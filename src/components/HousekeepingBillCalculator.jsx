@@ -116,9 +116,36 @@ function calcBill(form, mv) {
   };
 }
 
+// ─── Field component (defined OUTSIDE main component so it never remounts) ────
+function Field({ label, value, onChange, prefix }) {
+  return (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.7 }}>{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+        {prefix && <span style={{ opacity: 0.5, fontSize: '0.9rem' }}>{prefix}</span>}
+        <input
+          type="text"
+          inputMode="numeric"
+          value={value}
+          onChange={e => {
+            const cleaned = e.target.value
+              .replace(/[^0-9.]/g, '')
+              .replace(/(\..*?)\.+/g, '$1');
+            onChange(cleaned);
+          }}
+          placeholder="0"
+          style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.95rem', background: 'rgba(255,255,255,0.8)' }}
+        />
+      </div>
+    </label>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
 export default function HousekeepingBillCalculator() {
   const [month, setMonth]       = useState(getCurrentMonth);
   const [form, setForm]         = useState(DEFAULT_FORM);
+  const [savedForm, setSavedForm] = useState(null);   // bill only updates on Save
   const [saveStatus, setSave]   = useState('idle');
   const [saveMsg, setSaveMsg]   = useState('');
   const [isLoading, setLoading] = useState(false);
@@ -140,10 +167,13 @@ export default function HousekeepingBillCalculator() {
         await ensureFirebaseSession();
         const snap = await getDoc(doc(db, 'housekeepingBillCalculations', recordId));
         if (!cancelled && snap.exists()) {
-          setForm({ ...DEFAULT_FORM, ...snap.data().form });
+          const loaded = { ...DEFAULT_FORM, ...snap.data().form };
+          setForm(loaded);
+          setSavedForm(loaded);   // initialise summary from Firebase
           setSaveMsg(`Loaded from Firebase — ${formatLongMonth(month)}`);
         } else if (!cancelled) {
           setForm(DEFAULT_FORM);
+          setSavedForm(null);
           setSaveMsg(`New bill — ${formatLongMonth(month)}`);
         }
       } catch (e) { console.error(e); }
@@ -167,6 +197,7 @@ export default function HousekeepingBillCalculator() {
     clearTimeout(timerRef.current);
     setIsSaving(true);
     await saveToFirebase(form, recordId);
+    setSavedForm(form);   // freeze the summary table at this snapshot
     setIsSaving(false);
   }
 
@@ -174,7 +205,7 @@ export default function HousekeepingBillCalculator() {
     setForm(prev => ({ ...prev, [field]: value }));
   }
 
-  const bill = calcBill(form, month);
+  const bill = savedForm ? calcBill(savedForm, month) : null;  // only updates on Save
 
   function handleDownloadExcel() {
     if (!bill) return;
@@ -219,24 +250,6 @@ export default function HousekeepingBillCalculator() {
 
   const badge = { idle: { c: '#6b7280', i: '●' }, pending: { c: '#f59e0b', i: '⏳' }, saving: { c: '#3b82f6', i: '↑' }, saved: { c: '#10b981', i: '✓' }, error: { c: '#ef4444', i: '✗' } }[saveStatus];
 
-  function Field({ label, field, prefix }) {
-    return (
-      <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.7 }}>{label}</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          {prefix && <span style={{ opacity: 0.5, fontSize: '0.9rem' }}>{prefix}</span>}
-          <input
-            type="text"
-            inputMode="decimal"
-            value={form[field]}
-            onChange={e => handleChange(field, e.target.value)}
-            placeholder="0"
-            style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.95rem', background: 'rgba(255,255,255,0.8)' }}
-          />
-        </div>
-      </label>
-    );
-  }
 
   const sectionStyle = { background: 'rgba(255,255,255,0.6)', borderRadius: 14, padding: '20px 24px', border: '1px solid rgba(0,0,0,0.08)', display: 'flex', flexDirection: 'column', gap: 14 };
   const gridStyle    = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 };
@@ -289,9 +302,9 @@ export default function HousekeepingBillCalculator() {
           <p style={headingStyle}>🏢 Building Distribution Units</p>
           <p style={{ margin: 0, fontSize: '0.82rem', opacity: 0.6 }}>Number of flats per building — determines cost split ratio</p>
           <div style={gridStyle}>
-            <Field label="A Building Units" field="unitsA" />
-            <Field label="B Building Units" field="unitsB" />
-            <Field label="C Building Units" field="unitsC" />
+            <Field label="A Building Units" value={form.unitsA} onChange={v => handleChange('unitsA', v)} />
+            <Field label="B Building Units" value={form.unitsB} onChange={v => handleChange('unitsB', v)} />
+            <Field label="C Building Units" value={form.unitsC} onChange={v => handleChange('unitsC', v)} />
           </div>
           {bill && (
             <div style={{ fontSize: '0.8rem', opacity: 0.65 }}>
@@ -304,19 +317,19 @@ export default function HousekeepingBillCalculator() {
         <div style={sectionStyle}>
           <p style={headingStyle}>👷 Building Manpower Wages</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <Field label="A Building Days" field="aDays" />
-            <Field label="A Building Wage (₹)" field="aWage" prefix="₹" />
-            <Field label="B Building Days" field="bDays" />
-            <Field label="B Building Wage (₹)" field="bWage" prefix="₹" />
-            <Field label="C Building Days" field="cDays" />
-            <Field label="C Building Wage (₹)" field="cWage" prefix="₹" />
+            <Field label="A Building Days" value={form.aDays} onChange={v => handleChange('aDays', v)} />
+            <Field label="A Building Wage (₹)" value={form.aWage} onChange={v => handleChange('aWage', v)} prefix="₹" />
+            <Field label="B Building Days" value={form.bDays} onChange={v => handleChange('bDays', v)} />
+            <Field label="B Building Wage (₹)" value={form.bWage} onChange={v => handleChange('bWage', v)} prefix="₹" />
+            <Field label="C Building Days" value={form.cDays} onChange={v => handleChange('cDays', v)} />
+            <Field label="C Building Wage (₹)" value={form.cWage} onChange={v => handleChange('cWage', v)} prefix="₹" />
           </div>
         </div>
 
         {/* Supervisor */}
         <div style={sectionStyle}>
           <p style={headingStyle}>🧑‍💼 Supervisor</p>
-          <Field label="Supervisor Monthly Salary (₹)" field="supervisorSalary" prefix="₹" />
+          <Field label="Supervisor Monthly Salary (₹)" value={form.supervisorSalary} onChange={v => handleChange('supervisorSalary', v)} prefix="₹" />
           {bill && n(form.supervisorSalary) > 0 && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, fontSize: '0.85rem' }}>
               {bill.rows.map(r => <div key={r.label} style={{ textAlign: 'center', padding: '8px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}><div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{r.label}</div><strong>₹{fmt(r.sup)}</strong></div>)}
@@ -328,9 +341,9 @@ export default function HousekeepingBillCalculator() {
         <div style={sectionStyle}>
           <p style={headingStyle}>👥 Common Staff</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <Field label="No. of Staff" field="commonCount" />
-            <Field label="Total Salary (₹)" field="commonSalary" prefix="₹" />
-            <Field label="Days Absent" field="commonAbsent" />
+            <Field label="No. of Staff" value={form.commonCount} onChange={v => handleChange('commonCount', v)} />
+            <Field label="Total Salary (₹)" value={form.commonSalary} onChange={v => handleChange('commonSalary', v)} prefix="₹" />
+            <Field label="Days Absent" value={form.commonAbsent} onChange={v => handleChange('commonAbsent', v)} />
           </div>
           {bill && n(form.commonSalary) > 0 && (
             <div style={{ fontSize: '0.83rem', display: 'flex', flexDirection: 'column', gap: 4, padding: '10px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}>
@@ -349,7 +362,7 @@ export default function HousekeepingBillCalculator() {
         {/* Garbage */}
         <div style={sectionStyle}>
           <p style={headingStyle}>🗑️ Garbage</p>
-          <Field label="Monthly Garbage Amount (₹)" field="garbageTotal" prefix="₹" />
+          <Field label="Monthly Garbage Amount (₹)" value={form.garbageTotal} onChange={v => handleChange('garbageTotal', v)} prefix="₹" />
           {bill && n(form.garbageTotal) > 0 && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, fontSize: '0.85rem' }}>
               {bill.rows.map(r => <div key={r.label} style={{ textAlign: 'center', padding: '8px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}><div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{r.label}</div><strong>₹{fmt(r.garb)}</strong></div>)}
@@ -361,8 +374,8 @@ export default function HousekeepingBillCalculator() {
         <div style={sectionStyle}>
           <p style={headingStyle}>🚜 Tractor</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <Field label="Rate per Trip (₹)" field="tractorRate" prefix="₹" />
-            <Field label="No. of Trips" field="tractorTrips" />
+            <Field label="Rate per Trip (₹)" value={form.tractorRate} onChange={v => handleChange('tractorRate', v)} prefix="₹" />
+            <Field label="No. of Trips" value={form.tractorTrips} onChange={v => handleChange('tractorTrips', v)} />
           </div>
           {bill && bill.tractTotal > 0 && (
             <>
@@ -379,7 +392,7 @@ export default function HousekeepingBillCalculator() {
         {/* STP */}
         <div style={sectionStyle}>
           <p style={headingStyle}>💧 STP Operator</p>
-          <Field label="STP Operator Monthly Salary (₹)" field="stpSalary" prefix="₹" />
+          <Field label="STP Operator Monthly Salary (₹)" value={form.stpSalary} onChange={v => handleChange('stpSalary', v)} prefix="₹" />
           {bill && n(form.stpSalary) > 0 && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, fontSize: '0.85rem' }}>
               {bill.rows.map(r => <div key={r.label} style={{ textAlign: 'center', padding: '8px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}><div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{r.label}</div><strong>₹{fmt(r.stp)}</strong></div>)}
