@@ -671,38 +671,32 @@ export default function App() {
           />
         </section>
 
-        <section className="tabs-shell">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 16px 4px 16px', margin: '0 -16px' }}>
-            <div className={`tabs-row ${isTabsExpanded ? 'tabs-row--expanded' : ''}`} role="tablist" aria-label="Dashboard sections" style={{ flex: 1, padding: 0 }}>
-              {tabItems.map((tab) => (
-                <button
-                  key={tab.id}
-                  id={`tab-${tab.id}`}
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === tab.id}
-                  aria-controls={`panel-${tab.id}`}
-                  className={`tab-button ${activeTab === tab.id ? 'tab-button--active' : ''}`}
-                  onClick={() => { setActiveTab(tab.id); setIsTabsExpanded(false); }}
-                >
-                  <span>{tab.label}</span>
-                  <small>{tab.metric}</small>
-                </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              className="tabs-expand-button"
-              onClick={() => setIsTabsExpanded(!isTabsExpanded)}
-              aria-label={isTabsExpanded ? 'Collapse tabs' : 'Expand tabs'}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="19" cy="12" r="1"></circle>
-                <circle cx="5" cy="12" r="1"></circle>
-              </svg>
-            </button>
+        <section className={`tabs-shell ${isTabsExpanded ? 'tabs-shell--expanded' : ''}`}>
+          <div className={`tabs-row ${isTabsExpanded ? 'tabs-row--expanded' : ''}`} role="tablist" aria-label="Dashboard sections">
+            {tabItems.map((tab) => (
+              <button
+                key={tab.id}
+                id={`tab-${tab.id}`}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`panel-${tab.id}`}
+                className={`tab-button ${activeTab === tab.id ? 'tab-button--active' : ''}`}
+                onClick={() => { setActiveTab(tab.id); setIsTabsExpanded(false); }}
+              >
+                <span>{tab.label}</span>
+                <small>{tab.metric}</small>
+              </button>
+            ))}
           </div>
+          <button
+            type="button"
+            className="tabs-expand-button"
+            onClick={() => setIsTabsExpanded(!isTabsExpanded)}
+            aria-label={isTabsExpanded ? 'Collapse tabs' : 'Expand tabs'}
+          >
+            {isTabsExpanded ? '✕' : '⋯'}
+          </button>
         </section>
 
         <div

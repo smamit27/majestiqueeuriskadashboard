@@ -453,8 +453,6 @@ select {
   position: sticky;
   top: clamp(6px, 1.5vw, 12px);
   z-index: 100;
-  /* overflow:hidden clips the scroll container so shell doesn't expand page width */
-  overflow: hidden;
   padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 16px);
   background: rgba(244, 239, 231, 0.92);
   backdrop-filter: blur(20px);

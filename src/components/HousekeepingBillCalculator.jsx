@@ -408,7 +408,9 @@ export default function HousekeepingBillCalculator() {
             <p className="eyebrow">Bill Summary</p>
             <h3 style={{ margin: '4px 0 16px' }}>Total per Building — {formatLongMonth(month)}</h3>
           </div>
-          <div style={{ overflowX: 'auto' }}>
+
+          {/* Desktop: scrollable table */}
+          <div className="hk-bill-table-desktop" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
               <thead>
                 <tr style={{ background: 'rgba(0,0,0,0.06)' }}>
@@ -437,6 +439,31 @@ export default function HousekeepingBillCalculator() {
                 </tr>
               </tfoot>
             </table>
+          </div>
+
+          {/* Mobile: stacked card view */}
+          <div className="hk-bill-cards-mobile" style={{ display: 'none' }}>
+            {bill.rows.map(r => (
+              <div key={r.label} style={{ padding: '14px 16px', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+                <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: 10, color: '#196c6c' }}>{r.label}</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 16px', fontSize: '0.85rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Wage</span><strong>₹{fmt(r.wage)}</strong></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Supervisor</span><strong>₹{fmt(r.sup)}</strong></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Common</span><strong>₹{fmt(r.com)}</strong></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Garbage</span><strong>₹{fmt(r.garb)}</strong></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Tractor</span><strong>₹{fmt(r.tract)}</strong></div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>STP</span><strong>₹{fmt(r.stp)}</strong></div>
+                </div>
+                <div style={{ marginTop: 10, paddingTop: 8, borderTop: '1px dashed rgba(0,0,0,0.1)', display: 'flex', justifyContent: 'space-between', fontSize: '1rem' }}>
+                  <span style={{ fontWeight: 700 }}>Total</span>
+                  <strong style={{ color: '#1a6b3c' }}>₹{fmt(r.total)}</strong>
+                </div>
+              </div>
+            ))}
+            <div style={{ padding: '16px', background: 'rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '0 0 14px 14px' }}>
+              <span style={{ fontWeight: 700, fontSize: '1.05rem' }}>Grand Total</span>
+              <strong style={{ color: '#1a6b3c', fontSize: '1.2rem' }}>₹{fmt(bill.grandTotal)}</strong>
+            </div>
           </div>
         </div>
       )}
