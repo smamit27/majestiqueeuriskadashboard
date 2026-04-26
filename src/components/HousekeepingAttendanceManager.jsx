@@ -1,578 +1,544 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../firebase.js';
 
+// ─── Constants ──────────────────────────────────────────────────────────────
+
 const LOCAL_STORAGE_KEY = 'majestique-housekeeping-register';
+const AUTO_SAVE_DELAY_MS = 1500; // debounce: wait 1.5 s after last keystroke
+
 const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, index) => {
   const date = new Date(2026, 3 + index, 1);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-
-  return `${year}-${month}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 });
 
-const registerColumns = [
-  { key: 'a', label: 'A', placeholder: "" },
-  { key: 'b', label: 'B', placeholder: "" },
-  { key: 'c', label: 'C', placeholder: "" },
-  { key: 'supervisor', label: 'Supervisor', placeholder: "" },
-  { key: 'common', label: 'Common', placeholder: "" },
-  { key: 'tractorTrip', label: 'Tractor Trip', placeholder: "" }
+// Columns that count towards the daily manpower total (excludes tractorTrip)
+const MANPOWER_COLUMNS = [
+  { key: 'a',          label: 'A' },
+  { key: 'b',          label: 'B' },
+  { key: 'c',          label: 'C' },
+  { key: 'supervisor', label: 'Supervisor' },
+  { key: 'common',     label: 'Common' },
 ];
 
-const manpowerColumns = registerColumns.filter((column) => column.key !== 'tractorTrip');
+// ─── Pure helpers ────────────────────────────────────────────────────────────
 
 function getCurrentMonthValue() {
-  const date = new Date();
-  const monthValue = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-
-  return FINANCIAL_YEAR_MONTHS.includes(monthValue) ? monthValue : FINANCIAL_YEAR_MONTHS[0];
+  const d = new Date();
+  const v = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  return FINANCIAL_YEAR_MONTHS.includes(v) ? v : FINANCIAL_YEAR_MONTHS[0];
 }
 
-function parseMonthValue(monthValue) {
-  const [year, month] = monthValue.split('-').map(Number);
-
-  return {
-    year,
-    monthIndex: month - 1
-  };
+function parseMonthValue(mv) {
+  const [year, month] = mv.split('-').map(Number);
+  return { year, monthIndex: month - 1 };
 }
 
-function formatMonthLabel(monthValue) {
-  const { year, monthIndex } = parseMonthValue(monthValue);
-
-  return new Intl.DateTimeFormat('en-IN', {
-    month: 'short',
-    year: '2-digit'
-  }).format(new Date(year, monthIndex, 1));
+function formatMonthLabel(mv) {
+  const { year, monthIndex } = parseMonthValue(mv);
+  return new Intl.DateTimeFormat('en-IN', { month: 'short', year: '2-digit' })
+    .format(new Date(year, monthIndex, 1));
 }
 
-function formatLongMonthLabel(monthValue) {
-  const { year, monthIndex } = parseMonthValue(monthValue);
-
-  return new Intl.DateTimeFormat('en-IN', {
-    month: 'long',
-    year: 'numeric'
-  }).format(new Date(year, monthIndex, 1));
+function formatLongMonthLabel(mv) {
+  const { year, monthIndex } = parseMonthValue(mv);
+  return new Intl.DateTimeFormat('en-IN', { month: 'long', year: 'numeric' })
+    .format(new Date(year, monthIndex, 1));
 }
 
 function formatDateLabel(date) {
   return new Intl.DateTimeFormat('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  })
-    .format(date)
-    .replaceAll('/', '-');
+    day: '2-digit', month: '2-digit', year: 'numeric',
+  }).format(date).replaceAll('/', '-');
 }
 
-function normalizeValue(value) {
-  if (value === '' || value === null || value === undefined) {
-    return '';
-  }
-
-  const parsedValue = Number(value);
-
-  return Number.isFinite(parsedValue) ? Math.max(0, parsedValue) : '';
+function buildFileSafeLabel(mv) {
+  const { year, monthIndex } = parseMonthValue(mv);
+  const month = new Intl.DateTimeFormat('en-IN', { month: 'short' })
+    .format(new Date(year, monthIndex, 1));
+  return `${month}-${year}`;
 }
 
-function buildMonthDays(monthValue) {
-  const { year, monthIndex } = parseMonthValue(monthValue);
-  const totalDays = new Date(year, monthIndex + 1, 0).getDate();
+function normalizeValue(v) {
+  if (v === '' || v === null || v === undefined) return '';
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.max(0, n) : '';
+}
 
-  return Array.from({ length: totalDays }, (_, index) => {
-    const dayNumber = index + 1;
-    const date = new Date(year, monthIndex, dayNumber);
-    const dateKey = `${monthValue}-${String(dayNumber).padStart(2, '0')}`;
+function getNum(v) { return v === '' ? 0 : Number(v) || 0; }
 
+function rowTotal(row) {
+  return MANPOWER_COLUMNS.reduce((s, col) => s + getNum(row[col.key]), 0);
+}
+
+function emptyRow() {
+  return { a: '', b: '', c: '', supervisor: '', common: '', tractorTrip: '' };
+}
+
+function buildMonthDays(mv) {
+  const { year, monthIndex } = parseMonthValue(mv);
+  const total = new Date(year, monthIndex + 1, 0).getDate();
+  return Array.from({ length: total }, (_, i) => {
+    const day = i + 1;
+    const date = new Date(year, monthIndex, day);
+    const dateKey = `${mv}-${String(day).padStart(2, '0')}`;
     return {
       date,
       dateKey,
       formattedDate: formatDateLabel(date),
-      weekdayLabel: new Intl.DateTimeFormat('en-IN', { weekday: 'short' }).format(date)
+      weekday: new Intl.DateTimeFormat('en-IN', { weekday: 'short' }).format(date),
     };
   });
 }
 
-function createEmptyRow() {
-  return {
-    a: '',
-    b: '',
-    c: '',
-    supervisor: '',
-    common: '',
-    tractorTrip: ''
-  };
-}
-
-function normalizeEntries(monthDays, sourceEntries = {}) {
-  return monthDays.reduce((entries, day) => {
-    const sourceRow = sourceEntries[day.dateKey] || {};
-
-    entries[day.dateKey] = {
-      a: normalizeValue(sourceRow.a),
-      b: normalizeValue(sourceRow.b),
-      c: normalizeValue(sourceRow.c),
-      supervisor: normalizeValue(sourceRow.supervisor),
-      common: normalizeValue(sourceRow.common),
-      tractorTrip: normalizeValue(sourceRow.tractorTrip)
+function normalizeEntries(days, src = {}) {
+  return days.reduce((acc, d) => {
+    const s = src[d.dateKey] || {};
+    acc[d.dateKey] = {
+      a:          normalizeValue(s.a),
+      b:          normalizeValue(s.b),
+      c:          normalizeValue(s.c),
+      supervisor: normalizeValue(s.supervisor),
+      common:     normalizeValue(s.common),
+      tractorTrip: normalizeValue(s.tractorTrip),
     };
-
-    return entries;
+    return acc;
   }, {});
 }
 
-function readLocalEntries() {
-  if (typeof window === 'undefined') {
-    return {};
-  }
+// ─── Local-storage helpers ───────────────────────────────────────────────────
 
+function readLocal() {
   try {
-    const storedValue = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-    return storedValue ? JSON.parse(storedValue) : {};
-  } catch (error) {
-    console.error('Unable to read local housekeeping register entries.', error);
-    return {};
-  }
+    const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
 }
 
-function writeLocalEntries(entries) {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(entries));
+function writeLocal(data) {
+  try { window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data)); } catch {}
 }
 
-function getNumericValue(value) {
-  return value === '' ? 0 : Number(value) || 0;
-}
-
-function getRowTotal(row) {
-  return manpowerColumns.reduce((sum, column) => sum + getNumericValue(row[column.key]), 0);
-}
-
-function buildFileSafeMonthLabel(monthValue) {
-  const { year, monthIndex } = parseMonthValue(monthValue);
-  const month = new Intl.DateTimeFormat('en-IN', { month: 'short' }).format(
-    new Date(year, monthIndex, 1)
-  );
-
-  return `${month}-${year}`;
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
+// ─── Component ───────────────────────────────────────────────────────────────
 
 export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
-  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonthValue);
-  const [attendanceEntries, setAttendanceEntries] = useState({});
-  const [localRecords, setLocalRecords] = useState(readLocalEntries);
-  const [isLoadingRecord, setIsLoadingRecord] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('');
+  const [selectedMonth, setSelectedMonth]       = useState(getCurrentMonthValue);
+  const [entries, setEntries]                   = useState({});
+  const [localRecords, setLocalRecords]         = useState(readLocal);
+  const [isLoading, setIsLoading]               = useState(false);
+  // saveStatus: 'idle' | 'pending' | 'saving' | 'saved' | 'error'
+  const [saveStatus, setSaveStatus]             = useState('idle');
+  const [saveMsg, setSaveMsg]                   = useState('');
 
-  const monthDays = useMemo(() => buildMonthDays(selectedMonth), [selectedMonth]);
-  const recordId = `register_${selectedMonth}`;
+  const monthDays  = useMemo(() => buildMonthDays(selectedMonth), [selectedMonth]);
+  const recordId   = `register_${selectedMonth}`;
 
+  // Track whether current entries came from a load (skip auto-save on initial load)
+  const isLoadedRef    = useRef(false);
+  const autoSaveTimer  = useRef(null);
+
+  // ── Load from Firebase when month changes ─────────────────────────────────
   useEffect(() => {
-    let isCancelled = false;
+    let cancelled = false;
+    isLoadedRef.current = false;
+    setSaveStatus('idle');
+    setSaveMsg('');
 
-    async function loadMonthlyRegister() {
+    async function load() {
+      setIsLoading(true);
       const localEntry = localRecords[recordId]?.entries || {};
 
-      setIsLoadingRecord(true);
-      setStatusMessage('');
-
       if (!isFirebaseConfigured || !db) {
-        if (!isCancelled) {
-          setAttendanceEntries(normalizeEntries(monthDays, localEntry));
-          setStatusMessage('Preview mode: the monthly register is stored in this browser until Firebase is connected.');
-          setIsLoadingRecord(false);
+        if (!cancelled) {
+          setEntries(normalizeEntries(monthDays, localEntry));
+          setSaveMsg('Local mode — Firebase not connected.');
+          setIsLoading(false);
+          isLoadedRef.current = true;
         }
-
         return;
       }
 
       try {
         await ensureFirebaseSession();
-        const snapshot = await getDoc(doc(db, 'housekeepingAttendanceRegisters', recordId));
-        const firestoreEntries = snapshot.exists() ? snapshot.data().entries || {} : {};
-
-        if (!isCancelled) {
-          setAttendanceEntries(normalizeEntries(monthDays, snapshot.exists() ? firestoreEntries : localEntry));
-          setStatusMessage(
-            snapshot.exists()
-              ? 'Monthly housekeeping register loaded from Firebase.'
-              : 'New monthly register ready. Manager can enter values and save.'
+        const snap = await getDoc(doc(db, 'housekeepingAttendanceRegisters', recordId));
+        if (!cancelled) {
+          const src = snap.exists() ? snap.data().entries || {} : localEntry;
+          setEntries(normalizeEntries(monthDays, src));
+          setSaveMsg(
+            snap.exists()
+              ? `Loaded from Firebase — ${formatLongMonthLabel(selectedMonth)}`
+              : `New register — ${formatLongMonthLabel(selectedMonth)}`
           );
         }
-      } catch (error) {
-        console.error(`Unable to load housekeeping register for "${recordId}".`, error);
-
-        if (!isCancelled) {
-          setAttendanceEntries(normalizeEntries(monthDays, localEntry));
-          setStatusMessage('Firebase was unavailable, so the local monthly register was loaded instead.');
+      } catch (err) {
+        console.error('Load error:', err);
+        if (!cancelled) {
+          setEntries(normalizeEntries(monthDays, localEntry));
+          setSaveMsg('Firebase unavailable — showing local data.');
         }
       } finally {
-        if (!isCancelled) {
-          setIsLoadingRecord(false);
+        if (!cancelled) {
+          setIsLoading(false);
+          isLoadedRef.current = true;
         }
       }
     }
 
-    loadMonthlyRegister();
+    load();
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recordId]);
 
-    return () => {
-      isCancelled = true;
+  // ── Auto-save: fires 1.5 s after last cell change ─────────────────────────
+  const saveToFirebase = useCallback(async (currentEntries, currentRecordId, month) => {
+    setSaveStatus('saving');
+    const payload = {
+      month,
+      registerType: 'daily-manpower',
+      rosterCount: staffMembers.length,
+      entries: currentEntries,
     };
-  }, [monthDays, recordId]);
 
-  const registerSummary = useMemo(() => {
-    const columnTotals = registerColumns.reduce((totals, column) => {
-      totals[column.key] = monthDays.reduce((sum, day) => {
-        const row = attendanceEntries[day.dateKey] || createEmptyRow();
-        return sum + getNumericValue(row[column.key]);
+    if (isFirebaseConfigured && db) {
+      try {
+        await ensureFirebaseSession();
+        await setDoc(
+          doc(db, 'housekeepingAttendanceRegisters', currentRecordId),
+          { ...payload, updatedAt: serverTimestamp() },
+          { merge: true }
+        );
+        setSaveStatus('saved');
+        setSaveMsg('All changes saved to Firebase ✓');
+      } catch (err) {
+        console.error('Auto-save error:', err);
+        // Fallback to local
+        const next = { ...readLocal(), [currentRecordId]: { ...payload, savedAt: new Date().toISOString() } };
+        writeLocal(next);
+        setLocalRecords(next);
+        setSaveStatus('error');
+        setSaveMsg('Firebase save failed — saved locally instead.');
+      }
+    } else {
+      const next = { ...readLocal(), [currentRecordId]: { ...payload, savedAt: new Date().toISOString() } };
+      writeLocal(next);
+      setLocalRecords(next);
+      setSaveStatus('saved');
+      setSaveMsg('Saved locally (Firebase not connected).');
+    }
+  }, [staffMembers.length]);
+
+  // ── Cell change handler ───────────────────────────────────────────────────
+  function handleCellChange(dateKey, field, value) {
+    if (!isLoadedRef.current) return; // skip during initial hydration
+
+    const next = (prev) => ({
+      ...prev,
+      [dateKey]: { ...(prev[dateKey] || emptyRow()), [field]: normalizeValue(value) },
+    });
+
+    setEntries((prev) => {
+      const updated = next(prev);
+      // Debounce auto-save
+      clearTimeout(autoSaveTimer.current);
+      setSaveStatus('pending');
+      setSaveMsg('Unsaved changes…');
+      autoSaveTimer.current = setTimeout(
+        () => saveToFirebase(updated, recordId, selectedMonth),
+        AUTO_SAVE_DELAY_MS
+      );
+      return updated;
+    });
+  }
+
+  // Cleanup timer on unmount
+  useEffect(() => () => clearTimeout(autoSaveTimer.current), []);
+
+  // ── Summary totals ────────────────────────────────────────────────────────
+  const summary = useMemo(() => {
+    const colTotals = [...MANPOWER_COLUMNS, { key: 'tractorTrip' }].reduce((acc, col) => {
+      acc[col.key] = monthDays.reduce((s, d) => {
+        const row = entries[d.dateKey] || emptyRow();
+        return s + getNum(row[col.key]);
       }, 0);
-      return totals;
+      return acc;
     }, {});
 
-    const manpowerTotal = monthDays.reduce((sum, day) => {
-      const row = attendanceEntries[day.dateKey] || createEmptyRow();
-      return sum + getRowTotal(row);
-    }, 0);
+    const manpowerTotal = monthDays.reduce((s, d) => s + rowTotal(entries[d.dateKey] || emptyRow()), 0);
 
     return {
       daysInMonth: monthDays.length,
       manpowerTotal,
-      tractorTripTotal: columnTotals.tractorTrip || 0,
-      averageDailyTotal: monthDays.length ? (manpowerTotal / monthDays.length).toFixed(1) : '0.0',
-      columnTotals
+      tractorTripTotal: colTotals.tractorTrip || 0,
+      avgDaily: monthDays.length ? (manpowerTotal / monthDays.length).toFixed(1) : '0.0',
+      colTotals,
     };
-  }, [attendanceEntries, monthDays]);
+  }, [entries, monthDays]);
 
-  function handleEntryChange(dateKey, field, value) {
-    const normalizedNextValue = normalizeValue(value);
-
-    setAttendanceEntries((currentEntries) => ({
-      ...currentEntries,
-      [dateKey]: {
-        ...(currentEntries[dateKey] || createEmptyRow()),
-        [field]: normalizedNextValue
-      }
-    }));
-  }
-
+  // ── Excel download ────────────────────────────────────────────────────────
   function handleDownloadExcel() {
-    const headerCells = manpowerColumns
-      .map((column) => `<th>${escapeHtml(column.label)}</th>`)
-      .join('');
+    const headers = ['Date', 'Day', 'A', 'B', 'C', 'Supervisor', 'Common', 'Total', 'Tractor Trip'];
 
-    const bodyRows = monthDays
-      .map((day) => {
-        const row = attendanceEntries[day.dateKey] || createEmptyRow();
-        const manpowerCells = manpowerColumns
-          .map((column) => `<td>${getNumericValue(row[column.key])}</td>`)
-          .join('');
-
-        return `
-          <tr>
-            <td>${escapeHtml(day.formattedDate)}</td>
-            ${manpowerCells}
-            <td>${getRowTotal(row)}</td>
-            <td>${getNumericValue(row.tractorTrip)}</td>
-          </tr>
-        `;
-      })
-      .join('');
-
-    const totalCells = manpowerColumns
-      .map((column) => `<th>${registerSummary.columnTotals[column.key]}</th>`)
-      .join('');
-
-    const workbookHtml = `
-      <html xmlns:o="urn:schemas-microsoft-com:office:office"
-            xmlns:x="urn:schemas-microsoft-com:office:excel"
-            xmlns="http://www.w3.org/TR/REC-html40">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="ProgId" content="Excel.Sheet" />
-          <meta name="Generator" content="Majestique Euriska Dashboard" />
-          <style>
-            table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; }
-            th, td { border: 1px solid #666; padding: 8px; text-align: center; }
-            thead th, tfoot th { background: #f0e8dc; font-weight: 700; }
-            h2 { margin-bottom: 12px; font-family: Arial, sans-serif; }
-          </style>
-        </head>
-        <body>
-          <h2>Housekeeping Attendance Month of ${escapeHtml(formatMonthLabel(selectedMonth))}</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                ${headerCells}
-                <th>Total</th>
-                <th>Tractor Trip</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${bodyRows}
-            </tbody>
-            <tfoot>
-              <tr>
-                <th>Total</th>
-                ${totalCells}
-                <th>${registerSummary.manpowerTotal}</th>
-                <th>${registerSummary.tractorTripTotal}</th>
-              </tr>
-            </tfoot>
-          </table>
-        </body>
-      </html>
-    `;
-
-    const blob = new Blob([workbookHtml], {
-      type: 'application/vnd.ms-excel;charset=utf-8'
+    const dataRows = monthDays.map((d) => {
+      const row = entries[d.dateKey] || emptyRow();
+      return [
+        d.formattedDate,
+        d.weekday,
+        getNum(row.a),
+        getNum(row.b),
+        getNum(row.c),
+        getNum(row.supervisor),
+        getNum(row.common),
+        rowTotal(row),
+        getNum(row.tractorTrip),
+      ];
     });
-    const downloadUrl = window.URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
 
-    anchor.href = downloadUrl;
-    anchor.download = `housekeeping-register-${buildFileSafeMonthLabel(selectedMonth)}.xls`;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    window.URL.revokeObjectURL(downloadUrl);
-    setStatusMessage(`Excel file downloaded for ${formatLongMonthLabel(selectedMonth)}.`);
-  }
+    const totalsRow = [
+      'Total', '',
+      summary.colTotals.a,
+      summary.colTotals.b,
+      summary.colTotals.c,
+      summary.colTotals.supervisor,
+      summary.colTotals.common,
+      summary.manpowerTotal,
+      summary.tractorTripTotal,
+    ];
 
-  async function handleSave() {
-    setIsSaving(true);
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...dataRows, totalsRow]);
+    ws['!cols'] = [
+      { wch: 14 }, // Date
+      { wch: 6  }, // Day
+      { wch: 7  }, // A
+      { wch: 7  }, // B
+      { wch: 7  }, // C
+      { wch: 12 }, // Supervisor
+      { wch: 10 }, // Common
+      { wch: 9  }, // Total
+      { wch: 13 }, // Tractor Trip
+    ];
 
-    const payload = {
-      month: selectedMonth,
-      registerType: 'daily-manpower',
-      rosterCount: staffMembers.length,
-      entries: attendanceEntries
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, `HK ${formatMonthLabel(selectedMonth)}`);
+    wb.Props = {
+      Title:  `Housekeeping Attendance – ${formatLongMonthLabel(selectedMonth)}`,
+      Author: 'Majestique Euriska Dashboard',
     };
 
-    try {
-      if (isFirebaseConfigured && db) {
-        await ensureFirebaseSession();
-        await setDoc(
-          doc(db, 'housekeepingAttendanceRegisters', recordId),
-          {
-            ...payload,
-            updatedAt: serverTimestamp()
-          },
-          { merge: true }
-        );
-
-        setStatusMessage('Monthly housekeeping register saved to Firebase.');
-      } else {
-        const nextLocalRecords = {
-          ...localRecords,
-          [recordId]: {
-            ...payload,
-            savedAt: new Date().toISOString()
-          }
-        };
-
-        setLocalRecords(nextLocalRecords);
-        writeLocalEntries(nextLocalRecords);
-        setStatusMessage('Monthly housekeeping register saved locally in this browser.');
-      }
-    } catch (error) {
-      console.error(`Unable to save housekeeping register for "${recordId}".`, error);
-
-      const nextLocalRecords = {
-        ...localRecords,
-        [recordId]: {
-          ...payload,
-          savedAt: new Date().toISOString()
-        }
-      };
-
-      setLocalRecords(nextLocalRecords);
-      writeLocalEntries(nextLocalRecords);
-      setStatusMessage('Firebase save failed, so the monthly register was stored locally instead.');
-    } finally {
-      setIsSaving(false);
-    }
+    XLSX.writeFile(wb, `housekeeping-attendance-${buildFileSafeLabel(selectedMonth)}.xlsx`);
+    setSaveMsg(`Excel downloaded for ${formatLongMonthLabel(selectedMonth)}.`);
   }
 
+  // ── Save-status badge ─────────────────────────────────────────────────────
+  const statusBadge = {
+    idle:    { color: '#6b7280', icon: '●', text: 'Ready' },
+    pending: { color: '#f59e0b', icon: '⏳', text: 'Saving…' },
+    saving:  { color: '#3b82f6', icon: '↑', text: 'Saving to Firebase…' },
+    saved:   { color: '#10b981', icon: '✓', text: 'Saved' },
+    error:   { color: '#ef4444', icon: '✗', text: 'Save failed' },
+  }[saveStatus];
+
+  // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="attendance-manager attendance-manager--register">
+
+      {/* ── Controls panel ── */}
       <div className="attendance-manager__controls stack-card">
         <div>
           <p className="eyebrow">Monthly housekeeping register</p>
           <h3>Manager entry table</h3>
-          <p>Enter daily deployment values the same way as the register sheet, and the totals will calculate automatically.</p>
+          <p>
+            Enter daily deployment values — changes are saved to Firebase automatically.
+          </p>
         </div>
 
+        {/* Summary chips */}
         <div className="attendance-control-grid">
           <div className="summary-card summary-card--inline">
             <span>Financial year</span>
-            <strong>April 2026 to March 2027</strong>
+            <strong>April 2026 – March 2027</strong>
           </div>
-
           <div className="summary-card summary-card--inline">
-            <span>Active register month</span>
+            <span>Active month</span>
             <strong>{formatLongMonthLabel(selectedMonth)}</strong>
           </div>
-
           <div className="summary-card summary-card--inline">
-            <span>Roster reference</span>
-            <strong>{staffMembers.length} staff in tracker</strong>
+            <span>Staff in roster</span>
+            <strong>{staffMembers.length}</strong>
           </div>
         </div>
 
+        {/* Totals grid */}
         <div className="attendance-summary-grid">
           <div className="summary-card">
             <span>Days in month</span>
-            <strong>{registerSummary.daysInMonth}</strong>
+            <strong>{summary.daysInMonth}</strong>
           </div>
           <div className="summary-card">
             <span>Monthly manpower</span>
-            <strong>{registerSummary.manpowerTotal}</strong>
+            <strong>{summary.manpowerTotal}</strong>
           </div>
           <div className="summary-card">
             <span>Tractor trips</span>
-            <strong>{registerSummary.tractorTripTotal}</strong>
+            <strong>{summary.tractorTripTotal}</strong>
           </div>
           <div className="summary-card">
-            <span>Average daily total</span>
-            <strong>{registerSummary.averageDailyTotal}</strong>
+            <span>Avg daily total</span>
+            <strong>{summary.avgDaily}</strong>
           </div>
         </div>
 
+        {/* Column totals */}
         <div className="attendance-status-list">
-          {manpowerColumns.map((column) => (
-            <div key={column.key} className="attendance-status-item">
-              <span>{column.label} total</span>
-              <strong>{registerSummary.columnTotals[column.key]}</strong>
+          {MANPOWER_COLUMNS.map((col) => (
+            <div key={col.key} className="attendance-status-item">
+              <span>{col.label} total</span>
+              <strong>{summary.colTotals[col.key]}</strong>
             </div>
           ))}
           <div className="attendance-status-item">
             <span>Tractor Trip total</span>
-            <strong>{registerSummary.tractorTripTotal}</strong>
+            <strong>{summary.tractorTripTotal}</strong>
           </div>
         </div>
 
-        <button className="button-primary" type="button" onClick={handleSave} disabled={isSaving}>
-          {isSaving ? 'Saving...' : 'Save Monthly Register'}
-        </button>
-
-        <p className="attendance-note">
-          {isLoadingRecord
-            ? `Loading ${formatLongMonthLabel(selectedMonth)} register...`
-            : statusMessage}
-        </p>
+        {/* Auto-save status */}
+        <div
+          className="attendance-note"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontWeight: 500,
+            color: statusBadge.color,
+            transition: 'color 0.3s',
+          }}
+        >
+          <span style={{ fontSize: '1rem' }}>{statusBadge.icon}</span>
+          <span>
+            {isLoading
+              ? `Loading ${formatLongMonthLabel(selectedMonth)}…`
+              : saveMsg || statusBadge.text}
+          </span>
+        </div>
       </div>
 
+      {/* ── Table panel ── */}
       <div className="table-card attendance-table-card attendance-table-card--register">
-        <div className="attendance-month-tabs" role="tablist" aria-label="Manager daily entry months">
-          {FINANCIAL_YEAR_MONTHS.map((monthValue) => (
+
+        {/* Month tabs */}
+        <div className="attendance-month-tabs" role="tablist" aria-label="Monthly register tabs">
+          {FINANCIAL_YEAR_MONTHS.map((mv) => (
             <button
-              key={monthValue}
+              key={mv}
               type="button"
               role="tab"
-              aria-selected={selectedMonth === monthValue}
-              className={`attendance-month-tab ${selectedMonth === monthValue ? 'attendance-month-tab--active' : ''}`}
-              onClick={() => setSelectedMonth(monthValue)}
+              aria-selected={selectedMonth === mv}
+              className={`attendance-month-tab ${selectedMonth === mv ? 'attendance-month-tab--active' : ''}`}
+              onClick={() => setSelectedMonth(mv)}
             >
-              {formatMonthLabel(monthValue)}
+              {formatMonthLabel(mv)}
             </button>
           ))}
         </div>
 
+        {/* Table header */}
         <div className="attendance-table-card__header">
           <div>
-            <p className="eyebrow">Manager daily entry sheet</p>
-            <h3>Housekeeping Attendance Month of {formatMonthLabel(selectedMonth)}</h3>
+            <p className="eyebrow">Daily entry sheet</p>
+            <h3>Housekeeping Attendance — {formatLongMonthLabel(selectedMonth)}</h3>
           </div>
           <div className="attendance-table-card__actions">
-            <p>Manager can enter day-wise values for A, B, C, Supervisor, Common, and Tractor Trip directly in this table.</p>
+            <p>Type values directly — auto-saves to Firebase after every change.</p>
             <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
-              Download Excel
+              ⬇ Download Excel
             </button>
           </div>
         </div>
 
+        {/* Table */}
         <div className="attendance-table-scroll">
           <table className="attendance-table attendance-table--register">
             <thead>
               <tr>
-                <th>Date</th>
-                {manpowerColumns.map((column) => (
-                  <th key={column.key}>{column.label}</th>
+                <th style={{ minWidth: 110 }}>Date</th>
+                {MANPOWER_COLUMNS.map((col) => (
+                  <th key={col.key}>{col.label}</th>
                 ))}
                 <th>Total</th>
                 <th>Tractor Trip</th>
               </tr>
             </thead>
+
             <tbody>
-              {monthDays.map((day) => {
-                const row = attendanceEntries[day.dateKey] || createEmptyRow();
-                const rowTotal = getRowTotal(row);
+              {isLoading ? (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: 'center', padding: '24px', opacity: 0.6 }}>
+                    Loading {formatLongMonthLabel(selectedMonth)}…
+                  </td>
+                </tr>
+              ) : (
+                monthDays.map((d) => {
+                  const row = entries[d.dateKey] || emptyRow();
+                  const total = rowTotal(row);
 
-                return (
-                  <tr key={day.dateKey}>
-                    <th className="attendance-register-date">
-                      <strong>{day.formattedDate}</strong>
-                      <span>{day.weekdayLabel}</span>
-                    </th>
+                  return (
+                    <tr key={d.dateKey}>
+                      {/* Date + weekday */}
+                      <th className="attendance-register-date">
+                        <strong>{d.formattedDate}</strong>
+                        <span>{d.weekday}</span>
+                      </th>
 
-                    {manpowerColumns.map((column) => (
-                      <td key={`${day.dateKey}-${column.key}`}>
+                      {/* A, B, C, Supervisor, Common */}
+                      {MANPOWER_COLUMNS.map((col) => (
+                        <td key={`${d.dateKey}-${col.key}`}>
+                          <input
+                            className="attendance-register-input"
+                            type="number"
+                            min="0"
+                            step="1"
+                            inputMode="numeric"
+                            placeholder="0"
+                            value={row[col.key]}
+                            onChange={(e) => handleCellChange(d.dateKey, col.key, e.target.value)}
+                          />
+                        </td>
+                      ))}
+
+                      {/* Auto-calculated total */}
+                      <td className="attendance-register-total">
+                        <strong>{total}</strong>
+                      </td>
+
+                      {/* Tractor Trip */}
+                      <td>
                         <input
                           className="attendance-register-input"
                           type="number"
                           min="0"
                           step="1"
                           inputMode="numeric"
-                          placeholder={String(column.placeholder)}
-                          value={row[column.key]}
-                          onChange={(event) => handleEntryChange(day.dateKey, column.key, event.target.value)}
+                          placeholder="0"
+                          value={row.tractorTrip}
+                          onChange={(e) => handleCellChange(d.dateKey, 'tractorTrip', e.target.value)}
                         />
                       </td>
-                    ))}
-
-                    <td className="attendance-register-total">
-                      <strong>{rowTotal}</strong>
-                    </td>
-
-                    <td>
-                      <input
-                        className="attendance-register-input"
-                        type="number"
-                        min="0"
-                        step="1"
-                        inputMode="numeric"
-                        placeholder="0"
-                        value={row.tractorTrip}
-                        onChange={(event) => handleEntryChange(day.dateKey, 'tractorTrip', event.target.value)}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
+
+            {/* Column totals footer */}
             <tfoot>
               <tr>
                 <th>Total</th>
-                {manpowerColumns.map((column) => (
-                  <th key={`total-${column.key}`}>{registerSummary.columnTotals[column.key]}</th>
+                {MANPOWER_COLUMNS.map((col) => (
+                  <th key={`ft-${col.key}`}>{summary.colTotals[col.key]}</th>
                 ))}
-                <th>{registerSummary.manpowerTotal}</th>
-                <th>{registerSummary.tractorTripTotal}</th>
+                <th>{summary.manpowerTotal}</th>
+                <th>{summary.tractorTripTotal}</th>
               </tr>
             </tfoot>
           </table>
