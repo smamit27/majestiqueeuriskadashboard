@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import MetricCard from './components/MetricCard.jsx';
 import HousekeepingAttendanceManager from './components/HousekeepingAttendanceManager.jsx';
+import HousekeepingBillCalculator from './components/HousekeepingBillCalculator.jsx';
+import SecurityAttendanceManager from './components/SecurityAttendanceManager.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 import SectionCard from './components/SectionCard.jsx';
 import StatusPill from './components/StatusPill.jsx';
@@ -528,6 +530,36 @@ export default function App() {
           <HousekeepingAttendanceManager staffMembers={staffData.items} />
         </SectionCard>
       )
+    },
+    {
+      id: 'security',
+      label: 'Security',
+      metric: 'Guard deployment',
+      render: () => (
+        <SectionCard
+          id="security"
+          badge="Security Staff Tracker"
+          title="Guard deployment and post coverage"
+          subtitle="Track daily guard counts across A Building, B Building, C Building, Common Area, and Chauhanji."
+        >
+          <SecurityAttendanceManager />
+        </SectionCard>
+      )
+    },
+    {
+      id: 'hkbill',
+      label: 'HK Bill',
+      metric: 'Bill calculator',
+      render: () => (
+        <SectionCard
+          id="hkbill"
+          badge="Housekeeping Bill Calculation"
+          title="Monthly bill breakdown per building"
+          subtitle="Enter salary, absences, garbage, tractor, and STP — auto-calculates A, B, C building share and saves to Firebase."
+        >
+          <HousekeepingBillCalculator />
+        </SectionCard>
+      )
     }
   ];
 
@@ -541,8 +573,29 @@ export default function App() {
       <main className="main-panel">
         <header className="dashboard-header">
           <div className="dashboard-header__copy">
-            <p className="eyebrow">Residential Society Dashboard</p>
-            <h1>Majestique Euriska</h1>
+
+            {/* Society logo + title row */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '12px' }}>
+              <img
+                src="/logo.png"
+                alt="Majestique Euriska Logo"
+                style={{
+                  width: '88px',
+                  height: '88px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  flexShrink: 0,
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+                  border: '3px solid rgba(255,255,255,0.25)',
+                  background: '#fff',
+                }}
+              />
+              <div>
+                <p className="eyebrow">Residential Society Dashboard</p>
+                <h1 style={{ margin: 0 }}>Majestique Euriska</h1>
+              </div>
+            </div>
+
             <p className="dashboard-header__text">
               A cleaner tab-based control center for member operations, dues, community updates,
               complaints, finance, visitor movement, and housekeeping management.

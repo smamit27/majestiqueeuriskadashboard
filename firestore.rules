@@ -1,44 +1,11 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isSignedIn() {
-      return request.auth != null;
-    }
 
-    match /members/{document=**} {
-      allow read, write: if isSignedIn();
-    }
-
-    match /dues/{document=**} {
-      allow read, write: if isSignedIn();
-    }
-
-    match /announcements/{document=**} {
-      allow read, write: if isSignedIn();
-    }
-
-    match /events/{document=**} {
-      allow read, write: if isSignedIn();
-    }
-
-    match /complaints/{document=**} {
-      allow read, write: if isSignedIn();
-    }
-
-    match /finance/{document=**} {
-      allow read, write: if isSignedIn();
-    }
-
-    match /visitors/{document=**} {
-      allow read, write: if isSignedIn();
-    }
-
-    match /staff/{document=**} {
-      allow read, write: if isSignedIn();
-    }
-
-    match /housekeepingAttendanceRegisters/{document=**} {
-      allow read, write: if isSignedIn();
+    // Internal dashboard — all collections open for read/write.
+    // Lock down with proper auth rules once user login is implemented.
+    match /{document=**} {
+      allow read, write: if true;
     }
   }
 }
