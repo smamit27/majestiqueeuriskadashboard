@@ -21,40 +21,46 @@ export default function MainDashboard({ stats }) {
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
+    <div className="accounting-shell">
       {/* Header */}
-      <div className="table-card" style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #0B2B26 0%, #1E3A8A 100%)', color: 'white' }}>
+      <div className="dashboard-hero-card">
         <div>
           <p className="eyebrow" style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '4px' }}>Welcome back, Admin</p>
           <h2 style={{ margin: 0, color: 'white', fontSize: '1.75rem', letterSpacing: '0.02em' }}>SOCIETY MANAGEMENT DASHBOARD</h2>
         </div>
-        <div>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <button 
+            className="dashboard-quick-btn" 
+            onClick={() => window.dispatchEvent(new CustomEvent('changeTab', { detail: 'cheques' }))}
+          >
+            📋 Cheque Tracker
+          </button>
           <img src="/favicon.png" alt="Majestique Euriska" style={{ height: '56px', filter: 'brightness(0) invert(1)' }} />
         </div>
       </div>
 
       {/* Top 4 Metrics */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
-        <div className="table-card" style={{ padding: '24px' }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Collection Rate</p>
-          <p style={{ margin: 0, fontSize: '2.25rem', fontWeight: 800, color: '#0B2B26' }}>{collectionRate.toFixed(1)}%</p>
+        <div className="dashboard-metric-card">
+          <p className="eyebrow">Collection Rate</p>
+          <p className="dashboard-metric-val" style={{ color: '#0B2B26' }}>{collectionRate.toFixed(1)}%</p>
           <div style={{ width: '100%', height: '4px', background: '#e2e8f0', borderRadius: '2px', marginTop: '12px' }}>
             <div style={{ width: `${collectionRate}%`, height: '100%', background: '#0B2B26', borderRadius: '2px' }}></div>
           </div>
         </div>
-        <div className="table-card" style={{ padding: '24px' }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Outstanding Dues</p>
-          <p style={{ margin: 0, fontSize: '2.25rem', fontWeight: 800, color: '#C49B4F' }}>₹{fmt(totalOutstanding)}</p>
+        <div className="dashboard-metric-card">
+          <p className="eyebrow">Outstanding Dues</p>
+          <p className="dashboard-metric-val" style={{ color: '#C49B4F' }}>₹{fmt(totalOutstanding)}</p>
           <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>Pending from households</p>
         </div>
-        <div className="table-card" style={{ padding: '24px' }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Staff on Duty</p>
-          <p style={{ margin: 0, fontSize: '2.25rem', fontWeight: 800, color: '#0B2B26' }}>{staffPresent}</p>
+        <div className="dashboard-metric-card">
+          <p className="eyebrow">Staff on Duty</p>
+          <p className="dashboard-metric-val" style={{ color: '#0B2B26' }}>{staffPresent}</p>
           <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>Security & Housekeeping</p>
         </div>
-        <div className="table-card" style={{ padding: '24px' }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Open Complaints</p>
-          <p style={{ margin: 0, fontSize: '2.25rem', fontWeight: 800, color: openComplaints > 5 ? '#dc2626' : '#0B2B26' }}>{openComplaints}</p>
+        <div className="dashboard-metric-card">
+          <p className="eyebrow">Open Complaints</p>
+          <p className="dashboard-metric-val" style={{ color: openComplaints > 5 ? '#dc2626' : '#0B2B26' }}>{openComplaints}</p>
           <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>Requires attention</p>
         </div>
       </div>
@@ -94,7 +100,7 @@ export default function MainDashboard({ stats }) {
         <div className="table-card" style={{ padding: '24px' }}>
           <h3 style={{ margin: '0 0 24px 0', fontSize: '1rem', color: '#334155', fontWeight: 700 }}>Operations & Community</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#f8fafc', borderRadius: '12px' }}>
+            <div className="dashboard-mini-card">
               <div style={{ fontSize: '24px' }}>👥</div>
               <div style={{ flex: 1 }}>
                 <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: 600 }}>Active Visitors</p>
@@ -103,7 +109,7 @@ export default function MainDashboard({ stats }) {
               <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>{activeVisitors}</div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#f8fafc', borderRadius: '12px' }}>
+            <div className="dashboard-mini-card">
               <div style={{ fontSize: '24px' }}>📅</div>
               <div style={{ flex: 1 }}>
                 <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: 600 }}>Next Event</p>
@@ -114,7 +120,7 @@ export default function MainDashboard({ stats }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', background: '#f8fafc', borderRadius: '12px' }}>
+            <div className="dashboard-mini-card">
               <div style={{ fontSize: '24px' }}>⚡</div>
               <div style={{ flex: 1 }}>
                 <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: 600 }}>Utility Status</p>

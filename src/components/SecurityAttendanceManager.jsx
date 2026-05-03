@@ -13,12 +13,16 @@ const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 });
 
-/** All guard-post columns that contribute to daily total */
-const SECURITY_COLUMNS = [
-  { key: 'aBuilding',   label: 'A Building'   },
-  { key: 'bBuilding',   label: 'B Building'   },
-  { key: 'cBuilding',   label: 'C Building'   },
-  { key: 'commonArea',  label: 'Common Area'  },
+/** All guard-post columns that contribute to daily total (Base reference) */
+const ALL_COLUMNS = [
+  { key: 'aMorn',      label: 'A Bldg (Morn)' },
+  { key: 'aEve',       label: 'A Bldg (Eve)'  },
+  { key: 'bMorn',      label: 'B Bldg (Morn)' },
+  { key: 'bEve',       label: 'B Bldg (Eve)'  },
+  { key: 'cMorn',      label: 'C Bldg (Morn)' },
+  { key: 'cEve',       label: 'C Bldg (Eve)'  },
+  { key: 'mainGateMorn', label: 'Main Gate (Morn)' },
+  { key: 'mainGateEve',  label: 'Main Gate (Eve)'  },
 ];
 
 // ─── Pure helpers ─────────────────────────────────────────────────────────────
@@ -30,9 +34,9 @@ function getCurrentMonthValue() {
 }
 
 /** Returns which building column key Chauhan occupies for a given month */
-const CHAUHAN_ROTATION = ['bBuilding', 'cBuilding', 'aBuilding'];
-const CHAUHAN_LABELS   = { aBuilding: 'A Building', bBuilding: 'B Building', cBuilding: 'C Building' };
-function getChauhanColKey(mv) {
+const CHAUHAN_ROTATION = ['b', 'c', 'a']; // rotation base keys
+const CHAUHAN_LABELS   = { a: 'A Building', b: 'B Building', c: 'C Building' };
+function getChauhanBaseKey(mv) {
   const [y, m] = mv.split('-').map(Number);
   const offset = (y - 2026) * 12 + (m - 4);
   return CHAUHAN_ROTATION[((offset % 3) + 3) % 3];
@@ -77,11 +81,11 @@ function normalizeValue(v) {
 function getNum(v) { return v === '' ? 0 : Number(v) || 0; }
 
 function rowTotal(row) {
-  return SECURITY_COLUMNS.reduce((s, col) => s + getNum(row[col.key]), 0);
+  return ALL_COLUMNS.reduce((s, col) => s + getNum(row[col.key]), 0);
 }
 
 function emptyRow() {
-  return { aBuilding: '', bBuilding: '', cBuilding: '', commonArea: '' };
+  return { aMorn: '', aEve: '', bMorn: '', bEve: '', cMorn: '', cEve: '', mainGateMorn: '', mainGateEve: '' };
 }
 
 function buildMonthDays(mv) {
@@ -104,10 +108,14 @@ function normalizeEntries(days, src = {}) {
   return days.reduce((acc, d) => {
     const s = src[d.dateKey] || {};
     acc[d.dateKey] = {
-      aBuilding:  normalizeValue(s.aBuilding),
-      bBuilding:  normalizeValue(s.bBuilding),
-      cBuilding:  normalizeValue(s.cBuilding),
-      commonArea: normalizeValue(s.commonArea),
+      aMorn: normalizeValue(s.aMorn || s.aBuilding), // migration support
+      aEve:  normalizeValue(s.aEve || s.aBuilding),
+      bMorn: normalizeValue(s.bMorn || s.bBuilding),
+      bEve:  normalizeValue(s.bEve || s.bBuilding),
+      cMorn: normalizeValue(s.cMorn || s.cBuilding),
+      cEve:  normalizeValue(s.cEve || s.cBuilding),
+      mainGateMorn: normalizeValue(s.mainGateMorn || s.commonArea),
+      mainGateEve:  normalizeValue(s.mainGateEve  || s.commonArea),
     };
     return acc;
   }, {});
@@ -267,10 +275,25 @@ export default function SecurityAttendanceManager() {
   // ── Cell change — marks dirty, no auto-save ────────────────────────────
   function handleCellChange(dateKey, field, value) {
     if (!isLoadedRef.current) return;
-    setEntries(prev => ({
-      ...prev,
-      [dateKey]: { ...(prev[dateKey] || emptyRow()), [field]: normalizeValue(value) },
-    }));
+    
+    setEntries(prev => {
+      const row = prev[dateKey] || emptyRow();
+      let nextRow;
+      
+      if (field.endsWith('Chauhan')) {
+        const base = field.replace('Chauhan', '');
+        nextRow = { 
+          ...row, 
+          [base + 'Morn']: normalizeValue(value),
+          [base + 'Eve']:  normalizeValue(value)
+        };
+      } else {
+        nextRow = { ...row, [field]: normalizeValue(value) };
+      }
+      
+      return { ...prev, [dateKey]: nextRow };
+    });
+    
     setSaveStatus('pending');
     setSaveMsg('Unsaved changes — click Save to persist.');
     setIsDirty(true);
@@ -278,11 +301,31 @@ export default function SecurityAttendanceManager() {
 
   useEffect(() => () => clearTimeout(autoSaveTimer.current), []);
 
+  const chauhanBaseKey = getChauhanBaseKey(selectedMonth);
+
+  const displayColumns = useMemo(() => {
+    const cols = [];
+    ['a', 'b', 'c'].forEach(bKey => {
+      if (bKey === chauhanBaseKey) {
+        cols.push({ key: bKey + 'Chauhan', label: `Chauhan (${CHAUHAN_LABELS[bKey]})`, isChauhan: true });
+      } else {
+        cols.push({ key: bKey + 'Morn', label: `${bKey.toUpperCase()} (Morn)` });
+        cols.push({ key: bKey + 'Eve',  label: `${bKey.toUpperCase()} (Eve)` });
+      }
+    });
+    cols.push({ key: 'mainGateMorn', label: 'Main Gate (Morn)' });
+    cols.push({ key: 'mainGateEve',  label: 'Main Gate (Eve)' });
+    return cols;
+  }, [chauhanBaseKey]);
+
   // ── Summary totals ────────────────────────────────────────────────────────
   const summary = useMemo(() => {
-    const colTotals = SECURITY_COLUMNS.reduce((acc, col) => {
+    const colTotals = displayColumns.reduce((acc, col) => {
       acc[col.key] = monthDays.reduce((s, d) => {
         const row = entries[d.dateKey] || emptyRow();
+        if (col.isChauhan) {
+          return s + getNum(row[chauhanBaseKey + 'Morn']); // Use Morn as proxy for Chauhan
+        }
         return s + getNum(row[col.key]);
       }, 0);
       return acc;
@@ -298,13 +341,13 @@ export default function SecurityAttendanceManager() {
       avgDaily: monthDays.length ? (grandTotal / monthDays.length).toFixed(1) : '0.0',
       colTotals,
     };
-  }, [entries, monthDays]);
+  }, [entries, monthDays, displayColumns, chauhanBaseKey]);
 
   // ── Excel download ────────────────────────────────────────────────────────
   function handleDownloadExcel() {
     const headers = [
       'Date', 'Day',
-      ...SECURITY_COLUMNS.map(c => c.label),
+      ...displayColumns.map(c => c.label),
       'Total'
     ];
 
@@ -313,14 +356,17 @@ export default function SecurityAttendanceManager() {
       return [
         d.formattedDate,
         d.weekday,
-        ...SECURITY_COLUMNS.map(c => getNum(row[c.key])),
+        ...displayColumns.map(c => {
+          if (c.isChauhan) return getNum(row[chauhanBaseKey + 'Morn']);
+          return getNum(row[c.key]);
+        }),
         rowTotal(row),
       ];
     });
 
     const totalsRow = [
       'Total', '',
-      ...SECURITY_COLUMNS.map(c => summary.colTotals[c.key]),
+      ...displayColumns.map(c => summary.colTotals[c.key]),
       summary.grandTotal,
     ];
 
@@ -328,10 +374,7 @@ export default function SecurityAttendanceManager() {
     ws['!cols'] = [
       { wch: 14 }, // Date
       { wch: 6  }, // Day
-      { wch: 12 }, // A Building
-      { wch: 12 }, // B Building
-      { wch: 12 }, // C Building
-      { wch: 13 }, // Common Area
+      ...displayColumns.map(() => ({ wch: 12 })),
       { wch: 9  }, // Total
     ];
 
@@ -347,8 +390,6 @@ export default function SecurityAttendanceManager() {
   }
 
   // ── Status badge ──────────────────────────────────────────────────────────
-  const chauhanColKey = getChauhanColKey(selectedMonth);
-
   const badge = {
     idle:    { color: '#6b7280', icon: '●', text: 'Ready'                    },
     pending: { color: '#f59e0b', icon: '⏳', text: 'Saving…'                 },
@@ -388,15 +429,15 @@ export default function SecurityAttendanceManager() {
         {/* Totals grid */}
         <div className="attendance-summary-grid">
           <div className="summary-card">
-            <span>Monthly guard total</span>
+            <span>Monthly total shifts</span>
             <strong>{summary.grandTotal}</strong>
           </div>
           <div className="summary-card">
-            <span>Avg guards / day</span>
+            <span>Avg / day</span>
             <strong>{summary.avgDaily}</strong>
           </div>
-          {SECURITY_COLUMNS.map(col => (
-            <div key={col.key} className="summary-card">
+          {displayColumns.map(col => (
+            <div key={col.key} className="summary-card" style={col.isChauhan ? { borderColor: '#C49B4F', background: '#fffcf5' } : {}}>
               <span>{col.label}</span>
               <strong>{summary.colTotals[col.key]}</strong>
             </div>
@@ -477,19 +518,11 @@ export default function SecurityAttendanceManager() {
             <thead>
               <tr>
                 <th style={{ minWidth: 110 }}>Date</th>
-                {SECURITY_COLUMNS.map(col => {
-                  const isChauhanCol = col.key === chauhanColKey;
-                  return (
-                    <th key={col.key} style={isChauhanCol ? { background: '#fef3c7', color: '#92400e' } : {}}>
-                      {col.label}
-                      {isChauhanCol && (
-                        <span style={{ display: 'block', fontSize: '0.7rem', fontWeight: 600, color: '#b45309', marginTop: 2 }}>
-                          Chauhan
-                        </span>
-                      )}
-                    </th>
-                  );
-                })}
+                {displayColumns.map(col => (
+                  <th key={col.key} style={col.isChauhan ? { background: '#fef3c7', color: '#92400e', minWidth: 120 } : { minWidth: 90 }}>
+                    {col.label}
+                  </th>
+                ))}
                 <th>Total</th>
               </tr>
             </thead>
@@ -497,7 +530,7 @@ export default function SecurityAttendanceManager() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={SECURITY_COLUMNS.length + 2}
+                  <td colSpan={ALL_COLUMNS.length + 2}
                     style={{ textAlign: 'center', padding: '24px', opacity: 0.6 }}>
                     Loading {formatLongMonthLabel(selectedMonth)}…
                   </td>
@@ -515,21 +548,19 @@ export default function SecurityAttendanceManager() {
                         <span>{d.weekday}</span>
                       </th>
 
-                      {/* Guard-post inputs */}
-                      {SECURITY_COLUMNS.map(col => {
-                        const isChauhanCol = col.key === chauhanColKey;
+                      {/* Post inputs */}
+                      {displayColumns.map(col => {
+                        const val = col.isChauhan ? row[chauhanBaseKey + 'Morn'] : row[col.key];
                         return (
                           <td key={`${d.dateKey}-${col.key}`}
-                            style={isChauhanCol ? { background: '#fef9ee' } : {}}>
+                            style={col.isChauhan ? { background: '#fef9ee' } : {}}>
                             <input
                               className="attendance-register-input"
                               type="text"
                               inputMode="numeric"
-                              placeholder={isChauhanCol ? 'Chauhan' : ''}
-                              value={row[col.key]}
-                              disabled={isChauhanCol}
-                              title={isChauhanCol ? `Chauhan is at ${CHAUHAN_LABELS[chauhanColKey]} this month` : ''}
-                              style={isChauhanCol ? { background: '#fef3c7', color: '#92400e', cursor: 'not-allowed', opacity: 0.7 } : {}}
+                              placeholder="0"
+                              value={val}
+                              style={col.isChauhan ? { background: '#fef3c7', color: '#92400e', fontWeight: 700 } : {}}
                               onChange={(e) => handleCellChange(d.dateKey, col.key, e.target.value)}
                             />
                           </td>
@@ -550,7 +581,7 @@ export default function SecurityAttendanceManager() {
             <tfoot>
               <tr>
                 <th>Total</th>
-                {SECURITY_COLUMNS.map(col => (
+                {displayColumns.map(col => (
                   <th key={`ft-${col.key}`}>{summary.colTotals[col.key]}</th>
                 ))}
                 <th>{summary.grandTotal}</th>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc, deleteDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../firebase.js';
 
@@ -228,6 +228,37 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
     }
   }, [staffMembers.length]);
 
+  const handleDeleteMonthData = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Clear any pending auto-saves
+    clearTimeout(autoSaveTimer.current);
+
+    if (!window.confirm(`Are you sure you want to PERMANENTLY delete all housekeeping data (attendance and billing) for ${formatLongMonthLabel(selectedMonth)}?`)) return;
+    
+    setSaveStatus('saving');
+    setSaveMsg('Deleting data...');
+    
+    try {
+      await ensureFirebaseSession();
+      // Delete attendance register
+      await deleteDoc(doc(db, 'housekeepingAttendanceRegisters', recordId));
+      // Delete bill record
+      await deleteDoc(doc(db, 'housekeepingBillCalculations', `hk_bill_${selectedMonth}`));
+      
+      setSaveStatus('saved');
+      setSaveMsg(`Deleted data for ${formatLongMonthLabel(selectedMonth)}.`);
+      window.location.reload(); // Refresh to clear state
+    } catch (err) {
+      console.error('Delete error:', err);
+      setSaveStatus('error');
+      setSaveMsg('Failed to delete data.');
+    }
+  };
+
   // ── Cell change handler ───────────────────────────────────────────────────
   function handleCellChange(dateKey, field, value) {
     if (!isLoadedRef.current) return; // skip during initial hydration
@@ -452,6 +483,14 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
             <p>Type values directly — auto-saves to Firebase after every change.</p>
             <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
               ⬇ Download Excel
+            </button>
+            <button 
+              className="button-secondary" 
+              type="button" 
+              onClick={(e) => handleDeleteMonthData(e)}
+              style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
+            >
+              🗑️ Delete
             </button>
           </div>
         </div>

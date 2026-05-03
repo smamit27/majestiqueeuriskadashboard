@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc, deleteDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../firebase.js';
 
@@ -40,7 +40,7 @@ const DEFAULT_FORM = {
   bDays: '', bWage: '',
   cDays: '', cWage: '',
   // Supervisor
-  supervisorSalary: '',
+  supervisorSalary: '', supervisorDays: '',
   // Common Staff
   commonCount: '', commonSalary: '', commonAbsent: '',
   // Garbage
@@ -51,7 +51,7 @@ const DEFAULT_FORM = {
   stpSalary: '',
 };
 
-function calcBill(form, mv) {
+function calcBill(form, mv, attData = null) {
   const totalUnits = n(form.unitsA) + n(form.unitsB) + n(form.unitsC);
   if (totalUnits === 0) return null;
 
@@ -59,21 +59,27 @@ function calcBill(form, mv) {
   const ratioB = n(form.unitsB) / totalUnits;
   const ratioC = n(form.unitsC) / totalUnits;
 
-  // Buildings
-  const aWage = n(form.aWage);
-  const bWage = n(form.bWage);
-  const cWage = n(form.cWage);
+  const days = daysInMonth(mv);
+
+  // Pro-rated Wages for Buildings
+  // If attendance is present, we calculate: (MonthlyWage / DaysInMonth) * ActualDaysPresent
+  // Otherwise we use the flat wage entered in the form.
+  const aWage = attData ? (n(form.aWage) / days) * attData.a : n(form.aWage);
+  const bWage = attData ? (n(form.bWage) / days) * attData.b : n(form.bWage);
+  const cWage = attData ? (n(form.cWage) / days) * attData.c : n(form.cWage);
 
   // Supervisor
-  const supTotal = n(form.supervisorSalary);
-  const supA = supTotal * ratioA;
-  const supB = supTotal * ratioB;
-  const supC = supTotal * ratioC;
+  const supWage = n(form.supervisorSalary);
+  const supDays = attData ? attData.supervisor : (n(form.supervisorDays) || days);
+  const supActualTotal = (supWage / days) * supDays;
+  
+  const supA = supActualTotal * ratioA;
+  const supB = supActualTotal * ratioB;
+  const supC = supActualTotal * ratioC;
 
   // Common Staff
   const comSalary = n(form.commonSalary);
   const comCount  = n(form.commonCount) || 1;
-  const days      = daysInMonth(mv);
   const perDay    = comSalary / (comCount * days);
   const deduction = n(form.commonAbsent) * perDay;
   const comNet    = comSalary - deduction;
@@ -88,7 +94,9 @@ function calcBill(form, mv) {
   const garbC = garbTotal * ratioC;
 
   // Tractor
-  const tractTotal = n(form.tractorRate) * n(form.tractorTrips);
+  // Use actual trips from attendance if available
+  const trips = attData ? attData.tractorTrip : n(form.tractorTrips);
+  const tractTotal = n(form.tractorRate) * trips;
   const tractA = tractTotal * ratioA;
   const tractB = tractTotal * ratioB;
   const tractC = tractTotal * ratioC;
@@ -107,10 +115,11 @@ function calcBill(form, mv) {
     ratioA, ratioB, ratioC,
     perDay, deduction, comNet,
     tractTotal,
+    usedAttendance: !!attData,
     rows: [
-      { label: 'A Building', wage: aWage, sup: supA, com: comA, garb: garbA, tract: tractA, stp: stpA, total: totalA },
-      { label: 'B Building', wage: bWage, sup: supB, com: comB, garb: garbB, tract: tractB, stp: stpB, total: totalB },
-      { label: 'C Building', wage: cWage, sup: supC, com: comC, garb: garbC, tract: tractC, stp: stpC, total: totalC },
+      { label: 'A Building', wage: aWage, sup: supA, com: comA, garb: garbA, tract: tractA, stp: stpA, total: totalA, days: attData?.a || days },
+      { label: 'B Building', wage: bWage, sup: supB, com: comB, garb: garbB, tract: tractB, stp: stpB, total: totalB, days: attData?.b || days },
+      { label: 'C Building', wage: cWage, sup: supC, com: comC, garb: garbC, tract: tractC, stp: stpC, total: totalC, days: attData?.c || days },
     ],
     grandTotal: totalA + totalB + totalC,
   };
@@ -150,6 +159,7 @@ export default function HousekeepingBillCalculator() {
   const [saveMsg, setSaveMsg]   = useState('');
   const [isLoading, setLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [attendance, setAttendance] = useState(null);
   const loadedRef  = useRef(false);
   const timerRef   = useRef(null);
   const recordId   = `hk_bill_${month}`;
@@ -183,6 +193,38 @@ export default function HousekeepingBillCalculator() {
     return () => { cancelled = true; };
   }, [recordId, month]);
 
+  // Load attendance data for the selected month
+  useEffect(() => {
+    let cancelled = false;
+    async function loadAttendance() {
+      if (!isFirebaseConfigured || !db) return;
+      try {
+        await ensureFirebaseSession();
+        const snap = await getDoc(doc(db, 'housekeepingAttendanceRegisters', `register_${month}`));
+        if (!cancelled && snap.exists()) {
+          const data = snap.data().entries || {};
+          // Sum up per building
+          const sums = { a: 0, b: 0, c: 0, supervisor: 0, common: 0, tractorTrip: 0 };
+          Object.values(data).forEach(row => {
+            sums.a += n(row.a);
+            sums.b += n(row.b);
+            sums.c += n(row.c);
+            sums.supervisor += n(row.supervisor);
+            sums.common += n(row.common);
+            sums.tractorTrip += n(row.tractorTrip);
+          });
+          setAttendance(sums);
+        } else if (!cancelled) {
+          setAttendance(null);
+        }
+      } catch {
+        if (!cancelled) setAttendance(null);
+      }
+    }
+    loadAttendance();
+    return () => { cancelled = true; };
+  }, [month]);
+
   const saveToFirebase = useCallback(async (currentForm, currentId) => {
     setSave('saving');
     try {
@@ -192,6 +234,24 @@ export default function HousekeepingBillCalculator() {
       setSave('saved'); setSaveMsg('Saved to Firebase ✓');
     } catch (e) { setSave('error'); setSaveMsg('Save failed.'); }
   }, []);
+
+  async function handleDeleteBill() {
+    if (!window.confirm(`Are you sure you want to PERMANENTLY delete ALL housekeeping data (attendance AND billing) for ${formatLongMonth(month)}?`)) return;
+    setLoading(true);
+    setSaveMsg('Deleting data...');
+    try {
+      await ensureFirebaseSession();
+      await deleteDoc(doc(db, 'housekeepingBillCalculations', recordId));
+      await deleteDoc(doc(db, 'housekeepingAttendanceRegisters', `register_${month}`));
+      setSaveMsg(`Deleted data for ${formatLongMonth(month)}.`);
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      setSaveMsg('Delete failed.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleManualSave() {
     clearTimeout(timerRef.current);
@@ -205,7 +265,7 @@ export default function HousekeepingBillCalculator() {
     setForm(prev => ({ ...prev, [field]: value }));
   }
 
-  const bill = savedForm ? calcBill(savedForm, month) : null;  // only updates on Save
+  const bill = savedForm ? calcBill(savedForm, month, attendance) : null;  // only updates on Save
 
   function handleDownloadExcel() {
     if (!bill) return;
@@ -289,6 +349,14 @@ export default function HousekeepingBillCalculator() {
               <button className="button-secondary" type="button" onClick={handleDownloadExcel} disabled={!bill}>
                 ⬇ Download Excel
               </button>
+              <button 
+                className="button-secondary" 
+                type="button" 
+                onClick={handleDeleteBill}
+                style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)', fontWeight: 700 }}
+              >
+                🗑️ CLEAR ALL MONTH DATA
+              </button>
             </div>
           </div>
         </div>
@@ -329,7 +397,15 @@ export default function HousekeepingBillCalculator() {
         {/* Supervisor */}
         <div style={sectionStyle}>
           <p style={headingStyle}>🧑‍💼 Supervisor</p>
-          <Field label="Supervisor Monthly Salary (₹)" value={form.supervisorSalary} onChange={v => handleChange('supervisorSalary', v)} prefix="₹" />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 10 }}>
+            <Field label="Supervisor Days Present" value={form.supervisorDays} onChange={v => handleChange('supervisorDays', v)} />
+            <Field label="Monthly Wage (₹)" value={form.supervisorSalary} onChange={v => handleChange('supervisorSalary', v)} prefix="₹" />
+          </div>
+          {bill && n(form.supervisorSalary) > 0 && (
+            <div style={{ fontSize: '0.83rem', padding: '10px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}>
+              Actual Cost: (₹{form.supervisorSalary} / {daysInMonth(month)}) × {attendance ? attendance.supervisor : (n(form.supervisorDays) || daysInMonth(month))} days = <strong>₹{fmt((n(form.supervisorSalary) / daysInMonth(month)) * (attendance ? attendance.supervisor : (n(form.supervisorDays) || daysInMonth(month))))}</strong>
+            </div>
+          )}
           {bill && n(form.supervisorSalary) > 0 && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 90px), 1fr))', gap: 8, fontSize: '0.85rem' }}>
               {bill.rows.map(r => <div key={r.label} style={{ textAlign: 'center', padding: '8px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}><div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{r.label}</div><strong>₹{fmt(r.sup)}</strong></div>)}
@@ -405,8 +481,12 @@ export default function HousekeepingBillCalculator() {
       {bill && (
         <div className="table-card">
           <div style={{ padding: '16px 20px 0' }}>
-            <p className="eyebrow">Bill Summary</p>
             <h3 style={{ margin: '4px 0 16px' }}>Total per Building — {formatLongMonth(month)}</h3>
+            {!bill?.usedAttendance && (
+              <div style={{ background: '#fff7ed', border: '1px solid #ffedd5', color: '#9a3412', padding: '12px 16px', borderRadius: 10, marginBottom: 16, fontSize: '0.9rem' }}>
+                ⚠️ <strong>Attendance Data Missing:</strong> Please save the Attendance Register for {formatLongMonth(month)} first to get accurate pro-rated wages.
+              </div>
+            )}
           </div>
 
           {/* Desktop: scrollable table */}
@@ -414,28 +494,35 @@ export default function HousekeepingBillCalculator() {
             <table className="attendance-table attendance-table--bill">
               <thead>
                 <tr>
-                  {['Building', 'Wage', 'Supervisor', 'Common', 'Garbage', 'Tractor', 'STP', 'Total'].map(h => (
+                  <th style={{ textAlign: 'left' }}>Building</th>
+                  <th style={{ textAlign: 'right' }}>Days Present</th>
+                  {['Wage', 'Supervisor', 'Common', 'Garbage', 'Tractor', 'STP'].map(h => (
                     <th key={h} style={{ textAlign: 'right' }}>{h}</th>
                   ))}
+                  <th style={{ textAlign: 'right', minWidth: '120px' }}>Total (₹)</th>
                 </tr>
               </thead>
               <tbody>
                 {bill.rows.map((r, i) => (
                   <tr key={r.label}>
-                    <td style={{ fontWeight: 700 }}>{r.label}</td>
-                    {[r.wage, r.sup, r.com, r.garb, r.tract, r.stp, r.total].map((v, j) => (
-                      <td key={j} style={{ textAlign: 'right', color: j === 6 ? '#1a6b3c' : 'inherit', fontWeight: j === 6 ? 700 : 400 }}>
+                    <td style={{ fontWeight: 700, textAlign: 'left' }}>{r.label}</td>
+                    <td style={{ textAlign: 'right', fontWeight: 600, color: '#0F3D35' }}>{r.days.toFixed(1)} days</td>
+                    {[r.wage, r.sup, r.com, r.garb, r.tract, r.stp].map((v, j) => (
+                      <td key={j} style={{ textAlign: 'right' }}>
                         ₹{fmt(v)}
                       </td>
                     ))}
+                    <td style={{ textAlign: 'right', color: '#1a6b3c', fontWeight: 700 }}>
+                      ₹{fmt(r.total)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
                 <tr>
-                  <th>Grand Total</th>
-                  <th colSpan={6} />
-                  <th style={{ textAlign: 'right', color: '#1a6b3c', fontSize: '1.05rem' }}>₹{fmt(bill.grandTotal)}</th>
+                  <th style={{ textAlign: 'left' }}>Grand Total</th>
+                  <th colSpan={7} />
+                  <th style={{ textAlign: 'right', color: '#1a6b3c', fontSize: '1.1rem', fontWeight: 800, borderTop: '2px solid #1a6b3c' }}>₹{fmt(bill.grandTotal)}</th>
                 </tr>
               </tfoot>
             </table>

@@ -1,8 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import MetricCard from './components/MetricCard.jsx';
 import HousekeepingModule from './components/HousekeepingModule.jsx';
 import SecurityModule from './components/SecurityModule.jsx';
 import SolarModule from './components/SolarModule.jsx';
+import ChequeTracker from './components/ChequeTracker.jsx';
+import FinanceTracker from './components/FinanceTracker.jsx';
 import MainDashboard from './components/MainDashboard.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 import SectionCard from './components/SectionCard.jsx';
@@ -38,6 +40,9 @@ function sortByDateAscending(items, key) {
 
 /* ── Tab icon map ─────────────────────────────────────── */
 const TAB_ICONS = {
+  society_overview: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+  ),
   members: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
   ),
@@ -65,11 +70,15 @@ const TAB_ICONS = {
   solar: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M5 5l1.5 1.5"/><path d="M17.5 17.5L19 19"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M5 19l1.5-1.5"/><path d="M17.5 6.5L19 5"/></svg>
   ),
+  cheques: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="7" y1="15" x2="7.01" y2="15"/><line x1="12" y1="15" x2="12.01" y2="15"/></svg>
+  ),
 };
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('society_overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [prevTab, setPrevTab] = useState(null);
   const [memberSearchText, setMemberSearchText] = useState('');
@@ -177,6 +186,42 @@ export default function App() {
       label: 'Overview',
       metric: 'Society Dashboard',
       render: () => <MainDashboard stats={dashboardStats} />
+    },
+    {
+      id: 'security',
+      label: 'Security',
+      metric: 'Deployment & Billing',
+      render: () => <SecurityModule />
+    },
+    {
+      id: 'housekeeping',
+      label: 'Housekeeping',
+      metric: 'Attendance & Billing',
+      render: () => (
+        <HousekeepingModule 
+          staffMembers={staffData.items} 
+          staffPresentCount={staffPresent} 
+          totalStaffCount={staffData.items.length} 
+        />
+      )
+    },
+    {
+      id: 'solar',
+      label: 'Solar Management',
+      metric: 'Evaluation & ROI',
+      render: () => <SolarModule />
+    },
+    {
+      id: 'finance',
+      label: 'Finance',
+      metric: 'Income & Expenses',
+      render: () => <FinanceTracker />
+    },
+    {
+      id: 'cheques',
+      label: 'Cheque Tracker',
+      metric: 'Shared Expenses',
+      render: () => <ChequeTracker />
     },
     {
       id: 'members',
@@ -424,66 +469,7 @@ export default function App() {
         </SectionCard>
       )
     },
-    {
-      id: 'finance',
-      label: 'Finance',
-      metric: formatCurrency(financeSnapshot.collections),
-      render: () => (
-        <SectionCard
-          id="finance"
-          badge="Financial Overview"
-          title="Collections, expenses, and reserve movement"
-          subtitle="Use monthly snapshots to spot spending trends and maintain reserve health."
-        >
-          <div className="section-grid section-grid--dual">
-            <div className="table-card">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Month</th>
-                    <th>Collections</th>
-                    <th>Expenses</th>
-                    <th>Reserve</th>
-                    <th>Outstanding</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {financeData.items.map((month) => (
-                    <tr key={month.id}>
-                      <td>{month.month}</td>
-                      <td>{formatCurrency(month.collections)}</td>
-                      <td>{formatCurrency(month.expenses)}</td>
-                      <td>{formatCurrency(month.reserveContribution)}</td>
-                      <td>{formatCurrency(month.outstanding)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
 
-            <div className="stack-card">
-              <div>
-                <p className="eyebrow">Current month</p>
-                <h3>{financeSnapshot.month}</h3>
-                <p>Track whether collection inflows are staying ahead of society operating costs.</p>
-              </div>
-              <div className="stat-line">
-                <span>Total collections</span>
-                <strong>{formatCurrency(financeSnapshot.collections)}</strong>
-              </div>
-              <div className="stat-line">
-                <span>Total expenses</span>
-                <strong>{formatCurrency(financeSnapshot.expenses)}</strong>
-              </div>
-              <div className="stat-line">
-                <span>Outstanding dues</span>
-                <strong>{formatCurrency(financeSnapshot.outstanding)}</strong>
-              </div>
-            </div>
-          </div>
-        </SectionCard>
-      )
-    },
     {
       id: 'visitors',
       label: 'Visitors',
@@ -524,36 +510,13 @@ export default function App() {
         </SectionCard>
       )
     },
-    {
-      id: 'housekeeping',
-      label: 'Housekeeping',
-      metric: 'Attendance & Billing',
-      render: () => (
-        <HousekeepingModule 
-          staffMembers={staffData.items} 
-          staffPresentCount={staffPresent} 
-          totalStaffCount={staffData.items.length} 
-        />
-      )
-    },
-    {
-      id: 'security',
-      label: 'Security',
-      metric: 'Deployment & Billing',
-      render: () => <SecurityModule />
-    },
-    {
-      id: 'solar',
-      label: 'Solar Management',
-      metric: 'Evaluation & ROI',
-      render: () => <SolarModule />
-    }
+
 
   ];
 
   const activeTabPanel = tabItems.find((item) => item.id === activeTab) || tabItems[0];
 
-  const handleTabChange = (tabId) => {
+  const handleTabChange = useCallback((tabId) => {
     if (tabId === activeTab) return;
     setPrevTab(activeTab);
     setIsTransitioning(true);
@@ -562,7 +525,7 @@ export default function App() {
       setIsSidebarOpen(false); // Auto-close on mobile
       setIsTransitioning(false);
     }, 180);
-  };
+  }, [activeTab]);
 
   const getBadgeCount = (tabId) => {
     switch (tabId) {
@@ -573,8 +536,16 @@ export default function App() {
     }
   };
 
+  useEffect(() => {
+    const handleGlobalTabChange = (e) => {
+      if (e.detail) handleTabChange(e.detail);
+    };
+    window.addEventListener('changeTab', handleGlobalTabChange);
+    return () => window.removeEventListener('changeTab', handleGlobalTabChange);
+  }, [handleTabChange]);
+
   return (
-    <div className="dashboard-shell dashboard-shell--sidebar">
+    <div className={`dashboard-shell dashboard-shell--sidebar ${isSidebarCollapsed ? 'dashboard-shell--collapsed' : ''}`}>
       <div className="backdrop backdrop--top" />
       <div className="backdrop backdrop--bottom" />
 
@@ -584,17 +555,35 @@ export default function App() {
       )}
 
       {/* ── Vertical Sidebar ── */}
-      <aside className={`sidebar ${isSidebarOpen ? 'sidebar--open' : ''}`}>
+      <aside className={`sidebar ${isSidebarOpen ? 'sidebar--open' : ''} ${isSidebarCollapsed ? 'sidebar--collapsed' : ''}`}>
         <div className="sidebar__brand">
-          <img
-            src="/logo.png"
-            alt="Majestique Euriska Logo"
-            className="sidebar__logo"
-          />
-          <div>
-            <p className="sidebar__kicker">Residential Society</p>
-            <h2 className="sidebar__title">Majestique Euriska</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, overflow: 'hidden' }}>
+            {!isSidebarCollapsed && (
+              <img
+                src="/logo.png"
+                alt="Majestique Euriska Logo"
+                className="sidebar__logo"
+              />
+            )}
+            {!isSidebarCollapsed && (
+              <div className="sidebar__brand-text">
+                <p className="sidebar__kicker">Residential Society</p>
+                <h2 className="sidebar__title">Majestique Euriska</h2>
+              </div>
+            )}
           </div>
+          
+          <button 
+            className="sidebar-collapse-toggle" 
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
         </div>
 
         <nav className="sidebar__nav" role="tablist" aria-orientation="vertical">
@@ -618,11 +607,14 @@ export default function App() {
                 aria-controls={`panel-${tab.id}`}
                 className={`sidebar-item ${activeTab === tab.id ? 'sidebar-item--active' : ''} ${tab.isSubItem ? 'sidebar-item--sub' : ''}`}
                 onClick={() => handleTabChange(tab.id)}
+                title={isSidebarCollapsed ? tab.label : ""}
               >
                 <span className="sidebar-item__icon">{TAB_ICONS[tab.id]}</span>
-                <span className="sidebar-item__label">{tab.label}</span>
+                {!isSidebarCollapsed && <span className="sidebar-item__label">{tab.label}</span>}
                 {badgeCount > 0 && (
-                  <span className="sidebar-item__badge">{badgeCount}</span>
+                  <span className={`sidebar-item__badge ${isSidebarCollapsed ? 'sidebar-item__badge--dot' : ''}`}>
+                    {isSidebarCollapsed ? "" : badgeCount}
+                  </span>
                 )}
               </button>
             );
@@ -639,7 +631,7 @@ export default function App() {
           <h2>{activeTabPanel.label}</h2>
         </div>
 
-        {!['housekeeping', 'security', 'solar'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques'].includes(activeTab) && (
         <header className="dashboard-header">
           <div className="dashboard-header__copy">
             <h1 style={{ margin: 0 }}>{activeTabPanel.label} Dashboard</h1>
@@ -691,7 +683,7 @@ export default function App() {
 
         {loadErrors.length > 0 ? <div className="notice-banner">{loadErrors[0]}</div> : null}
 
-        {!['housekeeping', 'security', 'solar'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques'].includes(activeTab) && (
           <section className="metrics-grid">
           <MetricCard
             label="Members & Occupancy"
@@ -732,7 +724,7 @@ export default function App() {
           {activeTabPanel.render()}
         </div>
 
-        {!['housekeeping', 'security', 'solar'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques'].includes(activeTab) && (
           <section className="snapshot-grid">
           <div className="snapshot-panel">
             <p className="eyebrow">Collection health</p>

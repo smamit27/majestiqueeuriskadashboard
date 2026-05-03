@@ -50,9 +50,16 @@ function detectChauhanFromAttendance(entries) {
   return best; // null = fall back to auto-rotation
 }
 
+const ATT_KEYS = {
+  'A Building': 'a',
+  'B Building': 'b',
+  'C Building': 'c',
+};
+
 const DEFAULT_FORM = {
   chauhanSalary: '20000',
-  vendorGuardSalary: '24000',
+  vendorMornSalary: '12000',
+  vendorEveSalary: '12000',
   mainGateGuardSalary: '15000',
   mainGateMorning: '2',
   mainGateEvening: '2',
@@ -92,22 +99,15 @@ function calcBill(form, mv, attData = null) {
   const chauhanDaysWorked = n(form.chauhanDays) > 0 ? n(form.chauhanDays) : daysInMonth;
   const chauhanActualCost = (n(form.chauhanSalary) / daysInMonth) * chauhanDaysWorked;
 
-  // Main gate — split by flat ratio. Prorated by commonArea guard-days if available.
+  // Main gate — split by flat ratio. Prorated by main gate shifts if available.
   const mainGateMonthlyPerGuard = n(form.mainGateGuardSalary);
   const mainGateTotal = attData 
-    ? (mainGateMonthlyPerGuard / daysInMonth) * attData.commonDays 
+    ? (mainGateMonthlyPerGuard / daysInMonth) * (attData.mainMorn + attData.mainEve) 
     : (n(form.mainGateMorning) + n(form.mainGateEvening)) * mainGateMonthlyPerGuard;
 
-  // Vendor daily rate for proration
-  const vendorMonthly = n(form.vendorGuardSalary);
-  const vendorDailyRate = vendorMonthly / daysInMonth;
-
-  // Attendance guard-days per building column
-  const attCols = {
-    'A Building': attData ? attData.aGuardDays : daysInMonth,
-    'B Building': attData ? attData.bGuardDays : daysInMonth,
-    'C Building': attData ? attData.cGuardDays : daysInMonth,
-  };
+  // Vendor rates for proration
+  const vendorMornRate = n(form.vendorMornSalary) / daysInMonth;
+  const vendorEveRate  = n(form.vendorEveSalary) / daysInMonth;
 
   const buildings = ['A Building', 'B Building', 'C Building'];
   const res = {};
@@ -122,8 +122,12 @@ function calcBill(form, mv, attData = null) {
     if (b === actualChauhanLoc) {
       chauhanCost = chauhanActualCost;
     } else {
-      // Prorate by actual guard-days if attendance available
-      vendorCost = attData ? vendorDailyRate * attCols[b] : vendorMonthly;
+      // Prorate by Morning and Evening shifts
+      const k = ATT_KEYS[b];
+      const mornPresent = attData ? attData[`${k}Morn`] : daysInMonth;
+      const evePresent  = attData ? attData[`${k}Eve`]  : daysInMonth;
+      
+      vendorCost = (mornPresent * vendorMornRate) + (evePresent * vendorEveRate);
     }
 
     const total = mainGateShare + chauhanCost + vendorCost;
@@ -135,7 +139,6 @@ function calcBill(form, mv, attData = null) {
       mainGate: mainGateShare,
       chauhan: chauhanCost,
       vendor: vendorCost,
-      guardDays: attCols[b],
       total,
     };
   });
@@ -295,7 +298,10 @@ export default function SecurityBillCalculator() {
   useEffect(() => () => clearTimeout(autoSaveTimer.current), []);
 
   function handleDownloadExcel() {
-    const bill = calcBill(form, selectedMonth);
+    const bill = calcBill(form, selectedMonth, attSummary);
+    const vendorMornTotal = n(form.vendorMornSalary) * 2; // Assuming 2 buildings have vendors
+    const vendorEveTotal  = n(form.vendorEveSalary) * 2;
+
     const rows = [
       ['Majestique Euriska - Security Bill'],
       ['Month', formatLongMonth(selectedMonth)],
@@ -305,7 +311,8 @@ export default function SecurityBillCalculator() {
       ['Main Gate Guards (Evening)', form.mainGateEvening],
       ['Main Gate Guard Salary', form.mainGateGuardSalary],
       ['Chauhan Salary (Internal)', form.chauhanSalary],
-      ['Vendor Guard Salary (24h)', form.vendorGuardSalary],
+      ['Vendor Morn Salary (12h)', form.vendorMornSalary],
+      ['Vendor Eve Salary (12h)', form.vendorEveSalary],
       ['Chauhan Placed At', bill.actualChauhanLoc],
       [],
       ['Building Breakdown', 'Main Gate Share', 'Chauhan Cost', 'Vendor Guard Cost', 'Total Due'],
@@ -316,7 +323,7 @@ export default function SecurityBillCalculator() {
         bill.details[b].vendor,
         bill.details[b].total
       ]),
-      ['Grand Total', bill.mainGateTotal, n(form.chauhanSalary), 2 * n(form.vendorGuardSalary), bill.grandTotal]
+      ['Grand Total', bill.mainGateTotal, n(form.chauhanSalary), vendorMornTotal + vendorEveTotal, bill.grandTotal]
     ];
 
     const ws = XLSX.utils.aoa_to_sheet(rows);
@@ -335,18 +342,22 @@ export default function SecurityBillCalculator() {
 
   // Compute attendance summary for display
   const rawSummary = attendance ? {
-    aGuardDays: sumAttendanceCol(attendance, 'aBuilding'),
-    bGuardDays: sumAttendanceCol(attendance, 'bBuilding'),
-    cGuardDays: sumAttendanceCol(attendance, 'cBuilding'),
-    commonDays: sumAttendanceCol(attendance, 'commonArea'),
+    aMorn: sumAttendanceCol(attendance, 'aMorn'),
+    aEve:  sumAttendanceCol(attendance, 'aEve'),
+    bMorn: sumAttendanceCol(attendance, 'bMorn'),
+    bEve:  sumAttendanceCol(attendance, 'bEve'),
+    cMorn: sumAttendanceCol(attendance, 'cMorn'),
+    cEve:  sumAttendanceCol(attendance, 'cEve'),
+    mainMorn: sumAttendanceCol(attendance, 'mainGateMorn'),
+    mainEve:  sumAttendanceCol(attendance, 'mainGateEve'),
   } : null;
 
   // Only consider it "linked" if there is at least some data entered
   const isLinked = rawSummary && (
-    rawSummary.aGuardDays > 0 ||
-    rawSummary.bGuardDays > 0 ||
-    rawSummary.cGuardDays > 0 ||
-    rawSummary.commonDays > 0
+    rawSummary.aMorn > 0 || rawSummary.aEve > 0 ||
+    rawSummary.bMorn > 0 || rawSummary.bEve > 0 ||
+    rawSummary.cMorn > 0 || rawSummary.cEve > 0 ||
+    rawSummary.mainMorn > 0 || rawSummary.mainEve > 0
   );
 
   const attSummary = isLinked ? rawSummary : null;
@@ -444,10 +455,17 @@ export default function SecurityBillCalculator() {
             />
           </div>
           <div className="summary-card summary-card--inline" style={{ borderColor: '#C49B4F' }}>
-            <span>Vendor Guard Salary (24h)</span>
+            <span>Vendor Morn Salary (12h)</span>
             <input
               type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '100px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
-              value={form.vendorGuardSalary} onChange={e => handleFieldChange('vendorGuardSalary', e.target.value)}
+              value={form.vendorMornSalary} onChange={e => handleFieldChange('vendorMornSalary', e.target.value)}
+            />
+          </div>
+          <div className="summary-card summary-card--inline" style={{ borderColor: '#C49B4F' }}>
+            <span>Vendor Eve Salary (12h)</span>
+            <input
+              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '100px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              value={form.vendorEveSalary} onChange={e => handleFieldChange('vendorEveSalary', e.target.value)}
             />
           </div>
           <div className="summary-card summary-card--inline" style={{ borderColor: '#C49B4F' }}>
@@ -483,10 +501,10 @@ export default function SecurityBillCalculator() {
             <p className="eyebrow" style={{ marginBottom: 8, color: '#0F3D35' }}>Linked from Attendance Register ✓</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
               {[
-                { label: 'A Bldg Guard-Days', val: attSummary.aGuardDays },
-                { label: 'B Bldg Guard-Days', val: attSummary.bGuardDays },
-                { label: 'C Bldg Guard-Days', val: attSummary.cGuardDays },
-                { label: 'Common Area Days', val: attSummary.commonDays },
+                { label: 'A Bldg Shifts', val: `${attSummary.aMorn}M / ${attSummary.aEve}E` },
+                { label: 'B Bldg Shifts', val: `${attSummary.bMorn}M / ${attSummary.bEve}E` },
+                { label: 'C Bldg Shifts', val: `${attSummary.cMorn}M / ${attSummary.cEve}E` },
+                { label: 'Main Gate Shifts', val: `${attSummary.mainMorn}M / ${attSummary.mainEve}E` },
               ].map(({ label, val }) => (
                 <div key={label} className="summary-card summary-card--inline" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
                   <span style={{ fontSize: '0.78rem', color: '#6b7280' }}>{label}</span>
@@ -533,7 +551,7 @@ export default function SecurityBillCalculator() {
                   <tr style={{ background: '#f8fafc' }}>
                     <th style={{ width: '18%' }}>Building</th>
                     <th style={{ textAlign: 'right' }}>Flats (Share %)</th>
-                    {bill.usedAttendance && <th style={{ textAlign: 'right', color: '#0F3D35' }}>Guard Days</th>}
+                    {bill.usedAttendance && <th style={{ textAlign: 'right', color: '#0F3D35' }}>Shifts (M/E)</th>}
                     <th style={{ textAlign: 'right' }}>Main Gate Share (₹)</th>
                     <th style={{ textAlign: 'right' }}>Chauhan Cost (₹)</th>
                     <th style={{ textAlign: 'right' }}>Vendor Guard Cost (₹)</th>
@@ -548,13 +566,14 @@ export default function SecurityBillCalculator() {
                   ) : (
                     bill.buildings.map((b) => {
                       const data = bill.details[b];
+                      const k = ATT_KEYS[b];
                       return (
                         <tr key={b}>
                           <td><strong>{b}</strong> {b === bill.actualChauhanLoc && <span style={{fontSize: '0.8rem', marginLeft: 8, color: '#0F3D35', background: '#dcfce7', padding: '2px 6px', borderRadius: 12}}>Chauhan Shift</span>}</td>
                           <td style={{ textAlign: 'right', color: '#6b7280' }}>{data.flats} flats <span style={{ fontSize: '0.78rem' }}>({data.flatRatioPct}%)</span></td>
                           {bill.usedAttendance && (
                             <td style={{ textAlign: 'right', fontWeight: 600, color: '#0F3D35' }}>
-                              {b === bill.actualChauhanLoc ? <em style={{ color: '#b45309', fontStyle: 'normal' }}>Chauhan</em> : `${data.guardDays} days`}
+                              {b === bill.actualChauhanLoc ? <em style={{ color: '#b45309', fontStyle: 'normal' }}>Chauhan</em> : `${attSummary[`${k}Morn`]}M / ${attSummary[`${k}Eve`]}E`}
                             </td>
                           )}
                           <td style={{ textAlign: 'right' }}>{fmt(data.mainGate)}</td>
@@ -573,7 +592,7 @@ export default function SecurityBillCalculator() {
                     {bill.usedAttendance && <th style={{ textAlign: 'right' }}>-</th>}
                     <th style={{ textAlign: 'right' }}>{fmt(bill.mainGateTotal)}</th>
                     <th style={{ textAlign: 'right' }}>{fmt(n(form.chauhanSalary))}</th>
-                    <th style={{ textAlign: 'right' }}>{fmt(2 * n(form.vendorGuardSalary))}</th>
+                    <th style={{ textAlign: 'right' }}>{fmt((n(form.vendorMornSalary) + n(form.vendorEveSalary)) * 2)}</th>
                     <th style={{ textAlign: 'right', fontSize: '1.1rem' }}>{fmt(bill.grandTotal)}</th>
                   </tr>
                 </tfoot>
