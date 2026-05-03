@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc, deleteDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../firebase.js';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const LOCAL_STORAGE_KEY  = 'majestique-security-register';
-const AUTO_SAVE_DELAY_MS = 1500;
+// No auto-save — user must explicitly click Save
 
 const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(2026, 3 + i, 1);
@@ -19,7 +19,6 @@ const SECURITY_COLUMNS = [
   { key: 'bBuilding',   label: 'B Building'   },
   { key: 'cBuilding',   label: 'C Building'   },
   { key: 'commonArea',  label: 'Common Area'  },
-  { key: 'chauhanji',   label: 'Chauhanji'    },
 ];
 
 // ─── Pure helpers ─────────────────────────────────────────────────────────────
@@ -28,6 +27,15 @@ function getCurrentMonthValue() {
   const d = new Date();
   const v = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   return FINANCIAL_YEAR_MONTHS.includes(v) ? v : FINANCIAL_YEAR_MONTHS[0];
+}
+
+/** Returns which building column key Chauhan occupies for a given month */
+const CHAUHAN_ROTATION = ['bBuilding', 'cBuilding', 'aBuilding'];
+const CHAUHAN_LABELS   = { aBuilding: 'A Building', bBuilding: 'B Building', cBuilding: 'C Building' };
+function getChauhanColKey(mv) {
+  const [y, m] = mv.split('-').map(Number);
+  const offset = (y - 2026) * 12 + (m - 4);
+  return CHAUHAN_ROTATION[((offset % 3) + 3) % 3];
 }
 
 function parseMonthValue(mv) {
@@ -73,7 +81,7 @@ function rowTotal(row) {
 }
 
 function emptyRow() {
-  return { aBuilding: '', bBuilding: '', cBuilding: '', commonArea: '', chauhanji: '' };
+  return { aBuilding: '', bBuilding: '', cBuilding: '', commonArea: '' };
 }
 
 function buildMonthDays(mv) {
@@ -100,7 +108,6 @@ function normalizeEntries(days, src = {}) {
       bBuilding:  normalizeValue(s.bBuilding),
       cBuilding:  normalizeValue(s.cBuilding),
       commonArea: normalizeValue(s.commonArea),
-      chauhanji:  normalizeValue(s.chauhanji),
     };
     return acc;
   }, {});
@@ -128,6 +135,7 @@ export default function SecurityAttendanceManager() {
   const [isLoading,     setIsLoading]     = useState(false);
   const [saveStatus,    setSaveStatus]    = useState('idle');
   const [saveMsg,       setSaveMsg]       = useState('');
+  const [isDirty,       setIsDirty]       = useState(false);
 
   const monthDays  = useMemo(() => buildMonthDays(selectedMonth), [selectedMonth]);
   const recordId   = `security_register_${selectedMonth}`;
@@ -187,9 +195,10 @@ export default function SecurityAttendanceManager() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordId]);
 
-  // ── Auto-save to Firebase ─────────────────────────────────────────────────
+  // ── Manual save to Firebase ───────────────────────────────────────────────
   const saveToFirebase = useCallback(async (currentEntries, currentRecordId, month) => {
     setSaveStatus('saving');
+    setSaveMsg('Saving to Firebase…');
     const payload = { month, registerType: 'security-daily', entries: currentEntries };
 
     if (isFirebaseConfigured && db) {
@@ -202,13 +211,15 @@ export default function SecurityAttendanceManager() {
         );
         setSaveStatus('saved');
         setSaveMsg('All changes saved to Firebase ✓');
+        setIsDirty(false);
       } catch (err) {
-        console.error('Security auto-save error:', err);
+        console.error('Security save error:', err);
         const next = { ...readLocal(), [currentRecordId]: { ...payload, savedAt: new Date().toISOString() } };
         writeLocal(next);
         setLocalRecords(next);
         setSaveStatus('error');
         setSaveMsg('Firebase save failed — saved locally instead.');
+        setIsDirty(false);
       }
     } else {
       const next = { ...readLocal(), [currentRecordId]: { ...payload, savedAt: new Date().toISOString() } };
@@ -216,27 +227,53 @@ export default function SecurityAttendanceManager() {
       setLocalRecords(next);
       setSaveStatus('saved');
       setSaveMsg('Saved locally (Firebase not connected).');
+      setIsDirty(false);
     }
   }, []);
 
-  // ── Cell change → debounced auto-save ────────────────────────────────────
+  const handleSave = () => saveToFirebase(entries, recordId, selectedMonth);
+
+  const handleDeleteMonthData = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Clear any pending auto-saves
+    clearTimeout(autoSaveTimer.current);
+
+    if (!window.confirm(`Are you sure you want to PERMANENTLY delete all security data (attendance and billing) for ${formatLongMonthLabel(selectedMonth)}?`)) return;
+    
+    setSaveStatus('saving');
+    setSaveMsg('Deleting data...');
+    
+    try {
+      await ensureFirebaseSession();
+      // Delete attendance register
+      await deleteDoc(doc(db, 'securityAttendanceRegisters', recordId));
+      // Delete bill record
+      await deleteDoc(doc(db, 'securityBills', `security_bill_${selectedMonth}`));
+      
+      setSaveStatus('saved');
+      setSaveMsg(`Deleted data for ${formatLongMonthLabel(selectedMonth)}.`);
+      window.location.reload(); // Refresh to clear state
+    } catch (err) {
+      console.error('Delete error:', err);
+      setSaveStatus('error');
+      setSaveMsg('Failed to delete data.');
+    }
+  };
+
+  // ── Cell change — marks dirty, no auto-save ────────────────────────────
   function handleCellChange(dateKey, field, value) {
     if (!isLoadedRef.current) return;
-
-    setEntries((prev) => {
-      const updated = {
-        ...prev,
-        [dateKey]: { ...(prev[dateKey] || emptyRow()), [field]: normalizeValue(value) },
-      };
-      clearTimeout(autoSaveTimer.current);
-      setSaveStatus('pending');
-      setSaveMsg('Unsaved changes…');
-      autoSaveTimer.current = setTimeout(
-        () => saveToFirebase(updated, recordId, selectedMonth),
-        AUTO_SAVE_DELAY_MS
-      );
-      return updated;
-    });
+    setEntries(prev => ({
+      ...prev,
+      [dateKey]: { ...(prev[dateKey] || emptyRow()), [field]: normalizeValue(value) },
+    }));
+    setSaveStatus('pending');
+    setSaveMsg('Unsaved changes — click Save to persist.');
+    setIsDirty(true);
   }
 
   useEffect(() => () => clearTimeout(autoSaveTimer.current), []);
@@ -295,7 +332,6 @@ export default function SecurityAttendanceManager() {
       { wch: 12 }, // B Building
       { wch: 12 }, // C Building
       { wch: 13 }, // Common Area
-      { wch: 12 }, // Chauhanji
       { wch: 9  }, // Total
     ];
 
@@ -311,6 +347,8 @@ export default function SecurityAttendanceManager() {
   }
 
   // ── Status badge ──────────────────────────────────────────────────────────
+  const chauhanColKey = getChauhanColKey(selectedMonth);
+
   const badge = {
     idle:    { color: '#6b7280', icon: '●', text: 'Ready'                    },
     pending: { color: '#f59e0b', icon: '⏳', text: 'Saving…'                 },
@@ -408,10 +446,28 @@ export default function SecurityAttendanceManager() {
             <h3>Security Attendance — {formatLongMonthLabel(selectedMonth)}</h3>
           </div>
           <div className="attendance-table-card__actions">
-            <p>Enter guard counts per building/post — auto-saves to Firebase after every change.</p>
-            <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
-              ⬇ Download Excel
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
+              <span>{badge.icon}</span>
+              <span>{isLoading ? `Loading ${formatLongMonthLabel(selectedMonth)}…` : saveMsg || badge.text}</span>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button className="button-primary" type="button" onClick={handleSave}
+                disabled={!isDirty || saveStatus === 'saving'}
+                style={{ opacity: (!isDirty || saveStatus === 'saving') ? 0.5 : 1 }}>
+                💾 Save
+              </button>
+              <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
+                ⬇ Excel
+              </button>
+              <button 
+                className="button-secondary" 
+                type="button" 
+                onClick={(e) => handleDeleteMonthData(e)}
+                style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
+              >
+                🗑️ Delete
+              </button>
+            </div>
           </div>
         </div>
 
@@ -421,9 +477,19 @@ export default function SecurityAttendanceManager() {
             <thead>
               <tr>
                 <th style={{ minWidth: 110 }}>Date</th>
-                {SECURITY_COLUMNS.map(col => (
-                  <th key={col.key}>{col.label}</th>
-                ))}
+                {SECURITY_COLUMNS.map(col => {
+                  const isChauhanCol = col.key === chauhanColKey;
+                  return (
+                    <th key={col.key} style={isChauhanCol ? { background: '#fef3c7', color: '#92400e' } : {}}>
+                      {col.label}
+                      {isChauhanCol && (
+                        <span style={{ display: 'block', fontSize: '0.7rem', fontWeight: 600, color: '#b45309', marginTop: 2 }}>
+                          Chauhan
+                        </span>
+                      )}
+                    </th>
+                  );
+                })}
                 <th>Total</th>
               </tr>
             </thead>
@@ -450,20 +516,25 @@ export default function SecurityAttendanceManager() {
                       </th>
 
                       {/* Guard-post inputs */}
-                      {SECURITY_COLUMNS.map(col => (
-                        <td key={`${d.dateKey}-${col.key}`}>
-                          <input
-                            className="attendance-register-input"
-                            type="number"
-                            min="0"
-                            step="1"
-                            inputMode="numeric"
-                            placeholder="0"
-                            value={row[col.key]}
-                            onChange={(e) => handleCellChange(d.dateKey, col.key, e.target.value)}
-                          />
-                        </td>
-                      ))}
+                      {SECURITY_COLUMNS.map(col => {
+                        const isChauhanCol = col.key === chauhanColKey;
+                        return (
+                          <td key={`${d.dateKey}-${col.key}`}
+                            style={isChauhanCol ? { background: '#fef9ee' } : {}}>
+                            <input
+                              className="attendance-register-input"
+                              type="text"
+                              inputMode="numeric"
+                              placeholder={isChauhanCol ? 'Chauhan' : ''}
+                              value={row[col.key]}
+                              disabled={isChauhanCol}
+                              title={isChauhanCol ? `Chauhan is at ${CHAUHAN_LABELS[chauhanColKey]} this month` : ''}
+                              style={isChauhanCol ? { background: '#fef3c7', color: '#92400e', cursor: 'not-allowed', opacity: 0.7 } : {}}
+                              onChange={(e) => handleCellChange(d.dateKey, col.key, e.target.value)}
+                            />
+                          </td>
+                        );
+                      })}
 
                       {/* Auto-calculated total */}
                       <td className="attendance-register-total">

@@ -133,7 +133,7 @@ function Field({ label, value, onChange, prefix }) {
               .replace(/(\..*?)\.+/g, '$1');
             onChange(cleaned);
           }}
-          placeholder="0"
+          
           style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.95rem', background: 'rgba(255,255,255,0.8)' }}
         />
       </div>
@@ -410,21 +410,21 @@ export default function HousekeepingBillCalculator() {
           </div>
 
           {/* Desktop: scrollable table */}
-          <div className="hk-bill-table-desktop" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+          <div className="hk-bill-table-desktop attendance-table-scroll">
+            <table className="attendance-table attendance-table--bill">
               <thead>
-                <tr style={{ background: 'rgba(0,0,0,0.06)' }}>
+                <tr>
                   {['Building', 'Wage', 'Supervisor', 'Common', 'Garbage', 'Tractor', 'STP', 'Total'].map(h => (
-                    <th key={h} style={{ padding: '10px 14px', textAlign: 'right', fontWeight: 700, whiteSpace: 'nowrap' }}>{h}</th>
+                    <th key={h} style={{ textAlign: 'right' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {bill.rows.map((r, i) => (
-                  <tr key={r.label} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(0,0,0,0.02)' }}>
-                    <td style={{ padding: '10px 14px', fontWeight: 700 }}>{r.label}</td>
+                  <tr key={r.label}>
+                    <td style={{ fontWeight: 700 }}>{r.label}</td>
                     {[r.wage, r.sup, r.com, r.garb, r.tract, r.stp, r.total].map((v, j) => (
-                      <td key={j} style={{ padding: '10px 14px', textAlign: 'right', color: j === 6 ? '#1a6b3c' : 'inherit', fontWeight: j === 6 ? 700 : 400 }}>
+                      <td key={j} style={{ textAlign: 'right', color: j === 6 ? '#1a6b3c' : 'inherit', fontWeight: j === 6 ? 700 : 400 }}>
                         ₹{fmt(v)}
                       </td>
                     ))}
@@ -432,10 +432,10 @@ export default function HousekeepingBillCalculator() {
                 ))}
               </tbody>
               <tfoot>
-                <tr style={{ background: 'rgba(0,0,0,0.08)', fontWeight: 700 }}>
-                  <td style={{ padding: '10px 14px' }}>Grand Total</td>
-                  <td colSpan={6} />
-                  <td style={{ padding: '10px 14px', textAlign: 'right', color: '#1a6b3c', fontSize: '1.05rem' }}>₹{fmt(bill.grandTotal)}</td>
+                <tr>
+                  <th>Grand Total</th>
+                  <th colSpan={6} />
+                  <th style={{ textAlign: 'right', color: '#1a6b3c', fontSize: '1.05rem' }}>₹{fmt(bill.grandTotal)}</th>
                 </tr>
               </tfoot>
             </table>

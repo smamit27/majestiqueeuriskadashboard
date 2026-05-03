@@ -92,118 +92,74 @@ img {
     font-size: 1.2rem !important;
   }
 
-  /* ── Tabs ────────────────────────────────────────── */
-  .tabs-shell {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 100 !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 0 !important;
-    padding: 10px 0 10px 8px !important;
-    margin: -10px -10px 16px -10px !important;
-    border-radius: 0 0 20px 20px !important;
-    border-top: none !important;
-    border-left: none !important;
-    border-right: none !important;
-    background: rgba(244, 239, 231, 0.95) !important;
-    backdrop-filter: blur(24px) !important;
-    -webkit-backdrop-filter: blur(24px) !important;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
-    overflow: visible !important;
-  }
-
-  /* Expanded: stack vertically so tabs wrap */
-  .tabs-shell--expanded {
-    flex-wrap: wrap !important;
-  }
-
-  .tabs-row {
-    display: flex !important;
-    flex: 1 !important;
-    min-width: 0 !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    overflow-y: visible !important;
-    -webkit-overflow-scrolling: touch !important;
-    scroll-snap-type: x mandatory;
-    gap: 8px !important;
-    padding: 0 8px 0 8px !important;
-    scrollbar-width: none !important;
-  }
-
-  .tabs-row--expanded {
-    flex-wrap: wrap !important;
-    overflow-x: visible !important;
-    gap: 8px !important;
-    padding-bottom: 4px !important;
-  }
-
-  .tabs-row::-webkit-scrollbar { display: none; }
-
-  /* Three-dot expand/collapse button */
-  .tabs-expand-button {
-    display: flex !important;
-    flex-shrink: 0 !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 44px !important;
-    height: 44px !important;
-    margin-right: 4px !important;
-    border-radius: 50% !important;
-    background: rgba(0,0,0,0.06) !important;
-    border: none !important;
-    color: var(--ink) !important;
-    font-size: 1.4rem !important;
-    font-weight: 900 !important;
-    cursor: pointer !important;
-    line-height: 1 !important;
-    letter-spacing: 2px !important;
-  }
-
-  .tab-button {
-    flex: 0 0 auto !important;
-    min-width: unset !important;
-    width: auto !important;
-    white-space: nowrap !important;
-    padding: 10px 18px !important;
-    border-radius: 100px !important;
-    border: 1px solid rgba(0,0,0,0.05) !important;
-    background: #fff !important;
-    min-height: 48px !important;
-    scroll-snap-align: start;
+  /* ── Sidebar (Mobile Drawer) ────────────────────────── */
+  .dashboard-shell--sidebar {
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important;
+    padding: 0 !important;
+  }
+
+  .main-panel {
+    padding: 14px !important;
+    width: 100% !important;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -320px !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    width: 280px !important;
+    z-index: 1000 !important;
+    border-radius: 0 !important;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 24px 20px !important;
+  }
+
+  .sidebar--open {
+    left: 0 !important;
+  }
+
+  .sidebar-overlay {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0,0,0,0.5) !important;
+    z-index: 999 !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+  }
+
+  .mobile-header {
+    display: flex !important;
     align-items: center !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+    gap: 16px !important;
+    margin-bottom: 12px !important;
+    padding: 4px 8px !important;
   }
 
-  .tab-button--active {
-    background: linear-gradient(135deg, #196c6c, #31553e) !important;
-    box-shadow: 0 6px 16px rgba(25,108,108,0.25) !important;
-    border-color: transparent !important;
+  .mobile-header h2 {
+    margin: 0 !important;
+    font-size: 1.4rem !important;
+    font-family: var(--heading-font) !important;
   }
 
-  .tab-button span {
-    font-size: 0.85rem !important;
-    font-weight: 700 !important;
+  .mobile-menu-toggle {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #fff !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    border-radius: 12px !important;
+    width: 44px !important;
+    height: 44px !important;
     color: var(--ink) !important;
-  }
-
-  .tab-button--active span {
-    color: #fff !important;
-  }
-
-  .tab-button small {
-    font-size: 0.65rem !important;
-    margin-top: 2px !important;
-    opacity: 0.6 !important;
-  }
-
-  .tab-button--active small {
-    color: rgba(255,255,255,0.8) !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
   }
 
   /* ── Section / cards ─────────────────────────────── */

@@ -495,11 +495,9 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
                         <td key={`${d.dateKey}-${col.key}`}>
                           <input
                             className="attendance-register-input"
-                            type="number"
-                            min="0"
-                            step="1"
+                            type="text"
                             inputMode="numeric"
-                            placeholder="0"
+                            
                             value={row[col.key]}
                             onChange={(e) => handleCellChange(d.dateKey, col.key, e.target.value)}
                           />
@@ -519,7 +517,7 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
                           min="0"
                           step="1"
                           inputMode="numeric"
-                          placeholder="0"
+                          
                           value={row.tractorTrip}
                           onChange={(e) => handleCellChange(d.dateKey, 'tractorTrip', e.target.value)}
                         />

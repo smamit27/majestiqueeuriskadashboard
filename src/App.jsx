@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import MetricCard from './components/MetricCard.jsx';
-import HousekeepingAttendanceManager from './components/HousekeepingAttendanceManager.jsx';
-import HousekeepingBillCalculator from './components/HousekeepingBillCalculator.jsx';
-import SecurityAttendanceManager from './components/SecurityAttendanceManager.jsx';
+import HousekeepingModule from './components/HousekeepingModule.jsx';
+import SecurityModule from './components/SecurityModule.jsx';
+import SolarModule from './components/SolarModule.jsx';
+import MainDashboard from './components/MainDashboard.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 import SectionCard from './components/SectionCard.jsx';
 import StatusPill from './components/StatusPill.jsx';
@@ -35,9 +36,42 @@ function sortByDateAscending(items, key) {
   return [...items].sort((left, right) => new Date(left[key]) - new Date(right[key]));
 }
 
+/* ── Tab icon map ─────────────────────────────────────── */
+const TAB_ICONS = {
+  members: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+  ),
+  dues: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+  ),
+  events: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  ),
+  complaints: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  ),
+  finance: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+  ),
+  visitors: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+  ),
+  housekeeping: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  ),
+  security: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  ),
+  solar: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M5 5l1.5 1.5"/><path d="M17.5 17.5L19 19"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M5 19l1.5-1.5"/><path d="M17.5 6.5L19 5"/></svg>
+  ),
+};
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState('members');
-  const [isTabsExpanded, setIsTabsExpanded] = useState(false);
+  const [activeTab, setActiveTab] = useState('society_overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [prevTab, setPrevTab] = useState(null);
   const [memberSearchText, setMemberSearchText] = useState('');
   const [complaintSearchText, setComplaintSearchText] = useState('');
 
@@ -126,7 +160,24 @@ export default function App() {
     ? (financeSnapshot.expenses / financeSnapshot.collections) * 100
     : 0;
 
+  const dashboardStats = {
+    duesCollected,
+    totalOutstanding,
+    collectionRate,
+    openComplaints,
+    activeVisitors,
+    staffPresent,
+    financeSnapshot,
+    nextEvent
+  };
+
   const tabItems = [
+    {
+      id: 'society_overview',
+      label: 'Overview',
+      metric: 'Society Dashboard',
+      render: () => <MainDashboard stats={dashboardStats} />
+    },
     {
       id: 'members',
       label: 'Members',
@@ -474,131 +525,126 @@ export default function App() {
       )
     },
     {
-      id: 'staff',
+      id: 'housekeeping',
       label: 'Housekeeping',
-      metric: `${staffPresent}/${staffData.items.length} on shift`,
+      metric: 'Attendance & Billing',
       render: () => (
-        <SectionCard
-          id="staff"
-          badge="Housekeeping Staff Tracker"
-          title="Attendance, zoning, and shift visibility"
-          subtitle="Monitor housekeeping coverage and let managers maintain a daily manpower attendance register for the full month."
-        >
-          <div className="section-grid section-grid--dual">
-            <div className="table-card">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Staff</th>
-                    <th>Role</th>
-                    <th>Shift</th>
-                    <th>Zone</th>
-                    <th>Attendance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {staffData.items.map((person) => (
-                    <tr key={person.id}>
-                      <td>{person.name}</td>
-                      <td>{person.role}</td>
-                      <td>{person.shift}</td>
-                      <td>{person.zone}</td>
-                      <td>
-                        <StatusPill value={person.attendance} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="stack-card">
-              <div>
-                <p className="eyebrow">Coverage snapshot</p>
-                <h3>{staffPresent} team members available</h3>
-                <p>Supervision and floor cleaning coverage can be reviewed at a glance before peak resident hours.</p>
-              </div>
-              <ProgressBar label="On-shift coverage" value={staffPresent} total={staffData.items.length} tone="pine" />
-              <ProgressBar
-                label="Leave impact"
-                value={staffData.items.filter((item) => item.attendance === 'On Leave').length}
-                total={staffData.items.length}
-                tone="amber"
-              />
-            </div>
-          </div>
-
-          <HousekeepingAttendanceManager staffMembers={staffData.items} />
-        </SectionCard>
+        <HousekeepingModule 
+          staffMembers={staffData.items} 
+          staffPresentCount={staffPresent} 
+          totalStaffCount={staffData.items.length} 
+        />
       )
     },
     {
       id: 'security',
       label: 'Security',
-      metric: 'Guard deployment',
-      render: () => (
-        <SectionCard
-          id="security"
-          badge="Security Staff Tracker"
-          title="Guard deployment and post coverage"
-          subtitle="Track daily guard counts across A Building, B Building, C Building, Common Area, and Chauhanji."
-        >
-          <SecurityAttendanceManager />
-        </SectionCard>
-      )
+      metric: 'Deployment & Billing',
+      render: () => <SecurityModule />
     },
     {
-      id: 'hkbill',
-      label: 'HK Bill',
-      metric: 'Bill calculator',
-      render: () => (
-        <SectionCard
-          id="hkbill"
-          badge="Housekeeping Bill Calculation"
-          title="Monthly bill breakdown per building"
-          subtitle="Enter salary, absences, garbage, tractor, and STP — auto-calculates A, B, C building share and saves to Firebase."
-        >
-          <HousekeepingBillCalculator />
-        </SectionCard>
-      )
+      id: 'solar',
+      label: 'Solar Management',
+      metric: 'Evaluation & ROI',
+      render: () => <SolarModule />
     }
+
   ];
 
   const activeTabPanel = tabItems.find((item) => item.id === activeTab) || tabItems[0];
 
+  const handleTabChange = (tabId) => {
+    if (tabId === activeTab) return;
+    setPrevTab(activeTab);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveTab(tabId);
+      setIsSidebarOpen(false); // Auto-close on mobile
+      setIsTransitioning(false);
+    }, 180);
+  };
+
+  const getBadgeCount = (tabId) => {
+    switch (tabId) {
+      case 'complaints': return openComplaints > 0 ? openComplaints : 0;
+      case 'visitors': return activeVisitors > 0 ? activeVisitors : 0;
+      case 'dues': return duesData.items.filter(i => i.status !== 'Paid').length;
+      default: return 0;
+    }
+  };
+
   return (
-    <div className="dashboard-shell dashboard-shell--tabs">
+    <div className="dashboard-shell dashboard-shell--sidebar">
       <div className="backdrop backdrop--top" />
       <div className="backdrop backdrop--bottom" />
 
+      {/* Mobile overlay */}
+      {isSidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />
+      )}
+
+      {/* ── Vertical Sidebar ── */}
+      <aside className={`sidebar ${isSidebarOpen ? 'sidebar--open' : ''}`}>
+        <div className="sidebar__brand">
+          <img
+            src="/logo.png"
+            alt="Majestique Euriska Logo"
+            className="sidebar__logo"
+          />
+          <div>
+            <p className="sidebar__kicker">Residential Society</p>
+            <h2 className="sidebar__title">Majestique Euriska</h2>
+          </div>
+        </div>
+
+        <nav className="sidebar__nav" role="tablist" aria-orientation="vertical">
+          {tabItems.map((tab) => {
+            if (tab.isGroupHeader) {
+              return (
+                <div key={tab.id} className="sidebar-group-header">
+                  {tab.label}
+                </div>
+              );
+            }
+
+            const badgeCount = getBadgeCount(tab.id);
+            return (
+              <button
+                key={tab.id}
+                id={`tab-${tab.id}`}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`panel-${tab.id}`}
+                className={`sidebar-item ${activeTab === tab.id ? 'sidebar-item--active' : ''} ${tab.isSubItem ? 'sidebar-item--sub' : ''}`}
+                onClick={() => handleTabChange(tab.id)}
+              >
+                <span className="sidebar-item__icon">{TAB_ICONS[tab.id]}</span>
+                <span className="sidebar-item__label">{tab.label}</span>
+                {badgeCount > 0 && (
+                  <span className="sidebar-item__badge">{badgeCount}</span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+      </aside>
+
       <main className="main-panel">
+        {/* Mobile Header Toggle */}
+        <div className="mobile-header">
+          <button className="mobile-menu-toggle" onClick={() => setIsSidebarOpen(true)}>
+            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <h2>{activeTabPanel.label}</h2>
+        </div>
+
+        {!['housekeeping', 'security', 'solar'].includes(activeTab) && (
         <header className="dashboard-header">
           <div className="dashboard-header__copy">
-
-            {/* Society logo + title row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '12px' }}>
-              <img
-                src="/logo.png"
-                alt="Majestique Euriska Logo"
-                style={{
-                  width: '88px',
-                  height: '88px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  flexShrink: 0,
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
-                  border: '3px solid rgba(255,255,255,0.25)',
-                  background: '#fff',
-                }}
-              />
-              <div>
-                <p className="eyebrow">Residential Society Dashboard</p>
-                <h1 style={{ margin: 0 }}>Majestique Euriska</h1>
-              </div>
-            </div>
-
+            <h1 style={{ margin: 0 }}>{activeTabPanel.label} Dashboard</h1>
             <p className="dashboard-header__text">
-              A cleaner tab-based control center for member operations, dues, community updates,
+              A cleaner control center for member operations, dues, community updates,
               complaints, finance, visitor movement, and housekeeping management.
             </p>
 
@@ -611,7 +657,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="dashboard-header__aside">
+            <div className="dashboard-header__aside">
             <article className="summary-panel">
               <p className="eyebrow">Live snapshot</p>
               <div className="summary-panel__grid">
@@ -641,10 +687,12 @@ export default function App() {
             </article>
           </div>
         </header>
+        )}
 
         {loadErrors.length > 0 ? <div className="notice-banner">{loadErrors[0]}</div> : null}
 
-        <section className="metrics-grid">
+        {!['housekeeping', 'security', 'solar'].includes(activeTab) && (
+          <section className="metrics-grid">
           <MetricCard
             label="Members & Occupancy"
             value={`${memberData.items.length} households`}
@@ -670,45 +718,22 @@ export default function App() {
             tone="pine"
           />
         </section>
+        )}
 
-        <section className={`tabs-shell ${isTabsExpanded ? 'tabs-shell--expanded' : ''}`}>
-          <div className={`tabs-row ${isTabsExpanded ? 'tabs-row--expanded' : ''}`} role="tablist" aria-label="Dashboard sections">
-            {tabItems.map((tab) => (
-              <button
-                key={tab.id}
-                id={`tab-${tab.id}`}
-                type="button"
-                role="tab"
-                aria-selected={activeTab === tab.id}
-                aria-controls={`panel-${tab.id}`}
-                className={`tab-button ${activeTab === tab.id ? 'tab-button--active' : ''}`}
-                onClick={() => { setActiveTab(tab.id); setIsTabsExpanded(false); }}
-              >
-                <span>{tab.label}</span>
-                <small>{tab.metric}</small>
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            className="tabs-expand-button"
-            onClick={() => setIsTabsExpanded(!isTabsExpanded)}
-            aria-label={isTabsExpanded ? 'Collapse tabs' : 'Expand tabs'}
-          >
-            {isTabsExpanded ? '✕' : '⋯'}
-          </button>
-        </section>
+
 
         <div
           id={`panel-${activeTabPanel.id}`}
-          className="tab-content-panel"
+          className={`tab-content-panel ${isTransitioning ? 'tab-content-panel--exit' : 'tab-content-panel--enter'}`}
           role="tabpanel"
           aria-labelledby={`tab-${activeTabPanel.id}`}
+          style={{}}
         >
           {activeTabPanel.render()}
         </div>
 
-        <section className="snapshot-grid">
+        {!['housekeeping', 'security', 'solar'].includes(activeTab) && (
+          <section className="snapshot-grid">
           <div className="snapshot-panel">
             <p className="eyebrow">Collection health</p>
             <ProgressBar label="Maintenance collected" value={duesCollected} total={collectionTarget} tone="teal" />
@@ -731,6 +756,7 @@ export default function App() {
             </div>
           </div>
         </section>
+        )}
       </main>
     </div>
   );
