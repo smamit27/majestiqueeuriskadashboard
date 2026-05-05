@@ -112,7 +112,7 @@ const DEFAULT_FORM = {
   vendor3: { name: '', answers: {}, score: '', remarks: '' }
 };
 
-export default function SolarVendorTracker() {
+export default function SolarVendorTracker({ isAdmin = false }) {
   const [form, setForm] = useState(DEFAULT_FORM);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg] = useState('');
@@ -238,14 +238,16 @@ export default function SolarVendorTracker() {
               <span>{isLoading ? 'Loading…' : saveMsg || 'Ready'}</span>
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button
-                className="button-primary"
-                type="button"
-                onClick={handleManualSave}
-                disabled={isSaving || isLoading}
-              >
-                {isSaving ? 'Saving…' : '💾 Save Checklist'}
-              </button>
+              {isAdmin && (
+                <button
+                  className="button-primary"
+                  type="button"
+                  onClick={handleManualSave}
+                  disabled={isSaving || isLoading}
+                >
+                  {isSaving ? 'Saving…' : '💾 Save Checklist'}
+                </button>
+              )}
               <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
                 ⬇ Download Excel
               </button>
@@ -270,6 +272,7 @@ export default function SolarVendorTracker() {
                     onChange={(e) => handleVendorNameChange(vKey, e.target.value)}
                     placeholder="Enter Vendor Name"
                     style={{ width: '100%', padding: '6px 8px', borderRadius: '4px', border: 'none', textAlign: 'center', fontWeight: 'bold' }}
+                    readOnly={!isAdmin}
                   />
                 </th>
               ))}
@@ -295,6 +298,7 @@ export default function SolarVendorTracker() {
                           onChange={(e) => handleAnswerChange(vKey, q.id, e.target.value)}
                           placeholder="Your Answer"
                           style={{ width: '100%', padding: '6px 8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)', background: 'white' }}
+                          readOnly={!isAdmin}
                         />
                       </td>
                     ))}
@@ -315,6 +319,7 @@ export default function SolarVendorTracker() {
                       onChange={(e) => handleScoreChange(vKey, 'score', e.target.value)}
                       placeholder="Score"
                       style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.15)', fontWeight: 'bold', textAlign: 'center' }}
+                      readOnly={!isAdmin}
                     />
                 </td>
               ))}
@@ -329,6 +334,7 @@ export default function SolarVendorTracker() {
                       placeholder="Remarks"
                       rows={2}
                       style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.15)', resize: 'vertical' }}
+                      readOnly={!isAdmin}
                     />
                 </td>
               ))}

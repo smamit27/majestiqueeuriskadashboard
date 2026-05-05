@@ -215,12 +215,12 @@ select {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 14px 16px;
-  border-radius: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
   border: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -792,15 +792,15 @@ select {
 
 /* 44px min-height touch targets on all interactive controls */
 .button-primary {
-  padding: 6px 14px;
-  min-height: 32px;
-  font-size: 0.85rem;
+  padding: 5px 12px;
+  min-height: 28px;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   background: #0B2B26;
   color: #fff;
   transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
-  box-shadow: 0 6px 16px rgba(11, 43, 38, 0.18);
+  box-shadow: 0 4px 12px rgba(11, 43, 38, 0.18);
 }
 
 .button-primary:hover:not(:disabled) {
@@ -816,9 +816,9 @@ select {
 
 .button-secondary {
   width: auto;
-  padding: 6px 14px;
-  min-height: 32px;
-  font-size: 0.85rem;
+  padding: 5px 12px;
+  min-height: 28px;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.84);
@@ -1032,10 +1032,10 @@ select {
 
 .attendance-month-tab {
   flex: 0 0 auto;
-  min-width: 96px;
-  padding: 12px 14px;
+  min-width: 84px;
+  padding: 8px 12px;
   border: 1px solid rgba(61, 63, 52, 0.12);
-  border-radius: 14px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.72);
   color: var(--ink);
   cursor: pointer;
@@ -1156,9 +1156,9 @@ select {
 .attendance-register-input {
   width: 100%;
   min-width: 72px;
-  padding: 10px 12px;
+  padding: 7px 10px;
   border: 1px solid rgba(61, 63, 52, 0.12);
-  border-radius: 12px;
+  border-radius: 10px;
   background: #fffefb;
   color: var(--ink);
   text-align: center;
@@ -1660,10 +1660,10 @@ select {
   background: white;
   color: #0B2B26;
   border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 6px 14px;
+  border-radius: 8px;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   cursor: pointer;
   transition: transform 0.1s ease;
 }

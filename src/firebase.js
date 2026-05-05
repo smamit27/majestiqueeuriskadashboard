@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 
 const firebaseConfig = {
@@ -23,6 +24,8 @@ export const app = isFirebaseConfigured
   : null;
 
 export const db = app ? getFirestore(app) : null;
+export const auth = app ? getAuth(app) : null;
+export const googleProvider = new GoogleAuthProvider();
 
 // Analytics — only in browser environments that support it
 export let analytics = null;
@@ -32,5 +35,12 @@ if (app) {
 
 // No-op kept for API compatibility — auth no longer required
 export async function ensureFirebaseSession() {
-  return null;
+  if (!auth) return null;
+  if (auth.currentUser) return auth.currentUser;
+  return new Promise((resolve) => {
+    const unsub = auth.onAuthStateChanged((user) => {
+      unsub();
+      resolve(user);
+    });
+  });
 }

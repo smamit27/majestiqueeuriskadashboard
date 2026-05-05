@@ -3,12 +3,15 @@ import MetricCard from './components/MetricCard.jsx';
 import HousekeepingModule from './components/HousekeepingModule.jsx';
 import SecurityModule from './components/SecurityModule.jsx';
 import SolarModule from './components/SolarModule.jsx';
-import ChequeTracker from './components/ChequeTracker.jsx';
+import ChequeManagement from './components/ChequeManagement.jsx';
 import FinanceTracker from './components/FinanceTracker.jsx';
 import MainDashboard from './components/MainDashboard.jsx';
 import ProgressBar from './components/ProgressBar.jsx';
 import SectionCard from './components/SectionCard.jsx';
 import StatusPill from './components/StatusPill.jsx';
+import AuthModal from './components/AuthModal.jsx';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebase.js';
 import { announcements, complaints, dues, events, finance, members, staff, visitors } from './data/mockData.js';
 import { useCollection } from './hooks/useCollection.js';
 
@@ -83,7 +86,19 @@ export default function App() {
   const [prevTab, setPrevTab] = useState(null);
   const [memberSearchText, setMemberSearchText] = useState('');
   const [complaintSearchText, setComplaintSearchText] = useState('');
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    if (!auth) return;
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+    });
+    return () => unsub();
+  }, []);
+  const isAdmin = useMemo(() => {
+    return user && user.email === 'majestiqueeuriska.a@gmail.com';
+  }, [user]);
   const memberData = useCollection('members', members);
   const duesData = useCollection('dues', dues);
   const announcementData = useCollection('announcements', announcements);
@@ -191,7 +206,7 @@ export default function App() {
       id: 'security',
       label: 'Security',
       metric: 'Deployment & Billing',
-      render: () => <SecurityModule />
+      render: () => <SecurityModule isAdmin={isAdmin} />
     },
     {
       id: 'housekeeping',
@@ -199,6 +214,7 @@ export default function App() {
       metric: 'Attendance & Billing',
       render: () => (
         <HousekeepingModule 
+          isAdmin={isAdmin}
           staffMembers={staffData.items} 
           staffPresentCount={staffPresent} 
           totalStaffCount={staffData.items.length} 
@@ -209,19 +225,19 @@ export default function App() {
       id: 'solar',
       label: 'Solar Management',
       metric: 'Evaluation & ROI',
-      render: () => <SolarModule />
+      render: () => <SolarModule isAdmin={isAdmin} />
     },
     {
       id: 'finance',
-      label: 'Finance',
+      label: 'Income & Expenses',
       metric: 'Income & Expenses',
-      render: () => <FinanceTracker />
+      render: () => <FinanceTracker isAdmin={isAdmin} />
     },
     {
       id: 'cheques',
       label: 'Cheque Tracker',
       metric: 'Shared Expenses',
-      render: () => <ChequeTracker />
+      render: () => <ChequeManagement isAdmin={isAdmin} />
     },
     {
       id: 'members',
@@ -620,6 +636,34 @@ export default function App() {
             );
           })}
         </nav>
+
+        <div className="sidebar__footer" style={{ marginTop: 'auto', padding: '16px' }}>
+          <button 
+            className={`sidebar-item ${isAdmin ? 'sidebar-item--active' : ''}`}
+            onClick={() => setIsAuthModalOpen(true)}
+            style={isAdmin ? { background: '#10b981', color: 'white' } : {}}
+          >
+            <span className="sidebar-item__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                {isAdmin ? (
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                ) : (
+                  <>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </>
+                )}
+              </svg>
+            </span>
+            {!isSidebarCollapsed && <span className="sidebar-item__label">{isAdmin ? 'Admin (Live)' : 'Admin Login'}</span>}
+          </button>
+        </div>
+
+        <AuthModal 
+          isOpen={isAuthModalOpen} 
+          onClose={() => setIsAuthModalOpen(false)} 
+          user={user}
+        />
       </aside>
 
       <main className="main-panel">
@@ -637,7 +681,7 @@ export default function App() {
             <h1 style={{ margin: 0 }}>{activeTabPanel.label} Dashboard</h1>
             <p className="dashboard-header__text">
               A cleaner control center for member operations, dues, community updates,
-              complaints, finance, visitor movement, and housekeeping management.
+              complaints, income & expenses, visitor movement, and housekeeping management.
             </p>
 
             <div className="header-badges">

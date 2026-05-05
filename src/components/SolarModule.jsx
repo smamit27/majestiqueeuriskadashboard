@@ -3,7 +3,7 @@ import SolarVendorTracker from './SolarVendorTracker.jsx';
 import SolarVendorCompare from './SolarVendorCompare.jsx';
 import SolarOverview from './SolarOverview.jsx';
 
-export default function SolarModule() {
+export default function SolarModule({ isAdmin = false }) {
   const [subTab, setSubTab] = useState('overview');
 
   return (
@@ -75,9 +75,9 @@ export default function SolarModule() {
       </div>
 
       <div className="solar-content-panel">
-        {subTab === 'overview' && <SolarOverview />}
-        {subTab === 'tracker' && <SolarVendorTracker />}
-        {subTab === 'compare' && <SolarVendorCompare />}
+        {subTab === 'overview' && <SolarOverview isAdmin={isAdmin} />}
+        {subTab === 'tracker' && <SolarVendorTracker isAdmin={isAdmin} />}
+        {subTab === 'compare' && <SolarVendorCompare isAdmin={isAdmin} />}
       </div>
     </div>
   );

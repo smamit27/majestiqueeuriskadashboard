@@ -3,7 +3,7 @@ import HousekeepingAttendanceManager from './HousekeepingAttendanceManager.jsx';
 import HousekeepingBillCalculator from './HousekeepingBillCalculator.jsx';
 import SectionCard from './SectionCard.jsx';
 
-export default function HousekeepingModule({ staffMembers, staffPresentCount, totalStaffCount }) {
+export default function HousekeepingModule({ isAdmin = false, staffMembers, staffPresentCount, totalStaffCount }) {
   const [subTab, setSubTab] = useState('tracking');
 
   return (
@@ -65,7 +65,7 @@ export default function HousekeepingModule({ staffMembers, staffPresentCount, to
             title="Daily manpower attendance register"
             subtitle="Track daily attendance for all housekeeping staff across the full month. Save to Firebase when done."
           >
-            <HousekeepingAttendanceManager staffMembers={staffMembers} />
+            <HousekeepingAttendanceManager isAdmin={isAdmin} staffMembers={staffMembers} />
           </SectionCard>
         )}
         {subTab === 'billing' && (

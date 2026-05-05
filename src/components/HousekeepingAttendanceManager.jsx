@@ -122,7 +122,7 @@ function writeLocal(data) {
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
+export default function HousekeepingAttendanceManager({ isAdmin = false, staffMembers = [] }) {
   const [selectedMonth, setSelectedMonth]       = useState(getCurrentMonthValue);
   const [entries, setEntries]                   = useState({});
   const [localRecords, setLocalRecords]         = useState(readLocal);
@@ -167,8 +167,8 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
           setEntries(normalizeEntries(monthDays, src));
           setSaveMsg(
             snap.exists()
-              ? `Loaded from Firebase — ${formatLongMonthLabel(selectedMonth)}`
-              : `New register — ${formatLongMonthLabel(selectedMonth)}`
+              ? `Synced — ${formatMonthLabel(selectedMonth)}`
+              : `New — ${formatMonthLabel(selectedMonth)}`
           );
         }
       } catch (err) {
@@ -209,7 +209,7 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
           { merge: true }
         );
         setSaveStatus('saved');
-        setSaveMsg('All changes saved to Firebase ✓');
+        setSaveMsg('Saved ✓');
       } catch (err) {
         console.error('Auto-save error:', err);
         // Fallback to local
@@ -379,7 +379,7 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
           <p className="eyebrow">Monthly housekeeping register</p>
           <h3>Manager entry table</h3>
           <p>
-            Enter daily deployment values — changes are saved to Firebase automatically.
+            Auto-saves to cloud.
           </p>
         </div>
 
@@ -477,21 +477,23 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
         <div className="attendance-table-card__header">
           <div>
             <p className="eyebrow">Daily entry sheet</p>
-            <h3>Housekeeping Attendance — {formatLongMonthLabel(selectedMonth)}</h3>
+            <h3>HK Attendance — {formatMonthLabel(selectedMonth)}</h3>
           </div>
           <div className="attendance-table-card__actions">
-            <p>Type values directly — auto-saves to Firebase after every change.</p>
+            <p>Auto-saves to cloud.</p>
             <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
               ⬇ Download Excel
             </button>
-            <button 
-              className="button-secondary" 
-              type="button" 
-              onClick={(e) => handleDeleteMonthData(e)}
-              style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
-            >
-              🗑️ Delete
-            </button>
+            {isAdmin && (
+              <button 
+                className="button-secondary" 
+                type="button" 
+                onClick={(e) => handleDeleteMonthData(e)}
+                style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
+              >
+                🗑️ Delete
+              </button>
+            )}
           </div>
         </div>
 
@@ -539,6 +541,7 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
                             
                             value={row[col.key]}
                             onChange={(e) => handleCellChange(d.dateKey, col.key, e.target.value)}
+                            readOnly={!isAdmin}
                           />
                         </td>
                       ))}
@@ -559,6 +562,7 @@ export default function HousekeepingAttendanceManager({ staffMembers = [] }) {
                           
                           value={row.tractorTrip}
                           onChange={(e) => handleCellChange(d.dateKey, 'tractorTrip', e.target.value)}
+                          readOnly={!isAdmin}
                         />
                       </td>
                     </tr>

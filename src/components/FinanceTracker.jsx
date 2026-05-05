@@ -27,7 +27,7 @@ function formatLongMonth(mv) {
 const n = (v) => parseFloat(v) || 0;
 const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export default function FinanceTracker() {
+export default function FinanceTracker({ isAdmin = false }) {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
   const [income, setIncome] = useState([{ source: '', amount: '', remark: '' }]);
   const [expenses, setExpenses] = useState([{ vendor: '', amount: '', purpose: '' }]);
@@ -217,9 +217,11 @@ export default function FinanceTracker() {
                <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button className="button-primary" onClick={handleManualSave} disabled={isLoading || saveStatus === 'saving'} style={{ padding: '8px 16px' }}>
-                💾 Save Tracker
-              </button>
+              {isAdmin && (
+                <button className="button-primary" onClick={handleManualSave} disabled={isLoading || saveStatus === 'saving'} style={{ padding: '8px 16px' }}>
+                  💾 Save Tracker
+                </button>
+              )}
               <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '8px 16px' }}>
                 ⬇ Export Excel
               </button>
@@ -250,7 +252,7 @@ export default function FinanceTracker() {
         <div className="table-card" style={{ height: 'fit-content' }}>
           <div className="attendance-table-card__header" style={{ padding: '16px 20px' }}>
             <h4 style={{ margin: 0, color: '#059669' }}>📥 Income Details</h4>
-            <button className="button-secondary" onClick={addIncomeRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>
+            {isAdmin && <button className="button-secondary" onClick={addIncomeRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>}
           </div>
           <div className="attendance-table-scroll" style={{ padding: 0 }}>
             <table className="attendance-table attendance-table--bill" style={{ minWidth: '100%' }}>
@@ -271,6 +273,7 @@ export default function FinanceTracker() {
                         value={row.source} 
                         onChange={e => updateIncome(i, 'source', e.target.value)}
                         placeholder="e.g. Maintenance"
+                        readOnly={!isAdmin}
                       />
                     </td>
                     <td>
@@ -280,6 +283,7 @@ export default function FinanceTracker() {
                         value={row.amount} 
                         onChange={e => updateIncome(i, 'amount', e.target.value)}
                         placeholder="0.00"
+                        readOnly={!isAdmin}
                       />
                     </td>
                     <td>
@@ -288,10 +292,11 @@ export default function FinanceTracker() {
                         value={row.remark} 
                         onChange={e => updateIncome(i, 'remark', e.target.value)}
                         placeholder="Remark"
+                        readOnly={!isAdmin}
                       />
                     </td>
                     <td style={{ textAlign: 'center' }}>
-                      <button onClick={() => removeIncome(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.4 }}>✕</button>
+                      {isAdmin && <button onClick={() => removeIncome(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.4 }}>✕</button>}
                     </td>
                   </tr>
                 ))}
@@ -304,7 +309,7 @@ export default function FinanceTracker() {
         <div className="table-card" style={{ height: 'fit-content' }}>
           <div className="attendance-table-card__header" style={{ padding: '16px 20px' }}>
             <h4 style={{ margin: 0, color: '#dc2626' }}>📤 Expense Details</h4>
-            <button className="button-secondary" onClick={addExpenseRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>
+            {isAdmin && <button className="button-secondary" onClick={addExpenseRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>}
           </div>
           <div className="attendance-table-scroll" style={{ padding: 0 }}>
             <table className="attendance-table attendance-table--bill" style={{ minWidth: '100%' }}>
@@ -325,6 +330,7 @@ export default function FinanceTracker() {
                         value={row.vendor} 
                         onChange={e => updateExpense(i, 'vendor', e.target.value)}
                         placeholder="e.g. MSEDCL"
+                        readOnly={!isAdmin}
                       />
                     </td>
                     <td>
@@ -334,6 +340,7 @@ export default function FinanceTracker() {
                         value={row.amount} 
                         onChange={e => updateExpense(i, 'amount', e.target.value)}
                         placeholder="0.00"
+                        readOnly={!isAdmin}
                       />
                     </td>
                     <td>
@@ -342,10 +349,11 @@ export default function FinanceTracker() {
                         value={row.purpose} 
                         onChange={e => updateExpense(i, 'purpose', e.target.value)}
                         placeholder="Purpose"
+                        readOnly={!isAdmin}
                       />
                     </td>
                     <td style={{ textAlign: 'center' }}>
-                      <button onClick={() => removeExpense(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.4 }}>✕</button>
+                      {isAdmin && <button onClick={() => removeExpense(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.4 }}>✕</button>}
                     </td>
                   </tr>
                 ))}

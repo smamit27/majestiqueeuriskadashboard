@@ -136,7 +136,7 @@ function writeLocal(data) {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function SecurityAttendanceManager() {
+export default function SecurityAttendanceManager({ isAdmin = false }) {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonthValue);
   const [entries,       setEntries]       = useState({});
   const [localRecords,  setLocalRecords]  = useState(readLocal);
@@ -180,8 +180,8 @@ export default function SecurityAttendanceManager() {
           setEntries(normalizeEntries(monthDays, src));
           setSaveMsg(
             snap.exists()
-              ? `Loaded from Firebase — ${formatLongMonthLabel(selectedMonth)}`
-              : `New register — ${formatLongMonthLabel(selectedMonth)}`
+              ? `Synced — ${formatMonthLabel(selectedMonth)}`
+              : `New — ${formatMonthLabel(selectedMonth)}`
           );
         }
       } catch (err) {
@@ -218,7 +218,7 @@ export default function SecurityAttendanceManager() {
           { merge: true }
         );
         setSaveStatus('saved');
-        setSaveMsg('All changes saved to Firebase ✓');
+        setSaveMsg('Saved ✓');
         setIsDirty(false);
       } catch (err) {
         console.error('Security save error:', err);
@@ -407,7 +407,7 @@ export default function SecurityAttendanceManager() {
         <div>
           <p className="eyebrow">Monthly security register</p>
           <h3>Guard deployment entry table</h3>
-          <p>Enter daily guard counts per post — changes auto-save to Firebase.</p>
+          <p>Auto-saves to cloud.</p>
         </div>
 
         {/* Summary chips */}
@@ -483,8 +483,8 @@ export default function SecurityAttendanceManager() {
         {/* Table header */}
         <div className="attendance-table-card__header">
           <div>
-            <p className="eyebrow">Daily guard deployment sheet</p>
-            <h3>Security Attendance — {formatLongMonthLabel(selectedMonth)}</h3>
+            <p className="eyebrow">Daily deployment sheet</p>
+            <h3>Sec. Attendance — {formatMonthLabel(selectedMonth)}</h3>
           </div>
           <div className="attendance-table-card__actions">
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
@@ -492,22 +492,26 @@ export default function SecurityAttendanceManager() {
               <span>{isLoading ? `Loading ${formatLongMonthLabel(selectedMonth)}…` : saveMsg || badge.text}</span>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button className="button-primary" type="button" onClick={handleSave}
-                disabled={!isDirty || saveStatus === 'saving'}
-                style={{ opacity: (!isDirty || saveStatus === 'saving') ? 0.5 : 1 }}>
-                💾 Save
-              </button>
+              {isAdmin && (
+                <button className="button-primary" type="button" onClick={handleSave}
+                  disabled={!isDirty || saveStatus === 'saving'}
+                  style={{ opacity: (!isDirty || saveStatus === 'saving') ? 0.5 : 1 }}>
+                  💾 Save
+                </button>
+              )}
               <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
                 ⬇ Excel
               </button>
-              <button 
-                className="button-secondary" 
-                type="button" 
-                onClick={(e) => handleDeleteMonthData(e)}
-                style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
-              >
-                🗑️ Delete
-              </button>
+              {isAdmin && (
+                <button 
+                  className="button-secondary" 
+                  type="button" 
+                  onClick={(e) => handleDeleteMonthData(e)}
+                  style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
+                >
+                  🗑️ Delete
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -562,6 +566,7 @@ export default function SecurityAttendanceManager() {
                               value={val}
                               style={col.isChauhan ? { background: '#fef3c7', color: '#92400e', fontWeight: 700 } : {}}
                               onChange={(e) => handleCellChange(d.dateKey, col.key, e.target.value)}
+                              readOnly={!isAdmin}
                             />
                           </td>
                         );

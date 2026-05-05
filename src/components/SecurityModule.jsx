@@ -3,7 +3,7 @@ import SecurityAttendanceManager from './SecurityAttendanceManager.jsx';
 import SecurityBillCalculator from './SecurityBillCalculator.jsx';
 import SectionCard from './SectionCard.jsx';
 
-export default function SecurityModule() {
+export default function SecurityModule({ isAdmin = false }) {
   const [subTab, setSubTab] = useState('tracking');
 
   return (
@@ -65,7 +65,7 @@ export default function SecurityModule() {
             title="Guard deployment and post coverage"
             subtitle="Track daily guard counts across A Building, B Building, C Building, Common Area, and Chauhanji."
           >
-            <SecurityAttendanceManager />
+            <SecurityAttendanceManager isAdmin={isAdmin} />
           </SectionCard>
         )}
         {subTab === 'billing' && (
