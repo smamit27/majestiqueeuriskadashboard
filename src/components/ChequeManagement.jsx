@@ -37,6 +37,7 @@ const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2,
 export default function ChequeManagement({ isAdmin = false }) {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
   const [subTab, setSubTab] = useState('buildingA'); // 'buildingA' or 'common'
+  const [searchText, setSearchText] = useState('');
   
   const [chequesA, setChequesA] = useState([{ id: 1, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building' }]);
   const [chequesCommon, setChequesCommon] = useState([{ id: 1, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building' }]);
@@ -148,6 +149,10 @@ export default function ChequeManagement({ isAdmin = false }) {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    if (!isAdmin) {
+      alert('You do not have permission to perform this action.');
+      return;
+    }
     if (!formData.vendor || !formData.amount || !formData.chequeNo) {
       alert('Please enter Cheque No, Vendor Name and Amount.');
       return;
@@ -192,6 +197,7 @@ export default function ChequeManagement({ isAdmin = false }) {
   };
 
   const updateRow = (idx, field, val) => {
+    if (!isAdmin) return;
     const isCommon = subTab === 'common';
     const next = isCommon ? [...chequesCommon] : [...chequesA];
     next[idx] = { ...next[idx], [field]: val };
@@ -206,6 +212,7 @@ export default function ChequeManagement({ isAdmin = false }) {
   };
 
   const removeRow = (idx) => {
+    if (!isAdmin) return;
     const isCommon = subTab === 'common';
     const currentList = isCommon ? chequesCommon : chequesA;
     const next = currentList.filter((_, i) => i !== idx).map((c, i) => ({ ...c, srNo: i + 1 }));
@@ -220,7 +227,30 @@ export default function ChequeManagement({ isAdmin = false }) {
   };
 
   const activeCheques = subTab === 'common' ? chequesCommon : chequesA;
-  const totalAmount = activeCheques.reduce((s, c) => s + n(c.amount), 0);
+  
+  const filteredCheques = activeCheques
+    .filter(c => {
+      if (!searchText) return true;
+      const s = searchText.toLowerCase();
+      return (
+        (c.chequeNo && String(c.chequeNo).toLowerCase().includes(s)) ||
+        (c.date && String(c.date).toLowerCase().includes(s)) ||
+        (c.vendor && String(c.vendor).toLowerCase().includes(s))
+      );
+    })
+    .sort((a, b) => {
+      // Sort by date descending (newest first)
+      const dateA = a.date ? new Date(a.date) : new Date(0);
+      const dateB = b.date ? new Date(b.date) : new Date(0);
+      if (dateB - dateA !== 0) return dateB - dateA;
+      
+      // Secondary sort: Cheque No (desc)
+      const numA = String(a.chequeNo || '').toLowerCase();
+      const numB = String(b.chequeNo || '').toLowerCase();
+      return numB.localeCompare(numA);
+    });
+
+  const totalAmount = filteredCheques.reduce((s, c) => s + n(c.amount), 0);
 
   const badge = {
     idle: { color: '#6b7280', icon: '●' },
@@ -231,7 +261,7 @@ export default function ChequeManagement({ isAdmin = false }) {
   }[saveStatus];
 
   const handleDownloadExcel = () => {
-    const rows = activeCheques.map(c => {
+    const rows = filteredCheques.map(c => {
       const base = {
         'Sr. No': c.srNo,
         'Month': formatLongMonth(selectedMonth),
@@ -310,15 +340,30 @@ export default function ChequeManagement({ isAdmin = false }) {
             <p className="eyebrow">{subTab === 'common' ? 'Society Shared Expenses' : 'A Building Ledger'}</p>
             <h3>{subTab === 'common' ? 'Common Work Cheques' : 'Building A Cheques'} — {formatMonthLabel(selectedMonth)}</h3>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
-               <span>{badge.icon}</span>
-               <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
-            </div>
-            <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '6px 14px' }}>
-              ⬇ Export Excel
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
+             <span>{badge.icon}</span>
+             <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
           </div>
+        </div>
+      </div>
+
+      {/* SEARCH ZONE */}
+      <div className="section-card" style={{ padding: '16px 24px', background: '#f8fafc', border: '1px solid var(--line)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          <div className="filter-field" style={{ flex: 1, minWidth: '280px', margin: 0 }}>
+            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>🔍 Search by Cheque Number or Date</label>
+            <input 
+              type="search" 
+              placeholder="Search Cheque No, Date (YYYY-MM-DD), or Vendor..." 
+              value={searchText} 
+              onChange={e => setSearchText(e.target.value)}
+              className="attendance-register-input"
+              style={{ textAlign: 'left', height: '44px', fontSize: '1rem', background: 'white' }}
+            />
+          </div>
+          <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '10px 20px', height: '44px', marginTop: 'auto' }}>
+            ⬇ Export to Excel
+          </button>
         </div>
       </div>
 
@@ -413,35 +458,40 @@ export default function ChequeManagement({ isAdmin = false }) {
             <tbody>
               {isLoading ? (
                 <tr><td colSpan={subTab === 'common' ? 12 : 9} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
-              ) : activeCheques.length === 0 || (activeCheques.length === 1 && !activeCheques[0].vendor) ? (
-                <tr><td colSpan={subTab === 'common' ? 12 : 9} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>No cheques recorded.</td></tr>
+              ) : filteredCheques.length === 0 ? (
+                <tr><td colSpan={subTab === 'common' ? 12 : 9} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
+                  {searchText ? `No cheques found matching "${searchText}"` : 'No cheques recorded.'}
+                </td></tr>
               ) : (
-                activeCheques.map((c, i) => (
-                  <tr key={c.id || i}>
-                    <td>{c.srNo}</td>
-                    <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(i, 'date', e.target.value)} readOnly={!isAdmin} /></td>
-                    <td><input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(i, 'chequeNo', e.target.value)} readOnly={!isAdmin} /></td>
-                    <td><input className="attendance-register-input" style={{ fontWeight: 600 }} value={c.vendor} onChange={e => updateRow(i, 'vendor', e.target.value)} readOnly={!isAdmin} /></td>
-                    <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(i, 'purpose', e.target.value)} readOnly={!isAdmin} /></td>
-                    <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700 }} value={c.amount} onChange={e => updateRow(i, 'amount', e.target.value)} readOnly={!isAdmin} /></td>
-                    {subTab === 'common' && (
-                      <>
-                        <td style={{ textAlign: 'right', color: '#16a34a', fontWeight: 500 }}>₹{fmt(n(c.amount) * FLATS.A / FLATS.Total)}</td>
-                        <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 500 }}>₹{fmt(n(c.amount) * FLATS.B / FLATS.Total)}</td>
-                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 500 }}>₹{fmt(n(c.amount) * FLATS.C / FLATS.Total)}</td>
-                      </>
-                    )}
-                    <td>
-                      <select className="attendance-register-input" value={c.whoPaid} onChange={e => updateRow(i, 'whoPaid', e.target.value)} disabled={!isAdmin}>
-                        <option>A Building</option>
-                        <option>B Building</option>
-                        <option>C Building</option>
-                        <option>Petty Cash</option>
-                      </select>
-                    </td>
-                    <td>{isAdmin && <button className="button-icon" onClick={() => removeRow(i)} style={{ opacity: 0.3 }}>✕</button>}</td>
-                  </tr>
-                ))
+                filteredCheques.map((c, i) => {
+                  const actualIdx = activeCheques.findIndex(orig => orig.id === c.id);
+                  return (
+                    <tr key={c.id || i}>
+                      <td>{i + 1}</td>
+                      <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value)} readOnly={!isAdmin} /></td>
+                      <td><input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value)} readOnly={!isAdmin} /></td>
+                      <td><input className="attendance-register-input" style={{ fontWeight: 600 }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value)} readOnly={!isAdmin} /></td>
+                      <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value)} readOnly={!isAdmin} /></td>
+                      <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700 }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value)} readOnly={!isAdmin} /></td>
+                      {subTab === 'common' && (
+                        <>
+                          <td style={{ textAlign: 'right', color: '#16a34a', fontWeight: 500 }}>₹{fmt(n(c.amount) * FLATS.A / FLATS.Total)}</td>
+                          <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 500 }}>₹{fmt(n(c.amount) * FLATS.B / FLATS.Total)}</td>
+                          <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 500 }}>₹{fmt(n(c.amount) * FLATS.C / FLATS.Total)}</td>
+                        </>
+                      )}
+                      <td>
+                        <select className="attendance-register-input" value={c.whoPaid} onChange={e => updateRow(actualIdx, 'whoPaid', e.target.value)} disabled={!isAdmin}>
+                          <option>A Building</option>
+                          <option>B Building</option>
+                          <option>C Building</option>
+                          <option>Petty Cash</option>
+                        </select>
+                      </td>
+                      <td>{isAdmin && <button className="button-icon" onClick={() => removeRow(actualIdx)} style={{ opacity: 0.3 }}>✕</button>}</td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
             <tfoot>

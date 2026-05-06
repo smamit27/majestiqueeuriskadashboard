@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   signInWithEmailAndPassword, 
   sendPasswordResetEmail, 
   signOut,
-  signInWithPopup,
-  fetchSignInMethodsForEmail
+  signInWithPopup
 } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 
@@ -18,6 +17,13 @@ export default function AuthModal({ isOpen, onClose, user }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
+  useEffect(() => {
+    if (isOpen) {
+      setError('');
+      setMessage('');
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleLogin = async (e) => {
@@ -26,7 +32,7 @@ export default function AuthModal({ isOpen, onClose, user }) {
     setLoading(true);
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
-      if (cred.user.email !== ADMIN_EMAIL) {
+      if (cred.user.email.toLowerCase() !== ADMIN_EMAIL) {
         await signOut(auth);
         setError('Unauthorized: Only the official admin email can edit.');
         return;
@@ -53,7 +59,7 @@ export default function AuthModal({ isOpen, onClose, user }) {
     setLoading(true);
     try {
       const cred = await signInWithPopup(auth, googleProvider);
-      if (cred.user.email !== ADMIN_EMAIL) {
+      if (cred.user.email.toLowerCase() !== ADMIN_EMAIL) {
         await signOut(auth);
         setError('Unauthorized: Only majestiqueeuriska.a@gmail.com is allowed.');
         return;
@@ -111,17 +117,24 @@ export default function AuthModal({ isOpen, onClose, user }) {
       <div className="section-card" style={{ 
         width: 'min(90vw, 400px)', 
         padding: '32px',
-        position: 'relative'
+        position: 'relative',
+        background: 'white',
+        borderRadius: '24px'
       }}>
         <button 
           onClick={onClose}
           style={{
             position: 'absolute',
-            top: '16px',
-            right: '16px',
+            top: '20px',
+            right: '20px',
             border: 'none',
-            background: 'none',
-            fontSize: '1.5rem',
+            background: 'rgba(0,0,0,0.05)',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             cursor: 'pointer',
             color: 'var(--muted)'
           }}
@@ -131,7 +144,7 @@ export default function AuthModal({ isOpen, onClose, user }) {
 
         {user ? (
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>👤</div>
+            <div style={{ fontSize: '3.5rem', marginBottom: '16px' }}>👤</div>
             <h3>Administrator Session</h3>
             <p style={{ color: 'var(--muted)', marginBottom: '24px' }}>Logged in as {user.email}</p>
             <button className="button-primary" onClick={handleLogout} style={{ width: '100%' }}>

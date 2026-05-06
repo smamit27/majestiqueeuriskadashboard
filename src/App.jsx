@@ -10,6 +10,7 @@ import ProgressBar from './components/ProgressBar.jsx';
 import SectionCard from './components/SectionCard.jsx';
 import StatusPill from './components/StatusPill.jsx';
 import AuthModal from './components/AuthModal.jsx';
+import IntroAnimation from './components/IntroAnimation.jsx';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase.js';
 import { announcements, complaints, dues, events, finance, members, staff, visitors } from './data/mockData.js';
@@ -88,6 +89,10 @@ export default function App() {
   const [complaintSearchText, setComplaintSearchText] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [showIntro, setShowIntro] = useState(() => {
+    // Check if user has seen intro in this session or ever
+    return !localStorage.getItem('majestique_intro_seen_v18');
+  });
 
   useEffect(() => {
     if (!auth) return;
@@ -96,9 +101,11 @@ export default function App() {
     });
     return () => unsub();
   }, []);
+
   const isAdmin = useMemo(() => {
-    return user && user.email === 'majestiqueeuriska.a@gmail.com';
+    return user && user.email && user.email.toLowerCase() === 'majestiqueeuriska.a@gmail.com';
   }, [user]);
+
   const memberData = useCollection('members', members);
   const duesData = useCollection('dues', dues);
   const announcementData = useCollection('announcements', announcements);
@@ -560,8 +567,15 @@ export default function App() {
     return () => window.removeEventListener('changeTab', handleGlobalTabChange);
   }, [handleTabChange]);
 
+  const handleIntroFinish = () => {
+    localStorage.setItem('majestique_intro_seen_v18', 'true');
+    setShowIntro(false);
+  };
+
   return (
-    <div className={`dashboard-shell dashboard-shell--sidebar ${isSidebarCollapsed ? 'dashboard-shell--collapsed' : ''}`}>
+    <>
+      {showIntro && <IntroAnimation onFinish={handleIntroFinish} />}
+      <div className={`dashboard-shell dashboard-shell--sidebar ${isSidebarCollapsed ? 'dashboard-shell--collapsed' : ''}`}>
       <div className="backdrop backdrop--top" />
       <div className="backdrop backdrop--bottom" />
 
@@ -602,6 +616,28 @@ export default function App() {
           </button>
         </div>
 
+        <div className="sidebar__admin-zone" style={{ padding: '0 16px 16px' }}>
+          <button 
+            className={`sidebar-item ${isAdmin ? 'sidebar-item--active' : ''}`}
+            onClick={() => setIsAuthModalOpen(true)}
+            style={isAdmin ? { background: '#10b981', color: 'white' } : {}}
+          >
+            <span className="sidebar-item__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                {isAdmin ? (
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                ) : (
+                  <>
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </>
+                )}
+              </svg>
+            </span>
+            {!isSidebarCollapsed && <span className="sidebar-item__label">{isAdmin ? 'Admin (Live)' : 'Admin Login'}</span>}
+          </button>
+        </div>
+
         <nav className="sidebar__nav" role="tablist" aria-orientation="vertical">
           {tabItems.map((tab) => {
             if (tab.isGroupHeader) {
@@ -637,27 +673,7 @@ export default function App() {
           })}
         </nav>
 
-        <div className="sidebar__footer" style={{ marginTop: 'auto', padding: '16px' }}>
-          <button 
-            className={`sidebar-item ${isAdmin ? 'sidebar-item--active' : ''}`}
-            onClick={() => setIsAuthModalOpen(true)}
-            style={isAdmin ? { background: '#10b981', color: 'white' } : {}}
-          >
-            <span className="sidebar-item__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                {isAdmin ? (
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                ) : (
-                  <>
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                  </>
-                )}
-              </svg>
-            </span>
-            {!isSidebarCollapsed && <span className="sidebar-item__label">{isAdmin ? 'Admin (Live)' : 'Admin Login'}</span>}
-          </button>
-        </div>
+
 
         <AuthModal 
           isOpen={isAuthModalOpen} 
@@ -795,5 +811,6 @@ export default function App() {
         )}
       </main>
     </div>
+    </>
   );
 }

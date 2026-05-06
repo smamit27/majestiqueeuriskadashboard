@@ -11,7 +11,9 @@
     "deploy:firebase": "npx firebase-tools deploy --only hosting,firestore:rules,firestore:indexes"
   },
   "dependencies": {
+    "canvas-confetti": "^1.9.4",
     "firebase": "^11.7.1",
+    "gsap": "^3.15.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "recharts": "^3.8.1",
