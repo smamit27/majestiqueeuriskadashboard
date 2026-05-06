@@ -91,7 +91,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [showIntro, setShowIntro] = useState(() => {
     // Check if user has seen intro in this session or ever
-    return !localStorage.getItem('majestique_intro_seen_v18');
+    return !localStorage.getItem('majestique_intro_seen_v26');
   });
 
   useEffect(() => {
@@ -568,7 +568,7 @@ export default function App() {
   }, [handleTabChange]);
 
   const handleIntroFinish = () => {
-    localStorage.setItem('majestique_intro_seen_v18', 'true');
+    localStorage.setItem('majestique_intro_seen_v26', 'true');
     setShowIntro(false);
   };
 
