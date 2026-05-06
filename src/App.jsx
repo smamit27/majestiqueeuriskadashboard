@@ -90,8 +90,7 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [showIntro, setShowIntro] = useState(() => {
-    // Check if user has seen intro in this session or ever
-    return !localStorage.getItem('majestique_intro_seen_v26');
+    return !localStorage.getItem('majestique_intro_seen_v30');
   });
 
   useEffect(() => {
@@ -568,7 +567,7 @@ export default function App() {
   }, [handleTabChange]);
 
   const handleIntroFinish = () => {
-    localStorage.setItem('majestique_intro_seen_v26', 'true');
+    localStorage.setItem('majestique_intro_seen_v30', 'true');
     setShowIntro(false);
   };
 
