@@ -163,8 +163,9 @@ export default function AuthModal({ isOpen, onClose, user }) {
 
             <form onSubmit={isResetMode ? handleReset : handleLogin} style={{ display: 'grid', gap: '16px' }}>
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Email Address</label>
+                <label htmlFor="admin-email" className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Email Address</label>
                 <input 
+                  id="admin-email"
                   type="email" 
                   className="attendance-register-input" 
                   style={{ textAlign: 'left' }}
@@ -177,8 +178,9 @@ export default function AuthModal({ isOpen, onClose, user }) {
 
               {!isResetMode && (
                 <div className="field-group">
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Password</label>
+                  <label htmlFor="admin-password" className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Password</label>
                   <input 
+                    id="admin-password"
                     type="password" 
                     className="attendance-register-input" 
                     style={{ textAlign: 'left' }}
