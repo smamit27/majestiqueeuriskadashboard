@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
-import { db, ensureFirebaseSession, isFirebaseConfigured } from '../firebase.js';
+import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 
 const CATEGORIES = [
   {

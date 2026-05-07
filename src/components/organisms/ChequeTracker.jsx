@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
-import { db, ensureFirebaseSession, isFirebaseConfigured } from '../firebase.js';
+import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 
 const FLAT_COUNTS = { A: 87, B: 96, C: 48 };
 const TOTAL_FLATS = FLAT_COUNTS.A + FLAT_COUNTS.B + FLAT_COUNTS.C;

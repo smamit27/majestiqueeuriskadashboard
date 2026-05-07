@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc, deleteDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
-import { db, ensureFirebaseSession, isFirebaseConfigured } from '../firebase.js';
+import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 
 const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(2026, 3 + i, 1);

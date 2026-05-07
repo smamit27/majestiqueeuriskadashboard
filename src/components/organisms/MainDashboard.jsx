@@ -25,12 +25,12 @@ export default function MainDashboard({ stats }) {
       {/* Header */}
       <div className="dashboard-hero-card">
         <div>
-          <p className="eyebrow" style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '4px' }}>Welcome back, Admin</p>
+          <p className="eyebrow" style={{ color: 'white', marginBottom: '4px' }}>Welcome back, Admin</p>
           <h2 style={{ margin: 0, color: 'white', fontSize: '1.75rem', letterSpacing: '0.02em' }}>SOCIETY MANAGEMENT DASHBOARD</h2>
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <button 
-            className="dashboard-quick-btn" 
+          <button
+            className="dashboard-quick-btn"
             onClick={() => window.dispatchEvent(new CustomEvent('changeTab', { detail: 'cheques' }))}
           >
             📋 Cheque Tracker

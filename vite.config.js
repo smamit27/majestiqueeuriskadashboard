@@ -14,12 +14,23 @@ export default defineConfig({
           if (id.includes('node_modules/firebase')) {
             return 'firebase';
           }
-
           if (id.includes('node_modules/react')) {
             return 'react-vendor';
           }
         }
       }
     }
-  }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.js'],
+    include: ['src/**/*.{test,spec}.{js,jsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov', 'html'],
+      include: ['src/components/**'],
+      exclude: ['src/test/**'],
+    },
+  },
 });

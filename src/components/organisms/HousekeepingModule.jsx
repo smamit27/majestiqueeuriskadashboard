@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import HousekeepingAttendanceManager from './HousekeepingAttendanceManager.jsx';
 import HousekeepingBillCalculator from './HousekeepingBillCalculator.jsx';
-import SectionCard from './SectionCard.jsx';
+import SectionCard from '../molecules/SectionCard.jsx';
 
 export default function HousekeepingModule({ isAdmin = false, staffMembers, staffPresentCount, totalStaffCount }) {
   const [subTab, setSubTab] = useState('tracking');

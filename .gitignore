@@ -7,3 +7,8 @@ dist/
 .firebase/
 firebase-debug.log
 *.log
+
+# Playwright
+playwright-report/
+test-results/
+

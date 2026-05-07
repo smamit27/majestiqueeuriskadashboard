@@ -5,7 +5,7 @@ import {
   signOut,
   signInWithPopup
 } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
+import { auth, googleProvider } from '../../firebase';
 
 const ADMIN_EMAIL = 'majestiqueeuriska.a@gmail.com';
 
@@ -104,16 +104,19 @@ export default function AuthModal({ isOpen, onClose, user }) {
   };
 
   return (
-    <div className="modal-overlay" style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 2000,
-      backdropFilter: 'blur(8px)'
-    }}>
+    <div
+      className="modal-overlay"
+      data-testid="auth-modal"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 2000,
+        backdropFilter: 'blur(8px)'
+      }}>
       <div className="section-card" style={{ 
         width: 'min(90vw, 400px)', 
         padding: '32px',

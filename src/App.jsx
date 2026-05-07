@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import MetricCard from './components/MetricCard.jsx';
-import HousekeepingModule from './components/HousekeepingModule.jsx';
-import SecurityModule from './components/SecurityModule.jsx';
-import SolarModule from './components/SolarModule.jsx';
-import ChequeManagement from './components/ChequeManagement.jsx';
-import FinanceTracker from './components/FinanceTracker.jsx';
-import MainDashboard from './components/MainDashboard.jsx';
-import ProgressBar from './components/ProgressBar.jsx';
-import SectionCard from './components/SectionCard.jsx';
-import StatusPill from './components/StatusPill.jsx';
-import AuthModal from './components/AuthModal.jsx';
-import IntroAnimation from './components/IntroAnimation.jsx';
+// ── Atoms ──────────────────────────────────────────────────────
+import MetricCard from './components/molecules/MetricCard.jsx';
+import ProgressBar from './components/atoms/ProgressBar.jsx';
+import StatusPill from './components/atoms/StatusPill.jsx';
+// ── Molecules ──────────────────────────────────────────────────
+import SectionCard from './components/molecules/SectionCard.jsx';
+// ── Organisms ─────────────────────────────────────────────────
+import HousekeepingModule from './components/organisms/HousekeepingModule.jsx';
+import SecurityModule from './components/organisms/SecurityModule.jsx';
+import SolarModule from './components/organisms/SolarModule.jsx';
+import ChequeManagement from './components/organisms/ChequeManagement.jsx';
+import FinanceTracker from './components/organisms/FinanceTracker.jsx';
+import MainDashboard from './components/organisms/MainDashboard.jsx';
+import AuthModal from './components/organisms/AuthModal.jsx';
+import IntroAnimation from './components/organisms/IntroAnimation.jsx';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase.js';
 import { announcements, complaints, dues, events, finance, members, staff, visitors } from './data/mockData.js';

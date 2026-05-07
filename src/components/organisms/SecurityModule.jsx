@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SecurityAttendanceManager from './SecurityAttendanceManager.jsx';
 import SecurityBillCalculator from './SecurityBillCalculator.jsx';
-import SectionCard from './SectionCard.jsx';
+import SectionCard from '../molecules/SectionCard.jsx';
 
 export default function SecurityModule({ isAdmin = false }) {
   const [subTab, setSubTab] = useState('tracking');
