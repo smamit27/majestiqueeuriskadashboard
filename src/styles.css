@@ -1247,7 +1247,7 @@ select {
   padding: 14px 18px;
   background: rgba(255, 235, 225, 0.9);
   border: 1px solid rgba(194, 100, 74, 0.22);
-  border-radius: 14px;
+  border-radius: 8px;
   color: #8a4b38;
 }
 
@@ -1593,7 +1593,7 @@ select {
   display: flex;
   background: #fff;
   border: 1px solid var(--line);
-  borderRadius: 8px;
+  border-radius: 8px;
   padding: 2px 8px;
   flex: 1 1 200px;
   max-width: 300px;
