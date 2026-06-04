@@ -8,12 +8,12 @@ export default function HousekeepingModule({ isAdmin = false, staffMembers, staf
 
   return (
     <div className="housekeeping-module">
-      <div className="tab-navigation" style={{ 
-        display: 'flex', 
-        gap: '12px', 
-        marginBottom: '24px', 
-        background: 'rgba(255, 255, 255, 0.5)', 
-        padding: '8px', 
+      <div className="tab-navigation" style={{
+        display: 'flex',
+        gap: '12px',
+        marginBottom: '24px',
+        background: 'rgba(255, 255, 255, 0.5)',
+        padding: '8px',
         borderRadius: '12px',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(0,0,0,0.05)',
@@ -21,7 +21,7 @@ export default function HousekeepingModule({ isAdmin = false, staffMembers, staf
         top: '0',
         zIndex: 10
       }}>
-        <button 
+        <button
           onClick={() => setSubTab('tracking')}
           className={`sub-tab-button ${subTab === 'tracking' ? 'active' : ''}`}
           style={{
@@ -36,9 +36,9 @@ export default function HousekeepingModule({ isAdmin = false, staffMembers, staf
             fontSize: '0.9rem'
           }}
         >
-          📋 Attendance Tracking ({staffPresentCount}/{totalStaffCount})
+          📋 Housekeeping Deployment
         </button>
-        <button 
+        <button
           onClick={() => setSubTab('billing')}
           className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''}`}
           style={{

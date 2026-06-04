@@ -62,7 +62,7 @@ export default function FinanceTracker({ isAdmin = false }) {
             const data = snap.data();
             setIncome(data.income || [{ source: '', amount: '', remark: '' }]);
             setExpenses(data.expenses || [{ vendor: '', amount: '', purpose: '' }]);
-            setSaveMsg(`Loaded from Firebase — ${formatLongMonth(selectedMonth)}`);
+            setSaveMsg(`${formatLongMonth(selectedMonth)}`);
           } else {
             setIncome([{ source: '', amount: '', remark: '' }]);
             setExpenses([{ vendor: '', amount: '', purpose: '' }]);
@@ -169,7 +169,7 @@ export default function FinanceTracker({ isAdmin = false }) {
   const handleDownloadExcel = () => {
     const incomeRows = income.map(r => ({ Category: 'Income', Detail: r.source, Amount: n(r.amount), Remark: r.remark }));
     const expenseRows = expenses.map(r => ({ Category: 'Expense', Detail: r.vendor, Amount: n(r.amount), Remark: r.purpose }));
-    
+
     const allRows = [
       ...incomeRows,
       { Category: 'TOTAL INCOME', Detail: '', Amount: totalIncome, Remark: '' },
@@ -191,7 +191,7 @@ export default function FinanceTracker({ isAdmin = false }) {
 
   return (
     <div className="finance-tracker" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      
+
       {/* Header & Tabs */}
       <div className="table-card" style={{ padding: 0 }}>
         <div className="attendance-month-tabs" role="tablist">
@@ -205,7 +205,7 @@ export default function FinanceTracker({ isAdmin = false }) {
             </button>
           ))}
         </div>
-        
+
         <div className="attendance-table-card__header">
           <div>
             <p className="eyebrow">Monthly Cashflow Tracker</p>
@@ -213,8 +213,8 @@ export default function FinanceTracker({ isAdmin = false }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
-               <span>{badge.icon}</span>
-               <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
+              <span>{badge.icon}</span>
+              <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               {isAdmin && (
@@ -247,7 +247,7 @@ export default function FinanceTracker({ isAdmin = false }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 500px), 1fr))', gap: '24px' }}>
-        
+
         {/* Income Table */}
         <div className="table-card" style={{ height: 'fit-content' }}>
           <div className="attendance-table-card__header" style={{ padding: '16px 20px' }}>
@@ -268,28 +268,28 @@ export default function FinanceTracker({ isAdmin = false }) {
                 {income.map((row, i) => (
                   <tr key={i}>
                     <td>
-                      <input 
-                        className="attendance-register-input" 
-                        value={row.source} 
+                      <input
+                        className="attendance-register-input"
+                        value={row.source}
                         onChange={e => updateIncome(i, 'source', e.target.value)}
                         placeholder="e.g. Maintenance"
                         readOnly={!isAdmin}
                       />
                     </td>
                     <td>
-                      <input 
-                        className="attendance-register-input" 
+                      <input
+                        className="attendance-register-input"
                         style={{ textAlign: 'right' }}
-                        value={row.amount} 
+                        value={row.amount}
                         onChange={e => updateIncome(i, 'amount', e.target.value)}
                         placeholder="0.00"
                         readOnly={!isAdmin}
                       />
                     </td>
                     <td>
-                      <input 
-                        className="attendance-register-input" 
-                        value={row.remark} 
+                      <input
+                        className="attendance-register-input"
+                        value={row.remark}
                         onChange={e => updateIncome(i, 'remark', e.target.value)}
                         placeholder="Remark"
                         readOnly={!isAdmin}
@@ -325,28 +325,28 @@ export default function FinanceTracker({ isAdmin = false }) {
                 {expenses.map((row, i) => (
                   <tr key={i}>
                     <td>
-                      <input 
-                        className="attendance-register-input" 
-                        value={row.vendor} 
+                      <input
+                        className="attendance-register-input"
+                        value={row.vendor}
                         onChange={e => updateExpense(i, 'vendor', e.target.value)}
                         placeholder="e.g. MSEDCL"
                         readOnly={!isAdmin}
                       />
                     </td>
                     <td>
-                      <input 
-                        className="attendance-register-input" 
+                      <input
+                        className="attendance-register-input"
                         style={{ textAlign: 'right' }}
-                        value={row.amount} 
+                        value={row.amount}
                         onChange={e => updateExpense(i, 'amount', e.target.value)}
                         placeholder="0.00"
                         readOnly={!isAdmin}
                       />
                     </td>
                     <td>
-                      <input 
-                        className="attendance-register-input" 
-                        value={row.purpose} 
+                      <input
+                        className="attendance-register-input"
+                        value={row.purpose}
                         onChange={e => updateExpense(i, 'purpose', e.target.value)}
                         placeholder="Purpose"
                         readOnly={!isAdmin}
@@ -366,8 +366,8 @@ export default function FinanceTracker({ isAdmin = false }) {
 
       <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '16px', border: '1px solid var(--line)', display: 'flex', justifyContent: 'flex-end' }}>
         <div style={{ textAlign: 'right' }}>
-           <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.6 }}>Final Balance for {formatMonthLabel(selectedMonth)}</p>
-           <h2 style={{ margin: 0, color: balance >= 0 ? '#10b981' : '#ef4444' }}>₹{fmt(balance)}</h2>
+          <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.6 }}>Final Balance for {formatMonthLabel(selectedMonth)}</p>
+          <h2 style={{ margin: 0, color: balance >= 0 ? '#10b981' : '#ef4444' }}>₹{fmt(balance)}</h2>
         </div>
       </div>
 

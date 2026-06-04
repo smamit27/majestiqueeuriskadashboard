@@ -32,19 +32,14 @@ const defaultProps = {
 };
 
 describe('HousekeepingModule – initial render', () => {
-  it('renders the Attendance Tracking tab button', () => {
+  it('renders the Housekeeping Deployment tab button', () => {
     render(<HousekeepingModule {...defaultProps} />);
-    expect(screen.getByRole('button', { name: /attendance tracking/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /housekeeping deployment/i })).toBeInTheDocument();
   });
 
   it('renders the Bill Calculator tab button', () => {
     render(<HousekeepingModule {...defaultProps} />);
     expect(screen.getByRole('button', { name: /bill calculator/i })).toBeInTheDocument();
-  });
-
-  it('shows the staff count in the Attendance tab label', () => {
-    render(<HousekeepingModule {...defaultProps} staffPresentCount={4} totalStaffCount={6} />);
-    expect(screen.getByText(/4\/6/)).toBeInTheDocument();
   });
 
   it('shows the AttendanceManager by default (tracking tab active)', () => {
@@ -73,11 +68,11 @@ describe('HousekeepingModule – tab switching', () => {
     expect(screen.queryByTestId('hk-attendance-manager')).not.toBeInTheDocument();
   });
 
-  it('switches back to tracking tab when Attendance tab is clicked again', async () => {
+  it('switches back to tracking tab when Housekeeping Deployment tab is clicked again', async () => {
     const user = userEvent.setup();
     render(<HousekeepingModule {...defaultProps} />);
     await user.click(screen.getByRole('button', { name: /bill calculator/i }));
-    await user.click(screen.getByRole('button', { name: /attendance tracking/i }));
+    await user.click(screen.getByRole('button', { name: /housekeeping deployment/i }));
     expect(screen.getByTestId('hk-attendance-manager')).toBeInTheDocument();
     expect(screen.queryByTestId('hk-bill-calculator')).not.toBeInTheDocument();
   });

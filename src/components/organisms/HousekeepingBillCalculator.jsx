@@ -75,7 +75,7 @@ function calcBill(form, mv, attData = null) {
   const supWage = n(form.supervisorSalary);
   const supDays = attData ? attData.supervisor : (form.supervisorDays !== '' ? n(form.supervisorDays) : days);
   const supActualTotal = (supWage / days) * supDays;
-  
+
   const supA = supActualTotal * ratioA;
   const supB = supActualTotal * ratioB;
   const supC = supActualTotal * ratioC;
@@ -163,15 +163,15 @@ function Field({ label, value, onChange, prefix }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function HousekeepingBillCalculator() {
-  const [month, setMonth]       = useState(getCurrentMonth);
-  const [form, setForm]         = useState(DEFAULT_FORM);
-  const [saveStatus, setSave]   = useState('idle');
-  const [saveMsg, setSaveMsg]   = useState('');
+  const [month, setMonth] = useState(getCurrentMonth);
+  const [form, setForm] = useState(DEFAULT_FORM);
+  const [saveStatus, setSave] = useState('idle');
+  const [saveMsg, setSaveMsg] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [attendance, setAttendance] = useState(null);
-  const loadedRef  = useRef(false);
-  const recordId   = `hk_bill_${month}`;
+  const loadedRef = useRef(false);
+  const recordId = `hk_bill_${month}`;
 
   // Load from Firebase
   useEffect(() => {
@@ -188,7 +188,7 @@ export default function HousekeepingBillCalculator() {
         if (!cancelled && snap.exists()) {
           const loaded = { ...DEFAULT_FORM, ...snap.data().form };
           setForm(loaded);
-          setSaveMsg(`Loaded from Firebase — ${formatLongMonth(month)}`);
+          setSaveMsg(`${formatLongMonth(month)}`);
         } else if (!cancelled) {
           setForm(DEFAULT_FORM);
           setSaveMsg(`New bill — ${formatLongMonth(month)}`);
@@ -381,35 +381,35 @@ export default function HousekeepingBillCalculator() {
     setSaveMsg('Excel downloaded.');
   }
 
-  const badge = { 
-    idle: { c: '#6b7280', i: '●' }, 
-    pending: { c: '#f59e0b', i: '⏳' }, 
-    saving: { c: '#3b82f6', i: '↑' }, 
-    saved: { c: '#10b981', i: '✓' }, 
-    error: { c: '#ef4444', i: '✗' } 
+  const badge = {
+    idle: { c: '#6b7280', i: '●' },
+    pending: { c: '#f59e0b', i: '⏳' },
+    saving: { c: '#3b82f6', i: '↑' },
+    saved: { c: '#10b981', i: '✓' },
+    error: { c: '#ef4444', i: '✗' }
   }[saveStatus] || { c: '#6b7280', i: '●' };
 
-  const sectionStyle = { 
-    background: 'rgba(255,255,255,0.6)', 
-    borderRadius: 14, 
-    padding: '20px 24px', 
-    border: '1px solid rgba(0,0,0,0.08)', 
-    display: 'flex', 
-    flexDirection: 'column', 
-    gap: 14 
+  const sectionStyle = {
+    background: 'rgba(255,255,255,0.6)',
+    borderRadius: 14,
+    padding: '20px 24px',
+    border: '1px solid rgba(0,0,0,0.08)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 14
   };
-  const gridStyle    = { 
-    display: 'grid', 
-    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))', 
-    gap: 12 
+  const gridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))',
+    gap: 12
   };
-  const headingStyle = { 
-    margin: 0, 
-    fontSize: '0.85rem', 
-    fontWeight: 700, 
-    textTransform: 'uppercase', 
-    letterSpacing: '0.06em', 
-    opacity: 0.6 
+  const headingStyle = {
+    margin: 0,
+    fontSize: '0.85rem',
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: '0.06em',
+    opacity: 0.6
   };
 
   return (
@@ -441,18 +441,18 @@ export default function HousekeepingBillCalculator() {
                 onClick={handleManualSave}
                 disabled={isSaving || isLoading}
               >
-                {isSaving ? 'Saving…' : '💾 Save Bill'}
+                {isSaving ? 'Saving…' : '💾 Save'}
               </button>
               <button className="button-secondary" type="button" onClick={handleDownloadExcel} disabled={!bill}>
-                ⬇ Download Excel
+                ⬇ Download
               </button>
-              <button 
-                className="button-secondary" 
-                type="button" 
+              <button
+                className="button-secondary"
+                type="button"
                 onClick={handleDeleteBill}
                 style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)', fontWeight: 700 }}
               >
-                🗑️ CLEAR ALL MONTH DATA
+                🗑️ Clear
               </button>
             </div>
           </div>
@@ -484,10 +484,10 @@ export default function HousekeepingBillCalculator() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 10 }}>
             <Field label="A Building Wage (₹)" value={form.aWage} onChange={v => handleChange('aWage', v)} prefix="₹" />
             {!attendance && <Field label="A Building Days" value={form.aDays} onChange={v => handleChange('aDays', v)} />}
-            
+
             <Field label="B Building Wage (₹)" value={form.bWage} onChange={v => handleChange('bWage', v)} prefix="₹" />
             {!attendance && <Field label="B Building Days" value={form.bDays} onChange={v => handleChange('bDays', v)} />}
-            
+
             <Field label="C Building Wage (₹)" value={form.cWage} onChange={v => handleChange('cWage', v)} prefix="₹" />
             {!attendance && <Field label="C Building Days" value={form.cDays} onChange={v => handleChange('cDays', v)} />}
           </div>
@@ -586,10 +586,10 @@ export default function HousekeepingBillCalculator() {
           </div>
           {attendance && (
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.85rem', cursor: 'pointer', marginTop: 4 }}>
-              <input 
-                type="checkbox" 
-                checked={!!form.overrideTractorTrips} 
-                onChange={e => handleChange('overrideTractorTrips', e.target.checked)} 
+              <input
+                type="checkbox"
+                checked={!!form.overrideTractorTrips}
+                onChange={e => handleChange('overrideTractorTrips', e.target.checked)}
               />
               <span>Manually override trips count</span>
             </label>
@@ -651,9 +651,9 @@ export default function HousekeepingBillCalculator() {
                     <td style={{ fontWeight: 700, textAlign: 'left' }}>{r.label}</td>
                     <td style={{ textAlign: 'right', fontWeight: 600, color: '#0F3D35' }}>{r.days.toFixed(1)} days</td>
                     {[r.wage, r.sup, r.com, r.garb, r.tract, r.stp].map((v, j) => (
-                       <td key={j} style={{ textAlign: 'right' }}>
-                         ₹{fmt(v)}
-                       </td>
+                      <td key={j} style={{ textAlign: 'right' }}>
+                        ₹{fmt(v)}
+                      </td>
                     ))}
                     <td style={{ textAlign: 'right', color: '#1a6b3c', fontWeight: 700 }}>
                       ₹{fmt(r.total)}

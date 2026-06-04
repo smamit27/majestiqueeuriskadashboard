@@ -101,13 +101,13 @@ function calcBill(form, mv, attData = null) {
 
   // Main gate — split by flat ratio. Prorated by main gate shifts if available.
   const mainGateMonthlyPerGuard = n(form.mainGateGuardSalary);
-  const mainGateTotal = attData 
-    ? (mainGateMonthlyPerGuard / daysInMonth) * (attData.mainMorn + attData.mainEve) 
+  const mainGateTotal = attData
+    ? (mainGateMonthlyPerGuard / daysInMonth) * (attData.mainMorn + attData.mainEve)
     : (n(form.mainGateMorning) + n(form.mainGateEvening)) * mainGateMonthlyPerGuard;
 
   // Vendor rates for proration
   const vendorMornRate = n(form.vendorMornSalary) / daysInMonth;
-  const vendorEveRate  = n(form.vendorEveSalary) / daysInMonth;
+  const vendorEveRate = n(form.vendorEveSalary) / daysInMonth;
 
   const buildings = ['A Building', 'B Building', 'C Building'];
   const res = {};
@@ -125,8 +125,8 @@ function calcBill(form, mv, attData = null) {
       // Prorate by Morning and Evening shifts
       const k = ATT_KEYS[b];
       const mornPresent = attData ? attData[`${k}Morn`] : daysInMonth;
-      const evePresent  = attData ? attData[`${k}Eve`]  : daysInMonth;
-      
+      const evePresent = attData ? attData[`${k}Eve`] : daysInMonth;
+
       vendorCost = (mornPresent * vendorMornRate) + (evePresent * vendorEveRate);
     }
 
@@ -184,7 +184,7 @@ export default function SecurityBillCalculator() {
         if (!cancelled) {
           if (snap.exists()) {
             setForm({ ...DEFAULT_FORM, ...snap.data().form });
-            setSaveMsg(`Loaded from Firebase — ${formatLongMonth(selectedMonth)}`);
+            setSaveMsg(`${formatLongMonth(selectedMonth)}`);
           } else {
             setForm(DEFAULT_FORM);
             setSaveMsg(`New bill — ${formatLongMonth(selectedMonth)}`);
@@ -257,25 +257,25 @@ export default function SecurityBillCalculator() {
       e.preventDefault();
       e.stopPropagation();
     }
-    
+
     // Clear any pending auto-saves
     clearTimeout(autoSaveTimer.current);
 
     if (!window.confirm(`Are you sure you want to PERMANENTLY delete ALL security data (attendance AND billing) for ${formatLongMonth(selectedMonth)}?`)) return;
-    
+
     setSaveStatus('saving');
     setSaveMsg('Deleting data...');
-    
+
     try {
       await ensureFirebaseSession();
       // Delete billing config
       await deleteDoc(doc(db, 'securityBills', recordId));
       // Delete attendance register as well to be clean
       await deleteDoc(doc(db, 'securityAttendanceRegisters', attendanceRecordId));
-      
+
       setSaveStatus('saved');
       setSaveMsg(`Deleted data for ${formatLongMonth(selectedMonth)}.`);
-      window.location.reload(); 
+      window.location.reload();
     } catch (err) {
       console.error('Delete error:', err);
       setSaveStatus('error');
@@ -300,7 +300,7 @@ export default function SecurityBillCalculator() {
   function handleDownloadExcel() {
     const bill = calcBill(form, selectedMonth, attSummary);
     const vendorMornTotal = n(form.vendorMornSalary) * 2; // Assuming 2 buildings have vendors
-    const vendorEveTotal  = n(form.vendorEveSalary) * 2;
+    const vendorEveTotal = n(form.vendorEveSalary) * 2;
 
     const rows = [
       ['Majestique Euriska - Security Bill'],
@@ -343,13 +343,13 @@ export default function SecurityBillCalculator() {
   // Compute attendance summary for display
   const rawSummary = attendance ? {
     aMorn: sumAttendanceCol(attendance, 'aMorn'),
-    aEve:  sumAttendanceCol(attendance, 'aEve'),
+    aEve: sumAttendanceCol(attendance, 'aEve'),
     bMorn: sumAttendanceCol(attendance, 'bMorn'),
-    bEve:  sumAttendanceCol(attendance, 'bEve'),
+    bEve: sumAttendanceCol(attendance, 'bEve'),
     cMorn: sumAttendanceCol(attendance, 'cMorn'),
-    cEve:  sumAttendanceCol(attendance, 'cEve'),
+    cEve: sumAttendanceCol(attendance, 'cEve'),
     mainMorn: sumAttendanceCol(attendance, 'mainGateMorn'),
-    mainEve:  sumAttendanceCol(attendance, 'mainGateEve'),
+    mainEve: sumAttendanceCol(attendance, 'mainGateEve'),
   } : null;
 
   // Only consider it "linked" if there is at least some data entered
@@ -375,9 +375,9 @@ export default function SecurityBillCalculator() {
             <h3>Security Cost Distribution</h3>
             <p style={{ margin: 0 }}>Configure guard counts and salaries. Chauhan shifts building each month.</p>
           </div>
-          <button 
-            className="button-secondary" 
-            type="button" 
+          <button
+            className="button-secondary"
+            type="button"
             onClick={(e) => handleDeleteBill(e)}
             style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)', padding: '6px 12px' }}
           >
@@ -495,29 +495,29 @@ export default function SecurityBillCalculator() {
         </div>
       </div>
 
-        {/* Attendance Link Summary */}
-        {attSummary ? (
-          <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '16px 20px' }}>
-            <p className="eyebrow" style={{ marginBottom: 8, color: '#0F3D35' }}>Linked from Attendance Register ✓</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
-              {[
-                { label: 'A Bldg Shifts', val: `${attSummary.aMorn}M / ${attSummary.aEve}E` },
-                { label: 'B Bldg Shifts', val: `${attSummary.bMorn}M / ${attSummary.bEve}E` },
-                { label: 'C Bldg Shifts', val: `${attSummary.cMorn}M / ${attSummary.cEve}E` },
-                { label: 'Main Gate Shifts', val: `${attSummary.mainMorn}M / ${attSummary.mainEve}E` },
-              ].map(({ label, val }) => (
-                <div key={label} className="summary-card summary-card--inline" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
-                  <span style={{ fontSize: '0.78rem', color: '#6b7280' }}>{label}</span>
-                  <strong style={{ fontSize: '1.1rem', color: '#0F3D35' }}>{val}</strong>
-                </div>
-              ))}
-            </div>
+      {/* Attendance Link Summary */}
+      {attSummary ? (
+        <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '16px 20px' }}>
+          <p className="eyebrow" style={{ marginBottom: 8, color: '#0F3D35' }}>Linked from Attendance Register ✓</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
+            {[
+              { label: 'A Bldg Shifts', val: `${attSummary.aMorn}M / ${attSummary.aEve}E` },
+              { label: 'B Bldg Shifts', val: `${attSummary.bMorn}M / ${attSummary.bEve}E` },
+              { label: 'C Bldg Shifts', val: `${attSummary.cMorn}M / ${attSummary.cEve}E` },
+              { label: 'Main Gate Shifts', val: `${attSummary.mainMorn}M / ${attSummary.mainEve}E` },
+            ].map(({ label, val }) => (
+              <div key={label} className="summary-card summary-card--inline" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+                <span style={{ fontSize: '0.78rem', color: '#6b7280' }}>{label}</span>
+                <strong style={{ fontSize: '1.1rem', color: '#0F3D35' }}>{val}</strong>
+              </div>
+            ))}
           </div>
-        ) : (
-          <div style={{ background: '#fefce8', border: '1px solid #fde047', borderRadius: 10, padding: '12px 16px', fontSize: '0.9rem', color: '#713f12' }}>
-            ⚠️ No saved attendance data for {formatLongMonth(selectedMonth)}. Go to <strong>Security Tracking</strong>, fill in the register and save it first.
-          </div>
-        )}
+        </div>
+      ) : (
+        <div style={{ background: '#fefce8', border: '1px solid #fde047', borderRadius: 10, padding: '12px 16px', fontSize: '0.9rem', color: '#713f12' }}>
+          ⚠️ No saved attendance data for {formatLongMonth(selectedMonth)}. Go to <strong>Security Tracking</strong>, fill in the register and save it first.
+        </div>
+      )}
       <div className="table-card attendance-table-card attendance-table-card--register" style={{ padding: 0 }}>
         <div className="attendance-month-tabs" role="tablist">
           {FINANCIAL_YEAR_MONTHS.map((mv) => (
@@ -569,7 +569,7 @@ export default function SecurityBillCalculator() {
                       const k = ATT_KEYS[b];
                       return (
                         <tr key={b}>
-                          <td><strong>{b}</strong> {b === bill.actualChauhanLoc && <span style={{fontSize: '0.8rem', marginLeft: 8, color: '#0F3D35', background: '#dcfce7', padding: '2px 6px', borderRadius: 12}}>Chauhan Shift</span>}</td>
+                          <td><strong>{b}</strong> {b === bill.actualChauhanLoc && <span style={{ fontSize: '0.8rem', marginLeft: 8, color: '#0F3D35', background: '#dcfce7', padding: '2px 6px', borderRadius: 12 }}>Chauhan Shift</span>}</td>
                           <td style={{ textAlign: 'right', color: '#6b7280' }}>{data.flats} flats <span style={{ fontSize: '0.78rem' }}>({data.flatRatioPct}%)</span></td>
                           {bill.usedAttendance && (
                             <td style={{ textAlign: 'right', fontWeight: 600, color: '#0F3D35' }}>
