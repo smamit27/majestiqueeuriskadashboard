@@ -46,7 +46,7 @@ const DEFAULT_FORM = {
   // Garbage
   garbageTotal: '8000',
   // Tractor
-  tractorRate: '1400', tractorTrips: '',
+  tractorRate: '1400', tractorTrips: '', overrideTractorTrips: false,
   // STP
   stpSalary: '8000',
 };
@@ -106,7 +106,8 @@ function calcBill(form, mv, attData = null) {
   const garbC = garbTotal * ratioC;
 
   // Tractor
-  const trips = attData ? attData.tractorTrip : (form.tractorTrips !== '' ? n(form.tractorTrips) : 0);
+  const useAttendance = attData && !form.overrideTractorTrips;
+  const trips = useAttendance ? attData.tractorTrip : (form.tractorTrips !== '' ? n(form.tractorTrips) : 0);
   const tractTotal = n(form.tractorRate) * trips;
   const tractA = tractTotal * ratioA;
   const tractB = tractTotal * ratioB;
@@ -363,7 +364,7 @@ export default function HousekeepingBillCalculator() {
       [],
       ['Garbage', n(form.garbageTotal), bill.rows[0].garb, bill.rows[1].garb, bill.rows[2].garb],
       [],
-      ['Tractor', `Rate: ${form.tractorRate} × Trips: ${attendance ? attendance.tractorTrip : (form.tractorTrips !== '' ? n(form.tractorTrips) : 0)}`, bill.rows[0].tract, bill.rows[1].tract, bill.rows[2].tract],
+      ['Tractor', `Rate: ${form.tractorRate} × Trips: ${attendance && !form.overrideTractorTrips ? attendance.tractorTrip : (form.tractorTrips !== '' ? n(form.tractorTrips) : 0)}`, bill.rows[0].tract, bill.rows[1].tract, bill.rows[2].tract],
       [],
       ['STP Operator', n(form.stpSalary), bill.rows[0].stp, bill.rows[1].stp, bill.rows[2].stp],
       [],
@@ -375,7 +376,7 @@ export default function HousekeepingBillCalculator() {
     const ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!cols'] = [{ wch: 22 }, { wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }];
     const wb = XLSX.utils.book_new();
-    XcontentL: XLSX.utils.book_append_sheet(wb, ws, `HK Bill ${formatMonthLabel(month)}`);
+    XLSX.utils.book_append_sheet(wb, ws, `HK Bill ${formatMonthLabel(month)}`);
     XLSX.writeFile(wb, `hk-bill-${month}.xlsx`);
     setSaveMsg('Excel downloaded.');
   }
@@ -572,12 +573,31 @@ export default function HousekeepingBillCalculator() {
           <p style={headingStyle}>🚜 Tractor</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 10 }}>
             <Field label="Rate per Trip (₹)" value={form.tractorRate} onChange={v => handleChange('tractorRate', v)} prefix="₹" />
-            {!attendance && <Field label="No. of Trips" value={form.tractorTrips} onChange={v => handleChange('tractorTrips', v)} />}
+            {(form.overrideTractorTrips || !attendance) ? (
+              <Field label="No. of Trips" value={form.tractorTrips} onChange={v => handleChange('tractorTrips', v)} />
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.7 }}>No. of Trips (Auto)</span>
+                <div style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.15)', background: 'rgba(0,0,0,0.05)', fontSize: '0.95rem', fontWeight: 600 }}>
+                  {attendance.tractorTrip} trips (from Attendance)
+                </div>
+              </div>
+            )}
           </div>
+          {attendance && (
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.85rem', cursor: 'pointer', marginTop: 4 }}>
+              <input 
+                type="checkbox" 
+                checked={!!form.overrideTractorTrips} 
+                onChange={e => handleChange('overrideTractorTrips', e.target.checked)} 
+              />
+              <span>Manually override trips count</span>
+            </label>
+          )}
           {bill && (
             <>
               <div style={{ fontSize: '0.83rem', padding: '8px 10px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}>
-                Total: ₹{form.tractorRate} × {attendance ? attendance.tractorTrip : (form.tractorTrips !== '' ? n(form.tractorTrips) : 0)} trips = <strong>₹{fmt(bill.tractTotal)}</strong>
+                Total: ₹{form.tractorRate} × {attendance && !form.overrideTractorTrips ? attendance.tractorTrip : (form.tractorTrips !== '' ? n(form.tractorTrips) : 0)} trips = <strong>₹{fmt(bill.tractTotal)}</strong>
               </div>
               {bill.tractTotal > 0 && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 90px), 1fr))', gap: 8, fontSize: '0.85rem' }}>
