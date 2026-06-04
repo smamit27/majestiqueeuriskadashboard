@@ -33,7 +33,7 @@ if (app) {
   isSupported().then((ok) => { if (ok) analytics = getAnalytics(app); });
 }
 
-// No-op kept for API compatibility — auth no longer required
+// Waits for Firebase Auth to initialize before proceeding with Firestore operations
 export async function ensureFirebaseSession() {
   if (!auth) return null;
   if (auth.currentUser) return auth.currentUser;

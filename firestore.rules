@@ -1,11 +1,14 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Internal dashboard — all collections open for read/write.
-    // Lock down with proper auth rules once user login is implemented.
     match /{document=**} {
-      allow read, write: if true;
+      // Allow read access to any authenticated user
+      allow read: if request.auth != null;
+      
+      // Allow write access only to the official admin emails
+      allow write: if request.auth != null && 
+                    (request.auth.token.email.lower() == 'majestiqueeuriska.a@gmail.com' || 
+                     request.auth.token.email.lower() == 'smamit27@gmail.com');
     }
   }
 }

@@ -4,7 +4,7 @@ import { db, ensureFirebaseSession, isFirebaseConfigured } from '../firebase.js'
 
 const MOCK_DELAY_MS = 320;
 
-export function useCollection(collectionName, fallbackItems) {
+export function useCollection(collectionName, fallbackItems, user) {
   const [items, setItems] = useState(fallbackItems);
   const [loading, setLoading] = useState(true);
   const [source, setSource] = useState(isFirebaseConfigured ? 'firebase' : 'mock');
@@ -67,7 +67,7 @@ export function useCollection(collectionName, fallbackItems) {
         unsubscribe();
       }
     };
-  }, [collectionName, fallbackItems]);
+  }, [collectionName, fallbackItems, user?.uid]);
 
   return {
     items,

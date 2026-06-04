@@ -7,7 +7,7 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider } from '../../firebase';
 
-const ADMIN_EMAIL = 'majestiqueeuriska.a@gmail.com';
+const ADMIN_EMAILS = ['majestiqueeuriska.a@gmail.com', 'smamit27@gmail.com'];
 
 export default function AuthModal({ isOpen, onClose, user }) {
   const [email, setEmail] = useState('');
@@ -32,15 +32,16 @@ export default function AuthModal({ isOpen, onClose, user }) {
     setLoading(true);
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
-      if (cred.user.email.toLowerCase() !== ADMIN_EMAIL) {
+      const userEmail = cred.user?.email;
+      if (!userEmail || !ADMIN_EMAILS.includes(userEmail.toLowerCase())) {
         await signOut(auth);
-        setError('Unauthorized: Only the official admin email can edit.');
+        setError('Unauthorized: Only the official admin emails can edit.');
         return;
       }
       onClose();
     } catch (err) {
       console.error(err);
-      if (err.code === 'auth/wrong-password') {
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
         setError('Incorrect password. Please try again or use Google Login.');
       } else if (err.code === 'auth/user-not-found') {
         setError('Account not found. Please create it in Firebase Console first.');
@@ -59,9 +60,10 @@ export default function AuthModal({ isOpen, onClose, user }) {
     setLoading(true);
     try {
       const cred = await signInWithPopup(auth, googleProvider);
-      if (cred.user.email.toLowerCase() !== ADMIN_EMAIL) {
+      const userEmail = cred.user?.email;
+      if (!userEmail || !ADMIN_EMAILS.includes(userEmail.toLowerCase())) {
         await signOut(auth);
-        setError('Unauthorized: Only majestiqueeuriska.a@gmail.com is allowed.');
+        setError('Unauthorized: Only majestiqueeuriska.a@gmail.com or smamit27@gmail.com is allowed.');
         return;
       }
       onClose();

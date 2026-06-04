@@ -137,6 +137,16 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
   // Track whether current entries came from a load (skip auto-save on initial load)
   const isLoadedRef    = useRef(false);
   const autoSaveTimer  = useRef(null);
+  const isMountedRef   = useRef(true);
+  const pendingSaveRef = useRef(null);
+
+  // Track mounting state
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   // ── Load from Firebase when month changes ─────────────────────────────────
   useEffect(() => {
@@ -180,7 +190,7 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
       } finally {
         if (!cancelled) {
           setIsLoading(false);
-          isLoadedRef.current = true;
+          if (isMountedRef.current) isLoadedRef.current = true;
         }
       }
     }
@@ -192,7 +202,13 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
 
   // ── Auto-save: fires 1.5 s after last cell change ─────────────────────────
   const saveToFirebase = useCallback(async (currentEntries, currentRecordId, month) => {
-    setSaveStatus('saving');
+    if (isMountedRef.current) setSaveStatus('saving');
+
+    // Clear pending save ref if it matches the current save
+    if (pendingSaveRef.current && pendingSaveRef.current.recordId === currentRecordId) {
+      pendingSaveRef.current = null;
+    }
+
     const payload = {
       month,
       registerType: 'daily-manpower',
@@ -208,25 +224,42 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
           { ...payload, updatedAt: serverTimestamp() },
           { merge: true }
         );
-        setSaveStatus('saved');
-        setSaveMsg('Saved ✓');
+        if (isMountedRef.current) {
+          setSaveStatus('saved');
+          setSaveMsg('Saved ✓');
+        }
       } catch (err) {
         console.error('Auto-save error:', err);
         // Fallback to local
         const next = { ...readLocal(), [currentRecordId]: { ...payload, savedAt: new Date().toISOString() } };
         writeLocal(next);
-        setLocalRecords(next);
-        setSaveStatus('error');
-        setSaveMsg('Firebase save failed — saved locally instead.');
+        if (isMountedRef.current) {
+          setLocalRecords(next);
+          setSaveStatus('error');
+          setSaveMsg('Firebase save failed — saved locally instead.');
+        }
       }
     } else {
       const next = { ...readLocal(), [currentRecordId]: { ...payload, savedAt: new Date().toISOString() } };
       writeLocal(next);
-      setLocalRecords(next);
-      setSaveStatus('saved');
-      setSaveMsg('Saved locally (Firebase not connected).');
+      if (isMountedRef.current) {
+        setLocalRecords(next);
+        setSaveStatus('saved');
+        setSaveMsg('Saved locally (Firebase not connected).');
+      }
     }
   }, [staffMembers.length]);
+
+  // Flush save on unmount if there is a pending save
+  useEffect(() => {
+    return () => {
+      if (pendingSaveRef.current) {
+        const { entries, recordId, month } = pendingSaveRef.current;
+        saveToFirebase(entries, recordId, month);
+      }
+      clearTimeout(autoSaveTimer.current);
+    };
+  }, [saveToFirebase]);
 
   const handleDeleteMonthData = async (e) => {
     if (e) {
@@ -263,13 +296,32 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
   function handleCellChange(dateKey, field, value) {
     if (!isLoadedRef.current) return; // skip during initial hydration
 
-    const next = (prev) => ({
-      ...prev,
-      [dateKey]: { ...(prev[dateKey] || emptyRow()), [field]: normalizeValue(value) },
-    });
+    const nextEntries = (prev) => {
+      const updated = {
+        ...prev,
+        [dateKey]: { ...(prev[dateKey] || emptyRow()), [field]: normalizeValue(value) },
+      };
+
+      // Save to local storage synchronously so it is never lost on tab switch/unmount!
+      const payload = {
+        month: selectedMonth,
+        registerType: 'daily-manpower',
+        rosterCount: staffMembers.length,
+        entries: updated,
+      };
+      const nextLocal = { ...readLocal(), [recordId]: { ...payload, savedAt: new Date().toISOString() } };
+      writeLocal(nextLocal);
+      setLocalRecords(nextLocal);
+
+      // Trigger a custom event to notify other components (like Bill Calculator)
+      window.dispatchEvent(new CustomEvent('attendanceUpdated', { detail: { month: selectedMonth, entries: updated } }));
+
+      return updated;
+    };
 
     setEntries((prev) => {
-      const updated = next(prev);
+      const updated = nextEntries(prev);
+      pendingSaveRef.current = { entries: updated, recordId, month: selectedMonth };
       // Debounce auto-save
       clearTimeout(autoSaveTimer.current);
       setSaveStatus('pending');
@@ -281,9 +333,6 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
       return updated;
     });
   }
-
-  // Cleanup timer on unmount
-  useEffect(() => () => clearTimeout(autoSaveTimer.current), []);
 
   // ── Summary totals ────────────────────────────────────────────────────────
   const summary = useMemo(() => {

@@ -14,7 +14,7 @@ import FinanceTracker from './components/organisms/FinanceTracker.jsx';
 import MainDashboard from './components/organisms/MainDashboard.jsx';
 import AuthModal from './components/organisms/AuthModal.jsx';
 import IntroAnimation from './components/organisms/IntroAnimation.jsx';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
 import { announcements, complaints, dues, events, finance, members, staff, visitors } from './data/mockData.js';
 import { useCollection } from './hooks/useCollection.js';
@@ -100,22 +100,28 @@ export default function App() {
     if (!auth) return;
     const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
+      if (!u) {
+        signInAnonymously(auth).catch((err) => {
+          console.error("Failed to sign in anonymously:", err);
+        });
+      }
     });
     return () => unsub();
   }, []);
 
   const isAdmin = useMemo(() => {
-    return user && user.email && user.email.toLowerCase() === 'majestiqueeuriska.a@gmail.com';
+    const allowedAdmins = ['majestiqueeuriska.a@gmail.com', 'smamit27@gmail.com'];
+    return user && user.email && allowedAdmins.includes(user.email.toLowerCase());
   }, [user]);
 
-  const memberData = useCollection('members', members);
-  const duesData = useCollection('dues', dues);
-  const announcementData = useCollection('announcements', announcements);
-  const eventData = useCollection('events', events);
-  const complaintData = useCollection('complaints', complaints);
-  const financeData = useCollection('finance', finance);
-  const visitorData = useCollection('visitors', visitors);
-  const staffData = useCollection('staff', staff);
+  const memberData = useCollection('members', members, user);
+  const duesData = useCollection('dues', dues, user);
+  const announcementData = useCollection('announcements', announcements, user);
+  const eventData = useCollection('events', events, user);
+  const complaintData = useCollection('complaints', complaints, user);
+  const financeData = useCollection('finance', finance, user);
+  const visitorData = useCollection('visitors', visitors, user);
+  const staffData = useCollection('staff', staff, user);
 
   const sourceSummary = [
     memberData.source,

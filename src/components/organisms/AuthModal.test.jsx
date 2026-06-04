@@ -174,12 +174,23 @@ describe('AuthModal – Email/Password login', () => {
     );
   });
 
-  it('calls onClose after successful authorised login', async () => {
+  it('calls onClose after successful authorised login with first email', async () => {
     mockSignIn.mockResolvedValue({
       user: { email: 'majestiqueeuriska.a@gmail.com' },
     });
     const { user, onClose } = setup();
     await user.type(screen.getByPlaceholderText(/admin@example\.com/i), 'majestiqueeuriska.a@gmail.com');
+    await user.type(screen.getByPlaceholderText(/••••••••/), 'correctpass');
+    await user.click(screen.getByRole('button', { name: /^login$/i }));
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
+  });
+
+  it('calls onClose after successful authorised login with second email', async () => {
+    mockSignIn.mockResolvedValue({
+      user: { email: 'smamit27@gmail.com' },
+    });
+    const { user, onClose } = setup();
+    await user.type(screen.getByPlaceholderText(/admin@example\.com/i), 'smamit27@gmail.com');
     await user.type(screen.getByPlaceholderText(/••••••••/), 'correctpass');
     await user.click(screen.getByRole('button', { name: /^login$/i }));
     await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
