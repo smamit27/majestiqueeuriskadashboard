@@ -540,7 +540,7 @@ export default function SecurityBillCalculator() {
               </div>
               <div className="attendance-table-card__actions">
                 <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
-                  ⬇ Download Excel
+                  ⬇ Download
                 </button>
               </div>
             </div>

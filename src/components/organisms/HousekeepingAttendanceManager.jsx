@@ -15,11 +15,11 @@ const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, index) => {
 
 // Columns that count towards the daily manpower total (excludes tractorTrip)
 const MANPOWER_COLUMNS = [
-  { key: 'a',          label: 'A' },
-  { key: 'b',          label: 'B' },
-  { key: 'c',          label: 'C' },
+  { key: 'a', label: 'A' },
+  { key: 'b', label: 'B' },
+  { key: 'c', label: 'C' },
   { key: 'supervisor', label: 'Supervisor' },
-  { key: 'common',     label: 'Common' },
+  { key: 'common', label: 'Common' },
 ];
 
 // ─── Pure helpers ────────────────────────────────────────────────────────────
@@ -96,11 +96,11 @@ function normalizeEntries(days, src = {}) {
   return days.reduce((acc, d) => {
     const s = src[d.dateKey] || {};
     acc[d.dateKey] = {
-      a:          normalizeValue(s.a),
-      b:          normalizeValue(s.b),
-      c:          normalizeValue(s.c),
+      a: normalizeValue(s.a),
+      b: normalizeValue(s.b),
+      c: normalizeValue(s.c),
       supervisor: normalizeValue(s.supervisor),
-      common:     normalizeValue(s.common),
+      common: normalizeValue(s.common),
       tractorTrip: normalizeValue(s.tractorTrip),
     };
     return acc;
@@ -117,27 +117,27 @@ function readLocal() {
 }
 
 function writeLocal(data) {
-  try { window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data)); } catch {}
+  try { window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data)); } catch { }
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function HousekeepingAttendanceManager({ isAdmin = false, staffMembers = [] }) {
-  const [selectedMonth, setSelectedMonth]       = useState(getCurrentMonthValue);
-  const [entries, setEntries]                   = useState({});
-  const [localRecords, setLocalRecords]         = useState(readLocal);
-  const [isLoading, setIsLoading]               = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonthValue);
+  const [entries, setEntries] = useState({});
+  const [localRecords, setLocalRecords] = useState(readLocal);
+  const [isLoading, setIsLoading] = useState(false);
   // saveStatus: 'idle' | 'pending' | 'saving' | 'saved' | 'error'
-  const [saveStatus, setSaveStatus]             = useState('idle');
-  const [saveMsg, setSaveMsg]                   = useState('');
+  const [saveStatus, setSaveStatus] = useState('idle');
+  const [saveMsg, setSaveMsg] = useState('');
 
-  const monthDays  = useMemo(() => buildMonthDays(selectedMonth), [selectedMonth]);
-  const recordId   = `register_${selectedMonth}`;
+  const monthDays = useMemo(() => buildMonthDays(selectedMonth), [selectedMonth]);
+  const recordId = `register_${selectedMonth}`;
 
   // Track whether current entries came from a load (skip auto-save on initial load)
-  const isLoadedRef    = useRef(false);
-  const autoSaveTimer  = useRef(null);
-  const isMountedRef   = useRef(true);
+  const isLoadedRef = useRef(false);
+  const autoSaveTimer = useRef(null);
+  const isMountedRef = useRef(true);
   const pendingSaveRef = useRef(null);
 
   // Track mounting state
@@ -197,7 +197,7 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
 
     load();
     return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordId]);
 
   // ── Auto-save: fires 1.5 s after last cell change ─────────────────────────
@@ -266,22 +266,22 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
       e.preventDefault();
       e.stopPropagation();
     }
-    
+
     // Clear any pending auto-saves
     clearTimeout(autoSaveTimer.current);
 
     if (!window.confirm(`Are you sure you want to PERMANENTLY delete all housekeeping data (attendance and billing) for ${formatLongMonthLabel(selectedMonth)}?`)) return;
-    
+
     setSaveStatus('saving');
     setSaveMsg('Deleting data...');
-    
+
     try {
       await ensureFirebaseSession();
       // Delete attendance register
       await deleteDoc(doc(db, 'housekeepingAttendanceRegisters', recordId));
       // Delete bill record
       await deleteDoc(doc(db, 'housekeepingBillCalculations', `hk_bill_${selectedMonth}`));
-      
+
       setSaveStatus('saved');
       setSaveMsg(`Deleted data for ${formatLongMonthLabel(selectedMonth)}.`);
       window.location.reload(); // Refresh to clear state
@@ -388,20 +388,20 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
     const ws = XLSX.utils.aoa_to_sheet([headers, ...dataRows, totalsRow]);
     ws['!cols'] = [
       { wch: 14 }, // Date
-      { wch: 6  }, // Day
-      { wch: 7  }, // A
-      { wch: 7  }, // B
-      { wch: 7  }, // C
+      { wch: 6 }, // Day
+      { wch: 7 }, // A
+      { wch: 7 }, // B
+      { wch: 7 }, // C
       { wch: 12 }, // Supervisor
       { wch: 10 }, // Common
-      { wch: 9  }, // Total
+      { wch: 9 }, // Total
       { wch: 13 }, // Tractor Trip
     ];
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, `HK ${formatMonthLabel(selectedMonth)}`);
     wb.Props = {
-      Title:  `Housekeeping Attendance – ${formatLongMonthLabel(selectedMonth)}`,
+      Title: `Housekeeping Attendance – ${formatLongMonthLabel(selectedMonth)}`,
       Author: 'Majestique Euriska Dashboard',
     };
 
@@ -411,11 +411,11 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
 
   // ── Save-status badge ─────────────────────────────────────────────────────
   const statusBadge = {
-    idle:    { color: '#6b7280', icon: '●', text: 'Ready' },
+    idle: { color: '#6b7280', icon: '●', text: 'Ready' },
     pending: { color: '#f59e0b', icon: '⏳', text: 'Saving…' },
-    saving:  { color: '#3b82f6', icon: '↑', text: 'Saving to Firebase…' },
-    saved:   { color: '#10b981', icon: '✓', text: 'Saved' },
-    error:   { color: '#ef4444', icon: '✗', text: 'Save failed' },
+    saving: { color: '#3b82f6', icon: '↑', text: 'Saving to Firebase…' },
+    saved: { color: '#10b981', icon: '✓', text: 'Saved' },
+    error: { color: '#ef4444', icon: '✗', text: 'Save failed' },
   }[saveStatus];
 
   // ─── Render ───────────────────────────────────────────────────────────────
@@ -531,12 +531,12 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
           <div className="attendance-table-card__actions">
             <p>Auto-saves to cloud.</p>
             <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
-              ⬇ Download Excel
+              ⬇ Download
             </button>
             {isAdmin && (
-              <button 
-                className="button-secondary" 
-                type="button" 
+              <button
+                className="button-secondary"
+                type="button"
                 onClick={(e) => handleDeleteMonthData(e)}
                 style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
               >
@@ -587,7 +587,7 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
                             className="attendance-register-input"
                             type="text"
                             inputMode="numeric"
-                            
+
                             value={row[col.key]}
                             onChange={(e) => handleCellChange(d.dateKey, col.key, e.target.value)}
                             readOnly={!isAdmin}
@@ -608,7 +608,7 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
                           min="0"
                           step="1"
                           inputMode="numeric"
-                          
+
                           value={row.tractorTrip}
                           onChange={(e) => handleCellChange(d.dateKey, 'tractorTrip', e.target.value)}
                           readOnly={!isAdmin}

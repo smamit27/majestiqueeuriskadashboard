@@ -46,7 +46,7 @@ export default function ChequeTracker() {
           const data = snap.data();
           if (snap.exists() && data?.entries && data.entries.length > 0) {
             setEntries(data.entries);
-            setSaveMsg('Data loaded from Firebase ✓');
+            setSaveMsg('Data loaded');
           } else {
             // Seed the database if it's missing or empty
             console.log("Seeding database with initial cheque data...");
@@ -110,7 +110,7 @@ export default function ChequeTracker() {
   const updateRow = (idx, field, val) => {
     const next = [...entries];
     next[idx] = { ...next[idx], [field]: val };
-    
+
     // Auto-calc shares if total amount changes
     if (field === 'totalAmount' && val) {
       const amount = n(val);
@@ -118,7 +118,7 @@ export default function ChequeTracker() {
       next[idx].bShare = (amount * (FLAT_COUNTS.B / TOTAL_FLATS)).toFixed(2);
       next[idx].cShare = (amount * (FLAT_COUNTS.C / TOTAL_FLATS)).toFixed(2);
     }
-    
+
     setEntries(next);
     triggerAutoSave(next);
   };
@@ -176,8 +176,8 @@ export default function ChequeTracker() {
 
   // Logic: Filter and Search
   const filteredEntries = entries.filter(e => {
-    const matchesSearch = !searchTerm || 
-      e.vendor.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch = !searchTerm ||
+      e.vendor.toLowerCase().includes(searchTerm.toLowerCase()) ||
       e.purpose.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesMonth = filterMonth === 'All' || e.month === filterMonth;
     return matchesSearch && matchesMonth;
@@ -203,7 +203,7 @@ export default function ChequeTracker() {
 
   return (
     <div className="accounting-shell">
-      
+
       {/* Summary Cards */}
       <div className="attendance-summary-grid">
         <div className="accounting-summary-card" style={{ borderLeft: '4px solid #3b82f6' }}>
@@ -241,16 +241,16 @@ export default function ChequeTracker() {
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', width: '100%', justifyContent: 'flex-end' }}>
               <div className="accounting-search-container">
                 <span style={{ display: 'flex', alignItems: 'center', opacity: 0.4 }}>🔍</span>
-                <input 
+                <input
                   className="attendance-register-input"
                   style={{ border: 'none', padding: '8px', outline: 'none', textAlign: 'left' }}
-                  placeholder="Search Vendor or Purpose..." 
+                  placeholder="Search Vendor or Purpose..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
-              <select 
-                className="attendance-register-input" 
+              <select
+                className="attendance-register-input"
                 style={{ width: 'auto', minWidth: '120px', height: '38px' }}
                 value={filterMonth}
                 onChange={e => setFilterMonth(e.target.value)}
@@ -311,20 +311,20 @@ export default function ChequeTracker() {
                   <td style={{ background: '#f0fdf4' }}><input className="attendance-register-input" style={{ textAlign: 'right' }} value={e.aShare} onChange={v => updateRow(i, 'aShare', v.target.value)} /></td>
                   <td style={{ background: '#eff6ff' }}><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: e.bReceiveDate ? 400 : 700 }} value={e.bShare} onChange={v => updateRow(i, 'bShare', v.target.value)} /></td>
                   <td style={{ background: '#eff6ff' }}>
-                    <input 
+                    <input
                       className={`attendance-register-input ${e.bReceiveDate ? 'input-status-received' : 'input-status-pending'}`}
-                      value={e.bReceiveDate} 
-                      onChange={v => updateRow(i, 'bReceiveDate', v.target.value)} 
-                      placeholder="Pending" 
+                      value={e.bReceiveDate}
+                      onChange={v => updateRow(i, 'bReceiveDate', v.target.value)}
+                      placeholder="Pending"
                     />
                   </td>
                   <td style={{ background: '#fff7ed' }}><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: e.cReceiveDate ? 400 : 700 }} value={e.cShare} onChange={v => updateRow(i, 'cShare', v.target.value)} /></td>
                   <td style={{ background: '#fff7ed' }}>
-                    <input 
+                    <input
                       className={`attendance-register-input ${e.cReceiveDate ? 'input-status-received' : 'input-status-pending'}`}
-                      value={e.cReceiveDate} 
-                      onChange={v => updateRow(i, 'cReceiveDate', v.target.value)} 
-                      placeholder="Pending" 
+                      value={e.cReceiveDate}
+                      onChange={v => updateRow(i, 'cReceiveDate', v.target.value)}
+                      placeholder="Pending"
                     />
                   </td>
                   <td><input className="attendance-register-input" value={e.remarks} onChange={v => updateRow(i, 'remarks', v.target.value)} /></td>
@@ -350,12 +350,12 @@ export default function ChequeTracker() {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#64748b', fontSize: '0.85rem', padding: '0 8px' }}>
-         <div>Showing {filteredEntries.length} of {entries.length} records</div>
-         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '12px', height: '12px', background: '#fee2e2', borderRadius: '3px' }}></span> Pending Payment</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '12px', height: '12px', background: '#dcfce7', borderRadius: '3px' }}></span> Payment Received</span>
-            <div style={{ color: badge, fontWeight: 700 }}>● {saveMsg || 'All changes saved'}</div>
-         </div>
+        <div>Showing {filteredEntries.length} of {entries.length} records</div>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '12px', height: '12px', background: '#fee2e2', borderRadius: '3px' }}></span> Pending Payment</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '12px', height: '12px', background: '#dcfce7', borderRadius: '3px' }}></span> Payment Received</span>
+          <div style={{ color: badge, fontWeight: 700 }}>● {saveMsg || 'All changes saved'}</div>
+        </div>
       </div>
 
     </div>

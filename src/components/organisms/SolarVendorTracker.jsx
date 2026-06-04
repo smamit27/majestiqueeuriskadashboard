@@ -134,7 +134,7 @@ export default function SolarVendorTracker({ isAdmin = false }) {
         const snap = await getDoc(doc(db, 'solarEvaluations', recordId));
         if (!cancelled && snap.exists()) {
           setForm({ ...DEFAULT_FORM, ...snap.data().form });
-          setSaveMsg('Loaded from Firebase ✓');
+          setSaveMsg('Loaded');
         } else if (!cancelled) {
           setForm(DEFAULT_FORM);
           setSaveMsg('New evaluation checklist');
@@ -249,7 +249,7 @@ export default function SolarVendorTracker({ isAdmin = false }) {
                 </button>
               )}
               <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
-                ⬇ Download Excel
+                ⬇ Download
               </button>
             </div>
           </div>
@@ -312,15 +312,15 @@ export default function SolarVendorTracker({ isAdmin = false }) {
               <td colSpan={3} style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700 }}>Overall Score (1-5)</td>
               {['vendor1', 'vendor2', 'vendor3'].map((vKey, vIdx) => (
                 <td key={vKey} style={{ padding: '8px', background: ['rgba(37, 99, 235, 0.1)', 'rgba(22, 163, 74, 0.1)', 'rgba(126, 34, 206, 0.1)'][vIdx] }}>
-                   <input
-                      type="number"
-                      min="1" max="5"
-                      value={form[vKey].score || ''}
-                      onChange={(e) => handleScoreChange(vKey, 'score', e.target.value)}
-                      placeholder="Score"
-                      style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.15)', fontWeight: 'bold', textAlign: 'center' }}
-                      readOnly={!isAdmin}
-                    />
+                  <input
+                    type="number"
+                    min="1" max="5"
+                    value={form[vKey].score || ''}
+                    onChange={(e) => handleScoreChange(vKey, 'score', e.target.value)}
+                    placeholder="Score"
+                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.15)', fontWeight: 'bold', textAlign: 'center' }}
+                    readOnly={!isAdmin}
+                  />
                 </td>
               ))}
             </tr>
@@ -328,32 +328,32 @@ export default function SolarVendorTracker({ isAdmin = false }) {
               <td colSpan={3} style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700 }}>Remarks / Recommendation</td>
               {['vendor1', 'vendor2', 'vendor3'].map((vKey, vIdx) => (
                 <td key={vKey} style={{ padding: '8px', background: ['rgba(37, 99, 235, 0.1)', 'rgba(22, 163, 74, 0.1)', 'rgba(126, 34, 206, 0.1)'][vIdx] }}>
-                   <textarea
-                      value={form[vKey].remarks || ''}
-                      onChange={(e) => handleScoreChange(vKey, 'remarks', e.target.value)}
-                      placeholder="Remarks"
-                      rows={2}
-                      style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.15)', resize: 'vertical' }}
-                      readOnly={!isAdmin}
-                    />
+                  <textarea
+                    value={form[vKey].remarks || ''}
+                    onChange={(e) => handleScoreChange(vKey, 'remarks', e.target.value)}
+                    placeholder="Remarks"
+                    rows={2}
+                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.15)', resize: 'vertical' }}
+                    readOnly={!isAdmin}
+                  />
                 </td>
               ))}
             </tr>
           </tfoot>
         </table>
       </div>
-      
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-         <div className="table-card" style={{ padding: '20px' }}>
-            <h4 style={{ marginTop: 0, marginBottom: '12px', opacity: 0.8 }}>Scoring Guide (Internal Use)</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: '50px 1fr', gap: '8px', fontSize: '0.85rem' }}>
-              <strong style={{ background: '#1e293b', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>5</strong> <span>Excellent (Exceeds Benchmark)</span>
-              <strong style={{ background: '#334155', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>4</strong> <span>Good (Meets Benchmark)</span>
-              <strong style={{ background: '#475569', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>3</strong> <span>Average (Partially Meets Benchmark)</span>
-              <strong style={{ background: '#64748b', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>2</strong> <span>Below Average (Below Benchmark)</span>
-              <strong style={{ background: '#94a3b8', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>1</strong> <span>Poor (Does Not Meet Benchmark)</span>
-            </div>
-         </div>
+        <div className="table-card" style={{ padding: '20px' }}>
+          <h4 style={{ marginTop: 0, marginBottom: '12px', opacity: 0.8 }}>Scoring Guide (Internal Use)</h4>
+          <div style={{ display: 'grid', gridTemplateColumns: '50px 1fr', gap: '8px', fontSize: '0.85rem' }}>
+            <strong style={{ background: '#1e293b', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>5</strong> <span>Excellent (Exceeds Benchmark)</span>
+            <strong style={{ background: '#334155', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>4</strong> <span>Good (Meets Benchmark)</span>
+            <strong style={{ background: '#475569', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>3</strong> <span>Average (Partially Meets Benchmark)</span>
+            <strong style={{ background: '#64748b', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>2</strong> <span>Below Average (Below Benchmark)</span>
+            <strong style={{ background: '#94a3b8', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>1</strong> <span>Poor (Does Not Meet Benchmark)</span>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -217,25 +217,27 @@ export default function App() {
       metric: 'Society Dashboard',
       render: () => <MainDashboard stats={dashboardStats} />
     },
-    {
-      id: 'security',
-      label: 'Security',
-      metric: 'Deployment & Billing',
-      render: () => <SecurityModule isAdmin={isAdmin} />
-    },
-    {
-      id: 'housekeeping',
-      label: 'Housekeeping',
-      metric: 'Attendance & Billing',
-      render: () => (
-        <HousekeepingModule 
-          isAdmin={isAdmin}
-          staffMembers={staffData.items} 
-          staffPresentCount={staffPresent} 
-          totalStaffCount={staffData.items.length} 
-        />
-      )
-    },
+    ...(isAdmin ? [
+      {
+        id: 'security',
+        label: 'Security',
+        metric: 'Deployment & Billing',
+        render: () => <SecurityModule isAdmin={isAdmin} />
+      },
+      {
+        id: 'housekeeping',
+        label: 'Housekeeping',
+        metric: 'Attendance & Billing',
+        render: () => (
+          <HousekeepingModule 
+            isAdmin={isAdmin}
+            staffMembers={staffData.items} 
+            staffPresentCount={staffPresent} 
+            totalStaffCount={staffData.items.length} 
+          />
+        )
+      }
+    ] : []),
     {
       id: 'solar',
       label: 'Solar Management',
@@ -574,6 +576,12 @@ export default function App() {
     window.addEventListener('changeTab', handleGlobalTabChange);
     return () => window.removeEventListener('changeTab', handleGlobalTabChange);
   }, [handleTabChange]);
+
+  useEffect(() => {
+    if (!isAdmin && ['security', 'housekeeping'].includes(activeTab)) {
+      setActiveTab('society_overview');
+    }
+  }, [isAdmin, activeTab]);
 
   const handleIntroFinish = () => {
     localStorage.setItem('majestique_intro_seen_v30', 'true');
