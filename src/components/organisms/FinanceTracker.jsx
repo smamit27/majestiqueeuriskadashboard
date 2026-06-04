@@ -218,8 +218,8 @@ export default function FinanceTracker({ isAdmin = false }) {
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               {isAdmin && (
-                <button className="button-primary" onClick={handleManualSave} disabled={isLoading || saveStatus === 'saving'} style={{ padding: '8px 16px' }}>
-                  💾 Save Tracker
+                <button className="button-secondary" onClick={handleManualSave} disabled={isLoading || saveStatus === 'saving'} style={{ padding: '8px 16px' }}>
+                  💾 Save
                 </button>
               )}
               <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '8px 16px' }}>

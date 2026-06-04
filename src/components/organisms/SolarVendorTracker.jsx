@@ -240,7 +240,7 @@ export default function SolarVendorTracker({ isAdmin = false }) {
             <div style={{ display: 'flex', gap: 10 }}>
               {isAdmin && (
                 <button
-                  className="button-primary"
+                  className="button-secondary"
                   type="button"
                   onClick={handleManualSave}
                   disabled={isSaving || isLoading}

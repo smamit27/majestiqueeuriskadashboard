@@ -818,7 +818,7 @@ select {
 }
 
 .button-secondary {
-  width: 192px;
+  width: auto;
   padding: 5px 12px;
   min-height: 28px;
   font-size: 0.78rem;

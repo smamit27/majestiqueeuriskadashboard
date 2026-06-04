@@ -436,7 +436,7 @@ export default function HousekeepingBillCalculator() {
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button
-                className="button-primary"
+                className="button-secondary"
                 type="button"
                 onClick={handleManualSave}
                 disabled={isSaving || isLoading}

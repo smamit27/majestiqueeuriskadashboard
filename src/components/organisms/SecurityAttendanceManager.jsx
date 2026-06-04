@@ -5,7 +5,7 @@ import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const LOCAL_STORAGE_KEY  = 'majestique-security-register';
+const LOCAL_STORAGE_KEY = 'majestique-security-register';
 // No auto-save — user must explicitly click Save
 
 const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
@@ -15,14 +15,14 @@ const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
 
 /** All guard-post columns that contribute to daily total (Base reference) */
 const ALL_COLUMNS = [
-  { key: 'aMorn',      label: 'A Bldg (Morn)' },
-  { key: 'aEve',       label: 'A Bldg (Eve)'  },
-  { key: 'bMorn',      label: 'B Bldg (Morn)' },
-  { key: 'bEve',       label: 'B Bldg (Eve)'  },
-  { key: 'cMorn',      label: 'C Bldg (Morn)' },
-  { key: 'cEve',       label: 'C Bldg (Eve)'  },
+  { key: 'aMorn', label: 'A Bldg (Morn)' },
+  { key: 'aEve', label: 'A Bldg (Eve)' },
+  { key: 'bMorn', label: 'B Bldg (Morn)' },
+  { key: 'bEve', label: 'B Bldg (Eve)' },
+  { key: 'cMorn', label: 'C Bldg (Morn)' },
+  { key: 'cEve', label: 'C Bldg (Eve)' },
   { key: 'mainGateMorn', label: 'Main Gate (Morn)' },
-  { key: 'mainGateEve',  label: 'Main Gate (Eve)'  },
+  { key: 'mainGateEve', label: 'Main Gate (Eve)' },
 ];
 
 // ─── Pure helpers ─────────────────────────────────────────────────────────────
@@ -35,7 +35,7 @@ function getCurrentMonthValue() {
 
 /** Returns which building column key Chauhan occupies for a given month */
 const CHAUHAN_ROTATION = ['b', 'c', 'a']; // rotation base keys
-const CHAUHAN_LABELS   = { a: 'A Building', b: 'B Building', c: 'C Building' };
+const CHAUHAN_LABELS = { a: 'A Building', b: 'B Building', c: 'C Building' };
 function getChauhanBaseKey(mv) {
   const [y, m] = mv.split('-').map(Number);
   const offset = (y - 2026) * 12 + (m - 4);
@@ -92,7 +92,7 @@ function buildMonthDays(mv) {
   const { year, monthIndex } = parseMonthValue(mv);
   const total = new Date(year, monthIndex + 1, 0).getDate();
   return Array.from({ length: total }, (_, i) => {
-    const day  = i + 1;
+    const day = i + 1;
     const date = new Date(year, monthIndex, day);
     const dateKey = `${mv}-${String(day).padStart(2, '0')}`;
     return {
@@ -109,13 +109,13 @@ function normalizeEntries(days, src = {}) {
     const s = src[d.dateKey] || {};
     acc[d.dateKey] = {
       aMorn: normalizeValue(s.aMorn || s.aBuilding), // migration support
-      aEve:  normalizeValue(s.aEve || s.aBuilding),
+      aEve: normalizeValue(s.aEve || s.aBuilding),
       bMorn: normalizeValue(s.bMorn || s.bBuilding),
-      bEve:  normalizeValue(s.bEve || s.bBuilding),
+      bEve: normalizeValue(s.bEve || s.bBuilding),
       cMorn: normalizeValue(s.cMorn || s.cBuilding),
-      cEve:  normalizeValue(s.cEve || s.cBuilding),
+      cEve: normalizeValue(s.cEve || s.cBuilding),
       mainGateMorn: normalizeValue(s.mainGateMorn || s.commonArea),
-      mainGateEve:  normalizeValue(s.mainGateEve  || s.commonArea),
+      mainGateEve: normalizeValue(s.mainGateEve || s.commonArea),
     };
     return acc;
   }, {});
@@ -131,24 +131,24 @@ function readLocal() {
 }
 
 function writeLocal(data) {
-  try { window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data)); } catch {}
+  try { window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data)); } catch { }
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function SecurityAttendanceManager({ isAdmin = false }) {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonthValue);
-  const [entries,       setEntries]       = useState({});
-  const [localRecords,  setLocalRecords]  = useState(readLocal);
-  const [isLoading,     setIsLoading]     = useState(false);
-  const [saveStatus,    setSaveStatus]    = useState('idle');
-  const [saveMsg,       setSaveMsg]       = useState('');
-  const [isDirty,       setIsDirty]       = useState(false);
+  const [entries, setEntries] = useState({});
+  const [localRecords, setLocalRecords] = useState(readLocal);
+  const [isLoading, setIsLoading] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('idle');
+  const [saveMsg, setSaveMsg] = useState('');
+  const [isDirty, setIsDirty] = useState(false);
 
-  const monthDays  = useMemo(() => buildMonthDays(selectedMonth), [selectedMonth]);
-  const recordId   = `security_register_${selectedMonth}`;
+  const monthDays = useMemo(() => buildMonthDays(selectedMonth), [selectedMonth]);
+  const recordId = `security_register_${selectedMonth}`;
 
-  const isLoadedRef   = useRef(false);
+  const isLoadedRef = useRef(false);
   const autoSaveTimer = useRef(null);
 
   // ── Load from Firebase on month change ───────────────────────────────────
@@ -200,7 +200,7 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
 
     load();
     return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordId]);
 
   // ── Manual save to Firebase ───────────────────────────────────────────────
@@ -246,22 +246,22 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
       e.preventDefault();
       e.stopPropagation();
     }
-    
+
     // Clear any pending auto-saves
     clearTimeout(autoSaveTimer.current);
 
     if (!window.confirm(`Are you sure you want to PERMANENTLY delete all security data (attendance and billing) for ${formatLongMonthLabel(selectedMonth)}?`)) return;
-    
+
     setSaveStatus('saving');
     setSaveMsg('Deleting data...');
-    
+
     try {
       await ensureFirebaseSession();
       // Delete attendance register
       await deleteDoc(doc(db, 'securityAttendanceRegisters', recordId));
       // Delete bill record
       await deleteDoc(doc(db, 'securityBills', `security_bill_${selectedMonth}`));
-      
+
       setSaveStatus('saved');
       setSaveMsg(`Deleted data for ${formatLongMonthLabel(selectedMonth)}.`);
       window.location.reload(); // Refresh to clear state
@@ -275,25 +275,25 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
   // ── Cell change — marks dirty, no auto-save ────────────────────────────
   function handleCellChange(dateKey, field, value) {
     if (!isLoadedRef.current) return;
-    
+
     setEntries(prev => {
       const row = prev[dateKey] || emptyRow();
       let nextRow;
-      
+
       if (field.endsWith('Chauhan')) {
         const base = field.replace('Chauhan', '');
-        nextRow = { 
-          ...row, 
+        nextRow = {
+          ...row,
           [base + 'Morn']: normalizeValue(value),
-          [base + 'Eve']:  normalizeValue(value)
+          [base + 'Eve']: normalizeValue(value)
         };
       } else {
         nextRow = { ...row, [field]: normalizeValue(value) };
       }
-      
+
       return { ...prev, [dateKey]: nextRow };
     });
-    
+
     setSaveStatus('pending');
     setSaveMsg('Unsaved changes — click Save to persist.');
     setIsDirty(true);
@@ -310,11 +310,11 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
         cols.push({ key: bKey + 'Chauhan', label: `Chauhan (${CHAUHAN_LABELS[bKey]})`, isChauhan: true });
       } else {
         cols.push({ key: bKey + 'Morn', label: `${bKey.toUpperCase()} (Morn)` });
-        cols.push({ key: bKey + 'Eve',  label: `${bKey.toUpperCase()} (Eve)` });
+        cols.push({ key: bKey + 'Eve', label: `${bKey.toUpperCase()} (Eve)` });
       }
     });
     cols.push({ key: 'mainGateMorn', label: 'Main Gate (Morn)' });
-    cols.push({ key: 'mainGateEve',  label: 'Main Gate (Eve)' });
+    cols.push({ key: 'mainGateEve', label: 'Main Gate (Eve)' });
     return cols;
   }, [chauhanBaseKey]);
 
@@ -373,15 +373,15 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
     const ws = XLSX.utils.aoa_to_sheet([headers, ...dataRows, totalsRow]);
     ws['!cols'] = [
       { wch: 14 }, // Date
-      { wch: 6  }, // Day
+      { wch: 6 }, // Day
       ...displayColumns.map(() => ({ wch: 12 })),
-      { wch: 9  }, // Total
+      { wch: 9 }, // Total
     ];
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, `Sec ${formatMonthLabel(selectedMonth)}`);
     wb.Props = {
-      Title:  `Security Attendance — ${formatLongMonthLabel(selectedMonth)}`,
+      Title: `Security Attendance — ${formatLongMonthLabel(selectedMonth)}`,
       Author: 'Majestique Euriska Dashboard',
     };
 
@@ -391,11 +391,11 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
 
   // ── Status badge ──────────────────────────────────────────────────────────
   const badge = {
-    idle:    { color: '#6b7280', icon: '●', text: 'Ready'                    },
-    pending: { color: '#f59e0b', icon: '⏳', text: 'Saving…'                 },
-    saving:  { color: '#3b82f6', icon: '↑', text: 'Saving to Firebase…'      },
-    saved:   { color: '#10b981', icon: '✓', text: 'Saved'                    },
-    error:   { color: '#ef4444', icon: '✗', text: 'Save failed'              },
+    idle: { color: '#6b7280', icon: '●', text: 'Ready' },
+    pending: { color: '#f59e0b', icon: '⏳', text: 'Saving…' },
+    saving: { color: '#3b82f6', icon: '↑', text: 'Saving to Firebase…' },
+    saved: { color: '#10b981', icon: '✓', text: 'Saved' },
+    error: { color: '#ef4444', icon: '✗', text: 'Save failed' },
   }[saveStatus];
 
   // ─── Render ───────────────────────────────────────────────────────────────
@@ -493,7 +493,7 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               {isAdmin && (
-                <button className="button-primary" type="button" onClick={handleSave}
+                <button className="button-secondary" type="button" onClick={handleSave}
                   disabled={!isDirty || saveStatus === 'saving'}
                   style={{ opacity: (!isDirty || saveStatus === 'saving') ? 0.5 : 1 }}>
                   💾 Save
@@ -503,9 +503,9 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
                 ⬇ Excel
               </button>
               {isAdmin && (
-                <button 
-                  className="button-secondary" 
-                  type="button" 
+                <button
+                  className="button-secondary"
+                  type="button"
                   onClick={(e) => handleDeleteMonthData(e)}
                   style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
                 >
@@ -541,7 +541,7 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
                 </tr>
               ) : (
                 monthDays.map((d) => {
-                  const row   = entries[d.dateKey] || emptyRow();
+                  const row = entries[d.dateKey] || emptyRow();
                   const total = rowTotal(row);
 
                   return (
