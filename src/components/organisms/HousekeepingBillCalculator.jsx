@@ -427,7 +427,7 @@ export default function HousekeepingBillCalculator() {
         <div className="attendance-table-card__header">
           <div>
             <p className="eyebrow">Monthly Bill Calculation</p>
-            <h3>Housekeeping Bill — {formatLongMonth(month)}</h3>
+            <h3>Bill — {formatLongMonth(month)}</h3>
           </div>
           <div className="attendance-table-card__actions">
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: badge.c, fontWeight: 500, fontSize: '0.9rem' }}>
