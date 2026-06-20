@@ -10,6 +10,7 @@ import HousekeepingModule from './components/organisms/HousekeepingModule.jsx';
 import SecurityModule from './components/organisms/SecurityModule.jsx';
 import SolarModule from './components/organisms/SolarModule.jsx';
 import ChequeManagement from './components/organisms/ChequeManagement.jsx';
+import ElectricityTracker from './components/organisms/ElectricityTracker.jsx';
 import FinanceTracker from './components/organisms/FinanceTracker.jsx';
 import MainDashboard from './components/organisms/MainDashboard.jsx';
 import AuthModal from './components/organisms/AuthModal.jsx';
@@ -79,6 +80,9 @@ const TAB_ICONS = {
   ),
   cheques: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="7" y1="15" x2="7.01" y2="15"/><line x1="12" y1="15" x2="12.01" y2="15"/></svg>
+  ),
+  electricity: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
   ),
 };
 
@@ -255,6 +259,12 @@ export default function App() {
       label: 'Cheque Tracker',
       metric: 'Shared Expenses',
       render: () => <ChequeManagement isAdmin={isAdmin} />
+    },
+    {
+      id: 'electricity',
+      label: 'Electricity Bills',
+      metric: 'Utility Tracking',
+      render: () => <ElectricityTracker isAdmin={isAdmin} />
     },
     {
       id: 'members',
@@ -578,7 +588,7 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    if (!isAdmin && ['security', 'housekeeping'].includes(activeTab)) {
+    if (!isAdmin && ['security', 'housekeeping', 'electricity'].includes(activeTab)) {
       setActiveTab('society_overview');
     }
   }, [isAdmin, activeTab]);
@@ -707,7 +717,7 @@ export default function App() {
           <h2>{activeTabPanel.label}</h2>
         </div>
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity'].includes(activeTab) && (
         <header className="dashboard-header">
           <div className="dashboard-header__copy">
             <h1 style={{ margin: 0 }}>{activeTabPanel.label} Dashboard</h1>
@@ -759,7 +769,7 @@ export default function App() {
 
         {loadErrors.length > 0 ? <div className="notice-banner">{loadErrors[0]}</div> : null}
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity'].includes(activeTab) && (
           <section className="metrics-grid">
           <MetricCard
             label="Members & Occupancy"
@@ -800,7 +810,7 @@ export default function App() {
           {activeTabPanel.render()}
         </div>
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity'].includes(activeTab) && (
           <section className="snapshot-grid">
           <div className="snapshot-panel">
             <p className="eyebrow">Collection health</p>
