@@ -254,14 +254,14 @@ export default function FinanceTracker({ isAdmin = false }) {
             <h4 style={{ margin: 0, color: '#059669' }}>📥 Income Details</h4>
             {isAdmin && <button className="button-secondary" onClick={addIncomeRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>}
           </div>
-          <div className="attendance-table-scroll" style={{ padding: 0 }}>
+          <div className="attendance-table-scroll" style={{ padding: 0, maxHeight: '520px', overflowY: 'auto' }}>
             <table className="attendance-table attendance-table--bill" style={{ minWidth: '100%' }}>
               <thead>
                 <tr style={{ background: '#ecfdf5' }}>
-                  <th style={{ width: '40%', color: '#059669' }}>Amount Received</th>
-                  <th style={{ width: '25%', textAlign: 'right', color: '#059669' }}>Amount (₹)</th>
-                  <th style={{ width: '35%', color: '#059669' }}>Remark</th>
-                  <th style={{ width: '40px' }}></th>
+                  <th style={{ width: '40%', color: '#059669', background: '#ecfdf5' }}>Amount Received</th>
+                  <th style={{ width: '25%', textAlign: 'right', color: '#059669', background: '#ecfdf5' }}>Amount (₹)</th>
+                  <th style={{ width: '35%', color: '#059669', background: '#ecfdf5' }}>Remark</th>
+                  <th style={{ width: '40px', background: '#ecfdf5' }}></th>
                 </tr>
               </thead>
               <tbody>
@@ -311,14 +311,14 @@ export default function FinanceTracker({ isAdmin = false }) {
             <h4 style={{ margin: 0, color: '#dc2626' }}>📤 Expense Details</h4>
             {isAdmin && <button className="button-secondary" onClick={addExpenseRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>}
           </div>
-          <div className="attendance-table-scroll" style={{ padding: 0 }}>
+          <div className="attendance-table-scroll" style={{ padding: 0, maxHeight: '520px', overflowY: 'auto' }}>
             <table className="attendance-table attendance-table--bill" style={{ minWidth: '100%' }}>
               <thead>
                 <tr style={{ background: '#fff1f2' }}>
-                  <th style={{ width: '40%', color: '#e11d48' }}>Vendor Name</th>
-                  <th style={{ width: '25%', textAlign: 'right', color: '#e11d48' }}>Amount (₹)</th>
-                  <th style={{ width: '35%', color: '#e11d48' }}>Purpose</th>
-                  <th style={{ width: '40px' }}></th>
+                  <th style={{ width: '40%', color: '#e11d48', background: '#fff1f2' }}>Vendor Name</th>
+                  <th style={{ width: '25%', textAlign: 'right', color: '#e11d48', background: '#fff1f2' }}>Amount (₹)</th>
+                  <th style={{ width: '35%', color: '#e11d48', background: '#fff1f2' }}>Purpose</th>
+                  <th style={{ width: '40px', background: '#fff1f2' }}></th>
                 </tr>
               </thead>
               <tbody>
