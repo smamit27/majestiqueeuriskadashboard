@@ -10,6 +10,8 @@ const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 });
 
+const DEFAULT_UNITS = { a: '87', b: '96', c: '48' };
+
 function getCurrentMonth() {
   const d = new Date();
   const v = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -50,19 +52,45 @@ const headingStyle = {
   opacity: 0.6,
 };
 
+function Field({ label, value, onChange, prefix }) {
+  return (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.7 }}>{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+        {prefix && <span style={{ opacity: 0.5, fontSize: '0.9rem' }}>{prefix}</span>}
+        <input
+          type="text"
+          inputMode="numeric"
+          value={value}
+          onChange={e => onChange(e.target.value.replace(/[^0-9.]/g, '').replace(/(\.\.*?)\\.+/g, '$1'))}
+          style={{
+            width: '100%',
+            padding: '8px 10px',
+            borderRadius: 8,
+            border: '1px solid rgba(0,0,0,0.15)',
+            fontSize: '0.95rem',
+            background: 'rgba(255,255,255,0.8)',
+          }}
+        />
+      </div>
+    </label>
+  );
+}
+
 // ─── Bill Calculator ──────────────────────────────────────────────────────────
 
 export default function TankerBillCalculator() {
   const [month, setMonth] = useState(getCurrentMonth);
   const [entries, setEntries] = useState({});
-  const [overrideRate, setOverrideRate] = useState('');
+  const [units, setUnits] = useState(DEFAULT_UNITS);
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const docId = `tanker_${month}`;
 
-  // Load tanker entries for selected month
+  // Load tanker entries + saved units for selected month
   useEffect(() => {
     let cancelled = false;
     setSaveStatus('idle');
@@ -70,21 +98,19 @@ export default function TankerBillCalculator() {
 
     async function load() {
       setIsLoading(true);
-      setEntries([]);
-      setOverrideRate('');
+      setEntries({});
 
       if (!isFirebaseConfigured || !db) {
-        // Try local storage fallback
         try {
           const raw = window.localStorage.getItem('majestique-tanker-register');
           const local = raw ? JSON.parse(raw) : {};
           const record = local[docId];
           if (!cancelled && record) {
             setEntries(record.entries || {});
-            setOverrideRate(String(record.commonRate || ''));
+            if (record.units) setUnits({ ...DEFAULT_UNITS, ...record.units });
           }
         } catch { }
-        if (!cancelled) { setIsLoading(false); }
+        if (!cancelled) setIsLoading(false);
         return;
       }
 
@@ -95,23 +121,23 @@ export default function TankerBillCalculator() {
           if (snap.exists()) {
             const data = snap.data();
             setEntries(data.entries || {});
-            setOverrideRate(String(data.commonRate || ''));
+            if (data.units) setUnits({ ...DEFAULT_UNITS, ...data.units });
             setSaveMsg(`Loaded — ${formatLongMonth(month)}`);
           } else {
             setEntries({});
+            setUnits(DEFAULT_UNITS);
             setSaveMsg(`No data yet for ${formatLongMonth(month)}`);
           }
         }
       } catch (err) {
         console.error('TankerBillCalculator load error:', err);
-        // fallback to local storage
         try {
           const raw = window.localStorage.getItem('majestique-tanker-register');
           const local = raw ? JSON.parse(raw) : {};
           const record = local[docId];
           if (!cancelled && record) {
             setEntries(record.entries || {});
-            setOverrideRate(String(record.commonRate || ''));
+            if (record.units) setUnits({ ...DEFAULT_UNITS, ...record.units });
           }
         } catch { }
         if (!cancelled) setSaveMsg('Firebase unavailable — showing local data.');
@@ -122,82 +148,101 @@ export default function TankerBillCalculator() {
 
     load();
     return () => { cancelled = true; };
-
-    // Listen for real-time updates from TankerTracker on same page
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [docId]);
 
-  // ── Computed bill ─────────────────────────────────────────────────────────
+  // ── Computed bill ──────────────────────────────────────────────────────────
   const bill = useMemo(() => {
     if (!entries || typeof entries !== 'object') return null;
 
-    // entries is now a date-keyed object: { '2026-06-01': { count, remark }, ... }
-    const baseRate = n(overrideRate) || 0;
+    // Build rows only from days that have tanker count > 0
     const rows = Object.entries(entries)
       .filter(([, v]) => n(v.count) > 0)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([dateKey, v]) => ({
         date: dateKey,
-        rate: baseRate,
+        rate: n(v.rate),
         quantity: n(v.count),
-        total: n(v.count) * baseRate,
-        remark: v.remark || '',
+        total: n(v.count) * n(v.rate),
       }));
 
     if (rows.length === 0) return null;
 
-    const totalTrips = rows.reduce((s, r) => s + r.quantity, 0);
+    const totalTankers = rows.reduce((s, r) => s + r.quantity, 0);
     const grandTotal = rows.reduce((s, r) => s + r.total, 0);
-    const avgRate = baseRate;
 
-    const overridedTotal = grandTotal; // rate IS the override rate here
+    // Building split by unit ratio
+    const totalUnits = n(units.a) + n(units.b) + n(units.c);
+    let buildingSplit = null;
+    if (totalUnits > 0) {
+      const ratioA = n(units.a) / totalUnits;
+      const ratioB = n(units.b) / totalUnits;
+      const ratioC = n(units.c) / totalUnits;
+      buildingSplit = {
+        ratioA, ratioB, ratioC,
+        amountA: grandTotal * ratioA,
+        amountB: grandTotal * ratioB,
+        amountC: grandTotal * ratioC,
+      };
+    }
 
-    return { rows, totalTrips, grandTotal, avgRate, overridedTotal };
-  }, [entries, overrideRate]);
+    return { rows, totalTankers, grandTotal, buildingSplit };
+  }, [entries, units]);
 
-  // ── Save override rate ─────────────────────────────────────────────────────
-  async function handleSaveOverride() {
+  // ── Save units to Firebase ─────────────────────────────────────────────────
+  async function handleSaveUnits() {
     if (!isFirebaseConfigured || !db) {
-      setSaveMsg('Firebase not connected — cannot save override.');
+      setSaveMsg('Firebase not connected.');
       return;
     }
+    setIsSaving(true);
     setSaveStatus('saving');
     try {
       await ensureFirebaseSession();
       await setDoc(
         doc(db, 'tankerEntries', docId),
-        { overrideRate: n(overrideRate), updatedAt: serverTimestamp() },
+        { units, updatedAt: serverTimestamp() },
         { merge: true }
       );
       setSaveStatus('saved');
-      setSaveMsg('Override rate saved ✓');
+      setSaveMsg('Building units saved ✓');
     } catch (err) {
-      console.error('Save override error:', err);
+      console.error('Save units error:', err);
       setSaveStatus('error');
       setSaveMsg('Save failed.');
+    } finally {
+      setIsSaving(false);
     }
   }
 
   // ── Excel export ─────────────────────────────────────────────────────────
   function handleDownloadExcel() {
     if (!bill) return;
+
     const rows = [
       [`Tanker Bill Summary — ${formatLongMonth(month)}`],
       [],
-      ['Date', 'Rate (₹)', 'Qty / Trips', 'Total (₹)', 'Remark'],
-      ...bill.rows.map(r => [r.date, r.rate, r.quantity, r.total, r.remark]),
+      ['Date', 'Rate (₹)', 'Tanker Count', 'Total (₹)'],
+      ...bill.rows.map(r => [r.date, r.rate, r.quantity, r.total]),
       [],
-      ['Summary', '', '', '', ''],
-      ['Total Trips', bill.totalTrips],
+      ['Summary', '', '', ''],
+      ['Total Tankers', bill.totalTankers],
       ['Grand Total (₹)', bill.grandTotal],
-      ['Avg Rate per Trip (₹)', bill.avgRate.toFixed(2)],
-      ...(overrideRate
-        ? [['Override Rate (₹)', n(overrideRate)], ['Recalculated Total (₹)', bill.overridedTotal]]
-        : []),
     ];
 
+    if (bill.buildingSplit) {
+      const bs = bill.buildingSplit;
+      rows.push(
+        [],
+        ['Building Split', 'Units', 'Ratio (%)', 'Amount (₹)'],
+        ['A Building', units.a, `${(bs.ratioA * 100).toFixed(1)}%`, bs.amountA],
+        ['B Building', units.b, `${(bs.ratioB * 100).toFixed(1)}%`, bs.amountB],
+        ['C Building', units.c, `${(bs.ratioC * 100).toFixed(1)}%`, bs.amountC],
+      );
+    }
+
     const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{ wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 26 }];
+    ws['!cols'] = [{ wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 14 }];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, `Tanker Bill ${formatMonthLabel(month)}`);
     XLSX.writeFile(wb, `tanker-bill-${month}.xlsx`);
@@ -210,6 +255,11 @@ export default function TankerBillCalculator() {
     saved: { c: '#10b981', i: '✓' },
     error: { c: '#ef4444', i: '✗' },
   }[saveStatus] || { c: '#6b7280', i: '●' };
+
+  const totalUnits = n(units.a) + n(units.b) + n(units.c);
+  const ratioA = totalUnits > 0 ? (n(units.a) / totalUnits * 100).toFixed(1) : 0;
+  const ratioB = totalUnits > 0 ? (n(units.b) / totalUnits * 100).toFixed(1) : 0;
+  const ratioC = totalUnits > 0 ? (n(units.c) / totalUnits * 100).toFixed(1) : 0;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -253,7 +303,36 @@ export default function TankerBillCalculator() {
         </div>
       </div>
 
-      {/* ── Summary Cards ── */}
+      {/* ── Building Distribution Units ── */}
+      <div style={sectionStyle}>
+        <p style={headingStyle}>🏢 Building Distribution Units</p>
+        <p style={{ margin: 0, fontSize: '0.82rem', opacity: 0.6 }}>
+          Number of flats per building — determines cost split ratio
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))', gap: 12 }}>
+          <Field label="A Building Units" value={units.a} onChange={v => setUnits(u => ({ ...u, a: v }))} />
+          <Field label="B Building Units" value={units.b} onChange={v => setUnits(u => ({ ...u, b: v }))} />
+          <Field label="C Building Units" value={units.c} onChange={v => setUnits(u => ({ ...u, c: v }))} />
+        </div>
+        {totalUnits > 0 && (
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.82rem', opacity: 0.65 }}>
+              Ratio — A: <strong>{ratioA}%</strong> · B: <strong>{ratioB}%</strong> · C: <strong>{ratioC}%</strong>
+            </span>
+            <button
+              className="button-secondary"
+              type="button"
+              onClick={handleSaveUnits}
+              disabled={isSaving}
+              style={{ fontSize: '0.82rem', padding: '6px 14px' }}
+            >
+              {isSaving ? 'Saving…' : '💾 Save Units'}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* ── Summary or empty state ── */}
       {isLoading ? (
         <div style={{ textAlign: 'center', padding: '40px', opacity: 0.6 }}>Loading {formatLongMonth(month)}…</div>
       ) : !bill ? (
@@ -271,11 +350,10 @@ export default function TankerBillCalculator() {
         </div>
       ) : (
         <>
-          {/* Key metrics */}
+          {/* ── Grand Total Metric Cards ── */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 16 }}>
             {[
-              { label: 'Total Tankers', value: bill.totalTrips, icon: '🚛', color: '#1e3a8a' },
-              { label: 'Rate per Tanker', value: `₹${fmt(bill.avgRate)}`, icon: '📊', color: '#6d28d9' },
+              { label: 'Total Tankers', value: bill.totalTankers, icon: '🚛', color: '#1e3a8a' },
               { label: 'Grand Total', value: `₹${fmt(bill.grandTotal)}`, icon: '💰', color: '#0f3d35', large: true },
             ].map(card => (
               <div key={card.label} style={{
@@ -295,54 +373,79 @@ export default function TankerBillCalculator() {
             ))}
           </div>
 
-          {/* Override Rate Tool */}
-          <div style={sectionStyle}>
-            <p style={headingStyle}>🔧 Rate Override Tool</p>
-            <p style={{ margin: 0, fontSize: '0.82rem', opacity: 0.6 }}>
-              Use this to recalculate the grand total with a different per-trip rate (e.g. if the vendor rate changes mid-month).
-            </p>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap' }}>
-              <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.7 }}>Override Rate (₹ per trip)</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <span style={{ opacity: 0.5, fontSize: '0.9rem' }}>₹</span>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    value={overrideRate}
-                    onChange={e => setOverrideRate(e.target.value.replace(/[^0-9.]/g, ''))}
-                    placeholder={`Current avg: ${fmt(bill.avgRate)}`}
-                    style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.95rem', background: 'rgba(255,255,255,0.8)', width: 180 }}
-                  />
-                </div>
-              </label>
-              {overrideRate && (
-                <>
-                  <button className="button-secondary" type="button" onClick={handleSaveOverride}>
-                    💾 Save Override
-                  </button>
-                  <button
-                    className="button-secondary"
-                    type="button"
-                    onClick={() => setOverrideRate('')}
-                    style={{ color: '#6b7280' }}
-                  >
-                    ✕ Clear
-                  </button>
-                </>
-              )}
-            </div>
-            {overrideRate && bill && (
-              <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', padding: '12px 16px', background: 'rgba(30,58,138,0.06)', borderRadius: 10, fontSize: '0.9rem' }}>
-                <div>Trips: <strong>{bill.totalTrips}</strong></div>
-                <div>Override Rate: <strong>₹{n(overrideRate).toLocaleString('en-IN')}</strong></div>
-                <div>Recalculated Total: <strong style={{ color: '#0f3d35', fontSize: '1rem' }}>₹{fmt(bill.overridedTotal)}</strong></div>
-                <div style={{ opacity: 0.6 }}>Difference vs actual: ₹{fmt(bill.overridedTotal - bill.grandTotal)}</div>
+          {/* ── Building Split ── */}
+          {bill.buildingSplit && (
+            <div style={sectionStyle}>
+              <p style={headingStyle}>🏢 Building-wise Cost Split</p>
+              <p style={{ margin: 0, fontSize: '0.82rem', opacity: 0.6 }}>
+                Grand total of ₹{fmt(bill.grandTotal)} split by flat ratio (A: {ratioA}% · B: {ratioB}% · C: {ratioC}%)
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))', gap: 12 }}>
+                {[
+                  { label: 'A Building', value: bill.buildingSplit.amountA, ratio: ratioA, color: '#1e3a8a', bg: 'rgba(30,58,138,0.07)' },
+                  { label: 'B Building', value: bill.buildingSplit.amountB, ratio: ratioB, color: '#6d28d9', bg: 'rgba(109,40,217,0.07)' },
+                  { label: 'C Building', value: bill.buildingSplit.amountC, ratio: ratioC, color: '#0f3d35', bg: 'rgba(15,61,53,0.07)' },
+                ].map(bld => (
+                  <div key={bld.label} style={{
+                    background: bld.bg,
+                    borderRadius: 12,
+                    padding: '16px 20px',
+                    border: `1px solid ${bld.bg.replace('0.07', '0.2')}`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 6,
+                    textAlign: 'center',
+                  }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, opacity: 0.7, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{bld.label}</span>
+                    <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>{bld.ratio}% share</span>
+                    <strong style={{ fontSize: '1.25rem', color: bld.color, fontWeight: 800 }}>₹{fmt(bld.value)}</strong>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
 
-          {/* Detailed entry table */}
+              {/* Summary table */}
+              <div className="table-card" style={{ marginTop: 4 }}>
+                <div className="attendance-table-scroll">
+                  <table className="attendance-table">
+                    <thead>
+                      <tr>
+                        <th style={{ textAlign: 'left' }}>Building</th>
+                        <th style={{ textAlign: 'right' }}>Units</th>
+                        <th style={{ textAlign: 'right' }}>Ratio (%)</th>
+                        <th style={{ textAlign: 'right' }}>Amount (₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { label: 'A Building', u: units.a, ratio: ratioA, amt: bill.buildingSplit.amountA },
+                        { label: 'B Building', u: units.b, ratio: ratioB, amt: bill.buildingSplit.amountB },
+                        { label: 'C Building', u: units.c, ratio: ratioC, amt: bill.buildingSplit.amountC },
+                      ].map(r => (
+                        <tr key={r.label}>
+                          <td style={{ fontWeight: 700 }}>{r.label}</td>
+                          <td style={{ textAlign: 'right' }}>{r.u}</td>
+                          <td style={{ textAlign: 'right' }}>{r.ratio}%</td>
+                          <td style={{ textAlign: 'right', color: '#0f3d35', fontWeight: 700 }}>₹{fmt(r.amt)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th style={{ textAlign: 'left' }}>Grand Total</th>
+                        <th style={{ textAlign: 'right' }}>{totalUnits}</th>
+                        <th style={{ textAlign: 'right' }}>100%</th>
+                        <th style={{ textAlign: 'right', color: '#0f3d35', fontSize: '1.05rem', fontWeight: 800, borderTop: '2px solid #0f3d35' }}>
+                          ₹{fmt(bill.grandTotal)}
+                        </th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Entry Breakdown Table ── */}
           <div className="table-card">
             <div style={{ padding: '16px 20px 0' }}>
               <h3 style={{ margin: '4px 0 16px' }}>Entry Breakdown — {formatLongMonth(month)}</h3>
@@ -353,9 +456,8 @@ export default function TankerBillCalculator() {
                   <tr>
                     <th style={{ textAlign: 'left' }}>Date</th>
                     <th style={{ textAlign: 'right' }}>Rate (₹)</th>
-                    <th style={{ textAlign: 'right' }}>Trips</th>
+                    <th style={{ textAlign: 'right' }}>Tankers</th>
                     <th style={{ textAlign: 'right' }}>Total (₹)</th>
-                    <th style={{ textAlign: 'left' }}>Remark</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -365,7 +467,6 @@ export default function TankerBillCalculator() {
                       <td style={{ textAlign: 'right' }}>₹{fmt(row.rate)}</td>
                       <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.quantity}</td>
                       <td style={{ textAlign: 'right', color: '#0f3d35', fontWeight: 700 }}>₹{fmt(row.total)}</td>
-                      <td style={{ opacity: 0.7, fontSize: '0.88rem' }}>{row.remark || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -373,23 +474,11 @@ export default function TankerBillCalculator() {
                   <tr>
                     <th style={{ textAlign: 'left' }}>Grand Total</th>
                     <th />
-                    <th style={{ textAlign: 'right' }}>{bill.totalTrips}</th>
+                    <th style={{ textAlign: 'right' }}>{bill.totalTankers}</th>
                     <th style={{ textAlign: 'right', color: '#0f3d35', fontSize: '1.05rem', fontWeight: 800, borderTop: '2px solid #0f3d35' }}>
                       ₹{fmt(bill.grandTotal)}
                     </th>
-                    <th />
                   </tr>
-                  {overrideRate && (
-                    <tr style={{ background: 'rgba(30,58,138,0.05)' }}>
-                      <th style={{ textAlign: 'left', color: '#1e3a8a' }}>Recalculated Total (Override ₹{n(overrideRate)})</th>
-                      <th />
-                      <th style={{ textAlign: 'right' }}>{bill.totalTrips}</th>
-                      <th style={{ textAlign: 'right', color: '#1e3a8a', fontSize: '1.05rem', fontWeight: 800 }}>
-                        ₹{fmt(bill.overridedTotal)}
-                      </th>
-                      <th />
-                    </tr>
-                  )}
                 </tfoot>
               </table>
             </div>

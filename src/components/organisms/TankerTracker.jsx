@@ -80,7 +80,7 @@ function normalizeEntries(days, src = {}) {
     const s = src[d.dateKey] || {};
     acc[d.dateKey] = {
       count: s.count !== undefined ? String(s.count) : '',
-      remark: s.remark || '',
+      rate: s.rate !== undefined ? String(s.rate) : String(DEFAULT_RATE),
     };
     return acc;
   }, {});
@@ -103,7 +103,6 @@ function writeLocal(data) {
 
 export default function TankerTracker({ isAdmin = false }) {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonthValue);
-  const [commonRate, setCommonRate] = useState(String(DEFAULT_RATE));
   const [entries, setEntries] = useState({});
   const [localRecords, setLocalRecords] = useState(readLocal);
   const [isLoading, setIsLoading] = useState(false);
@@ -134,12 +133,10 @@ export default function TankerTracker({ isAdmin = false }) {
       setIsLoading(true);
       const localEntry = localRecords[docId] || {};
       const localEntries = localEntry.entries || {};
-      const localRate = localEntry.commonRate || String(DEFAULT_RATE);
 
       if (!isFirebaseConfigured || !db) {
         if (!cancelled) {
           setEntries(normalizeEntries(monthDays, localEntries));
-          setCommonRate(localRate);
           setSaveMsg('Local mode — Firebase not connected.');
           setIsLoading(false);
           isLoadedRef.current = true;
@@ -153,9 +150,7 @@ export default function TankerTracker({ isAdmin = false }) {
         if (!cancelled) {
           const data = snap.exists() ? snap.data() : null;
           const src = data?.entries || localEntries;
-          const rate = data?.commonRate || localRate;
           setEntries(normalizeEntries(monthDays, src));
-          setCommonRate(String(rate));
           setSaveMsg(snap.exists()
             ? `Synced — ${formatMonthLabel(selectedMonth)}`
             : `New — ${formatMonthLabel(selectedMonth)}`
@@ -165,7 +160,6 @@ export default function TankerTracker({ isAdmin = false }) {
         console.error('Tanker load error:', err);
         if (!cancelled) {
           setEntries(normalizeEntries(monthDays, localEntries));
-          setCommonRate(localRate);
           setSaveMsg('Firebase unavailable — showing local data.');
         }
       } finally {
@@ -182,11 +176,11 @@ export default function TankerTracker({ isAdmin = false }) {
   }, [docId]);
 
   // ── Auto-save ────────────────────────────────────────────────────────────
-  const saveToFirebase = useCallback(async (currentEntries, currentRate, currentDocId, month) => {
+  const saveToFirebase = useCallback(async (currentEntries, currentDocId, month) => {
     if (isMountedRef.current) setSaveStatus('saving');
     if (pendingSaveRef.current?.docId === currentDocId) pendingSaveRef.current = null;
 
-    const payload = { month, commonRate: currentRate, entries: currentEntries };
+    const payload = { month, entries: currentEntries };
 
     if (isFirebaseConfigured && db) {
       try {
@@ -225,8 +219,8 @@ export default function TankerTracker({ isAdmin = false }) {
   useEffect(() => {
     return () => {
       if (pendingSaveRef.current) {
-        const { entries, rate, docId, month } = pendingSaveRef.current;
-        saveToFirebase(entries, rate, docId, month);
+        const { entries, docId, month } = pendingSaveRef.current;
+        saveToFirebase(entries, docId, month);
       }
       clearTimeout(autoSaveTimer.current);
     };
@@ -239,49 +233,26 @@ export default function TankerTracker({ isAdmin = false }) {
     setEntries(prev => {
       const updated = {
         ...prev,
-        [dateKey]: { ...(prev[dateKey] || { count: '', remark: '' }), [field]: value },
+        [dateKey]: { ...(prev[dateKey] || { count: '', rate: String(DEFAULT_RATE) }), [field]: value },
       };
 
       // Sync to local storage immediately
-      const payload = { month: selectedMonth, commonRate, entries: updated };
+      const payload = { month: selectedMonth, entries: updated };
       const nextLocal = { ...readLocal(), [docId]: { ...payload, savedAt: new Date().toISOString() } };
       writeLocal(nextLocal);
       setLocalRecords(nextLocal);
 
       // Schedule auto-save
-      pendingSaveRef.current = { entries: updated, rate: commonRate, docId, month: selectedMonth };
+      pendingSaveRef.current = { entries: updated, docId, month: selectedMonth };
       clearTimeout(autoSaveTimer.current);
       setSaveStatus('pending');
       setSaveMsg('Unsaved changes…');
       autoSaveTimer.current = setTimeout(
-        () => saveToFirebase(updated, commonRate, docId, selectedMonth),
+        () => saveToFirebase(updated, docId, selectedMonth),
         AUTO_SAVE_DELAY_MS
       );
       return updated;
     });
-  }
-
-  // ── Rate change handler ──────────────────────────────────────────────────
-  function handleRateChange(value) {
-    const cleaned = value.replace(/[^0-9.]/g, '');
-    setCommonRate(cleaned);
-
-    if (!isLoadedRef.current) return;
-
-    // Sync to local storage + schedule save
-    const payload = { month: selectedMonth, commonRate: cleaned, entries };
-    const nextLocal = { ...readLocal(), [docId]: { ...payload, savedAt: new Date().toISOString() } };
-    writeLocal(nextLocal);
-    setLocalRecords(nextLocal);
-
-    pendingSaveRef.current = { entries, rate: cleaned, docId, month: selectedMonth };
-    clearTimeout(autoSaveTimer.current);
-    setSaveStatus('pending');
-    setSaveMsg('Unsaved changes…');
-    autoSaveTimer.current = setTimeout(
-      () => saveToFirebase(entries, cleaned, docId, selectedMonth),
-      AUTO_SAVE_DELAY_MS
-    );
   }
 
   // ── Delete month ────────────────────────────────────────────────────────
@@ -296,7 +267,6 @@ export default function TankerTracker({ isAdmin = false }) {
       setSaveStatus('saved');
       setSaveMsg(`Deleted data for ${formatLongMonthLabel(selectedMonth)}.`);
       setEntries(normalizeEntries(monthDays, {}));
-      setCommonRate(String(DEFAULT_RATE));
     } catch (err) {
       console.error('Delete error:', err);
       setSaveStatus('error');
@@ -306,33 +276,34 @@ export default function TankerTracker({ isAdmin = false }) {
 
   // ── Summary ──────────────────────────────────────────────────────────────
   const summary = useMemo(() => {
-    const rate = n(commonRate);
     const totalTankers = monthDays.reduce((s, d) => s + n(entries[d.dateKey]?.count), 0);
-    const grandTotal = totalTankers * rate;
+    const grandTotal = monthDays.reduce((s, d) => {
+      const row = entries[d.dateKey] || {};
+      return s + n(row.count) * n(row.rate);
+    }, 0);
     const activeDays = monthDays.filter(d => n(entries[d.dateKey]?.count) > 0).length;
-    return { totalTankers, grandTotal, activeDays, rate };
-  }, [entries, monthDays, commonRate]);
+    return { totalTankers, grandTotal, activeDays };
+  }, [entries, monthDays]);
 
   // ── Excel export ─────────────────────────────────────────────────────────
   function handleDownloadExcel() {
-    const rate = n(commonRate);
-    const headers = ['Date', 'Day', 'Common Rate (₹)', 'Tanker Count', 'Total (₹)', 'Remark'];
+    const headers = ['Date', 'Day', 'Rate (₹)', 'Tanker Count', 'Total (₹)'];
     const dataRows = monthDays.map(d => {
-      const row = entries[d.dateKey] || { count: '', remark: '' };
+      const row = entries[d.dateKey] || { count: '', rate: String(DEFAULT_RATE) };
       const count = n(row.count);
+      const rate = n(row.rate);
       return [
         d.formattedDate,
         d.weekday,
         rate,
         count || '',
         count > 0 ? count * rate : '',
-        row.remark || '',
       ];
     });
-    const totalsRow = ['Total', '', '', summary.totalTankers, summary.grandTotal, ''];
+    const totalsRow = ['Total', '', '', summary.totalTankers, summary.grandTotal];
 
     const ws = XLSX.utils.aoa_to_sheet([headers, ...dataRows, totalsRow]);
-    ws['!cols'] = [{ wch: 14 }, { wch: 7 }, { wch: 18 }, { wch: 14 }, { wch: 12 }, { wch: 26 }];
+    ws['!cols'] = [{ wch: 14 }, { wch: 7 }, { wch: 12 }, { wch: 14 }, { wch: 14 }];
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, `Tanker ${formatMonthLabel(selectedMonth)}`);
@@ -362,48 +333,7 @@ export default function TankerTracker({ isAdmin = false }) {
         <div>
           <p className="eyebrow">Monthly tanker register</p>
           <h3>Daily entry table</h3>
-          <p>Enter tanker count for each day — auto-saves to cloud.</p>
-        </div>
-
-        {/* Common rate input */}
-        <div style={{
-          background: 'rgba(30,58,138,0.06)',
-          borderRadius: 12,
-          padding: '14px 18px',
-          border: '1px solid rgba(30,58,138,0.12)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 16,
-          flexWrap: 'wrap',
-        }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Common Rate (₹ per tanker)
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: '1rem', opacity: 0.5 }}>₹</span>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={commonRate}
-                onChange={e => handleRateChange(e.target.value)}
-                readOnly={!isAdmin}
-                style={{
-                  padding: '8px 12px',
-                  borderRadius: 8,
-                  border: '1px solid rgba(0,0,0,0.15)',
-                  fontSize: '1rem',
-                  fontWeight: 700,
-                  background: isAdmin ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.05)',
-                  width: 120,
-                  color: '#0f3d35',
-                }}
-              />
-            </div>
-          </div>
-          <div style={{ fontSize: '0.85rem', opacity: 0.7 }}>
-            Applied to all days in {formatLongMonthLabel(selectedMonth)}.
-          </div>
+          <p>Enter rate and tanker count for each day — auto-saves to cloud.</p>
         </div>
 
         {/* Summary chips */}
@@ -431,10 +361,6 @@ export default function TankerTracker({ isAdmin = false }) {
           <div className="summary-card">
             <span>Total Tankers</span>
             <strong>{summary.totalTankers}</strong>
-          </div>
-          <div className="summary-card">
-            <span>Rate per Tanker</span>
-            <strong>₹{n(commonRate).toLocaleString('en-IN')}</strong>
           </div>
           <div className="summary-card">
             <span>Grand Total</span>
@@ -508,9 +434,9 @@ export default function TankerTracker({ isAdmin = false }) {
             <thead>
               <tr>
                 <th style={{ minWidth: 130 }}>Date</th>
-                <th style={{ minWidth: 100, textAlign: 'center' }}>Tanker Count</th>
-                <th style={{ minWidth: 120, textAlign: 'right' }}>Total (₹)</th>
-                <th style={{ minWidth: 200 }}>Remark</th>
+                <th style={{ minWidth: 120, textAlign: 'center' }}>Rate (₹)</th>
+                <th style={{ minWidth: 120, textAlign: 'center' }}>Tanker Count</th>
+                <th style={{ minWidth: 130, textAlign: 'right' }}>Total (₹)</th>
               </tr>
             </thead>
             <tbody>
@@ -522,23 +448,35 @@ export default function TankerTracker({ isAdmin = false }) {
                 </tr>
               ) : (
                 monthDays.map(d => {
-                  const row = entries[d.dateKey] || { count: '', remark: '' };
+                  const row = entries[d.dateKey] || { count: '', rate: String(DEFAULT_RATE) };
                   const count = n(row.count);
-                  const rowTotal = count * n(commonRate);
+                  const rate = n(row.rate);
+                  const rowTotal = count * rate;
                   const isSunday = d.date.getDay() === 0;
 
                   return (
                     <tr
                       key={d.dateKey}
-                      style={{
-                        background: isSunday ? 'rgba(239,68,68,0.04)' : undefined,
-                      }}
+                      style={{ background: isSunday ? 'rgba(239,68,68,0.04)' : undefined }}
                     >
                       {/* Date + weekday */}
                       <th className="attendance-register-date">
                         <strong>{d.formattedDate}</strong>
                         <span style={{ color: isSunday ? '#dc2626' : undefined }}>{d.weekday}</span>
                       </th>
+
+                      {/* Rate input — editable per row */}
+                      <td style={{ textAlign: 'center' }}>
+                        <input
+                          className="attendance-register-input"
+                          type="text"
+                          inputMode="numeric"
+                          value={row.rate}
+                          onChange={e => handleCellChange(d.dateKey, 'rate', e.target.value.replace(/[^0-9.]/g, ''))}
+                          readOnly={!isAdmin}
+                          style={{ width: 80, textAlign: 'right' }}
+                        />
+                      </td>
 
                       {/* Tanker count input */}
                       <td style={{ textAlign: 'center' }}>
@@ -562,19 +500,6 @@ export default function TankerTracker({ isAdmin = false }) {
                           <span style={{ opacity: 0.3 }}>—</span>
                         )}
                       </td>
-
-                      {/* Remark */}
-                      <td>
-                        <input
-                          className="attendance-register-input"
-                          type="text"
-                          value={row.remark}
-                          onChange={e => handleCellChange(d.dateKey, 'remark', e.target.value)}
-                          readOnly={!isAdmin}
-                          placeholder="Optional note…"
-                          style={{ minWidth: 160 }}
-                        />
-                      </td>
                     </tr>
                   );
                 })
@@ -586,9 +511,9 @@ export default function TankerTracker({ isAdmin = false }) {
               <tfoot>
                 <tr>
                   <th>Total</th>
+                  <th />
                   <th style={{ textAlign: 'center' }}>{summary.totalTankers}</th>
                   <th style={{ textAlign: 'right', color: '#0f3d35' }}>₹{fmt(summary.grandTotal)}</th>
-                  <th />
                 </tr>
               </tfoot>
             )}
