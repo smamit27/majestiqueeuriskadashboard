@@ -208,20 +208,27 @@ export default function FinanceTracker({ isAdmin = false }) {
   }[saveStatus];
 
   const handleDownloadExcel = () => {
-    const incomeRows = income.map(r => ({ Category: 'Income', Detail: r.source, Amount: n(r.amount), Remark: r.remark }));
+    const incomeRows = income.map(r => ({
+      Category: 'Income',
+      'Cheque No': '',
+      Detail: r.source,
+      'Amount (₹)': n(r.amount),
+      'Remark / Purpose': r.remark
+    }));
     const expenseRows = combinedExpenses.map(r => ({
-      Category: r.isLinked ? `Expense (Cheque: ${r.chequeNo})` : (r.chequeNo ? `Expense (Cheque: ${r.chequeNo})` : 'Expense (Manual)'),
+      Category: r.isLinked ? 'Expense (Linked)' : 'Expense (Manual)',
+      'Cheque No': r.chequeNo || '',
       Detail: r.vendor,
-      Amount: n(r.amount),
-      Remark: r.purpose
+      'Amount (₹)': n(r.amount),
+      'Remark / Purpose': r.purpose
     }));
 
     const allRows = [
       ...incomeRows,
-      { Category: 'TOTAL INCOME', Detail: '', Amount: totalIncome, Remark: '' },
+      { Category: 'TOTAL INCOME', 'Cheque No': '', Detail: '', 'Amount (₹)': totalIncome, 'Remark / Purpose': '' },
       ...expenseRows,
-      { Category: 'TOTAL EXPENSES', Detail: '', Amount: totalExpense, Remark: '' },
-      { Category: 'CLOSING BALANCE', Detail: '', Amount: balance, Remark: '' }
+      { Category: 'TOTAL EXPENSES', 'Cheque No': '', Detail: '', 'Amount (₹)': totalExpense, 'Remark / Purpose': '' },
+      { Category: 'CLOSING BALANCE', 'Cheque No': '', Detail: '', 'Amount (₹)': balance, 'Remark / Purpose': '' }
     ];
 
     const ws = XLSX.utils.json_to_sheet(allRows);
