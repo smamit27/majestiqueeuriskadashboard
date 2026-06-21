@@ -77,13 +77,13 @@ describe('FinanceTracker – initial render', () => {
   it('does NOT show Save Tracker button for non-admin', async () => {
     render(<FinanceTracker isAdmin={false} />);
     await waitFor(() => screen.getByText(/monthly cashflow tracker/i));
-    expect(screen.queryByRole('button', { name: /save tracker/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /save/i })).not.toBeInTheDocument();
   });
 
   it('shows Save Tracker button when isAdmin=true', async () => {
     render(<FinanceTracker isAdmin={true} />);
     await waitFor(() =>
-      expect(screen.getByRole('button', { name: /save tracker/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument()
     );
   });
 });

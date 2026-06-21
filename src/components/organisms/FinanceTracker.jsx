@@ -30,7 +30,8 @@ const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2,
 export default function FinanceTracker({ isAdmin = false }) {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
   const [income, setIncome] = useState([{ source: '', amount: '', remark: '' }]);
-  const [expenses, setExpenses] = useState([{ vendor: '', amount: '', purpose: '' }]);
+  const [expenses, setExpenses] = useState([{ chequeNo: '', vendor: '', amount: '', purpose: '' }]);
+  const [chequeExpenses, setChequeExpenses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg] = useState('');
@@ -56,16 +57,68 @@ export default function FinanceTracker({ isAdmin = false }) {
 
       try {
         await ensureFirebaseSession();
+        
+        // Fetch main finance doc
         const snap = await getDoc(doc(db, 'financeMonthly', recordId));
+        
+        // Fetch cheques if selectedMonth is June 2026 or later
+        let chequesList = [];
+        if (selectedMonth >= '2026-06') {
+          try {
+            const [snapA, snapCommon] = await Promise.all([
+              getDoc(doc(db, 'chequesMonthly', `cheques_${selectedMonth}`)),
+              getDoc(doc(db, 'chequesMonthly', `cheques_common_${selectedMonth}`))
+            ]);
+            
+            const listA = snapA.exists() ? (snapA.data().cheques || []) : [];
+            const listCommon = snapCommon.exists() ? (snapCommon.data().cheques || []) : [];
+            
+            const mappedA = listA
+              .filter(c => c.vendor || c.amount || c.chequeNo)
+              .map(c => ({
+                chequeNo: c.chequeNo || '',
+                vendor: c.vendor || '',
+                purpose: c.purpose || '',
+                amount: c.amount || '0',
+                isLinked: true,
+                sourceTab: 'A Building'
+              }));
+              
+            const mappedCommon = listCommon
+              .filter(c => c.vendor || c.amount || c.chequeNo)
+              .map(c => ({
+                chequeNo: c.chequeNo || '',
+                vendor: c.vendor || '',
+                purpose: c.purpose || '',
+                amount: c.amount || '0',
+                isLinked: true,
+                sourceTab: 'Common'
+              }));
+              
+            chequesList = [...mappedA, ...mappedCommon];
+          } catch (err) {
+            console.error('Error loading cheques for finance tracker:', err);
+          }
+        }
+
         if (!cancelled) {
+          setChequeExpenses(chequesList);
+
           if (snap.exists()) {
             const data = snap.data();
             setIncome(data.income || [{ source: '', amount: '', remark: '' }]);
-            setExpenses(data.expenses || [{ vendor: '', amount: '', purpose: '' }]);
+            
+            const loadedExpenses = (data.expenses || []).map(e => ({
+              chequeNo: e.chequeNo || '',
+              vendor: e.vendor || '',
+              amount: e.amount || '',
+              purpose: e.purpose || ''
+            }));
+            setExpenses(loadedExpenses.length > 0 ? loadedExpenses : [{ chequeNo: '', vendor: '', amount: '', purpose: '' }]);
             setSaveMsg(`${formatLongMonth(selectedMonth)}`);
           } else {
             setIncome([{ source: '', amount: '', remark: '' }]);
-            setExpenses([{ vendor: '', amount: '', purpose: '' }]);
+            setExpenses([{ chequeNo: '', vendor: '', amount: '', purpose: '' }]);
             setSaveMsg(`New tracker — ${formatLongMonth(selectedMonth)}`);
           }
         }
@@ -121,7 +174,7 @@ export default function FinanceTracker({ isAdmin = false }) {
   };
 
   const addExpenseRow = () => {
-    const next = [...expenses, { vendor: '', amount: '', purpose: '' }];
+    const next = [...expenses, { chequeNo: '', vendor: '', amount: '', purpose: '' }];
     setExpenses(next);
     triggerAutoSave(income, next);
   };
@@ -149,13 +202,18 @@ export default function FinanceTracker({ isAdmin = false }) {
 
   const removeExpense = (idx) => {
     const next = expenses.filter((_, i) => i !== idx);
-    if (next.length === 0) next.push({ vendor: '', amount: '', purpose: '' });
+    if (next.length === 0) next.push({ chequeNo: '', vendor: '', amount: '', purpose: '' });
     setExpenses(next);
     triggerAutoSave(income, next);
   };
 
+  const combinedExpenses = [
+    ...chequeExpenses.map((c, i) => ({ ...c, id: `cheque-${i}`, isLinked: true })),
+    ...expenses.map((e, i) => ({ ...e, id: `manual-${i}`, isLinked: false, originalIndex: i }))
+  ];
+
   const totalIncome = income.reduce((s, r) => s + n(r.amount), 0);
-  const totalExpense = expenses.reduce((s, r) => s + n(r.amount), 0);
+  const totalExpense = combinedExpenses.reduce((s, r) => s + n(r.amount), 0);
   const balance = totalIncome - totalExpense;
 
   const badge = {
@@ -168,7 +226,12 @@ export default function FinanceTracker({ isAdmin = false }) {
 
   const handleDownloadExcel = () => {
     const incomeRows = income.map(r => ({ Category: 'Income', Detail: r.source, Amount: n(r.amount), Remark: r.remark }));
-    const expenseRows = expenses.map(r => ({ Category: 'Expense', Detail: r.vendor, Amount: n(r.amount), Remark: r.purpose }));
+    const expenseRows = combinedExpenses.map(r => ({
+      Category: r.isLinked ? `Expense (Cheque: ${r.chequeNo})` : (r.chequeNo ? `Expense (Cheque: ${r.chequeNo})` : 'Expense (Manual)'),
+      Detail: r.vendor,
+      Amount: n(r.amount),
+      Remark: r.purpose
+    }));
 
     const allRows = [
       ...incomeRows,
@@ -315,48 +378,104 @@ export default function FinanceTracker({ isAdmin = false }) {
             <table className="attendance-table attendance-table--bill" style={{ minWidth: '100%' }}>
               <thead>
                 <tr style={{ background: '#fff1f2' }}>
-                  <th style={{ width: '40%', color: '#e11d48', background: '#fff1f2' }}>Vendor Name</th>
-                  <th style={{ width: '25%', textAlign: 'right', color: '#e11d48', background: '#fff1f2' }}>Amount (₹)</th>
-                  <th style={{ width: '35%', color: '#e11d48', background: '#fff1f2' }}>Purpose</th>
+                  {selectedMonth >= '2026-06' && <th style={{ width: '15%', color: '#e11d48', background: '#fff1f2' }}>Cheque No</th>}
+                  <th style={{ width: selectedMonth >= '2026-06' ? '30%' : '40%', color: '#e11d48', background: '#fff1f2' }}>Vendor Name</th>
+                  <th style={{ width: '20%', textAlign: 'right', color: '#e11d48', background: '#fff1f2' }}>Amount (₹)</th>
+                  <th style={{ width: selectedMonth >= '2026-06' ? '30%' : '35%', color: '#e11d48', background: '#fff1f2' }}>Purpose</th>
                   <th style={{ width: '40px', background: '#fff1f2' }}></th>
                 </tr>
               </thead>
               <tbody>
-                {expenses.map((row, i) => (
-                  <tr key={i}>
-                    <td>
-                      <input
-                        className="attendance-register-input"
-                        value={row.vendor}
-                        onChange={e => updateExpense(i, 'vendor', e.target.value)}
-                        placeholder="e.g. MSEDCL"
-                        readOnly={!isAdmin}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        className="attendance-register-input"
-                        style={{ textAlign: 'right' }}
-                        value={row.amount}
-                        onChange={e => updateExpense(i, 'amount', e.target.value)}
-                        placeholder="0.00"
-                        readOnly={!isAdmin}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        className="attendance-register-input"
-                        value={row.purpose}
-                        onChange={e => updateExpense(i, 'purpose', e.target.value)}
-                        placeholder="Purpose"
-                        readOnly={!isAdmin}
-                      />
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      {isAdmin && <button onClick={() => removeExpense(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.4 }}>✕</button>}
-                    </td>
-                  </tr>
-                ))}
+                {combinedExpenses.map((row) => {
+                  if (row.isLinked) {
+                    return (
+                      <tr key={row.id} style={{ background: '#fafaf9', opacity: 0.85 }}>
+                        {selectedMonth >= '2026-06' && (
+                          <td style={{ verticalAlign: 'middle', paddingLeft: '12px' }}>
+                            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--muted)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              🔗 {row.chequeNo}
+                            </span>
+                          </td>
+                        )}
+                        <td>
+                          <input
+                            className="attendance-register-input"
+                            value={row.vendor}
+                            readOnly
+                            style={{ background: 'transparent', color: '#78716c', fontStyle: 'italic' }}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            className="attendance-register-input"
+                            style={{ textAlign: 'right', background: 'transparent', color: '#78716c', fontStyle: 'italic' }}
+                            value={row.amount}
+                            readOnly
+                          />
+                        </td>
+                        <td>
+                          <input
+                            className="attendance-register-input"
+                            value={`${row.purpose} (${row.sourceTab})`}
+                            readOnly
+                            style={{ background: 'transparent', color: '#78716c', fontStyle: 'italic' }}
+                          />
+                        </td>
+                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                          <span title="Linked to Cheque Tracker" style={{ cursor: 'default', fontSize: '0.85rem' }}>🔒</span>
+                        </td>
+                      </tr>
+                    );
+                  } else {
+                    const i = row.originalIndex;
+                    return (
+                      <tr key={row.id}>
+                        {selectedMonth >= '2026-06' && (
+                          <td>
+                            <input
+                              className="attendance-register-input"
+                              value={row.chequeNo}
+                              onChange={e => updateExpense(i, 'chequeNo', e.target.value)}
+                              placeholder="e.g. 123"
+                              readOnly={!isAdmin}
+                            />
+                          </td>
+                        )}
+                        <td>
+                          <input
+                            className="attendance-register-input"
+                            value={row.vendor}
+                            onChange={e => updateExpense(i, 'vendor', e.target.value)}
+                            placeholder="e.g. MSEDCL"
+                            readOnly={!isAdmin}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            className="attendance-register-input"
+                            style={{ textAlign: 'right' }}
+                            value={row.amount}
+                            onChange={e => updateExpense(i, 'amount', e.target.value)}
+                            placeholder="0.00"
+                            readOnly={!isAdmin}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            className="attendance-register-input"
+                            value={row.purpose}
+                            onChange={e => updateExpense(i, 'purpose', e.target.value)}
+                            placeholder="Purpose"
+                            readOnly={!isAdmin}
+                          />
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          {isAdmin && <button onClick={() => removeExpense(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.4 }}>✕</button>}
+                        </td>
+                      </tr>
+                    );
+                  }
+                })}
               </tbody>
             </table>
           </div>
