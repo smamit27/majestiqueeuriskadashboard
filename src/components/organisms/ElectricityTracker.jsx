@@ -205,8 +205,8 @@ export default function ElectricityTracker({ isAdmin = false }) {
     setFormData(prev => {
       const next = { ...prev, [field]: val };
 
-      // Auto-calculate slabs for both Mahavitaran and Tata tabs
-      if ((subTab === 'mahavitaran' || subTab === 'tata') && (field === 'prevReading' || field === 'currReading')) {
+      // Auto-calculate slabs for Mahavitaran tab
+      if (subTab === 'mahavitaran' && (field === 'prevReading' || field === 'currReading')) {
         const p = n(next.prevReading);
         const c = n(next.currReading);
         if (c > p && p >= 0) {
@@ -264,7 +264,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
       id: Date.now()
     };
 
-    if (subTab === 'mahavitaran' || subTab === 'tata') {
+    if (subTab === 'mahavitaran') {
       const calc = calculateMahavitaranBill(
         formData.prevReading, formData.currReading,
         formData.msebFixedCharge, formData.msebEnergyCharge,
@@ -318,7 +318,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
     const current = next[idx];
     const updated = { ...current, [field]: val };
 
-    if (subTab === 'mahavitaran' || subTab === 'tata') {
+    if (subTab === 'mahavitaran') {
       if (['prevReading', 'currReading', 'msebFixedCharge', 'msebEnergyCharge', 'msebWheelingRate', 'msebFuelAdj'].includes(field)) {
         const calc = calculateMahavitaranBill(
           updated.prevReading, updated.currReading,
@@ -640,9 +640,9 @@ export default function ElectricityTracker({ isAdmin = false }) {
               <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="0" value={formData.currReading} onChange={e => handleFormChange('currReading', e.target.value)} required />
             </div>
 
-            {(subTab === 'mahavitaran' || subTab === 'tata') ? (
+            {subTab === 'mahavitaran' ? (
               <>
-                {/* Mahavitaran shows Meter Type dropdown; Tata is always 10kW = 445 */}
+                {/* Mahavitaran shows Meter Type dropdown */}
                 {subTab === 'mahavitaran' && (
                   <div className="field-group">
                     <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Meter Type</label>
@@ -691,7 +691,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
             </div>
           </form>
 
-          {(subTab === 'mahavitaran' || subTab === 'tata') && n(formData.currReading) > n(formData.prevReading) && (
+          {subTab === 'mahavitaran' && n(formData.currReading) > n(formData.prevReading) && (
             <div style={{ marginTop: '24px', padding: '16px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
               <h5 style={{ margin: '0 0 12px 0', color: '#334155' }}>Slab Breakdown for {n(formData.currReading) - n(formData.prevReading)} units</h5>
               <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
@@ -726,9 +726,9 @@ export default function ElectricityTracker({ isAdmin = false }) {
       {/* Main Table */}
       <div className="table-card">
         <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: (subTab === 'mahavitaran' || subTab === 'tata') ? 1200 : 1000 }}>
+          <table className="attendance-table" style={{ minWidth: subTab === 'mahavitaran' ? 1200 : 1000 }}>
             <thead>
-              {(subTab === 'mahavitaran' || subTab === 'tata') ? (
+              {subTab === 'mahavitaran' ? (
                 <tr style={{ background: '#f8fafc' }}>
                   <th style={{ width: 60 }}>Sr.</th>
                   <th style={{ width: 220 }}>Period</th>
@@ -767,7 +767,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
                   const actualIdx = activeBills.findIndex(orig => orig.id === c.id);
                   const isEditing = editingRowId === c.id;
 
-                  if (subTab === 'mahavitaran' || subTab === 'tata') {
+                  if (subTab === 'mahavitaran') {
                     return (
                       <tr key={c.id || i}>
                         <td style={{ verticalAlign: 'middle' }}>{i + 1}</td>
@@ -878,7 +878,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
               )}
             </tbody>
             <tfoot>
-              {(subTab === 'mahavitaran' || subTab === 'tata') ? (
+              {subTab === 'mahavitaran' ? (
                 <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
                   <td colSpan={3} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
                   <td style={{ textAlign: 'right', color: '#ea580c' }}>{fmt(totalConsumption)}</td>
