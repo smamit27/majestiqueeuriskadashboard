@@ -65,15 +65,11 @@ export default function FinanceTracker({ isAdmin = false }) {
         let chequesList = [];
         if (selectedMonth >= '2026-06') {
           try {
-            const [snapA, snapCommon] = await Promise.all([
-              getDoc(doc(db, 'chequesMonthly', `cheques_${selectedMonth}`)),
-              getDoc(doc(db, 'chequesMonthly', `cheques_common_${selectedMonth}`))
-            ]);
+            const snapA = await getDoc(doc(db, 'chequesMonthly', `cheques_${selectedMonth}`));
             
             const listA = snapA.exists() ? (snapA.data().cheques || []) : [];
-            const listCommon = snapCommon.exists() ? (snapCommon.data().cheques || []) : [];
             
-            const mappedA = listA
+            chequesList = listA
               .filter(c => c.vendor || c.amount || c.chequeNo)
               .map(c => ({
                 chequeNo: c.chequeNo || '',
@@ -83,19 +79,6 @@ export default function FinanceTracker({ isAdmin = false }) {
                 isLinked: true,
                 sourceTab: 'A Building'
               }));
-              
-            const mappedCommon = listCommon
-              .filter(c => c.vendor || c.amount || c.chequeNo)
-              .map(c => ({
-                chequeNo: c.chequeNo || '',
-                vendor: c.vendor || '',
-                purpose: c.purpose || '',
-                amount: c.amount || '0',
-                isLinked: true,
-                sourceTab: 'Common'
-              }));
-              
-            chequesList = [...mappedA, ...mappedCommon];
           } catch (err) {
             console.error('Error loading cheques for finance tracker:', err);
           }
