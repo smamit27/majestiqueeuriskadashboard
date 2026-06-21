@@ -251,7 +251,7 @@ export default function FinanceTracker({ isAdmin = false }) {
         {/* Income Table */}
         <div className="table-card" style={{ height: 'fit-content' }}>
           <div className="attendance-table-card__header" style={{ padding: '16px 20px' }}>
-            <h4 style={{ margin: 0, color: '#059669' }}>📥 Income Details</h4>
+            <h4 style={{ margin: 0, color: '#059669' }}>📥 Income Details (₹{fmt(totalIncome)})</h4>
             {isAdmin && <button className="button-secondary" onClick={addIncomeRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>}
           </div>
           <div className="attendance-table-scroll" style={{ padding: 0, maxHeight: '520px', overflowY: 'auto' }}>
@@ -308,7 +308,7 @@ export default function FinanceTracker({ isAdmin = false }) {
         {/* Expenses Table */}
         <div className="table-card" style={{ height: 'fit-content' }}>
           <div className="attendance-table-card__header" style={{ padding: '16px 20px' }}>
-            <h4 style={{ margin: 0, color: '#dc2626' }}>📤 Expense Details</h4>
+            <h4 style={{ margin: 0, color: '#dc2626' }}>📤 Expense Details (₹{fmt(totalExpense)})</h4>
             {isAdmin && <button className="button-secondary" onClick={addExpenseRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>}
           </div>
           <div className="attendance-table-scroll" style={{ padding: 0, maxHeight: '520px', overflowY: 'auto' }}>
