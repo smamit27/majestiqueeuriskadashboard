@@ -239,18 +239,50 @@ export default function ChequeManagement({ isAdmin = false }) {
       );
     })
     .sort((a, b) => {
-      // Sort by date descending (newest first)
-      const dateA = a.date ? new Date(a.date) : new Date(0);
-      const dateB = b.date ? new Date(b.date) : new Date(0);
-      if (dateB - dateA !== 0) return dateB - dateA;
-      
-      // Secondary sort: Cheque No (desc)
-      const numA = String(a.chequeNo || '').toLowerCase();
-      const numB = String(b.chequeNo || '').toLowerCase();
-      return numB.localeCompare(numA);
+      // Primary sort: Cheque No ascending (lowest to highest)
+      const numA = Number(String(a.chequeNo || '').replace(/\D/g, '')) || Infinity;
+      const numB = Number(String(b.chequeNo || '').replace(/\D/g, '')) || Infinity;
+      return numA - numB;
     });
 
   const totalAmount = filteredCheques.reduce((s, c) => s + n(c.amount), 0);
+
+  // Missing Cheque Detection — only for Building A tab, June 2026 onwards
+  const getMissingCheques = () => {
+    if (subTab !== 'buildingA') return [];
+    
+    // Only check months from Jun 2026 onwards
+    const [selYear, selMonthNum] = selectedMonth.split('-').map(Number);
+    const cutoffYear = 2026, cutoffMonth = 6;
+    if (selYear < cutoffYear || (selYear === cutoffYear && selMonthNum < cutoffMonth)) return [];
+
+    // Get all numeric cheque numbers from A building cheques this month
+    // Exclude cancelled cheques (amount = 0)
+    const numbers = chequesA
+      .filter(c => n(c.amount) !== 0) // Skip cancelled cheques
+      .map(c => {
+        const stripped = String(c.chequeNo || '').replace(/\D/g, '');
+        return stripped ? Number(stripped) : null;
+      })
+      .filter(num => num !== null)
+      .sort((a, b) => a - b);
+
+    if (numbers.length <= 5) return []; // Only check if more than 5 active cheques
+
+    // Find small gaps (1-3 missing) in the sequence
+    const missing = [];
+    for (let i = 0; i < numbers.length - 1; i++) {
+      const diff = numbers[i + 1] - numbers[i];
+      if (diff > 1 && diff <= 4) {
+        for (let j = numbers[i] + 1; j < numbers[i + 1]; j++) {
+          missing.push(j);
+        }
+      }
+    }
+    return missing;
+  };
+
+  const missingCheques = getMissingCheques();
 
   const badge = {
     idle: { color: '#6b7280', icon: '●' },
@@ -346,6 +378,19 @@ export default function ChequeManagement({ isAdmin = false }) {
           </div>
         </div>
       </div>
+
+      {/* Missing Cheque Alert Banner — Building A only, June 2026+ */}
+      {missingCheques.length > 0 && (
+        <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '12px', padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+          <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>⚠️</span>
+          <div>
+            <p style={{ margin: '0 0 4px 0', fontWeight: 700, color: '#dc2626', fontSize: '0.95rem' }}>Missing Cheque Alert</p>
+            <p style={{ margin: 0, color: '#991b1b', fontSize: '0.88rem' }}>
+              In <strong>{formatLongMonth(selectedMonth)}</strong>, you missed to add cheque number(s): <strong>{missingCheques.join(', ')}</strong>. Please check.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* SEARCH ZONE */}
       <div className="section-card" style={{ padding: '16px 24px', background: '#f8fafc', border: '1px solid var(--line)' }}>
@@ -465,19 +510,25 @@ export default function ChequeManagement({ isAdmin = false }) {
               ) : (
                 filteredCheques.map((c, i) => {
                   const actualIdx = activeCheques.findIndex(orig => orig.id === c.id);
+                  const isCancelled = n(c.amount) === 0;
                   return (
-                    <tr key={c.id || i}>
+                    <tr key={c.id || i} style={isCancelled ? { background: '#f5f5f5', opacity: 0.65 } : {}}>
                       <td>{i + 1}</td>
-                      <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value)} readOnly={!isAdmin} /></td>
-                      <td><input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value)} readOnly={!isAdmin} /></td>
-                      <td><input className="attendance-register-input" style={{ fontWeight: 600 }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value)} readOnly={!isAdmin} /></td>
-                      <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value)} readOnly={!isAdmin} /></td>
-                      <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700 }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value)} readOnly={!isAdmin} /></td>
+                      <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value)} readOnly={!isAdmin} style={isCancelled ? { textDecoration: 'line-through', color: '#9ca3af' } : {}} /></td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value)} readOnly={!isAdmin} style={isCancelled ? { textDecoration: 'line-through', color: '#9ca3af' } : {}} />
+                          {isCancelled && <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', fontWeight: 700, padding: '2px 5px', borderRadius: '4px', whiteSpace: 'nowrap' }}>CANCELLED</span>}
+                        </div>
+                      </td>
+                      <td><input className="attendance-register-input" style={{ fontWeight: 600, ...(isCancelled ? { textDecoration: 'line-through', color: '#9ca3af' } : {}) }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value)} readOnly={!isAdmin} /></td>
+                      <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value)} readOnly={!isAdmin} style={isCancelled ? { color: '#9ca3af' } : {}} /></td>
+                      <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700, ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value)} readOnly={!isAdmin} /></td>
                       {subTab === 'common' && (
                         <>
-                          <td style={{ textAlign: 'right', color: '#16a34a', fontWeight: 500 }}>₹{fmt(n(c.amount) * FLATS.A / FLATS.Total)}</td>
-                          <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 500 }}>₹{fmt(n(c.amount) * FLATS.B / FLATS.Total)}</td>
-                          <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 500 }}>₹{fmt(n(c.amount) * FLATS.C / FLATS.Total)}</td>
+                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#16a34a', fontWeight: 500 }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
+                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#2563eb', fontWeight: 500 }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
+                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#ea580c', fontWeight: 500 }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
                         </>
                       )}
                       <td>

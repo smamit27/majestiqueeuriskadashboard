@@ -107,24 +107,25 @@ export default function ChequeTracker() {
     triggerAutoSave(next);
   };
 
-  const updateRow = (idx, field, val) => {
-    const next = [...entries];
-    next[idx] = { ...next[idx], [field]: val };
-
-    // Auto-calc shares if total amount changes
-    if (field === 'totalAmount' && val) {
-      const amount = n(val);
-      next[idx].aShare = (amount * (FLAT_COUNTS.A / TOTAL_FLATS)).toFixed(2);
-      next[idx].bShare = (amount * (FLAT_COUNTS.B / TOTAL_FLATS)).toFixed(2);
-      next[idx].cShare = (amount * (FLAT_COUNTS.C / TOTAL_FLATS)).toFixed(2);
-    }
-
+  const updateRow = (id, field, val) => {
+    const next = entries.map(e => {
+      if (e.id !== id) return e;
+      const updated = { ...e, [field]: val };
+      // Auto-calc shares if total amount changes
+      if (field === 'totalAmount' && val) {
+        const amount = n(val);
+        updated.aShare = (amount * (FLAT_COUNTS.A / TOTAL_FLATS)).toFixed(2);
+        updated.bShare = (amount * (FLAT_COUNTS.B / TOTAL_FLATS)).toFixed(2);
+        updated.cShare = (amount * (FLAT_COUNTS.C / TOTAL_FLATS)).toFixed(2);
+      }
+      return updated;
+    });
     setEntries(next);
     triggerAutoSave(next);
   };
 
-  const removeRow = (idx) => {
-    const next = entries.filter((_, i) => i !== idx);
+  const removeRow = (id) => {
+    const next = entries.filter(e => e.id !== id);
     setEntries(next);
     triggerAutoSave(next);
   };
@@ -174,13 +175,18 @@ export default function ChequeTracker() {
     await saveToFirebase(defaults);
   };
 
-  // Logic: Filter and Search
+  // Logic: Filter, Search, and Sort
   const filteredEntries = entries.filter(e => {
     const matchesSearch = !searchTerm ||
       e.vendor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      e.purpose.toLowerCase().includes(searchTerm.toLowerCase());
+      e.purpose.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (e.chequeNo || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesMonth = filterMonth === 'All' || e.month === filterMonth;
     return matchesSearch && matchesMonth;
+  }).sort((a, b) => {
+    const numA = Number(a.chequeNo?.replace(/\D/g, '')) || Infinity;
+    const numB = Number(b.chequeNo?.replace(/\D/g, '')) || Infinity;
+    return numA - numB;
   });
 
   const months = ['All', ...new Set(entries.map(e => e.month).filter(Boolean))];
@@ -199,10 +205,89 @@ export default function ChequeTracker() {
   const pendingB = stats.totalDueFromB - stats.totalRecvFromB;
   const pendingC = stats.totalDueFromC - stats.totalRecvFromC;
 
+  // Helper: parse month strings like 'Jun 2026', 'Jun 26', 'June 2026' into a Date
+  const parseMonthString = (monthStr) => {
+    if (!monthStr) return null;
+    // Normalize 2-digit year e.g. 'Jun 26' -> 'Jun 2026'
+    const normalized = monthStr.trim().replace(/\b(\d{2})\b$/, (_, yr) => `20${yr}`);
+    const d = new Date(`1 ${normalized}`);
+    return isNaN(d) ? null : d;
+  };
+
+  const getMissingCheques = () => {
+    const missingByMonth = [];
+    const cutoff = new Date(2026, 5, 1); // June 2026 (month is 0-indexed)
+    
+    // Group by month — only A Building
+    const byMonth = {};
+    entries.forEach(e => {
+      if (e.whoPaid !== 'A Building') return;
+      const m = e.month?.trim();
+      if (!m) return;
+      // Only consider June 2026 onwards
+      const parsed = parseMonthString(m);
+      if (!parsed || parsed < cutoff) return;
+      if (!byMonth[m]) byMonth[m] = [];
+      byMonth[m].push(e);
+    });
+
+    for (const [month, monthEntries] of Object.entries(byMonth)) {
+      if (monthEntries.length > 5) {
+        // Extract valid numeric cheque numbers
+        const numbers = monthEntries
+          .map(e => {
+            const stripped = e.chequeNo?.replace(/\D/g, '');
+            return stripped ? Number(stripped) : null;
+          })
+          .filter(n => n !== null)
+          .sort((a, b) => a - b);
+        
+        if (numbers.length < 2) continue;
+
+        // Only flag a gap if it is small (≤ 3 missing) relative to a run of consecutive cheques.
+        // We do this by checking pairs of consecutive numbers in our sorted list:
+        // If (next - prev) is between 2 and 4, we assume those are skipped numbers in a run.
+        // If (next - prev) > 4, we assume it's a completely different block (no alert needed).
+        const missing = [];
+        for (let i = 0; i < numbers.length - 1; i++) {
+          const diff = numbers[i + 1] - numbers[i];
+          if (diff > 1 && diff <= 4) {
+            // Small gap — these cheques are likely missing from a consecutive series
+            for (let j = numbers[i] + 1; j < numbers[i + 1]; j++) {
+              missing.push(j);
+            }
+          }
+        }
+          
+        if (missing.length > 0) {
+          missingByMonth.push({ month, missing });
+        }
+      }
+    }
+    return missingByMonth;
+  };
+
+  const missingAlerts = getMissingCheques();
+
   const badge = { idle: '#6b7280', pending: '#f59e0b', saving: '#3b82f6', saved: '#10b981', error: '#ef4444' }[saveStatus] || '#6b7280';
 
   return (
     <div className="accounting-shell">
+
+      {missingAlerts.length > 0 && (
+        <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '12px', padding: '16px', marginBottom: '24px' }}>
+          <h4 style={{ margin: '0 0 8px 0', color: '#dc2626', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>⚠️</span> Missing Cheque Alert
+          </h4>
+          <ul style={{ margin: 0, paddingLeft: '24px', color: '#991b1b', fontSize: '0.9rem' }}>
+            {missingAlerts.map(alert => (
+              <li key={alert.month}>
+                In <strong>{alert.month}</strong>, you missed to add cheque <strong>{alert.missing.join(', ')}</strong>. Please check.
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Summary Cards */}
       <div className="attendance-summary-grid">
@@ -292,43 +377,43 @@ export default function ChequeTracker() {
                 <tr><td colSpan={15} style={{ textAlign: 'center', padding: 60 }}>
                   <div style={{ opacity: 0.5 }}>Loading Accounting Records...</div>
                 </td></tr>
-              ) : filteredEntries.map((e, i) => (
+              ) : filteredEntries.map((e) => (
                 <tr key={e.id} className={(!e.bReceiveDate || !e.cReceiveDate) ? 'row-pending' : ''}>
-                  <td><input className="attendance-register-input" value={e.srNo} onChange={v => updateRow(i, 'srNo', v.target.value)} /></td>
-                  <td><input className="attendance-register-input" value={e.month} onChange={v => updateRow(i, 'month', v.target.value)} /></td>
-                  <td><input className="attendance-register-input" value={e.date} onChange={v => updateRow(i, 'date', v.target.value)} /></td>
-                  <td><input className="attendance-register-input" value={e.chequeNo} onChange={v => updateRow(i, 'chequeNo', v.target.value)} /></td>
-                  <td><input className="attendance-register-input" style={{ fontWeight: 600 }} value={e.vendor} onChange={v => updateRow(i, 'vendor', v.target.value)} /></td>
-                  <td><input className="attendance-register-input" value={e.purpose} onChange={v => updateRow(i, 'purpose', v.target.value)} /></td>
-                  <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 800, color: 'var(--ink)' }} value={e.totalAmount} onChange={v => updateRow(i, 'totalAmount', v.target.value)} /></td>
+                  <td><input className="attendance-register-input" value={e.srNo} onChange={v => updateRow(e.id, 'srNo', v.target.value)} /></td>
+                  <td><input className="attendance-register-input" value={e.month} onChange={v => updateRow(e.id, 'month', v.target.value)} /></td>
+                  <td><input className="attendance-register-input" value={e.date} onChange={v => updateRow(e.id, 'date', v.target.value)} /></td>
+                  <td><input className="attendance-register-input" value={e.chequeNo} onChange={v => updateRow(e.id, 'chequeNo', v.target.value)} /></td>
+                  <td><input className="attendance-register-input" style={{ fontWeight: 600 }} value={e.vendor} onChange={v => updateRow(e.id, 'vendor', v.target.value)} /></td>
+                  <td><input className="attendance-register-input" value={e.purpose} onChange={v => updateRow(e.id, 'purpose', v.target.value)} /></td>
+                  <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 800, color: 'var(--ink)' }} value={e.totalAmount} onChange={v => updateRow(e.id, 'totalAmount', v.target.value)} /></td>
                   <td>
-                    <select className="attendance-register-input" value={e.whoPaid} onChange={v => updateRow(i, 'whoPaid', v.target.value)}>
+                    <select className="attendance-register-input" value={e.whoPaid} onChange={v => updateRow(e.id, 'whoPaid', v.target.value)}>
                       <option>A Building</option>
                       <option>B Building</option>
                       <option>C Building</option>
                     </select>
                   </td>
-                  <td style={{ background: '#f0fdf4' }}><input className="attendance-register-input" style={{ textAlign: 'right' }} value={e.aShare} onChange={v => updateRow(i, 'aShare', v.target.value)} /></td>
-                  <td style={{ background: '#eff6ff' }}><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: e.bReceiveDate ? 400 : 700 }} value={e.bShare} onChange={v => updateRow(i, 'bShare', v.target.value)} /></td>
+                  <td style={{ background: '#f0fdf4' }}><input className="attendance-register-input" style={{ textAlign: 'right' }} value={e.aShare} onChange={v => updateRow(e.id, 'aShare', v.target.value)} /></td>
+                  <td style={{ background: '#eff6ff' }}><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: e.bReceiveDate ? 400 : 700 }} value={e.bShare} onChange={v => updateRow(e.id, 'bShare', v.target.value)} /></td>
                   <td style={{ background: '#eff6ff' }}>
                     <input
                       className={`attendance-register-input ${e.bReceiveDate ? 'input-status-received' : 'input-status-pending'}`}
                       value={e.bReceiveDate}
-                      onChange={v => updateRow(i, 'bReceiveDate', v.target.value)}
+                      onChange={v => updateRow(e.id, 'bReceiveDate', v.target.value)}
                       placeholder="Pending"
                     />
                   </td>
-                  <td style={{ background: '#fff7ed' }}><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: e.cReceiveDate ? 400 : 700 }} value={e.cShare} onChange={v => updateRow(i, 'cShare', v.target.value)} /></td>
+                  <td style={{ background: '#fff7ed' }}><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: e.cReceiveDate ? 400 : 700 }} value={e.cShare} onChange={v => updateRow(e.id, 'cShare', v.target.value)} /></td>
                   <td style={{ background: '#fff7ed' }}>
                     <input
                       className={`attendance-register-input ${e.cReceiveDate ? 'input-status-received' : 'input-status-pending'}`}
                       value={e.cReceiveDate}
-                      onChange={v => updateRow(i, 'cReceiveDate', v.target.value)}
+                      onChange={v => updateRow(e.id, 'cReceiveDate', v.target.value)}
                       placeholder="Pending"
                     />
                   </td>
-                  <td><input className="attendance-register-input" value={e.remarks} onChange={v => updateRow(i, 'remarks', v.target.value)} /></td>
-                  <td><button className="button-icon" onClick={() => removeRow(i)} style={{ opacity: 0.3 }}>✕</button></td>
+                  <td><input className="attendance-register-input" value={e.remarks} onChange={v => updateRow(e.id, 'remarks', v.target.value)} /></td>
+                  <td><button className="button-icon" onClick={() => removeRow(e.id)} style={{ opacity: 0.3 }}>✕</button></td>
                 </tr>
               ))}
             </tbody>

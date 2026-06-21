@@ -1520,10 +1520,20 @@ select {
     border-radius: 8px;
   }
 
-  .attendance-register-input {
+  /* Narrow inputs inside table cells only */
+  .attendance-table .attendance-register-input {
     width: 52px;
     padding: 6px 4px;
     font-size: 0.85rem;
+  }
+
+  /* Form field inputs stay full-width on mobile */
+  .field-group .attendance-register-input,
+  .section-card .attendance-register-input {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1rem;
+    padding: 10px 12px;
   }
 
   .attendance-manager--register {

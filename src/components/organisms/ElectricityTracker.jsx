@@ -22,21 +22,21 @@ const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2,
 
 export default function ElectricityTracker({ isAdmin = false }) {
   const [subTab, setSubTab] = useState('tata'); // 'tata', 'buildingA', 'mahavitaran'
-  
+
   const [tataBills, setTataBills] = useState([]);
   const [buildingABills, setBuildingABills] = useState([]);
   const [mahavitaranBills, setMahavitaranBills] = useState([]);
-  
+
   const [searchText, setSearchText] = useState('');
   const [editingRowId, setEditingRowId] = useState(null);
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg] = useState('');
 
   const isLoadedRef = useRef(false);
   const autoSaveTimer = useRef(null);
-  
+
   const tataRecordId = 'tata_electricity_bills';
   const buildingARecordId = 'building_a_electricity_bills';
   const mahavitaranRecordId = 'mahavitaran_electricity_bills';
@@ -58,7 +58,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
       try {
         await ensureFirebaseSession();
-        
+
         const [snapTata, snapBuildingA, snapMahavitaran] = await Promise.all([
           getDoc(doc(db, 'electricityTracking', tataRecordId)),
           getDoc(doc(db, 'electricityTracking', buildingARecordId)),
@@ -66,7 +66,39 @@ export default function ElectricityTracker({ isAdmin = false }) {
         ]);
 
         if (!cancelled) {
-          setTataBills(snapTata.exists() ? snapTata.data().bills || [] : []);
+          // Historical Tata template bills — Sep 2025 to May 2026 (15th–14th billing cycle)
+          // 8988 total units ÷ 9 months = 999 units/month (rounded)
+          // Pre-calculated: Energy=14309.47, Fuel=334.60, Fixed=445, Wheeling=1598.40
+          // Subtotal=16687.47, Duty=2669.99, Grand Total=₹19,357
+          const makeTataBill = (id, start, end, prevR, currR) => ({
+            id, startMonth: start, endMonth: end,
+            prevReading: String(prevR), currReading: String(currR),
+            msebFixedCharge: '445.00', msebEnergyCharge: '14309.47',
+            msebWheelingRate: '1.60', msebFuelAdj: '334.60',
+            consumption: 999, fixed: 445, energy: 14309.47,
+            wheelTotal: 1598.40, fuel: 334.60,
+            subtotal: 16687.47, duty: 2669.995, exactTotal: 19357.465, grandTotal: 19357
+          });
+          const tataSeed = [
+            makeTataBill(1001, '2025-08-15', '2025-09-14',    0,   999),
+            makeTataBill(1002, '2025-09-15', '2025-10-14',  999,  1998),
+            makeTataBill(1003, '2025-10-15', '2025-11-14', 1998,  2997),
+            makeTataBill(1004, '2025-11-15', '2025-12-14', 2997,  3996),
+            makeTataBill(1005, '2025-12-15', '2026-01-14', 3996,  4995),
+            makeTataBill(1006, '2026-01-15', '2026-02-14', 4995,  5994),
+            makeTataBill(1007, '2026-02-15', '2026-03-14', 5994,  6993),
+            makeTataBill(1008, '2026-03-15', '2026-04-14', 6993,  7992),
+            // Last month: 996 units so total across all 9 months = 8×999 + 996 = 8988
+            { id: 1009, startMonth: '2026-04-15', endMonth: '2026-05-14',
+              prevReading: '7992', currReading: '8988',
+              msebFixedCharge: '445.00', msebEnergyCharge: '14256.88',
+              msebWheelingRate: '1.60', msebFuelAdj: '333.40',
+              consumption: 996, fixed: 445, energy: 14256.88,
+              wheelTotal: 1593.60, fuel: 333.40,
+              subtotal: 16628.88, duty: 2660.62, exactTotal: 19289.50, grandTotal: 19290 },
+          ];
+          const tataData = snapTata.exists() ? snapTata.data().bills || [] : [];
+          setTataBills(tataData.length > 0 ? tataData : tataSeed);
           setBuildingABills(snapBuildingA.exists() ? snapBuildingA.data().bills || [] : []);
           setMahavitaranBills(snapMahavitaran.exists() ? snapMahavitaran.data().bills || [] : []);
           setSaveMsg(`Synced`);
@@ -109,7 +141,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
     clearTimeout(autoSaveTimer.current);
     setSaveStatus('pending');
     setSaveMsg('Unsaved changes...');
-    
+
     let targetId = tataRecordId;
     if (currentTab === 'buildingA') targetId = buildingARecordId;
     if (currentTab === 'mahavitaran') targetId = mahavitaranRecordId;
@@ -151,11 +183,11 @@ export default function ElectricityTracker({ isAdmin = false }) {
       const unitsInSlab = Math.min(remaining, slab.limit);
       const energyCost = unitsInSlab * slab.energy;
       const fuelCost = unitsInSlab * slab.fuel;
-      
+
       energyTotal += energyCost;
       fuelTotal += fuelCost;
       remaining -= unitsInSlab;
-      
+
       breakdown.push({
         slab: slab.name,
         units: unitsInSlab,
@@ -172,18 +204,17 @@ export default function ElectricityTracker({ isAdmin = false }) {
   const handleFormChange = (field, val) => {
     setFormData(prev => {
       const next = { ...prev, [field]: val };
-      
-      if (subTab === 'mahavitaran' && (field === 'prevReading' || field === 'currReading')) {
+
+      // Auto-calculate slabs for both Mahavitaran and Tata tabs
+      if ((subTab === 'mahavitaran' || subTab === 'tata') && (field === 'prevReading' || field === 'currReading')) {
         const p = n(next.prevReading);
         const c = n(next.currReading);
         if (c > p && p >= 0) {
           const units = c - p;
           const { energyTotal, fuelTotal } = calculateMahavitaranSlabs(units);
-          // Auto-fill values
           next.msebEnergyCharge = energyTotal.toFixed(2);
           next.msebFuelAdj = fuelTotal.toFixed(2);
         } else if (c <= p || !next.currReading) {
-          // Clear if invalid or empty
           next.msebEnergyCharge = '';
           next.msebFuelAdj = '';
         }
@@ -196,18 +227,18 @@ export default function ElectricityTracker({ isAdmin = false }) {
     const prev = n(prevStr);
     const curr = n(currStr);
     const consumption = curr - prev;
-    
+
     const fixed = n(fixedStr);
     const energy = n(energyStr);
     const wheelRate = n(wheelRateStr);
     const fuel = n(fuelStr);
-    
+
     const wheelTotal = consumption * wheelRate;
     const subtotal = fixed + energy + wheelTotal + fuel;
     const duty = subtotal * 0.16; // 16% electricity duty
     const exactTotal = subtotal + duty;
     const grandTotal = Math.round(exactTotal);
-    
+
     return {
       consumption, fixed, energy, wheelRate, wheelTotal, fuel, subtotal, duty, exactTotal, grandTotal
     };
@@ -219,7 +250,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
       alert('You do not have permission to perform this action.');
       return;
     }
-    
+
     const prev = n(formData.prevReading);
     const curr = n(formData.currReading);
 
@@ -233,7 +264,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
       id: Date.now()
     };
 
-    if (subTab === 'mahavitaran') {
+    if (subTab === 'mahavitaran' || subTab === 'tata') {
       const calc = calculateMahavitaranBill(
         formData.prevReading, formData.currReading,
         formData.msebFixedCharge, formData.msebEnergyCharge,
@@ -261,7 +292,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
       setTataBills(next);
     }
     triggerAutoSave(next, subTab);
-    
+
     // Reset form
     setFormData({
       startMonth: '',
@@ -278,7 +309,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
   const updateRow = (idx, field, val) => {
     if (!isAdmin) return;
-    
+
     let currentList = tataBills;
     if (subTab === 'buildingA') currentList = buildingABills;
     if (subTab === 'mahavitaran') currentList = mahavitaranBills;
@@ -287,7 +318,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
     const current = next[idx];
     const updated = { ...current, [field]: val };
 
-    if (subTab === 'mahavitaran') {
+    if (subTab === 'mahavitaran' || subTab === 'tata') {
       if (['prevReading', 'currReading', 'msebFixedCharge', 'msebEnergyCharge', 'msebWheelingRate', 'msebFuelAdj'].includes(field)) {
         const calc = calculateMahavitaranBill(
           updated.prevReading, updated.currReading,
@@ -308,24 +339,24 @@ export default function ElectricityTracker({ isAdmin = false }) {
     }
 
     next[idx] = updated;
-    
+
     if (subTab === 'mahavitaran') setMahavitaranBills(next);
     else if (subTab === 'buildingA') setBuildingABills(next);
     else setTataBills(next);
-    
+
     triggerAutoSave(next, subTab);
   };
 
   const removeRow = (idx) => {
     if (!isAdmin) return;
     if (!window.confirm('Are you sure you want to delete this bill?')) return;
-    
+
     let currentList = tataBills;
     if (subTab === 'buildingA') currentList = buildingABills;
     if (subTab === 'mahavitaran') currentList = mahavitaranBills;
 
     const next = currentList.filter((_, i) => i !== idx);
-    
+
     if (subTab === 'mahavitaran') setMahavitaranBills(next);
     else if (subTab === 'buildingA') setBuildingABills(next);
     else setTataBills(next);
@@ -390,7 +421,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
         'Grand Total (₹)': n(c.grandTotal),
       }));
     }
-    
+
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
     const sheetName = subTab === 'tata' ? 'Tata' : (subTab === 'mahavitaran' ? 'Mahavitaran' : 'A Building');
@@ -424,11 +455,11 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
     for (let current = new Date(start); current < end; current.setDate(current.getDate() + 1)) {
       if (current < fifteenMonthsAgo) continue;
-      
+
       const y = current.getFullYear();
       const m = current.getMonth();
       const key = `${y}-${m}`;
-      
+
       if (!monthBuckets[key]) {
         monthBuckets[key] = {
           year: y,
@@ -457,7 +488,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
     });
 
   const renderTabButton = (id, icon, label) => (
-    <button 
+    <button
       onClick={() => { setSubTab(id); setEditingRowId(null); }}
       className={`sub-tab-button ${subTab === id ? 'active' : ''}`}
       style={{
@@ -473,13 +504,13 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
   return (
     <div className="electricity-tracker" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      
+
       {/* Tab Navigation */}
       <div className="table-card" style={{ padding: '8px', background: 'rgba(255,255,255,0.4)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px' }}>
         <div style={{ display: 'flex', gap: '8px' }}>
-           {renderTabButton('tata', '⚡️', 'Tata Electricity')}
-           {renderTabButton('buildingA', '🏢', 'A Building Electricity')}
-           {renderTabButton('mahavitaran', '🔌', 'Mahavitaran (MSEB)')}
+          {renderTabButton('tata', '⚡️', 'Tata Electricity')}
+          {renderTabButton('buildingA', '🏢', 'A Building Electricity')}
+          {renderTabButton('mahavitaran', '🔌', 'Mahavitaran (MSEB)')}
         </div>
       </div>
 
@@ -492,12 +523,12 @@ export default function ElectricityTracker({ isAdmin = false }) {
             <h3 style={{ marginBottom: '4px' }}>
               {subTab === 'tata' ? 'Tata Bills' : (subTab === 'mahavitaran' ? 'MSEB Detailed Bills' : 'A Building Bills')}
             </h3>
-            {subTab === 'tata' && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>Customer Number: 17000358685</p>}
+            {subTab === 'buildingA' && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>Customer Number: 17000358685</p>}
             {subTab === 'mahavitaran' && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>Detailed breakdown per MSEB format</p>}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
-             <span>{badge.icon}</span>
-             <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
+            <span>{badge.icon}</span>
+            <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
           </div>
         </div>
       </div>
@@ -507,10 +538,10 @@ export default function ElectricityTracker({ isAdmin = false }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <div className="filter-field" style={{ flex: 1, minWidth: '280px', margin: 0 }}>
             <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>🔍 Search Dates</label>
-            <input 
-              type="search" 
-              placeholder="Search YYYY-MM..." 
-              value={searchText} 
+            <input
+              type="search"
+              placeholder="Search YYYY-MM..."
+              value={searchText}
               onChange={e => setSearchText(e.target.value)}
               className="attendance-register-input"
               style={{ textAlign: 'left', height: '44px', fontSize: '1rem', background: 'white' }}
@@ -526,19 +557,19 @@ export default function ElectricityTracker({ isAdmin = false }) {
       {filteredBills.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div className="attendance-summary-grid" style={{ background: '#f0f9ff', padding: '20px', borderRadius: '16px', border: '1px solid #bae6fd' }}>
-             <div style={{ gridColumn: '1 / -1', marginBottom: '10px' }}>
-                <p className="eyebrow" style={{ color: '#0369a1' }}>Total Statistics</p>
-             </div>
-             <div className="accounting-summary-card" style={{ background: 'white' }}>
-                <p className="eyebrow">Total Consumption</p>
-                <h3 style={{ color: '#ea580c' }}>{fmt(totalConsumption)} Units</h3>
-             </div>
-             <div className="accounting-summary-card" style={{ background: 'white' }}>
-                <p className="eyebrow">Total Bill Paid</p>
-                <h3 style={{ color: '#0369a1' }}>₹{fmt(totalAmount)}</h3>
-             </div>
+            <div style={{ gridColumn: '1 / -1', marginBottom: '10px' }}>
+              <p className="eyebrow" style={{ color: '#0369a1' }}>Total Statistics</p>
+            </div>
+            <div className="accounting-summary-card" style={{ background: 'white' }}>
+              <p className="eyebrow">Total Consumption</p>
+              <h3 style={{ color: '#ea580c' }}>{fmt(totalConsumption)} Units</h3>
+            </div>
+            <div className="accounting-summary-card" style={{ background: 'white' }}>
+              <p className="eyebrow">Total Bill Paid</p>
+              <h3 style={{ color: '#0369a1' }}>₹{fmt(totalAmount)}</h3>
+            </div>
           </div>
-          
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
             <div className="section-card" style={{ padding: '24px', border: '1px solid var(--line)' }}>
               <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>Total Monthly Consumption (Last 15 Months)</h4>
@@ -587,114 +618,117 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
       {/* ADD NEW BILL FORM */}
       {isAdmin && (
-      <div className="section-card" style={{ padding: '24px' }}>
-        <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>
-          ➕ Add {subTab === 'tata' ? 'Tata' : (subTab === 'mahavitaran' ? 'Mahavitaran' : 'A Building')} Bill
-        </h4>
-        <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Start Date <span style={{ color: '#ef4444' }}>*</span></label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.startMonth} onChange={e => handleFormChange('startMonth', e.target.value)} required />
-          </div>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>End Date <span style={{ color: '#ef4444' }}>*</span></label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.endMonth} onChange={e => handleFormChange('endMonth', e.target.value)} required />
-          </div>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Previous Reading <span style={{ color: '#ef4444' }}>*</span></label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="0" value={formData.prevReading} onChange={e => handleFormChange('prevReading', e.target.value)} required />
-          </div>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Current Reading <span style={{ color: '#ef4444' }}>*</span></label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="0" value={formData.currReading} onChange={e => handleFormChange('currReading', e.target.value)} required />
-          </div>
-
-          {subTab === 'mahavitaran' ? (
-            <>
-              <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Meter Type</label>
-                <select 
-                  className="attendance-register-input" 
-                  style={{ textAlign: 'left', background: 'white' }}
-                  value={formData.msebFixedCharge === '140.00' ? '140.00' : formData.msebFixedCharge === '445.00' ? '445.00' : 'custom'}
-                  onChange={e => {
-                    if (e.target.value !== 'custom') {
-                      handleFormChange('msebFixedCharge', e.target.value);
-                    }
-                  }}
-                >
-                  <option value="140.00">Individual (4 kW)</option>
-                  <option value="445.00">Society (10 kW)</option>
-                  <option value="custom">Custom...</option>
-                </select>
-              </div>
-              <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Fixed Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.msebFixedCharge} onChange={e => handleFormChange('msebFixedCharge', e.target.value)} required />
-              </div>
-              <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Energy Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="e.g. 29332.68" value={formData.msebEnergyCharge} onChange={e => handleFormChange('msebEnergyCharge', e.target.value)} required />
-              </div>
-              <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Wheeling Rate (₹/U) <span style={{ color: '#ef4444' }}>*</span></label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.msebWheelingRate} onChange={e => handleFormChange('msebWheelingRate', e.target.value)} required />
-              </div>
-              <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Fuel Adjustment (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.msebFuelAdj} onChange={e => handleFormChange('msebFuelAdj', e.target.value)} required />
-              </div>
-            </>
-          ) : (
+        <div className="section-card" style={{ padding: '24px' }}>
+          <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>
+            ➕ Add {subTab === 'tata' ? 'Tata' : (subTab === 'mahavitaran' ? 'Mahavitaran' : 'A Building')} Bill
+          </h4>
+          <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Rate per Unit (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Start Date <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.startMonth} onChange={e => handleFormChange('startMonth', e.target.value)} required />
+            </div>
+            <div className="field-group">
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>End Date <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.endMonth} onChange={e => handleFormChange('endMonth', e.target.value)} required />
+            </div>
+            <div className="field-group">
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Previous Reading <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="0" value={formData.prevReading} onChange={e => handleFormChange('prevReading', e.target.value)} required />
+            </div>
+            <div className="field-group">
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Current Reading <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="0" value={formData.currReading} onChange={e => handleFormChange('currReading', e.target.value)} required />
+            </div>
+
+            {(subTab === 'mahavitaran' || subTab === 'tata') ? (
+              <>
+                {/* Mahavitaran shows Meter Type dropdown; Tata is always 10kW = 445 */}
+                {subTab === 'mahavitaran' && (
+                  <div className="field-group">
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Meter Type</label>
+                    <select
+                      className="attendance-register-input"
+                      style={{ textAlign: 'left', background: 'white' }}
+                      value={formData.msebFixedCharge === '140.00' ? '140.00' : formData.msebFixedCharge === '445.00' ? '445.00' : 'custom'}
+                      onChange={e => {
+                        if (e.target.value !== 'custom') {
+                          handleFormChange('msebFixedCharge', e.target.value);
+                        }
+                      }}
+                    >
+                      <option value="140.00">Individual (4 kW)</option>
+                      <option value="445.00">Society (10 kW)</option>
+                      <option value="custom">Custom...</option>
+                    </select>
+                  </div>
+                )}
+                <div className="field-group">
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Fixed Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.msebFixedCharge} onChange={e => handleFormChange('msebFixedCharge', e.target.value)} required />
+                </div>
+                <div className="field-group">
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Energy Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="Auto-calculated" value={formData.msebEnergyCharge} onChange={e => handleFormChange('msebEnergyCharge', e.target.value)} required />
+                </div>
+                <div className="field-group">
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Wheeling Rate (₹/U) <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.msebWheelingRate} onChange={e => handleFormChange('msebWheelingRate', e.target.value)} required />
+                </div>
+                <div className="field-group">
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Fuel Adjustment (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.msebFuelAdj} onChange={e => handleFormChange('msebFuelAdj', e.target.value)} required />
+                </div>
+              </>
+            ) : (
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Rate per Unit (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
+              </div>
+            )}
+
+            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+              <button type="submit" className="button-primary" style={{ padding: '8px 24px', width: 'auto' }}>Calculate & Add Bill</button>
+            </div>
+          </form>
+
+          {(subTab === 'mahavitaran' || subTab === 'tata') && n(formData.currReading) > n(formData.prevReading) && (
+            <div style={{ marginTop: '24px', padding: '16px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <h5 style={{ margin: '0 0 12px 0', color: '#334155' }}>Slab Breakdown for {n(formData.currReading) - n(formData.prevReading)} units</h5>
+              <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #cbd5e1', color: '#64748b' }}>
+                    <th style={{ textAlign: 'left', paddingBottom: '8px' }}>Slab</th>
+                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>Units</th>
+                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>Energy Rate</th>
+                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>Energy Total</th>
+                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>FAC Rate</th>
+                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>FAC Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {calculateMahavitaranSlabs(n(formData.currReading) - n(formData.prevReading)).breakdown.map((b, i) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                      <td style={{ padding: '6px 0', fontWeight: 500 }}>{b.slab}</td>
+                      <td style={{ textAlign: 'right' }}>{b.units}</td>
+                      <td style={{ textAlign: 'right' }}>₹{b.energyRate.toFixed(2)}</td>
+                      <td style={{ textAlign: 'right' }}>₹{b.energyCost.toFixed(2)}</td>
+                      <td style={{ textAlign: 'right' }}>₹{b.fuelRate.toFixed(3)}</td>
+                      <td style={{ textAlign: 'right' }}>₹{b.fuelCost.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
-
-          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-            <button type="submit" className="button-primary" style={{ padding: '8px 24px', width: 'auto' }}>Calculate & Add Bill</button>
-          </div>
-        </form>
-
-        {subTab === 'mahavitaran' && n(formData.currReading) > n(formData.prevReading) && (
-          <div style={{ marginTop: '24px', padding: '16px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-            <h5 style={{ margin: '0 0 12px 0', color: '#334155' }}>Slab Breakdown for {n(formData.currReading) - n(formData.prevReading)} units</h5>
-            <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid #cbd5e1', color: '#64748b' }}>
-                  <th style={{ textAlign: 'left', paddingBottom: '8px' }}>Slab</th>
-                  <th style={{ textAlign: 'right', paddingBottom: '8px' }}>Units</th>
-                  <th style={{ textAlign: 'right', paddingBottom: '8px' }}>Energy Rate</th>
-                  <th style={{ textAlign: 'right', paddingBottom: '8px' }}>Energy Total</th>
-                  <th style={{ textAlign: 'right', paddingBottom: '8px' }}>FAC Rate</th>
-                  <th style={{ textAlign: 'right', paddingBottom: '8px' }}>FAC Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {calculateMahavitaranSlabs(n(formData.currReading) - n(formData.prevReading)).breakdown.map((b, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <td style={{ padding: '6px 0', fontWeight: 500 }}>{b.slab}</td>
-                    <td style={{ textAlign: 'right' }}>{b.units}</td>
-                    <td style={{ textAlign: 'right' }}>₹{b.energyRate.toFixed(2)}</td>
-                    <td style={{ textAlign: 'right' }}>₹{b.energyCost.toFixed(2)}</td>
-                    <td style={{ textAlign: 'right' }}>₹{b.fuelRate.toFixed(3)}</td>
-                    <td style={{ textAlign: 'right' }}>₹{b.fuelCost.toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+        </div>
       )}
 
       {/* Main Table */}
       <div className="table-card">
         <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: subTab === 'mahavitaran' ? 1400 : 1000 }}>
+          <table className="attendance-table" style={{ minWidth: (subTab === 'mahavitaran' || subTab === 'tata') ? 1200 : 1000 }}>
             <thead>
-              {subTab === 'mahavitaran' ? (
+              {(subTab === 'mahavitaran' || subTab === 'tata') ? (
                 <tr style={{ background: '#f8fafc' }}>
                   <th style={{ width: 60 }}>Sr.</th>
                   <th style={{ width: 220 }}>Period</th>
@@ -733,7 +767,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
                   const actualIdx = activeBills.findIndex(orig => orig.id === c.id);
                   const isEditing = editingRowId === c.id;
 
-                  if (subTab === 'mahavitaran') {
+                  if (subTab === 'mahavitaran' || subTab === 'tata') {
                     return (
                       <tr key={c.id || i}>
                         <td style={{ verticalAlign: 'middle' }}>{i + 1}</td>
@@ -745,7 +779,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
                               <input className="attendance-register-input" style={{ width: '130px', padding: '6px' }} type="date" value={c.endMonth} onChange={e => updateRow(actualIdx, 'endMonth', e.target.value)} />
                             </div>
                           ) : (
-                            <span style={{ fontWeight: 500, fontSize: '0.85rem' }}>{formatDateLabel(c.startMonth)} -<br/>{formatDateLabel(c.endMonth)}</span>
+                            <span style={{ fontWeight: 500, fontSize: '0.85rem' }}>{formatDateLabel(c.startMonth)} -<br />{formatDateLabel(c.endMonth)}</span>
                           )}
                         </td>
                         <td style={{ textAlign: 'right', fontSize: '0.85rem' }}>
@@ -755,7 +789,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
                               <input className="attendance-register-input" style={{ padding: '4px' }} type="number" step="any" value={c.currReading} onChange={e => updateRow(actualIdx, 'currReading', e.target.value)} />
                             </div>
                           ) : (
-                            <><span style={{ color: 'var(--muted)' }}>P: {n(c.prevReading)}</span><br/><span>C: {n(c.currReading)}</span></>
+                            <><span style={{ color: 'var(--muted)' }}>P: {n(c.prevReading)}</span><br /><span>C: {n(c.currReading)}</span></>
                           )}
                         </td>
                         <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 600, verticalAlign: 'middle' }}>{n(c.consumption)}</td>
@@ -844,11 +878,12 @@ export default function ElectricityTracker({ isAdmin = false }) {
               )}
             </tbody>
             <tfoot>
-              {subTab === 'mahavitaran' ? (
+              {(subTab === 'mahavitaran' || subTab === 'tata') ? (
                 <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
                   <td colSpan={3} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
                   <td style={{ textAlign: 'right', color: '#ea580c' }}>{fmt(totalConsumption)}</td>
-                  <td colSpan={5}></td>
+                  <td colSpan={4}></td>
+                  <td></td>
                   <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmount)}</td>
                   <td></td>
                 </tr>
