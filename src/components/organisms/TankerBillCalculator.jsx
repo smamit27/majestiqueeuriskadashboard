@@ -220,13 +220,13 @@ export default function TankerBillCalculator() {
     if (!bill) return;
 
     const rows = [
-      [`Tanker Bill Summary — ${formatLongMonth(month)}`],
+      [`Water Tanker Bill Summary — ${formatLongMonth(month)}`],
       [],
-      ['Date', 'Rate (₹)', 'Tanker Count', 'Total (₹)'],
+      ['Date', 'Rate (₹)', 'Water Tanker Count', 'Total (₹)'],
       ...bill.rows.map(r => [r.date, r.rate, r.quantity, r.total]),
       [],
       ['Summary', '', '', ''],
-      ['Total Tankers', bill.totalTankers],
+      ['Total Water Tankers', bill.totalTankers],
       ['Grand Total (₹)', bill.grandTotal],
     ];
 
@@ -244,8 +244,8 @@ export default function TankerBillCalculator() {
     const ws = XLSX.utils.aoa_to_sheet(rows);
     ws['!cols'] = [{ wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 14 }];
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, `Tanker Bill ${formatMonthLabel(month)}`);
-    XLSX.writeFile(wb, `tanker-bill-${month}.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, `Water Tanker Bill ${formatMonthLabel(month)}`);
+    XLSX.writeFile(wb, `water-tanker-bill-${month}.xlsx`);
     setSaveMsg('Excel downloaded.');
   }
 
@@ -284,7 +284,7 @@ export default function TankerBillCalculator() {
         <div className="attendance-table-card__header">
           <div>
             <p className="eyebrow">Monthly Bill Calculation</p>
-            <h3>🚛 Tanker Bill — {formatLongMonth(month)}</h3>
+            <h3>💧 Water Tanker Bill — {formatLongMonth(month)}</h3>
           </div>
           <div className="attendance-table-card__actions">
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: badge.c, fontWeight: 500, fontSize: '0.9rem' }}>
@@ -346,14 +346,14 @@ export default function TankerBillCalculator() {
         }}>
           <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🚛</div>
           <p style={{ fontWeight: 600, fontSize: '1rem' }}>No tanker entries yet for {formatLongMonth(month)}</p>
-          <p style={{ fontSize: '0.85rem', marginTop: 4 }}>Add entries in the Tanker Entry tab to see the bill here.</p>
+          <p style={{ fontSize: '0.85rem', marginTop: 4 }}>Add entries in the Water Tanker Entry tab to see the bill here.</p>
         </div>
       ) : (
         <>
           {/* ── Grand Total Metric Cards ── */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 16 }}>
             {[
-              { label: 'Total Tankers', value: bill.totalTankers, icon: '🚛', color: '#1e3a8a' },
+              { label: 'Total Water Tankers', value: bill.totalTankers, icon: '💧', color: '#1e3a8a' },
               { label: 'Grand Total', value: `₹${fmt(bill.grandTotal)}`, icon: '💰', color: '#0f3d35', large: true },
             ].map(card => (
               <div key={card.label} style={{
@@ -456,7 +456,7 @@ export default function TankerBillCalculator() {
                   <tr>
                     <th style={{ textAlign: 'left' }}>Date</th>
                     <th style={{ textAlign: 'right' }}>Rate (₹)</th>
-                    <th style={{ textAlign: 'right' }}>Tankers</th>
+                    <th style={{ textAlign: 'right' }}>Water Tankers</th>
                     <th style={{ textAlign: 'right' }}>Total (₹)</th>
                   </tr>
                 </thead>

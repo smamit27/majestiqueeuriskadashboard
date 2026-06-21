@@ -36,7 +36,7 @@ export default function TankerModule({ isAdmin = false }) {
             fontSize: '0.9rem'
           }}
         >
-          🚛 Tanker Entry
+          💧 Water Tanker Entry
         </button>
         <button
           onClick={() => setSubTab('billing')}
@@ -61,9 +61,9 @@ export default function TankerModule({ isAdmin = false }) {
         {subTab === 'entry' && (
           <SectionCard
             id="tanker_entry"
-            badge="Tanker Entry Register"
-            title="Daily tanker delivery log"
-            subtitle="Record each tanker delivery with date, rate per trip, quantity, and auto-calculated total. Auto-saves to Firebase."
+            badge="Water Tanker Entry Register"
+            title="Daily water tanker delivery log"
+            subtitle="Record each water tanker delivery with date, rate per trip, and count. Auto-saves to Firebase."
           >
             <TankerTracker isAdmin={isAdmin} />
           </SectionCard>
@@ -71,9 +71,9 @@ export default function TankerModule({ isAdmin = false }) {
         {subTab === 'billing' && (
           <SectionCard
             id="tanker_billing"
-            badge="Tanker Bill Calculation"
-            title="Monthly bill summary and breakdown"
-            subtitle="View the complete bill for the selected month — total trips, grand total, and per-entry breakdown. Supports override rate recalculation."
+            badge="Water Tanker Bill Calculation"
+            title="Monthly water tanker bill summary and breakdown"
+            subtitle="View the complete bill for the selected month — total trips, grand total, and per-building split."
           >
             <TankerBillCalculator />
           </SectionCard>

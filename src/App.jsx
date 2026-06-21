@@ -247,8 +247,8 @@ export default function App() {
       },
       {
         id: 'tanker',
-        label: 'Tanker',
-        metric: 'Delivery & Billing',
+        label: 'Water Tanker',
+        metric: 'Water Tanker Billing',
         render: () => <TankerModule isAdmin={isAdmin} />
       }
     ] : []),

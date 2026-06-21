@@ -306,9 +306,9 @@ export default function TankerTracker({ isAdmin = false }) {
     ws['!cols'] = [{ wch: 14 }, { wch: 7 }, { wch: 12 }, { wch: 14 }, { wch: 14 }];
 
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, `Tanker ${formatMonthLabel(selectedMonth)}`);
+    XLSX.utils.book_append_sheet(wb, ws, `Water Tanker ${formatMonthLabel(selectedMonth)}`);
     wb.Props = {
-      Title: `Tanker Entries – ${formatLongMonthLabel(selectedMonth)}`,
+      Title: `Water Tanker Entries – ${formatLongMonthLabel(selectedMonth)}`,
       Author: 'Majestique Euriska Dashboard',
     };
     XLSX.writeFile(wb, `tanker-entries-${buildFileSafeLabel(selectedMonth)}.xlsx`);
@@ -333,7 +333,7 @@ export default function TankerTracker({ isAdmin = false }) {
         <div>
           <p className="eyebrow">Monthly tanker register</p>
           <h3>Daily entry table</h3>
-          <p>Enter rate and tanker count for each day — auto-saves to cloud.</p>
+          <p>Enter rate and water tanker count for each day — auto-saves to cloud.</p>
         </div>
 
         {/* Summary chips */}
@@ -359,7 +359,7 @@ export default function TankerTracker({ isAdmin = false }) {
             <strong>{monthDays.length}</strong>
           </div>
           <div className="summary-card">
-            <span>Total Tankers</span>
+            <span>Total Water Tankers</span>
             <strong>{summary.totalTankers}</strong>
           </div>
           <div className="summary-card">
@@ -405,7 +405,7 @@ export default function TankerTracker({ isAdmin = false }) {
         <div className="attendance-table-card__header">
           <div>
             <p className="eyebrow">Daily entry sheet</p>
-            <h3>Tanker Log — {formatMonthLabel(selectedMonth)}</h3>
+            <h3>Water Tanker Log — {formatMonthLabel(selectedMonth)}</h3>
           </div>
           <div className="attendance-table-card__actions">
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: statusBadge.color, fontWeight: 500, fontSize: '0.85rem' }}>
@@ -435,7 +435,7 @@ export default function TankerTracker({ isAdmin = false }) {
               <tr>
                 <th style={{ minWidth: 130 }}>Date</th>
                 <th style={{ minWidth: 120, textAlign: 'center' }}>Rate (₹)</th>
-                <th style={{ minWidth: 120, textAlign: 'center' }}>Tanker Count</th>
+                <th style={{ minWidth: 120, textAlign: 'center' }}>Water Tanker Count</th>
                 <th style={{ minWidth: 130, textAlign: 'right' }}>Total (₹)</th>
               </tr>
             </thead>
