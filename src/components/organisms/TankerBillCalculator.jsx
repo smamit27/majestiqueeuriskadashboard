@@ -54,7 +54,7 @@ const headingStyle = {
 
 export default function TankerBillCalculator() {
   const [month, setMonth] = useState(getCurrentMonth);
-  const [entries, setEntries] = useState([]);
+  const [entries, setEntries] = useState({});
   const [overrideRate, setOverrideRate] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
@@ -79,7 +79,10 @@ export default function TankerBillCalculator() {
           const raw = window.localStorage.getItem('majestique-tanker-register');
           const local = raw ? JSON.parse(raw) : {};
           const record = local[docId];
-          if (!cancelled && record?.entries) setEntries(record.entries);
+          if (!cancelled && record) {
+            setEntries(record.entries || {});
+            setOverrideRate(String(record.commonRate || ''));
+          }
         } catch { }
         if (!cancelled) { setIsLoading(false); }
         return;
@@ -91,9 +94,11 @@ export default function TankerBillCalculator() {
         if (!cancelled) {
           if (snap.exists()) {
             const data = snap.data();
-            setEntries(data.entries || []);
+            setEntries(data.entries || {});
+            setOverrideRate(String(data.commonRate || ''));
             setSaveMsg(`Loaded — ${formatLongMonth(month)}`);
           } else {
+            setEntries({});
             setSaveMsg(`No data yet for ${formatLongMonth(month)}`);
           }
         }
@@ -104,7 +109,10 @@ export default function TankerBillCalculator() {
           const raw = window.localStorage.getItem('majestique-tanker-register');
           const local = raw ? JSON.parse(raw) : {};
           const record = local[docId];
-          if (!cancelled && record?.entries) setEntries(record.entries);
+          if (!cancelled && record) {
+            setEntries(record.entries || {});
+            setOverrideRate(String(record.commonRate || ''));
+          }
         } catch { }
         if (!cancelled) setSaveMsg('Firebase unavailable — showing local data.');
       } finally {
@@ -121,24 +129,28 @@ export default function TankerBillCalculator() {
 
   // ── Computed bill ─────────────────────────────────────────────────────────
   const bill = useMemo(() => {
-    if (entries.length === 0) return null;
+    if (!entries || typeof entries !== 'object') return null;
 
-    const rows = entries.map(e => ({
-      date: e.date,
-      rate: n(e.rate),
-      quantity: n(e.quantity),
-      total: n(e.rate) * n(e.quantity),
-      remark: e.remark || '',
-    }));
+    // entries is now a date-keyed object: { '2026-06-01': { count, remark }, ... }
+    const baseRate = n(overrideRate) || 0;
+    const rows = Object.entries(entries)
+      .filter(([, v]) => n(v.count) > 0)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([dateKey, v]) => ({
+        date: dateKey,
+        rate: baseRate,
+        quantity: n(v.count),
+        total: n(v.count) * baseRate,
+        remark: v.remark || '',
+      }));
+
+    if (rows.length === 0) return null;
 
     const totalTrips = rows.reduce((s, r) => s + r.quantity, 0);
     const grandTotal = rows.reduce((s, r) => s + r.total, 0);
-    const avgRate = totalTrips > 0 ? grandTotal / totalTrips : 0;
+    const avgRate = baseRate;
 
-    // Override rate scenario
-    const overridedTotal = overrideRate
-      ? totalTrips * n(overrideRate)
-      : grandTotal;
+    const overridedTotal = grandTotal; // rate IS the override rate here
 
     return { rows, totalTrips, grandTotal, avgRate, overridedTotal };
   }, [entries, overrideRate]);
@@ -262,8 +274,8 @@ export default function TankerBillCalculator() {
           {/* Key metrics */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 16 }}>
             {[
-              { label: 'Total Trips', value: bill.totalTrips, icon: '🔢', color: '#1e3a8a' },
-              { label: 'Avg Rate / Trip', value: `₹${fmt(bill.avgRate)}`, icon: '📊', color: '#6d28d9' },
+              { label: 'Total Tankers', value: bill.totalTrips, icon: '🚛', color: '#1e3a8a' },
+              { label: 'Rate per Tanker', value: `₹${fmt(bill.avgRate)}`, icon: '📊', color: '#6d28d9' },
               { label: 'Grand Total', value: `₹${fmt(bill.grandTotal)}`, icon: '💰', color: '#0f3d35', large: true },
             ].map(card => (
               <div key={card.label} style={{
