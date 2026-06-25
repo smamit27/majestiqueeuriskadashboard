@@ -7,7 +7,7 @@ import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.
 
 const LOCAL_STORAGE_KEY = 'majestique-tanker-register';
 const AUTO_SAVE_DELAY_MS = 1500;
-const DEFAULT_RATE = 800;
+const DEFAULT_RATE = 700;
 
 const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(2026, 3 + i, 1);

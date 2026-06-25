@@ -158,3 +158,72 @@ describe('FinanceTracker – Excel export', () => {
     expect(filename).toMatch(/Finance_Tracker_\d{4}-\d{2}\.xlsx/);
   });
 });
+
+describe('FinanceTracker – locked months (April and May 2026)', () => {
+  it('disables editing, hides Add Row, hides Save button, and sets inputs to readOnly for April 2026', async () => {
+    const user = userEvent.setup();
+    render(<FinanceTracker isAdmin={true} />);
+    await waitFor(() => screen.getByText(/income details/i));
+
+    // Find and click the Apr 26 tab
+    const tablist = screen.getAllByRole('button');
+    const aprTab = tablist.find(b => /apr/i.test(b.textContent ?? ''));
+    expect(aprTab).toBeDefined();
+    await user.click(aprTab);
+
+    // Verify warning banner is present
+    expect(screen.getByText(/this month is locked/i)).toBeInTheDocument();
+
+    // Verify Save button is hidden/not in document
+    expect(screen.queryByRole('button', { name: /save/i })).not.toBeInTheDocument();
+
+    // Verify Add Row buttons are not in document
+    expect(screen.queryByRole('button', { name: /\+ add row/i })).not.toBeInTheDocument();
+
+    // Verify inputs are readOnly
+    const inputs = screen.getAllByRole('textbox');
+    for (const input of inputs) {
+      expect(input).toHaveAttribute('readOnly');
+    }
+  });
+
+  it('disables editing, hides Add Row, hides Save button, and sets inputs to readOnly for May 2026', async () => {
+    const user = userEvent.setup();
+    render(<FinanceTracker isAdmin={true} />);
+    await waitFor(() => screen.getByText(/income details/i));
+
+    // Find and click the May 26 tab
+    const tablist = screen.getAllByRole('button');
+    const mayTab = tablist.find(b => /may/i.test(b.textContent ?? ''));
+    expect(mayTab).toBeDefined();
+    await user.click(mayTab);
+
+    // Verify warning banner is present
+    expect(screen.getByText(/this month is locked/i)).toBeInTheDocument();
+
+    // Verify Save button is hidden/not in document
+    expect(screen.queryByRole('button', { name: /save/i })).not.toBeInTheDocument();
+
+    // Verify Add Row buttons are not in document
+    expect(screen.queryByRole('button', { name: /\+ add row/i })).not.toBeInTheDocument();
+
+    // Verify inputs are readOnly
+    const inputs = screen.getAllByRole('textbox');
+    for (const input of inputs) {
+      expect(input).toHaveAttribute('readOnly');
+    }
+  });
+
+  it('updates month tabs when switching the Financial Year selector', async () => {
+    const user = userEvent.setup();
+    render(<FinanceTracker />);
+    await waitFor(() => screen.getByText(/income details/i));
+
+    // Select FY 2025-26 from dropdown
+    const select = screen.getByRole('combobox');
+    await user.selectOptions(select, '2025');
+
+    // Headers/tabs should update
+    expect(screen.getByText(/Income & Expenses — April 2025/i)).toBeInTheDocument();
+  });
+});

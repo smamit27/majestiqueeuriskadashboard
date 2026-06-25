@@ -16,6 +16,10 @@ import TankerModule from './components/organisms/TankerModule.jsx';
 import MainDashboard from './components/organisms/MainDashboard.jsx';
 import AuthModal from './components/organisms/AuthModal.jsx';
 import IntroAnimation from './components/organisms/IntroAnimation.jsx';
+import EventsCalendarView from './components/organisms/EventsCalendarView.jsx';
+import ManagerTaskTracker from './components/organisms/ManagerTaskTracker.jsx';
+import AmcTracker from './components/organisms/AmcTracker.jsx';
+
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
 import { announcements, complaints, dues, events, finance, members, staff, visitors } from './data/mockData.js';
@@ -71,7 +75,7 @@ const TAB_ICONS = {
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
   ),
   housekeeping: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m11.6 13.5 3.9 3.9"/><path d="m16 8 4 4"/><path d="m15 5 4 4"/><path d="M9 18c-1.2 0-2.4-.5-3.2-1.3l-2-2c-.8-.8-.8-2 0-2.8l7-7c.8-.8 2-.8 2.8 0l2 2c.8.8.8 2 0 2.8L8.7 16.6c-.8.8-2 1.4-3.2 1.4Z"/><path d="M3 21h18"/></svg>
   ),
   security: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -88,10 +92,16 @@ const TAB_ICONS = {
   tanker: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
   ),
+  manager_tasks: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+  ),
+  amc: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+  ),
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('society_overview');
+  const [activeTab, setActiveTab] = useState('manager_tasks');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -219,12 +229,7 @@ export default function App() {
   };
 
   const tabItems = [
-    {
-      id: 'society_overview',
-      label: 'Overview',
-      metric: 'Society Dashboard',
-      render: () => <MainDashboard stats={dashboardStats} />
-    },
+
     ...(isAdmin ? [
       {
         id: 'security',
@@ -253,10 +258,16 @@ export default function App() {
       }
     ] : []),
     {
-      id: 'solar',
-      label: 'Solar Management',
-      metric: 'Evaluation & ROI',
-      render: () => <SolarModule isAdmin={isAdmin} />
+      id: 'manager_tasks',
+      label: 'Manager Tasks',
+      metric: 'Task & Deadline Tracker',
+      render: () => <ManagerTaskTracker isAdmin={isAdmin} />
+    },
+    {
+      id: 'amc',
+      label: 'AMC Tracker',
+      metric: 'Contracts & Payments',
+      render: () => <AmcTracker isAdmin={isAdmin} />
     },
     {
       id: 'finance',
@@ -277,295 +288,13 @@ export default function App() {
       render: () => <ElectricityTracker isAdmin={isAdmin} />
     },
     {
-      id: 'members',
-      label: 'Members',
-      metric: `${memberData.items.length} households`,
-      render: () => (
-        <SectionCard
-          id="members"
-          badge="Member Management"
-          title="Residents, flats, and occupancy"
-          subtitle="Track owners, tenants, household size, and dues status."
-        >
-          <div className="section-toolbar">
-            <label className="filter-field">
-              <span>Search households</span>
-              <input
-                type="search"
-                value={memberSearchText}
-                onChange={(event) => setMemberSearchText(event.target.value)}
-                placeholder="Search by resident, flat, phone, or ownership type"
-              />
-            </label>
-          </div>
-
-          <div className="table-card">
-            <table>
-              <thead>
-                <tr>
-                  <th>Resident</th>
-                  <th>Flat</th>
-                  <th>Type</th>
-                  <th>Contact</th>
-                  <th>Status</th>
-                  <th>Dues</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredMembers.length > 0 ? (
-                  filteredMembers.map((member) => (
-                    <tr key={member.id}>
-                      <td>
-                        <strong>{member.name}</strong>
-                        <span>{member.householdSize} residents</span>
-                      </td>
-                      <td>{member.flat}</td>
-                      <td>{member.ownership}</td>
-                      <td>{member.phone}</td>
-                      <td>
-                        <StatusPill value={member.status} />
-                      </td>
-                      <td>
-                        <StatusPill value={member.duesStatus} />
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr className="empty-row">
-                    <td colSpan="6">No matching households were found for this search.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </SectionCard>
-      )
+      id: 'solar',
+      label: 'Solar Management',
+      metric: 'Evaluation & ROI',
+      render: () => <SolarModule isAdmin={isAdmin} />
     },
-    {
-      id: 'dues',
-      label: 'Dues',
-      metric: `${Math.round(collectionRate)}% collected`,
-      render: () => (
-        <SectionCard
-          id="dues"
-          badge="Maintenance / Dues Tracking"
-          title="Monthly collections and follow-ups"
-          subtitle="Highlight pending balances before they become aging receivables."
-        >
-          <div className="section-grid section-grid--dual">
-            <div className="table-card">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Resident</th>
-                    <th>Flat</th>
-                    <th>Amount</th>
-                    <th>Outstanding</th>
-                    <th>Due date</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {duesData.items.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.resident}</td>
-                      <td>{item.flat}</td>
-                      <td>{formatCurrency(item.amount)}</td>
-                      <td>{formatCurrency(item.outstanding)}</td>
-                      <td>{formatDate(item.dueDate)}</td>
-                      <td>
-                        <StatusPill value={item.status} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="stack-card">
-              <div>
-                <p className="eyebrow">Cycle overview</p>
-                <h3>{formatCurrency(duesCollected)} collected</h3>
-                <p>{formatCurrency(totalOutstanding)} still outstanding across current dues.</p>
-              </div>
-              <ProgressBar label="Paid units" value={paidDuesCount} total={duesData.items.length} tone="teal" />
-              <ProgressBar
-                label="Pending or overdue amount"
-                value={totalOutstanding}
-                total={collectionTarget}
-                tone="coral"
-              />
-            </div>
-          </div>
-        </SectionCard>
-      )
-    },
-    {
-      id: 'events',
-      label: 'Events',
-      metric: `${eventData.items.length} scheduled`,
-      render: () => (
-        <SectionCard
-          id="events"
-          badge="Events & Announcements"
-          title="Community communication and upcoming activities"
-          subtitle="Keep residents informed about maintenance, safety, and shared events."
-        >
-          <div className="section-grid section-grid--dual">
-            <div className="list-card">
-              <div className="list-card__header">
-                <h3>Announcements</h3>
-                <span>{announcementData.items.length} posts</span>
-              </div>
-              {sortByDateDescending(announcementData.items, 'postedOn').map((announcement) => (
-                <article key={announcement.id} className="list-item">
-                  <div className="list-item__title">
-                    <h4>{announcement.title}</h4>
-                    <StatusPill value={announcement.priority} />
-                  </div>
-                  <p>{announcement.summary}</p>
-                  <small>
-                    {announcement.audience} · {formatDate(announcement.postedOn)}
-                  </small>
-                </article>
-              ))}
-            </div>
-
-            <div className="list-card">
-              <div className="list-card__header">
-                <h3>Upcoming events</h3>
-                <span>{eventData.items.length} scheduled</span>
-              </div>
-              {upcomingEvents.map((event) => (
-                <article key={event.id} className="timeline-item">
-                  <div>
-                    <p className="eyebrow">{event.category}</p>
-                    <h4>{event.title}</h4>
-                  </div>
-                  <div className="timeline-item__meta">
-                    <strong>{formatDate(event.date)}</strong>
-                    <span>{event.venue}</span>
-                    <span>{event.attendees} attendees expected</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </SectionCard>
-      )
-    },
-    {
-      id: 'complaints',
-      label: 'Complaints',
-      metric: `${openComplaints} open`,
-      render: () => (
-        <SectionCard
-          id="complaints"
-          badge="Complaints & Requests"
-          title="Issue logging and escalation monitoring"
-          subtitle="Prioritize service requests and keep residents updated on resolution progress."
-        >
-          <div className="section-toolbar">
-            <label className="filter-field">
-              <span>Search complaints</span>
-              <input
-                type="search"
-                value={complaintSearchText}
-                onChange={(event) => setComplaintSearchText(event.target.value)}
-                placeholder="Search by resident, flat, category, or ticket status"
-              />
-            </label>
-          </div>
-
-          <div className="table-card">
-            <table>
-              <thead>
-                <tr>
-                  <th>Ticket</th>
-                  <th>Resident</th>
-                  <th>Category</th>
-                  <th>Raised</th>
-                  <th>Priority</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredComplaints.length > 0 ? (
-                  filteredComplaints.map((item) => (
-                    <tr key={item.id}>
-                      <td>
-                        <strong>{item.id}</strong>
-                        <span>{item.note}</span>
-                      </td>
-                      <td>
-                        {item.resident}
-                        <span>{item.flat}</span>
-                      </td>
-                      <td>{item.category}</td>
-                      <td>{formatDate(item.raisedOn)}</td>
-                      <td>
-                        <StatusPill value={item.priority} />
-                      </td>
-                      <td>
-                        <StatusPill value={item.status} />
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr className="empty-row">
-                    <td colSpan="6">No complaint records matched the current search.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </SectionCard>
-      )
-    },
-
-    {
-      id: 'visitors',
-      label: 'Visitors',
-      metric: `${activeVisitors} live`,
-      render: () => (
-        <SectionCard
-          id="visitors"
-          badge="Visitor / Gate Log"
-          title="Visitor movement and gate updates"
-          subtitle="Log courier, guest, and service partner entry status for faster front-gate handling."
-        >
-          <div className="table-card">
-            <table>
-              <thead>
-                <tr>
-                  <th>Visitor</th>
-                  <th>Purpose</th>
-                  <th>Host Flat</th>
-                  <th>Time In</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {visitorData.items.map((visitor) => (
-                  <tr key={visitor.id}>
-                    <td>{visitor.visitorName}</td>
-                    <td>{visitor.purpose}</td>
-                    <td>{visitor.hostFlat}</td>
-                    <td>{visitor.timeIn}</td>
-                    <td>
-                      <StatusPill value={visitor.status} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </SectionCard>
-      )
-    },
-
-
   ];
+
 
   const activeTabPanel = tabItems.find((item) => item.id === activeTab) || tabItems[0];
 
@@ -581,12 +310,7 @@ export default function App() {
   }, [activeTab]);
 
   const getBadgeCount = (tabId) => {
-    switch (tabId) {
-      case 'complaints': return openComplaints > 0 ? openComplaints : 0;
-      case 'visitors': return activeVisitors > 0 ? activeVisitors : 0;
-      case 'dues': return duesData.items.filter(i => i.status !== 'Paid').length;
-      default: return 0;
-    }
+    return 0;
   };
 
   useEffect(() => {
@@ -727,7 +451,7 @@ export default function App() {
           <h2>{activeTabPanel.label}</h2>
         </div>
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'manager_tasks', 'amc'].includes(activeTab) && (
         <header className="dashboard-header">
           <div className="dashboard-header__copy">
             <h1 style={{ margin: 0 }}>{activeTabPanel.label} Dashboard</h1>
@@ -779,7 +503,7 @@ export default function App() {
 
         {loadErrors.length > 0 ? <div className="notice-banner">{loadErrors[0]}</div> : null}
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'manager_tasks', 'amc'].includes(activeTab) && (
           <section className="metrics-grid">
           <MetricCard
             label="Members & Occupancy"
@@ -820,7 +544,7 @@ export default function App() {
           {activeTabPanel.render()}
         </div>
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'manager_tasks', 'amc'].includes(activeTab) && (
           <section className="snapshot-grid">
           <div className="snapshot-panel">
             <p className="eyebrow">Collection health</p>

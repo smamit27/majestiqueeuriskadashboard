@@ -35,10 +35,18 @@ export function useCollection(collectionName, fallbackItems, user) {
         unsubscribe = onSnapshot(
           collection(db, collectionName),
           (snapshot) => {
-            setItems(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-            setLoading(false);
-            setSource('firebase');
-            setError('');
+            // If Firestore has no documents yet, show mockData as fallback
+            if (snapshot.empty) {
+              setItems(fallbackItems);
+              setLoading(false);
+              setSource('mock');
+              setError('');
+            } else {
+              setItems(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+              setLoading(false);
+              setSource('firebase');
+              setError('');
+            }
           },
           (snapshotError) => {
             console.error(`Unable to sync collection "${collectionName}"`, snapshotError);

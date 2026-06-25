@@ -152,15 +152,19 @@ export const events = [
     date: '2026-04-27',
     venue: 'Society Office',
     attendees: 11,
-    category: 'Governance'
+    category: 'Governance',
+    description: 'Monthly committee meeting to review society finances, maintenance, and upcoming activities.',
+    reminder: false
   },
   {
     id: 'EVT-002',
-    title: 'Children’s summer workshop',
+    title: 'Children\'s summer workshop',
     date: '2026-05-02',
     venue: 'Clubhouse',
     attendees: 28,
-    category: 'Community'
+    category: 'Community',
+    description: 'Fun-filled workshop for kids covering art, science, and storytelling activities.',
+    reminder: false
   },
   {
     id: 'EVT-003',
@@ -168,7 +172,51 @@ export const events = [
     date: '2026-05-05',
     venue: 'Podium Level',
     attendees: 64,
-    category: 'Safety'
+    category: 'Safety',
+    description: 'Annual fire safety drill covering evacuation routes, assembly points, and extinguisher usage.',
+    reminder: false
+  },
+  {
+    id: 'EVT-004',
+    title: 'Ganesh Chaturthi Festival',
+    date: '2026-09-14',
+    endDate: '2026-09-24',
+    venue: 'Society Podium & Clubhouse',
+    attendees: 120,
+    category: 'Festival',
+    description: 'Ten-day celebration dedicated to Lord Ganesha with daily prayers, cultural programs, and Ganesh Visarjan on the final day.',
+    reminder: false
+  },
+  {
+    id: 'EVT-005',
+    title: 'Durga Puja',
+    date: '2026-10-18',
+    endDate: '2026-10-21',
+    venue: 'Society Clubhouse',
+    attendees: 100,
+    category: 'Festival',
+    description: 'Four-day festival celebrating Goddess Durga, including Maha Saptami, Maha Ashtami, Maha Navami, and Vijayadashami.',
+    reminder: false
+  },
+  {
+    id: 'EVT-006',
+    title: 'Dussehra (Vijayadashami)',
+    date: '2026-10-20',
+    venue: 'Society Garden',
+    attendees: 80,
+    category: 'Festival',
+    description: 'Celebration of the victory of good over evil and the triumph of Lord Rama over Ravana.',
+    reminder: false
+  },
+  {
+    id: 'EVT-007',
+    title: 'Diwali',
+    date: '2026-11-08',
+    venue: 'Society Common Areas',
+    attendees: 150,
+    category: 'Festival',
+    description: 'Festival of Lights celebrated with Lakshmi Puja, decorations, diyas, and community gatherings.',
+    reminder: false
   }
 ];
 

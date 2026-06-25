@@ -5,10 +5,11 @@ service cloud.firestore {
       // Allow read access to any authenticated user
       allow read: if request.auth != null;
       
-      // Allow write access only to the official admin emails
+      // Allow write access only to the official admin emails, excluding locked finance months
       allow write: if request.auth != null && 
                     (request.auth.token.email.lower() == 'majestiqueeuriska.a@gmail.com' || 
-                     request.auth.token.email.lower() == 'smamit27@gmail.com');
+                     request.auth.token.email.lower() == 'smamit27@gmail.com') &&
+                    !(request.path.size() > 4 && request.path[3] == 'financeMonthly' && request.path[4] in ['finance_2026-04', 'finance_2026-05']);
     }
   }
 }
