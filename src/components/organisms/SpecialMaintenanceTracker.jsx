@@ -10,16 +10,16 @@ const fmt = (v) =>
 // Oct 2021 – Jun 2025 : ₹2,200 / month  (45 months)
 // Jul 2025 – Jun 2026 : ₹3,000 / month  (12 months)
 const BILLS_TEMPLATE = [
-  { id: 1, year: 'FY 2021-22',       period: 'Oct 2021 – Mar 2022', months: 6,  rate: 2200, amount: 13200 },
-  { id: 2, year: 'FY 2022-23',       period: 'Apr 2022 – Mar 2023', months: 12, rate: 2200, amount: 26400 },
-  { id: 3, year: 'FY 2023-24',       period: 'Apr 2023 – Mar 2024', months: 12, rate: 2200, amount: 26400 },
-  { id: 4, year: 'FY 2024-25',       period: 'Apr 2024 – Mar 2025', months: 12, rate: 2200, amount: 26400 },
-  { id: 5, year: 'FY 2025-26 (I)',   period: 'Apr 2025 – Jun 2025', months: 3,  rate: 2200, amount: 6600  },
-  { id: 6, year: 'FY 2025-26 (II)',  period: 'Jul 2025 – Jun 2026', months: 12, rate: 3000, amount: 36000 },
+  { id: 1, year: 'FY 2021-22', period: 'Oct 2021 – Mar 2022', months: 6, rate: 2200, amount: 13200 },
+  { id: 2, year: 'FY 2022-23', period: 'Apr 2022 – Mar 2023', months: 12, rate: 2200, amount: 26400 },
+  { id: 3, year: 'FY 2023-24', period: 'Apr 2023 – Mar 2024', months: 12, rate: 2200, amount: 26400 },
+  { id: 4, year: 'FY 2024-25', period: 'Apr 2024 – Mar 2025', months: 12, rate: 2200, amount: 26400 },
+  { id: 5, year: 'FY 2025-26 (I)', period: 'Apr 2025 – Jun 2025', months: 3, rate: 2200, amount: 6600 },
+  { id: 6, year: 'FY 2025-26 (II)', period: 'Jul 2025 – Jun 2026', months: 12, rate: 3000, amount: 36000 },
 ];
 
 const TOTAL_PER_FLAT = BILLS_TEMPLATE.reduce((s, b) => s + b.amount, 0); // ₹1,35,000
-const TOTAL_MONTHS   = BILLS_TEMPLATE.reduce((s, b) => s + b.months, 0); // 57 months
+const TOTAL_MONTHS = BILLS_TEMPLATE.reduce((s, b) => s + b.months, 0); // 57 months
 const FLAT_IDS = ['A-302', 'A-904', 'A-1002'];
 
 const makeDefaultFlats = () =>
@@ -67,13 +67,13 @@ function StatChip({ label, value, bg, color }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function MaintenanceTracker({ isAdmin = false }) {
-  const [flats, setFlats]           = useState([]);
-  const [isLoading, setIsLoading]   = useState(false);
+  const [flats, setFlats] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
-  const [saveMsg, setSaveMsg]       = useState('');
+  const [saveMsg, setSaveMsg] = useState('');
   const [activeFlat, setActiveFlat] = useState(null);
-  const isLoadedRef                 = useRef(false);
-  const recordId                    = 'maintenance_bills_v3';
+  const isLoadedRef = useRef(false);
+  const recordId = 'maintenance_bills_v3';
 
   useEffect(() => {
     let cancelled = false;
@@ -119,13 +119,13 @@ export default function MaintenanceTracker({ isAdmin = false }) {
     if (isLoadedRef.current) save(next);
   };
 
-  const totalBills   = flats.reduce((s, f) => s + f.bills.length, 0);
-  const totalPaid    = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Paid').length, 0);
+  const totalBills = flats.reduce((s, f) => s + f.bills.length, 0);
+  const totalPaid = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Paid').length, 0);
   const totalPending = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Pending').length, 0);
-  const amtPaid      = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Paid').reduce((a, b) => a + b.amount, 0), 0);
-  const amtPending   = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Pending').reduce((a, b) => a + b.amount, 0), 0);
-  const grandTotal   = TOTAL_PER_FLAT * 3;
-  const donePercent  = totalBills > 0 ? Math.round((totalPaid / totalBills) * 100) : 0;
+  const amtPaid = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Paid').reduce((a, b) => a + b.amount, 0), 0);
+  const amtPending = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Pending').reduce((a, b) => a + b.amount, 0), 0);
+  const grandTotal = TOTAL_PER_FLAT * 3;
+  const donePercent = totalBills > 0 ? Math.round((totalPaid / totalBills) * 100) : 0;
   const visibleFlats = activeFlat ? flats.filter(f => f.id === activeFlat) : flats;
 
   return (
@@ -152,9 +152,9 @@ export default function MaintenanceTracker({ isAdmin = false }) {
         </div>
 
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          <StatChip label="Total"   value={totalBills}   bg="rgba(255,255,255,0.1)"  color="#fff"     />
-          <StatChip label="Paid"    value={totalPaid}    bg="rgba(110,231,183,0.2)"  color="#6ee7b7"  />
-          <StatChip label="Pending" value={totalPending} bg="rgba(253,224,71,0.18)"  color="#fde047"  />
+          <StatChip label="Total" value={totalBills} bg="rgba(255,255,255,0.1)" color="#fff" />
+          <StatChip label="Paid" value={totalPaid} bg="rgba(110,231,183,0.2)" color="#6ee7b7" />
+          <StatChip label="Pending" value={totalPending} bg="rgba(253,224,71,0.18)" color="#fde047" />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '8px 14px' }}>
             <div style={{ position: 'relative', width: 44, height: 44 }}>
@@ -178,19 +178,19 @@ export default function MaintenanceTracker({ isAdmin = false }) {
           </div>
 
           {saveStatus === 'saving' && <span style={{ fontSize: '0.75rem', color: '#fde047', fontWeight: 700 }}>Saving…</span>}
-          {saveStatus === 'saved'  && <span style={{ fontSize: '0.75rem', color: '#6ee7b7', fontWeight: 700 }}>{saveMsg}</span>}
-          {saveStatus === 'error'  && <span style={{ fontSize: '0.75rem', color: '#fca5a5', fontWeight: 700 }}>{saveMsg}</span>}
-          {isLoading               && <span style={{ fontSize: '0.75rem', color: '#93c5fd', fontWeight: 700 }}>Loading…</span>}
+          {saveStatus === 'saved' && <span style={{ fontSize: '0.75rem', color: '#6ee7b7', fontWeight: 700 }}>{saveMsg}</span>}
+          {saveStatus === 'error' && <span style={{ fontSize: '0.75rem', color: '#fca5a5', fontWeight: 700 }}>{saveMsg}</span>}
+          {isLoading && <span style={{ fontSize: '0.75rem', color: '#93c5fd', fontWeight: 700 }}>Loading…</span>}
         </div>
       </div>
 
       {/* ── Summary Cards ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
         {[
-          { label: 'Grand Total (3 Flats)', value: fmt(grandTotal),     sub: `${fmt(TOTAL_PER_FLAT)} per flat`,          accent: '#0b2b26' },
-          { label: 'Amount Pending',        value: fmt(amtPending),     sub: 'Across all 3 flats',                        accent: '#991b1b' },
-          { label: 'Amount Paid',           value: fmt(amtPaid),        sub: 'Across all 3 flats',                        accent: '#065f46' },
-          { label: 'Per Flat Total',        value: fmt(TOTAL_PER_FLAT), sub: '45 mos × ₹2,200 + 12 mos × ₹3,000',        accent: '#196c6c' },
+          { label: 'Grand Total (3 Flats)', value: fmt(grandTotal), sub: `${fmt(TOTAL_PER_FLAT)} per flat`, accent: '#0b2b26' },
+          { label: 'Amount Pending', value: fmt(amtPending), sub: 'Across all 3 flats', accent: '#991b1b' },
+          { label: 'Amount Paid', value: fmt(amtPaid), sub: 'Across all 3 flats', accent: '#065f46' },
+          { label: 'Per Flat Total', value: fmt(TOTAL_PER_FLAT), sub: '45 mos × ₹2,200 + 12 mos × ₹3,000', accent: '#196c6c' },
         ].map(c => (
           <div key={c.label} style={{
             background: 'rgba(255,250,242,0.97)', border: '1px solid rgba(61,63,52,0.1)',
@@ -241,10 +241,10 @@ export default function MaintenanceTracker({ isAdmin = false }) {
 
       {/* ── Flat Tables ── */}
       {visibleFlats.map(flat => {
-        const paidAmt   = flat.bills.filter(b => b.status === 'Paid').reduce((s, b) => s + b.amount, 0);
-        const pendAmt   = flat.bills.filter(b => b.status === 'Pending').reduce((s, b) => s + b.amount, 0);
+        const paidAmt = flat.bills.filter(b => b.status === 'Paid').reduce((s, b) => s + b.amount, 0);
+        const pendAmt = flat.bills.filter(b => b.status === 'Pending').reduce((s, b) => s + b.amount, 0);
         const paidCount = flat.bills.filter(b => b.status === 'Paid').length;
-        const pct       = Math.round((paidAmt / TOTAL_PER_FLAT) * 100);
+        const pct = Math.round((paidAmt / TOTAL_PER_FLAT) * 100);
 
         return (
           <div key={flat.id} style={{
@@ -324,9 +324,9 @@ export default function MaintenanceTracker({ isAdmin = false }) {
                 </thead>
                 <tbody>
                   {flat.bills.map((bill, idx) => {
-                    const isPaid    = bill.status === 'Paid';
+                    const isPaid = bill.status === 'Paid';
                     const isNewRate = bill.rate === 3000;
-                    const rowBg     = isPaid ? 'rgba(209,250,229,0.1)' : 'transparent';
+                    const rowBg = isPaid ? 'rgba(209,250,229,0.1)' : 'transparent';
                     return (
                       <tr
                         key={bill.id}
