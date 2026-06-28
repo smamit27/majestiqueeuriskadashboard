@@ -23,6 +23,9 @@ const TOTAL_MONTHS = BILLS_TEMPLATE.reduce((s, b) => s + b.months, 0); // 57 mon
 const FLAT_IDS = ['A-302', 'A-904', 'A-1002'];
 
 const TOI_TRANSACTIONS = [
+  { transactionNo: '-', invoiceNo: '-', invoiceDate: '-', amount: 9000, createdOn: '-', utrNo: '-', period: 'April to June 2026', unit: 'A-302' },
+  { transactionNo: '-', invoiceNo: '-', invoiceDate: '-', amount: 9000, createdOn: '-', utrNo: '-', period: 'April to June 2026', unit: 'A-904' },
+  { transactionNo: '-', invoiceNo: '-', invoiceDate: '-', amount: 9000, createdOn: '-', utrNo: '-', period: 'April to June 2026', unit: 'A-1002' },
   { transactionNo: '4060073532', invoiceNo: 'ME/A/15/OCT-25', invoiceDate: '18-10-2025', amount: 18000, createdOn: '21-11-2025', utrNo: 'HDFCN52025112110540834', period: 'Oct 25 to Mar 26', unit: 'A-302' },
   { transactionNo: '4060073966', invoiceNo: 'ME/A/16/OCT-25', invoiceDate: '18-10-2025', amount: 18000, createdOn: '25-11-2025', utrNo: 'HDFCH00631917461', period: 'Oct 25 to Mar 26', unit: 'A-904' },
   { transactionNo: '4060073966', invoiceNo: 'ME/A/17/OCT-25', invoiceDate: '18-10-2025', amount: 18000, createdOn: '25-11-2025', utrNo: 'HDFCH00631917461', period: 'Oct 25 to Mar 26', unit: 'A-1002' },
