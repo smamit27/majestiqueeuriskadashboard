@@ -104,6 +104,7 @@ export default function MaintenanceTracker({ isAdmin = false }) {
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg] = useState('');
   const [activeFlat, setActiveFlat] = useState(null);
+  const [activeToiFlat, setActiveToiFlat] = useState(null);
   const [viewSection, setViewSection] = useState('maintenance'); // 'maintenance' | 'toi_transactions'
   const isLoadedRef = useRef(false);
   const recordId = 'maintenance_bills_v3';
@@ -473,97 +474,121 @@ export default function MaintenanceTracker({ isAdmin = false }) {
       )}
 
       {/* ── TOI Transactions View ── */}
-      {viewSection === 'toi_transactions' && (
-        <div style={{
-          background: 'rgba(255,250,242,0.97)', borderRadius: 20,
-          border: '1px solid rgba(61,63,52,0.1)',
-          boxShadow: '0 4px 24px rgba(11,43,38,0.07)', overflow: 'hidden',
-        }}>
-          <div style={{
-            padding: '16px 22px',
-            background: 'linear-gradient(135deg, rgba(244,239,231,0.98), rgba(255,250,242,0.9))',
-            borderBottom: '1px solid rgba(61,63,52,0.08)',
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+      {viewSection === 'toi_transactions' && (() => {
+        const filteredToi = activeToiFlat ? TOI_TRANSACTIONS.filter(t => t.unit === activeToiFlat) : TOI_TRANSACTIONS;
+        const toiTotalAmount = filteredToi.reduce((a, b) => a + b.amount, 0);
+
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            {/* ── Flat Tab Switcher ── */}
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {[{ id: null, label: 'All Flats', emoji: '🏢' }, ...FLAT_IDS.map(id => ({ id, label: id, emoji: '🏠' }))].map(tab => (
+                <button key={String(tab.id)} onClick={() => setActiveToiFlat(tab.id)} style={{
+                  padding: '9px 18px', borderRadius: 12, border: '2px solid',
+                  borderColor: activeToiFlat === tab.id ? '#0b2b26' : 'rgba(61,63,52,0.15)',
+                  cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', fontFamily: 'inherit',
+                  background: activeToiFlat === tab.id ? '#0b2b26' : 'rgba(255,250,242,0.85)',
+                  color: activeToiFlat === tab.id ? '#C49B4F' : '#1d2a24',
+                  boxShadow: activeToiFlat === tab.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none',
+                  transition: 'all 0.18s', display: 'flex', alignItems: 'center', gap: 7,
+                }}>
+                  <span>{tab.emoji}</span> <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <div style={{
+              background: 'rgba(255,250,242,0.97)', borderRadius: 20,
+              border: '1px solid rgba(61,63,52,0.1)',
+              boxShadow: '0 4px 24px rgba(11,43,38,0.07)', overflow: 'hidden',
+            }}>
               <div style={{
-                width: 50, height: 50,
-                background: 'linear-gradient(135deg, #0b2b26, #196c6c)',
-                color: '#C49B4F', borderRadius: 13,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontWeight: 800, fontSize: '1.5rem',
-                boxShadow: '0 4px 14px rgba(11,43,38,0.25)',
+                padding: '16px 22px',
+                background: 'linear-gradient(135deg, rgba(244,239,231,0.98), rgba(255,250,242,0.9))',
+                borderBottom: '1px solid rgba(61,63,52,0.08)',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14,
               }}>
-                📰
-              </div>
-              <div>
-                <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: '#196c6c', marginBottom: 2 }}>Records</div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0b2b26' }}>Times of India Paid Transactions</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: 12 }}>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#065f46', marginBottom: 2 }}>Total Amount Paid</div>
-                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#065f46' }}>{fmt(TOI_TRANSACTIONS.reduce((a, b) => a + b.amount, 0))}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <div style={{
+                    width: 50, height: 50,
+                    background: 'linear-gradient(135deg, #0b2b26, #196c6c)',
+                    color: '#C49B4F', borderRadius: 13,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontWeight: 800, fontSize: '1.5rem',
+                    boxShadow: '0 4px 14px rgba(11,43,38,0.25)',
+                  }}>
+                    📰
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: '#196c6c', marginBottom: 2 }}>Records</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0b2b26' }}>Times of India Paid Transactions</div>
+                  </div>
                 </div>
+                <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#065f46', marginBottom: 2 }}>Total Amount Paid</div>
+                      <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#065f46' }}>{fmt(toiTotalAmount)}</div>
+                    </div>
+                </div>
+              </div>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
+                  <thead>
+                    <tr>
+                      <th style={{ ...TH_BASE, textAlign: 'center', width: 40 }}>#</th>
+                      <th style={{ ...TH_BASE, textAlign: 'center' }}>Flat</th>
+                      <th style={{ ...TH_BASE, textAlign: 'left' }}>Transaction No</th>
+                      <th style={{ ...TH_BASE, textAlign: 'left' }}>Invoice No</th>
+                      <th style={{ ...TH_BASE, textAlign: 'center' }}>Invoice Date</th>
+                      <th style={{ ...TH_BASE, textAlign: 'left' }}>Period</th>
+                      <th style={{ ...TH_BASE, textAlign: 'center' }}>UTR / Reference</th>
+                      <th style={{ ...TH_BASE, textAlign: 'center' }}>Created On</th>
+                      <th style={{ ...TH_BASE, textAlign: 'right' }}>Amount</th>
+                      <th style={{ ...TH_BASE, textAlign: 'center' }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredToi.map((txn, idx) => (
+                      <tr
+                        key={idx}
+                        style={{
+                          borderBottom: idx < filteredToi.length - 1 ? '1px solid rgba(61,63,52,0.055)' : 'none',
+                          background: 'rgba(209,250,229,0.1)', transition: 'background 0.13s',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(209,250,229,0.3)'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(209,250,229,0.1)'}
+                      >
+                        <td style={{ ...TD_BASE, textAlign: 'center', color: '#c4b99a', fontSize: '0.72rem', fontWeight: 700 }}>{idx + 1}</td>
+                        <td style={{ ...TD_BASE, textAlign: 'center' }}>
+                          <span style={{
+                            display: 'inline-block', padding: '3px 10px', borderRadius: 8,
+                            fontSize: '0.71rem', fontWeight: 700,
+                            background: 'rgba(11,43,38,0.1)', color: '#0b2b26',
+                          }}>
+                            {txn.unit}
+                          </span>
+                        </td>
+                        <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.85rem', color: '#196c6c' }}>{txn.transactionNo}</td>
+                        <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.8rem', color: '#5f665f' }}>{txn.invoiceNo}</td>
+                        <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.8rem', color: '#5f665f' }}>{txn.invoiceDate}</td>
+                        <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.8rem', color: '#1d2a24' }}>{txn.period}</td>
+                        <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.75rem', color: '#8a9080' }}>{txn.utrNo || '-'}</td>
+                        <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.8rem', color: '#5f665f' }}>{txn.createdOn}</td>
+                        <td style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.92rem', color: '#065f46', fontVariantNumeric: 'tabular-nums' }}>
+                          {fmt(txn.amount)}
+                        </td>
+                        <td style={{ ...TD_BASE, textAlign: 'center' }}>
+                          <StatusBadge status="Paid" />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
-              <thead>
-                <tr>
-                  <th style={{ ...TH_BASE, textAlign: 'center', width: 40 }}>#</th>
-                  <th style={{ ...TH_BASE, textAlign: 'center' }}>Flat</th>
-                  <th style={{ ...TH_BASE, textAlign: 'left' }}>Transaction No</th>
-                  <th style={{ ...TH_BASE, textAlign: 'left' }}>Invoice No</th>
-                  <th style={{ ...TH_BASE, textAlign: 'center' }}>Invoice Date</th>
-                  <th style={{ ...TH_BASE, textAlign: 'left' }}>Period</th>
-                  <th style={{ ...TH_BASE, textAlign: 'center' }}>UTR / Reference</th>
-                  <th style={{ ...TH_BASE, textAlign: 'center' }}>Created On</th>
-                  <th style={{ ...TH_BASE, textAlign: 'right' }}>Amount</th>
-                  <th style={{ ...TH_BASE, textAlign: 'center' }}>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {TOI_TRANSACTIONS.map((txn, idx) => (
-                  <tr
-                    key={idx}
-                    style={{
-                      borderBottom: idx < TOI_TRANSACTIONS.length - 1 ? '1px solid rgba(61,63,52,0.055)' : 'none',
-                      background: 'rgba(209,250,229,0.1)', transition: 'background 0.13s',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(209,250,229,0.3)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(209,250,229,0.1)'}
-                  >
-                    <td style={{ ...TD_BASE, textAlign: 'center', color: '#c4b99a', fontSize: '0.72rem', fontWeight: 700 }}>{idx + 1}</td>
-                    <td style={{ ...TD_BASE, textAlign: 'center' }}>
-                      <span style={{
-                        display: 'inline-block', padding: '3px 10px', borderRadius: 8,
-                        fontSize: '0.71rem', fontWeight: 700,
-                        background: 'rgba(11,43,38,0.1)', color: '#0b2b26',
-                      }}>
-                        {txn.unit}
-                      </span>
-                    </td>
-                    <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.85rem', color: '#196c6c' }}>{txn.transactionNo}</td>
-                    <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.8rem', color: '#5f665f' }}>{txn.invoiceNo}</td>
-                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.8rem', color: '#5f665f' }}>{txn.invoiceDate}</td>
-                    <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.8rem', color: '#1d2a24' }}>{txn.period}</td>
-                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.75rem', color: '#8a9080' }}>{txn.utrNo || '-'}</td>
-                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.8rem', color: '#5f665f' }}>{txn.createdOn}</td>
-                    <td style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.92rem', color: '#065f46', fontVariantNumeric: 'tabular-nums' }}>
-                      {fmt(txn.amount)}
-                    </td>
-                    <td style={{ ...TD_BASE, textAlign: 'center' }}>
-                      <StatusBadge status="Paid" />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }
