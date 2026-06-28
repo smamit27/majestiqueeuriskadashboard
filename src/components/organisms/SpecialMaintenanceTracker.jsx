@@ -22,6 +22,32 @@ const TOTAL_PER_FLAT = BILLS_TEMPLATE.reduce((s, b) => s + b.amount, 0); // ₹1
 const TOTAL_MONTHS = BILLS_TEMPLATE.reduce((s, b) => s + b.months, 0); // 57 months
 const FLAT_IDS = ['A-302', 'A-904', 'A-1002'];
 
+const TOI_TRANSACTIONS = [
+  { transactionNo: '1000050569', invoiceNo: 'ME/A/14/OCT-24B', invoiceDate: '10-10-2024', amount: 13200, createdOn: '19-03-2025', utrNo: '503257788563', period: 'OCT24 TO MAR25', unit: 'A-904' },
+  { transactionNo: '1000050567', invoiceNo: 'ME/A/14/OCT-24', invoiceDate: '10-10-2024', amount: 13200, createdOn: '19-03-2025', utrNo: '503257788563', period: 'OCT24 TO MAR25', unit: 'A-302' },
+  { transactionNo: '1000034521', invoiceNo: 'ME/A/13/JUN-24-3', invoiceDate: '17-06-2024', amount: 13200, createdOn: '03-07-2024', utrNo: 'N243243234910184', period: 'April 24 to Sept 24', unit: 'A-1002' },
+  { transactionNo: '1000034519', invoiceNo: 'ME/A/13/JUN-24-2', invoiceDate: '17-06-2024', amount: 13200, createdOn: '03-07-2024', utrNo: 'N243243234910184', period: 'April 24 to Sept 24', unit: 'A-904' },
+  { transactionNo: '1000034517', invoiceNo: 'ME/A/13/JUN-24-1', invoiceDate: '17-06-2024', amount: 13200, createdOn: '03-07-2024', utrNo: 'N243243234910184', period: 'April 24 to Sept 24', unit: 'A-302' },
+  { transactionNo: '1000026932', invoiceNo: 'ME/A/13/DEC-23', invoiceDate: '10-12-2023', amount: 11000, createdOn: '26-02-2024', utrNo: '-', period: 'Nov23 to Jan24', unit: 'A-1002' },
+  { transactionNo: '1000026931', invoiceNo: 'ME/A/12/DEC-23', invoiceDate: '10-12-2023', amount: 11000, createdOn: '26-02-2024', utrNo: '-', period: 'Nov23 to Jan24', unit: 'A-904' },
+  { transactionNo: '1000026930', invoiceNo: 'ME/A/11/DEC-23', invoiceDate: '10-12-2023', amount: 11000, createdOn: '26-02-2024', utrNo: '-', period: 'Nov23 to Jan24', unit: 'A-302' },
+  { transactionNo: '1000017540', invoiceNo: 'ME/A/17/JULY-23', invoiceDate: '20-07-2023', amount: 13200, createdOn: '08-09-2023', utrNo: 'N291232695112959', period: 'May23 to Oct23', unit: 'A-1002' },
+  { transactionNo: '1000017539', invoiceNo: 'ME/A/16/JULY-23', invoiceDate: '20-07-2023', amount: 13200, createdOn: '08-09-2023', utrNo: 'N291232695112959', period: 'May23 to Oct23', unit: 'A-904' },
+  { transactionNo: '1000017538', invoiceNo: 'ME/A/15/JULY-23', invoiceDate: '20-07-2023', amount: 13200, createdOn: '08-09-2023', utrNo: 'N291232695112959', period: 'May23 to Oct23', unit: 'A-302' },
+  { transactionNo: '1000010335', invoiceNo: 'SF/74/APRIL-2023', invoiceDate: '01-04-2023', amount: 100, createdOn: '06-04-2023', utrNo: 'N102232415860682', period: "Apr'23 to Jun'23", unit: 'A-1002' },
+  { transactionNo: '1000010334', invoiceNo: 'M/73/APRIL-2023', invoiceDate: '01-04-2023', amount: 3100, createdOn: '06-04-2023', utrNo: 'N102232415860682', period: "Apr'23 to Jun'23", unit: 'A-1002' },
+  { transactionNo: '1000010332', invoiceNo: 'SF/68/APRIL-2023', invoiceDate: '01-04-2023', amount: 100, createdOn: '06-04-2023', utrNo: 'N102232415860682', period: "Apr'23 to Jun'23", unit: 'A-904' },
+  { transactionNo: '1000010331', invoiceNo: 'M/68/APRIL-2023', invoiceDate: '01-04-2023', amount: 3100, createdOn: '06-04-2023', utrNo: 'N102232415860682', period: "Apr'23 to Jun'23", unit: 'A-904' },
+  { transactionNo: '1000010330', invoiceNo: 'SF/13/APRIL-2023', invoiceDate: '01-04-2023', amount: 100, createdOn: '06-04-2023', utrNo: 'N102232415860682', period: "Apr'23 to Jun'23", unit: 'A-302' },
+  { transactionNo: '1000010329', invoiceNo: 'M/17/APRIL-2023', invoiceDate: '01-04-2023', amount: 3100, createdOn: '06-04-2023', utrNo: 'N102232415860682', period: "Apr'23 to Jun'23", unit: 'A-302' },
+  { transactionNo: '1000009809', invoiceNo: '14', invoiceDate: '01-01-2023', amount: 6600, createdOn: '28-03-2023', utrNo: 'N090232395743913', period: "Oct'22 to Mar'23", unit: 'A-1002' },
+  { transactionNo: '1000009807', invoiceNo: '9', invoiceDate: '01-12-2022', amount: 6600, createdOn: '28-03-2023', utrNo: 'N090232395743913', period: "Oct'22 to Mar'23", unit: 'A-1002' },
+  { transactionNo: '1000009804', invoiceNo: '12', invoiceDate: '01-01-2023', amount: 6600, createdOn: '28-03-2023', utrNo: 'N090232395743913', period: "Oct'22 to Mar'23", unit: 'A-904' },
+  { transactionNo: '1000009802', invoiceNo: '6', invoiceDate: '01-12-2022', amount: 6600, createdOn: '28-03-2023', utrNo: 'N090232395743913', period: "Oct'22 to Mar'23", unit: 'A-904' },
+  { transactionNo: '1000009801', invoiceNo: '13', invoiceDate: '01-01-2023', amount: 6600, createdOn: '28-03-2023', utrNo: 'N090232395743913', period: "Oct'22 to Mar'23", unit: 'A-302' },
+  { transactionNo: '1000009800', invoiceNo: '3', invoiceDate: '01-12-2022', amount: 6600, createdOn: '28-03-2023', utrNo: 'N090232395743913', period: "Oct'22 to Mar'23", unit: 'A-302' },
+];
+
 const makeDefaultFlats = () =>
   FLAT_IDS.map(id => ({
     id, flatNo: id,
@@ -72,6 +98,7 @@ export default function MaintenanceTracker({ isAdmin = false }) {
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg] = useState('');
   const [activeFlat, setActiveFlat] = useState(null);
+  const [viewSection, setViewSection] = useState('maintenance'); // 'maintenance' | 'toi_transactions'
   const isLoadedRef = useRef(false);
   const recordId = 'maintenance_bills_v3';
 
@@ -141,10 +168,10 @@ export default function MaintenanceTracker({ isAdmin = false }) {
       }}>
         <div>
           <p style={{ margin: '0 0 2px', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#C49B4F' }}>
-            Flat Maintenance
+            {viewSection === 'maintenance' ? 'Flat Maintenance' : 'Newspaper Transactions'}
           </p>
           <h2 style={{ margin: '0 0 2px', fontSize: '1.35rem', fontWeight: 800, color: '#fff' }}>
-            🏠 Maintenance Amount Tracker
+            {viewSection === 'maintenance' ? '🏠 Maintenance Amount Tracker' : '📰 TOI Amount Tracker'}
           </h2>
           <p style={{ margin: 0, color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>
             Flats A-302 · A-904 · A-1002 &nbsp;|&nbsp; Majestique Euriska
@@ -222,24 +249,47 @@ export default function MaintenanceTracker({ isAdmin = false }) {
         </span>
       </div>
 
-      {/* ── Flat Tab Switcher ── */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        {[{ id: null, label: 'All Flats', emoji: '🏢' }, ...FLAT_IDS.map(id => ({ id, label: id, emoji: '🏠' }))].map(tab => (
-          <button key={String(tab.id)} onClick={() => setActiveFlat(tab.id)} style={{
-            padding: '9px 18px', borderRadius: 12, border: '2px solid',
-            borderColor: activeFlat === tab.id ? '#0b2b26' : 'rgba(61,63,52,0.15)',
-            cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', fontFamily: 'inherit',
-            background: activeFlat === tab.id ? '#0b2b26' : 'rgba(255,250,242,0.85)',
-            color: activeFlat === tab.id ? '#C49B4F' : '#1d2a24',
-            boxShadow: activeFlat === tab.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none',
-            transition: 'all 0.18s', display: 'flex', alignItems: 'center', gap: 7,
+      {/* ── Section Switcher ── */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 4 }}>
+        {[
+          { id: 'maintenance', label: '🏠 Maintenance Tracker' },
+          { id: 'toi_transactions', label: '📰 TOI Transactions' },
+        ].map(s => (
+          <button key={s.id} onClick={() => setViewSection(s.id)} style={{
+            padding: '10px 22px', borderRadius: 12, border: '2px solid',
+            borderColor: viewSection === s.id ? '#0b2b26' : 'rgba(61,63,52,0.15)',
+            cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem', fontFamily: 'inherit',
+            background: viewSection === s.id ? '#0b2b26' : 'rgba(255,250,242,0.85)',
+            color: viewSection === s.id ? '#C49B4F' : '#1d2a24',
+            boxShadow: viewSection === s.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none',
+            transition: 'all 0.18s',
           }}>
-            <span>{tab.emoji}</span> <span>{tab.label}</span>
+            {s.label}
           </button>
         ))}
       </div>
 
-      {/* ── Flat Tables ── */}
+      {viewSection === 'maintenance' && (
+        <>
+          {/* ── Flat Tab Switcher ── */}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[{ id: null, label: 'All Flats', emoji: '🏢' }, ...FLAT_IDS.map(id => ({ id, label: id, emoji: '🏠' }))].map(tab => (
+              <button key={String(tab.id)} onClick={() => setActiveFlat(tab.id)} style={{
+                padding: '9px 18px', borderRadius: 12, border: '2px solid',
+                borderColor: activeFlat === tab.id ? '#0b2b26' : 'rgba(61,63,52,0.15)',
+                cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', fontFamily: 'inherit',
+                background: activeFlat === tab.id ? '#0b2b26' : 'rgba(255,250,242,0.85)',
+                color: activeFlat === tab.id ? '#C49B4F' : '#1d2a24',
+                boxShadow: activeFlat === tab.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none',
+                transition: 'all 0.18s', display: 'flex', alignItems: 'center', gap: 7,
+              }}>
+                <span>{tab.emoji}</span> <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* ── Flat Tables ── */}
+
       {visibleFlats.map(flat => {
         const paidAmt = flat.bills.filter(b => b.status === 'Paid').reduce((s, b) => s + b.amount, 0);
         const pendAmt = flat.bills.filter(b => b.status === 'Pending').reduce((s, b) => s + b.amount, 0);
@@ -413,6 +463,101 @@ export default function MaintenanceTracker({ isAdmin = false }) {
           </div>
         );
       })}
+        </>
+      )}
+
+      {/* ── TOI Transactions View ── */}
+      {viewSection === 'toi_transactions' && (
+        <div style={{
+          background: 'rgba(255,250,242,0.97)', borderRadius: 20,
+          border: '1px solid rgba(61,63,52,0.1)',
+          boxShadow: '0 4px 24px rgba(11,43,38,0.07)', overflow: 'hidden',
+        }}>
+          <div style={{
+            padding: '16px 22px',
+            background: 'linear-gradient(135deg, rgba(244,239,231,0.98), rgba(255,250,242,0.9))',
+            borderBottom: '1px solid rgba(61,63,52,0.08)',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{
+                width: 50, height: 50,
+                background: 'linear-gradient(135deg, #0b2b26, #196c6c)',
+                color: '#C49B4F', borderRadius: 13,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontWeight: 800, fontSize: '1.5rem',
+                boxShadow: '0 4px 14px rgba(11,43,38,0.25)',
+              }}>
+                📰
+              </div>
+              <div>
+                <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: '#196c6c', marginBottom: 2 }}>Records</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0b2b26' }}>Times of India Paid Transactions</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#065f46', marginBottom: 2 }}>Total Amount Paid</div>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#065f46' }}>{fmt(TOI_TRANSACTIONS.reduce((a, b) => a + b.amount, 0))}</div>
+                </div>
+            </div>
+          </div>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...TH_BASE, textAlign: 'center', width: 40 }}>#</th>
+                  <th style={{ ...TH_BASE, textAlign: 'center' }}>Flat</th>
+                  <th style={{ ...TH_BASE, textAlign: 'left' }}>Transaction No</th>
+                  <th style={{ ...TH_BASE, textAlign: 'left' }}>Invoice No</th>
+                  <th style={{ ...TH_BASE, textAlign: 'center' }}>Invoice Date</th>
+                  <th style={{ ...TH_BASE, textAlign: 'left' }}>Period</th>
+                  <th style={{ ...TH_BASE, textAlign: 'center' }}>UTR / Reference</th>
+                  <th style={{ ...TH_BASE, textAlign: 'center' }}>Created On</th>
+                  <th style={{ ...TH_BASE, textAlign: 'right' }}>Amount</th>
+                  <th style={{ ...TH_BASE, textAlign: 'center' }}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {TOI_TRANSACTIONS.map((txn, idx) => (
+                  <tr
+                    key={idx}
+                    style={{
+                      borderBottom: idx < TOI_TRANSACTIONS.length - 1 ? '1px solid rgba(61,63,52,0.055)' : 'none',
+                      background: 'rgba(209,250,229,0.1)', transition: 'background 0.13s',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(209,250,229,0.3)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(209,250,229,0.1)'}
+                  >
+                    <td style={{ ...TD_BASE, textAlign: 'center', color: '#c4b99a', fontSize: '0.72rem', fontWeight: 700 }}>{idx + 1}</td>
+                    <td style={{ ...TD_BASE, textAlign: 'center' }}>
+                      <span style={{
+                        display: 'inline-block', padding: '3px 10px', borderRadius: 8,
+                        fontSize: '0.71rem', fontWeight: 700,
+                        background: 'rgba(11,43,38,0.1)', color: '#0b2b26',
+                      }}>
+                        {txn.unit}
+                      </span>
+                    </td>
+                    <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.85rem', color: '#196c6c' }}>{txn.transactionNo}</td>
+                    <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.8rem', color: '#5f665f' }}>{txn.invoiceNo}</td>
+                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.8rem', color: '#5f665f' }}>{txn.invoiceDate}</td>
+                    <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.8rem', color: '#1d2a24' }}>{txn.period}</td>
+                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.75rem', color: '#8a9080' }}>{txn.utrNo || '-'}</td>
+                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.8rem', color: '#5f665f' }}>{txn.createdOn}</td>
+                    <td style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.92rem', color: '#065f46', fontVariantNumeric: 'tabular-nums' }}>
+                      {fmt(txn.amount)}
+                    </td>
+                    <td style={{ ...TD_BASE, textAlign: 'center' }}>
+                      <StatusBadge status="Paid" />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
