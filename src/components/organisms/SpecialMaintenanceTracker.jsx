@@ -527,11 +527,19 @@ export default function MaintenanceTracker({ isAdmin = false }) {
                     <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0b2b26' }}>Times of India Paid Transactions</div>
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: 12 }}>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#065f46', marginBottom: 2 }}>Total Amount Paid</div>
-                      <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#065f46' }}>{fmt(toiTotalAmount)}</div>
-                    </div>
+                <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#5f665f', marginBottom: 2 }}>Maintenance Expected</div>
+                    <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1d2a24' }}>{fmt(activeToiFlat ? TOTAL_PER_FLAT : grandTotal)}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#991b1b', marginBottom: 2 }}>TOI Paid</div>
+                    <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#991b1b' }}>{fmt(toiTotalAmount)}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#065f46', marginBottom: 2 }}>Balance Available</div>
+                    <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#065f46' }}>{fmt((activeToiFlat ? TOTAL_PER_FLAT : grandTotal) - toiTotalAmount)}</div>
+                  </div>
                 </div>
               </div>
               <div style={{ overflowX: 'auto' }}>
