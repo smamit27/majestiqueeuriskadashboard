@@ -153,13 +153,24 @@ export default function FinanceTracker({ isAdmin = false }) {
         let totalExp = 0;
         const allData = [];
         for (const m of months) {
-          const snap = await getDoc(doc(db, 'financeMonthly', `finance_${m}`));
-          if (snap.exists()) {
-            const data = snap.data();
-            allData.push({ month: m, ...data });
-            (data.income || []).forEach(i => totalInc += parseFloat(i.amount) || 0);
-            (data.expenses || []).forEach(e => totalExp += parseFloat(e.amount) || 0);
+          const [snap, chequeSnap] = await Promise.all([
+             getDoc(doc(db, 'financeMonthly', `finance_${m}`)),
+             getDoc(doc(db, 'chequesMonthly', `cheques_${m}`))
+          ]);
+          
+          let data = { income: [], expenses: [] };
+          let chequeData = { cheques: [] };
+          
+          if (snap.exists()) data = snap.data();
+          if (chequeSnap.exists()) chequeData = chequeSnap.data();
+          
+          if (snap.exists() || chequeSnap.exists()) {
+             allData.push({ month: m, ...data, chequeExpenses: chequeData.cheques || [] });
           }
+          
+          (data.income || []).forEach(i => totalInc += parseFloat(i.amount) || 0);
+          (data.expenses || []).forEach(e => totalExp += parseFloat(e.amount) || 0);
+          (chequeData.cheques || []).forEach(c => totalExp += parseFloat(c.amount) || 0);
         }
         if (!cancelled) {
           setYearlyIncome(totalInc);
@@ -465,10 +476,10 @@ export default function FinanceTracker({ isAdmin = false }) {
               <tbody>
                 {[...months].reverse().flatMap(m => {
                    const isCurrent = m === selectedMonth;
-                   const monthObj = isCurrent ? { month: m, income, expenses } : (yearlyData.find(d => d.month === m) || { month: m, income: [], expenses: [] });
+                   const monthObj = isCurrent ? { month: m, income, expenses, chequeExpenses } : (yearlyData.find(d => d.month === m) || { month: m, income: [], expenses: [], chequeExpenses: [] });
                    
                    const matchedIncome = (monthObj.income || []).filter(i => i.source || i.amount).map(i => ({ ...i, type: 'Income', month: formatLongMonth(m) }));
-                   const matchedExpense = (monthObj.expenses || []).filter(e => e.vendor || e.amount).map(e => ({ ...e, type: 'Expense', month: formatLongMonth(m) }));
+                   const matchedExpense = [...(monthObj.expenses || []), ...(monthObj.chequeExpenses || [])].filter(e => e.vendor || e.amount || e.chequeNo).map(e => ({ ...e, type: 'Expense', month: formatLongMonth(m) }));
                    return [...matchedIncome, ...matchedExpense];
                 }).filter(item => {
                    if (!searchQuery) return true;
