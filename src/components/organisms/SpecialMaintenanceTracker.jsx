@@ -19,12 +19,31 @@ const BILLS_TEMPLATE = [
 ];
 
 const TOTAL_PER_FLAT = BILLS_TEMPLATE.reduce((s, b) => s + b.amount, 0); // ₹1,35,000
+const TOTAL_MONTHS   = BILLS_TEMPLATE.reduce((s, b) => s + b.months, 0); // 57 months
 const FLAT_IDS = ['A-302', 'A-904', 'A-1002'];
 
 const makeDefaultFlats = () =>
   FLAT_IDS.map(id => ({
     id, flatNo: id,
     bills: BILLS_TEMPLATE.map(b => ({ ...b, status: 'Pending' })),
+  }));
+
+// ─── TOI Bill Template (same rates, same periods) ────────────────────────────
+const TOI_TEMPLATE = [
+  { id: 1, year: 'FY 2021-22',       period: 'Oct 2021 – Mar 2022', months: 6,  rate: 2200, amount: 13200 },
+  { id: 2, year: 'FY 2022-23',       period: 'Apr 2022 – Mar 2023', months: 12, rate: 2200, amount: 26400 },
+  { id: 3, year: 'FY 2023-24',       period: 'Apr 2023 – Mar 2024', months: 12, rate: 2200, amount: 26400 },
+  { id: 4, year: 'FY 2024-25',       period: 'Apr 2024 – Mar 2025', months: 12, rate: 2200, amount: 26400 },
+  { id: 5, year: 'FY 2025-26 (I)',   period: 'Apr 2025 – Jun 2025', months: 3,  rate: 2200, amount: 6600  },
+  { id: 6, year: 'FY 2025-26 (II)',  period: 'Jul 2025 – Jun 2026', months: 12, rate: 3000, amount: 36000 },
+];
+const TOI_TOTAL_PER_FLAT = TOI_TEMPLATE.reduce((s, b) => s + b.amount, 0);
+const TOI_TOTAL_MONTHS   = TOI_TEMPLATE.reduce((s, b) => s + b.months, 0);
+
+const makeDefaultToiFlats = () =>
+  FLAT_IDS.map(id => ({
+    id, flatNo: id,
+    bills: TOI_TEMPLATE.map(b => ({ ...b, status: 'Pending' })),
   }));
 
 // ─── Style tokens ─────────────────────────────────────────────────────────────
@@ -69,13 +88,17 @@ function StatChip({ label, value, bg, color }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function MaintenanceTracker({ isAdmin = false }) {
+  const [section, setSection]       = useState('maintenance'); // 'maintenance' | 'toi'
   const [flats, setFlats]           = useState([]);
+  const [toiFlats, setToiFlats]     = useState([]);
   const [isLoading, setIsLoading]   = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg]       = useState('');
-  const [activeFlat, setActiveFlat] = useState(null); // null = show all
+  const [activeFlat, setActiveFlat] = useState(null);
   const isLoadedRef                 = useRef(false);
+  const toiLoadedRef                = useRef(false);
   const recordId                    = 'maintenance_bills_v3';
+  const toiRecordId                 = 'toi_bills_v3';
 
   // ── Load ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -99,6 +122,27 @@ export default function MaintenanceTracker({ isAdmin = false }) {
     return () => { cancelled = true; };
   }, []);
 
+  // ── Load TOI ──────────────────────────────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    toiLoadedRef.current = false;
+    async function loadToi() {
+      if (!isFirebaseConfigured || !db) {
+        setToiFlats(makeDefaultToiFlats()); toiLoadedRef.current = true; return;
+      }
+      try {
+        await ensureFirebaseSession();
+        const snap = await getDoc(doc(db, 'toiTracking', toiRecordId));
+        if (!cancelled)
+          setToiFlats(snap.exists() && snap.data().flats ? snap.data().flats : makeDefaultToiFlats());
+      } catch { setToiFlats(makeDefaultToiFlats()); }
+      finally { if (!cancelled) toiLoadedRef.current = true; }
+    }
+    loadToi();
+    return () => { cancelled = true; };
+  }, []);
+
+
   // ── Save ──────────────────────────────────────────────────────────────────
   const save = async (data) => {
     setSaveStatus('saving');
@@ -110,7 +154,7 @@ export default function MaintenanceTracker({ isAdmin = false }) {
     } catch { setSaveStatus('error'); setSaveMsg('Save failed'); }
   };
 
-  // ── Toggle ────────────────────────────────────────────────────────────────
+  // ── Toggle Maintenance Bill ────────────────────────────────────────────────
   const toggleBill = (flatId, billId) => {
     if (!isAdmin) return;
     const next = flats.map(f =>
@@ -124,16 +168,39 @@ export default function MaintenanceTracker({ isAdmin = false }) {
     if (isLoadedRef.current) save(next);
   };
 
-  // ── Aggregate stats (all flats) ───────────────────────────────────────────
-  const totalBills   = flats.reduce((s, f) => s + f.bills.length, 0);
-  const totalPaid    = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Paid').length, 0);
-  const totalPending = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Pending').length, 0);
-  const amtPaid      = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Paid').reduce((a, b) => a + b.amount, 0), 0);
-  const amtPending   = flats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Pending').reduce((a, b) => a + b.amount, 0), 0);
-  const grandTotal   = TOTAL_PER_FLAT * 3;
+  // ── Toggle TOI Bill ────────────────────────────────────────────────────────
+  const toggleToiBill = (flatId, billId) => {
+    if (!isAdmin) return;
+    const next = toiFlats.map(f =>
+      f.id !== flatId ? f : {
+        ...f, bills: f.bills.map(b =>
+          b.id !== billId ? b : { ...b, status: b.status === 'Pending' ? 'Paid' : 'Pending' }
+        ),
+      }
+    );
+    setToiFlats(next);
+    if (toiLoadedRef.current && isFirebaseConfigured && db) {
+      ensureFirebaseSession().then(() =>
+        setDoc(doc(db, 'toiTracking', toiRecordId), { flats: next, updatedAt: serverTimestamp() }, { merge: true })
+      ).catch(console.error);
+    }
+  };
+
+  // ── Stats (section-aware) ─────────────────────────────────────────────────
+  const activeFlats    = section === 'toi' ? toiFlats : flats;
+  const activeTpl      = section === 'toi' ? TOI_TOTAL_PER_FLAT : TOTAL_PER_FLAT;
+  const activeTotalMos = section === 'toi' ? TOI_TOTAL_MONTHS : TOTAL_MONTHS;
+  const activeToggle   = section === 'toi' ? toggleToiBill : toggleBill;
+
+  const totalBills   = activeFlats.reduce((s, f) => s + f.bills.length, 0);
+  const totalPaid    = activeFlats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Paid').length, 0);
+  const totalPending = activeFlats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Pending').length, 0);
+  const amtPaid      = activeFlats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Paid').reduce((a, b) => a + b.amount, 0), 0);
+  const amtPending   = activeFlats.reduce((s, f) => s + f.bills.filter(b => b.status === 'Pending').reduce((a, b) => a + b.amount, 0), 0);
+  const grandTotal   = activeTpl * 3;
   const donePercent  = totalBills > 0 ? Math.round((totalPaid / totalBills) * 100) : 0;
 
-  const visibleFlats = activeFlat ? flats.filter(f => f.id === activeFlat) : flats;
+  const visibleFlats = activeFlat ? activeFlats.filter(f => f.id === activeFlat) : activeFlats;
 
   // ─────────────────────────────────────────────────────────────────────────
   return (
@@ -150,10 +217,10 @@ export default function MaintenanceTracker({ isAdmin = false }) {
         {/* Left: Title */}
         <div>
           <p style={{ margin: '0 0 2px', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#C49B4F' }}>
-            Flat Maintenance
+            {section === 'toi' ? 'Newspaper Subscription' : 'Flat Maintenance'}
           </p>
           <h2 style={{ margin: '0 0 2px', fontSize: '1.35rem', fontWeight: 800, color: '#fff' }}>
-            🏠 Maintenance Amount Tracker
+            {section === 'toi' ? '📰 Times of India Tracker' : '🏠 Maintenance Amount Tracker'}
           </h2>
           <p style={{ margin: 0, color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>
             Flats A-302 · A-904 · A-1002 &nbsp;|&nbsp; Majestique Euriska
@@ -199,10 +266,10 @@ export default function MaintenanceTracker({ isAdmin = false }) {
       {/* ── Amount Summary Cards ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
         {[
-          { label: 'Grand Total (3 Flats)', value: fmt(grandTotal),       sub: `₹${TOTAL_PER_FLAT.toLocaleString('en-IN')} per flat`, accent: '#0b2b26' },
+          { label: 'Grand Total (3 Flats)', value: fmt(grandTotal),       sub: `${fmt(activeTpl)} per flat`, accent: '#0b2b26' },
           { label: 'Amount Pending',        value: fmt(amtPending),       sub: 'Across all 3 flats',                                   accent: '#991b1b' },
           { label: 'Amount Paid',           value: fmt(amtPaid),          sub: 'Across all 3 flats',                                   accent: '#065f46' },
-          { label: 'Per Flat Total',        value: fmt(TOTAL_PER_FLAT),   sub: '45 mos × ₹2,200 + 12 mos × ₹3,000',                   accent: '#196c6c' },
+          { label: 'Per Flat Total',        value: fmt(activeTpl),   sub: '45 mos × ₹2,200 + 12 mos × ₹3,000',                   accent: '#196c6c' },
         ].map(c => (
           <div key={c.label} style={{
             background: 'rgba(255,250,242,0.97)', border: '1px solid rgba(61,63,52,0.1)',
@@ -234,6 +301,26 @@ export default function MaintenanceTracker({ isAdmin = false }) {
         </span>
       </div>
 
+      {/* ── Section Switcher: Maintenance | TOI ── */}
+      <div style={{ display: 'flex', gap: 8 }}>
+        {[
+          { id: 'maintenance', label: '🏠 Maintenance' },
+          { id: 'toi',         label: '📰 Times of India' },
+        ].map(s => (
+          <button key={s.id} onClick={() => { setSection(s.id); setActiveFlat(null); }} style={{
+            padding: '10px 22px', borderRadius: 12, border: '2px solid',
+            borderColor: section === s.id ? '#0b2b26' : 'rgba(61,63,52,0.15)',
+            cursor: 'pointer', fontWeight: 700, fontSize: '0.9rem', fontFamily: 'inherit',
+            background: section === s.id ? '#0b2b26' : 'rgba(255,250,242,0.85)',
+            color: section === s.id ? '#C49B4F' : '#1d2a24',
+            boxShadow: section === s.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none',
+            transition: 'all 0.18s',
+          }}>
+            {s.label}
+          </button>
+        ))}
+      </div>
+
       {/* ── Flat Tab Switcher ── */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {[{ id: null, label: 'All Flats', emoji: '🏢' }, ...FLAT_IDS.map(id => ({ id, label: id, emoji: '🏠' }))].map(tab => (
@@ -256,7 +343,7 @@ export default function MaintenanceTracker({ isAdmin = false }) {
         const paidAmt    = flat.bills.filter(b => b.status === 'Paid').reduce((s, b) => s + b.amount, 0);
         const pendAmt    = flat.bills.filter(b => b.status === 'Pending').reduce((s, b) => s + b.amount, 0);
         const paidCount  = flat.bills.filter(b => b.status === 'Paid').length;
-        const pct        = Math.round((paidAmt / TOTAL_PER_FLAT) * 100);
+        const pct        = Math.round((paidAmt / activeTpl) * 100);
 
         return (
           <div key={flat.id} style={{
@@ -388,7 +475,7 @@ export default function MaintenanceTracker({ isAdmin = false }) {
 
                         {isAdmin && (
                           <td style={{ ...TD_BASE, textAlign: 'center' }}>
-                            <button onClick={() => toggleBill(flat.id, bill.id)} style={{
+                            <button onClick={() => activeToggle(flat.id, bill.id)} style={{
                               padding: '5px 14px',
                               background: isPaid ? 'rgba(61,63,52,0.07)' : '#0b2b26',
                               color: isPaid ? '#5f665f' : '#C49B4F',
@@ -409,11 +496,19 @@ export default function MaintenanceTracker({ isAdmin = false }) {
                 {/* Grand-Total Footer Row */}
                 <tfoot>
                   <tr style={{ background: 'rgba(11,43,38,0.04)', borderTop: '2px solid rgba(61,63,52,0.13)' }}>
-                    <td colSpan={5} style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.82rem', color: '#0b2b26', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <td colSpan={3} style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.82rem', color: '#0b2b26', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Grand Total
                     </td>
+                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 800, fontSize: '0.92rem', color: '#196c6c' }}>
+                      <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 8, background: 'rgba(25,108,108,0.1)', color: '#196c6c', fontWeight: 800, fontSize: '0.82rem' }}>
+                        {activeTotalMos} mos
+                      </span>
+                    </td>
+                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 700, fontSize: '0.8rem', color: '#5f665f' }}>
+                      45 × ₹2,200<br />12 × ₹3,000
+                    </td>
                     <td style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '1rem', color: '#0b2b26', fontVariantNumeric: 'tabular-nums' }}>
-                      {fmt(TOTAL_PER_FLAT)}
+                      {fmt(activeTpl)}
                     </td>
                     <td style={{ ...TD_BASE, textAlign: 'center' }}>
                       <span style={{

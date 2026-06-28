@@ -17,6 +17,7 @@ const BILLS_TEMPLATE = [
 ];
 
 const TOTAL_PER_FLAT = BILLS_TEMPLATE.reduce((s, b) => s + b.amount, 0);
+const TOTAL_MONTHS   = BILLS_TEMPLATE.reduce((s, b) => s + b.months, 0); // 57 months
 const FLAT_IDS = ['A-302', 'A-904', 'A-1002'];
 
 const makeDefaultFlats = () =>
@@ -380,8 +381,16 @@ export default function TimesOfIndiaTracker({ isAdmin = false }) {
                 {/* Grand Total Footer */}
                 <tfoot>
                   <tr style={{ background: 'rgba(11,43,38,0.04)', borderTop: '2px solid rgba(61,63,52,0.13)' }}>
-                    <td colSpan={5} style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.82rem', color: '#0b2b26', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <td colSpan={3} style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.82rem', color: '#0b2b26', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Grand Total
+                    </td>
+                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 800, fontSize: '0.92rem', color: '#196c6c' }}>
+                      <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 8, background: 'rgba(25,108,108,0.1)', color: '#196c6c', fontWeight: 800, fontSize: '0.82rem' }}>
+                        {TOTAL_MONTHS} mos
+                      </span>
+                    </td>
+                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 700, fontSize: '0.8rem', color: '#5f665f' }}>
+                      45 × ₹2,200<br />12 × ₹3,000
                     </td>
                     <td style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '1rem', color: '#0b2b26', fontVariantNumeric: 'tabular-nums' }}>
                       {fmt(TOTAL_PER_FLAT)}
