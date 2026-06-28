@@ -284,8 +284,8 @@ export default function App() {
     },
     {
       id: 'maintenance',
-      label: 'Maintenance & TOI',
-      metric: 'Maintenance & Newspaper Bills',
+      label: 'Maintenance',
+      metric: 'Outstanding Maintenance',
       render: () => <SpecialMaintenanceTracker isAdmin={isAdmin} />
     },
     {
