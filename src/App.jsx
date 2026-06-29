@@ -270,7 +270,7 @@ export default function App() {
     ] : []),
     {
       id: 'water_management',
-      label: 'Water Management',
+      label: 'Diagram',
       metric: 'Water Flow & Schedule',
       render: () => <WaterManagement />
     },

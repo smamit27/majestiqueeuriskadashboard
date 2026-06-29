@@ -1,10 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export default function WaterManagement() {
+  const [subTab, setSubTab] = useState('water_supply');
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', fontFamily: 'Inter, system-ui, sans-serif' }}>
       
-      {/* ── PART 1: WATER FLOW DIAGRAM ── */}
+      {/* Tab Navigation */}
+      <div style={{ display: 'flex', gap: '12px', borderBottom: '2px solid #e2e8f0', paddingBottom: '16px' }}>
+        <button 
+          onClick={() => setSubTab('water_supply')}
+          style={{
+            padding: '12px 24px',
+            borderRadius: '8px',
+            border: 'none',
+            background: subTab === 'water_supply' ? '#0a1d47' : '#f1f5f9',
+            color: subTab === 'water_supply' ? 'white' : '#475569',
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontSize: '1rem',
+            transition: 'all 0.2s'
+          }}
+        >
+          Water Supply
+        </button>
+        <button 
+          onClick={() => setSubTab('water_flow')}
+          style={{
+            padding: '12px 24px',
+            borderRadius: '8px',
+            border: 'none',
+            background: subTab === 'water_flow' ? '#0a1d47' : '#f1f5f9',
+            color: subTab === 'water_flow' ? 'white' : '#475569',
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontSize: '1rem',
+            transition: 'all 0.2s'
+          }}
+        >
+          Water Flow
+        </button>
+      </div>
+
+      {subTab === 'water_flow' && (
       <div style={{
         background: '#ffffff',
         borderRadius: '16px',
@@ -203,8 +241,10 @@ export default function WaterManagement() {
           </h3>
         </div>
       </div>
+      )}
 
       {/* ── PART 2: WATER SUPPLY SCHEDULE ── */}
+      {subTab === 'water_supply' && (
       <div style={{
         background: '#ffffff',
         borderRadius: '16px',
@@ -334,6 +374,7 @@ export default function WaterManagement() {
         </div>
         </div>
       </div>
+      )}
       
     </div>
   );
