@@ -1021,7 +1021,7 @@ export default function MaintenanceTracker({ isAdmin = false }) {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f8fafc', padding: '6px 12px', borderRadius: '20px', border: '1px solid #e2e8f0' }}>
                 <span style={{ color: '#f59e0b', fontSize: '1rem' }}>⭐</span>
-                Extra payments of ₹3,900 have been adjusted against the shortfall to arrive at the Net Outstanding Balance.
+                Extra payments of ₹6,300 have been adjusted against the shortfall to arrive at the Net Outstanding Balance.
               </div>
             </div>
           </div>
