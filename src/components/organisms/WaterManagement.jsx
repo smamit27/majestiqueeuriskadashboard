@@ -57,46 +57,48 @@ export default function WaterManagement() {
             cursor: 'zoom-out',
           }}
         >
+          {/* Fixed close button at top-right of screen */}
+          <button
+            onClick={() => setSelectedVisual(null)}
+            style={{
+              position: 'fixed',
+              top: '20px',
+              right: '20px',
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              background: '#fff',
+              border: 'none',
+              fontSize: '1.4rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+              zIndex: 10000,
+              color: '#0f172a',
+            }}
+          >
+            ✕
+          </button>
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
               position: 'relative',
               maxWidth: '95vw',
-              maxHeight: '92vh',
+              maxHeight: '85vh',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
             }}
           >
-            <button
-              onClick={() => setSelectedVisual(null)}
-              style={{
-                position: 'absolute',
-                top: '-12px',
-                right: '-12px',
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                background: '#fff',
-                border: 'none',
-                fontSize: '1.2rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-                zIndex: 10,
-              }}
-            >
-              ✕
-            </button>
             <img
               src={selectedVisual.image}
               alt={selectedVisual.title}
               style={{
                 maxWidth: '100%',
-                maxHeight: '85vh',
+                maxHeight: '80vh',
                 borderRadius: '12px',
                 objectFit: 'contain',
                 boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
