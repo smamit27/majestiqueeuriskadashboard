@@ -526,34 +526,7 @@ export default function App() {
 
         {loadErrors.length > 0 ? <div className="notice-banner">{loadErrors[0]}</div> : null}
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'manager_tasks', 'amc', 'maintenance'].includes(activeTab) && (
-          <section className="metrics-grid">
-          <MetricCard
-            label="Members & Occupancy"
-            value={`${memberData.items.length} households`}
-            detail={`${memberData.items.filter((item) => item.status === 'Active').length} currently active`}
-            tone="sand"
-          />
-          <MetricCard
-            label="Dues Outstanding"
-            value={formatCurrency(totalOutstanding)}
-            detail={`${Math.round(collectionRate)}% collected this cycle`}
-            tone="teal"
-          />
-          <MetricCard
-            label="Open Complaints"
-            value={openComplaints}
-            detail="Across maintenance, security, and housekeeping"
-            tone="coral"
-          />
-          <MetricCard
-            label="Live Gate Activity"
-            value={`${activeVisitors} visitors`}
-            detail={`${staffPresent}/${staffData.items.length} staff available today`}
-            tone="pine"
-          />
-        </section>
-        )}
+
 
 
 
@@ -567,31 +540,7 @@ export default function App() {
           {activeTabPanel.render()}
         </div>
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'manager_tasks', 'amc', 'maintenance'].includes(activeTab) && (
-          <section className="snapshot-grid">
-          <div className="snapshot-panel">
-            <p className="eyebrow">Collection health</p>
-            <ProgressBar label="Maintenance collected" value={duesCollected} total={collectionTarget} tone="teal" />
-            <ProgressBar label="Expense ratio" value={expenseRatio} total={100} tone="amber" />
-          </div>
 
-          <div className="snapshot-panel">
-            <p className="eyebrow">Financial pulse</p>
-            <div className="stat-line">
-              <span>Operating margin</span>
-              <strong>{formatCurrency(operatingMargin)}</strong>
-            </div>
-            <div className="stat-line">
-              <span>Reserve contribution</span>
-              <strong>{formatCurrency(financeSnapshot.reserveContribution)}</strong>
-            </div>
-            <div className="stat-line">
-              <span>Utility spend</span>
-              <strong>{formatCurrency(financeSnapshot.utilities)}</strong>
-            </div>
-          </div>
-        </section>
-        )}
       </main>
     </div>
     </>
