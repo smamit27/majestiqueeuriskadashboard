@@ -33,6 +33,14 @@ const visuals = [
     category: 'Society Amenity',
     color: '#6d28d9',
   },
+  {
+    id: 'playground',
+    title: 'Children\'s Playground',
+    subtitle: 'Colorful play area with swings, slides, and dolphin-themed rubber flooring',
+    image: '/visuals/playground.png',
+    category: 'Society Amenity',
+    color: '#dc2626',
+  },
 ];
 
 export default function WaterManagement() {
