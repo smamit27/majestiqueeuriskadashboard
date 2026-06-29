@@ -55,6 +55,12 @@ const TOI_TRANSACTIONS = [
   { transactionNo: '1000009802', invoiceNo: '6', invoiceDate: '01-12-2022', amount: 6600, createdOn: '28-03-2023', utrNo: 'N090232395743913', period: "Oct'22 to Mar'23", unit: 'A-904' },
   { transactionNo: '1000009801', invoiceNo: '13', invoiceDate: '01-01-2023', amount: 6600, createdOn: '28-03-2023', utrNo: 'N090232395743913', period: "Oct'22 to Mar'23", unit: 'A-302' },
   { transactionNo: '1000009800', invoiceNo: '3', invoiceDate: '01-12-2022', amount: 6600, createdOn: '28-03-2023', utrNo: 'N090232395743913', period: "Oct'22 to Mar'23", unit: 'A-302' },
+  { transactionNo: 'Red Motive', invoiceNo: '-', invoiceDate: '15-07-2022', amount: 13200, createdOn: '15-07-2022', utrNo: '-', period: "Apr'22 to Sept'22", unit: 'A-1002' },
+  { transactionNo: 'Red Motive', invoiceNo: '-', invoiceDate: '15-07-2022', amount: 13200, createdOn: '15-07-2022', utrNo: '-', period: "Apr'22 to Sept'22", unit: 'A-904' },
+  { transactionNo: 'Red Motive', invoiceNo: '-', invoiceDate: '15-07-2022', amount: 13200, createdOn: '15-07-2022', utrNo: '-', period: "Apr'22 to Sept'22", unit: 'A-302' },
+  { transactionNo: 'Red Motive', invoiceNo: '-', invoiceDate: '18-02-2022', amount: 14000, createdOn: '18-02-2022', utrNo: '-', period: "Oct'21 to Mar'22", unit: 'A-1002' },
+  { transactionNo: 'Red Motive', invoiceNo: '-', invoiceDate: '18-02-2022', amount: 14000, createdOn: '18-02-2022', utrNo: '-', period: "Oct'21 to Mar'22", unit: 'A-904' },
+  { transactionNo: 'Red Motive', invoiceNo: '-', invoiceDate: '18-02-2022', amount: 14000, createdOn: '18-02-2022', utrNo: '-', period: "Oct'21 to Mar'22", unit: 'A-302' },
 ];
 
 const makeDefaultFlats = () =>
@@ -108,7 +114,7 @@ export default function MaintenanceTracker({ isAdmin = false }) {
   const [saveMsg, setSaveMsg] = useState('');
   const [activeFlat, setActiveFlat] = useState(null);
   const [activeToiFlat, setActiveToiFlat] = useState(null);
-  const [viewSection, setViewSection] = useState('maintenance'); // 'maintenance' | 'toi_transactions'
+  const [viewSection, setViewSection] = useState('maintenance'); // 'maintenance' | 'toi_transactions' | 'overall_toi'
   const isLoadedRef = useRef(false);
   const recordId = 'maintenance_bills_v3';
 
@@ -264,6 +270,7 @@ export default function MaintenanceTracker({ isAdmin = false }) {
         {[
           { id: 'maintenance', label: '🏠 Maintenance Tracker' },
           { id: 'toi_transactions', label: '📰 TOI Transactions' },
+          { id: 'overall_toi', label: '📊 Overall TOI' },
         ].map(s => (
           <button key={s.id} onClick={() => setViewSection(s.id)} style={{
             padding: '10px 22px', borderRadius: 12, border: '2px solid',
@@ -600,6 +607,427 @@ export default function MaintenanceTracker({ isAdmin = false }) {
           </div>
         );
       })()}
+
+      {/* ── Overall TOI Reconciliation ── */}
+      {viewSection === 'overall_toi' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, fontFamily: 'Arial, sans-serif' }}>
+          
+          <div style={{
+            background: '#fff', borderRadius: 8,
+            border: '1px solid #c9c9c9', overflow: 'hidden'
+          }}>
+            
+            {/* Header Titles */}
+            <div style={{ background: '#0b2447', color: '#fff', textAlign: 'center', padding: '16px' }}>
+              <h2 style={{ margin: '0 0 6px', fontSize: '1.4rem', fontWeight: 800, textTransform: 'uppercase' }}>SOCIETY MAINTENANCE PAYMENT RECONCILIATION – TIME OF INDIA</h2>
+              <div style={{ color: '#e5e7eb', fontSize: '0.9rem', fontWeight: 600 }}>
+                <span style={{ color: '#fbbf24' }}>Flats: 302, 904, 1002 (3 Flats)</span> &nbsp;|&nbsp; Maintenance Start Date: October 2021
+              </div>
+            </div>
+
+            {/* Header KPI Cards */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', padding: '12px', gap: 12, background: '#f8fafc', borderBottom: '1px solid #c9c9c9' }}>
+              <div style={{ flex: 1, minWidth: 200, padding: '10px 14px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ fontSize: '2rem', color: '#1e3a8a' }}>📅</div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Rate till June 2025</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 800 }}>₹2,200 per Month per Flat</div>
+                </div>
+              </div>
+              <div style={{ flex: 1, minWidth: 200, padding: '10px 14px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ fontSize: '2rem', color: '#16a34a' }}>📈</div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Rate from July 2025</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 800 }}>₹3,000 per Month per Flat</div>
+                </div>
+              </div>
+              <div style={{ flex: 1, minWidth: 200, padding: '10px 14px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ fontSize: '2rem', color: '#3b82f6' }}>🧾</div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textAlign: 'center' }}>Total Amount Due<br/>(Oct 2021 to Jun 2026)</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1e3a8a', textAlign: 'center' }}>₹4,05,000</div>
+                </div>
+              </div>
+              <div style={{ flex: 1, minWidth: 200, padding: '10px 14px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ fontSize: '2rem', color: '#16a34a' }}>💲</div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textAlign: 'center' }}>Total Amount Paid (Till Date)</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#16a34a', textAlign: 'center' }}>₹3,98,100<br/><span style={{ fontSize: '0.8rem', color: '#15803d' }}>(₹3,16,500 + 81,600)</span></div>
+                </div>
+              </div>
+              <div style={{ flex: '0 0 auto', padding: '10px 20px', background: '#fff7ed', border: '2px solid #fed7aa', borderRadius: 6, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#ea580c' }}>NET OUTSTANDING BALANCE</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#dc2626' }}>₹6,900</div>
+              </div>
+            </div>
+
+            {/* Section A */}
+            <div style={{ padding: '0' }}>
+              <div style={{ background: '#eef2ff', color: '#1e3a8a', padding: '6px', textAlign: 'center', fontWeight: 800, fontSize: '0.85rem', borderBottom: '1px solid #c9c9c9' }}>
+                A. CHRONOLOGICAL PAYMENT TIMELINE (All Payments Received)
+              </div>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '0.8rem' }}>
+                  <thead>
+                    <tr style={{ background: '#0b2447', color: '#fff' }}>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Sr.<br/>No.</th>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Payment Date</th>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Payment Mode /<br/>Bank</th>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Amount<br/>Paid (₹)</th>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>For Which Flats</th>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Maintenance Period<br/>Covered</th>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>No. of<br/>Months</th>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Rate Per<br/>Flat (₹)</th>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Amount Applicable<br/>for 3 Flats (₹)</th>
+                      <th style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Difference<br/>(Paid - Expected)</th>
+                      <th style={{ padding: '8px 6px' }}>Remarks</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{ fontWeight: 600 }}>
+                    <tr style={{ borderBottom: '1px solid #ddd' }}>
+                      <td style={{ padding: '12px 6px' }}>1</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>18-02-2022</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>Red Motive</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>55,200</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>302, 904, 1002, 902<br/>(4 Flats)</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>Oct 2021 – Mar 2022<br/>(6 Months)</td>
+                      <td style={{ padding: '12px 6px' }}>6</td>
+                      <td style={{ padding: '12px 6px' }}>2,200</td>
+                      <td style={{ padding: '12px 6px', fontWeight: 800 }}>39,600</td>
+                      <td style={{ padding: '12px 6px', color: '#15803d', fontWeight: 800 }}>+2,400</td>
+                      <td style={{ padding: '6px', textAlign: 'left', fontSize: '0.75rem', lineHeight: 1.3 }}>
+                        Paid for 4 Flats (₹55,200)<br/>
+                        Less: Flat 902 share (2,200 × 6)<br/>
+                        = ₹13,200<br/>
+                        <b>Applicable for 3 Flats = ₹42,000</b><br/>
+                        <b>Expected for 3 Flats = ₹39,600</b><br/>
+                        <b>Extra Paid = ₹2,400</b>
+                      </td>
+                    </tr>
+                    <tr style={{ background: '#fdf6e3', borderBottom: '1px solid #ddd', fontSize: '0.75rem' }}>
+                      <td colSpan={11} style={{ padding: '6px 12px', textAlign: 'left' }}>
+                        Break-up: 2,200 × 4 Flats × 6 Months = ₹55,200 &nbsp;|&nbsp; Less: Flat 902 (2,200 × 6) = ₹13,200 &nbsp;|&nbsp; Applicable for 3 Flats = ₹42,000<br/>
+                        Expected for 3 Flats: 2,200 × 3 × 6 = ₹39,600 &nbsp;|&nbsp; Extra Paid = ₹2,400
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #ddd' }}>
+                      <td style={{ padding: '12px 6px' }}>2</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>15-07-2022</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>Red Motive</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>39,600</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>302, 904, 1002<br/>(3 Flats)</td>
+                      <td style={{ padding: '12px 6px', color: '#b91c1c', fontWeight: 800 }}>Apr 2022 – Sept 2022<br/>(6 Months)</td>
+                      <td style={{ padding: '12px 6px' }}>6</td>
+                      <td style={{ padding: '12px 6px' }}>2,200</td>
+                      <td style={{ padding: '12px 6px', fontWeight: 800 }}>39,600</td>
+                      <td style={{ padding: '12px 6px', color: '#15803d', fontWeight: 800 }}>0</td>
+                      <td style={{ padding: '12px 6px', color: '#15803d', fontWeight: 800 }}>Fully Paid</td>
+                    </tr>
+                    {/* Summary row for Section A */}
+                    <tr style={{ background: '#f0fdf4', borderTop: '2px solid #bbf7d0', borderBottom: '1px solid #bbf7d0' }}>
+                      <td colSpan={3} style={{ padding: '8px', color: '#166534', fontWeight: 800 }}>SUMMARY FOR<br/>OCT 2021 – SEPT 2022<br/>(12 MONTHS)</td>
+                      <td colSpan={3} style={{ padding: '8px' }}>
+                        <div style={{ fontSize: '0.75rem', color: '#475569' }}>Total Expected for 3 Flats</div>
+                        <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#166534' }}>₹79,200</div>
+                      </td>
+                      <td colSpan={3} style={{ padding: '8px' }}>
+                        <div style={{ fontSize: '0.75rem', color: '#475569' }}>Total Paid</div>
+                        <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#166534' }}>₹81,600</div>
+                      </td>
+                      <td style={{ padding: '8px' }}>
+                        <div style={{ fontSize: '0.75rem', color: '#475569' }}>Difference (Paid - Expected)</div>
+                        <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#15803d' }}>+ ₹2,400</div>
+                      </td>
+                      <td style={{ padding: '8px' }}>
+                        <div style={{ fontSize: '0.75rem', color: '#475569' }}>Status</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 800, color: '#15803d' }}>EXTRA PAID</div>
+                      </td>
+                    </tr>
+                    <tr style={{ background: '#f0fdf4', borderBottom: '2px solid #c9c9c9' }}>
+                      <td colSpan={11} style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 800, color: '#166534', fontSize: '0.85rem' }}>
+                        <span style={{ fontSize: '1.1rem', verticalAlign: 'middle' }}>✅</span> Conclusion: No missing bill for Oct 2021 – Sept 2022. Total Extra Paid: ₹2,400
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Section B & Details Panel */}
+            <div style={{ background: '#eef2ff', color: '#1e3a8a', padding: '6px', textAlign: 'center', fontWeight: 800, fontSize: '0.85rem', borderBottom: '1px solid #c9c9c9' }}>
+              B. PERIOD-WISE RECONCILIATION STATEMENT
+            </div>
+            
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+              
+              {/* Table B */}
+              <div style={{ flex: '2 1 600px', overflowX: 'auto', borderRight: '1px solid #c9c9c9' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '0.75rem' }}>
+                  <thead>
+                    <tr style={{ background: '#0b2447', color: '#fff' }}>
+                      <th style={{ padding: '8px 4px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Sr.<br/>No.</th>
+                      <th style={{ padding: '8px 4px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Period</th>
+                      <th style={{ padding: '8px 4px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Months</th>
+                      <th style={{ padding: '8px 4px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Rate Per<br/>Flat per Month (₹)</th>
+                      <th style={{ padding: '8px 4px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Expected Amount<br/>for 3 Flats (₹)</th>
+                      <th style={{ padding: '8px 4px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Amount Paid (₹)</th>
+                      <th style={{ padding: '8px 4px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Payment Date / Bank</th>
+                      <th style={{ padding: '8px 4px', borderRight: '1px solid rgba(255,255,255,0.2)' }}>Difference<br/>(Paid - Expected) (₹)</th>
+                      <th style={{ padding: '8px 4px' }}>Status / Remarks</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{ fontWeight: 600 }}>
+                    <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '8px' }}>1</td>
+                      <td style={{ padding: '8px' }}>Oct 2021 – Sept 2022 (12 Months)</td>
+                      <td style={{ padding: '8px' }}>12</td>
+                      <td style={{ padding: '8px' }}>2,200</td>
+                      <td style={{ padding: '8px' }}>79,200</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>81,600</td>
+                      <td style={{ padding: '8px', fontSize: '0.7rem' }}>18-02-2022 (RM) - 42,000<br/>15-07-2022 (RM) - 39,600</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>+2,400</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>EXTRA PAID</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#f8fafc' }}>
+                      <td style={{ padding: '8px' }}>2</td>
+                      <td style={{ padding: '8px' }}>Oct 2022 – Mar 2023 (6 Months)</td>
+                      <td style={{ padding: '8px' }}>6</td>
+                      <td style={{ padding: '8px' }}>2,200</td>
+                      <td style={{ padding: '8px' }}>39,600</td>
+                      <td style={{ padding: '8px', color: '#dc2626', fontWeight: 800 }}>39,600</td>
+                      <td style={{ padding: '8px' }}>31-03-2023 (ICICI)</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>0</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>PAID</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '8px' }}>3</td>
+                      <td style={{ padding: '8px' }}>Apr 2023 – Mar 2024 (12 Months)</td>
+                      <td style={{ padding: '8px' }}>12</td>
+                      <td style={{ padding: '8px' }}>2,200</td>
+                      <td style={{ padding: '8px' }}>79,200</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>82,200</td>
+                      <td style={{ padding: '8px', fontSize: '0.7rem' }}>12-04-2023, 18-10-2023,<br/>16-05-2024 (ICICI)</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>+3,000</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>EXTRA PAID</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#f8fafc' }}>
+                      <td style={{ padding: '8px' }}>4</td>
+                      <td style={{ padding: '8px' }}>Apr 2024 – Sept 2024 (6 Months)</td>
+                      <td style={{ padding: '8px' }}>6</td>
+                      <td style={{ padding: '8px' }}>2,200</td>
+                      <td style={{ padding: '8px' }}>39,600</td>
+                      <td style={{ padding: '8px', color: '#dc2626', fontWeight: 800 }}>39,600</td>
+                      <td style={{ padding: '8px' }}>30-08-2024 (ICICI)</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>0</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>PAID</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '8px' }}>5</td>
+                      <td style={{ padding: '8px' }}>Oct 2024 – Mar 2025 (6 Months)</td>
+                      <td style={{ padding: '8px' }}>6</td>
+                      <td style={{ padding: '8px' }}>2,200</td>
+                      <td style={{ padding: '8px' }}>39,600</td>
+                      <td style={{ padding: '8px', color: '#dc2626', fontWeight: 800 }}>26,400</td>
+                      <td style={{ padding: '8px' }}>28-03-2025 (ICICI)</td>
+                      <td style={{ padding: '8px', color: '#dc2626', fontWeight: 800 }}>-13,200</td>
+                      <td style={{ padding: '8px', color: '#dc2626', fontWeight: 800 }}>SHORT PAID</td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#f8fafc' }}>
+                      <td style={{ padding: '8px' }}>6</td>
+                      <td style={{ padding: '8px' }}>Apr 2025 – Sept 2025 (6 Months)</td>
+                      <td style={{ padding: '8px' }}>6</td>
+                      <td style={{ padding: '8px', fontSize: '0.7rem' }}>Apr–Jun: 2,200<br/>Jul–Sept: 3,000</td>
+                      <td style={{ padding: '8px' }}>46,800</td>
+                      <td style={{ padding: '8px', color: '#dc2626', fontWeight: 800 }}>47,700</td>
+                      <td style={{ padding: '8px' }}>08-08-2025 (ICICI)</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>+900</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>EXTRA PAID<br/><span style={{ fontSize: '0.6rem', color: '#475569', fontWeight: 500 }}>(Details below)</span></td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                      <td style={{ padding: '8px' }}>7</td>
+                      <td style={{ padding: '8px' }}>Oct 2025 – Mar 2026 (6 Months)</td>
+                      <td style={{ padding: '8px' }}>6</td>
+                      <td style={{ padding: '8px' }}>3,000</td>
+                      <td style={{ padding: '8px' }}>54,000</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>54,000</td>
+                      <td style={{ padding: '8px' }}>21-11-2025 & 25-11-2025 (ICICI)</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>0</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>PAID</td>
+                    </tr>
+                    <tr style={{ borderBottom: '2px solid #0b2447', background: '#f8fafc' }}>
+                      <td style={{ padding: '8px' }}>8</td>
+                      <td style={{ padding: '8px' }}>Apr 2026 – Jun 2026 (3 Months)</td>
+                      <td style={{ padding: '8px' }}>3</td>
+                      <td style={{ padding: '8px' }}>3,000</td>
+                      <td style={{ padding: '8px' }}>27,000</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>27,000</td>
+                      <td style={{ padding: '8px' }}>–</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>0</td>
+                      <td style={{ padding: '8px', color: '#15803d', fontWeight: 800 }}>PAID</td>
+                    </tr>
+                    <tr style={{ background: '#eef2ff', color: '#1e3a8a', fontSize: '0.85rem' }}>
+                      <td colSpan="2" style={{ padding: '10px', textAlign: 'center', fontWeight: 800 }}>TOTAL</td>
+                      <td style={{ padding: '10px', fontWeight: 800, color: '#1d4ed8' }}>57</td>
+                      <td></td>
+                      <td style={{ padding: '10px', fontWeight: 800, color: '#dc2626' }}>4,05,000</td>
+                      <td style={{ padding: '10px', fontWeight: 800, color: '#15803d' }}>3,98,100<br/><span style={{ fontSize: '0.65rem' }}>(3,16,500 + 81,600)</span></td>
+                      <td></td>
+                      <td style={{ padding: '10px', fontWeight: 800, color: '#dc2626' }}>-6,900</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              {/* Details Side Panel */}
+              <div style={{ flex: '1 1 250px', background: '#fff', borderLeft: '1px solid #c9c9c9', padding: '12px' }}>
+                <div style={{ background: '#f0fdf4', color: '#166534', fontWeight: 800, padding: '8px', fontSize: '0.75rem', border: '1px solid #bbf7d0', borderRadius: 4, textAlign: 'center', marginBottom: 12 }}>
+                  DETAILS: APR 2025 – SEPT 2025 PAYMENT
+                </div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600 }}>
+                  <div style={{ fontWeight: 800, marginBottom: 4, color: '#1e293b' }}>Expected Break-up for 3 Flats</div>
+                  <ul style={{ margin: '0 0 12px', paddingLeft: 16, lineHeight: 1.5, color: '#334155' }}>
+                    <li>Apr – Jun 2025 (3m): 2,200 × 3 × 3 = ₹19,800</li>
+                    <li>Jul – Sept 2025 (3m): 3,000 × 3 × 3 = ₹27,000</li>
+                  </ul>
+                  <div style={{ fontWeight: 800, marginBottom: 12, color: '#1e293b' }}>Total Expected = ₹46,800</div>
+                  <hr style={{ border: 'none', borderTop: '1px dashed #cbd5e1', margin: '12px 0' }} />
+                  <div style={{ fontWeight: 800, marginBottom: 4, color: '#166534' }}>Amount Paid</div>
+                  <div style={{ color: '#334155', marginBottom: 12 }}>Paid on 08-08-2025 (ICICI) = ₹47,700</div>
+                  <hr style={{ border: 'none', borderTop: '1px dashed #cbd5e1', margin: '12px 0' }} />
+                  <div style={{ fontWeight: 800, marginBottom: 4, color: '#1e293b' }}>Difference</div>
+                  <div style={{ color: '#334155' }}>₹47,700 - ₹46,800 = ₹900 (Extra Paid)</div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Bottom Grid Panels */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', padding: '16px', background: '#f8fafc', borderTop: '1px solid #c9c9c9' }}>
+              
+              {/* C. WHERE THEY PAY SHORT */}
+              <div style={{ background: '#fff', border: '1px solid #fecaca', borderRadius: 6, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ color: '#b91c1c', textAlign: 'center', padding: '8px', fontWeight: 800, fontSize: '0.8rem', borderBottom: '1px solid #fecaca' }}>C. WHERE THEY PAY SHORT</div>
+                <div style={{ padding: '0', fontSize: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', background: '#fef2f2', padding: '6px 10px', borderBottom: '1px solid #fee2e2', fontWeight: 800, color: '#1e293b' }}>
+                    <div style={{ flex: 1, textAlign: 'center' }}>Particulars</div>
+                    <div style={{ width: '70px', textAlign: 'right' }}>Amount (₹)</div>
+                  </div>
+                  <div style={{ display: 'flex', padding: '8px 10px', borderBottom: '1px solid #f87171', flex: 1, color: '#334155', fontWeight: 600 }}>
+                    <div style={{ flex: 1 }}>Oct 2024 – Mar 2025 (Short Paid)</div>
+                    <div style={{ width: '70px', textAlign: 'right' }}>13,200</div>
+                  </div>
+                  <div style={{ display: 'flex', padding: '10px', color: '#b91c1c', fontWeight: 800 }}>
+                    <div style={{ flex: 1, textAlign: 'center' }}>TOTAL SHORTFALL</div>
+                    <div style={{ width: '70px', textAlign: 'right' }}>₹13,200</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* D. WHERE THEY PAY EXTRA */}
+              <div style={{ background: '#fff', border: '1px solid #bbf7d0', borderRadius: 6, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ color: '#15803d', textAlign: 'center', padding: '8px', fontWeight: 800, fontSize: '0.8rem', borderBottom: '1px solid #bbf7d0' }}>D. WHERE THEY PAY EXTRA</div>
+                <div style={{ padding: '0', fontSize: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', background: '#f0fdf4', padding: '6px 10px', borderBottom: '1px solid #dcfce7', fontWeight: 800, color: '#1e293b' }}>
+                    <div style={{ flex: 1, textAlign: 'center' }}>Particulars</div>
+                    <div style={{ width: '70px', textAlign: 'right' }}>Amount (₹)</div>
+                  </div>
+                  <div style={{ display: 'flex', padding: '8px 10px', borderBottom: '1px solid #e2e8f0', color: '#334155', fontWeight: 600 }}>
+                    <div style={{ flex: 1 }}>Oct 2021 – Sept 2022 (Extra Paid)</div>
+                    <div style={{ width: '70px', textAlign: 'right' }}>2,400</div>
+                  </div>
+                  <div style={{ display: 'flex', padding: '8px 10px', borderBottom: '1px solid #e2e8f0', color: '#334155', fontWeight: 600 }}>
+                    <div style={{ flex: 1 }}>Apr 2023 – Mar 2024 (Extra Paid)</div>
+                    <div style={{ width: '70px', textAlign: 'right' }}>3,000</div>
+                  </div>
+                  <div style={{ display: 'flex', padding: '8px 10px', borderBottom: '1px solid #4ade80', flex: 1, color: '#334155', fontWeight: 600 }}>
+                    <div style={{ flex: 1 }}>Apr 2025 – Sept 2025 (Extra Paid)</div>
+                    <div style={{ width: '70px', textAlign: 'right' }}>900</div>
+                  </div>
+                  <div style={{ display: 'flex', padding: '10px', color: '#15803d', fontWeight: 800 }}>
+                    <div style={{ flex: 1, textAlign: 'center' }}>TOTAL EXTRA PAID</div>
+                    <div style={{ width: '70px', textAlign: 'right' }}>₹6,300</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* E. NET OUTSTANDING CALCULATION */}
+              <div style={{ background: '#fff', border: '1px solid #c7d2fe', borderRadius: 6, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ color: '#4338ca', textAlign: 'center', padding: '8px', fontWeight: 800, fontSize: '0.8rem', borderBottom: '1px solid #c7d2fe' }}>E. NET OUTSTANDING CALCULATION</div>
+                <div style={{ padding: '12px', fontSize: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', fontWeight: 600, color: '#334155' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span>Total Shortfall (C)</span>
+                    <strong style={{ fontSize: '0.85rem' }}>₹13,200</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid #818cf8', paddingBottom: '10px' }}>
+                    <span>Less: Total Extra Paid (D)</span>
+                    <strong style={{ fontSize: '0.85rem' }}>- ₹6,300</strong>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ color: '#4338ca', fontWeight: 800, fontSize: '0.75rem', marginBottom: 4 }}>NET OUTSTANDING BALANCE</div>
+                    <div style={{ color: '#3730a3', fontWeight: 800, fontSize: '1.4rem' }}>₹6,900</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* F. OVERALL SUMMARY */}
+              <div style={{ background: '#fff', border: '1px solid #cbd5e1', borderRadius: 6, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ color: '#1e293b', textAlign: 'center', padding: '8px', fontWeight: 800, fontSize: '0.8rem', borderBottom: '1px solid #cbd5e1' }}>F. OVERALL SUMMARY</div>
+                <div style={{ padding: '12px 12px 0 12px', fontSize: '0.75rem', display: 'flex', flexDirection: 'column', fontWeight: 600, color: '#334155' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span>Total Amount Due (Oct 2021 to Jun 2026)</span>
+                    <strong style={{ fontSize: '0.85rem' }}>₹4,05,000</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <span>Total Amount Paid (Till Date)</span>
+                    <strong style={{ fontSize: '0.85rem' }}>₹3,98,100</strong>
+                  </div>
+                </div>
+                <div style={{ background: '#0b2447', color: '#fff', padding: '12px', textAlign: 'center', marginTop: 'auto' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.75rem', marginBottom: 2 }}>NET OUTSTANDING TO BE RECEIVED</div>
+                  <div style={{ fontWeight: 800, fontSize: '1.4rem' }}>₹6,900</div>
+                </div>
+              </div>
+              
+              {/* KEY TAKEAWAYS */}
+              <div style={{ background: '#fffcf2', border: '1px solid #fde047', borderRadius: 6, overflow: 'hidden', display: 'flex', flexDirection: 'column', gridColumn: 'span 2' }}>
+                <div style={{ color: '#854d0e', textAlign: 'center', padding: '8px', fontWeight: 800, fontSize: '0.8rem', borderBottom: '1px solid #fef08a' }}>KEY TAKEAWAYS</div>
+                <div style={{ padding: '12px', fontSize: '0.8rem', color: '#3f6212', fontWeight: 600, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <span>✓</span>
+                    <span>No missing bill for Oct 2021 – Sept 2022. Extra paid by ₹2,400.</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <span>✓</span>
+                    <span>All payments are mapped against corresponding periods.</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <span>✓</span>
+                    <span>Only shortfall is for Oct 2024 – Mar 2025.</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            
+            {/* Notes Footer */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', background: '#fff', borderTop: '1px solid #cbd5e1', fontSize: '0.75rem', color: '#64748b', fontWeight: 600, flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <span style={{ color: '#f59e0b', fontSize: '1.1rem' }}>💡</span>
+                <div>
+                  <div><strong>NOTES:</strong> 1. Maintenance includes 3 Flats: 302, 904, 1002</div>
+                  <div style={{ paddingLeft: '48px' }}>2. All amounts are in Indian Rupees (₹)</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f8fafc', padding: '6px 12px', borderRadius: '20px', border: '1px solid #e2e8f0' }}>
+                <span style={{ color: '#f59e0b', fontSize: '1rem' }}>⭐</span>
+                Extra payments of ₹3,900 have been adjusted against the shortfall to arrive at the Net Outstanding Balance.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
