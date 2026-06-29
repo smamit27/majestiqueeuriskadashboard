@@ -41,6 +41,14 @@ const visuals = [
     category: 'Society Amenity',
     color: '#dc2626',
   },
+  {
+    id: 'security_guidelines',
+    title: 'Security & Water Management Guidelines',
+    subtitle: 'Complete 15-point security, MyGate, water management, and emergency guidelines',
+    image: '/visuals/security_guidelines.jpg',
+    category: 'Security & Safety',
+    color: '#0a1d47',
+  },
 ];
 
 export default function WaterManagement() {
