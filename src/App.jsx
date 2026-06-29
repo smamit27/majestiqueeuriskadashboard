@@ -252,6 +252,12 @@ export default function App() {
       metric: 'Contracts & Payments',
       render: () => <AmcTracker isAdmin={isAdmin} />
     },
+    {
+      id: 'water_management',
+      label: 'Visualization Work',
+      metric: 'Society Visual Plans & Designs',
+      render: () => <WaterManagement />
+    },
     ...(isAdmin ? [
       {
         id: 'security',
@@ -277,12 +283,6 @@ export default function App() {
         label: 'Water Tanker',
         metric: 'Water Tanker Billing',
         render: () => <TankerModule isAdmin={isAdmin} />
-      },
-      {
-        id: 'water_management',
-        label: 'Visualization Work',
-        metric: 'Society Visual Plans & Designs',
-        render: () => <WaterManagement />
       },
       {
         id: 'finance',
@@ -344,7 +344,7 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    if (!isAdmin && activeTab !== 'manager_tasks' && activeTab !== 'amc') {
+    if (!isAdmin && activeTab !== 'manager_tasks' && activeTab !== 'amc' && activeTab !== 'water_management') {
       setActiveTab('manager_tasks');
     }
   }, [isAdmin, activeTab]);
