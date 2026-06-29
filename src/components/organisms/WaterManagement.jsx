@@ -132,7 +132,7 @@ export default function WaterManagement() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(2, 1fr)',
           gap: '20px',
         }}
       >
