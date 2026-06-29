@@ -240,7 +240,18 @@ export default function App() {
   };
 
   const tabItems = [
-
+    {
+      id: 'manager_tasks',
+      label: 'Manager Tasks',
+      metric: 'Task & Deadline Tracker',
+      render: () => <ManagerTaskTracker isAdmin={isAdmin} />
+    },
+    {
+      id: 'amc',
+      label: 'AMC Tracker',
+      metric: 'Contracts & Payments',
+      render: () => <AmcTracker isAdmin={isAdmin} />
+    },
     ...(isAdmin ? [
       {
         id: 'security',
@@ -266,56 +277,44 @@ export default function App() {
         label: 'Water Tanker',
         metric: 'Water Tanker Billing',
         render: () => <TankerModule isAdmin={isAdmin} />
+      },
+      {
+        id: 'water_management',
+        label: 'Diagram',
+        metric: 'Water Flow & Schedule',
+        render: () => <WaterManagement />
+      },
+      {
+        id: 'finance',
+        label: 'Income & Expenses',
+        metric: 'Income & Expenses',
+        render: () => <FinanceTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'maintenance',
+        label: 'Maintenance',
+        metric: 'Outstanding Maintenance',
+        render: () => <SpecialMaintenanceTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'cheques',
+        label: 'Cheque Tracker',
+        metric: 'Shared Expenses',
+        render: () => <ChequeManagement isAdmin={isAdmin} />
+      },
+      {
+        id: 'electricity',
+        label: 'Electricity Bills',
+        metric: 'Utility Tracking',
+        render: () => <ElectricityTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'solar',
+        label: 'Solar Management',
+        metric: 'Evaluation & ROI',
+        render: () => <SolarModule isAdmin={isAdmin} />
       }
-    ] : []),
-    {
-      id: 'water_management',
-      label: 'Diagram',
-      metric: 'Water Flow & Schedule',
-      render: () => <WaterManagement />
-    },
-    {
-      id: 'manager_tasks',
-      label: 'Manager Tasks',
-      metric: 'Task & Deadline Tracker',
-      render: () => <ManagerTaskTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'amc',
-      label: 'AMC Tracker',
-      metric: 'Contracts & Payments',
-      render: () => <AmcTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'finance',
-      label: 'Income & Expenses',
-      metric: 'Income & Expenses',
-      render: () => <FinanceTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'maintenance',
-      label: 'Maintenance',
-      metric: 'Outstanding Maintenance',
-      render: () => <SpecialMaintenanceTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'cheques',
-      label: 'Cheque Tracker',
-      metric: 'Shared Expenses',
-      render: () => <ChequeManagement isAdmin={isAdmin} />
-    },
-    {
-      id: 'electricity',
-      label: 'Electricity Bills',
-      metric: 'Utility Tracking',
-      render: () => <ElectricityTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'solar',
-      label: 'Solar Management',
-      metric: 'Evaluation & ROI',
-      render: () => <SolarModule isAdmin={isAdmin} />
-    },
+    ] : [])
   ];
 
 
@@ -345,8 +344,8 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    if (!isAdmin && ['security', 'housekeeping', 'electricity', 'tanker', 'maintenance'].includes(activeTab)) {
-      setActiveTab('society_overview');
+    if (!isAdmin && activeTab !== 'manager_tasks' && activeTab !== 'amc') {
+      setActiveTab('manager_tasks');
     }
   }, [isAdmin, activeTab]);
 
