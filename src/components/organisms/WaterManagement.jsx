@@ -27,10 +27,11 @@ export default function WaterManagement() {
           </h2>
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
-          
-          {/* Main Diagram Area */}
-          <div style={{ flex: '1 1 600px', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <div style={{ overflowX: 'auto', paddingBottom: '16px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', minWidth: '850px' }}>
+            
+            {/* Main Diagram Area */}
+            <div style={{ flex: '1 1 550px', display: 'flex', flexDirection: 'column', position: 'relative' }}>
             
             {/* Sources Row */}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '40px', position: 'relative' }}>
@@ -181,7 +182,7 @@ export default function WaterManagement() {
               </div>
             </div>
           </div>
-          
+        </div>
         </div>
 
         {/* Bottom Priority Banner */}
@@ -232,9 +233,10 @@ export default function WaterManagement() {
           <div style={{ fontSize: '3rem' }}>🚰</div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          
-          {/* MORNING */}
+        <div style={{ overflowX: 'auto', paddingBottom: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: '700px' }}>
+            
+            {/* MORNING */}
           <div style={{ border: '2px solid #bfdbfe', borderRadius: '16px', position: 'relative', padding: '32px 24px 24px' }}>
             <div style={{ position: 'absolute', top: '-18px', left: '50%', transform: 'translateX(-50%)', background: '#1e3a8a', color: 'white', padding: '6px 24px', borderRadius: '20px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.1rem' }}>
               <span style={{ fontSize: '1.3rem' }}>☀️</span> MORNING
@@ -329,6 +331,7 @@ export default function WaterManagement() {
             </div>
           </div>
 
+        </div>
         </div>
       </div>
       
