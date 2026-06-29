@@ -159,7 +159,8 @@ export default function ChequeManagement({ isAdmin = false }) {
     vendor: '',
     purpose: '',
     amount: '',
-    whoPaid: 'A Building'
+    whoPaid: 'A Building',
+    isPaid: false
   });
 
   const handleFormChange = (field, val) => {
@@ -321,7 +322,8 @@ export default function ChequeManagement({ isAdmin = false }) {
         'Vendor Name': c.vendor,
         'Remarks / Purpose': c.purpose,
         'Total (₹)': n(c.amount),
-        'Who Paid': c.whoPaid
+        'Who Paid': c.whoPaid,
+        'Paid?': c.isPaid ? 'Yes' : 'No'
       };
       
       if (subTab === 'common') {
@@ -516,6 +518,7 @@ export default function ChequeManagement({ isAdmin = false }) {
                   </>
                 )}
                 <th style={{ width: 130 }}>Who Paid</th>
+                <th style={{ width: 70, textAlign: 'center' }}>Paid?</th>
                 <th style={{ width: 50 }}></th>
               </tr>
             </thead>
@@ -530,33 +533,40 @@ export default function ChequeManagement({ isAdmin = false }) {
                 filteredCheques.map((c, i) => {
                   const actualIdx = activeCheques.findIndex(orig => orig.id === c.id);
                   const isCancelled = n(c.amount) === 0;
+                  const isPaid = c.isPaid === true;
+                  const rowStyle = isCancelled ? { background: '#f5f5f5', opacity: 0.65 } : isPaid ? { background: '#f0fdf4', opacity: 0.85 } : {};
+                  const strikeStyle = isCancelled || isPaid ? { textDecoration: 'line-through', color: '#9ca3af' } : {};
+                  
                   return (
-                    <tr key={c.id || i} style={isCancelled ? { background: '#f5f5f5', opacity: 0.65 } : {}}>
-                      <td>{i + 1}</td>
-                      <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value)} readOnly={!isAdmin} style={isCancelled ? { textDecoration: 'line-through', color: '#9ca3af' } : {}} /></td>
+                    <tr key={c.id || i} style={rowStyle}>
+                      <td style={strikeStyle}>{i + 1}</td>
+                      <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value)} readOnly={!isAdmin} style={strikeStyle} /></td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value)} readOnly={!isAdmin} style={isCancelled ? { textDecoration: 'line-through', color: '#9ca3af' } : {}} />
+                          <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value)} readOnly={!isAdmin} style={strikeStyle} />
                           {isCancelled && <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', fontWeight: 700, padding: '2px 5px', borderRadius: '4px', whiteSpace: 'nowrap' }}>CANCELLED</span>}
                         </div>
                       </td>
-                      <td><input className="attendance-register-input" style={{ fontWeight: 600, ...(isCancelled ? { textDecoration: 'line-through', color: '#9ca3af' } : {}) }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value)} readOnly={!isAdmin} /></td>
-                      <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value)} readOnly={!isAdmin} style={isCancelled ? { color: '#9ca3af' } : {}} /></td>
-                      <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700, ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value)} readOnly={!isAdmin} /></td>
+                      <td><input className="attendance-register-input" style={{ fontWeight: 600, ...strikeStyle }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value)} readOnly={!isAdmin} /></td>
+                      <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value)} readOnly={!isAdmin} style={isCancelled || isPaid ? { color: '#9ca3af' } : {}} /></td>
+                      <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700, ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : isPaid ? { textDecoration: 'line-through', color: '#16a34a' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value)} readOnly={!isAdmin} /></td>
                       {subTab === 'common' && (
                         <>
-                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#16a34a', fontWeight: 500 }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
-                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#2563eb', fontWeight: 500 }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
-                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#ea580c', fontWeight: 500 }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
+                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#16a34a', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
+                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#2563eb', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
+                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#ea580c', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
                         </>
                       )}
                       <td>
-                        <select className="attendance-register-input" value={c.whoPaid} onChange={e => updateRow(actualIdx, 'whoPaid', e.target.value)} disabled={!isAdmin}>
+                        <select className="attendance-register-input" value={c.whoPaid} onChange={e => updateRow(actualIdx, 'whoPaid', e.target.value)} disabled={!isAdmin} style={strikeStyle}>
                           <option>A Building</option>
                           <option>B Building</option>
                           <option>C Building</option>
                           <option>Petty Cash</option>
                         </select>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                         <input type="checkbox" checked={c.isPaid || false} onChange={e => updateRow(actualIdx, 'isPaid', e.target.checked)} disabled={!isAdmin} style={{ transform: 'scale(1.2)' }} />
                       </td>
                       <td>{isAdmin && <button className="button-icon" onClick={() => removeRow(actualIdx)} style={{ opacity: 0.3 }}>✕</button>}</td>
                     </tr>
