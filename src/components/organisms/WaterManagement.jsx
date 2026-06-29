@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const visuals = [
   {
@@ -58,7 +59,7 @@ export default function WaterManagement() {
     <div style={{ fontFamily: 'Inter, system-ui, sans-serif', maxWidth: '100%', overflow: 'hidden' }}>
 
       {/* Lightbox Modal */}
-      {selectedVisual && (
+      {selectedVisual && createPortal(
         <div
           onClick={() => setSelectedVisual(null)}
           style={{
@@ -67,73 +68,78 @@ export default function WaterManagement() {
             left: 0,
             width: '100vw',
             height: '100vh',
-            background: 'rgba(0,0,0,0.88)',
-            zIndex: 99999,
+            background: 'rgba(0,0,0,0.92)',
+            zIndex: 999999,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '16px',
+            padding: '24px',
             cursor: 'pointer',
           }}
         >
-          {/* Close bar at top */}
-          <div
+          {/* Close button at top-right of screen */}
+          <button
+            onClick={(e) => { e.stopPropagation(); setSelectedVisual(null); }}
             style={{
-              width: '100%',
-              maxWidth: '900px',
+              position: 'fixed',
+              top: '24px',
+              right: '24px',
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              background: '#ef4444',
+              color: '#ffffff',
+              border: 'none',
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
               display: 'flex',
-              justifyContent: 'flex-end',
-              marginBottom: '8px',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
+              zIndex: 1000000,
             }}
           >
-            <button
-              onClick={(e) => { e.stopPropagation(); setSelectedVisual(null); }}
-              style={{
-                background: '#ef4444',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '8px 20px',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-              }}
-            >
-              ✕ Close
-            </button>
-          </div>
+            ✕
+          </button>
 
-          {/* Image */}
-          <img
+          {/* Image Container */}
+          <div 
             onClick={(e) => e.stopPropagation()}
-            src={selectedVisual.image}
-            alt={selectedVisual.title}
             style={{
-              maxWidth: '900px',
-              width: '100%',
-              maxHeight: '75vh',
-              borderRadius: '12px',
-              objectFit: 'contain',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+              maxWidth: '90%',
+              maxHeight: '80vh',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
               cursor: 'default',
             }}
-          />
+          >
+            <img
+              src={selectedVisual.image}
+              alt={selectedVisual.title}
+              style={{
+                maxWidth: '100%',
+                maxHeight: '75vh',
+                borderRadius: '12px',
+                objectFit: 'contain',
+                boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7)',
+              }}
+            />
 
-          {/* Caption */}
-          <div style={{ color: '#fff', textAlign: 'center', marginTop: '12px' }}>
-            <h3 style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: 700 }}>
-              {selectedVisual.title}
-            </h3>
-            <p style={{ margin: 0, fontSize: '0.8rem', opacity: 0.7 }}>
-              {selectedVisual.subtitle}
-            </p>
+            {/* Caption */}
+            <div style={{ color: '#fff', textAlign: 'center', marginTop: '16px' }}>
+              <h3 style={{ margin: '0 0 4px', fontSize: '1.2rem', fontWeight: 700 }}>
+                {selectedVisual.title}
+              </h3>
+              <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.8 }}>
+                {selectedVisual.subtitle}
+              </p>
+            </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Gallery Grid */}
