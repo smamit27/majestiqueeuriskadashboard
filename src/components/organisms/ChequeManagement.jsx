@@ -87,10 +87,13 @@ export default function ChequeManagement({ isAdmin = false }) {
             // Seed requested entries for June 2026 if not already present
             if (selectedMonth === '2026-06') {
               if (!commonData.some(c => c.vendor === 'MESDCL' && String(c.amount) === '57420')) {
-                commonData.push({ id: Date.now() + 101, srNo: commonData.length + 1, date: '2026-06-15', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building' });
+                commonData.push({ id: Date.now() + 101, srNo: commonData.length + 1, date: '2026-06-15', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false });
               }
               if (!commonData.some(c => c.vendor === 'Tanaji Hunde' && String(c.amount) === '11500')) {
-                commonData.push({ id: Date.now() + 102, srNo: commonData.length + 1, date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building' });
+                commonData.push({ id: Date.now() + 102, srNo: commonData.length + 1, date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false });
+              }
+              if (!commonData.some(c => c.chequeNo === '493')) {
+                commonData.push({ id: Date.now() + 103, srNo: commonData.length + 1, date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false });
               }
             }
             setChequesCommon(commonData);
@@ -98,11 +101,12 @@ export default function ChequeManagement({ isAdmin = false }) {
             let initialCommon = [];
             if (selectedMonth === '2026-06') {
               initialCommon = [
-                { id: Date.now() + 101, srNo: 1, date: '2026-06-15', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building' },
-                { id: Date.now() + 102, srNo: 2, date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building' }
+                { id: Date.now() + 101, srNo: 1, date: '2026-06-15', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false },
+                { id: Date.now() + 102, srNo: 2, date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false },
+                { id: Date.now() + 103, srNo: 3, date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false }
               ];
             } else {
-              initialCommon = [{ id: Date.now() + 100, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building' }];
+              initialCommon = [{ id: Date.now() + 100, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building', isPaid: false }];
             }
             setChequesCommon(initialCommon);
           }
