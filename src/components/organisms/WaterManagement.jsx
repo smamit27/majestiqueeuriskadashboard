@@ -1,253 +1,226 @@
 import React, { useState } from 'react';
 
+const visuals = [
+  {
+    id: 'water_flow',
+    title: 'Water Flow Diagram',
+    subtitle: 'Complete water distribution architecture of our society',
+    image: '/visuals/water_flow_diagram.jpg',
+    category: 'Water Management',
+    color: '#2563eb',
+  },
+  {
+    id: 'water_supply',
+    title: 'Water Supply Schedule',
+    subtitle: 'Daily water supply timings for all buildings',
+    image: '/visuals/water_supply_schedule.jpg',
+    category: 'Water Management',
+    color: '#16a34a',
+  },
+  {
+    id: 'rcc_drains',
+    title: 'RCC Drain Covers – Child Safety',
+    subtitle: 'Replacement of iron drain grills with RCC covers for child safety',
+    image: '/visuals/rcc_drain_covers.jpg',
+    category: 'Safety Improvement',
+    color: '#ea580c',
+  },
+  {
+    id: 'gazebo',
+    title: 'Gazebo & Garden Area',
+    subtitle: 'Society gazebo with landscaping and green spaces',
+    image: '/visuals/gazebo.jpg',
+    category: 'Society Amenity',
+    color: '#6d28d9',
+  },
+];
+
 export default function WaterManagement() {
-  const [subTab, setSubTab] = useState('water_supply');
+  const [selectedVisual, setSelectedVisual] = useState(null);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', fontFamily: 'Inter, system-ui, sans-serif' }}>
-      
-      {/* Tab Navigation */}
-      <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
-        <button 
-          onClick={() => setSubTab('water_supply')}
+    <div style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+
+      {/* Lightbox Modal */}
+      {selectedVisual && (
+        <div
+          onClick={() => setSelectedVisual(null)}
           style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: subTab === 'water_supply' ? '#0a1d47' : '#f8fafc',
-            color: subTab === 'water_supply' ? 'white' : '#475569',
-            fontWeight: 600,
-            cursor: 'pointer',
-            fontSize: '0.9rem',
-            transition: 'all 0.2s'
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.85)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px',
+            cursor: 'zoom-out',
           }}
         >
-          Water Supply Schedule
-        </button>
-        <button 
-          onClick={() => setSubTab('water_flow')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '6px',
-            border: 'none',
-            background: subTab === 'water_flow' ? '#0a1d47' : '#f8fafc',
-            color: subTab === 'water_flow' ? 'white' : '#475569',
-            fontWeight: 600,
-            cursor: 'pointer',
-            fontSize: '0.9rem',
-            transition: 'all 0.2s'
-          }}
-        >
-          Water Flow Diagram
-        </button>
-      </div>
-
-      {subTab === 'water_flow' && (
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '12px',
-        border: '1px solid #e2e8f0',
-        padding: '24px',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
-      }}>
-        <h2 style={{ margin: '0 0 24px 0', fontSize: '1.2rem', fontWeight: 700, color: '#0f172a' }}>Water Flow Architecture</h2>
-        
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
-          
-          {/* Main Diagram Area */}
-          <div style={{ flex: '1 1 500px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', position: 'relative', marginTop: '12px' }}>
-              
-              {/* Horizontal Pipe spanning across tanks */}
-              <div style={{ position: 'absolute', top: '105px', left: '16.66%', right: '16.66%', height: '3px', background: '#3b82f6', zIndex: 1 }}></div>
-
-              {/* SOURCES ROW */}
-              <div style={{ gridColumn: '1 / 2', position: 'relative' }}>
-                <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '12px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '1.5rem', marginBottom: '4px' }}>🚰</div>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#1e3a8a' }}>PMC WATER</div>
-                  <div style={{ fontSize: '0.65rem', color: '#3b82f6' }}>Main line supply</div>
-                </div>
-                {/* Vertical Pipe from PMC to horizontal branch */}
-                <div style={{ position: 'absolute', bottom: '-24px', left: '50%', transform: 'translateX(-50%)', width: '3px', height: '24px', background: '#3b82f6', zIndex: 1 }}></div>
-              </div>
-              
-              <div></div> {/* Empty middle col */}
-
-              <div style={{ gridColumn: '3 / 4', position: 'relative' }}>
-                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '12px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '1.5rem', marginBottom: '4px' }}>🚚</div>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#14532d' }}>WATER TANKER</div>
-                  <div style={{ fontSize: '0.65rem', color: '#16a34a' }}>Common tank only</div>
-                </div>
-                {/* Vertical Pipe from Tanker bypassing horizontal branch to Common Tank */}
-                <div style={{ position: 'absolute', bottom: '-46px', left: '50%', transform: 'translateX(-50%)', width: '3px', height: '46px', background: '#22c55e', zIndex: 2 }}></div>
-              </div>
-
-              {/* Spacer */}
-              <div style={{ gridColumn: '1 / 4', height: '24px' }}></div>
-
-              {/* TANKS ROW */}
-              {/* Tank 1 */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-                <div style={{ width: '3px', height: '22px', background: '#3b82f6', position: 'absolute', top: '-22px', left: '50%', transform: 'translateX(-50%)', zIndex: 1 }}></div>
-                <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid #3b82f6', position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}></div>
-                
-                <div style={{ background: 'linear-gradient(to bottom, #eff6ff, #bfdbfe)', width: '100%', height: '80px', borderRadius: '12px 12px 4px 4px', border: '2px solid #60a5fa', borderBottom: '8px solid #94a3b8', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '6px' }}>
-                   <div style={{ fontSize: '1.2rem' }}>💧</div>
-                   <div style={{ color: '#1e3a8a', fontSize: '0.7rem', fontWeight: 800 }}>DRINKING</div>
-                </div>
-                <div style={{ fontSize: '0.65rem', color: '#475569', textAlign: 'center', marginTop: '8px' }}>Drinking, Cooking</div>
-              </div>
-
-              {/* Tank 2 */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-                <div style={{ width: '3px', height: '22px', background: '#3b82f6', position: 'absolute', top: '-22px', left: '50%', transform: 'translateX(-50%)', zIndex: 1 }}></div>
-                <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid #3b82f6', position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}></div>
-                
-                <div style={{ background: 'linear-gradient(to bottom, #f0fdf4, #bbf7d0)', width: '100%', height: '80px', borderRadius: '12px 12px 4px 4px', border: '2px solid #4ade80', borderBottom: '8px solid #94a3b8', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '6px' }}>
-                   <div style={{ fontSize: '1.2rem' }}>🚰</div>
-                   <div style={{ color: '#14532d', fontSize: '0.7rem', fontWeight: 800 }}>UTILITY</div>
-                </div>
-                <div style={{ fontSize: '0.65rem', color: '#475569', textAlign: 'center', marginTop: '8px' }}>Cleaning, Flushing</div>
-              </div>
-
-              {/* Tank 3 */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-                {/* PMC Pipe Left */}
-                <div style={{ width: '3px', height: '22px', background: '#3b82f6', position: 'absolute', top: '-22px', left: 'calc(50% - 12px)', transform: 'translateX(-50%)', zIndex: 1 }}></div>
-                <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid #3b82f6', position: 'absolute', top: 0, left: 'calc(50% - 12px)', transform: 'translateX(-50%)', zIndex: 2 }}></div>
-                
-                {/* Tanker Pipe Right */}
-                <div style={{ width: '3px', height: '22px', background: '#22c55e', position: 'absolute', top: '-22px', left: 'calc(50% + 12px)', transform: 'translateX(-50%)', zIndex: 1 }}></div>
-                <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid #22c55e', position: 'absolute', top: 0, left: 'calc(50% + 12px)', transform: 'translateX(-50%)', zIndex: 2 }}></div>
-                
-                <div style={{ background: 'linear-gradient(to bottom, #fff7ed, #fed7aa)', width: '100%', height: '80px', borderRadius: '12px 12px 4px 4px', border: '2px solid #fb923c', borderBottom: '8px solid #94a3b8', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '6px' }}>
-                   <div style={{ fontSize: '1.2rem' }}>🪣</div>
-                   <div style={{ color: '#9a3412', fontSize: '0.7rem', fontWeight: 800 }}>COMMON</div>
-                </div>
-                <div style={{ fontSize: '0.65rem', color: '#475569', textAlign: 'center', marginTop: '8px' }}>Utility Overflow</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Sidebar: Rules */}
-          <div style={{ flex: '1 1 250px' }}>
-            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', height: '100%' }}>
-              <h3 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155', marginTop: 0, marginBottom: '16px', textTransform: 'uppercase' }}>Rules</h3>
-              
-              <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'flex-start' }}>
-                <div style={{ background: '#3b82f6', color: 'white', width: '20px', height: '20px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.6rem' }}>✓</div>
-                <div style={{ color: '#475569', fontSize: '0.8rem', lineHeight: '1.4' }}>PMC water feeds all three tanks.</div>
-              </div>
-
-              <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'flex-start' }}>
-                <div style={{ background: '#22c55e', color: 'white', width: '20px', height: '20px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.6rem' }}>✓</div>
-                <div style={{ color: '#475569', fontSize: '0.8rem', lineHeight: '1.4' }}>Water tanker <strong style={{ color: '#16a34a' }}>ONLY</strong> feeds the Common Tank.</div>
-              </div>
-
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                <div style={{ background: '#ef4444', color: 'white', width: '20px', height: '20px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '0.7rem', fontWeight: 800 }}>×</div>
-                <div style={{ color: '#475569', fontSize: '0.8rem', lineHeight: '1.4' }}>Tankers <strong style={{ color: '#ef4444' }}>NEVER</strong> feed Drinking or Utility directly.</div>
-              </div>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              maxWidth: '95vw',
+              maxHeight: '92vh',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <button
+              onClick={() => setSelectedVisual(null)}
+              style={{
+                position: 'absolute',
+                top: '-12px',
+                right: '-12px',
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                background: '#fff',
+                border: 'none',
+                fontSize: '1.2rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                zIndex: 10,
+              }}
+            >
+              ✕
+            </button>
+            <img
+              src={selectedVisual.image}
+              alt={selectedVisual.title}
+              style={{
+                maxWidth: '100%',
+                maxHeight: '85vh',
+                borderRadius: '12px',
+                objectFit: 'contain',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+              }}
+            />
+            <div style={{ color: '#fff', textAlign: 'center', marginTop: '16px' }}>
+              <h3 style={{ margin: '0 0 4px', fontSize: '1.1rem', fontWeight: 700 }}>
+                {selectedVisual.title}
+              </h3>
+              <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>
+                {selectedVisual.subtitle}
+              </p>
             </div>
           </div>
         </div>
-
-        <div style={{ marginTop: '24px', background: '#eff6ff', borderRadius: '8px', padding: '12px', textAlign: 'center', color: '#1e3a8a', fontSize: '0.85rem', fontWeight: 600 }}>
-          Priority: Safe drinking water for every resident.
-        </div>
-      </div>
       )}
 
-      {subTab === 'water_supply' && (
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '12px',
-        border: '1px solid #e2e8f0',
-        padding: '24px',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
-      }}>
-        <h2 style={{ margin: '0 0 24px 0', fontSize: '1.2rem', fontWeight: 700, color: '#0f172a' }}>Daily Supply Schedule</h2>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-          
-          {/* Morning */}
-          <div style={{ border: '1px solid #bfdbfe', borderRadius: '12px', overflow: 'hidden' }}>
-            <div style={{ background: '#eff6ff', padding: '12px 16px', borderBottom: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, color: '#1e3a8a', fontSize: '0.9rem' }}>
-              <span>☀️</span> Morning
+      {/* Gallery Grid */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gap: '20px',
+        }}
+      >
+        {visuals.map((v) => (
+          <div
+            key={v.id}
+            onClick={() => setSelectedVisual(v)}
+            style={{
+              background: '#fff',
+              borderRadius: '12px',
+              border: '1px solid #e2e8f0',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+            }}
+          >
+            {/* Image */}
+            <div
+              style={{
+                width: '100%',
+                height: '220px',
+                overflow: 'hidden',
+                position: 'relative',
+              }}
+            >
+              <img
+                src={v.image}
+                alt={v.title}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                  transition: 'transform 0.3s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+              />
+              {/* Category Badge */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  left: '12px',
+                  background: v.color,
+                  color: '#fff',
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  padding: '4px 10px',
+                  borderRadius: '20px',
+                  letterSpacing: '0.5px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {v.category}
+              </div>
+              {/* Zoom icon */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '12px',
+                  right: '12px',
+                  background: 'rgba(255,255,255,0.9)',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#334155" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  <line x1="11" y1="8" x2="11" y2="14" />
+                  <line x1="8" y1="11" x2="14" y2="11" />
+                </svg>
+              </div>
             </div>
+
+            {/* Text */}
             <div style={{ padding: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '12px', borderBottom: '1px solid #f1f5f9', marginBottom: '12px' }}>
-                <div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#334155' }}>C Building</div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Approx. 1-1.5 hrs</div>
-                </div>
-                <div style={{ background: '#f1f5f9', padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, color: '#0f172a' }}>
-                  7:00 AM
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#334155' }}>A & B Buildings</div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Approx. 2 hrs</div>
-                </div>
-                <div style={{ background: '#f1f5f9', padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, color: '#0f172a' }}>
-                  8:00 AM
-                </div>
-              </div>
+              <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem', fontWeight: 700, color: '#0f172a' }}>
+                {v.title}
+              </h3>
+              <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', lineHeight: 1.4 }}>
+                {v.subtitle}
+              </p>
             </div>
           </div>
-
-          {/* Afternoon */}
-          <div style={{ border: '1px solid #fed7aa', borderRadius: '12px', overflow: 'hidden' }}>
-            <div style={{ background: '#fff7ed', padding: '12px 16px', borderBottom: '1px solid #fed7aa', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, color: '#9a3412', fontSize: '0.9rem' }}>
-              <span>🌤️</span> Afternoon
-            </div>
-            <div style={{ padding: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#334155' }}>A & B Buildings</div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Approx. 1 hr</div>
-                </div>
-                <div style={{ background: '#f1f5f9', padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, color: '#0f172a' }}>
-                  1:00 PM
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Evening */}
-          <div style={{ border: '1px solid #e9d5ff', borderRadius: '12px', overflow: 'hidden' }}>
-            <div style={{ background: '#faf5ff', padding: '12px 16px', borderBottom: '1px solid #e9d5ff', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700, color: '#6b21a8', fontSize: '0.9rem' }}>
-              <span>🌙</span> Evening
-            </div>
-            <div style={{ padding: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '12px', borderBottom: '1px solid #f1f5f9', marginBottom: '12px' }}>
-                <div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#334155' }}>C Building</div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Approx. 1.5 hrs</div>
-                </div>
-                <div style={{ background: '#f1f5f9', padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, color: '#0f172a' }}>
-                  4:00 PM
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#334155' }}>A & B Buildings</div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Approx. 1.5 - 2 hrs</div>
-                </div>
-                <div style={{ background: '#f1f5f9', padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, color: '#0f172a' }}>
-                  5:00 PM
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
+        ))}
       </div>
-      )}
-      
     </div>
   );
 }

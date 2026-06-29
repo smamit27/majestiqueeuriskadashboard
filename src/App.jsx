@@ -280,8 +280,8 @@ export default function App() {
       },
       {
         id: 'water_management',
-        label: 'Diagram',
-        metric: 'Water Flow & Schedule',
+        label: 'Visualization Work',
+        metric: 'Society Visual Plans & Designs',
         render: () => <WaterManagement />
       },
       {
