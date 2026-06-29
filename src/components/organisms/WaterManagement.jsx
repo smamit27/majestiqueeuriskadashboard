@@ -47,71 +47,75 @@ export default function WaterManagement() {
           onClick={() => setSelectedVisual(null)}
           style={{
             position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.85)',
-            zIndex: 9999,
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0,0,0,0.88)',
+            zIndex: 99999,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '24px',
-            cursor: 'zoom-out',
+            padding: '16px',
+            cursor: 'pointer',
           }}
         >
-          {/* Fixed close button at top-right of screen */}
-          <button
-            onClick={() => setSelectedVisual(null)}
-            style={{
-              position: 'fixed',
-              top: '20px',
-              right: '20px',
-              width: '44px',
-              height: '44px',
-              borderRadius: '50%',
-              background: '#fff',
-              border: 'none',
-              fontSize: '1.4rem',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-              zIndex: 10000,
-              color: '#0f172a',
-            }}
-          >
-            ✕
-          </button>
+          {/* Close bar at top */}
           <div
-            onClick={(e) => e.stopPropagation()}
             style={{
-              position: 'relative',
-              maxWidth: '95vw',
-              maxHeight: '85vh',
+              width: '100%',
+              maxWidth: '900px',
               display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              justifyContent: 'flex-end',
+              marginBottom: '8px',
             }}
           >
-            <img
-              src={selectedVisual.image}
-              alt={selectedVisual.title}
+            <button
+              onClick={(e) => { e.stopPropagation(); setSelectedVisual(null); }}
               style={{
-                maxWidth: '100%',
-                maxHeight: '80vh',
-                borderRadius: '12px',
-                objectFit: 'contain',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+                background: '#ef4444',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '8px 20px',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
               }}
-            />
-            <div style={{ color: '#fff', textAlign: 'center', marginTop: '16px' }}>
-              <h3 style={{ margin: '0 0 4px', fontSize: '1.1rem', fontWeight: 700 }}>
-                {selectedVisual.title}
-              </h3>
-              <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.7 }}>
-                {selectedVisual.subtitle}
-              </p>
-            </div>
+            >
+              ✕ Close
+            </button>
+          </div>
+
+          {/* Image */}
+          <img
+            onClick={(e) => e.stopPropagation()}
+            src={selectedVisual.image}
+            alt={selectedVisual.title}
+            style={{
+              maxWidth: '900px',
+              width: '100%',
+              maxHeight: '75vh',
+              borderRadius: '12px',
+              objectFit: 'contain',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+              cursor: 'default',
+            }}
+          />
+
+          {/* Caption */}
+          <div style={{ color: '#fff', textAlign: 'center', marginTop: '12px' }}>
+            <h3 style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: 700 }}>
+              {selectedVisual.title}
+            </h3>
+            <p style={{ margin: 0, fontSize: '0.8rem', opacity: 0.7 }}>
+              {selectedVisual.subtitle}
+            </p>
           </div>
         </div>
       )}
@@ -153,6 +157,7 @@ export default function WaterManagement() {
                 height: '220px',
                 overflow: 'hidden',
                 position: 'relative',
+                background: '#f1f5f9',
               }}
             >
               <img
@@ -161,7 +166,7 @@ export default function WaterManagement() {
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
                   display: 'block',
                   transition: 'transform 0.3s',
                 }}
