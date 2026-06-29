@@ -55,7 +55,7 @@ export default function WaterManagement() {
   const [selectedVisual, setSelectedVisual] = useState(null);
 
   return (
-    <div style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div style={{ fontFamily: 'Inter, system-ui, sans-serif', maxWidth: '100%', overflow: 'hidden' }}>
 
       {/* Lightbox Modal */}
       {selectedVisual && (
@@ -140,8 +140,9 @@ export default function WaterManagement() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '20px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '16px',
+          maxWidth: '100%',
         }}
       >
         {visuals.map((v) => (
