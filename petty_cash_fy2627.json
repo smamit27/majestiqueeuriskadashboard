@@ -1,0 +1,119 @@
+[
+  {
+    "id": 1782921846533,
+    "date": "2026-04-01",
+    "vendor": "System",
+    "purpose": "Opening Balance Adjustment for FY 26-27",
+    "receipt": "0",
+    "payment": "973",
+    "remarks": "Auto-adjusted to match ledger balances"
+  },
+  {
+    "id": 1782921846534,
+    "date": "2026-04-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846535,
+    "date": "2026-04-04",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846536,
+    "date": "2026-04-05",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses month of Mar 26",
+    "receipt": "",
+    "payment": "2131",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846537,
+    "date": "2026-04-29",
+    "vendor": "Rana Biswas",
+    "purpose": "Bathroom out side Plumbing Work",
+    "receipt": "",
+    "payment": "430",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846538,
+    "date": "2026-04-29",
+    "vendor": "Shree krushna H/W",
+    "purpose": "10w LED purchase",
+    "receipt": "",
+    "payment": "1200",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846539,
+    "date": "2026-05-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846540,
+    "date": "2026-05-05",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846541,
+    "date": "2026-05-05",
+    "vendor": "IGS Enterprises",
+    "purpose": "Solar Pipe Insstalation",
+    "receipt": "",
+    "payment": "800",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846542,
+    "date": "2026-05-30",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses",
+    "receipt": "",
+    "payment": "4370",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846543,
+    "date": "2026-06-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846544,
+    "date": "2026-06-03",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921846545,
+    "date": "2026-06-03",
+    "vendor": "IGS Enterprises",
+    "purpose": "Solar Lekage work",
+    "receipt": "",
+    "payment": "600",
+    "remarks": ""
+  }
+]

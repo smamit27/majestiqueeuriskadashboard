@@ -1,6 +1,6 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database}/documents { match /{path=**}/entries/{docId} { allow read, write: if true; } match /pettyCash/{docId} { allow read, write: if true; } match /commonExpenses/{docId} { allow read, write: if true; }
+  match /databases/{database}/documents {
     match /{document=**} {
       // Allow read access to any authenticated user
       allow read: if request.auth != null;

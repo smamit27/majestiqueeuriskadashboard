@@ -21,6 +21,7 @@ import ManagerTaskTracker from './components/organisms/ManagerTaskTracker.jsx';
 import AmcTracker from './components/organisms/AmcTracker.jsx';
 import SpecialMaintenanceTracker from './components/organisms/SpecialMaintenanceTracker.jsx';
 import WaterManagement from './components/organisms/WaterManagement.jsx';
+import PettyCashTracker from './components/organisms/PettyCashTracker.jsx';
 
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
@@ -109,6 +110,9 @@ const TAB_ICONS = {
   water_management: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
   ),
+  petty_cash: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M12 12h.01"/><path d="M16 12h.01"/><path d="M8 12h.01"/></svg>
+  )
 };
 
 export default function App() {
@@ -258,6 +262,12 @@ export default function App() {
       metric: 'Society Visual Plans & Designs',
       render: () => <WaterManagement />
     },
+    {
+      id: 'petty_cash',
+      label: 'Petty Cash',
+      metric: 'Ledger & Expenses',
+      render: () => <PettyCashTracker isAdmin={isAdmin} />
+    },
     ...(isAdmin ? [
       {
         id: 'security',
@@ -344,7 +354,7 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    if (!isAdmin && activeTab !== 'manager_tasks' && activeTab !== 'amc' && activeTab !== 'water_management') {
+    if (!isAdmin && activeTab !== 'manager_tasks' && activeTab !== 'amc' && activeTab !== 'water_management' && activeTab !== 'petty_cash') {
       setActiveTab('manager_tasks');
     }
   }, [isAdmin, activeTab]);
@@ -473,7 +483,7 @@ export default function App() {
           <h2>{activeTabPanel.label}</h2>
         </div>
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'water_management', 'manager_tasks', 'amc', 'maintenance'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'water_management', 'manager_tasks', 'amc', 'maintenance', 'petty_cash'].includes(activeTab) && (
         <header className="dashboard-header">
           <div className="dashboard-header__copy">
             <h1 style={{ margin: 0 }}>{activeTabPanel.label} Dashboard</h1>
