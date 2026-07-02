@@ -296,6 +296,37 @@ function buildMonthSummaries(entries, fiscalMonths) {
   });
 }
 
+export function calculateCommonSettlementBalance({ activeMonthId, monthSummariesByTab }) {
+  const activeCommonMonthSummary = monthSummariesByTab.common.find((month) => month.id === activeMonthId) || monthSummariesByTab.common[0];
+  const activeABuildingMonthSummary = monthSummariesByTab.buildingA.find((month) => month.id === activeMonthId) || monthSummariesByTab.buildingA[0];
+  const monthlyCommonExpenses = activeCommonMonthSummary ? (activeCommonMonthSummary.expenses || 0) : 0;
+  const monthlyCommonShare = monthlyCommonExpenses * (87 / 231);
+
+  const cumulativeCommonExpenses = monthSummariesByTab.common
+    .filter((month) => month.id <= activeMonthId)
+    .reduce((sum, month) => sum + (month.expenses || 0), 0);
+  const cumulativeCommonShare = cumulativeCommonExpenses * (87 / 231);
+
+  const cumulativeSettled = monthSummariesByTab.buildingA
+    .filter((month) => month.id <= activeMonthId)
+    .reduce((sum, month) => sum + month.entries.filter((entry) => entry.vendor === 'Common Settlement').reduce((entrySum, entry) => entrySum + toNumber(entry.payment), 0), 0);
+
+  return {
+    monthlyCommonExpenses,
+    monthlyCommonShare,
+    cumulativeCommonExpenses,
+    cumulativeCommonShare,
+    cumulativeSettled,
+    pendingCumulativeCommonShare: cumulativeCommonShare - cumulativeSettled,
+    monthlySettled: activeABuildingMonthSummary ? activeABuildingMonthSummary.entries
+      .filter((entry) => entry.vendor === 'Common Settlement')
+      .reduce((sum, entry) => sum + toNumber(entry.payment), 0) : 0,
+    monthlyPending: monthlyCommonShare - (activeABuildingMonthSummary ? activeABuildingMonthSummary.entries
+      .filter((entry) => entry.vendor === 'Common Settlement')
+      .reduce((sum, entry) => sum + toNumber(entry.payment), 0) : 0)
+  };
+}
+
 function SummaryCard({ label, value, accent, caption }) {
   return (
     <div
@@ -609,6 +640,11 @@ export default function PettyCashTracker({ isAdmin = false }) {
         ? '#0B6E4F'
         : '#667085';
 
+  const commonSettlementSummary = calculateCommonSettlementBalance({
+    activeMonthId,
+    monthSummariesByTab
+  });
+
   return (
     <div className="accounting-shell">
       <div
@@ -683,35 +719,11 @@ export default function PettyCashTracker({ isAdmin = false }) {
 
 
       {(() => {
-        const activeCommonMonthSummary = monthSummariesByTab.common.find(m => m.id === activeMonthId) || monthSummariesByTab.common[0];
-        const activeABuildingMonthSummary = monthSummariesByTab.buildingA.find(m => m.id === activeMonthId) || monthSummariesByTab.buildingA[0];
-        const commonNetBalance = activeCommonMonthSummary ? activeCommonMonthSummary.payments - activeCommonMonthSummary.receipts : 0;
-        // The total share accumulated up to the active month
-        const cumulativeCommonExpenses = monthSummariesByTab.common
-          .filter(m => m.id <= activeMonthId)
-          .reduce((sum, m) => sum + (m.expenses || 0), 0);
-        const cumulativeCommonShare = cumulativeCommonExpenses * (87 / 231);
-        
-        const cumulativeSettled = monthSummariesByTab.buildingA
-          .filter(m => m.id <= activeMonthId)
-          .reduce((sum, m) => sum + m.entries.filter(e => e.vendor === 'Common Settlement').reduce((s, e) => s + toNumber(e.payment), 0), 0);
-          
-        // User explicitly requested to ignore calculations for now and hardcode this to 4963.90
-        const pendingCumulativeCommonShare = 4963.90;
-
-        // Isolated monthly logic (for the breakdown box)
-        const monthlyCommonExpenses = activeCommonMonthSummary ? (activeCommonMonthSummary.expenses || 0) : 0;
-        const monthlyCommonShare = monthlyCommonExpenses * (87 / 231);
-        
-        // Payments made strictly in the active month
-        const monthlySettled = activeABuildingMonthSummary ? activeABuildingMonthSummary.entries
-          .filter(e => e.vendor === 'Common Settlement')
-          .reduce((sum, e) => sum + toNumber(e.payment), 0) : 0;
-          
-        const monthlyPending = monthlyCommonShare - monthlySettled;
-
-        const aBuildingClosingBalance = activeABuildingMonthSummary ? activeABuildingMonthSummary.closingBalance : 0;
-        const aBuildingMonthlyNet = activeABuildingMonthSummary ? activeABuildingMonthSummary.receipts - activeABuildingMonthSummary.payments : 0;
+        const {
+          pendingCumulativeCommonShare,
+          monthlySettled,
+          monthlyPending
+        } = commonSettlementSummary;
 
         return (
           <div
@@ -812,7 +824,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
               <div style={{ background: '#fff', padding: '12px 18px', borderRadius: '14px', border: '1px solid rgba(61, 63, 52, 0.06)' }}>
                 <div style={{ fontSize: '0.85rem', color: '#667085', fontWeight: 600, marginBottom: '4px' }}>A Building (87)</div>
                 <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#101828' }}>
-                  {formatCurrency((activeMonthSummary.payments - activeMonthSummary.receipts) * (87 / 231))}
+                  {formatCurrency(commonSettlementSummary.pendingCumulativeCommonShare)}
                 </div>
               </div>
               <div style={{ background: '#fff', padding: '12px 18px', borderRadius: '14px', border: '1px solid rgba(61, 63, 52, 0.06)' }}>

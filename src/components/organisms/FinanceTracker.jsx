@@ -112,14 +112,15 @@ export default function FinanceTracker({ isAdmin = false }) {
 
           if (snap.exists()) {
             const data = snap.data();
-            setIncome(data.income || [{ source: '', amount: '', remark: '' }]);
+            const filteredIncome = (data.income || []).filter(item => !item.source?.toLowerCase().includes('shop'));
+            setIncome(filteredIncome.length > 0 ? filteredIncome : [{ source: '', amount: '', remark: '' }]);
 
             const loadedExpenses = (data.expenses || []).map(e => ({
               chequeNo: e.chequeNo || '',
               vendor: e.vendor || '',
               amount: e.amount || '',
               purpose: e.purpose || ''
-            }));
+            })).filter(e => !e.vendor?.toLowerCase().includes('shop') && !e.purpose?.toLowerCase().includes('shop'));
             setExpenses(loadedExpenses.length > 0 ? loadedExpenses : [{ chequeNo: '', vendor: '', amount: '', purpose: '' }]);
             setSaveMsg(`${formatLongMonth(selectedMonth)}`);
           } else {
@@ -161,7 +162,15 @@ export default function FinanceTracker({ isAdmin = false }) {
           let data = { income: [], expenses: [] };
           let chequeData = { cheques: [] };
           
-          if (snap.exists()) data = snap.data();
+          if (snap.exists()) {
+            data = snap.data();
+            if (data.income) {
+              data.income = data.income.filter(item => !item.source?.toLowerCase().includes('shop'));
+            }
+            if (data.expenses) {
+              data.expenses = data.expenses.filter(e => !e.vendor?.toLowerCase().includes('shop') && !e.purpose?.toLowerCase().includes('shop'));
+            }
+          }
           if (chequeSnap.exists()) chequeData = chequeSnap.data();
           
           if (snap.exists() || chequeSnap.exists()) {
@@ -947,8 +956,7 @@ const HISTORICAL_DATA = {
       { source: 'Maintenance', amount: '262256.00', remark: '' },
       { source: 'Tata Play', amount: '3630.00', remark: 'TATA Play Rent' },
       { source: 'B Building', amount: '21402.00', remark: 'Common Light Bill Share' },
-      { source: 'Shifting Charges', amount: '4000.00', remark: 'Flat No 504' },
-      { source: 'Shop Maintenance', amount: '25700.00', remark: 'Shop No 07' }
+      { source: 'Shifting Charges', amount: '4000.00', remark: 'Flat No 504' }
     ],
     expenses: [
       { chequeNo: '', vendor: '3S Security Services', amount: '48050.00', purpose: 'Security Charges' },
