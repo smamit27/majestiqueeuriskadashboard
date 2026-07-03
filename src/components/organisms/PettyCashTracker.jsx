@@ -651,7 +651,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
         className="dashboard-hero-card"
         style={{
           alignItems: 'flex-start',
-          background: 'linear-gradient(135deg, #0B2B26 0%, #1E3A8A 58%, #C49B4F 100%)'
+          background: 'linear-gradient(135deg, rgb(11, 43, 38) 0%, rgb(25, 108, 108) 100%)'
         }}
       >
         <div style={{ flex: '1 1 480px' }}>
