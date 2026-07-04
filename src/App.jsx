@@ -23,6 +23,8 @@ import SpecialMaintenanceTracker from './components/organisms/SpecialMaintenance
 import WaterManagement from './components/organisms/WaterManagement.jsx';
 import PettyCashTracker from './components/organisms/PettyCashTracker.jsx';
 import ShopMaintenanceTracker from './components/organisms/ShopMaintenanceTracker.jsx';
+import AIChatButton from './components/AIChat/AIChatButton.jsx';
+import AIChatWindow from './components/AIChat/AIChatWindow.jsx';
 
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
@@ -135,6 +137,7 @@ export default function App() {
   const [memberSearchText, setMemberSearchText] = useState('');
   const [complaintSearchText, setComplaintSearchText] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [showIntro, setShowIntro] = useState(() => {
     return !localStorage.getItem('majestique_intro_seen_v30');
@@ -569,6 +572,9 @@ export default function App() {
 
       </main>
     </div>
+    
+    <AIChatButton isOpen={isChatOpen} onClick={() => setIsChatOpen(!isChatOpen)} />
+    <AIChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </>
   );
 }

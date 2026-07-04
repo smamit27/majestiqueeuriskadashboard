@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState, useEffect } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 
-const initialShopData = [
+export const initialShopData = [
   {
     id: 1,
     shopNo: 'Shop 1',
