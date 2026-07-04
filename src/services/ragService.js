@@ -105,13 +105,16 @@ export async function generateContextForQuery(query) {
     let contextStr = `Data retrieved from ${intent.type}:\n`;
 
     if (intent.type === 'shops') {
-      const snap = await getDoc(doc(db, 'shopMaintenance', 'shop_maintenance_ledger'));
       let shopsData = initialShopData;
-
-      if (snap.exists() && snap.data().shops) {
-        shopsData = snap.data().shops;
-      } else {
-        contextStr += `(Note: Live Firestore data not found, falling back to local built-in ledger data)\n`;
+      try {
+        const snap = await getDoc(doc(db, 'shopMaintenance', 'shop_maintenance_ledger'));
+        if (snap.exists() && snap.data().shops) {
+          shopsData = snap.data().shops;
+        } else {
+          contextStr += `(Note: Live Firestore data not found, falling back to local built-in ledger data)\n`;
+        }
+      } catch (e) {
+        contextStr += `(Note: Live Firestore query failed (${e.message}), falling back to local built-in ledger data)\n`;
       }
       
       let totalPending = 0;
@@ -134,31 +137,38 @@ export async function generateContextForQuery(query) {
     } else if (intent.type === 'housekeepingBill') {
       const parsedMonth = parseMonthYear(query);
       if (parsedMonth) {
-        const billDoc = await getDoc(doc(db, 'housekeepingBillCalculations', `hk_bill_${parsedMonth}`));
-        const registerDoc = await getDoc(doc(db, 'housekeepingAttendanceRegisters', `register_${parsedMonth}`));
-        
         let form = DEFAULT_HK_FORM;
         let attendance = null;
 
-        if (billDoc.exists()) {
-          form = { ...DEFAULT_HK_FORM, ...billDoc.data().form };
-        } else {
-          contextStr += `(Note: Live Firestore bill data not found, calculating using default base rates)\n`;
+        try {
+          const billDoc = await getDoc(doc(db, 'housekeepingBillCalculations', `hk_bill_${parsedMonth}`));
+          if (billDoc.exists()) {
+            form = { ...DEFAULT_HK_FORM, ...billDoc.data().form };
+          } else {
+            contextStr += `(Note: Live Firestore bill data not found, calculating using default base rates)\n`;
+          }
+        } catch (e) {
+          contextStr += `(Note: Live Firestore bill query failed (${e.message}), calculating using default base rates)\n`;
         }
 
-        if (registerDoc.exists() && registerDoc.data().entries) {
-          const rawEntries = registerDoc.data().entries;
-          const sums = { a: 0, b: 0, c: 0, supervisor: 0, common: 0, tractorTrip: 0 };
-          const parseFloatOrZero = v => parseFloat(v) || 0;
-          Object.values(rawEntries).forEach(row => {
-            sums.a += parseFloatOrZero(row.a);
-            sums.b += parseFloatOrZero(row.b);
-            sums.c += parseFloatOrZero(row.c);
-            sums.supervisor += parseFloatOrZero(row.supervisor);
-            sums.common += parseFloatOrZero(row.common);
-            sums.tractorTrip += parseFloatOrZero(row.tractorTrip);
-          });
-          attendance = sums;
+        try {
+          const registerDoc = await getDoc(doc(db, 'housekeepingAttendanceRegisters', `register_${parsedMonth}`));
+          if (registerDoc.exists() && registerDoc.data().entries) {
+            const rawEntries = registerDoc.data().entries;
+            const sums = { a: 0, b: 0, c: 0, supervisor: 0, common: 0, tractorTrip: 0 };
+            const parseFloatOrZero = v => parseFloat(v) || 0;
+            Object.values(rawEntries).forEach(row => {
+              sums.a += parseFloatOrZero(row.a);
+              sums.b += parseFloatOrZero(row.b);
+              sums.c += parseFloatOrZero(row.c);
+              sums.supervisor += parseFloatOrZero(row.supervisor);
+              sums.common += parseFloatOrZero(row.common);
+              sums.tractorTrip += parseFloatOrZero(row.tractorTrip);
+            });
+            attendance = sums;
+          }
+        } catch (e) {
+          contextStr += `(Note: Live Firestore attendance register query failed (${e.message}))\n`;
         }
 
         const calculated = calcBill(form, parsedMonth, attendance);
@@ -191,27 +201,45 @@ export async function generateContextForQuery(query) {
     } else if (intent.type === 'chequeTracker') {
       const parsedMonth = parseMonthYear(query);
       if (parsedMonth) {
-        const snapA = await getDoc(doc(db, 'chequesMonthly', `cheques_${parsedMonth}`));
-        const snapCommon = await getDoc(doc(db, 'chequesMonthly', `cheques_common_${parsedMonth}`));
-        
         let chequesA = [];
         let chequesCommon = [];
 
-        if (snapA.exists()) {
-          chequesA = snapA.data().cheques || [];
-        } else if (parsedMonth === '2026-06') {
-          chequesA = [
-            { date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false }
-          ];
+        try {
+          const snapA = await getDoc(doc(db, 'chequesMonthly', `cheques_${parsedMonth}`));
+          if (snapA.exists()) {
+            chequesA = snapA.data().cheques || [];
+          } else if (parsedMonth === '2026-06') {
+            chequesA = [
+              { date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false }
+            ];
+          }
+        } catch (e) {
+          contextStr += `(Note: Live Building A cheques query failed: ${e.message})\n`;
+          if (parsedMonth === '2026-06') {
+            chequesA = [
+              { date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false }
+            ];
+          }
         }
 
-        if (snapCommon.exists()) {
-          chequesCommon = snapCommon.data().cheques || [];
-        } else if (parsedMonth === '2026-06') {
-          chequesCommon = [
-            { date: '2026-06-15', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false },
-            { date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false }
-          ];
+        try {
+          const snapCommon = await getDoc(doc(db, 'chequesMonthly', `cheques_common_${parsedMonth}`));
+          if (snapCommon.exists()) {
+            chequesCommon = snapCommon.data().cheques || [];
+          } else if (parsedMonth === '2026-06') {
+            chequesCommon = [
+              { date: '2026-06-15', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false },
+              { date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false }
+            ];
+          }
+        } catch (e) {
+          contextStr += `(Note: Live Common cheques query failed: ${e.message})\n`;
+          if (parsedMonth === '2026-06') {
+            chequesCommon = [
+              { date: '2026-06-15', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false },
+              { date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false }
+            ];
+          }
         }
 
         contextStr += `Cheque Tracker Records for ${parsedMonth}:\n`;
@@ -247,16 +275,21 @@ export async function generateContextForQuery(query) {
     } else if (intent.type === 'finance') {
       const parsedMonth = parseMonthYear(query);
       if (parsedMonth) {
-        // Query financeMonthly for itemized bills
-        const docRef = doc(db, 'financeMonthly', `finance_${parsedMonth}`);
-        const snap = await getDoc(docRef);
-        
         let monthData = null;
-        if (snap.exists()) {
-          monthData = snap.data();
-        } else if (financeSeedData[`finance_${parsedMonth}`]) {
-          contextStr += `(Note: Live Firestore data not found, falling back to local seeded data)\n`;
-          monthData = financeSeedData[`finance_${parsedMonth}`];
+        try {
+          const docRef = doc(db, 'financeMonthly', `finance_${parsedMonth}`);
+          const snap = await getDoc(docRef);
+          if (snap.exists()) {
+            monthData = snap.data();
+          } else if (financeSeedData[`finance_${parsedMonth}`]) {
+            contextStr += `(Note: Live Firestore data not found, falling back to local seeded data)\n`;
+            monthData = financeSeedData[`finance_${parsedMonth}`];
+          }
+        } catch (e) {
+          contextStr += `(Note: Live Firestore query failed (${e.message}), falling back to local seeded data)\n`;
+          if (financeSeedData[`finance_${parsedMonth}`]) {
+            monthData = financeSeedData[`finance_${parsedMonth}`];
+          }
         }
 
         if (monthData) {
@@ -313,16 +346,20 @@ export async function generateContextForQuery(query) {
       } else {
         // Fallback: General summary of collections/expenses
         let collectionName = intent.type;
-        const querySnapshot = await getDocs(collection(db, collectionName));
-        
         let data = [];
-        if (querySnapshot.empty) {
-          contextStr += `(Note: Live Firestore data not found, falling back to local data)\n`;
+        try {
+          const querySnapshot = await getDocs(collection(db, collectionName));
+          if (querySnapshot.empty) {
+            contextStr += `(Note: Live Firestore data not found, falling back to local data)\n`;
+            data = mockFinance;
+          } else {
+            querySnapshot.forEach((d) => {
+              data.push({ id: d.id, ...d.data() });
+            });
+          }
+        } catch (e) {
+          contextStr += `(Note: Live Firestore query failed (${e.message}), falling back to local data)\n`;
           data = mockFinance;
-        } else {
-          querySnapshot.forEach((d) => {
-            data.push({ id: d.id, ...d.data() });
-          });
         }
 
         const latest = data[0] || {};
@@ -334,19 +371,26 @@ export async function generateContextForQuery(query) {
       }
     } else {
       let collectionName = intent.type;
-      const querySnapshot = await getDocs(collection(db, collectionName));
-      
       let data = [];
-      if (querySnapshot.empty) {
-        contextStr += `(Note: Live Firestore data not found, falling back to local data)\n`;
+      try {
+        const querySnapshot = await getDocs(collection(db, collectionName));
+        if (querySnapshot.empty) {
+          contextStr += `(Note: Live Firestore data not found, falling back to local data)\n`;
+          if (intent.type === 'complaints') data = mockComplaints;
+          else if (intent.type === 'dues') data = mockDues;
+          else if (intent.type === 'staff') data = mockStaff;
+          else if (intent.type === 'visitors') data = mockVisitors;
+        } else {
+          querySnapshot.forEach((d) => {
+            data.push({ id: d.id, ...d.data() });
+          });
+        }
+      } catch (e) {
+        contextStr += `(Note: Live Firestore query failed (${e.message}), falling back to local data)\n`;
         if (intent.type === 'complaints') data = mockComplaints;
         else if (intent.type === 'dues') data = mockDues;
         else if (intent.type === 'staff') data = mockStaff;
         else if (intent.type === 'visitors') data = mockVisitors;
-      } else {
-        querySnapshot.forEach((d) => {
-          data.push({ id: d.id, ...d.data() });
-        });
       }
 
       if (intent.type === 'complaints') {
@@ -371,16 +415,31 @@ export async function generateContextForQuery(query) {
 export async function getTabMetrics(tabId) {
   try {
     if (tabId === 'general') {
-      let duesSnap = await getDocs(collection(db, 'dues'));
-      let duesData = duesSnap.empty ? mockDues : duesSnap.docs.map(d => d.data());
+      let duesData = mockDues;
+      try {
+        let duesSnap = await getDocs(collection(db, 'dues'));
+        if (!duesSnap.empty) duesData = duesSnap.docs.map(d => d.data());
+      } catch (e) {
+        console.warn("getTabMetrics: Dues fetch failed, using mock data", e);
+      }
       const totalOutstanding = duesData.reduce((sum, item) => sum + (item.outstanding || 0), 0);
 
-      let complaintsSnap = await getDocs(collection(db, 'complaints'));
-      let complaintsData = complaintsSnap.empty ? mockComplaints : complaintsSnap.docs.map(d => d.data());
+      let complaintsData = mockComplaints;
+      try {
+        let complaintsSnap = await getDocs(collection(db, 'complaints'));
+        if (!complaintsSnap.empty) complaintsData = complaintsSnap.docs.map(d => d.data());
+      } catch (e) {
+        console.warn("getTabMetrics: Complaints fetch failed, using mock data", e);
+      }
       const openComplaints = complaintsData.filter(c => c.status !== 'Resolved').length;
 
-      let visitorsSnap = await getDocs(collection(db, 'visitors'));
-      let visitorsData = visitorsSnap.empty ? mockVisitors : visitorsSnap.docs.map(d => d.data());
+      let visitorsData = mockVisitors;
+      try {
+        let visitorsSnap = await getDocs(collection(db, 'visitors'));
+        if (!visitorsSnap.empty) visitorsData = visitorsSnap.docs.map(d => d.data());
+      } catch (e) {
+        console.warn("getTabMetrics: Visitors fetch failed, using mock data", e);
+      }
       const activeVisitors = visitorsData.filter(v => ['Checked In', 'At Gate'].includes(v.status)).length;
 
       return [
@@ -391,8 +450,15 @@ export async function getTabMetrics(tabId) {
     }
 
     if (tabId === 'maintenance') {
-      const snap = await getDoc(doc(db, 'shopMaintenance', 'shop_maintenance_ledger'));
-      const shopsData = snap.exists() && snap.data().shops ? snap.data().shops : initialShopData;
+      let shopsData = initialShopData;
+      try {
+        const snap = await getDoc(doc(db, 'shopMaintenance', 'shop_maintenance_ledger'));
+        if (snap.exists() && snap.data().shops) {
+          shopsData = snap.data().shops;
+        }
+      } catch (e) {
+        console.warn("getTabMetrics: Shop ledger fetch failed, using mock data", e);
+      }
 
       let totalPending = 0;
       let pendingCount = 0;
@@ -413,8 +479,13 @@ export async function getTabMetrics(tabId) {
     }
 
     if (tabId === 'finance') {
-      let finSnap = await getDocs(collection(db, 'finance'));
-      let finData = finSnap.empty ? mockFinance : finSnap.docs.map(d => d.data());
+      let finData = mockFinance;
+      try {
+        let finSnap = await getDocs(collection(db, 'finance'));
+        if (!finSnap.empty) finData = finSnap.docs.map(d => d.data());
+      } catch (e) {
+        console.warn("getTabMetrics: Finance fetch failed, using mock data", e);
+      }
       const latest = finData[0] || {};
 
       return [
@@ -425,11 +496,16 @@ export async function getTabMetrics(tabId) {
     }
 
     if (tabId === 'operations') {
-      let staffSnap = await getDocs(collection(db, 'staff'));
-      let staffData = staffSnap.empty ? mockStaff : staffSnap.docs.map(d => d.data());
+      let staffData = mockStaff;
+      try {
+        let staffSnap = await getDocs(collection(db, 'staff'));
+        if (!staffSnap.empty) staffData = staffSnap.docs.map(d => d.data());
+      } catch (e) {
+        console.warn("getTabMetrics: Staff fetch failed, using mock data", e);
+      }
       const staffPresent = staffData.filter(s => s.attendance !== 'On Leave').length;
 
-      let tasksCount = 0;
+      let tasksCount = 7;
       try {
         let commonSnap = await getDocs(collection(db, 'managerTasks_common'));
         let buildingSnap = await getDocs(collection(db, 'managerTasks_a_building'));
@@ -437,12 +513,12 @@ export async function getTabMetrics(tabId) {
         const cTasks = commonSnap.empty ? [] : commonSnap.docs.map(d => d.data());
         const bTasks = buildingSnap.empty ? [] : buildingSnap.docs.map(d => d.data());
         
-        tasksCount = [...cTasks, ...bTasks].filter(t => t.status !== 'Done').length;
-        if (commonSnap.empty && buildingSnap.empty) {
-          tasksCount = 7;
+        const totalPending = [...cTasks, ...bTasks].filter(t => t.status !== 'Done').length;
+        if (!commonSnap.empty || !buildingSnap.empty) {
+          tasksCount = totalPending;
         }
       } catch (e) {
-        tasksCount = 7;
+        console.warn("getTabMetrics: Tasks fetch failed, using default count", e);
       }
 
       return [
@@ -453,8 +529,13 @@ export async function getTabMetrics(tabId) {
     }
 
     if (tabId === 'complaints') {
-      let compSnap = await getDocs(collection(db, 'complaints'));
-      let compData = compSnap.empty ? mockComplaints : compSnap.docs.map(d => d.data());
+      let compData = mockComplaints;
+      try {
+        let compSnap = await getDocs(collection(db, 'complaints'));
+        if (!compSnap.empty) compData = compSnap.docs.map(d => d.data());
+      } catch (e) {
+        console.warn("getTabMetrics: Complaints fetch failed, using mock data", e);
+      }
 
       const open = compData.filter(c => c.status === 'Open').length;
       const inProgress = compData.filter(c => c.status === 'In Progress').length;
