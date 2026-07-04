@@ -133,7 +133,7 @@ export default function IntroAnimation({ onFinish }) {
           color: 'white', textTransform: 'uppercase', letterSpacing: '0.04em',
           lineHeight: 1.2, textShadow: '0 4px 20px rgba(11,43,38,.2)'
         }}>
-          Majestique Euriska World
+          Majestique Euriska
         </h2>
       </div>
     </div>
