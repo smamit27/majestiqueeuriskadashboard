@@ -25,7 +25,9 @@ const ALL_SUGGESTIONS = {
     "Show staff attendance for today.",
     "Which staff members are present?",
     "Did we pay the water bill?",
-    "How many tasks are pending for the manager?"
+    "How many tasks are pending for the manager?",
+    "Show housekeeping bill for July-26.",
+    "What is the housekeeping bill breakdown?"
   ],
   complaints: [
     "What are the open complaints?",

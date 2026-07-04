@@ -12,25 +12,9 @@ const db = admin.firestore();
 
 async function check() {
   const snapshot = await db.collection('financeMonthly').get();
+  console.log("Documents in financeMonthly:");
   snapshot.docs.forEach(doc => {
-    const data = doc.data();
-    if (data.income) {
-      data.income.forEach(i => {
-        if (i.source && i.source.toLowerCase().includes('shop')) {
-          console.log(`Found in income [${doc.id}]:`, i);
-        }
-      });
-    }
-    if (data.expenses) {
-      data.expenses.forEach(e => {
-        if (e.purpose && e.purpose.toLowerCase().includes('shop')) {
-          console.log(`Found in expenses purpose [${doc.id}]:`, e);
-        }
-        if (e.vendor && e.vendor.toLowerCase().includes('shop')) {
-          console.log(`Found in expenses vendor [${doc.id}]:`, e);
-        }
-      });
-    }
+    console.log(`- ${doc.id}`);
   });
 }
 
