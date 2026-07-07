@@ -9,3 +9,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </React.StrictMode>
 );
+
+// Register PWA service worker (auto-updates on new deploy)
+if ('serviceWorker' in navigator) {
+  import('virtual:pwa-register').then(({ registerSW }) => {
+    registerSW({ immediate: false });
+  }).catch(() => {
+    // PWA registration is optional; ignore failure in dev
+  });
+}

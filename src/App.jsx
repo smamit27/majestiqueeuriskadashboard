@@ -25,6 +25,10 @@ import PettyCashTracker from './components/organisms/PettyCashTracker.jsx';
 import ShopMaintenanceTracker from './components/organisms/ShopMaintenanceTracker.jsx';
 import AIChatButton from './components/AIChat/AIChatButton.jsx';
 import AIChatWindow from './components/AIChat/AIChatWindow.jsx';
+// ── New Features ───────────────────────────────────────────────────
+import AnnouncementsModule from './components/organisms/AnnouncementsModule.jsx';
+import NotificationCenter from './components/organisms/NotificationCenter.jsx';
+import GlobalSearch from './components/organisms/GlobalSearch.jsx';
 
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
@@ -61,6 +65,9 @@ function sortByDateAscending(items, key) {
 const TAB_ICONS = {
   society_overview: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+  ),
+  announcements: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
   ),
   members: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -129,7 +136,7 @@ const TAB_ICONS = {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('manager_tasks');
+  const [activeTab, setActiveTab] = useState('society_overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -138,7 +145,10 @@ export default function App() {
   const [complaintSearchText, setComplaintSearchText] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [pwaPrompt, setPwaPrompt] = useState(null);
+  const [showPwaBanner, setShowPwaBanner] = useState(false);
   const [showIntro, setShowIntro] = useState(() => {
     return !localStorage.getItem('majestique_intro_seen_v30');
   });
@@ -160,6 +170,36 @@ export default function App() {
     const allowedAdmins = ['majestiqueeuriska.a@gmail.com', 'smamit27@gmail.com'];
     return user && user.email && allowedAdmins.includes(user.email.toLowerCase());
   }, [user]);
+
+  // ── Cmd/Ctrl + K → open global search ──────────────────────────
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(s => !s);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  // ── PWA install prompt capture ──────────────────────────────────
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setPwaPrompt(e);
+      setShowPwaBanner(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handlePwaInstall = async () => {
+    if (!pwaPrompt) return;
+    pwaPrompt.prompt();
+    const { outcome } = await pwaPrompt.userChoice;
+    if (outcome === 'accepted') { setPwaPrompt(null); setShowPwaBanner(false); }
+  };
 
   const memberData = useCollection('members', members, user);
   const duesData = useCollection('dues', dues, user);
@@ -258,6 +298,18 @@ export default function App() {
   };
 
   const tabItems = [
+    {
+      id: 'society_overview',
+      label: 'Society Overview',
+      metric: 'Executive Summary',
+      render: () => <MainDashboard stats={dashboardStats} isAdmin={isAdmin} />
+    },
+    {
+      id: 'announcements',
+      label: 'Announcements',
+      metric: 'Notice Board',
+      render: () => <AnnouncementsModule isAdmin={isAdmin} />
+    },
     {
       id: 'manager_tasks',
       label: 'Manager Tasks',
@@ -374,8 +426,9 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    if (!isAdmin && activeTab !== 'manager_tasks' && activeTab !== 'amc' && activeTab !== 'water_management' && activeTab !== 'petty_cash' && activeTab !== 'shop_maintenance') {
-      setActiveTab('manager_tasks');
+    const publicTabs = ['society_overview', 'announcements', 'manager_tasks', 'amc', 'water_management', 'petty_cash', 'shop_maintenance'];
+    if (!isAdmin && !publicTabs.includes(activeTab)) {
+      setActiveTab('society_overview');
     }
   }, [isAdmin, activeTab]);
 
@@ -387,6 +440,28 @@ export default function App() {
   return (
     <>
       {showIntro && <IntroAnimation onFinish={handleIntroFinish} />}
+
+      {/* ── PWA Install Banner ── */}
+      {showPwaBanner && (
+        <div className="pwa-install-banner">
+          <span style={{ fontSize: '1.6rem' }}>📲</span>
+          <div>
+            <strong>Install ME Dashboard</strong>
+            <p>Add to home screen for quick access</p>
+          </div>
+          <button className="pwa-install-btn" onClick={handlePwaInstall}>Install</button>
+          <button className="pwa-dismiss-btn" onClick={() => setShowPwaBanner(false)}>✕</button>
+        </div>
+      )}
+
+      {/* ── Global Search ── */}
+      <GlobalSearch
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onNavigate={handleTabChange}
+        isAdmin={isAdmin}
+      />
+
       <div className={`dashboard-shell dashboard-shell--sidebar ${isSidebarCollapsed ? 'dashboard-shell--collapsed' : ''}`}>
       <div className="backdrop backdrop--top" />
       <div className="backdrop backdrop--bottom" />
@@ -428,26 +503,53 @@ export default function App() {
           </button>
         </div>
 
-        <div className="sidebar__admin-zone" style={{ padding: '0 16px 16px' }}>
-          <button 
-            className={`sidebar-item ${isAdmin ? 'sidebar-item--active' : ''}`}
-            onClick={() => setIsAuthModalOpen(true)}
-            style={isAdmin ? { background: '#10b981', color: 'white' } : {}}
-          >
-            <span className="sidebar-item__icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                {isAdmin ? (
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                ) : (
-                  <>
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                  </>
-                )}
+        <div className="sidebar__admin-zone" style={{ padding: '0 0 8px' }}>
+          {/* Search trigger */}
+          {!isSidebarCollapsed ? (
+            <button className="gsearch-trigger-btn" onClick={() => setIsSearchOpen(true)}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-            </span>
-            {!isSidebarCollapsed && <span className="sidebar-item__label">{isAdmin ? 'Admin (Live)' : 'Admin Login'}</span>}
-          </button>
+              Search...
+              <span className="gsearch-trigger-kbd">⌘K</span>
+            </button>
+          ) : (
+            <button
+              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', padding: '10px', display: 'flex', justifyContent: 'center', width: '100%' }}
+              onClick={() => setIsSearchOpen(true)}
+              title="Search (⌘K)"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </button>
+          )}
+
+          {/* Notifications */}
+          <NotificationCenter isSidebarCollapsed={isSidebarCollapsed} />
+
+          {/* Admin login */}
+          <div style={{ padding: '0 16px 8px' }}>
+            <button 
+              className={`sidebar-item ${isAdmin ? 'sidebar-item--active' : ''}`}
+              onClick={() => setIsAuthModalOpen(true)}
+              style={isAdmin ? { background: '#10b981', color: 'white' } : {}}
+            >
+              <span className="sidebar-item__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {isAdmin ? (
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  ) : (
+                    <>
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </>
+                  )}
+                </svg>
+              </span>
+              {!isSidebarCollapsed && <span className="sidebar-item__label">{isAdmin ? 'Admin (Live)' : 'Admin Login'}</span>}
+            </button>
+          </div>
         </div>
 
         <nav className="sidebar__nav" role="tablist" aria-orientation="vertical">
@@ -503,7 +605,7 @@ export default function App() {
           <h2>{activeTabPanel.label}</h2>
         </div>
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'water_management', 'manager_tasks', 'amc', 'maintenance', 'petty_cash', 'shop_maintenance'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'water_management', 'manager_tasks', 'amc', 'maintenance', 'petty_cash', 'shop_maintenance', 'society_overview', 'announcements'].includes(activeTab) && (
         <header className="dashboard-header">
           <div className="dashboard-header__copy">
             <h1 style={{ margin: 0 }}>{activeTabPanel.label} Dashboard</h1>
