@@ -1,6 +1,15 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database}/documents { match /{path=**}/entries/{docId} { allow read, write: if true; } match /pettyCash/{docId} { allow read, write: if true; } match /commonExpenses/{docId} { allow read, write: if true; }
+  match /databases/{database}/documents {
+    match /{path=**}/entries/{docId} { allow read, write: if true; }
+    match /pettyCash/{docId} { allow read, write: if true; }
+    match /commonExpenses/{docId} { allow read, write: if true; }
+    match /parkPlusInvoices/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+                    (request.auth.token.email.lower() == 'majestiqueeuriska.a@gmail.com' ||
+                     request.auth.token.email.lower() == 'smamit27@gmail.com');
+    }
     match /{document=**} {
       // Allow read access to any authenticated user
       allow read: if request.auth != null;
