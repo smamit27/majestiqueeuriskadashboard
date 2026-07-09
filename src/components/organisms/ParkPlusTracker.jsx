@@ -17,9 +17,9 @@ const STATUS_STYLE = {
 // ─── Seed data from invoices ─────────────────────────────────────────────────────
 const INITIAL_INVOICES = [
   {
-    id: 'PTI-202526-MAY',
-    invoiceDate: '2025-05-01',
-    dueDate: '2025-05-16',
+    id: 'PTI-202526-APR',
+    invoiceDate: '2025-04-01',
+    dueDate: '2025-04-16',
     description: 'Automated Gate and Security Solution',
     hsn: '997319',
     qty: 3,
@@ -31,7 +31,7 @@ const INITIAL_INVOICES = [
     paymentStatus: 'Paid',
     paidDate: '',
     remarks: '\u20b96,250 \u00d7 3 months',
-    period: '01-05-2025 to 30-06-2025',
+    period: '01-04-2025 to 30-06-2025',
   },
   {
     id: 'PTI-202526-001',
