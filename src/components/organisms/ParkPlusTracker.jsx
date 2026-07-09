@@ -17,9 +17,9 @@ const STATUS_STYLE = {
 // ─── Seed data from invoices ─────────────────────────────────────────────────────
 const INITIAL_INVOICES = [
   {
-    id: 'PTI-202526-APR',
-    invoiceDate: '2025-04-01',
-    dueDate: '2025-04-16',
+    id: 'PTI-202526-MAY',
+    invoiceDate: '2025-05-01',
+    dueDate: '2025-05-16',
     description: 'Automated Gate and Security Solution',
     hsn: '997319',
     qty: 3,
@@ -31,7 +31,7 @@ const INITIAL_INVOICES = [
     paymentStatus: 'Paid',
     paidDate: '',
     remarks: '\u20b96,250 \u00d7 3 months',
-    period: '01-04-2025 to 30-06-2025',
+    period: '01-05-2025 to 30-06-2025',
   },
   {
     id: 'PTI-202526-001',
@@ -109,13 +109,13 @@ const INITIAL_INVOICES = [
     hsn: '997319',
     qty: 1,
     uom: 'NOS',
-    unitPrice: 19687.5,
+    unitPrice: 19375.0,
     igstRate: 18,
-    igstAmt: 3543.75,
-    grandTotal: 23231.0,
+    igstAmt: 3487.5,
+    grandTotal: 22862.5,
     paymentStatus: 'Paid',
     paidDate: '',
-    remarks: '\u26a0\ufe0f 5% hike applied from Apr 1 by Park+. Should apply from May 1 — possible overcharge of \u20b9312.50 (pre-GST).',
+    remarks: 'Adjusted: Apr @ \u20b96,250 + May/Jun @ \u20b96,562.50 (5% hike from May 1).',
     period: '01-04-2026 to 30-06-2026',
   },
   {
