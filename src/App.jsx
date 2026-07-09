@@ -302,48 +302,6 @@ export default function App() {
   };
 
   const tabItems = [
-    {
-      id: 'society_overview',
-      label: 'Society Overview',
-      metric: 'Executive Summary',
-      render: () => <MainDashboard stats={dashboardStats} isAdmin={isAdmin} />
-    },
-    {
-      id: 'announcements',
-      label: 'Announcements',
-      metric: 'Notice Board',
-      render: () => <AnnouncementsModule isAdmin={isAdmin} />
-    },
-    {
-      id: 'manager_tasks',
-      label: 'Manager Tasks',
-      metric: 'Task & Deadline Tracker',
-      render: () => <ManagerTaskTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'amc',
-      label: 'AMC Tracker',
-      metric: 'Contracts & Payments',
-      render: () => <AmcTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'water_management',
-      label: 'Visualization Work',
-      metric: 'Society Visual Plans & Designs',
-      render: () => <WaterManagement />
-    },
-    {
-      id: 'park_plus',
-      label: 'Park+ Payments',
-      metric: 'RFID & Gate Solution Invoices',
-      render: () => <ParkPlusTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'petty_cash',
-      label: 'Petty Cash',
-      metric: 'Ledger & Expenses',
-      render: () => <PettyCashTracker isAdmin={isAdmin} />
-    },
     ...(isAdmin ? [
       {
         id: 'security',
@@ -406,7 +364,49 @@ export default function App() {
         metric: 'Evaluation & ROI',
         render: () => <SolarModule isAdmin={isAdmin} />
       }
-    ] : [])
+    ] : []),
+    {
+      id: 'society_overview',
+      label: 'Society Overview',
+      metric: 'Executive Summary',
+      render: () => <MainDashboard stats={dashboardStats} isAdmin={isAdmin} />
+    },
+    {
+      id: 'announcements',
+      label: 'Announcements',
+      metric: 'Notice Board',
+      render: () => <AnnouncementsModule isAdmin={isAdmin} />
+    },
+    {
+      id: 'manager_tasks',
+      label: 'Manager Tasks',
+      metric: 'Task & Deadline Tracker',
+      render: () => <ManagerTaskTracker isAdmin={isAdmin} />
+    },
+    {
+      id: 'amc',
+      label: 'AMC Tracker',
+      metric: 'Contracts & Payments',
+      render: () => <AmcTracker isAdmin={isAdmin} />
+    },
+    {
+      id: 'water_management',
+      label: 'Visualization Work',
+      metric: 'Society Visual Plans & Designs',
+      render: () => <WaterManagement />
+    },
+    {
+      id: 'park_plus',
+      label: 'Park+ Payments',
+      metric: 'RFID & Gate Solution Invoices',
+      render: () => <ParkPlusTracker isAdmin={isAdmin} />
+    },
+    {
+      id: 'petty_cash',
+      label: 'Petty Cash',
+      metric: 'Ledger & Expenses',
+      render: () => <PettyCashTracker isAdmin={isAdmin} />
+    },
   ];
 
 
