@@ -29,6 +29,7 @@ import AIChatWindow from './components/AIChat/AIChatWindow.jsx';
 import AnnouncementsModule from './components/organisms/AnnouncementsModule.jsx';
 import NotificationCenter from './components/organisms/NotificationCenter.jsx';
 import GlobalSearch from './components/organisms/GlobalSearch.jsx';
+import ParkPlusTracker from './components/organisms/ParkPlusTracker.jsx';
 
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
@@ -132,6 +133,9 @@ const TAB_ICONS = {
       <path d="M5 14v7h14v-7"/>
       <path d="M9 21v-4h6v4"/>
     </svg>
+  ),
+  park_plus: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V8h4a3 3 0 0 1 0 6H9"/></svg>
   )
 };
 
@@ -329,6 +333,12 @@ export default function App() {
       render: () => <WaterManagement />
     },
     {
+      id: 'park_plus',
+      label: 'Park+ Payments',
+      metric: 'RFID & Gate Solution Invoices',
+      render: () => <ParkPlusTracker isAdmin={isAdmin} />
+    },
+    {
       id: 'petty_cash',
       label: 'Petty Cash',
       metric: 'Ledger & Expenses',
@@ -426,7 +436,7 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    const publicTabs = ['society_overview', 'announcements', 'manager_tasks', 'amc', 'water_management', 'petty_cash', 'shop_maintenance'];
+    const publicTabs = ['society_overview', 'announcements', 'manager_tasks', 'amc', 'water_management', 'petty_cash', 'shop_maintenance', 'park_plus'];
     if (!isAdmin && !publicTabs.includes(activeTab)) {
       setActiveTab('society_overview');
     }
@@ -605,7 +615,7 @@ export default function App() {
           <h2>{activeTabPanel.label}</h2>
         </div>
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'water_management', 'manager_tasks', 'amc', 'maintenance', 'petty_cash', 'shop_maintenance', 'society_overview', 'announcements'].includes(activeTab) && (
+        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'water_management', 'manager_tasks', 'amc', 'maintenance', 'petty_cash', 'shop_maintenance', 'society_overview', 'announcements', 'park_plus'].includes(activeTab) && (
         <header className="dashboard-header">
           <div className="dashboard-header__copy">
             <h1 style={{ margin: 0 }}>{activeTabPanel.label} Dashboard</h1>
