@@ -818,6 +818,264 @@ export default function BankStatementTracker({ isAdmin }) {
       {activeSubTab === 'reports' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
+          {/* ── Income & Expense PDF Statement (NEW FEATURE) ── */}
+          <div className="section-card" style={{ border: '2px solid var(--pine)', background: 'rgba(49,85,62,0.04)' }}>
+            <h3 className="section-card__title" style={{ color: 'var(--pine)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>📊</span> Income & Expense Financial Statement (PDF / Print)
+            </h3>
+            <p style={{ color: 'var(--muted)', fontSize: '0.88rem', marginBottom: '20px' }}>
+              Generates a formal, audit-ready <strong>Income & Expense Statement PDF</strong> with dedicated income categorization (Vivish NEFT MyGate, UPI/IMPS, Tata Play, Cheque Deposits, Inter-building) & expense breakdown.
+            </p>
+            <button
+              className="action-btn action-btn--primary"
+              style={{ background: 'var(--pine)', borderColor: 'var(--pine)', fontWeight: '600', padding: '10px 20px', fontSize: '0.95rem' }}
+              onClick={() => {
+                const fmt = (v) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(v);
+                
+                const crTx = TRANSACTIONS_LIST.filter(t => t.type === 'CR');
+                const drTx = TRANSACTIONS_LIST.filter(t => t.type === 'DR');
+                const totalCR = crTx.reduce((s, t) => s + t.amount, 0);
+                const totalDR = drTx.reduce((s, t) => s + t.amount, 0);
+                const netFlow = totalCR - totalDR;
+
+                // Group Income
+                const vivishTx = crTx.filter(t => t.desc.toUpperCase().includes('VIVISH'));
+                const upiTx    = crTx.filter(t => {
+                  const d = t.desc.toUpperCase();
+                  return !d.includes('VIVISH') && (d.startsWith('UPI') || d.includes('UPI-') || d.includes('IMPS-') || d.includes('UPI SETTLEMENT'));
+                });
+                const tataTx   = crTx.filter(t => t.desc.toUpperCase().includes('TATA PLAY'));
+                const chqDepTx = crTx.filter(t => t.desc.toUpperCase().includes('CHQ DEP') || t.desc.toUpperCase().includes('CHEQUE DEP'));
+                const interCrTx = crTx.filter(t => t.desc.toUpperCase().includes('MAJESTIQUE EURISKA C') || t.desc.toUpperCase().includes('MAJESTIQUE EURISKA B') || t.desc.toUpperCase().includes('FT - CR'));
+                
+                const classifiedCrIds = new Set([...vivishTx, ...upiTx, ...tataTx, ...chqDepTx, ...interCrTx].map(t => t.ref));
+                const otherCrTx = crTx.filter(t => !classifiedCrIds.has(t.ref));
+
+                const incomeGroups = [
+                  { title: 'Vivish NEFT (MyGate Payment Gateway)', items: vivishTx, icon: '🟢', desc: 'Maintenance dues collected via MyGate payment gateway' },
+                  { title: 'UPI / IMPS Direct Receipts',          items: upiTx,    icon: '🟣', desc: 'Direct resident UPI settlements & IMPS transfers' },
+                  { title: 'Tata Play Broadband Refund / Credit', items: tataTx,   icon: '🔵', desc: 'Broadband commercial refund & reimbursement' },
+                  { title: 'Cheque Deposits (CTS Clearing)',       items: chqDepTx, icon: '🟡', desc: 'Physical maintenance cheques deposited in account' },
+                  { title: 'Inter-Building Receipts',             items: interCrTx,icon: '🩵', desc: 'Transfers received from B / C Building accounts' },
+                ];
+
+                if (otherCrTx.length > 0) {
+                  incomeGroups.push({ title: 'Other Direct Income', items: otherCrTx, icon: '⚪', desc: 'Other miscellaneous credit receipts' });
+                }
+
+                // Render Income Summary Rows
+                const incomeSummaryRows = incomeGroups.map(g => {
+                  const sum = g.items.reduce((s, t) => s + t.amount, 0);
+                  const pct = totalCR > 0 ? ((sum / totalCR) * 100).toFixed(2) : '0.00';
+                  return `
+                    <tr style="border-bottom:1px solid #e5e7eb">
+                      <td style="padding:10px;font-weight:600">${g.icon} ${g.title}</td>
+                      <td style="padding:10px;color:#6b7280;font-size:12px">${g.desc}</td>
+                      <td style="padding:10px;text-align:center;font-weight:600">${g.items.length}</td>
+                      <td style="padding:10px;text-align:right;font-weight:700;color:#31553e">${fmt(sum)}</td>
+                      <td style="padding:10px;text-align:right;font-weight:600;color:#196c6c">${pct}%</td>
+                    </tr>
+                  `;
+                }).join('');
+
+                // Render Expense Summary Rows
+                const expenseSummaryRows = VENDORS_DATA.map(v => {
+                  const pct = totalDR > 0 ? ((v.total / totalDR) * 100).toFixed(2) : '0.00';
+                  return `
+                    <tr style="border-bottom:1px solid #e5e7eb">
+                      <td style="padding:8px 10px;font-weight:700;color:#196c6c">#${v.rank}</td>
+                      <td style="padding:8px 10px;font-weight:600">${v.name}</td>
+                      <td style="padding:8px 10px;color:#4b5563;font-size:12px">${v.type}</td>
+                      <td style="padding:8px 10px;font-family:monospace;font-size:12px">${v.cheque}</td>
+                      <td style="padding:8px 10px;text-align:right;font-weight:700;color:#c2644a">${fmt(v.total)}</td>
+                      <td style="padding:8px 10px;text-align:right;font-weight:600">${pct}%</td>
+                    </tr>
+                  `;
+                }).join('');
+
+                // Render Detailed Income Transactions HTML
+                const itemizedIncomeHtml = incomeGroups.map(g => {
+                  const groupSum = g.items.reduce((s, t) => s + t.amount, 0);
+                  if (g.items.length === 0) return '';
+                  const rows = g.items.map(t => `
+                    <tr style="border-bottom:1px solid #f3f4f6;font-size:11px">
+                      <td style="padding:5px 8px;white-space:nowrap;color:#6b7280">${t.date}</td>
+                      <td style="padding:5px 8px">${t.desc}</td>
+                      <td style="padding:5px 8px;font-family:monospace;color:#6b7280">${t.ref}</td>
+                      <td style="padding:5px 8px;text-align:right;color:#31553e;font-weight:700">${fmt(t.amount)}</td>
+                    </tr>
+                  `).join('');
+
+                  return `
+                    <div style="margin-top:16px;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden">
+                      <div style="background:#f9fafb;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb">
+                        <strong style="font-size:13px;color:#111827">${g.icon} ${g.title} (${g.items.length} txs)</strong>
+                        <strong style="color:#31553e;font-size:13px">Total: ${fmt(groupSum)}</strong>
+                      </div>
+                      <table style="width:100%;border-collapse:collapse">
+                        <thead><tr style="background:#fff;text-align:left;font-size:11px;color:#6b7280;border-bottom:1px solid #e5e7eb">
+                          <th style="padding:5px 8px">Date</th>
+                          <th style="padding:5px 8px">Narration</th>
+                          <th style="padding:5px 8px">Ref / Chq No</th>
+                          <th style="padding:5px 8px;text-align:right">Amount (₹)</th>
+                        </tr></thead>
+                        <tbody>${rows}</tbody>
+                      </table>
+                    </div>
+                  `;
+                }).join('');
+
+                const html = `<!DOCTYPE html>
+                <html>
+                <head>
+                  <title>Income & Expense Statement — Majestique Euriska A Building (July 2026)</title>
+                  <style>
+                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 36px; color: #1f2937; line-height: 1.5; }
+                    .header { border-bottom: 3px solid #31553e; padding-bottom: 12px; margin-bottom: 24px; text-align: center; }
+                    .header h1 { margin: 0; color: #31553e; font-size: 22px; text-transform: uppercase; letter-spacing: 0.5px; }
+                    .header h2 { margin: 4px 0 0 0; color: #196c6c; font-size: 15px; font-weight: 600; }
+                    .header p { margin: 4px 0 0 0; color: #6b7280; font-size: 12px; }
+                    .kpi-grid { display: flex; gap: 16px; margin-bottom: 24px; }
+                    .kpi-box { flex: 1; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; text-align: center; }
+                    .kpi-box span { display: block; font-size: 11px; color: #6b7280; font-weight: 600; text-transform: uppercase; }
+                    .kpi-box strong { display: block; font-size: 18px; margin-top: 4px; }
+                    .section-title { color: #31553e; font-size: 16px; border-bottom: 2px solid #31553e; padding-bottom: 4px; margin-top: 28px; margin-bottom: 12px; }
+                    .section-title-expense { color: #c2644a; border-color: #c2644a; }
+                    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+                    th { background: #f3f4f6; padding: 8px 10px; text-align: left; font-size: 12px; color: #374151; border-top: 1px solid #e5e7eb; border-bottom: 2px solid #d1d5db; }
+                    td { padding: 8px 10px; font-size: 12px; }
+                    tfoot tr { background: #f9fafb; font-weight: 700; border-top: 2px solid #d1d5db; }
+                    .sig-grid { display: flex; justify: space-between; margin-top: 48px; border-top: 2px solid #e5e7eb; padding-top: 36px; text-align: center; }
+                    .sig-box { width: 22%; }
+                    .sig-line { border-top: 1px solid #9ca3af; margin-top: 40px; padding-top: 4px; font-size: 12px; font-weight: 600; color: #374151; }
+                    @media print {
+                      body { margin: 20px; }
+                      button { display: none; }
+                      .no-print { display: none; }
+                    }
+                  </style>
+                </head>
+                <body>
+                  <div class="no-print" style="margin-bottom: 16px; text-align: right;">
+                    <button onclick="window.print()" style="background:#31553e;color:#fff;border:none;padding:10px 20px;border-radius:6px;font-weight:600;cursor:pointer">🖨️ Print / Save as PDF</button>
+                  </div>
+
+                  <div class="header">
+                    <h1>Majestique Euriska A Building Sahakari Gruha Nirman Sanstha Maryadit</h1>
+                    <h2>FINANCIAL AUDIT STATEMENT — INCOME & EXPENDITURE ACCOUNT</h2>
+                    <p>For the Period: <strong>01 July 2026 to 29 July 2026</strong> | Bank: <strong>HDFC Bank (Mohammedwadi Branch)</strong></p>
+                  </div>
+
+                  <div class="kpi-grid">
+                    <div class="kpi-box">
+                      <span>Total Collections (Income)</span>
+                      <strong style="color: #31553e">${fmt(totalCR)}</strong>
+                      <span style="font-weight:normal;font-size:10px">${crTx.length} transactions</span>
+                    </div>
+                    <div class="kpi-box">
+                      <span>Total Expenses (Outflow)</span>
+                      <strong style="color: #c2644a">${fmt(totalDR)}</strong>
+                      <span style="font-weight:normal;font-size:10px">${drTx.length} transactions</span>
+                    </div>
+                    <div class="kpi-box">
+                      <span>Net Deficit / Cashflow</span>
+                      <strong style="color: ${netFlow >= 0 ? '#31553e' : '#c2644a'}">${fmt(netFlow)}</strong>
+                      <span style="font-weight:normal;font-size:10px">${netFlow >= 0 ? 'Surplus' : 'Deficit'}</span>
+                    </div>
+                    <div class="kpi-box">
+                      <span>Closing Reserve Balance</span>
+                      <strong style="color: #196c6c">${fmt(CLOSING_BALANCE)}</strong>
+                      <span style="font-weight:normal;font-size:10px">as of 29/07/2026</span>
+                    </div>
+                  </div>
+
+                  <!-- SECTION 1: INCOME BREAKDOWN -->
+                  <h3 class="section-title">📥 1. Income Summary (By Source Stream)</h3>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Income Source / Stream</th>
+                        <th>Description</th>
+                        <th style="text-align:center">Tx Count</th>
+                        <th style="text-align:right">Total Amount (₹)</th>
+                        <th style="text-align:right">% of Revenue</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${incomeSummaryRows}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="2">TOTAL INFLOW (RECEIPTS)</td>
+                        <td style="text-align:center">${crTx.length}</td>
+                        <td style="text-align:right;color:#31553e">${fmt(totalCR)}</td>
+                        <td style="text-align:right;color:#196c6c">100.00%</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+
+                  <!-- SECTION 2: EXPENSE BREAKDOWN -->
+                  <h3 class="section-title section-title-expense">📤 2. Expense Summary (By Vendor & Category)</h3>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Rank</th>
+                        <th>Vendor / Payee Name</th>
+                        <th>Category / Purpose</th>
+                        <th>Cheque / Ref No</th>
+                        <th style="text-align:right">Amount (₹)</th>
+                        <th style="text-align:right">% of Spend</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${expenseSummaryRows}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="4">TOTAL OUTFLOW (EXPENSES)</td>
+                        <td style="text-align:right;color:#c2644a">${fmt(totalDR)}</td>
+                        <td style="text-align:right">100.00%</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+
+                  <!-- SECTION 3: ITEMIZED INCOME RECEIPTS -->
+                  <h3 class="section-title" style="margin-top:36px">📋 3. Itemized Receipts Register (Categorized Income)</h3>
+                  <p style="font-size:12px;color:#6b7280;margin-bottom:12px">Full transaction breakdown of all credit entries received during the statement period.</p>
+                  ${itemizedIncomeHtml}
+
+                  <!-- SIGNATURE BLOCK -->
+                  <div class="sig-grid">
+                    <div class="sig-box">
+                      <div class="sig-line">Treasurer</div>
+                    </div>
+                    <div class="sig-box">
+                      <div class="sig-line">Secretary</div>
+                    </div>
+                    <div class="sig-box">
+                      <div class="sig-line">Chairman / President</div>
+                    </div>
+                    <div class="sig-box">
+                      <div class="sig-line">Internal Auditor</div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top:24px;text-align:center;font-size:11px;color:#9ca3af">
+                    Statement Auditor System — Majestique Euriska A Building Society Portal | Report Generated: ${new Date().toLocaleDateString('en-IN', {day:'2-digit',month:'long',year:'numeric'})}
+                  </div>
+                </body>
+                </html>`;
+
+                const w = window.open('', '_blank');
+                w.document.write(html);
+                w.document.close();
+                setTimeout(() => w.print(), 600);
+              }}
+            >
+              📊 Open Income & Expense Statement (PDF/Print)
+            </button>
+          </div>
+
           {/* ── CSV Downloads ── */}
           <div className="section-card">
             <h3 className="section-card__title">📥 Download Transaction Data (CSV / Excel)</h3>
@@ -863,9 +1121,9 @@ export default function BankStatementTracker({ isAdmin }) {
 
           {/* ── Print / PDF ── */}
           <div className="section-card">
-            <h3 className="section-card__title">🖨️ Print / Save as PDF</h3>
+            <h3 className="section-card__title">🖨️ Full Bank Statement & Ledger (PDF/Print)</h3>
             <p style={{ color: 'var(--muted)', fontSize: '0.88rem', marginBottom: '20px' }}>
-              Opens a print-ready page with KPI summary, vendor rankings, and complete transaction ledger. Use your browser's Print → Save as PDF option.
+              Opens a print-ready page with KPI summary, vendor rankings, and complete 101-transaction ledger. Use your browser's Print → Save as PDF option.
             </p>
             <button
               className="action-btn"
