@@ -30,6 +30,7 @@ import AnnouncementsModule from './components/organisms/AnnouncementsModule.jsx'
 import NotificationCenter from './components/organisms/NotificationCenter.jsx';
 import GlobalSearch from './components/organisms/GlobalSearch.jsx';
 import ParkPlusTracker from './components/organisms/ParkPlusTracker.jsx';
+import BankStatementTracker from './components/organisms/BankStatementTracker.jsx';
 
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
@@ -136,6 +137,9 @@ const TAB_ICONS = {
   ),
   park_plus: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V8h4a3 3 0 0 1 0 6H9"/></svg>
+  ),
+  statement_auditor: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="9" x2="13" y2="9"/><path d="M3 3h18v18H3z"/></svg>
   )
 };
 
@@ -407,6 +411,12 @@ export default function App() {
       metric: 'Ledger & Expenses',
       render: () => <PettyCashTracker isAdmin={isAdmin} />
     },
+    {
+      id: 'statement_auditor',
+      label: 'Statement Auditor',
+      metric: 'Forensic Payment Tracker',
+      render: () => <BankStatementTracker isAdmin={isAdmin} />
+    },
   ];
 
 
@@ -436,7 +446,7 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    const publicTabs = ['society_overview', 'announcements', 'manager_tasks', 'amc', 'water_management', 'petty_cash', 'shop_maintenance', 'park_plus'];
+    const publicTabs = ['society_overview', 'announcements', 'manager_tasks', 'amc', 'water_management', 'petty_cash', 'shop_maintenance', 'park_plus', 'statement_auditor'];
     if (!isAdmin && !publicTabs.includes(activeTab)) {
       setActiveTab('society_overview');
     }
@@ -615,55 +625,7 @@ export default function App() {
           <h2>{activeTabPanel.label}</h2>
         </div>
 
-        {!['housekeeping', 'security', 'solar', 'finance', 'cheques', 'electricity', 'tanker', 'water_management', 'manager_tasks', 'amc', 'maintenance', 'petty_cash', 'shop_maintenance', 'society_overview', 'announcements', 'park_plus'].includes(activeTab) && (
-        <header className="dashboard-header">
-          <div className="dashboard-header__copy">
-            <h1 style={{ margin: 0 }}>{activeTabPanel.label} Dashboard</h1>
-            <p className="dashboard-header__text">
-              A cleaner control center for member operations, dues, community updates,
-              complaints, income & expenses, visitor movement, and housekeeping management.
-            </p>
 
-            <div className="header-badges">
-              <span className="header-badge">Residential / Housing Society</span>
-              <span className="header-badge">
-                {hasFirebaseSync ? 'Firebase connected' : 'Mock preview mode'}
-              </span>
-              <span className="header-badge">{activeTabPanel.label} tab active</span>
-            </div>
-          </div>
-
-            <div className="dashboard-header__aside">
-            <article className="summary-panel">
-              <p className="eyebrow">Live snapshot</p>
-              <div className="summary-panel__grid">
-                <div>
-                  <span>Open complaints</span>
-                  <strong>{openComplaints}</strong>
-                </div>
-                <div>
-                  <span>Visitors at gate</span>
-                  <strong>{activeVisitors}</strong>
-                </div>
-                <div>
-                  <span>Dues outstanding</span>
-                  <strong>{formatCurrency(totalOutstanding)}</strong>
-                </div>
-              </div>
-            </article>
-
-            <article className="highlight-card">
-              <p className="eyebrow">Upcoming priority</p>
-              <h3>{nextEvent?.title || 'Committee meeting'}</h3>
-              <p>
-                {nextEvent
-                  ? `${formatDate(nextEvent.date)} at ${nextEvent.venue}`
-                  : 'Schedule the next community event.'}
-              </p>
-            </article>
-          </div>
-        </header>
-        )}
 
         {loadErrors.length > 0 ? <div className="notice-banner">{loadErrors[0]}</div> : null}
 
