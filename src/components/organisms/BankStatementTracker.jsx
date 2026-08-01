@@ -1037,11 +1037,6 @@ export default function BankStatementTracker({ isAdmin }) {
                             ` : ''}
                           </tfoot>
                         </table>
-
-                        <div style="padding:10px">
-                          <h4 style="margin:12px 0 6px 0;color:#31553e;font-size:12px;border-bottom:1px solid #31553e;padding-bottom:3px">📋 Itemized Inflow Receipts (Categorized)</h4>
-                          ${itemizedIncomeHtml}
-                        </div>
                       </div>
 
                       <!-- RIGHT SIDE: EXPENDITURE -->
@@ -1070,11 +1065,6 @@ export default function BankStatementTracker({ isAdmin }) {
                             </tr>
                           </tfoot>
                         </table>
-
-                        <div style="padding:10px">
-                          <h4 style="margin:12px 0 6px 0;color:#c2644a;font-size:12px;border-bottom:1px solid #c2644a;padding-bottom:3px">📋 Itemized Outflow Register (Debits)</h4>
-                          ${itemizedExpenseHtml}
-                        </div>
                       </div>
                     </div>
 
