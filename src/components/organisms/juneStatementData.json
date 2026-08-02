@@ -1,0 +1,1117 @@
+{
+  "period": "June 1, 2026 - June 30, 2026",
+  "openingBalance": 333303.54,
+  "closingBalance": 465193.55,
+  "totalCredits": 369080.01,
+  "totalDebits": 237190,
+  "netCashFlow": 131890.01,
+  "vendorsData": [
+    {
+      "rank": 1,
+      "name": "MSEDCL",
+      "count": 2,
+      "total": 95860,
+      "type": "Electricity Utility",
+      "cheque": "CHQ 496, 501"
+    },
+    {
+      "rank": 2,
+      "name": "Shubham Enterprises",
+      "count": 1,
+      "total": 37993,
+      "type": "Repairs & Operations",
+      "cheque": "CHQ 495"
+    },
+    {
+      "rank": 3,
+      "name": "Sandip Raju Wavare",
+      "count": 1,
+      "total": 27376,
+      "type": "Security Guard",
+      "cheque": "FT 497"
+    },
+    {
+      "rank": 4,
+      "name": "NRG Security Services",
+      "count": 1,
+      "total": 18539,
+      "type": "Security Guard",
+      "cheque": "CHQ 494"
+    },
+    {
+      "rank": 5,
+      "name": "Sidharam Parmeshwar",
+      "count": 1,
+      "total": 11700,
+      "type": "Staff Wages",
+      "cheque": "CHQ 489"
+    },
+    {
+      "rank": 6,
+      "name": "Tangji Hande",
+      "count": 1,
+      "total": 11500,
+      "type": "Staff Wages",
+      "cheque": "CHQ 499"
+    },
+    {
+      "rank": 7,
+      "name": "Self Withdrawal (Mohammedwadi)",
+      "count": 1,
+      "total": 10000,
+      "type": "Cash Handling",
+      "cheque": "CHQ 488"
+    },
+    {
+      "rank": 8,
+      "name": "Alok Sah",
+      "count": 1,
+      "total": 8060,
+      "type": "Staff Wages",
+      "cheque": "CHQ 504"
+    },
+    {
+      "rank": 9,
+      "name": "Shree Swami Samarth",
+      "count": 1,
+      "total": 5178,
+      "type": "Housekeeping & Cleaning",
+      "cheque": "CHQ 490"
+    },
+    {
+      "rank": 10,
+      "name": "Sai Swimming Pool M",
+      "count": 1,
+      "total": 4519,
+      "type": "Pool Upkeep",
+      "cheque": "CHQ 492"
+    },
+    {
+      "rank": 11,
+      "name": "Majestique Euriska (Admin)",
+      "count": 1,
+      "total": 3768,
+      "type": "Society Operations",
+      "cheque": "CHQ 498"
+    },
+    {
+      "rank": 12,
+      "name": "Naushad Ali",
+      "count": 1,
+      "total": 2697,
+      "type": "Staff Wages",
+      "cheque": "CHQ 491"
+    }
+  ],
+  "incomeCategories": [
+    {
+      "name": "Maintenance (Vivish PG)",
+      "value": 242423.01,
+      "count": 66,
+      "color": "#196c6c"
+    },
+    {
+      "name": "Bennett Coleman & Co",
+      "value": 54000,
+      "count": 1,
+      "color": "#31553e"
+    },
+    {
+      "name": "Inter-Building / Cheques (B & C)",
+      "value": 44957,
+      "count": 4,
+      "color": "#c2644a"
+    },
+    {
+      "name": "Direct Transfer (A. Kshirsagar)",
+      "value": 6654,
+      "count": 1,
+      "color": "#b98216"
+    },
+    {
+      "name": "Refund (Tata Play)",
+      "value": 3993,
+      "count": 1,
+      "color": "#5f665f"
+    },
+    {
+      "name": "Direct UPI Settlement",
+      "value": 3285,
+      "count": 1,
+      "color": "#a855f7"
+    }
+  ],
+  "expenseCategories": [
+    {
+      "name": "Electricity Utility (MSEDCL)",
+      "value": 95860,
+      "color": "#b98216"
+    },
+    {
+      "name": "Security & Staff Wages",
+      "value": 79872,
+      "color": "#196c6c"
+    },
+    {
+      "name": "Repairs & Operations (Shubham)",
+      "value": 37993,
+      "color": "#5f665f"
+    },
+    {
+      "name": "Cash Handling & Admin",
+      "value": 13768,
+      "color": "#ef4444"
+    },
+    {
+      "name": "Housekeeping & Pool",
+      "value": 9697,
+      "color": "#3b82f6"
+    }
+  ],
+  "timelineData": [
+    {
+      "date": "02/06",
+      "balance": 389708.54,
+      "credit": 66405,
+      "debit": 10000
+    },
+    {
+      "date": "03/06",
+      "balance": 421898.54,
+      "credit": 43890,
+      "debit": 11700
+    },
+    {
+      "date": "04/06",
+      "balance": 430448.54,
+      "credit": 8550,
+      "debit": 0
+    },
+    {
+      "date": "05/06",
+      "balance": 436148.54,
+      "credit": 5700,
+      "debit": 0
+    },
+    {
+      "date": "06/06",
+      "balance": 444698.54,
+      "credit": 8550,
+      "debit": 0
+    },
+    {
+      "date": "07/06",
+      "balance": 447983.54,
+      "credit": 3285,
+      "debit": 0
+    },
+    {
+      "date": "08/06",
+      "balance": 459953.54,
+      "credit": 11970,
+      "debit": 0
+    },
+    {
+      "date": "09/06",
+      "balance": 454287.56,
+      "credit": 21710.02,
+      "debit": 27376
+    },
+    {
+      "date": "10/06",
+      "balance": 435633.56,
+      "credit": 19324,
+      "debit": 37993
+    },
+    {
+      "date": "11/06",
+      "balance": 421125.56,
+      "credit": 8550,
+      "debit": 23058
+    },
+    {
+      "date": "12/06",
+      "balance": 427536.62,
+      "credit": 6411.06,
+      "debit": 0
+    },
+    {
+      "date": "15/06",
+      "balance": 383812.62,
+      "credit": 21571,
+      "debit": 65295
+    },
+    {
+      "date": "16/06",
+      "balance": 386632.62,
+      "credit": 14320,
+      "debit": 11500
+    },
+    {
+      "date": "17/06",
+      "balance": 383364.62,
+      "credit": 500,
+      "debit": 3768
+    },
+    {
+      "date": "18/06",
+      "balance": 386546.64,
+      "credit": 3182.02,
+      "debit": 0
+    },
+    {
+      "date": "19/06",
+      "balance": 389439.39,
+      "credit": 2892.75,
+      "debit": 0
+    },
+    {
+      "date": "22/06",
+      "balance": 392332.14,
+      "credit": 2892.75,
+      "debit": 0
+    },
+    {
+      "date": "23/06",
+      "balance": 448209.89,
+      "credit": 55877.75,
+      "debit": 0
+    },
+    {
+      "date": "25/06",
+      "balance": 455547.66,
+      "credit": 7337.77,
+      "debit": 0
+    },
+    {
+      "date": "29/06",
+      "balance": 502683.28,
+      "credit": 47135.62,
+      "debit": 0
+    },
+    {
+      "date": "30/06",
+      "balance": 465193.55,
+      "credit": 9010.27,
+      "debit": 46500
+    }
+  ],
+  "transactionsList": [
+    {
+      "date": "02/06/26",
+      "type": "DR",
+      "desc": "SELF - CHQ PAID - MOHAMMEDWADI",
+      "ref": "0000000000000488",
+      "amount": 10000,
+      "bal": 323303.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350377865 IN42615350377865",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 326153.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350409681 IN42615350409681",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 329003.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350396358 IN42615350396358",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 331853.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350418962 IN42615350418962",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 334703.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350443679 IN42615350443679",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 337553.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350451362 IN42615350451362",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 340403.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350520334 IN42615350520334",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 343253.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350602022 IN42615350602022",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 346103.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350658903 IN42615350658903",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 348953.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350689087 IN42615350689087",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 351803.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350669803 IN42615350669803",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 354653.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350695794 IN42615350695794",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 357503.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350729966 IN42615350729966",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 360353.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350720433 IN42615350720433",
+      "ref": "02/06/26",
+      "amount": 3135,
+      "bal": 363488.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350735751 IN42615350735751",
+      "ref": "02/06/26",
+      "amount": 3135,
+      "bal": 366623.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350716812 IN42615350716812",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 369473.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350723082 IN42615350723082",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 372323.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350757801 IN42615350757801",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 375173.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350848271 IN42615350848271",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 378023.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350874758 IN42615350874758",
+      "ref": "02/06/26",
+      "amount": 3135,
+      "bal": 381158.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350867591 IN42615350867591",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 384008.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350869952 IN42615350869952",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 386858.54
+    },
+    {
+      "date": "02/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615350875042 IN42615350875042",
+      "ref": "02/06/26",
+      "amount": 2850,
+      "bal": 389708.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S1-MUMB-SIDHARAM PARMESHWAR",
+      "ref": "0000000000000489",
+      "amount": 11700,
+      "bal": 378008.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451130745 IN42615451130745",
+      "ref": "03/06/26",
+      "amount": 3135,
+      "bal": 381143.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451166939 IN42615451166939",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 383993.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451264771 IN42615451264771",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 386843.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451281603 IN42615451281603",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 389693.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451292999 IN42615451292999",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 392543.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451314594 IN42615451314594",
+      "ref": "03/06/26",
+      "amount": 3135,
+      "bal": 395678.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451332149 IN42615451332149",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 398528.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451332956 IN42615451332956",
+      "ref": "03/06/26",
+      "amount": 3135,
+      "bal": 401663.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451339337 IN42615451339337",
+      "ref": "03/06/26",
+      "amount": 3135,
+      "bal": 404798.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451332036 IN42615451332036",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 407648.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451349819 IN42615451349819",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 410498.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451407423 IN42615451407423",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 413348.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451397983 IN42615451397983",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 416198.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451445441 IN42615451445441",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 419048.54
+    },
+    {
+      "date": "03/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615451444327 IN42615451444327",
+      "ref": "03/06/26",
+      "amount": 2850,
+      "bal": 421898.54
+    },
+    {
+      "date": "04/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615552076986 IN42615552076986",
+      "ref": "04/06/26",
+      "amount": 2850,
+      "bal": 424748.54
+    },
+    {
+      "date": "04/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615552067933 IN42615552067933",
+      "ref": "04/06/26",
+      "amount": 2850,
+      "bal": 427598.54
+    },
+    {
+      "date": "04/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615552141595 IN42615552141595",
+      "ref": "04/06/26",
+      "amount": 2850,
+      "bal": 430448.54
+    },
+    {
+      "date": "05/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615652740788 IN42615652740788",
+      "ref": "05/06/26",
+      "amount": 2850,
+      "bal": 433298.54
+    },
+    {
+      "date": "05/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615652871887 IN42615652871887",
+      "ref": "05/06/26",
+      "amount": 2850,
+      "bal": 436148.54
+    },
+    {
+      "date": "06/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615753836533 IN42615753836533",
+      "ref": "06/06/26",
+      "amount": 2850,
+      "bal": 438998.54
+    },
+    {
+      "date": "06/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615753883603 IN42615753883603",
+      "ref": "06/06/26",
+      "amount": 2850,
+      "bal": 441848.54
+    },
+    {
+      "date": "06/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615753931463 IN42615753931463",
+      "ref": "06/06/26",
+      "amount": 2850,
+      "bal": 444698.54
+    },
+    {
+      "date": "07/06/26",
+      "type": "CR",
+      "desc": "UPI SETTLEMENT -CAF652- 07/06/26",
+      "ref": "000000000000000",
+      "amount": 3285,
+      "bal": 447983.54
+    },
+    {
+      "date": "08/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615955862697 IN42615955862697",
+      "ref": "08/06/26",
+      "amount": 3135,
+      "bal": 451118.54
+    },
+    {
+      "date": "08/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615956402517 IN42615956402517",
+      "ref": "08/06/26",
+      "amount": 3135,
+      "bal": 454253.54
+    },
+    {
+      "date": "08/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615956411067 IN42615956411067",
+      "ref": "08/06/26",
+      "amount": 2850,
+      "bal": 457103.54
+    },
+    {
+      "date": "08/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42615956518408 IN42615956518408",
+      "ref": "08/06/26",
+      "amount": 2850,
+      "bal": 459953.54
+    },
+    {
+      "date": "09/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-UTIB0001394-TATA PLAY BROADBAND PRIVATE LIMITED-MAJESTIQUE EURISKA A BUILDING SAHAKARI G-AXISCN1369121275 AXISCN1369121275",
+      "ref": "09/06/26",
+      "amount": 3993,
+      "bal": 463946.54
+    },
+    {
+      "date": "09/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616057031853 IN42616057031853",
+      "ref": "09/06/26",
+      "amount": 2850,
+      "bal": 466796.54
+    },
+    {
+      "date": "09/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616057093560 IN42616057093560",
+      "ref": "09/06/26",
+      "amount": 2850,
+      "bal": 469646.54
+    },
+    {
+      "date": "09/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616057073496 IN42616057073496",
+      "ref": "09/06/26",
+      "amount": 2850,
+      "bal": 472496.54
+    },
+    {
+      "date": "09/06/26",
+      "type": "DR",
+      "desc": "FT - DR - 50100537218706 - SANDIP RAJU WAVARE",
+      "ref": "0000000000000497",
+      "amount": 27376,
+      "bal": 445120.54
+    },
+    {
+      "date": "09/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616057097171 IN42616057097171",
+      "ref": "09/06/26",
+      "amount": 6317.02,
+      "bal": 451437.56
+    },
+    {
+      "date": "09/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616057181806 IN42616057181806",
+      "ref": "09/06/26",
+      "amount": 2850,
+      "bal": 454287.56
+    },
+    {
+      "date": "10/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616157918311 IN42616157918311",
+      "ref": "10/06/26",
+      "amount": 1000,
+      "bal": 455287.56
+    },
+    {
+      "date": "10/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S5-MUMB-SHUBHAM ENTERPRISES",
+      "ref": "0000000000000495",
+      "amount": 37993,
+      "bal": 417294.56
+    },
+    {
+      "date": "10/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616157958044 IN42616157958044",
+      "ref": "10/06/26",
+      "amount": 2850,
+      "bal": 420144.56
+    },
+    {
+      "date": "10/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616158138945 IN42616158138945",
+      "ref": "10/06/26",
+      "amount": 2850,
+      "bal": 422994.56
+    },
+    {
+      "date": "10/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616158255942 IN42616158255942",
+      "ref": "10/06/26",
+      "amount": 3135,
+      "bal": 426129.56
+    },
+    {
+      "date": "10/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616158278945 IN42616158278945",
+      "ref": "10/06/26",
+      "amount": 2850,
+      "bal": 428979.56
+    },
+    {
+      "date": "10/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-DBSS0IN0811-ANIRUDHA CHHATRAPATI KSHIRSAGAR-MAJESTIQUE EURISKA A BUILDING COOP SOCIETY LTD-0811OP6175770745 0811OP6175770745",
+      "ref": "10/06/26",
+      "amount": 6654,
+      "bal": 435633.56
+    },
+    {
+      "date": "11/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S3-MUMB-NRG SECURITY SERVIC",
+      "ref": "0000000000000494",
+      "amount": 18539,
+      "bal": 417094.56
+    },
+    {
+      "date": "11/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S4-MUMB-SAI SWIMMING POOL M",
+      "ref": "0000000000000492",
+      "amount": 4519,
+      "bal": 412575.56
+    },
+    {
+      "date": "11/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616258997420 IN42616258997420",
+      "ref": "11/06/26",
+      "amount": 2850,
+      "bal": 415425.56
+    },
+    {
+      "date": "11/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616259159434 IN42616259159434",
+      "ref": "11/06/26",
+      "amount": 2850,
+      "bal": 418275.56
+    },
+    {
+      "date": "11/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616259233841 IN42616259233841",
+      "ref": "11/06/26",
+      "amount": 2850,
+      "bal": 421125.56
+    },
+    {
+      "date": "12/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616359886473 IN42616359886473",
+      "ref": "12/06/26",
+      "amount": 6411.06,
+      "bal": 427536.62
+    },
+    {
+      "date": "15/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S5-MUMB-NAUSHAD ALI",
+      "ref": "0000000000000491",
+      "amount": 2697,
+      "bal": 424839.62
+    },
+    {
+      "date": "15/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S5-MUMB-MSEDCL",
+      "ref": "0000000000000496",
+      "amount": 57420,
+      "bal": 367419.62
+    },
+    {
+      "date": "15/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616652137905 IN42616652137905",
+      "ref": "15/06/26",
+      "amount": 10000,
+      "bal": 377419.62
+    },
+    {
+      "date": "15/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616652152148 IN42616652152148",
+      "ref": "15/06/26",
+      "amount": 2892.75,
+      "bal": 380312.37
+    },
+    {
+      "date": "15/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S6-MUMB-SHRI SWAMI SAMARTH",
+      "ref": "0000000000000490",
+      "amount": 5178,
+      "bal": 375134.37
+    },
+    {
+      "date": "15/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616652231681 IN42616652231681",
+      "ref": "15/06/26",
+      "amount": 2892.75,
+      "bal": 378027.12
+    },
+    {
+      "date": "15/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616652308794 IN42616652308794",
+      "ref": "15/06/26",
+      "amount": 2892.75,
+      "bal": 380919.87
+    },
+    {
+      "date": "15/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616652511939 IN42616652511939",
+      "ref": "15/06/26",
+      "amount": 2892.75,
+      "bal": 383812.62
+    },
+    {
+      "date": "16/06/26",
+      "type": "CR",
+      "desc": "FT - CR - 50200065450992 - MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR 0000000000000692",
+      "ref": "16/06/26",
+      "amount": 11931,
+      "bal": 395743.62
+    },
+    {
+      "date": "16/06/26",
+      "type": "CR",
+      "desc": "FT - CR - 50200065450992 - MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR 0000000000000691",
+      "ref": "16/06/26",
+      "amount": 2389,
+      "bal": 398132.62
+    },
+    {
+      "date": "16/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S6-MUMB-TANGJI HANDE",
+      "ref": "0000000000000499",
+      "amount": 11500,
+      "bal": 386632.62
+    },
+    {
+      "date": "17/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S1-MUMB-MAJESTIQUE EURISKA",
+      "ref": "0000000000000498",
+      "amount": 3768,
+      "bal": 382864.62
+    },
+    {
+      "date": "17/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616853617469 IN42616853617469",
+      "ref": "17/06/26",
+      "amount": 500,
+      "bal": 383364.62
+    },
+    {
+      "date": "18/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42616954279202 IN42616954279202",
+      "ref": "18/06/26",
+      "amount": 3182.02,
+      "bal": 386546.64
+    },
+    {
+      "date": "19/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42617054848568 IN42617054848568",
+      "ref": "19/06/26",
+      "amount": 2892.75,
+      "bal": 389439.39
+    },
+    {
+      "date": "22/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42617356481910 IN42617356481910",
+      "ref": "22/06/26",
+      "amount": 2892.75,
+      "bal": 392332.14
+    },
+    {
+      "date": "23/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42617456971046 IN42617456971046",
+      "ref": "23/06/26",
+      "amount": 1877.75,
+      "bal": 394209.89
+    },
+    {
+      "date": "23/06/26",
+      "type": "CR",
+      "desc": "4060003934-BENNETT COLEMAN AND CO LTD NM",
+      "ref": "0000606237454936",
+      "amount": 54000,
+      "bal": 448209.89
+    },
+    {
+      "date": "25/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42617658006288 IN42617658006288",
+      "ref": "25/06/26",
+      "amount": 3182.02,
+      "bal": 451391.91
+    },
+    {
+      "date": "25/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42617658063174 IN42617658063174",
+      "ref": "25/06/26",
+      "amount": 2892.75,
+      "bal": 454284.66
+    },
+    {
+      "date": "25/06/26",
+      "type": "CR",
+      "desc": "FT - CR - 50200065450992 - MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR 0000000000000696",
+      "ref": "25/06/26",
+      "amount": 1263,
+      "bal": 455547.66
+    },
+    {
+      "date": "29/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42618059896956 IN42618059896956",
+      "ref": "29/06/26",
+      "amount": 9687.12,
+      "bal": 465234.78
+    },
+    {
+      "date": "29/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42618059940656 IN42618059940656",
+      "ref": "29/06/26",
+      "amount": 8806.5,
+      "bal": 474041.28
+    },
+    {
+      "date": "29/06/26",
+      "type": "CR",
+      "desc": "CHQ DEP CTS CLG2 MODEL COLONY PUNE - CTS: MAJESTIQUE EURISKA B BUILDING SAHAKARI GRUHARRACHA :UNION BANK OF INDIA 0000000000215243",
+      "ref": "29/06/26",
+      "amount": 4779,
+      "bal": 478820.28
+    },
+    {
+      "date": "29/06/26",
+      "type": "CR",
+      "desc": "CHQ DEP CTS CLG2 MODEL COLONY PUNE - CTS: MAJSTIQUE EUARSIKAR B BUIDING SAHKAR :UNION BANK OF INDIA 0000000000215244",
+      "ref": "29/06/26",
+      "amount": 23863,
+      "bal": 502683.28
+    },
+    {
+      "date": "30/06/26",
+      "type": "DR",
+      "desc": "ALOK SAH - CHQ PAID - MOHAMMEDWADI",
+      "ref": "0000000000000504",
+      "amount": 8060,
+      "bal": 494623.28
+    },
+    {
+      "date": "30/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42618150762205 IN42618150762205",
+      "ref": "30/06/26",
+      "amount": 5828.25,
+      "bal": 500451.53
+    },
+    {
+      "date": "30/06/26",
+      "type": "CR",
+      "desc": "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42618150780928 IN42618150780928",
+      "ref": "30/06/26",
+      "amount": 3182.02,
+      "bal": 503633.55
+    },
+    {
+      "date": "30/06/26",
+      "type": "DR",
+      "desc": "CHQ PAID-CTS S6-MUMB-MSEDCL",
+      "ref": "0000000000000501",
+      "amount": 38440,
+      "bal": 465193.55
+    }
+  ]
+}
