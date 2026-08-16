@@ -1,0 +1,2391 @@
+{
+  "period": "FY 2022-23 (01 Dec 2022 – 31 Mar 2023)",
+  "openingBalance": 0,
+  "closingBalance": 308797.5,
+  "totalCredits": 754947.5,
+  "totalDebits": 446150,
+  "netCashFlow": 308797.5,
+  "vendorsData": [
+    {
+      "name": "MARSHAL FORCE SECUR",
+      "count": 2,
+      "total": 86934,
+      "type": "Outflow",
+      "cheque": "0000000000000009",
+      "rank": 1
+    },
+    {
+      "name": "MAHARASHTRA STATE E",
+      "count": 2,
+      "total": 85680,
+      "type": "Outflow",
+      "cheque": "0000000000000019",
+      "rank": 2
+    },
+    {
+      "name": "SHUBHAM ENTERPRISES",
+      "count": 2,
+      "total": 60134,
+      "type": "Outflow",
+      "cheque": "0000000000000008",
+      "rank": 3
+    },
+    {
+      "name": "VISHWAS SALES CORPO",
+      "count": 1,
+      "total": 39045,
+      "type": "Outflow",
+      "cheque": "0000000000000013",
+      "rank": 4
+    },
+    {
+      "name": "MSEDCL",
+      "count": 2,
+      "total": 28540,
+      "type": "Outflow",
+      "cheque": "0000000000000006",
+      "rank": 5
+    },
+    {
+      "name": "MOHAMMEDWADI",
+      "count": 1,
+      "total": 25000,
+      "type": "Outflow",
+      "cheque": "0000000000000042",
+      "rank": 6
+    },
+    {
+      "name": "IMTAYAZ M KHAN",
+      "count": 1,
+      "total": 23000,
+      "type": "Outflow",
+      "cheque": "0000000000000028",
+      "rank": 7
+    },
+    {
+      "name": "MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR DR",
+      "count": 3,
+      "total": 19817,
+      "type": "Outflow",
+      "cheque": "0000000000000015",
+      "rank": 8
+    },
+    {
+      "name": "SHREE SWAMI SAMARTH",
+      "count": 2,
+      "total": 17136,
+      "type": "Outflow",
+      "cheque": "0000000000000021",
+      "rank": 9
+    },
+    {
+      "name": "MAJESTIQUE EURISKA",
+      "count": 1,
+      "total": 12805,
+      "type": "Outflow",
+      "cheque": "0000000000000012",
+      "rank": 10
+    },
+    {
+      "name": "SAI SWIMMING POOL M",
+      "count": 2,
+      "total": 7910,
+      "type": "Outflow",
+      "cheque": "0000000000000005",
+      "rank": 11
+    },
+    {
+      "name": "NAUSHAD ALI",
+      "count": 2,
+      "total": 6955,
+      "type": "Outflow",
+      "cheque": "0000000000000007",
+      "rank": 12
+    },
+    {
+      "name": "THE FITNESS SHOP LLP",
+      "count": 1,
+      "total": 6523,
+      "type": "Outflow",
+      "cheque": "0000000000000011",
+      "rank": 13
+    },
+    {
+      "name": "ROHAN SUNIL KOTKAR DR",
+      "count": 1,
+      "total": 5207,
+      "type": "Outflow",
+      "cheque": "0000000000000033",
+      "rank": 14
+    },
+    {
+      "name": "MEGHA WAGH",
+      "count": 1,
+      "total": 5000,
+      "type": "Outflow",
+      "cheque": "0000000000000022",
+      "rank": 15
+    },
+    {
+      "name": "NAUSHAB ALI",
+      "count": 1,
+      "total": 4258,
+      "type": "Outflow",
+      "cheque": "0000000000000020",
+      "rank": 16
+    },
+    {
+      "name": "SBI AC GRAS",
+      "count": 1,
+      "total": 3600,
+      "type": "Outflow",
+      "cheque": "0000000000000017",
+      "rank": 17
+    },
+    {
+      "name": "FARID ANSARI",
+      "count": 1,
+      "total": 2430,
+      "type": "Outflow",
+      "cheque": "0000000000000018",
+      "rank": 18
+    },
+    {
+      "name": "B T KAWADE R",
+      "count": 1,
+      "total": 1900,
+      "type": "Outflow",
+      "cheque": "0000000000000014",
+      "rank": 19
+    },
+    {
+      "name": "SHRI OM ENTERPRISES",
+      "count": 1,
+      "total": 1750,
+      "type": "Outflow",
+      "cheque": "0000000000000003",
+      "rank": 20
+    },
+    {
+      "name": "VIRAKARAM N DEVASI",
+      "count": 1,
+      "total": 697,
+      "type": "Outflow",
+      "cheque": "0000000000000023",
+      "rank": 21
+    },
+    {
+      "name": "ENET_ST CHG_MAJEURC 110223-MIR2308433342 588",
+      "count": 1,
+      "total": 590,
+      "type": "Outflow",
+      "cheque": "MIR2308433342588",
+      "rank": 22
+    },
+    {
+      "name": "ENET_ST CHG_MAJEURCX 110223-MIR230843340 2487",
+      "count": 1,
+      "total": 590,
+      "type": "Outflow",
+      "cheque": "MIR2308433402487",
+      "rank": 23
+    },
+    {
+      "name": "ENET_ST CHG_MAJEURCX_ 110223-MIR23084334 53817",
+      "count": 1,
+      "total": 590,
+      "type": "Outflow",
+      "cheque": "MIR2308433453817",
+      "rank": 24
+    },
+    {
+      "name": "CHQ RETURN CHGS INCL GST 140223-MIR23072",
+      "count": 1,
+      "total": 59,
+      "type": "Outflow",
+      "cheque": "0000000000000007",
+      "rank": 25
+    }
+  ],
+  "incomeCategories": [
+    {
+      "name": "Vivish PG Maintenance (NEFT)",
+      "value": 0,
+      "count": 0,
+      "color": "#196c6c"
+    },
+    {
+      "name": "Cheque Deposits",
+      "value": 41325,
+      "count": 2,
+      "color": "#b98216"
+    },
+    {
+      "name": "UPI Settlements (CAF652)",
+      "value": 37001,
+      "count": 9,
+      "color": "#a855f7"
+    },
+    {
+      "name": "Inter-Building Transfers (CR)",
+      "value": 20268,
+      "count": 2,
+      "color": "#c2644a"
+    },
+    {
+      "name": "Fixed Deposit (FD) Payouts / Sweep-ins",
+      "value": 0,
+      "count": 0,
+      "color": "#31553e"
+    },
+    {
+      "name": "Tata Play Refunds",
+      "value": 150733.5,
+      "count": 5,
+      "color": "#5f665f"
+    },
+    {
+      "name": "Other Collections",
+      "value": 505620,
+      "count": 201,
+      "color": "#ef4444"
+    }
+  ],
+  "expenseCategories": [
+    {
+      "name": "FD Booking",
+      "value": 0,
+      "color": "#22c55e"
+    },
+    {
+      "name": "Security & Staff (Salary)",
+      "value": 98147,
+      "color": "#196c6c"
+    },
+    {
+      "name": "Electricity (MSEDCL)",
+      "value": 114220,
+      "color": "#b98216"
+    },
+    {
+      "name": "Lift Maintenance (Schindler)",
+      "value": 0,
+      "color": "#c2644a"
+    },
+    {
+      "name": "Repairs & Operations",
+      "value": 60134,
+      "color": "#5f665f"
+    },
+    {
+      "name": "Cash Withdrawals (Self)",
+      "value": 26900,
+      "color": "#ef4444"
+    },
+    {
+      "name": "Other Outflows",
+      "value": 146749,
+      "color": "#a855f7"
+    }
+  ],
+  "timelineData": [
+    {
+      "date": "Apr 22",
+      "balance": 0,
+      "credit": 0,
+      "debit": 0
+    },
+    {
+      "date": "May 22",
+      "balance": 0,
+      "credit": 0,
+      "debit": 0
+    },
+    {
+      "date": "Jun 22",
+      "balance": 0,
+      "credit": 0,
+      "debit": 0
+    },
+    {
+      "date": "Jul 22",
+      "balance": 0,
+      "credit": 0,
+      "debit": 0
+    },
+    {
+      "date": "Aug 22",
+      "balance": 0,
+      "credit": 0,
+      "debit": 0
+    },
+    {
+      "date": "Sep 22",
+      "balance": 0,
+      "credit": 0,
+      "debit": 0
+    },
+    {
+      "date": "Oct 22",
+      "balance": 0,
+      "credit": 0,
+      "debit": 0
+    },
+    {
+      "date": "Nov 22",
+      "balance": 0,
+      "credit": 0,
+      "debit": 0
+    },
+    {
+      "date": "Dec 22",
+      "balance": 1,
+      "credit": 1,
+      "debit": 0
+    },
+    {
+      "date": "Jan 23",
+      "balance": 275763,
+      "credit": 275762,
+      "debit": 0
+    },
+    {
+      "date": "Feb 23",
+      "balance": 323763,
+      "credit": 283541,
+      "debit": 235541
+    },
+    {
+      "date": "Mar 23",
+      "balance": 308797.5,
+      "credit": 195643.5,
+      "debit": 210609
+    }
+  ],
+  "transactionsList": [
+    {
+      "date": "27/12/22",
+      "desc": "IMPS-236127042393-APIBANKING-RATN-XXXXXX XXXXXX0168-ACCOUNTVALIDATION",
+      "ref": "0000236127042393",
+      "type": "CR",
+      "amount": 1,
+      "bal": 1
+    },
+    {
+      "date": "01/01/23",
+      "desc": "UPI SETTLEMENT -CAF652- 01/01/23",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 1,
+      "bal": 2
+    },
+    {
+      "date": "07/01/23",
+      "desc": "IMPS-300728052526-NOBROKER-RATN-XXXXXXXX 0617-A104APTJANUARY",
+      "ref": "0000300728052526",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 2102
+    },
+    {
+      "date": "07/01/23",
+      "desc": "IMPS-300728057345-NOBROKER-RATN-XXXXXXXX 0617-A903APTJANUARY",
+      "ref": "0000300728057345",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 4202
+    },
+    {
+      "date": "07/01/23",
+      "desc": "IMPS-300726065680-NOBROKER-RATN-XXXXXXXX 0617-A607APTJANUARY",
+      "ref": "0000300726065680",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 6302
+    },
+    {
+      "date": "07/01/23",
+      "desc": "IMPS-300727077540-NOBROKER-RATN-XXXXXXXX 0617-A407APTJANUARY",
+      "ref": "0000300727077540",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 8402
+    },
+    {
+      "date": "07/01/23",
+      "desc": "IMPS-300726082261-NOBROKER-RATN-XXXXXXXX 0617-A1007APTJANUARY",
+      "ref": "0000300726082261",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 10502
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300826009894-NOBROKER-RATN-XXXXXXXX 0617-A206APTJANUARY",
+      "ref": "0000300826009894",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 12802
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300827010373-NOBROKER-RATN-XXXXXXXX 0617-A202APTJANUARY",
+      "ref": "0000300827010373",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 15102
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300825013562-NOBROKER-RATN-XXXXXXXX 0617-A401APTJANUARY",
+      "ref": "0000300825013562",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 17202
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300825015556-NOBROKER-RATN-XXXXXXXX 0617-A1003APTJANUARY",
+      "ref": "0000300825015556",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 19302
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300827016295-NOBROKER-RATN-XXXXXXXX 0617-A602APTJANUARY",
+      "ref": "0000300827016295",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 21402
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300825017496-NOBROKER-RATN-XXXXXXXX 0617-A1105APTJANUARY",
+      "ref": "0000300825017496",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 23702
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300825018227-NOBROKER-RATN-XXXXXXXX 0617-A304APTJANUARY",
+      "ref": "0000300825018227",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 26002
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300827020248-NOBROKER-RATN-XXXXXXXX 0617-A906APTJANUARY",
+      "ref": "0000300827020248",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 28102
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300828026402-NOBROKER-RATN-XXXXXXXX 0617-A501APTJANUARY",
+      "ref": "0000300828026402",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 30202
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300825026837-NOBROKER-RATN-XXXXXXXX 0617-A305APTJANUARY",
+      "ref": "0000300825026837",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 32502
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300826026702-NOBROKER-RATN-XXXXXXXX 0617-A1103APTJANUARY",
+      "ref": "0000300826026702",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 34602
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300827031306-NOBROKER-RATN-XXXXXXXX 0617-A502APTJANUARY",
+      "ref": "0000300827031306",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 36702
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300828032399-NOBROKER-RATN-XXXXXXXX 0617-A1101APTJANUARY",
+      "ref": "0000300828032399",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 38802
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300827035500-NOBROKER-RATN-XXXXXXXX 0617-A808APTJANUARY",
+      "ref": "0000300827035500",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 40902
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300828036217-NOBROKER-RATN-XXXXXXXX 0617-A907APTJANUARY",
+      "ref": "0000300828036217",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 43202
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300825040301-NOBROKER-RATN-XXXXXXXX 0617-A108APTJANUARY",
+      "ref": "0000300825040301",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 45302
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300825043648-NOBROKER-RATN-XXXXXXXX 0617-A704APTJANUARY",
+      "ref": "0000300825043648",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 47402
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300828058984-NOBROKER-RATN-XXXXXXXX 0617-A203APTJANUARY",
+      "ref": "0000300828058984",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 49502
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300827062230-NOBROKER-RATN-XXXXXXXX 0617-A103APTJANUARY",
+      "ref": "0000300827062230",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 51602
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300826074929-NOBROKER-RATN-XXXXXXXX 0617-A204APTJANUARY",
+      "ref": "0000300826074929",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 53702
+    },
+    {
+      "date": "08/01/23",
+      "desc": "IMPS-300825076556-NOBROKER-RATN-XXXXXXXX 0617-A901APTJANUARY",
+      "ref": "0000300825076556",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 55802
+    },
+    {
+      "date": "09/01/23",
+      "desc": "IMPS-300926014778-NOBROKER-RATN-XXXXXXXX 0617-A1005APTJANUARY",
+      "ref": "0000300926014778",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 57902
+    },
+    {
+      "date": "09/01/23",
+      "desc": "IMPS-300927016908-NOBROKER-RATN-XXXXXXXX 0617-A404APTJANUARY",
+      "ref": "0000300927016908",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 60002
+    },
+    {
+      "date": "09/01/23",
+      "desc": "IMPS-300928051118-NOBROKER-RATN-XXXXXXXX 0617-A1108APTJANUARY",
+      "ref": "0000300928051118",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 62102
+    },
+    {
+      "date": "09/01/23",
+      "desc": "IMPS-300925053464-NOBROKER-RATN-XXXXXXXX 0617-A303APTJANUARY",
+      "ref": "0000300925053464",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 64202
+    },
+    {
+      "date": "09/01/23",
+      "desc": "IMPS-300925056523-NOBROKER-RATN-XXXXXXXX 0617-A201APTJANUARY",
+      "ref": "0000300925056523",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 66302
+    },
+    {
+      "date": "09/01/23",
+      "desc": "IMPS-300926062892-NOBROKER-RATN-XXXXXXXX",
+      "ref": "0000300926062892",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 68402
+    },
+    {
+      "date": "09/01/23",
+      "desc": "IMPS-300926068656-NOBROKER-RATN-XXXXXXXX 0617-A801APTJANUARY",
+      "ref": "0000300926068656",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 70502
+    },
+    {
+      "date": "09/01/23",
+      "desc": "IMPS-300927072001-NOBROKER-RATN-XXXXXXXX 0617-A707APTJANUARY",
+      "ref": "0000300927072001",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 72602
+    },
+    {
+      "date": "09/01/23",
+      "desc": "IMPS-300925078224-NOBROKER-RATN-XXXXXXXX 0617-A603APTJANUARY",
+      "ref": "0000300925078224",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 74702
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301025014265-NOBROKER-RATN-XXXXXXXX 0617-A505APTJANUARY",
+      "ref": "0000301025014265",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 76802
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301028020276-NOBROKER-RATN-XXXXXXXX 0617-A503APTJANUARY",
+      "ref": "0000301028020276",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 79102
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301028020379-NOBROKER-RATN-XXXXXXXX 0617-A101APTJANUARY",
+      "ref": "0000301028020379",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 81202
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301025022421-NOBROKER-RATN-XXXXXXXX 0617-A1004APTJANUARY",
+      "ref": "0000301025022421",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 83502
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301025027223-NOBROKER-RATN-XXXXXXXX 0617-A902APTJANUARY",
+      "ref": "0000301025027223",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 85602
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301027035106-NOBROKER-RATN-XXXXXXXX 0617-A301APTJANUARY",
+      "ref": "0000301027035106",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 87702
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301025035608-NOBROKER-RATN-XXXXXXXX 0617-A1106APTJANUARY",
+      "ref": "0000301025035608",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 89802
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301027068168-NOBROKER-RATN-XXXXXXXX 0617-A705APTJANUARY",
+      "ref": "0000301027068168",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 92102
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301026086918-NOBROKER-RATN-XXXXXXXX 0617-A708APTJANUARY",
+      "ref": "0000301026086918",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 94202
+    },
+    {
+      "date": "10/01/23",
+      "desc": "IMPS-301026103045-NOBROKER-RATN-XXXXXXXX 0617-A207APTJANUARY",
+      "ref": "0000301026103045",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 96302
+    },
+    {
+      "date": "11/01/23",
+      "desc": "IMPS-301125020127-NOBROKER-RATN-XXXXXXXX 0617-A306APTJANUARY",
+      "ref": "0000301125020127",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 98402
+    },
+    {
+      "date": "11/01/23",
+      "desc": "IMPS-301126018751-NOBROKER-RATN-XXXXXXXX 0617-A1107APTJANUARY",
+      "ref": "0000301126018751",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 100502
+    },
+    {
+      "date": "11/01/23",
+      "desc": "IMPS-301126071767-NOBROKER-RATN-XXXXXXXX 0617-A406APTJANUARY",
+      "ref": "0000301126071767",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 102602
+    },
+    {
+      "date": "13/01/23",
+      "desc": "IMPS-301328032832-NOBROKER-RATN-XXXXXXXX 0617-A403APTJANUARY",
+      "ref": "0000301328032832",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 104702
+    },
+    {
+      "date": "15/01/23",
+      "desc": "IMPS-301527052426-NOBROKER-RATN-XXXXXXXX 0617-A507APTJANUARY",
+      "ref": "0000301527052426",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 106802
+    },
+    {
+      "date": "19/01/23",
+      "desc": "IMPS-301928020147-NOBROKER-RATN-XXXXXXXX 0617-A102APTJANUARY",
+      "ref": "0000301928020147",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 108902
+    },
+    {
+      "date": "19/01/23",
+      "desc": "UPI-SUCHIT GANGREDDIWAR-8767245104@IBL-H DFC0009554-301980256841-PAYMENT FROM PHO NE",
+      "ref": "0000301980256841",
+      "type": "CR",
+      "amount": 800,
+      "bal": 109702
+    },
+    {
+      "date": "19/01/23",
+      "desc": "UPI-SUCHIT GANGREDDIWAR-8767245104@IBL-H DFC0009554-301945598379-PAYMENT FROM PHO NE",
+      "ref": "0000301945598379",
+      "type": "CR",
+      "amount": 16000,
+      "bal": 125702
+    },
+    {
+      "date": "20/01/23",
+      "desc": "IMPS-302026013836-NOBROKER-RATN-XXXXXXXX 0617-A803APTJANUARY",
+      "ref": "0000302026013836",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 127802
+    },
+    {
+      "date": "20/01/23",
+      "desc": "IMPS-302028046350-NOBROKER-RATN-XXXXXXXX 0617-A1104APTJANUARY",
+      "ref": "0000302028046350",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 129902
+    },
+    {
+      "date": "20/01/23",
+      "desc": "NEFT CR-UTIB0001394-TATA PLAY BROADBAND PRIVATE LIMITE-MAJESTIQUE EURISKA A BUIL DING SAHA-AXISCN0200296652",
+      "ref": "AXISCN0200296652",
+      "type": "CR",
+      "amount": 6000,
+      "bal": 135902
+    },
+    {
+      "date": "23/01/23",
+      "desc": "IMPS-302326045241-NOBROKER-RATN-XXXXXXXX 0617-A705APTJANUARY",
+      "ref": "0000302326045241",
+      "type": "CR",
+      "amount": 4600,
+      "bal": 140502
+    },
+    {
+      "date": "23/01/23",
+      "desc": "NEFT CR-UTIB0001394-TATA PLAY BROADBAND PRIVATE LIMITE-MAJESTIQUE EURISKA A BUIL DING SAHA-AXISCN0201272923",
+      "ref": "AXISCN0201272923",
+      "type": "CR",
+      "amount": 124761,
+      "bal": 265263
+    },
+    {
+      "date": "31/01/23",
+      "desc": "IMPS-303125024680-NOBROKER-RATN-XXXXXXXX 0617-A606APTJANUARY",
+      "ref": "0000303125024680",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 267563
+    },
+    {
+      "date": "31/01/23",
+      "desc": "UPI SETTLEMENT -CAF652- 31/01/23",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 4000,
+      "bal": 271563
+    },
+    {
+      "date": "31/01/23",
+      "desc": "IMPS-303126027326-NOBROKER-RATN-XXXXXXXX 0617-A106APTJANUARY",
+      "ref": "0000303126027326",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 273663
+    },
+    {
+      "date": "31/01/23",
+      "desc": "IMPS-303127061998-NOBROKER-RATN-XXXXXXXX 0617-A905APTJANUARY",
+      "ref": "0000303127061998",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 275763
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303228002143-NOBROKER-RATN-XXXXXXXX 0617-A508APTFEBRUARY",
+      "ref": "0000303228002143",
+      "type": "CR",
+      "amount": 16800,
+      "bal": 292563
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303227033178-NOBROKER-RATN-XXXXXXXX 0617-A607APTFEBRUARY",
+      "ref": "0000303227033178",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 294663
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303227033336-NOBROKER-RATN-XXXXXXXX 0617-A703APTFEBRUARY",
+      "ref": "0000303227033336",
+      "type": "CR",
+      "amount": 4635,
+      "bal": 299298
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303227033505-NOBROKER-RATN-XXXXXXXX 0617-A1103APTFEBRUARY",
+      "ref": "0000303227033505",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 301398
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303228035105-NOBROKER-RATN-XXXXXXXX 0617-A206APTFEBRUARY",
+      "ref": "0000303228035105",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 303498
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303227036011-NOBROKER-RATN-XXXXXXXX 0617-A805APTFEBRUARY",
+      "ref": "0000303227036011",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 305598
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303225036838-NOBROKER-RATN-XXXXXXXX 0617-A401APTFEBRUARY",
+      "ref": "0000303225036838",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 307698
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303226037614-NOBROKER-RATN-XXXXXXXX 0617-A301APTFEBRUARY",
+      "ref": "0000303226037614",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 309798
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303225038283-NOBROKER-RATN-XXXXXXXX 0617-A708APTFEBRUARY",
+      "ref": "0000303225038283",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 311898
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303226038773-NOBROKER-RATN-XXXXXXXX 0617-A803APTFEBRUARY",
+      "ref": "0000303226038773",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 314030
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303227043658-NOBROKER-RATN-XXXXXXXX 0617-A203APTFEBRUARY",
+      "ref": "0000303227043658",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 316130
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303225044625-NOBROKER-RATN-XXXXXXXX 0617-A1007APTFEBRUARY",
+      "ref": "0000303225044625",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 318230
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303225045326-NOBROKER-RATN-XXXXXXXX 0617-A808APTFEBRUARY",
+      "ref": "0000303225045326",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 320330
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303227048220-NOBROKER-RATN-XXXXXXXX 0617-A608APTFEBRUARY",
+      "ref": "0000303227048220",
+      "type": "CR",
+      "amount": 4232,
+      "bal": 324562
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303227052272-NOBROKER-RATN-XXXXXXXX 0617-A303APTFEBRUARY",
+      "ref": "0000303227052272",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 326662
+    },
+    {
+      "date": "01/02/23",
+      "desc": "NEFT CR-FDRL0009996-FARZAD TAFTI HAGHIGH I-MAJESTIQUE EURISKA A-FFXP23032002995",
+      "ref": "0FFXP23032002995",
+      "type": "CR",
+      "amount": 6600,
+      "bal": 333262
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303228059186-NOBROKER-RATN-XXXXXXXX 0617-A901APTFEBRUARY",
+      "ref": "0000303228059186",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 335362
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303225060930-NOBROKER-RATN-XXXXXXXX",
+      "ref": "0000303225060930",
+      "type": "CR",
+      "amount": 400,
+      "bal": 335762
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303228074463-NOBROKER-RATN-XXXXXXXX 0617-A903APTFEBRUARY",
+      "ref": "0000303228074463",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 337862
+    },
+    {
+      "date": "01/02/23",
+      "desc": "IMPS-303227104755-NOBROKER-RATN-XXXXXXXX 0617-A104APTFEBRUARY",
+      "ref": "0000303227104755",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 339962
+    },
+    {
+      "date": "02/02/23",
+      "desc": "IMPS-303326013070-NOBROKER-RATN-XXXXXXXX 0617-A305APTFEBRUARY",
+      "ref": "0000303326013070",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 342262
+    },
+    {
+      "date": "02/02/23",
+      "desc": "IMPS-303327029301-NOBROKER-RATN-XXXXXXXX 0617-A407APTFEBRUARY",
+      "ref": "0000303327029301",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 344362
+    },
+    {
+      "date": "02/02/23",
+      "desc": "IMPS-303325050614-NOBROKER-RATN-XXXXXXXX 0617-A408APTFEBRUARY",
+      "ref": "0000303325050614",
+      "type": "CR",
+      "amount": 4232,
+      "bal": 348594
+    },
+    {
+      "date": "02/02/23",
+      "desc": "IMPS-303325089551-NOBROKER-RATN-XXXXXXXX 0617-A802APTFEBRUARY",
+      "ref": "0000303325089551",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 350894
+    },
+    {
+      "date": "03/02/23",
+      "desc": "IMPS-303428015125-NOBROKER-RATN-XXXXXXXX 0617-A108APTFEBRUARY",
+      "ref": "0000303428015125",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 352994
+    },
+    {
+      "date": "03/02/23",
+      "desc": "IMPS-303425020722-NOBROKER-RATN-XXXXXXXX 0617-A201APTFEBRUARY",
+      "ref": "0000303425020722",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 355094
+    },
+    {
+      "date": "03/02/23",
+      "desc": "IMPS-303426034877-NOBROKER-RATN-XXXXXXXX 0617-A502APTFEBRUARY",
+      "ref": "0000303426034877",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 357194
+    },
+    {
+      "date": "03/02/23",
+      "desc": "IMPS-303427041542-NOBROKER-RATN-XXXXXXXX 0617-A207APTFEBRUARY",
+      "ref": "0000303427041542",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 359294
+    },
+    {
+      "date": "03/02/23",
+      "desc": "IMPS-303427041743-NOBROKER-RATN-XXXXXXXX 0617-A707APTFEBRUARY",
+      "ref": "0000303427041743",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 361394
+    },
+    {
+      "date": "03/02/23",
+      "desc": "IMPS-303428052621-NOBROKER-RATN-XXXXXXXX 0617-A501APTFEBRUARY",
+      "ref": "0000303428052621",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 363494
+    },
+    {
+      "date": "03/02/23",
+      "desc": "IMPS-303428053388-NOBROKER-RATN-XXXXXXXX 0617-A1102APTFEBRUARY",
+      "ref": "0000303428053388",
+      "type": "CR",
+      "amount": 10626,
+      "bal": 374120
+    },
+    {
+      "date": "03/02/23",
+      "desc": "IMPS-303427066526-NOBROKER-RATN-XXXXXXXX 0617-A906APTFEBRUARY",
+      "ref": "0000303427066526",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 376220
+    },
+    {
+      "date": "03/02/23",
+      "desc": "IMPS-303428075723-NOBROKER-RATN-XXXXXXXX 0617-A1008APTFEBRUARY",
+      "ref": "0000303428075723",
+      "type": "CR",
+      "amount": 4635,
+      "bal": 380855
+    },
+    {
+      "date": "04/02/23",
+      "desc": "IMPS-303527030289-NOBROKER-RATN-XXXXXXXX 0617-A306APTFEBRUARY",
+      "ref": "0000303527030289",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 382987
+    },
+    {
+      "date": "04/02/23",
+      "desc": "IMPS-303528073258-NOBROKER-RATN-XXXXXXXX 0617-A106APTFEBRUARY",
+      "ref": "0000303528073258",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 385119
+    },
+    {
+      "date": "05/02/23",
+      "desc": "IMPS-303625055968-NOBROKER-RATN-XXXXXXXX 0617-A1105APTFEBRUARY",
+      "ref": "0000303625055968",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 387419
+    },
+    {
+      "date": "05/02/23",
+      "desc": "IMPS-303627064864-NOBROKER-RATN-XXXXXXXX 0617-A202APTFEBRUARY",
+      "ref": "0000303627064864",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 389719
+    },
+    {
+      "date": "05/02/23",
+      "desc": "IMPS-303625068696-NOBROKER-RATN-XXXXXXXX 0617-A1005APTFEBRUARY",
+      "ref": "0000303625068696",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 391819
+    },
+    {
+      "date": "05/02/23",
+      "desc": "IMPS-303627084228-NOBROKER-RATN-XXXXXXXX 0617-A601APTFEBRUARY",
+      "ref": "0000303627084228",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 393919
+    },
+    {
+      "date": "05/02/23",
+      "desc": "IMPS-303627091702-NOBROKER-RATN-XXXXXXXX 0617-A503APTFEBRUARY",
+      "ref": "0000303627091702",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 396219
+    },
+    {
+      "date": "06/02/23",
+      "desc": "IMPS-303728002444-NOBROKER-RATN-XXXXXXXX 0617-A403APTFEBRUARY",
+      "ref": "0000303728002444",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 398351
+    },
+    {
+      "date": "06/02/23",
+      "desc": "IMPS-303726018789-NOBROKER-RATN-XXXXXXXX 0617-A1004APTFEBRUARY",
+      "ref": "0000303726018789",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 400651
+    },
+    {
+      "date": "06/02/23",
+      "desc": "IMPS-303728024291-NOBROKER-RATN-XXXXXXXX 0617-A505APTFEBRUARY",
+      "ref": "0000303728024291",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 402751
+    },
+    {
+      "date": "06/02/23",
+      "desc": "IMPS-303726026638-NOBROKER-RATN-XXXXXXXX 0617-A902APTFEBRUARY",
+      "ref": "0000303726026638",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 404851
+    },
+    {
+      "date": "06/02/23",
+      "desc": "IMPS-303728030642-NOBROKER-RATN-XXXXXXXX 0617-A1003APTFEBRUARY",
+      "ref": "0000303728030642",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 406951
+    },
+    {
+      "date": "06/02/23",
+      "desc": "IMPS-303726045930-NOBROKER-RATN-XXXXXXXX 0617-A801APTFEBRUARY",
+      "ref": "0000303726045930",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 409051
+    },
+    {
+      "date": "06/02/23",
+      "desc": "IMPS-303728057228-NOBROKER-RATN-XXXXXXXX 0617-A1106APTFEBRUARY",
+      "ref": "0000303728057228",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 411151
+    },
+    {
+      "date": "06/02/23",
+      "desc": "IMPS-303725061020-NOBROKER-RATN-XXXXXXXX 0617-A806APTFEBRUARY",
+      "ref": "0000303725061020",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 413251
+    },
+    {
+      "date": "07/02/23",
+      "desc": "IMPS-303825013778-NOBROKER-RATN-XXXXXXXX 0617-A506APTFEBRUARY",
+      "ref": "0000303825013778",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 415351
+    },
+    {
+      "date": "07/02/23",
+      "desc": "IMPS-303825034450-NOBROKER-RATN-XXXXXXXX 0617-A702APTFEBRUARY",
+      "ref": "0000303825034450",
+      "type": "CR",
+      "amount": 4232,
+      "bal": 419583
+    },
+    {
+      "date": "07/02/23",
+      "desc": "IMPS-303826078171-NOBROKER-RATN-XXXXXXXX",
+      "ref": "0000303826078171",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 421683
+    },
+    {
+      "date": "07/02/23",
+      "desc": "IMPS-303825087258-NOBROKER-RATN-XXXXXXXX 0617-A304APTFEBRUARY",
+      "ref": "0000303825087258",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 423983
+    },
+    {
+      "date": "08/02/23",
+      "desc": "IMPS-303925022391-NOBROKER-RATN-XXXXXXXX 0617-A704APTFEBRUARY",
+      "ref": "0000303925022391",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 426083
+    },
+    {
+      "date": "08/02/23",
+      "desc": "IMPS-303927035518-NOBROKER-RATN-XXXXXXXX 0617-A101APTFEBRUARY",
+      "ref": "0000303927035518",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 428183
+    },
+    {
+      "date": "08/02/23",
+      "desc": "IMPS-303926044644-NOBROKER-RATN-XXXXXXXX 0617-A507APTFEBRUARY",
+      "ref": "0000303926044644",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 430315
+    },
+    {
+      "date": "08/02/23",
+      "desc": "IMPS-303925078191-NOBROKER-RATN-XXXXXXXX 0617-A103APTFEBRUARY",
+      "ref": "0000303925078191",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 432415
+    },
+    {
+      "date": "08/02/23",
+      "desc": "IMPS-303928084812-NOBROKER-RATN-XXXXXXXX 0617-A1101APTFEBRUARY",
+      "ref": "0000303928084812",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 434515
+    },
+    {
+      "date": "08/02/23",
+      "desc": "IMPS-303926087026-NOBROKER-RATN-XXXXXXXX 0617-A602APTFEBRUARY",
+      "ref": "0000303926087026",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 436615
+    },
+    {
+      "date": "08/02/23",
+      "desc": "IMPS-303926090573-NOBROKER-RATN-XXXXXXXX 0617-A605APTFEBRUARY",
+      "ref": "0000303926090573",
+      "type": "CR",
+      "amount": 4232,
+      "bal": 440847
+    },
+    {
+      "date": "09/02/23",
+      "desc": "IMPS-304026028100-NOBROKER-RATN-XXXXXXXX 0617-A1001APTFEBRUARY",
+      "ref": "0000304026028100",
+      "type": "CR",
+      "amount": 4635,
+      "bal": 445482
+    },
+    {
+      "date": "09/02/23",
+      "desc": "IMPS-304025032183-NOBROKER-RATN-XXXXXXXX 0617-A1107APTFEBRUARY",
+      "ref": "0000304025032183",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 447614
+    },
+    {
+      "date": "09/02/23",
+      "desc": "NEFT CR-UTIB0001394-TATA PLAY BROADBAND PRIVATE LIMITE-MAJESTIQUE EURISKA A BUIL DING SAHA-AXISCN0207451113",
+      "ref": "AXISCN0207451113",
+      "type": "CR",
+      "amount": 3000,
+      "bal": 450614
+    },
+    {
+      "date": "10/02/23",
+      "desc": "IMPS-304125030754-NOBROKER-RATN-XXXXXXXX 0617-A1104APTFEBRUARY",
+      "ref": "0000304125030754",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 452746
+    },
+    {
+      "date": "10/02/23",
+      "desc": "THE FITNESS SHOP LLP PUNE DR - 502000219 08716 - THE FITNESS SHOP LLP PUNE",
+      "ref": "0000000000000011",
+      "type": "DR",
+      "amount": 6523,
+      "bal": 446223
+    },
+    {
+      "date": "10/02/23",
+      "desc": "IMPS-304126088859-NOBROKER-RATN-XXXXXXXX 0617-A907APTFEBRUARY",
+      "ref": "0000304126088859",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 448523
+    },
+    {
+      "date": "10/02/23",
+      "desc": "IMPS-304127103408-NOBROKER-RATN-XXXXXXXX 0617-A204APTFEBRUARY",
+      "ref": "0000304127103408",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 450623
+    },
+    {
+      "date": "10/02/23",
+      "desc": "IMPS-304128104598-NOBROKER-RATN-XXXXXXXX",
+      "ref": "0000304128104598",
+      "type": "CR",
+      "amount": 4635,
+      "bal": 455258
+    },
+    {
+      "date": "11/02/23",
+      "desc": "IMPS-304225012147-NOBROKER-RATN-XXXXXXXX 0617-A1108APTFEBRUARY",
+      "ref": "0000304225012147",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 457390
+    },
+    {
+      "date": "13/02/23",
+      "desc": "MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR CR - 50200065450992 - MAJESTIQUE EURISK A C BLDG SA GRU SAN MAR",
+      "ref": "0000000000000124",
+      "type": "CR",
+      "amount": 8113,
+      "bal": 465503
+    },
+    {
+      "date": "14/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-MARSHAL FORCE SECUR",
+      "ref": "0000000000000009",
+      "type": "DR",
+      "amount": 43467,
+      "bal": 422036
+    },
+    {
+      "date": "14/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-NAUSHAD ALI",
+      "ref": "0000000000000007",
+      "type": "DR",
+      "amount": 4258,
+      "bal": 417778
+    },
+    {
+      "date": "14/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-SAI SWIMMING POOL M",
+      "ref": "0000000000000005",
+      "type": "DR",
+      "amount": 3955,
+      "bal": 413823
+    },
+    {
+      "date": "14/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-SHUBHAM ENTERPRISES",
+      "ref": "0000000000000008",
+      "type": "DR",
+      "amount": 26421,
+      "bal": 387402
+    },
+    {
+      "date": "14/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-VISHWAS SALES CORPO",
+      "ref": "0000000000000013",
+      "type": "DR",
+      "amount": 39045,
+      "bal": 348357
+    },
+    {
+      "date": "14/02/23",
+      "desc": "I/W CHQ RET-AMOUNTS IN WORDS AND FIGURES",
+      "ref": "0000000000000007",
+      "type": "CR",
+      "amount": 4258,
+      "bal": 352615
+    },
+    {
+      "date": "14/02/23",
+      "desc": "CHQ DEP MICR8 CLG MODEL COLONY - MICR 8: MAJESTIQUE EURISKA B BUILDING :STATE BA NK OF INDIA",
+      "ref": "0000000000642754",
+      "type": "CR",
+      "amount": 16227,
+      "bal": 368842
+    },
+    {
+      "date": "15/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-MSEDCL",
+      "ref": "0000000000000006",
+      "type": "DR",
+      "amount": 2160,
+      "bal": 366682
+    },
+    {
+      "date": "15/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-MAJESTIQUE EURISKA",
+      "ref": "0000000000000012",
+      "type": "DR",
+      "amount": 12805,
+      "bal": 353877
+    },
+    {
+      "date": "15/02/23",
+      "desc": "IMPS-304626050656-NOBROKER-RATN-XXXXXXXX 0617-A508APTFEBRUARY",
+      "ref": "0000304626050656",
+      "type": "CR",
+      "amount": 2384,
+      "bal": 356261
+    },
+    {
+      "date": "15/02/23",
+      "desc": "MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR DR - 50200065450992 - MAJESTIQUE EURISK A C BLDG SA GRU SAN MAR",
+      "ref": "0000000000000015",
+      "type": "DR",
+      "amount": 14257,
+      "bal": 342004
+    },
+    {
+      "date": "15/02/23",
+      "desc": "IMPS-304625088201-NOBROKER-RATN-XXXXXXXX 0617-A405APTFEBRUARY",
+      "ref": "0000304625088201",
+      "type": "CR",
+      "amount": 7500,
+      "bal": 349504
+    },
+    {
+      "date": "17/02/23",
+      "desc": "MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR CR - 50200065450992 - MAJESTIQUE EURISK A C BLDG SA GRU SAN MAR",
+      "ref": "0000000000000128",
+      "type": "CR",
+      "amount": 12155,
+      "bal": 361659
+    },
+    {
+      "date": "17/02/23",
+      "desc": "CASH PAID PRANAV SUNAT - CHQ PAID - B T KAWADE R",
+      "ref": "0000000000000014",
+      "type": "DR",
+      "amount": 1900,
+      "bal": 359759
+    },
+    {
+      "date": "17/02/23",
+      "desc": "IMPS-304828096210-NOBROKER-RATN-XXXXXXXX 0617-A404APTFEBRUARY",
+      "ref": "0000304828096210",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 361891
+    },
+    {
+      "date": "18/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-NAUSHAB ALI",
+      "ref": "0000000000000020",
+      "type": "DR",
+      "amount": 4258,
+      "bal": 357633
+    },
+    {
+      "date": "18/02/23",
+      "desc": "IMPS-304928032863-NOBROKER-RATN-XXXXXXXX",
+      "ref": "0000304928032863",
+      "type": "CR",
+      "amount": 2370,
+      "bal": 360003
+    },
+    {
+      "date": "19/02/23",
+      "desc": "IMPS-305025003653-NOBROKER-RATN-XXXXXXXX 0617-A406APTFEBRUARY",
+      "ref": "0000305025003653",
+      "type": "CR",
+      "amount": 2164,
+      "bal": 362167
+    },
+    {
+      "date": "21/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-SHREE SWAMI SAMARTH",
+      "ref": "0000000000000021",
+      "type": "DR",
+      "amount": 9792,
+      "bal": 352375
+    },
+    {
+      "date": "21/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-MAHARASHTRA STATE E",
+      "ref": "0000000000000019",
+      "type": "DR",
+      "amount": 56350,
+      "bal": 296025
+    },
+    {
+      "date": "21/02/23",
+      "desc": "UPI SETTLEMENT -CAF652- 21/02/23",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 4200,
+      "bal": 300225
+    },
+    {
+      "date": "22/02/23",
+      "desc": "IMPS-305325014648-NOBROKER-RATN-XXXXXXXX 0617-A308APTFEBRUARY",
+      "ref": "0000305325014648",
+      "type": "CR",
+      "amount": 4295,
+      "bal": 304520
+    },
+    {
+      "date": "23/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-MEGHA WAGH",
+      "ref": "0000000000000022",
+      "type": "DR",
+      "amount": 5000,
+      "bal": 299520
+    },
+    {
+      "date": "23/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-SHRI OM ENTERPRISES",
+      "ref": "0000000000000003",
+      "type": "DR",
+      "amount": 1750,
+      "bal": 297770
+    },
+    {
+      "date": "23/02/23",
+      "desc": "CHQ DEP MICR8 CLG MODEL COLONY - MICR 8: STATE BANK OF IMNDIA :STATE BANK OF IND IA",
+      "ref": "0000000000642755",
+      "type": "CR",
+      "amount": 25098,
+      "bal": 322868
+    },
+    {
+      "date": "23/02/23",
+      "desc": "IMPS-305425076923-NOBROKER-RATN-XXXXXXXX 0617-A701APTFEBRUARY",
+      "ref": "0000305425076923",
+      "type": "CR",
+      "amount": 4295,
+      "bal": 327163
+    },
+    {
+      "date": "25/02/23",
+      "desc": "UPI SETTLEMENT -CAF652- 25/02/23",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 200,
+      "bal": 327363
+    },
+    {
+      "date": "27/02/23",
+      "desc": "CHQ PAID-MICR CTS-MU-SBI AC GRAS",
+      "ref": "0000000000000017",
+      "type": "DR",
+      "amount": 3600,
+      "bal": 323763
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306028058766-NOBROKER-RATN-XXXXXXXX 0617-A502APTMARCH",
+      "ref": "0000306028058766",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 325863
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306028059479-NOBROKER-RATN-XXXXXXXX 0617-A1007APTMARCH",
+      "ref": "0000306028059479",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 327963
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306027062368-NOBROKER-RATN-XXXXXXXX 0617-A708APTMARCH",
+      "ref": "0000306027062368",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 330063
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306028064291-NOBROKER-RATN-XXXXXXXX 0617-A806APTMARCH",
+      "ref": "0000306028064291",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 332163
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306027066157-NOBROKER-RATN-XXXXXXXX 0617-A601APTMARCH",
+      "ref": "0000306027066157",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 334263
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306028069694-NOBROKER-RATN-XXXXXXXX 0617-A607APTMARCH",
+      "ref": "0000306028069694",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 336363
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306026075675-NOBROKER-RATN-XXXXXXXX 0617-A808APTMARCH",
+      "ref": "0000306026075675",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 338463
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306028080148-NOBROKER-RATN-XXXXXXXX 0617-A206APTMARCH",
+      "ref": "0000306028080148",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 340563
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306026086677-NOBROKER-RATN-XXXXXXXX 0617-A605APTMARCH",
+      "ref": "0000306026086677",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 342663
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306025089456-NOBROKER-RATN-XXXXXXXX 0617-A603APTMARCH",
+      "ref": "0000306025089456",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 344763
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306028094655-NOBROKER-RATN-XXXXXXXX 0617-A805APTMARCH",
+      "ref": "0000306028094655",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 346863
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306028111306-NOBROKER-RATN-XXXXXXXX 0617-A403APTMARCH",
+      "ref": "0000306028111306",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 348963
+    },
+    {
+      "date": "01/03/23",
+      "desc": "IMPS-306026117230-NOBROKER-RATN-XXXXXXXX 0617-A306APTMARCH",
+      "ref": "0000306026117230",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 351063
+    },
+    {
+      "date": "02/03/23",
+      "desc": "IMPS-306127034969-NOBROKER-RATN-XXXXXXXX 0617-A106APTMARCH",
+      "ref": "0000306127034969",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 353163
+    },
+    {
+      "date": "02/03/23",
+      "desc": "IMPS-306125106488-NOBROKER-RATN-XXXXXXXX 0617-A702APTMARCH",
+      "ref": "0000306125106488",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 355263
+    },
+    {
+      "date": "03/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-VIRAKARAM N DEVASI",
+      "ref": "0000000000000023",
+      "type": "DR",
+      "amount": 697,
+      "bal": 354566
+    },
+    {
+      "date": "03/03/23",
+      "desc": "IMPS-306226013785-NOBROKER-RATN-XXXXXXXX 0617-A303APTMARCH",
+      "ref": "0000306226013785",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 356666
+    },
+    {
+      "date": "03/03/23",
+      "desc": "IMPS-306227067596-NOBROKER-RATN-XXXXXXXX 0617-A1106APTMARCH",
+      "ref": "0000306227067596",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 358766
+    },
+    {
+      "date": "03/03/23",
+      "desc": "IMPS-306228081912-NOBROKER-RATN-XXXXXXXX 0617-A608APTMARCH",
+      "ref": "0000306228081912",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 360866
+    },
+    {
+      "date": "04/03/23",
+      "desc": "IMPS-306326033030-NOBROKER-RATN-XXXXXXXX 0617-A207APTMARCH",
+      "ref": "0000306326033030",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 362966
+    },
+    {
+      "date": "06/03/23",
+      "desc": "IMPS-306528004957-NOBROKER-RATN-XXXXXXXX 0617-A503APTMARCH",
+      "ref": "0000306528004957",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 365066
+    },
+    {
+      "date": "06/03/23",
+      "desc": "IMPS-306527031045-NOBROKER-RATN-XXXXXXXX 0617-A602APTMARCH",
+      "ref": "0000306527031045",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 367166
+    },
+    {
+      "date": "06/03/23",
+      "desc": "IMPS-306526035514-NOBROKER-RATN-XXXXXXXX 0617-A201APTMARCH",
+      "ref": "0000306526035514",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 369266
+    },
+    {
+      "date": "06/03/23",
+      "desc": "NEFT CR-UTIB0001394-TATA PLAY BROADBAND PRIVATE LIMITED-MAJESTIQUE EURISKA A BUI LDING SAHAK-AXISCN0219294503",
+      "ref": "AXISCN0219294503",
+      "type": "CR",
+      "amount": 3000,
+      "bal": 372266
+    },
+    {
+      "date": "06/03/23",
+      "desc": "IMPS-306525056635-NOBROKER-RATN-XXXXXXXX",
+      "ref": "0000306525056635",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 374366
+    },
+    {
+      "date": "06/03/23",
+      "desc": "IMPS-306525076997-NOBROKER-RATN-XXXXXXXX 0617-A104APTMARCH",
+      "ref": "0000306525076997",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 376466
+    },
+    {
+      "date": "06/03/23",
+      "desc": "IMPS-306527080532-NOBROKER-RATN-XXXXXXXX 0617-A1103APTMARCH",
+      "ref": "0000306527080532",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 378566
+    },
+    {
+      "date": "06/03/23",
+      "desc": "IMPS-306527098492-NOBROKER-RATN-XXXXXXXX 0617-A707APTMARCH",
+      "ref": "0000306527098492",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 380666
+    },
+    {
+      "date": "07/03/23",
+      "desc": "IMPS-306628026007-NOBROKER-RATN-XXXXXXXX 0617-A506APTMARCH",
+      "ref": "0000306628026007",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 382766
+    },
+    {
+      "date": "07/03/23",
+      "desc": "IMPS-306626040022-NOBROKER-RATN-XXXXXXXX 0617-A801APTMARCH",
+      "ref": "0000306626040022",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 384866
+    },
+    {
+      "date": "07/03/23",
+      "desc": "IMPS-306627085604-NOBROKER-RATN-XXXXXXXX 0617-A704APTMARCH",
+      "ref": "0000306627085604",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 386966
+    },
+    {
+      "date": "08/03/23",
+      "desc": "IMPS-306725027621-NOBROKER-RATN-XXXXXXXX 0617-A505APTMARCH",
+      "ref": "0000306725027621",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 389066
+    },
+    {
+      "date": "08/03/23",
+      "desc": "IMPS-306725032715-NOBROKER-RATN-XXXXXXXX 0617-A103APTMARCH",
+      "ref": "0000306725032715",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 391166
+    },
+    {
+      "date": "08/03/23",
+      "desc": "IMPS-306725036361-NOBROKER-RATN-XXXXXXXX 0617-A304APTMARCH",
+      "ref": "0000306725036361",
+      "type": "CR",
+      "amount": 2300,
+      "bal": 393466
+    },
+    {
+      "date": "08/03/23",
+      "desc": "IMPS-306728046352-NOBROKER-RATN-XXXXXXXX 0617-A903APTMARCH",
+      "ref": "0000306728046352",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 395566
+    },
+    {
+      "date": "08/03/23",
+      "desc": "IMPS-306727077911-NOBROKER-RATN-XXXXXXXX 0617-A404APTMARCH",
+      "ref": "0000306727077911",
+      "type": "CR",
+      "amount": 2068,
+      "bal": 397634
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306826004311-NOBROKER-RATN-XXXXXXXX 0617-A901APTMARCH",
+      "ref": "0000306826004311",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 399734
+    },
+    {
+      "date": "09/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-IMTAYAZ M KHAN",
+      "ref": "0000000000000028",
+      "type": "DR",
+      "amount": 23000,
+      "bal": 376734
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306827008754-NOBROKER-RATN-XXXXXXXX 0617-A108APTMARCH",
+      "ref": "0000306827008754",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 378834
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306828008756-NOBROKER-RATN-XXXXXXXX 0617-A1005APTMARCH",
+      "ref": "0000306828008756",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 380934
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306826026172-NOBROKER-RATN-XXXXXXXX 0617-A202APTMARCH",
+      "ref": "0000306826026172",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 383034
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306828027856-NOBROKER-RATN-XXXXXXXX",
+      "ref": "0000306828027856",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 385134
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306828031749-NOBROKER-RATN-XXXXXXXX 0617-A203APTMARCH",
+      "ref": "0000306828031749",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 387234
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306826032492-NOBROKER-RATN-XXXXXXXX 0617-A204APTMARCH",
+      "ref": "0000306826032492",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 389334
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306827034426-NOBROKER-RATN-XXXXXXXX 0617-A308APTMARCH",
+      "ref": "0000306827034426",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 391434
+    },
+    {
+      "date": "09/03/23",
+      "desc": "ROHAN SUNIL KOTKAR DR - 50100049885114 - ROHAN SUNIL KOTKAR",
+      "ref": "0000000000000033",
+      "type": "DR",
+      "amount": 5207,
+      "bal": 386227
+    },
+    {
+      "date": "09/03/23",
+      "desc": "MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR DR - 50200065450992 - MAJESTIQUE EURISK A C BLDG SA GRU SAN MAR",
+      "ref": "0000000000000024",
+      "type": "DR",
+      "amount": 3221,
+      "bal": 383006
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306827044409-NOBROKER-RATN-XXXXXXXX 0617-A1102APTMARCH",
+      "ref": "0000306827044409",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 385106
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306828049094-NOBROKER-RATN-XXXXXXXX 0617-A1107APTMARCH",
+      "ref": "0000306828049094",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 387206
+    },
+    {
+      "date": "09/03/23",
+      "desc": "IMPS-306828059181-NOBROKER-RATN-XXXXXXXX 0617-A101APTMARCH",
+      "ref": "0000306828059181",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 389306
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306927004826-NOBROKER-RATN-XXXXXXXX 0617-A407APTMARCH",
+      "ref": "0000306927004826",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 391406
+    },
+    {
+      "date": "10/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-MARSHAL FORCE SECUR",
+      "ref": "0000000000000029",
+      "type": "DR",
+      "amount": 43467,
+      "bal": 347939
+    },
+    {
+      "date": "10/03/23",
+      "desc": "UPI SETTLEMENT -CAF652- 10/03/23",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 2200,
+      "bal": 350139
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306926024775-NOBROKER-RATN-XXXXXXXX 0617-A507APTMARCH",
+      "ref": "0000306926024775",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 352239
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306928017960-NOBROKER-RATN-XXXXXXXX 0617-A1003APTMARCH",
+      "ref": "0000306928017960",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 354339
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306928022166-NOBROKER-RATN-XXXXXXXX 0617-A301APTMARCH",
+      "ref": "0000306928022166",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 356439
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306928022549-NOBROKER-RATN-XXXXXXXX 0617-A405APTMARCH",
+      "ref": "0000306928022549",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 358539
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306928034614-NOBROKER-RATN-XXXXXXXX 0617-A802APTMARCH",
+      "ref": "0000306928034614",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 360639
+    },
+    {
+      "date": "10/03/23",
+      "desc": "CASH DEPOSIT BY - PRAKASH - MOHAMMEDWADI",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 2200,
+      "bal": 362839
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306927044965-NOBROKER-RATN-XXXXXXXX 0617-A803APTMARCH",
+      "ref": "0000306927044965",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 364939
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306925064071-NOBROKER-RATN-XXXXXXXX 0617-A1004APTMARCH",
+      "ref": "0000306925064071",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 367039
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306927079006-NOBROKER-RATN-XXXXXXXX 0617-A1006APTMARCH",
+      "ref": "0000306927079006",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 369139
+    },
+    {
+      "date": "10/03/23",
+      "desc": "IMPS-306927096690-NOBROKER-RATN-XXXXXXXX 0617-A401APTMARCH",
+      "ref": "0000306927096690",
+      "type": "CR",
+      "amount": 2100,
+      "bal": 371239
+    },
+    {
+      "date": "11/03/23",
+      "desc": "IMPS-307026008888-NOBROKER-RATN-XXXXXXXX 0617-A102APTMARCH",
+      "ref": "0000307026008888",
+      "type": "CR",
+      "amount": 4327,
+      "bal": 375566
+    },
+    {
+      "date": "11/03/23",
+      "desc": "UPI SETTLEMENT -CAF652- 11/03/23",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 4000,
+      "bal": 379566
+    },
+    {
+      "date": "11/03/23",
+      "desc": "IMPS-307028044468-NOBROKER-RATN-XXXXXXXX 0617-A902APTMARCH",
+      "ref": "0000307028044468",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 381698
+    },
+    {
+      "date": "11/03/23",
+      "desc": "IMPS-307028122229-NOBROKER-RATN-XXXXXXXX 0617-A107APTMARCH",
+      "ref": "0000307028122229",
+      "type": "CR",
+      "amount": 6490,
+      "bal": 388188
+    },
+    {
+      "date": "13/03/23",
+      "desc": "IMPS-307227059887-NOBROKER-RATN-XXXXXXXX 0617-A1008APTMARCH",
+      "ref": "0000307227059887",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 390320
+    },
+    {
+      "date": "14/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-SAI SWIMMING POOL M",
+      "ref": "0000000000000031",
+      "type": "DR",
+      "amount": 3955,
+      "bal": 386365
+    },
+    {
+      "date": "14/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-SHUBHAM ENTERPRISES",
+      "ref": "0000000000000036",
+      "type": "DR",
+      "amount": 33713,
+      "bal": 352652
+    },
+    {
+      "date": "14/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-MAHARASHTRA STATE E",
+      "ref": "0000000000000032",
+      "type": "DR",
+      "amount": 29330,
+      "bal": 323322
+    },
+    {
+      "date": "14/03/23",
+      "desc": "IMPS-307325093760-NOBROKER-RATN-XXXXXXXX 0617-A907APTMARCH",
+      "ref": "0000307325093760",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 325454
+    },
+    {
+      "date": "15/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-SHREE SWAMI SAMARTH",
+      "ref": "0000000000000037",
+      "type": "DR",
+      "amount": 7344,
+      "bal": 318110
+    },
+    {
+      "date": "15/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-NAUSHAD ALI",
+      "ref": "0000000000000030",
+      "type": "DR",
+      "amount": 2697,
+      "bal": 315413
+    },
+    {
+      "date": "15/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-FARID ANSARI",
+      "ref": "0000000000000018",
+      "type": "DR",
+      "amount": 2430,
+      "bal": 312983
+    },
+    {
+      "date": "15/03/23",
+      "desc": "UPI SETTLEMENT -CAF652- 15/03/23",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 4000,
+      "bal": 316983
+    },
+    {
+      "date": "15/03/23",
+      "desc": "IMPS-307425078487-NOBROKER-RATN-XXXXXXXX 0617-A906APTMARCH",
+      "ref": "0000307425078487",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 319115
+    },
+    {
+      "date": "15/03/23",
+      "desc": "IMPS-307427081831-NOBROKER-RATN-XXXXXXXX 0617-A1108APTMARCH",
+      "ref": "0000307427081831",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 321247
+    },
+    {
+      "date": "16/03/23",
+      "desc": "IMPS-307525007303-NOBROKER-RATN-XXXXXXXX 0617-A305APTMARCH",
+      "ref": "0000307525007303",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 323379
+    },
+    {
+      "date": "16/03/23",
+      "desc": "CHQ RETURN CHGS INCL GST 140223-MIR23072",
+      "ref": "0000000000000007",
+      "type": "DR",
+      "amount": 59,
+      "bal": 323320
+    },
+    {
+      "date": "18/03/23",
+      "desc": "NEFT CR-UTIB0001394-TATA PLAY BROADBAND PRIVATE LIMITED-MAJESTIQUE EURISKA A BUI LDING SAHAK-AXISCN0224695801",
+      "ref": "AXISCN0224695801",
+      "type": "CR",
+      "amount": 13972.5,
+      "bal": 337292.5
+    },
+    {
+      "date": "19/03/23",
+      "desc": "IMPS-307828062279-NOBROKER-RATN-XXXXXXXX 0617-A606APTMARCH",
+      "ref": "0000307828062279",
+      "type": "CR",
+      "amount": 4330,
+      "bal": 341622.5
+    },
+    {
+      "date": "24/03/23",
+      "desc": "IMPS-308325028168-NOBROKER-RATN-XXXXXXXX 0617-A406APTMARCH",
+      "ref": "0000308325028168",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 343754.5
+    },
+    {
+      "date": "27/03/23",
+      "desc": "UPI SETTLEMENT -CAF652- 27/03/23",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 2000,
+      "bal": 345754.5
+    },
+    {
+      "date": "27/03/23",
+      "desc": "ENET_ST CHG_MAJEURC 110223-MIR2308433342 588",
+      "ref": "MIR2308433342588",
+      "type": "DR",
+      "amount": 590,
+      "bal": 345164.5
+    },
+    {
+      "date": "27/03/23",
+      "desc": "ENET_ST CHG_MAJEURCX 110223-MIR230843340 2487",
+      "ref": "MIR2308433402487",
+      "type": "DR",
+      "amount": 590,
+      "bal": 344574.5
+    },
+    {
+      "date": "27/03/23",
+      "desc": "ENET_ST CHG_MAJEURCX_ 110223-MIR23084334 53817",
+      "ref": "MIR2308433453817",
+      "type": "DR",
+      "amount": 590,
+      "bal": 343984.5
+    },
+    {
+      "date": "28/03/23",
+      "desc": "UPI SETTLEMENT -CAF652- 28/03/23",
+      "ref": "000000000000000",
+      "type": "CR",
+      "amount": 16400,
+      "bal": 360384.5
+    },
+    {
+      "date": "28/03/23",
+      "desc": "SHAKIR SHAIKH - CHQ PAID - MOHAMMEDWADI",
+      "ref": "0000000000000042",
+      "type": "DR",
+      "amount": 25000,
+      "bal": 335384.5
+    },
+    {
+      "date": "30/03/23",
+      "desc": "CHQ PAID-MICR CTS-MU-MSEDCL",
+      "ref": "0000000000000041",
+      "type": "DR",
+      "amount": 26380,
+      "bal": 309004.5
+    },
+    {
+      "date": "31/03/23",
+      "desc": "IMPS-309026010981-NOBROKER-RATN-XXXXXXXX 0617-A701APTMARCH",
+      "ref": "0000309026010981",
+      "type": "CR",
+      "amount": 2132,
+      "bal": 311136.5
+    },
+    {
+      "date": "31/03/23",
+      "desc": "MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR DR - 50200065450992 - MAJESTIQUE EURISK A C BLDG SA GRU SAN MAR",
+      "ref": "0000000000000034",
+      "type": "DR",
+      "amount": 2339,
+      "bal": 308797.5
+    }
+  ]
+}

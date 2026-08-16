@@ -10,7 +10,7 @@ const getMonthsForYear = (startYear) => {
   });
 };
 
-const LOCKED_MONTHS = [];
+const LOCKED_MONTHS = ['2026-04', '2026-05'];
 
 function getInitialYear() {
   const d = new Date();
@@ -147,7 +147,10 @@ export default function FinanceTracker({ isAdmin = false }) {
     let cancelled = false;
     async function loadYearly() {
       setIsYearlyLoading(true);
-      if (!isFirebaseConfigured || !db) return;
+      if (!isFirebaseConfigured || !db) {
+        setIsYearlyLoading(false);
+        return;
+      }
       try {
         await ensureFirebaseSession();
         let totalInc = 0;

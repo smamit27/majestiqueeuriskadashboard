@@ -1,8 +1,14 @@
 import aprilData from './aprilStatementData.json';
+import fy22_23Data from './fy22_23Data.json';
+import fy23_24Data from './fy23_24Data.json';
+import fy24_25Data from './fy24_25Data.json';
 import fy25_26Data from './fy25_26Data.json';
 import juneData from './juneStatementData.json';
 import mayData from './mayStatementData.json';
 
+export const FY2022_23_DATA = fy22_23Data;
+export const FY2023_24_DATA = fy23_24Data;
+export const FY2024_25_DATA = fy24_25Data;
 export const FY2025_26_DATA = fy25_26Data;
 export const APRIL_2026_DATA = aprilData;
 export const MAY_2026_DATA = mayData;

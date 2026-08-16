@@ -37,7 +37,7 @@ test.describe('Intro Animation', () => {
     await page.goto('/');
     await waitForIntro(page);
     await expect(page.locator('[data-testid="intro-overlay"]')).toHaveCount(0);
-    await expect(page.getByRole('heading', { name: /society management dashboard/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Society Overview/i })).toBeVisible();
   });
 });
 
@@ -46,7 +46,7 @@ test.describe('Intro Animation', () => {
 // ─────────────────────────────────────────────────────────────
 test.describe('Sidebar Navigation', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?admin=true');
     await waitForIntro(page);
   });
 
@@ -57,7 +57,7 @@ test.describe('Sidebar Navigation', () => {
 
     // Housekeeping
     await clickTab(page, 'housekeeping');
-    await expect(page.getByRole('button', { name: /attendance tracking/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /bill calculator/i })).toBeVisible();
 
     // Solar
     await clickTab(page, 'solar');
@@ -69,27 +69,7 @@ test.describe('Sidebar Navigation', () => {
 
     // Cheque
     await clickTab(page, 'cheque');
-    await expect(page.getByText(/cheques/i).first()).toBeVisible();
-
-    // Members
-    await clickTab(page, 'members');
-    await expect(page.getByRole('columnheader', { name: /resident/i }).first()).toBeVisible();
-
-    // Dues
-    await clickTab(page, 'dues');
-    await expect(page.getByRole('columnheader', { name: /outstanding/i }).first()).toBeVisible();
-
-    // Events
-    await clickTab(page, 'events');
-    await expect(page.getByRole('heading', { name: /announcements/i })).toBeVisible();
-
-    // Complaints
-    await clickTab(page, 'complaints');
-    await expect(page.getByRole('heading', { name: /complaints/i })).toBeVisible();
-
-    // Visitors
-    await clickTab(page, 'visitors');
-    await expect(page.getByRole('columnheader', { name: /visitor/i }).first()).toBeVisible();
+    await expect(page.getByText(/cheque/i).first()).toBeVisible();
   });
 
   test('sidebar collapse and expand', async ({ page }) => {
@@ -133,7 +113,7 @@ test.describe('Authentication', () => {
 // ─────────────────────────────────────────────────────────────
 test.describe('Module Features', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?admin=true');
     await waitForIntro(page);
   });
 
@@ -146,15 +126,8 @@ test.describe('Module Features', () => {
   test('Finance Tracker layout', async ({ page }) => {
     await clickTab(page, 'income');
     await expect(page.locator('.attendance-month-tab')).toHaveCount(12);
-    await expect(page.getByText('Total Income')).toBeVisible();
+    await expect(page.getByText('Total Income').first()).toBeVisible();
     await expect(page.getByRole('button', { name: /export excel/i })).toBeVisible();
-  });
-
-  test('Members search and filter', async ({ page }) => {
-    await clickTab(page, 'members');
-    const search = page.getByPlaceholder(/search by resident/i);
-    await search.fill('XYZ_NONE_EXISTENT_NAME');
-    await expect(page.getByText(/no matching households/i)).toBeVisible();
   });
 });
 

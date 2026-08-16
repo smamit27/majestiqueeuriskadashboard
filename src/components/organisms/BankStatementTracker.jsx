@@ -4,7 +4,8 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell
 } from 'recharts';
 
-import { APRIL_2026_DATA, MAY_2026_DATA, JUNE_2026_DATA, JULY_2026_DATA, ALL_TIME_DATA, FY2025_26_DATA, parseRawBankStatement } from './bankStatementData';
+import { APRIL_2026_DATA, MAY_2026_DATA, JUNE_2026_DATA, JULY_2026_DATA, ALL_TIME_DATA, FY2025_26_DATA, FY2024_25_DATA, FY2023_24_DATA, FY2022_23_DATA, parseRawBankStatement } from './bankStatementData';
+import FixedDepositTracker from './FixedDepositTracker';
 
 export default function BankStatementTracker({ isAdmin }) {
   const [password, setPassword] = useState('');
@@ -12,7 +13,7 @@ export default function BankStatementTracker({ isAdmin }) {
   const [errorMsg, setErrorMsg] = useState('');
   const [activeSubTab, setActiveSubTab] = useState('dashboard');
 
-  // Month / Period selector state: 'ALL_TIME' | 'FY2025_26' | 'APRIL_2026' | 'MAY_2026' | 'JUNE_2026' | 'JULY_2026' | 'CUSTOM'
+  // Month / Period selector state: 'ALL_TIME' | 'FY2025_26' | 'FY2024_25' | 'FY2023_24' | 'FY2022_23' | 'APRIL_2026' | 'MAY_2026' | 'JUNE_2026' | 'JULY_2026' | 'CUSTOM'
   const [selectedPeriod, setSelectedPeriod] = useState('ALL_TIME');
   const [customParsedData, setCustomParsedData] = useState(null);
 
@@ -30,6 +31,9 @@ export default function BankStatementTracker({ isAdmin }) {
   const activeData = useMemo(() => {
     if (selectedPeriod === 'ALL_TIME') return ALL_TIME_DATA;
     if (selectedPeriod === 'FY2025_26') return FY2025_26_DATA;
+    if (selectedPeriod === 'FY2024_25') return FY2024_25_DATA;
+    if (selectedPeriod === 'FY2023_24') return FY2023_24_DATA;
+    if (selectedPeriod === 'FY2022_23') return FY2022_23_DATA;
     if (selectedPeriod === 'APRIL_2026') return APRIL_2026_DATA;
     if (selectedPeriod === 'MAY_2026') return MAY_2026_DATA;
     if (selectedPeriod === 'JUNE_2026') return JUNE_2026_DATA;
@@ -48,6 +52,15 @@ export default function BankStatementTracker({ isAdmin }) {
   const EXPENSE_CATEGORIES = activeData.expenseCategories;
   const TIMELINE_DATA    = activeData.timelineData;
   const TRANSACTIONS_LIST= activeData.transactionsList;
+
+  const fdPrincipalFlow = useMemo(() => {
+    if (!TRANSACTIONS_LIST) return 0;
+    const fdCrs = TRANSACTIONS_LIST.filter(t => t.type === 'CR' && (t.desc.toUpperCase().includes('REDEEM PRINCIPAL') || t.desc.toUpperCase().includes('FD REDEEM PRINCIPAL')));
+    const fdDrs = TRANSACTIONS_LIST.filter(t => t.type === 'DR' && (t.desc.toUpperCase().includes('FD BOOKING') || t.desc.toUpperCase().includes('FIXED DEPOSIT') || t.desc.toUpperCase().includes('SWEEP OUT') || t.desc.toUpperCase().includes('SWEEP-OUT')));
+    const totalRedeemPrincipal = fdCrs.reduce((sum, t) => sum + t.amount, 0);
+    const totalBookedPrincipal = fdDrs.reduce((sum, t) => sum + t.amount, 0);
+    return totalRedeemPrincipal - totalBookedPrincipal;
+  }, [TRANSACTIONS_LIST]);
 
   const handleUnlock = (e) => {
     e.preventDefault();
@@ -92,6 +105,7 @@ export default function BankStatementTracker({ isAdmin }) {
   const getSourceKey = (tx) => {
     const d = tx.desc.toUpperCase();
     if (d.includes('VIVISH TECHNOLOGIES'))                                          return 'VIVISH';
+    if (d.includes('FD BOOKING') || d.includes('SWEEP IN') || d.includes('SWEEP-IN') || d.includes('FIXED DEPOSIT') || d.includes('FD CRED') || d.includes('FD REDEEM') || d.includes('REDEEM PRINCIPAL') || d.includes('REDEEM INTEREST')) return 'FD';
     if (d.includes('TATA PLAY'))                                                    return 'TATA_PLAY';
     if (d.startsWith('UPI') || d.includes('UPI SETTLEMENT') || d.includes('UPI-') || d.includes('IMPS-')) return 'UPI_IMPS';
     if (d.includes('CHQ DEP') || d.includes('CHEQUE DEP'))                          return 'CHQ_DEP';
@@ -177,6 +191,8 @@ export default function BankStatementTracker({ isAdmin }) {
     const d = tx.desc.toUpperCase();
     if (d.includes('VIVISH TECHNOLOGIES'))
       return { border: '#31553e', label: 'Vivish PG (NEFT)', dot: '#31553e' };
+    if (d.includes('FD BOOKING') || d.includes('SWEEP IN') || d.includes('SWEEP-IN') || d.includes('FIXED DEPOSIT') || d.includes('FD CRED') || d.includes('FD REDEEM') || d.includes('REDEEM PRINCIPAL') || d.includes('REDEEM INTEREST'))
+      return { border: '#10b981', label: 'Fixed Deposit (FD)', dot: '#10b981' };
     if (d.includes('TATA PLAY'))
       return { border: '#3b82f6', label: 'Tata Play Refund', dot: '#3b82f6' };
     if (d.startsWith('UPI') || d.includes('UPI SETTLEMENT') || d.includes('UPI-') || d.includes('IMPS-'))
@@ -192,6 +208,7 @@ export default function BankStatementTracker({ isAdmin }) {
 
   const COLOR_LEGEND = [
     { dot: '#31553e', label: 'Vivish PG (NEFT)',        desc: 'Maintenance collections via Vivish Technologies NEFT' },
+    { dot: '#10b981', label: 'Fixed Deposit (FD)',      desc: 'FD booking debit transactions and Sweep-In credits' },
     { dot: '#b98216', label: 'Cheque Deposit (CR)',      desc: 'Physical cheques deposited (CHQ DEP / CTS clearing)' },
     { dot: '#8b5cf6', label: 'UPI / IMPS',              desc: 'UPI settlements, IMPS member transfers' },
     { dot: '#3b82f6', label: 'Tata Play Refund',        desc: 'Broadband / OTT vendor credit/refund' },
@@ -202,6 +219,7 @@ export default function BankStatementTracker({ isAdmin }) {
   const SOURCE_FILTERS = [
     { key: 'ALL',      label: '✦ All',              dot: '#9ca3af' },
     { key: 'VIVISH',   label: 'Vivish NEFT',        dot: '#31553e' },
+    { key: 'FD',       label: 'Fixed Deposit',      dot: '#10b981' },
     { key: 'CHQ_DEP',  label: 'Cheque Deposit',     dot: '#b98216' },
     { key: 'UPI_IMPS', label: 'UPI / IMPS',         dot: '#8b5cf6' },
     { key: 'TATA_PLAY',label: 'Tata Play',           dot: '#3b82f6' },
@@ -378,6 +396,30 @@ export default function BankStatementTracker({ isAdmin }) {
           </button>
 
           <button
+            className={`action-btn ${selectedPeriod === 'FY2024_25' ? 'action-btn--primary' : ''}`}
+            onClick={() => setSelectedPeriod('FY2024_25')}
+            style={selectedPeriod === 'FY2024_25' ? { background: '#0284c7', color: 'white', fontWeight: '700' } : { borderColor: '#0284c7', color: '#0284c7' }}
+          >
+            📜 FY 2024-25 Full Year
+          </button>
+
+          <button
+            className={`action-btn ${selectedPeriod === 'FY2023_24' ? 'action-btn--primary' : ''}`}
+            onClick={() => setSelectedPeriod('FY2023_24')}
+            style={selectedPeriod === 'FY2023_24' ? { background: '#8b5cf6', color: 'white', fontWeight: '700' } : { borderColor: '#8b5cf6', color: '#8b5cf6' }}
+          >
+            📜 FY 2023-24 Full Year
+          </button>
+
+          <button
+            className={`action-btn ${selectedPeriod === 'FY2022_23' ? 'action-btn--primary' : ''}`}
+            onClick={() => setSelectedPeriod('FY2022_23')}
+            style={selectedPeriod === 'FY2022_23' ? { background: '#c2644a', color: 'white', fontWeight: '700' } : { borderColor: '#c2644a', color: '#c2644a' }}
+          >
+            📜 FY 2022-23 (Inception)
+          </button>
+
+          <button
             className={`action-btn ${selectedPeriod === 'APRIL_2026' ? 'action-btn--primary' : ''}`}
             onClick={() => setSelectedPeriod('APRIL_2026')}
             style={selectedPeriod === 'APRIL_2026' ? { background: '#196c6c', color: 'white' } : {}}
@@ -436,6 +478,12 @@ export default function BankStatementTracker({ isAdmin }) {
             <span>📈</span>
             {selectedPeriod === 'FY2025_26'
               ? 'FY 2025-26 Monthly Financial Breakdown (Apr 2025 – Mar 2026)'
+              : selectedPeriod === 'FY2024_25'
+              ? 'FY 2024-25 Monthly Financial Breakdown (Apr 2024 – Mar 2025)'
+              : selectedPeriod === 'FY2023_24'
+              ? 'FY 2023-24 Monthly Financial Breakdown (Apr 2023 – Mar 2024)'
+              : selectedPeriod === 'FY2022_23'
+              ? 'FY 2022-23 Monthly Financial Breakdown (Dec 2022 – Mar 2023)'
               : '4-Month Financial Trend Comparison: April, May, June & July 2026'}
           </h4>
           <span style={{ fontSize: '0.78rem', color: 'var(--muted)' }}>
@@ -443,8 +491,8 @@ export default function BankStatementTracker({ isAdmin }) {
           </span>
         </div>
 
-        {selectedPeriod === 'FY2025_26' ? (
-          /* FY 2025-26 monthly grid from timelineData */
+        {selectedPeriod === 'FY2025_26' || selectedPeriod === 'FY2024_25' || selectedPeriod === 'FY2023_24' || selectedPeriod === 'FY2022_23' ? (
+          /* monthly grid from timelineData */
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px' }}>
             {TIMELINE_DATA.map((m, idx) => {
               const net = m.credit - m.debit;
@@ -464,8 +512,10 @@ export default function BankStatementTracker({ isAdmin }) {
                 </div>
               );
             })}
-            <div style={{ padding: '11px 12px', background: 'var(--bg-card)', borderRadius: '8px', border: '2px solid var(--teal)' }}>
-              <span style={{ fontSize: '0.73rem', color: 'var(--teal)', fontWeight: '700', display: 'block' }}>📊 Full Year Net</span>
+            <div style={{ padding: '11px 12px', background: 'var(--bg-card)', borderRadius: '8px', border: `2px solid ${NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)'}` }}>
+              <span style={{ fontSize: '0.73rem', color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)', fontWeight: '700', display: 'block' }}>
+                {NET_CASH_FLOW >= 0 ? '🌟 Overall Profit' : '⚠️ Overall Deficit'}
+              </span>
               <strong style={{ fontSize: '0.98rem', color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
                 {NET_CASH_FLOW >= 0 ? '+ ' : '- '}₹ {Math.abs(NET_CASH_FLOW).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
               </strong>
@@ -475,6 +525,13 @@ export default function BankStatementTracker({ isAdmin }) {
               <span style={{ fontSize: '0.65rem', display: 'block', color: 'var(--muted)' }}>
                 Bal: ₹{OPENING_BALANCE.toLocaleString('en-IN', { maximumFractionDigits: 0 })} → ₹{CLOSING_BALANCE.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
               </span>
+              {fdPrincipalFlow !== 0 && (
+                <span style={{ fontSize: '0.63rem', display: 'block', color: 'var(--muted)', marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px' }}>
+                  Ops Net: <strong style={{ color: (NET_CASH_FLOW - fdPrincipalFlow) >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
+                    {fmtAmt(NET_CASH_FLOW - fdPrincipalFlow)}
+                  </strong> (Excl. FD)
+                </span>
+              )}
             </div>
           </div>
         ) : (
@@ -531,6 +588,13 @@ export default function BankStatementTracker({ isAdmin }) {
             📥 Inflow (CR) Log
           </button>
           <button 
+            className={`action-btn ${activeSubTab === 'fixed_deposits' ? 'action-btn--primary' : ''}`}
+            onClick={() => setActiveSubTab('fixed_deposits')}
+            style={activeSubTab === 'fixed_deposits' ? { background: '#196c6c', borderColor: '#196c6c', color: 'white' } : { borderColor: '#196c6c', color: '#196c6c' }}
+          >
+            💼 Fixed Deposits (FD)
+          </button>
+          <button 
             className={`action-btn ${activeSubTab === 'outflow' ? 'action-btn--primary' : ''}`}
             onClick={() => setActiveSubTab('outflow')}
           >
@@ -571,7 +635,7 @@ export default function BankStatementTracker({ isAdmin }) {
           <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Starting / Opening Balance</p>
           <h3 style={{ color: 'var(--teal)' }}>{fmtAmt(OPENING_BALANCE)}</h3>
           <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>
-            {selectedPeriod === 'ALL_TIME' ? 'As on 01 April 2026' : selectedPeriod === 'FY2025_26' ? 'As on 02 April 2025' : 'Verified starting limit'}
+            {selectedPeriod === 'ALL_TIME' ? 'As on 01 April 2026' : selectedPeriod === 'FY2025_26' ? 'As on 02 April 2025' : selectedPeriod === 'FY2024_25' ? 'As on 02 April 2024' : selectedPeriod === 'FY2023_24' ? 'As on 01 April 2023' : selectedPeriod === 'FY2022_23' ? 'As on 01 December 2022' : 'Verified starting limit'}
           </p>
         </div>
         <div className="metric-card metric-card--pine">
@@ -596,6 +660,14 @@ export default function BankStatementTracker({ isAdmin }) {
           <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>
             Closing Reserve: <strong>{fmtAmt(CLOSING_BALANCE)}</strong>
           </p>
+          {fdPrincipalFlow !== 0 && (
+            <p style={{ margin: '4px 0 0', fontSize: '0.68rem', color: 'var(--muted)', borderTop: '1px solid var(--line)', paddingTop: '4px' }}>
+              Operational Net: <strong style={{ color: (NET_CASH_FLOW - fdPrincipalFlow) >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
+                {fmtAmt(NET_CASH_FLOW - fdPrincipalFlow)}
+              </strong>
+              <span style={{ display: 'block', fontSize: '0.62rem', opacity: 0.8 }}>(Excl. FD Principal movements)</span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -609,7 +681,7 @@ export default function BankStatementTracker({ isAdmin }) {
             </h3>
             <div style={{ height: '350px', width: '100%' }}>
               <ResponsiveContainer width="100%" height="100%">
-                {selectedPeriod === 'ALL_TIME' || selectedPeriod === 'FY2025_26' ? (
+                {selectedPeriod === 'ALL_TIME' || selectedPeriod === 'FY2025_26' || selectedPeriod === 'FY2024_25' || selectedPeriod === 'FY2023_24' || selectedPeriod === 'FY2022_23' ? (
                   <BarChart data={TIMELINE_DATA}>
                     <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                     <XAxis dataKey="date" />
@@ -762,6 +834,10 @@ export default function BankStatementTracker({ isAdmin }) {
           {activeSubTab === 'inflow' && renderTable(filteredCrTx)}
           {activeSubTab === 'outflow' && renderTable(filteredDrTx)}
         </div>
+      )}
+
+      {activeSubTab === 'fixed_deposits' && (
+        <FixedDepositTracker isAdmin={isAdmin} />
       )}
 
       {activeSubTab === 'vendors' && (

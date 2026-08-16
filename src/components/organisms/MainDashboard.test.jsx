@@ -26,19 +26,19 @@ const baseStats = {
 };
 
 describe('MainDashboard – static content', () => {
-  it('renders the SOCIETY MANAGEMENT DASHBOARD heading', () => {
+  it('renders the Society Overview heading', () => {
     render(<MainDashboard stats={baseStats} />);
-    expect(screen.getByText(/society management dashboard/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Society Overview/i })).toBeInTheDocument();
   });
 
-  it('renders the "Welcome back, Admin" eyebrow text', () => {
+  it('renders the Residential Management Dashboard description', () => {
     render(<MainDashboard stats={baseStats} />);
-    expect(screen.getByText(/welcome back, admin/i)).toBeInTheDocument();
+    expect(screen.getByText(/Residential Management Dashboard/i)).toBeInTheDocument();
   });
 
-  it('renders the Cheque Tracker quick-action button', () => {
-    render(<MainDashboard stats={baseStats} />);
-    expect(screen.getByRole('button', { name: /cheque tracker/i })).toBeInTheDocument();
+  it('renders the Cheques quick-action button in admin mode', () => {
+    render(<MainDashboard stats={baseStats} isAdmin={true} />);
+    expect(screen.getByRole('button', { name: /cheques/i })).toBeInTheDocument();
   });
 });
 
@@ -50,7 +50,7 @@ describe('MainDashboard – metric cards', () => {
 
   it('displays the outstanding dues in INR format', () => {
     render(<MainDashboard stats={baseStats} />);
-    expect(screen.getByText(/₹1,20,000/)).toBeInTheDocument();
+    expect(screen.getByText(/₹1\.2L/)).toBeInTheDocument();
   });
 
   it('displays the staff count', () => {
@@ -73,30 +73,25 @@ describe('MainDashboard – metric cards', () => {
   it('shows complaints value in dark when count ≤ 5', () => {
     render(<MainDashboard stats={baseStats} />);
     const val = screen.getByText('3');
-    expect(val).toHaveStyle({ color: '#0B2B26' });
+    expect(val).toHaveStyle({ color: '#0f172a' });
   });
 });
 
 describe('MainDashboard – finance snapshot', () => {
-  it('renders Monthly Collections label', () => {
+  it('renders Monthly Surplus label', () => {
     render(<MainDashboard stats={baseStats} />);
-    expect(screen.getByText(/monthly collections/i)).toBeInTheDocument();
+    expect(screen.getByText(/monthly surplus/i)).toBeInTheDocument();
   });
 
-  it('renders Monthly Expenses label', () => {
+  it('renders Income vs Expense Trend heading', () => {
     render(<MainDashboard stats={baseStats} />);
-    expect(screen.getByText(/monthly expenses/i)).toBeInTheDocument();
+    expect(screen.getByText(/income vs expense trend/i)).toBeInTheDocument();
   });
 
-  it('formats collections correctly', () => {
+  it('formats surplus correctly', () => {
     render(<MainDashboard stats={baseStats} />);
-    // 500000 → ₹5,00,000 (Indian locale)
-    expect(screen.getByText(/₹5,00,000/)).toBeInTheDocument();
-  });
-
-  it('formats expenses correctly', () => {
-    render(<MainDashboard stats={baseStats} />);
-    expect(screen.getByText(/₹3,20,000/)).toBeInTheDocument();
+    // 500000 collections, 320000 expenses -> 180000 surplus -> formatted to ₹1.8L
+    expect(screen.getByText(/₹1\.8L/)).toBeInTheDocument();
   });
 });
 
@@ -116,25 +111,20 @@ describe('MainDashboard – operations section', () => {
     expect(screen.getByText('15 May')).toBeInTheDocument();
   });
 
-  it('shows fallback text when no next event is set', () => {
+  it('does not render Next Event section when no next event is set', () => {
     const noEvent = { ...baseStats, nextEvent: null };
     render(<MainDashboard stats={noEvent} />);
-    expect(screen.getByText('No upcoming events')).toBeInTheDocument();
-  });
-
-  it('shows HEALTHY utility status', () => {
-    render(<MainDashboard stats={baseStats} />);
-    expect(screen.getByText('HEALTHY')).toBeInTheDocument();
+    expect(screen.queryByText('📅 Next Event')).not.toBeInTheDocument();
   });
 });
 
 describe('MainDashboard – Cheque Tracker quick-action', () => {
   it('dispatches a changeTab CustomEvent with detail "cheques" when clicked', () => {
-    render(<MainDashboard stats={baseStats} />);
+    render(<MainDashboard stats={baseStats} isAdmin={true} />);
     const listener = vi.fn();
     window.addEventListener('changeTab', listener);
 
-    fireEvent.click(screen.getByRole('button', { name: /cheque tracker/i }));
+    fireEvent.click(screen.getByRole('button', { name: /cheques/i }));
 
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener.mock.calls[0][0].detail).toBe('cheques');

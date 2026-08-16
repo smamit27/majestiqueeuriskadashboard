@@ -57,7 +57,7 @@ describe('IntroAnimation – overlay present (before animation ends)', () => {
 
   it('renders "Majestique Euriska World" brand heading', () => {
     renderIntro();
-    expect(screen.getByRole('heading', { name: /majestique euriska /i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /majestique euriska/i })).toBeInTheDocument();
   });
 
   it('registers a 12-second safety timeout on mount', () => {

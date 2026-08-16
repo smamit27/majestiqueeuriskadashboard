@@ -298,6 +298,105 @@ img {
   .list-card, .stack-card {
     padding: 12px !important;
   }
+
+  .fd-summary-board {
+    padding: 12px !important;
+    border-radius: 18px !important;
+  }
+
+  .fd-summary-board__header {
+    padding: 0 0 10px !important;
+  }
+
+  .fd-summary-board__title {
+    font-size: 1rem !important;
+    letter-spacing: 0.03em !important;
+  }
+
+  .fd-summary-bank {
+    border-radius: 14px !important;
+  }
+
+  .fd-summary-bank__brand-wrap {
+    padding: 9px 10px !important;
+  }
+
+  .fd-summary-brand {
+    gap: 8px !important;
+    min-height: 34px !important;
+  }
+
+  .fd-summary-brand__hdfc-mark {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .fd-summary-brand__icici-mark {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 1rem !important;
+  }
+
+  .fd-summary-brand__hdfc-wordmark,
+  .fd-summary-brand__icici-wordmark,
+  .fd-summary-brand__generic-wordmark {
+    font-size: 0.92rem !important;
+  }
+
+  .fd-summary-table,
+  .fd-summary-grand {
+    min-width: 900px !important;
+  }
+
+  .fd-summary-table thead th {
+    padding: 10px 8px !important;
+    font-size: 0.76rem !important;
+  }
+
+  .fd-summary-table__cell {
+    padding: 10px 8px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .fd-summary-table__cell--serial,
+  .fd-summary-table__cell--number,
+  .fd-summary-table__subtotal-label,
+  .fd-summary-table__subtotal-value,
+  .fd-summary-grand td {
+    font-size: 0.82rem !important;
+  }
+
+  .fd-summary-table__deposit-line1 {
+    font-size: 0.82rem !important;
+  }
+
+  .fd-summary-table__deposit-line2 {
+    font-size: 0.76rem !important;
+  }
+
+  .fd-summary-interest {
+    padding: 14px 6px 6px !important;
+    gap: 10px !important;
+  }
+
+  .fd-summary-interest__label-wrap {
+    flex-direction: column !important;
+    gap: 8px !important;
+    text-align: center !important;
+  }
+
+  .fd-summary-interest__value {
+    width: 100% !important;
+    max-width: 260px !important;
+    min-width: 0 !important;
+    font-size: 1.45rem !important;
+  }
+
+  .fd-summary-note {
+    margin: 6px 0 0 !important;
+    text-align: center !important;
+    font-size: 0.76rem !important;
+  }
 }
 
 /* ── 2. Small phones (≤ 480px) ──────────────────────── */
@@ -308,6 +407,19 @@ img {
 
   .dashboard-shell {
     padding: 8px !important;
+  }
+
+  .fd-summary-board__title {
+    font-size: 0.92rem !important;
+  }
+
+  .fd-summary-interest__label {
+    font-size: 0.84rem !important;
+  }
+
+  .fd-summary-interest__value {
+    font-size: 1.28rem !important;
+    padding: 10px 14px !important;
   }
 }
 
