@@ -24,7 +24,7 @@ export default function BankStatementTracker({ isAdmin }) {
 
   // Search & Filter state for Transactions tabs
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortOrder, setSortOrder] = useState('DESC');
+  const [sortOrder, setSortOrder] = useState('DATE_DESC');
   const [sourceFilter, setSourceFilter] = useState('ALL');
 
   // Active Dataset Resolution
@@ -114,9 +114,20 @@ export default function BankStatementTracker({ isAdmin }) {
     return 'OTHER';
   };
 
+  const parseDateStr = (dateStr) => {
+    if (!dateStr || typeof dateStr !== 'string') return 0;
+    const parts = dateStr.split('/');
+    if (parts.length < 3) return 0;
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    let year = parseInt(parts[2], 10);
+    if (year < 100) year += 2000;
+    return new Date(year, month, day).getTime();
+  };
+
   // Helper filter function
   const getFilteredTx = (typeFilter) => {
-    let result = [...TRANSACTIONS_LIST];
+    let result = TRANSACTIONS_LIST.map((t, idx) => ({ ...t, originalIndex: idx }));
     if (searchTerm) {
       const q = searchTerm.toLowerCase();
       result = result.filter(t =>
@@ -132,6 +143,16 @@ export default function BankStatementTracker({ isAdmin }) {
       result = result.filter(t => getSourceKey(t) === sourceFilter);
     }
     result.sort((a, b) => {
+      if (sortOrder === 'DATE_DESC') {
+        const dateDiff = parseDateStr(b.date) - parseDateStr(a.date);
+        if (dateDiff !== 0) return dateDiff;
+        return b.originalIndex - a.originalIndex;
+      }
+      if (sortOrder === 'DATE_ASC') {
+        const dateDiff = parseDateStr(a.date) - parseDateStr(b.date);
+        if (dateDiff !== 0) return dateDiff;
+        return a.originalIndex - b.originalIndex;
+      }
       return sortOrder === 'DESC' ? b.amount - a.amount : a.amount - b.amount;
     });
     return result;
@@ -824,6 +845,8 @@ export default function BankStatementTracker({ isAdmin }) {
                   fontSize: '0.85rem'
                 }}
               >
+                <option value="DATE_DESC">Sort: Newest First</option>
+                <option value="DATE_ASC">Sort: Oldest First</option>
                 <option value="DESC">Sort: High Amount → Low</option>
                 <option value="ASC">Sort: Low Amount → High</option>
               </select>
