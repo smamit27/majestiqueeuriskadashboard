@@ -31,8 +31,8 @@ import NotificationCenter from './components/organisms/NotificationCenter.jsx';
 import GlobalSearch from './components/organisms/GlobalSearch.jsx';
 import ParkPlusTracker from './components/organisms/ParkPlusTracker.jsx';
 import BankStatementTracker from './components/organisms/BankStatementTracker.jsx';
-import FixedDepositTracker from './components/organisms/FixedDepositTracker.jsx';
 import TenantTracker from './components/organisms/TenantTracker.jsx';
+import EmergencyNumbers from './components/organisms/EmergencyNumbers.jsx';
 
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
@@ -148,11 +148,21 @@ const TAB_ICONS = {
   ),
   tenant_tracking: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  ),
+  emergency: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
   )
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('society_overview');
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== 'undefined') {
+      if (window.location.pathname === '/emergency' || window.location.hash === '#emergency') {
+        return 'emergency';
+      }
+    }
+    return 'society_overview';
+  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -387,6 +397,12 @@ export default function App() {
       render: () => <MainDashboard stats={dashboardStats} isAdmin={isAdmin} />
     },
     {
+      id: 'emergency',
+      label: 'Emergency',
+      metric: 'Quick Help & 112',
+      render: () => <EmergencyNumbers isAdmin={isAdmin} />
+    },
+    {
       id: 'announcements',
       label: 'Announcements',
       metric: 'Notice Board',
@@ -449,6 +465,13 @@ export default function App() {
     if (tabId === activeTab) return;
     setPrevTab(activeTab);
     setIsTransitioning(true);
+    if (typeof window !== 'undefined') {
+      if (tabId === 'emergency') {
+        window.history.replaceState(null, '', '/emergency');
+      } else if (window.location.pathname === '/emergency') {
+        window.history.replaceState(null, '', '/');
+      }
+    }
     setTimeout(() => {
       setActiveTab(tabId);
       setIsSidebarOpen(false); // Auto-close on mobile
@@ -469,7 +492,7 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    const publicTabs = ['society_overview', 'announcements', 'manager_tasks', 'amc', 'water_management', 'petty_cash', 'shop_maintenance', 'park_plus', 'statement_auditor', 'fixed_deposits', 'tenant_tracking'];
+    const publicTabs = ['society_overview', 'emergency', 'announcements', 'manager_tasks', 'amc', 'water_management', 'petty_cash', 'shop_maintenance', 'park_plus', 'statement_auditor', 'fixed_deposits', 'tenant_tracking'];
     if (!isAdmin && !publicTabs.includes(activeTab)) {
       setActiveTab('society_overview');
     }
@@ -672,6 +695,39 @@ export default function App() {
     
     <AIChatButton isOpen={isChatOpen} onClick={() => setIsChatOpen(!isChatOpen)} />
     <AIChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+
+    {/* ── Global Floating Emergency Action Button ── */}
+    {activeTab !== 'emergency' && (
+      <button
+        type="button"
+        className="floating-emergency-btn"
+        onClick={() => handleTabChange('emergency')}
+        style={{
+          position: 'fixed',
+          bottom: 24,
+          left: 24,
+          zIndex: 90,
+          background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+          color: '#ffffff',
+          border: 'none',
+          borderRadius: '50px',
+          padding: '10px 18px',
+          fontSize: '0.86rem',
+          fontWeight: 800,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          boxShadow: '0 8px 24px rgba(220, 38, 38, 0.45)',
+          cursor: 'pointer',
+          letterSpacing: '0.02em',
+          transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+        }}
+        aria-label="Quick Navigate to Emergency Numbers"
+      >
+        <span style={{ fontSize: '1.15rem' }}>🚨</span>
+        <span>EMERGENCY</span>
+      </button>
+    )}
     </>
   );
 }
