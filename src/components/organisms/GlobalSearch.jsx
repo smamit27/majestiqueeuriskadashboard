@@ -4,7 +4,6 @@ import { createPortal } from 'react-dom';
 // All sidebar tabs
 const NAV_ITEMS = [
   { id: 'society_overview', label: 'Society Overview',       icon: '🏠', group: 'Navigation' },
-  { id: 'emergency',        label: 'Emergency Numbers',      icon: '🚨', group: 'Navigation' },
   { id: 'announcements',    label: 'Announcements',          icon: '📢', group: 'Navigation' },
   { id: 'manager_tasks',    label: 'Manager Tasks',          icon: '✅', group: 'Navigation' },
   { id: 'amc',              label: 'AMC Tracker',            icon: '📋', group: 'Navigation' },
@@ -14,6 +13,7 @@ const NAV_ITEMS = [
   { id: 'statement_auditor',label: 'Statement Auditor',      icon: '📑', group: 'Navigation' },
   { id: 'fixed_deposits',   label: 'Fixed Deposits',         icon: '🏦', group: 'Navigation' },
   { id: 'tenant_tracking',  label: 'Tenant Tracker',         icon: '🏢', group: 'Navigation' },
+  { id: 'emergency',        label: 'Emergency Numbers',      icon: '🚨', group: 'Navigation' },
   { id: 'security',         label: 'Security',               icon: '🛡️', group: 'Navigation (Admin)' },
   { id: 'housekeeping',     label: 'Housekeeping',           icon: '🧹', group: 'Navigation (Admin)' },
   { id: 'tanker',           label: 'Water Tanker',           icon: '🚛', group: 'Navigation (Admin)' },

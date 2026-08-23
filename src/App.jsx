@@ -155,14 +155,7 @@ const TAB_ICONS = {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState(() => {
-    if (typeof window !== 'undefined') {
-      if (window.location.pathname === '/emergency' || window.location.hash === '#emergency') {
-        return 'emergency';
-      }
-    }
-    return 'society_overview';
-  });
+  const [activeTab, setActiveTab] = useState('society_overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -397,12 +390,6 @@ export default function App() {
       render: () => <MainDashboard stats={dashboardStats} isAdmin={isAdmin} />
     },
     {
-      id: 'emergency',
-      label: 'Emergency',
-      metric: 'Quick Help & 112',
-      render: () => <EmergencyNumbers isAdmin={isAdmin} />
-    },
-    {
       id: 'announcements',
       label: 'Announcements',
       metric: 'Notice Board',
@@ -456,6 +443,12 @@ export default function App() {
       metric: 'Wing A Occupants',
       render: () => <TenantTracker isAdmin={isAdmin} />
     },
+    {
+      id: 'emergency',
+      label: 'Emergency',
+      metric: 'Quick Help & 112',
+      render: () => <EmergencyNumbers isAdmin={isAdmin} />
+    },
   ];
 
 
@@ -465,13 +458,6 @@ export default function App() {
     if (tabId === activeTab) return;
     setPrevTab(activeTab);
     setIsTransitioning(true);
-    if (typeof window !== 'undefined') {
-      if (tabId === 'emergency') {
-        window.history.replaceState(null, '', '/emergency');
-      } else if (window.location.pathname === '/emergency') {
-        window.history.replaceState(null, '', '/');
-      }
-    }
     setTimeout(() => {
       setActiveTab(tabId);
       setIsSidebarOpen(false); // Auto-close on mobile
