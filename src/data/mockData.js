@@ -58,6 +58,36 @@ export const members = [
     householdSize: 3,
     status: 'Onboarding',
     duesStatus: 'Pending'
+  },
+  {
+    id: 'MEM-302',
+    name: 'Owner of A-302',
+    flat: 'A-302',
+    phone: '',
+    ownership: 'Owner',
+    householdSize: 1,
+    status: 'Active',
+    duesStatus: 'Paid'
+  },
+  {
+    id: 'MEM-904',
+    name: 'Owner of A-904',
+    flat: 'A-904',
+    phone: '',
+    ownership: 'Owner',
+    householdSize: 1,
+    status: 'Active',
+    duesStatus: 'Paid'
+  },
+  {
+    id: 'MEM-1002',
+    name: 'Owner of A-1002',
+    flat: 'A-1002',
+    phone: '',
+    ownership: 'Owner',
+    householdSize: 1,
+    status: 'Active',
+    duesStatus: 'Paid'
   }
 ];
 

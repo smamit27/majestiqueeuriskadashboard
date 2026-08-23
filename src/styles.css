@@ -1233,6 +1233,7 @@ select {
 }
 
 .status-pill--tenant,
+.status-pill--multitenant,
 .status-pill--onboarding,
 .status-pill--governance,
 .status-pill--community,
@@ -1244,6 +1245,11 @@ select {
 .status-pill--on-leave {
   background: rgba(61, 63, 52, 0.08);
   color: var(--muted);
+}
+
+.status-pill--refuge-area {
+  background: rgba(100, 116, 139, 0.12);
+  color: #64748b;
 }
 
 .notice-banner {
@@ -2958,4 +2964,82 @@ select {
   line-height: 1.5;
   text-align: center;
 }
+
+/* ── Print Styles for Tenant Registry ── */
+@media print {
+  /* Hide overall dashboard layout, menus, header, sidebars */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Show only the tenant tracking system section */
+  #tenant-tracking-system,
+  #tenant-tracking-system * {
+    visibility: visible;
+  }
+  
+  #tenant-tracking-system {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Hide search, filter, buttons, inline forms, analytics charts, status labels from printing */
+  .search-card,
+  .inline-form-card,
+  .metrics-grid,
+  .exec-grid-2col,
+  .button-primary,
+  .button-secondary,
+  .section-card__header button,
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Clean table container styling for printing */
+  .table-card {
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    margin-top: 20px !important;
+  }
+  
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  
+  th, td {
+    padding: 8px 12px !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+    font-size: 0.8rem !important;
+    color: #000000 !important;
+    background: transparent !important;
+  }
+  
+  th {
+    font-weight: 700 !important;
+    border-bottom: 2px solid #0f172a !important;
+  }
+  
+  thead {
+    display: table-header-group !important;
+  }
+  
+  tr {
+    page-break-inside: avoid !important;
+  }
+  
+  /* Set layout margins */
+  @page {
+    margin: 1.6cm;
+    size: A4 portrait;
+  }
+}
+
 
