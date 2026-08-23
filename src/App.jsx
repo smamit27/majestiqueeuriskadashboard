@@ -155,7 +155,12 @@ const TAB_ICONS = {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('society_overview');
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('admin=true')) {
+      return 'society_overview';
+    }
+    return 'emergency';
+  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -319,8 +324,19 @@ export default function App() {
     nextEvent
   };
 
-  const tabItems = [
-    ...(isAdmin ? [
+  const tabItems = useMemo(() => {
+    if (!isAdmin) {
+      return [
+        {
+          id: 'emergency',
+          label: 'Emergency',
+          metric: 'Quick Help & 112',
+          render: () => <EmergencyNumbers isAdmin={false} />
+        }
+      ];
+    }
+
+    return [
       {
         id: 'security',
         label: 'Security',
@@ -381,76 +397,75 @@ export default function App() {
         label: 'Solar Management',
         metric: 'Evaluation & ROI',
         render: () => <SolarModule isAdmin={isAdmin} />
-      }
-    ] : []),
-    {
-      id: 'society_overview',
-      label: 'Society Overview',
-      metric: 'Executive Summary',
-      render: () => <MainDashboard stats={dashboardStats} isAdmin={isAdmin} />
-    },
-    {
-      id: 'announcements',
-      label: 'Announcements',
-      metric: 'Notice Board',
-      render: () => <AnnouncementsModule isAdmin={isAdmin} />
-    },
-    {
-      id: 'manager_tasks',
-      label: 'Manager Tasks',
-      metric: 'Task & Deadline Tracker',
-      render: () => <ManagerTaskTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'amc',
-      label: 'AMC Tracker',
-      metric: 'Contracts & Payments',
-      render: () => <AmcTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'water_management',
-      label: 'Visualization Work',
-      metric: 'Society Visual Plans & Designs',
-      render: () => <WaterManagement />
-    },
-    {
-      id: 'park_plus',
-      label: 'Park+ Payments',
-      metric: 'RFID & Gate Solution Invoices',
-      render: () => <ParkPlusTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'petty_cash',
-      label: 'Petty Cash',
-      metric: 'Ledger & Expenses',
-      render: () => <PettyCashTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'statement_auditor',
-      label: 'Statement Auditor',
-      metric: 'Forensic Payment Tracker',
-      render: () => <BankStatementTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'fixed_deposits',
-      label: 'Fixed Deposits',
-      metric: 'FD Portfolio Manager',
-      render: () => <FixedDepositTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'tenant_tracking',
-      label: 'Tenant Tracker',
-      metric: 'Wing A Occupants',
-      render: () => <TenantTracker isAdmin={isAdmin} />
-    },
-    {
-      id: 'emergency',
-      label: 'Emergency',
-      metric: 'Quick Help & 112',
-      render: () => <EmergencyNumbers isAdmin={isAdmin} />
-    },
-  ];
-
+      },
+      {
+        id: 'society_overview',
+        label: 'Society Overview',
+        metric: 'Executive Summary',
+        render: () => <MainDashboard stats={dashboardStats} isAdmin={isAdmin} />
+      },
+      {
+        id: 'announcements',
+        label: 'Announcements',
+        metric: 'Notice Board',
+        render: () => <AnnouncementsModule isAdmin={isAdmin} />
+      },
+      {
+        id: 'manager_tasks',
+        label: 'Manager Tasks',
+        metric: 'Task & Deadline Tracker',
+        render: () => <ManagerTaskTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'amc',
+        label: 'AMC Tracker',
+        metric: 'Contracts & Payments',
+        render: () => <AmcTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'water_management',
+        label: 'Visualization Work',
+        metric: 'Society Visual Plans & Designs',
+        render: () => <WaterManagement />
+      },
+      {
+        id: 'park_plus',
+        label: 'Park+ Payments',
+        metric: 'RFID & Gate Solution Invoices',
+        render: () => <ParkPlusTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'petty_cash',
+        label: 'Petty Cash',
+        metric: 'Ledger & Expenses',
+        render: () => <PettyCashTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'statement_auditor',
+        label: 'Statement Auditor',
+        metric: 'Forensic Payment Tracker',
+        render: () => <BankStatementTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'fixed_deposits',
+        label: 'Fixed Deposits',
+        metric: 'FD Portfolio Manager',
+        render: () => <FixedDepositTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'tenant_tracking',
+        label: 'Tenant Tracker',
+        metric: 'Wing A Occupants',
+        render: () => <TenantTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'emergency',
+        label: 'Emergency',
+        metric: 'Quick Help & 112',
+        render: () => <EmergencyNumbers isAdmin={isAdmin} />
+      },
+    ];
+  }, [isAdmin, dashboardStats, staffData.items, staffPresent]);
 
   const activeTabPanel = tabItems.find((item) => item.id === activeTab) || tabItems[0];
 
@@ -478,11 +493,16 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    const publicTabs = ['society_overview', 'emergency', 'announcements', 'manager_tasks', 'amc', 'water_management', 'petty_cash', 'shop_maintenance', 'park_plus', 'statement_auditor', 'fixed_deposits', 'tenant_tracking'];
-    if (!isAdmin && !publicTabs.includes(activeTab)) {
-      setActiveTab('society_overview');
+    if (!isAdmin && activeTab !== 'emergency') {
+      setActiveTab('emergency');
     }
   }, [isAdmin, activeTab]);
+
+  useEffect(() => {
+    if (isAdmin && activeTab === 'emergency' && prevTab === null) {
+      setActiveTab('society_overview');
+    }
+  }, [isAdmin]);
 
   const handleIntroFinish = () => {
     localStorage.setItem('majestique_intro_seen_v30', 'true');
