@@ -5,7 +5,7 @@ import fs from 'fs';
 import { initialTenantData } from './src/data/tenantSeedData.js';
 
 const PROJECT_ID = 'majestiqueeuriskadashboard';
-const RECORD_ID = 'a_wing_flats_v2';
+const RECORD_ID = 'a_wing_flats_v3';
 
 function httpsRequest(options, body) {
   return new Promise((resolve, reject) => {

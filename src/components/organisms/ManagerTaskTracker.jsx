@@ -373,6 +373,247 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
     setSort(prev => prev.key === key ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'asc' });
   };
 
+  // ── Export CSV ────────────────────────────────────────────────────────────────
+  const handleExportCSV = useCallback(() => {
+    const listToExport = sorted.length > 0 ? sorted : currentTasks;
+    const tabName = activeTab === 'common' ? 'Common_Work' : 'A_Building_Work';
+    const headers = 'Task ID,Task Category,Area,Task Description,Vendor Name,Assigned To,Start Date,Deadline,Priority,Status,Days Left,Remarks\n';
+    const rows = listToExport.map(t => {
+      const daysLeft = calcDaysLeft(t.deadline, t.status);
+      const daysStr = daysLeft !== null ? (daysLeft < 0 ? `${Math.abs(daysLeft)}d overdue` : `${daysLeft}d left`) : '';
+      const cat = (t.taskCategory || '').replace(/"/g, '""');
+      const area = (t.area || '').replace(/"/g, '""');
+      const desc = (t.taskDescription || '').replace(/"/g, '""');
+      const vendor = (t.vendorName || '').replace(/"/g, '""');
+      const assigned = (t.assignedTo || '').replace(/"/g, '""');
+      const remarks = (t.remarks || '').replace(/"/g, '""');
+      return `"${t.id}","${cat}","${area}","${desc}","${vendor}","${assigned}","${t.startDate || ''}","${t.deadline || ''}","${t.priority || ''}","${t.status || ''}","${daysStr}","${remarks}"`;
+    }).join('\n');
+
+    const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `Majestique_Euriska_${tabName}_Tasks.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [sorted, currentTasks, activeTab]);
+
+  // ── Export Dedicated Print PDF ───────────────────────────────────────────────
+  const handleExportPDF = useCallback(() => {
+    const listToPrint = sorted.length > 0 ? sorted : currentTasks;
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const tabLabel = activeTab === 'common' ? 'Common Society Work' : 'A Building Work';
+    
+    const doneCount = listToPrint.filter(t => t.status === 'Done').length;
+    const inProgCount = listToPrint.filter(t => t.status === 'In Progress').length;
+    const pendingCount = listToPrint.filter(t => t.status === 'Pending').length;
+    const onHoldCount = listToPrint.filter(t => t.status === 'On Hold').length;
+    const overdueCount = listToPrint.filter(t => {
+      const d = calcDaysLeft(t.deadline, t.status);
+      return d !== null && d < 0;
+    }).length;
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Majestique Euriska - ${tabLabel} - Task & Deadline Ledger</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .summary-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 12px;
+            flex-wrap: wrap;
+          }
+          .summary-item { font-weight: 600; color: #334155; }
+          .summary-item strong { color: #0f172a; }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: left; padding: 8px 10px; border: 1px solid #94a3b8; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; }
+          td { padding: 7px 10px; border: 1px solid #cbd5e1; color: #0f172a; vertical-align: top; }
+          tr:nth-child(even) { background: #f8fafc; }
+          
+          .pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+          }
+          .pill-done { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+          .pill-inprogress { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+          .pill-pending { background: #fefce8; color: #854d0e; border: 1px solid #fef08a; }
+          .pill-onhold { background: #faf5ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+          
+          .pill-p-high { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+          .pill-p-medium { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+          .pill-p-low { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+          
+          .days-chip {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+          }
+          .days-overdue { background: #fee2e2; color: #991b1b; }
+          .days-soon { background: #fef3c7; color: #d97706; }
+          .days-ok { background: #d1fae5; color: #065f46; }
+
+          .footer {
+            margin-top: 24px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 10px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 landscape; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">📋 Majestique Euriska - ${tabLabel}</h1>
+            <div class="subtitle">Task & Deadline Tracker — Society Manager Task Ledger</div>
+          </div>
+          <div class="meta">
+            <div><strong>Report Date:</strong> ${generatedDate}</div>
+            <div><strong>Filter Scope:</strong> ${filterStatus === 'All' ? 'All Statuses' : filterStatus} • ${filterPriority === 'All' ? 'All Priorities' : filterPriority + ' Priority'}${search ? ` • Search: "${search}"` : ''} (${listToPrint.length} Tasks)</div>
+          </div>
+        </div>
+
+        <div class="summary-bar">
+          <div class="summary-item">Total Tasks: <strong>${listToPrint.length}</strong></div>
+          <div>•</div>
+          <div class="summary-item" style="color: #065f46;">Done: <strong>${doneCount} (${listToPrint.length ? Math.round((doneCount / listToPrint.length) * 100) : 0}%)</strong></div>
+          <div>•</div>
+          <div class="summary-item" style="color: #1e40af;">In Progress: <strong>${inProgCount}</strong></div>
+          <div>•</div>
+          <div class="summary-item" style="color: #854d0e;">Pending: <strong>${pendingCount}</strong></div>
+          ${onHoldCount > 0 ? `<div>•</div><div class="summary-item" style="color: #6b21a8;">On Hold: <strong>${onHoldCount}</strong></div>` : ''}
+          ${overdueCount > 0 ? `<div>•</div><div class="summary-item" style="color: #991b1b;">Overdue: <strong>${overdueCount}</strong></div>` : ''}
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 35px; text-align: center;">#</th>
+              <th style="width: 150px;">Task Category & ID</th>
+              <th style="width: 100px;">Area</th>
+              <th>Task Description</th>
+              <th style="width: 100px;">Vendor</th>
+              <th style="width: 90px;">Assigned</th>
+              <th style="width: 80px;">Start Date</th>
+              <th style="width: 80px;">Deadline</th>
+              <th style="width: 75px; text-align: center;">Priority</th>
+              <th style="width: 85px; text-align: center;">Status</th>
+              <th style="width: 85px; text-align: center;">Due In</th>
+              <th style="width: 120px;">Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${listToPrint.map((task, index) => {
+              const daysLeft = calcDaysLeft(task.deadline, task.status);
+              const pillStatusClass = task.status === 'Done'
+                ? 'pill-done'
+                : task.status === 'In Progress'
+                ? 'pill-inprogress'
+                : task.status === 'On Hold'
+                ? 'pill-onhold'
+                : 'pill-pending';
+
+              const pillPriorityClass = task.priority === 'High'
+                ? 'pill-p-high'
+                : task.priority === 'Medium'
+                ? 'pill-p-medium'
+                : task.priority === 'Low'
+                ? 'pill-p-low'
+                : '';
+
+              let daysChipHtml = '—';
+              if (daysLeft !== null) {
+                const chipClass = daysLeft < 0 ? 'days-overdue' : daysLeft <= 3 ? 'days-soon' : 'days-ok';
+                const label = daysLeft < 0 ? `${Math.abs(daysLeft)}d overdue` : daysLeft === 0 ? 'Today!' : `${daysLeft}d left`;
+                daysChipHtml = `<span class="days-chip ${chipClass}">${daysLeft < 0 ? '⚠ ' : ''}${label}</span>`;
+              }
+
+              return `
+                <tr>
+                  <td style="text-align: center; color: #64748b; font-weight: 600;">${index + 1}</td>
+                  <td>
+                    <strong style="color: #0f172a;">${task.taskCategory || '—'}</strong>
+                    <div style="font-size: 9px; color: #64748b; font-family: monospace;">${task.id}</div>
+                  </td>
+                  <td>${task.area || '—'}</td>
+                  <td>${task.taskDescription || '—'}</td>
+                  <td>${task.vendorName || '—'}</td>
+                  <td>${task.assignedTo ? `<span style="font-weight: 600;">${task.assignedTo}</span>` : '—'}</td>
+                  <td>${fmtDate(task.startDate)}</td>
+                  <td>${fmtDate(task.deadline)}</td>
+                  <td style="text-align: center;">
+                    ${task.priority ? `<span class="pill ${pillPriorityClass}">${task.priority}</span>` : '—'}
+                  </td>
+                  <td style="text-align: center;">
+                    <span class="pill ${pillStatusClass}">${task.status || 'Pending'}</span>
+                  </td>
+                  <td style="text-align: center;">${daysChipHtml}</td>
+                  <td style="font-size: 10px; color: #475569;">${task.remarks || '—'}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society • Task & Deadline Management Ledger</div>
+          <div>Confidential Document</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    } else {
+      window.print();
+    }
+  }, [sorted, currentTasks, activeTab, filterStatus, filterPriority, search]);
+
   // ─── Render ──────────────────────────────────────────────────────────────────
   const colCount = COLUMNS.length + (isAdmin ? 1 : 0);
 
@@ -510,7 +751,36 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
           </select>
 
           {/* Spacer + right actions */}
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <button
+              onClick={handleExportCSV}
+              style={{
+                padding: '7px 14px', borderRadius: 10,
+                border: '1.5px solid rgba(61,63,52,0.18)',
+                background: '#fff', color: '#1d2a24',
+                fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
+                transition: 'all 0.15s'
+              }}
+              title="Export tasks to CSV"
+            >
+              📥 Export CSV
+            </button>
+            <button
+              onClick={handleExportPDF}
+              style={{
+                padding: '7px 14px', borderRadius: 10,
+                border: '1.5px solid rgba(61,63,52,0.18)',
+                background: '#fff', color: '#1d2a24',
+                fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
+                transition: 'all 0.15s'
+              }}
+              title="Print or export as PDF"
+            >
+              📄 Print PDF
+            </button>
+
             {saveStatus && <span style={{ fontSize: '0.8rem', color: saveStatus.includes('✓') ? '#065f46' : '#991b1b', fontWeight: 700 }}>{saveStatus}</span>}
 
             {/* Page size picker */}

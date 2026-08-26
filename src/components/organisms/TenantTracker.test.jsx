@@ -39,16 +39,21 @@ describe('TenantTracker - Main Components', () => {
     
     expect(screen.getByText(/Total Flats Tracked/i)).toBeInTheDocument();
     expect(screen.getAllByText(/Tenant\/Other Occupied/i)[0]).toBeInTheDocument();
-    expect(screen.getByText(/e-Intercom Enabled/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Expiring Soon/i)[0]).toBeInTheDocument();
+    expect(screen.getByText(/Expired Agreements/i)).toBeInTheDocument();
 
     // Verify table columns exist for the new fields
+    expect(screen.getByText('Tenant / Resident Name')).toBeInTheDocument();
     expect(screen.getByText('Start Date')).toBeInTheDocument();
     expect(screen.getByText('End Date')).toBeInTheDocument();
+    expect(screen.getByText('Days Remaining')).toBeInTheDocument();
+    expect(screen.getByText('Remarks')).toBeInTheDocument();
   });
 
-  it('renders the export CSV button', async () => {
+  it('renders the export CSV and print PDF buttons', async () => {
     render(<TenantTracker isAdmin={false} />);
     expect(await screen.findByRole('button', { name: /Export CSV/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Print PDF/i })).toBeInTheDocument();
   });
 
   it('does not show admin action buttons when isAdmin is false', async () => {
@@ -67,7 +72,7 @@ describe('TenantTracker - Main Components', () => {
 });
 
 describe('TenantTracker - Filtering and Sorting', () => {
-  it('filters results by search text', async () => {
+  it('filters results by search text for flat number and tenant name', async () => {
     render(<TenantTracker isAdmin={false} />);
     
     // Wait for flat data to load
@@ -75,11 +80,12 @@ describe('TenantTracker - Filtering and Sorting', () => {
     
     const searchInput = screen.getByPlaceholderText(/Search Flat No/i);
     
-    // Type specific flat number
-    fireEvent.change(searchInput, { target: { value: 'A 1108' } });
+    // Search for Pamela
+    fireEvent.change(searchInput, { target: { value: 'Pamela' } });
     
     // The list should show the matching flat and not others
-    expect(screen.getByText('A 1108')).toBeInTheDocument();
+    expect(screen.getByText('A 105')).toBeInTheDocument();
+    expect(screen.getByText('Mrs. Pamela Chandra')).toBeInTheDocument();
     expect(screen.queryByText('A 1107')).not.toBeInTheDocument();
   });
 
@@ -98,6 +104,22 @@ describe('TenantTracker - Filtering and Sorting', () => {
     expect(screen.queryByText('A 1108')).not.toBeInTheDocument(); // A 1108 is Owner
     expect(screen.getByText('A 1006')).toBeInTheDocument(); // A 1006 is Tenant
   });
+
+  it('filters results by expiry filter selector', async () => {
+    render(<TenantTracker isAdmin={false} />);
+    
+    // Wait for flat data to load
+    await screen.findByText('A 1108');
+    
+    const expirySelect = screen.getByLabelText(/Expiry Filter/i);
+    
+    // Switch to Expired
+    fireEvent.change(expirySelect, { target: { value: 'Expired' } });
+    
+    // Should show expired lease A 405 (Mr. Modassir)
+    expect(screen.getByText('A 405')).toBeInTheDocument();
+    expect(screen.getByText('Mr. Modassir')).toBeInTheDocument();
+  });
 });
 
 describe('TenantTracker - Admin Actions Modals', () => {
@@ -113,10 +135,12 @@ describe('TenantTracker - Admin Actions Modals', () => {
     // Form title in modal should be visible
     expect(screen.getByRole('heading', { name: /Add Wing A Flat/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/Flat Number/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Tenant \/ Occupant Name/i)).toBeInTheDocument();
     
     // Check that new columns inputs are in form
     expect(screen.getByLabelText(/Start Date/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/End Date/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Remarks \/ Notes/i)).toBeInTheDocument();
 
     expect(screen.getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
   });

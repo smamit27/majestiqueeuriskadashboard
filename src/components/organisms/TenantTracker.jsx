@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, Legend, CartesianGrid } from 'recharts';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 import { initialTenantData } from '../../data/tenantSeedData.js';
 import MetricCard from '../molecules/MetricCard.jsx';
 import StatusPill from '../atoms/StatusPill.jsx';
 
 const TENANT_TRACKING_COLLECTION = 'tenantTracking';
-const TENANT_TRACKING_DOC_ID = 'a_wing_flats_v2'; // Bump version since schema changed to prevent caching issues
+const TENANT_TRACKING_DOC_ID = 'a_wing_flats_v3'; // Bump version for new schema: tenantName, remarks, live expiry calculation
 
 // ── Icons ──────────────────────────────────────────────────────────
 function UsersIcon({ size = 18 }) {
@@ -51,6 +50,102 @@ function PlusIcon({ size = 16 }) {
   );
 }
 
+// ── Lease Expiry Calculation Helper ─────────────────────────────────
+export function getLeaseExpiryInfo(endDate) {
+  if (!endDate || typeof endDate !== 'string' || !endDate.trim()) {
+    return {
+      status: 'none',
+      label: 'No End Date',
+      days: null,
+      daysText: '—',
+      badgeClass: 'lease-badge lease-badge--none',
+      isExpiringSoon: false,
+      isExpired: false,
+      isWarning: false
+    };
+  }
+
+  try {
+    const end = new Date(endDate);
+    if (isNaN(end.getTime())) {
+      return {
+        status: 'invalid',
+        label: endDate,
+        days: null,
+        daysText: endDate,
+        badgeClass: 'lease-badge lease-badge--none',
+        isExpiringSoon: false,
+        isExpired: false,
+        isWarning: false
+      };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    const diffTime = end.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return {
+        status: 'expired',
+        label: 'Expired',
+        days: diffDays,
+        daysText: `Expired (${Math.abs(diffDays)}d ago)`,
+        badgeClass: 'lease-badge lease-badge--expired',
+        isExpiringSoon: false,
+        isExpired: true,
+        isWarning: false
+      };
+    } else if (diffDays <= 30) {
+      return {
+        status: 'critical',
+        label: 'Expiring Soon',
+        days: diffDays,
+        daysText: `${diffDays} days left`,
+        badgeClass: 'lease-badge lease-badge--critical',
+        isExpiringSoon: true,
+        isExpired: false,
+        isWarning: true
+      };
+    } else if (diffDays <= 60) {
+      return {
+        status: 'warning',
+        label: 'Expiring (<60d)',
+        days: diffDays,
+        daysText: `${diffDays} days left`,
+        badgeClass: 'lease-badge lease-badge--warning',
+        isExpiringSoon: true,
+        isExpired: false,
+        isWarning: true
+      };
+    } else {
+      return {
+        status: 'active',
+        label: 'Active Lease',
+        days: diffDays,
+        daysText: `${diffDays} days left`,
+        badgeClass: 'lease-badge lease-badge--active',
+        isExpiringSoon: false,
+        isExpired: false,
+        isWarning: false
+      };
+    }
+  } catch {
+    return {
+      status: 'none',
+      label: '—',
+      days: null,
+      daysText: '—',
+      badgeClass: 'lease-badge lease-badge--none',
+      isExpiringSoon: false,
+      isExpired: false,
+      isWarning: false
+    };
+  }
+}
+
 export default function TenantTracker({ isAdmin = false }) {
   const [flats, setFlats] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -60,14 +155,14 @@ export default function TenantTracker({ isAdmin = false }) {
   // Search & Filter state
   const [searchText, setSearchText] = useState('');
   const [occupantFilter, setOccupantFilter] = useState('All');
-  const [intercomFilter, setIntercomFilter] = useState('All');
-  const [quarantineFilter, setQuarantineFilter] = useState('All');
+  const [expiryFilter, setExpiryFilter] = useState('All'); // 'All' | 'ExpiringSoon' | 'Expired' | 'ActiveLease'
   const [sortBy, setSortBy] = useState('flatAsc');
 
   // Form Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFlat, setEditingFlat] = useState(null);
   const [formFlatNo, setFormFlatNo] = useState('');
+  const [formTenantName, setFormTenantName] = useState('');
   const [formFlatType, setFormFlatType] = useState('Residential');
   const [formOccupantType, setFormOccupantType] = useState('Owner');
   const [formStatus, setFormStatus] = useState('Active');
@@ -79,6 +174,7 @@ export default function TenantTracker({ isAdmin = false }) {
   const [formKidsCount, setFormKidsCount] = useState('0');
   const [formStartDate, setFormStartDate] = useState('');
   const [formEndDate, setFormEndDate] = useState('');
+  const [formRemarks, setFormRemarks] = useState('');
 
   // Load flats data
   useEffect(() => {
@@ -88,7 +184,7 @@ export default function TenantTracker({ isAdmin = false }) {
       setIsLoading(true);
       if (!isFirebaseConfigured || !db) {
         // Fallback to local storage or seed data
-        const local = localStorage.getItem('me_tenant_data_v2');
+        const local = localStorage.getItem('me_tenant_data_v3');
         if (local) {
           setFlats(JSON.parse(local));
         } else {
@@ -130,7 +226,7 @@ export default function TenantTracker({ isAdmin = false }) {
           setSaveStatus('error');
           setSaveMessage('Failed to connect to cloud');
           // Load local backup
-          const local = localStorage.getItem('me_tenant_data_v2');
+          const local = localStorage.getItem('me_tenant_data_v3');
           setFlats(local ? JSON.parse(local) : initialTenantData);
         }
       } finally {
@@ -147,7 +243,7 @@ export default function TenantTracker({ isAdmin = false }) {
   // Save flats data
   const saveFlatsData = useCallback(async (updatedList) => {
     setFlats(updatedList);
-    localStorage.setItem('me_tenant_data_v2', JSON.stringify(updatedList));
+    localStorage.setItem('me_tenant_data_v3', JSON.stringify(updatedList));
 
     if (!isFirebaseConfigured || !db) {
       setSaveStatus('local');
@@ -174,7 +270,7 @@ export default function TenantTracker({ isAdmin = false }) {
 
   // Reset database back to seed data
   const handleResetToDefaults = async () => {
-    if (!window.confirm('Are you sure you want to reset all flats data back to the default Wing A CSV records? All custom additions and edits will be lost.')) {
+    if (!window.confirm('Are you sure you want to reset all flats data back to the default Wing A records? All custom additions and edits will be reset to latest initial tenant dataset.')) {
       return;
     }
     await saveFlatsData(initialTenantData);
@@ -182,7 +278,7 @@ export default function TenantTracker({ isAdmin = false }) {
 
   // Date formatter helper
   const formatDateLabel = (dateStr) => {
-    if (!dateStr) return '--';
+    if (!dateStr) return '—';
     try {
       const d = new Date(dateStr);
       if (isNaN(d.getTime())) return dateStr;
@@ -204,10 +300,18 @@ export default function TenantTracker({ isAdmin = false }) {
     const refuges = flats.filter(f => f.occupantType === 'Refuge Area').length;
     const tenantPercent = total ? ((tenants / total) * 100).toFixed(1) : 0;
     
-    const activeUsersTotal = flats.reduce((acc, curr) => acc + (Number(curr.activeUsers) || 0), 0);
-    const inactiveUsersTotal = flats.reduce((acc, curr) => acc + (Number(curr.inactiveUsers) || 0), 0);
-    const kidsTotal = flats.reduce((acc, curr) => acc + (Number(curr.kidsCount) || 0), 0);
-    const totalResidents = activeUsersTotal + inactiveUsersTotal + kidsTotal;
+    let expiredCount = 0;
+    let expiringSoonCount = 0;
+    let activeLeaseCount = 0;
+
+    flats.forEach(f => {
+      if ((f.occupantType === 'Tenant' || f.occupantType === 'Multitenant') && f.endDate) {
+        const info = getLeaseExpiryInfo(f.endDate);
+        if (info.isExpired) expiredCount++;
+        else if (info.isExpiringSoon) expiringSoonCount++;
+        else if (info.status === 'active') activeLeaseCount++;
+      }
+    });
 
     const withIntercom = flats.filter(f => f.primaryIntercom || f.secondaryIntercom).length;
     const intercomPercent = total ? ((withIntercom / total) * 100).toFixed(1) : 0;
@@ -218,36 +322,19 @@ export default function TenantTracker({ isAdmin = false }) {
       owners,
       refuges,
       tenantPercent,
-      activeUsersTotal,
-      inactiveUsersTotal,
-      kidsTotal,
-      totalResidents,
+      expiredCount,
+      expiringSoonCount,
+      activeLeaseCount,
       withIntercom,
       intercomPercent
     };
   }, [flats]);
 
-  // Chart data calculations
-  const occupantChartData = useMemo(() => {
-    return [
-      { name: 'Owner Occupied', value: metrics.owners, color: '#196c6c' },
-      { name: 'Tenant/Other Occupied', value: metrics.tenants, color: '#315271' },
-      ...(metrics.refuges > 0 ? [{ name: 'Refuge Areas', value: metrics.refuges, color: '#64748b' }] : [])
-    ];
-  }, [metrics]);
-
-  const residentChartData = useMemo(() => {
-    return [
-      { name: 'Active Users', count: metrics.activeUsersTotal, fill: '#10b981' },
-      { name: 'Inactive Users', count: metrics.inactiveUsersTotal, fill: '#94a3b8' },
-      { name: 'Kids', count: metrics.kidsTotal, fill: '#f59e0b' }
-    ];
-  }, [metrics]);
-
   // Handle open modal for new flat
   const handleOpenAddModal = () => {
     setEditingFlat(null);
     setFormFlatNo('');
+    setFormTenantName('');
     setFormFlatType('Residential');
     setFormOccupantType('Owner');
     setFormStatus('Active');
@@ -259,6 +346,7 @@ export default function TenantTracker({ isAdmin = false }) {
     setFormKidsCount('0');
     setFormStartDate('');
     setFormEndDate('');
+    setFormRemarks('');
     setIsModalOpen(true);
   };
 
@@ -266,6 +354,7 @@ export default function TenantTracker({ isAdmin = false }) {
   const handleOpenEditModal = (flat) => {
     setEditingFlat(flat);
     setFormFlatNo(flat.flat);
+    setFormTenantName(flat.tenantName || '');
     setFormFlatType(flat.flatType || 'Residential');
     setFormOccupantType(flat.occupantType);
     setFormStatus(flat.status || 'Active');
@@ -277,6 +366,7 @@ export default function TenantTracker({ isAdmin = false }) {
     setFormKidsCount(String(flat.kidsCount ?? 0));
     setFormStartDate(flat.startDate || '');
     setFormEndDate(flat.endDate || '');
+    setFormRemarks(flat.remarks || '');
     setIsModalOpen(true);
   };
 
@@ -307,6 +397,7 @@ export default function TenantTracker({ isAdmin = false }) {
 
     const flatObj = {
       flat: flatNo,
+      tenantName: formTenantName.trim(),
       flatType: formFlatType,
       occupantType: formOccupantType,
       status: formStatus,
@@ -318,6 +409,7 @@ export default function TenantTracker({ isAdmin = false }) {
       kidsCount: parseInt(formKidsCount) || 0,
       startDate: formStartDate,
       endDate: formEndDate,
+      remarks: formRemarks.trim(),
       created: editingFlat?.created || new Date().toLocaleDateString('en-IN', {
         day: '2-digit',
         month: 'short',
@@ -338,9 +430,12 @@ export default function TenantTracker({ isAdmin = false }) {
 
   // Export flat directory as CSV file
   const handleExportCSV = () => {
-    const headers = 'Flat,Flat Type,Occupant Type,Status,Quarantine Status,Primary e-Intercom,Secondary e-Intercom,Number of Active users,Number of Inactive users,Number of Kids,Start Date,End Date,Created\n';
+    const headers = 'Flat,Tenant Name,Occupant Type,Flat Type,Status,Start Date,End Date,Days Remaining,Lease Status,Remarks,Primary e-Intercom,Secondary e-Intercom\n';
     const rows = flats.map(f => {
-      return `"${f.flat}","${f.flatType || 'Residential'}","${f.occupantType}","${f.status}","${f.quarantineStatus || 'None'}","${f.primaryIntercom ? 'Y' : ''}","${f.secondaryIntercom ? 'Y' : ''}",${f.activeUsers},${f.inactiveUsers},${f.kidsCount},"${f.startDate || ''}","${f.endDate || ''}","${f.created}"`;
+      const expiry = getLeaseExpiryInfo(f.endDate);
+      const daysRem = expiry.days !== null ? expiry.days : '';
+      const leaseStat = expiry.label;
+      return `"${f.flat}","${f.tenantName || ''}","${f.occupantType}","${f.flatType || 'Residential'}","${f.status}","${f.startDate || ''}","${f.endDate || ''}","${daysRem}","${leaseStat}","${(f.remarks || '').replace(/"/g, '""')}","${f.primaryIntercom ? 'Y' : ''}","${f.secondaryIntercom ? 'Y' : ''}"`;
     }).join('\n');
 
     const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
@@ -358,14 +453,13 @@ export default function TenantTracker({ isAdmin = false }) {
     const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     const ownerCount = listToPrint.filter(f => f.occupantType === 'Owner').length;
     const tenantCount = listToPrint.filter(f => f.occupantType === 'Tenant' || f.occupantType === 'Multitenant').length;
-    const refugeCount = listToPrint.filter(f => f.occupantType === 'Refuge Area').length;
 
     const printDoc = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="utf-8">
-        <title>Majestique Euriska - Wing A Flat Occupancy Registry</title>
+        <title>Majestique Euriska - Wing A Flat Occupancy & Tenant Registry</title>
         <style>
           * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
           body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
@@ -404,6 +498,10 @@ export default function TenantTracker({ isAdmin = false }) {
           .pill-multitenant { background: #f0fdfa; color: #115e59; border: 1px solid #99f6e4; }
           .pill-refuge { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
           
+          .badge-expired { background: #fee2e2; color: #dc2626; padding: 3px 8px; border-radius: 6px; font-weight: 700; white-space: nowrap; display: inline-block; }
+          .badge-warning { background: #fef3c7; color: #b45309; padding: 3px 8px; border-radius: 6px; font-weight: 700; white-space: nowrap; display: inline-block; }
+          .badge-active { background: #ecfdf5; color: #059669; padding: 3px 8px; border-radius: 6px; font-weight: 700; white-space: nowrap; display: inline-block; }
+          
           .footer {
             margin-top: 24px;
             border-top: 1px solid #cbd5e1;
@@ -426,7 +524,7 @@ export default function TenantTracker({ isAdmin = false }) {
         <div class="header">
           <div>
             <h1 class="title">🏢 Majestique Euriska - Wing A Registry</h1>
-            <div class="subtitle">Flat Occupancy & Tenancy Management System</div>
+            <div class="subtitle">Tenant & Flat Occupancy Management System</div>
           </div>
           <div class="meta">
             <div><strong>Report Date:</strong> ${generatedDate}</div>
@@ -440,20 +538,19 @@ export default function TenantTracker({ isAdmin = false }) {
           <div class="summary-item">Owners: <strong>${ownerCount}</strong></div>
           <div>•</div>
           <div class="summary-item">Tenants: <strong>${tenantCount}</strong></div>
-          <div>•</div>
-          <div class="summary-item">Refuge Areas: <strong>${refugeCount}</strong></div>
         </div>
 
         <table>
           <thead>
             <tr>
-              <th style="width: 40px; text-align: center;">#</th>
-              <th style="width: 100px;">Flat No</th>
-              <th style="width: 130px;">Occupancy</th>
-              <th style="width: 100px;">Flat Type</th>
-              <th style="width: 80px; text-align: center;">Status</th>
-              <th style="width: 110px;">Start Date</th>
-              <th style="width: 110px;">End Date</th>
+              <th style="width: 30px; text-align: center;">#</th>
+              <th style="width: 75px;">Flat No</th>
+              <th style="width: 150px;">Tenant / Occupant</th>
+              <th style="width: 85px;">Occupancy</th>
+              <th style="width: 85px;">Start Date</th>
+              <th style="width: 85px;">End Date</th>
+              <th style="width: 160px; white-space: nowrap;">Days Remaining</th>
+              <th>Remarks</th>
             </tr>
           </thead>
           <tbody>
@@ -465,15 +562,29 @@ export default function TenantTracker({ isAdmin = false }) {
                 : flat.occupantType === 'Multitenant'
                 ? 'pill-multitenant'
                 : 'pill-refuge';
+              
+              const expiry = getLeaseExpiryInfo(flat.endDate);
+              let expiryBadge = '—';
+              if (flat.endDate) {
+                if (expiry.isExpired) {
+                  expiryBadge = `<span class="badge-expired">${expiry.daysText}</span>`;
+                } else if (expiry.isExpiringSoon) {
+                  expiryBadge = `<span class="badge-warning">${expiry.daysText}</span>`;
+                } else {
+                  expiryBadge = `<span class="badge-active">${expiry.daysText}</span>`;
+                }
+              }
+
               return `
                 <tr>
                   <td style="text-align: center; color: #64748b; font-weight: 600;">${index + 1}</td>
                   <td style="font-weight: 700; color: #0f172a;">${flat.flat || ''}</td>
+                  <td style="font-weight: 600;">${flat.tenantName || '—'}</td>
                   <td><span class="pill ${pillClass}">${flat.occupantType || ''}</span></td>
-                  <td>${flat.flatType || 'Residential'}</td>
-                  <td style="text-align: center; font-weight: 600;">${flat.status || 'Active'}</td>
                   <td>${flat.startDate ? flat.startDate : '—'}</td>
                   <td>${flat.endDate ? flat.endDate : '—'}</td>
+                  <td style="white-space: nowrap;">${expiryBadge}</td>
+                  <td style="color: #64748b; font-style: italic;">${flat.remarks || ''}</td>
                 </tr>
               `;
             }).join('')}
@@ -508,7 +619,6 @@ export default function TenantTracker({ isAdmin = false }) {
 
   // Helper sorting function
   const parseFlatNumber = (flatStr) => {
-    // extracts number, e.g., "A 1108" -> 1108
     const num = parseInt(flatStr.replace(/[^0-9]/g, ''), 10);
     return Number.isFinite(num) ? num : 0;
   };
@@ -518,13 +628,14 @@ export default function TenantTracker({ isAdmin = false }) {
     const q = searchText.trim().toLowerCase();
 
     let result = flats.filter((item) => {
-      // 1. Search Query filter
+      // 1. Search Query filter (searches Flat, Tenant Name, Remarks, Occupancy Type, Status)
       if (q) {
         const matchFlat = item.flat.toLowerCase().includes(q);
+        const matchName = (item.tenantName || '').toLowerCase().includes(q);
         const matchOccupant = item.occupantType.toLowerCase().includes(q);
+        const matchRemarks = (item.remarks || '').toLowerCase().includes(q);
         const matchStatus = (item.status || '').toLowerCase().includes(q);
-        const matchQuarantine = (item.quarantineStatus || '').toLowerCase().includes(q);
-        if (!matchFlat && !matchOccupant && !matchStatus && !matchQuarantine) {
+        if (!matchFlat && !matchName && !matchOccupant && !matchRemarks && !matchStatus) {
           return false;
         }
       }
@@ -536,28 +647,18 @@ export default function TenantTracker({ isAdmin = false }) {
         if (occupantFilter === 'Refuge Area' && item.occupantType !== 'Refuge Area') return false;
       }
 
-      // 3. Intercom filter
-      if (intercomFilter !== 'All') {
-        const hasPrimary = Boolean(item.primaryIntercom);
-        const hasSecondary = Boolean(item.secondaryIntercom);
-        if (intercomFilter === 'Primary' && !hasPrimary) return false;
-        if (intercomFilter === 'Secondary' && !hasSecondary) return false;
-        if (intercomFilter === 'Both' && (!hasPrimary || !hasSecondary)) return false;
-        if (intercomFilter === 'None' && (hasPrimary || hasSecondary)) return false;
-      }
-
-      // 4. Quarantine Filter
-      if (quarantineFilter !== 'All') {
-        const status = item.quarantineStatus || 'None';
-        if (quarantineFilter === 'Quarantined' && status === 'None') return false;
-        if (quarantineFilter === 'Completed' && status !== 'Completed') return false;
-        if (quarantineFilter === 'None' && status !== 'None') return false;
+      // 3. Expiry Filter
+      if (expiryFilter !== 'All') {
+        const expiry = getLeaseExpiryInfo(item.endDate);
+        if (expiryFilter === 'ExpiringSoon' && !expiry.isExpiringSoon) return false;
+        if (expiryFilter === 'Expired' && !expiry.isExpired) return false;
+        if (expiryFilter === 'ActiveLease' && expiry.status !== 'active') return false;
       }
 
       return true;
     });
 
-    // 5. Sorting logic
+    // 4. Sorting logic
     result.sort((a, b) => {
       if (sortBy === 'flatAsc') {
         return parseFlatNumber(a.flat) - parseFlatNumber(b.flat);
@@ -565,14 +666,14 @@ export default function TenantTracker({ isAdmin = false }) {
       if (sortBy === 'flatDesc') {
         return parseFlatNumber(b.flat) - parseFlatNumber(a.flat);
       }
-      if (sortBy === 'activeDesc') {
-        return (b.activeUsers || 0) - (a.activeUsers || 0);
+      if (sortBy === 'expiryAsc') {
+        // Earliest expiring first
+        if (!a.endDate) return 1;
+        if (!b.endDate) return -1;
+        return new Date(a.endDate) - new Date(b.endDate);
       }
-      if (sortBy === 'activeAsc') {
-        return (a.activeUsers || 0) - (b.activeUsers || 0);
-      }
-      if (sortBy === 'kidsDesc') {
-        return (b.kidsCount || 0) - (a.kidsCount || 0);
+      if (sortBy === 'nameAsc') {
+        return (a.tenantName || '').localeCompare(b.tenantName || '');
       }
       if (sortBy === 'createdDesc') {
         return new Date(b.created) - new Date(a.created);
@@ -581,11 +682,11 @@ export default function TenantTracker({ isAdmin = false }) {
     });
 
     return result;
-  }, [flats, searchText, occupantFilter, intercomFilter, quarantineFilter, sortBy]);
+  }, [flats, searchText, occupantFilter, expiryFilter, sortBy]);
 
   return (
     <section className="section-card" id="tenant-tracking-system">
-      {/* ── Standard Section Header ── */}
+      {/* ── Section Header ── */}
       <div className="section-card__header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
         <div>
           <p className="eyebrow" style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 4px 0' }}>
@@ -606,7 +707,7 @@ export default function TenantTracker({ isAdmin = false }) {
           <h2 style={{ margin: 0 }}>Tenant & Occupant Tracking</h2>
         </div>
 
-        {/* ── Horizontal Action Toolbar ── */}
+        {/* ── Action Toolbar ── */}
         <div className="section-toolbar" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <button className="button-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} onClick={handleExportCSV}>
             📥 Export CSV
@@ -633,12 +734,12 @@ export default function TenantTracker({ isAdmin = false }) {
       </div>
 
       <div className="section-card__body">
-        {/* ── Standard Horizontal Metrics Grid ── */}
+        {/* ── Metric Cards Grid ── */}
         <div className="metrics-grid" style={{ marginBottom: 20 }}>
           <MetricCard
             label="Total Flats Tracked"
             value={isLoading ? '...' : metrics.total}
-            detail="A-Wing Residents"
+            detail="A-Wing Units"
             tone="emerald"
           />
           <MetricCard
@@ -648,16 +749,16 @@ export default function TenantTracker({ isAdmin = false }) {
             tone="ocean"
           />
           <MetricCard
-            label="e-Intercom Enabled"
-            value={isLoading ? '...' : `${metrics.withIntercom} Flats`}
-            detail={`${metrics.intercomPercent}% coverage`}
-            tone="teal"
+            label="Expiring Soon (≤60 Days)"
+            value={isLoading ? '...' : `${metrics.expiringSoonCount} Leases`}
+            detail="Renewal action required"
+            tone={metrics.expiringSoonCount > 0 ? 'amber' : 'slate'}
           />
           <MetricCard
-            label="Refuge & Safety"
-            value={isLoading ? '...' : `${metrics.refuges} Flats`}
-            detail="Emergency floors"
-            tone="slate"
+            label="Expired Agreements"
+            value={isLoading ? '...' : `${metrics.expiredCount} Leases`}
+            detail={metrics.expiredCount > 0 ? 'Needs urgent renewal' : 'All up to date'}
+            tone={metrics.expiredCount > 0 ? 'rose' : 'teal'}
           />
         </div>
 
@@ -690,7 +791,7 @@ export default function TenantTracker({ isAdmin = false }) {
                     id="flatNoInput"
                     type="text"
                     disabled={Boolean(editingFlat)}
-                    placeholder="e.g. A 1109"
+                    placeholder="e.g. A 1006"
                     value={formFlatNo}
                     onChange={(e) => setFormFlatNo(e.target.value)}
                     style={{
@@ -705,13 +806,15 @@ export default function TenantTracker({ isAdmin = false }) {
                   />
                 </div>
 
-                {/* Flat type */}
+                {/* Tenant / Resident Name */}
                 <div className="ann-form-field">
-                  <label htmlFor="flatTypeInput">Flat Type</label>
-                  <select
-                    id="flatTypeInput"
-                    value={formFlatType}
-                    onChange={(e) => setFormFlatType(e.target.value)}
+                  <label htmlFor="tenantNameInput">Tenant / Occupant Name</label>
+                  <input
+                    id="tenantNameInput"
+                    type="text"
+                    placeholder="e.g. Mrs. Pamela Chandra"
+                    value={formTenantName}
+                    onChange={(e) => setFormTenantName(e.target.value)}
                     style={{
                       height: 40,
                       borderRadius: 10,
@@ -720,11 +823,7 @@ export default function TenantTracker({ isAdmin = false }) {
                       fontSize: '0.88rem',
                       background: '#fff'
                     }}
-                  >
-                    <option value="Residential">Residential</option>
-                    <option value="Commercial">Commercial</option>
-                    <option value="Utility">Utility</option>
-                  </select>
+                  />
                 </div>
 
                 {/* Occupant Type */}
@@ -757,6 +856,28 @@ export default function TenantTracker({ isAdmin = false }) {
                     <option value="Tenant">Tenant</option>
                     <option value="Multitenant">Multitenant</option>
                     <option value="Refuge Area">Refuge Area</option>
+                  </select>
+                </div>
+
+                {/* Flat type */}
+                <div className="ann-form-field">
+                  <label htmlFor="flatTypeInput">Flat Type</label>
+                  <select
+                    id="flatTypeInput"
+                    value={formFlatType}
+                    onChange={(e) => setFormFlatType(e.target.value)}
+                    style={{
+                      height: 40,
+                      borderRadius: 10,
+                      border: '1px solid rgba(0,0,0,0.1)',
+                      padding: '0 12px',
+                      fontSize: '0.88rem',
+                      background: '#fff'
+                    }}
+                  >
+                    <option value="Residential">Residential</option>
+                    <option value="Commercial">Commercial</option>
+                    <option value="Utility">Utility</option>
                   </select>
                 </div>
 
@@ -818,6 +939,26 @@ export default function TenantTracker({ isAdmin = false }) {
                     }}
                   />
                 </div>
+
+                {/* Remarks */}
+                <div className="ann-form-field">
+                  <label htmlFor="remarksInput">Remarks / Notes</label>
+                  <input
+                    id="remarksInput"
+                    type="text"
+                    placeholder="e.g. Brother Flat, Vacant Saturday"
+                    value={formRemarks}
+                    onChange={(e) => setFormRemarks(e.target.value)}
+                    style={{
+                      height: 40,
+                      borderRadius: 10,
+                      border: '1px solid rgba(0,0,0,0.1)',
+                      padding: '0 12px',
+                      fontSize: '0.88rem',
+                      background: '#fff'
+                    }}
+                  />
+                </div>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
@@ -841,7 +982,7 @@ export default function TenantTracker({ isAdmin = false }) {
           </div>
         )}
 
-        {/* ── Single Horizontal Search & Filter Row ── */}
+        {/* ── Search & Filter Row ── */}
         <div className="search-card" style={{
           display: 'flex',
           alignItems: 'center',
@@ -851,14 +992,14 @@ export default function TenantTracker({ isAdmin = false }) {
           marginBottom: 20,
           padding: '14px 18px'
         }}>
-          {/* Left: Search input */}
+          {/* Search input */}
           <div style={{ flex: '1 1 240px', position: 'relative' }}>
             <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', opacity: 0.5, fontSize: '0.9rem' }}>
               🔍
             </span>
             <input
               type="text"
-              placeholder="Search Flat No (e.g. A 1006) or Occupant Type..."
+              placeholder="Search Flat No, Tenant Name (e.g. Pamela), or Remarks..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               style={{
@@ -873,13 +1014,12 @@ export default function TenantTracker({ isAdmin = false }) {
             />
           </div>
 
-          {/* Center: Horizontal Occupant Filter Pills */}
+          {/* Center: Occupant Filter Pills */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
             {[
-              { id: 'All', label: 'All', count: metrics.total },
-              { id: 'Owner', label: 'Owners', count: metrics.owners },
+              { id: 'All', label: 'All Units', count: metrics.total },
               { id: 'Tenant', label: 'Tenants', count: metrics.tenants },
-              { id: 'Refuge Area', label: 'Refuge', count: metrics.refuges }
+              { id: 'Owner', label: 'Owners', count: metrics.owners }
             ].map(tab => {
               const isSelected = occupantFilter === tab.id;
               return (
@@ -918,8 +1058,8 @@ export default function TenantTracker({ isAdmin = false }) {
             })}
           </div>
 
-          {/* Right: Hidden/Synced Select for testing & accessibility + Sort selector */}
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {/* Right: Expiry Filter + Sort selector */}
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
             <select
               aria-label="Occupant Type Filter"
               value={occupantFilter}
@@ -935,9 +1075,30 @@ export default function TenantTracker({ isAdmin = false }) {
               }}
             >
               <option value="All">All Types</option>
-              <option value="Owner">Owners</option>
-              <option value="Tenant">Tenants</option>
+              <option value="Tenant">Tenants Only</option>
+              <option value="Owner">Owners Only</option>
               <option value="Refuge Area">Refuge Areas</option>
+            </select>
+
+            <select
+              aria-label="Expiry Filter"
+              value={expiryFilter}
+              onChange={(e) => setExpiryFilter(e.target.value)}
+              style={{
+                height: 40,
+                borderRadius: 10,
+                border: '1px solid rgba(0,0,0,0.1)',
+                padding: '0 10px',
+                background: '#fff',
+                fontSize: '0.84rem',
+                color: '#334155',
+                fontWeight: expiryFilter !== 'All' ? 600 : 400
+              }}
+            >
+              <option value="All">All Expiries</option>
+              <option value="ExpiringSoon">⚠️ Expiring Soon (≤60d)</option>
+              <option value="Expired">🚨 Expired Leases</option>
+              <option value="ActiveLease">🟢 Active Leases</option>
             </select>
 
             <select
@@ -956,6 +1117,8 @@ export default function TenantTracker({ isAdmin = false }) {
             >
               <option value="flatAsc">Flat No (Asc)</option>
               <option value="flatDesc">Flat No (Desc)</option>
+              <option value="expiryAsc">Expiring Soonest</option>
+              <option value="nameAsc">Tenant Name (A-Z)</option>
               <option value="createdDesc">Newest First</option>
             </select>
           </div>
@@ -976,46 +1139,122 @@ export default function TenantTracker({ isAdmin = false }) {
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
                 <tr>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>Flat No</th>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>Occupancy</th>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>Start Date</th>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>End Date</th>
-                  {isAdmin && <th className="no-print" style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', textAlign: 'center' }}>Actions</th>}
+                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 100 }}>Flat No</th>
+                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>Tenant / Resident Name</th>
+                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 120 }}>Occupancy</th>
+                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 120 }}>Start Date</th>
+                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 120 }}>End Date</th>
+                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 170 }}>Days Remaining</th>
+                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>Remarks</th>
+                  {isAdmin && <th className="no-print" style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', textAlign: 'center', width: 90 }}>Actions</th>}
                 </tr>
               </thead>
               <tbody>
-                {processedFlats.map((flat, idx) => (
-                  <tr key={flat.flat} style={{ background: idx % 2 === 0 ? '#fff' : '#fcfcfa', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
-                    <td style={{ padding: '14px 18px', fontWeight: 700, color: '#1e293b' }}>{flat.flat}</td>
-                    <td style={{ padding: '14px 18px' }}>
-                      <StatusPill value={flat.occupantType} />
-                    </td>
-                    <td style={{ padding: '14px 18px', color: '#334155', fontSize: '0.82rem', fontWeight: 500 }}>{formatDateLabel(flat.startDate)}</td>
-                    <td style={{ padding: '14px 18px', color: '#334155', fontSize: '0.82rem', fontWeight: 500 }}>{formatDateLabel(flat.endDate)}</td>
-                    {isAdmin && (
-                      <td className="no-print" style={{ padding: '14px 18px', textAlign: 'center' }}>
-                        <div style={{ display: 'inline-flex', gap: 6 }}>
-                          <button
-                            className="button-secondary"
-                            style={{ padding: 6, minHeight: 'auto', display: 'flex', alignItems: 'center', borderRadius: 8, border: '1px solid rgba(0,0,0,0.06)', color: '#475569' }}
-                            onClick={() => handleOpenEditModal(flat)}
-                            title="Edit flat details"
-                          >
-                            <PencilIcon size={14} />
-                          </button>
-                          <button
-                            className="button-secondary"
-                            style={{ padding: 6, minHeight: 'auto', display: 'flex', alignItems: 'center', borderRadius: 8, border: '1px solid rgba(220,38,38,0.1)', color: '#dc2626', background: 'rgba(220,38,38,0.02)' }}
-                            onClick={() => handleDeleteFlat(flat.flat)}
-                            title="Delete flat"
-                          >
-                            <TrashIcon size={14} />
-                          </button>
-                        </div>
+                {processedFlats.map((flat, idx) => {
+                  const expiry = getLeaseExpiryInfo(flat.endDate);
+                  const isTenant = flat.occupantType === 'Tenant' || flat.occupantType === 'Multitenant';
+                  
+                  // Row highlight if expired or expiring soon (matching user yellow highlight sheet)
+                  let rowClass = '';
+                  if (isTenant && expiry.isExpired) {
+                    rowClass = 'tenant-row--expired';
+                  } else if (isTenant && expiry.isWarning) {
+                    rowClass = 'tenant-row--warning';
+                  }
+
+                  return (
+                    <tr
+                      key={flat.flat}
+                      className={rowClass}
+                      style={{
+                        background: rowClass ? undefined : (idx % 2 === 0 ? '#fff' : '#fcfcfa'),
+                        borderBottom: '1px solid rgba(0,0,0,0.04)',
+                        transition: 'background 0.15s ease'
+                      }}
+                    >
+                      {/* Flat No */}
+                      <td style={{ padding: '14px 18px', fontWeight: 700, color: '#1e293b' }}>
+                        {flat.flat}
                       </td>
-                    )}
-                  </tr>
-                ))}
+
+                      {/* Tenant / Resident Name */}
+                      <td style={{ padding: '14px 18px', fontWeight: flat.tenantName ? 600 : 400, color: flat.tenantName ? '#0f172a' : '#94a3b8' }}>
+                        {flat.tenantName || (flat.occupantType === 'Owner' ? 'Owner Occupied' : '—')}
+                      </td>
+
+                      {/* Occupancy Type Badge */}
+                      <td style={{ padding: '14px 18px' }}>
+                        <StatusPill value={flat.occupantType} />
+                      </td>
+
+                      {/* Start Date */}
+                      <td style={{ padding: '14px 18px', color: '#334155', fontSize: '0.84rem', fontWeight: 500 }}>
+                        {formatDateLabel(flat.startDate)}
+                      </td>
+
+                      {/* End Date */}
+                      <td style={{ padding: '14px 18px', color: '#334155', fontSize: '0.84rem', fontWeight: 500 }}>
+                        {formatDateLabel(flat.endDate)}
+                      </td>
+
+                      {/* Days Remaining / Expiry Badge */}
+                      <td style={{ padding: '14px 18px' }}>
+                        {flat.endDate ? (
+                          <span className={expiry.badgeClass} title={`Agreement ends: ${flat.endDate}`}>
+                            {expiry.isExpired && '🚨 '}
+                            {expiry.isExpiringSoon && '⚠️ '}
+                            {expiry.status === 'active' && '🟢 '}
+                            {expiry.daysText}
+                          </span>
+                        ) : (
+                          <span style={{ color: '#94a3b8', fontSize: '0.82rem' }}>—</span>
+                        )}
+                      </td>
+
+                      {/* Remarks */}
+                      <td style={{ padding: '14px 18px', color: '#475569', fontSize: '0.84rem' }}>
+                        {flat.remarks ? (
+                          <span style={{
+                            display: 'inline-block',
+                            background: 'rgba(241, 245, 249, 0.9)',
+                            padding: '2px 8px',
+                            borderRadius: '6px',
+                            border: '1px solid rgba(203, 213, 225, 0.6)',
+                            fontWeight: 500,
+                            fontSize: '0.8rem',
+                            color: '#334155'
+                          }}>
+                            {flat.remarks}
+                          </span>
+                        ) : '—'}
+                      </td>
+
+                      {/* Actions */}
+                      {isAdmin && (
+                        <td className="no-print" style={{ padding: '14px 18px', textAlign: 'center' }}>
+                          <div style={{ display: 'inline-flex', gap: 6 }}>
+                            <button
+                              className="button-secondary"
+                              style={{ padding: 6, minHeight: 'auto', display: 'flex', alignItems: 'center', borderRadius: 8, border: '1px solid rgba(0,0,0,0.06)', color: '#475569' }}
+                              onClick={() => handleOpenEditModal(flat)}
+                              title="Edit flat & tenant details"
+                            >
+                              <PencilIcon size={14} />
+                            </button>
+                            <button
+                              className="button-secondary"
+                              style={{ padding: 6, minHeight: 'auto', display: 'flex', alignItems: 'center', borderRadius: 8, border: '1px solid rgba(220,38,38,0.1)', color: '#dc2626', background: 'rgba(220,38,38,0.02)' }}
+                              onClick={() => handleDeleteFlat(flat.flat)}
+                              title="Delete flat"
+                            >
+                              <TrashIcon size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
@@ -1024,4 +1263,3 @@ export default function TenantTracker({ isAdmin = false }) {
     </section>
   );
 }
-

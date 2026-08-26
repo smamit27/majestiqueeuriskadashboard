@@ -480,6 +480,215 @@ export default function ParkPlusTracker({ isAdmin = false }) {
     });
   }, [invoices, filterStatus, search]);
 
+  // ── Export CSV ────────────────────────────────────────────────────────────────
+  const handleExportCSV = useCallback(() => {
+    const listToExport = filtered.length > 0 ? filtered : invoices;
+    const headers = 'Invoice ID,Invoice Date,Due Date,Description,Period,HSN,Qty,UOM,Unit Price,IGST Rate,IGST Amount,Grand Total,Payment Status,Paid Date,Remarks\n';
+    const rows = listToExport.map(i => {
+      const desc = (i.description || '').replace(/"/g, '""');
+      const period = (i.period || '').replace(/"/g, '""');
+      const remarks = (i.remarks || '').replace(/"/g, '""');
+      return `"${i.id}","${i.invoiceDate}","${i.dueDate}","${desc}","${period}","${i.hsn || ''}",${i.qty || 1},"${i.uom || 'NOS'}",${i.unitPrice || 0},${i.igstRate || 18},${i.igstAmt || 0},${i.grandTotal || 0},"${i.paymentStatus}","${i.paidDate || ''}","${remarks}"`;
+    }).join('\n');
+
+    const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', 'Majestique_Euriska_ParkPlus_Invoices.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [filtered, invoices]);
+
+  // ── Export Dedicated Print PDF ───────────────────────────────────────────────
+  const handleExportPDF = useCallback(() => {
+    const listToPrint = filtered.length > 0 ? filtered : invoices;
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    
+    const totalSubtotal = listToPrint.reduce((s, i) => s + (Number(i.unitPrice) || 0), 0);
+    const totalIGST = listToPrint.reduce((s, i) => s + (Number(i.igstAmt) || 0), 0);
+    const totalGrand = listToPrint.reduce((s, i) => s + (Number(i.grandTotal) || 0), 0);
+    
+    const paidList = listToPrint.filter(i => i.paymentStatus === 'Paid');
+    const unpaidList = listToPrint.filter(i => i.paymentStatus !== 'Paid');
+    const totalPaid = paidList.reduce((s, i) => s + (Number(i.grandTotal) || 0), 0);
+    const totalUnpaid = unpaidList.reduce((s, i) => s + (Number(i.grandTotal) || 0), 0);
+    const overdueCount = listToPrint.filter(i => {
+      const d = calcDaysLeft(i.dueDate, i.paymentStatus);
+      return d !== null && d < 0;
+    }).length;
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Majestique Euriska - Park+ Payment & Invoice Ledger</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .summary-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 12px;
+            flex-wrap: wrap;
+          }
+          .summary-item { font-weight: 600; color: #334155; }
+          .summary-item strong { color: #0f172a; }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: left; padding: 8px 10px; border: 1px solid #94a3b8; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; }
+          td { padding: 7px 10px; border: 1px solid #cbd5e1; color: #0f172a; }
+          tr:nth-child(even) { background: #f8fafc; }
+          tfoot tr { background: #f1f5f9; font-weight: 700; }
+          tfoot td { border-top: 2px solid #0f172a; color: #0f172a; }
+          
+          .pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+          }
+          .pill-paid { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+          .pill-unpaid { background: #fefce8; color: #854d0e; border: 1px solid #fef08a; }
+          .pill-partial { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+          .pill-overdue { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+          
+          .footer {
+            margin-top: 24px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 10px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 landscape; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🅿️ Majestique Euriska - Park+ Payment Tracker</h1>
+            <div class="subtitle">RFID & Automated Gate Solution — Vendor Invoices & Payment Ledger</div>
+          </div>
+          <div class="meta">
+            <div><strong>Report Date:</strong> ${generatedDate}</div>
+            <div><strong>Filter Scope:</strong> ${filterStatus === 'All' ? 'All Statuses' : filterStatus}${search ? ` • Search: "${search}"` : ''} (${listToPrint.length} Invoices)</div>
+          </div>
+        </div>
+
+        <div class="summary-bar">
+          <div class="summary-item">Total Invoices: <strong>${listToPrint.length}</strong></div>
+          <div>•</div>
+          <div class="summary-item">Total Billed: <strong>₹${formatINR(totalGrand)}</strong></div>
+          <div>•</div>
+          <div class="summary-item" style="color: #065f46;">Paid: <strong>₹${formatINR(totalPaid)} (${paidList.length})</strong></div>
+          <div>•</div>
+          <div class="summary-item" style="color: #854d0e;">Pending: <strong>₹${formatINR(totalUnpaid)} (${unpaidList.length})</strong></div>
+          ${overdueCount > 0 ? `<div>•</div><div class="summary-item" style="color: #991b1b;">Overdue: <strong>${overdueCount}</strong></div>` : ''}
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 35px; text-align: center;">#</th>
+              <th style="width: 130px;">Invoice ID</th>
+              <th style="width: 85px;">Date</th>
+              <th style="width: 85px;">Due Date</th>
+              <th>Description / Period</th>
+              <th style="width: 90px; text-align: right;">Subtotal (₹)</th>
+              <th style="width: 80px; text-align: right;">IGST (₹)</th>
+              <th style="width: 100px; text-align: right;">Grand Total (₹)</th>
+              <th style="width: 85px; text-align: center;">Status</th>
+              <th style="width: 140px;">Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${listToPrint.map((inv, index) => {
+              const pillClass = inv.paymentStatus === 'Paid'
+                ? 'pill-paid'
+                : inv.paymentStatus === 'Partial'
+                ? 'pill-partial'
+                : inv.paymentStatus === 'Overdue'
+                ? 'pill-overdue'
+                : 'pill-unpaid';
+              return `
+                <tr>
+                  <td style="text-align: center; color: #64748b; font-weight: 600;">${index + 1}</td>
+                  <td style="font-weight: 700; font-family: monospace; color: #0f172a;">
+                    ${inv.id || ''}
+                    ${inv.hsn ? `<div style="font-size: 9px; color: #64748b; font-weight: normal;">HSN: ${inv.hsn}</div>` : ''}
+                  </td>
+                  <td>${fmtDate(inv.invoiceDate)}</td>
+                  <td>${fmtDate(inv.dueDate)}</td>
+                  <td>
+                    <strong>${inv.description || '—'}</strong>
+                    ${inv.period ? `<div style="font-size: 10px; color: #475569;">Period: ${inv.period}</div>` : ''}
+                  </td>
+                  <td style="text-align: right;">${formatINR(inv.unitPrice)}</td>
+                  <td style="text-align: right;">${formatINR(inv.igstAmt)}</td>
+                  <td style="text-align: right; font-weight: 700; color: #0b2b26;">${formatINR(inv.grandTotal)}</td>
+                  <td style="text-align: center;"><span class="pill ${pillClass}">${inv.paymentStatus || 'Unpaid'}</span></td>
+                  <td style="font-size: 10px; color: #475569;">${inv.remarks || (inv.paidDate ? `Paid on ${fmtDate(inv.paidDate)}` : '—')}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" style="text-align: right; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em;">Total (${listToPrint.length} items):</td>
+              <td style="text-align: right;">${formatINR(totalSubtotal)}</td>
+              <td style="text-align: right;">${formatINR(totalIGST)}</td>
+              <td style="text-align: right; font-size: 12px; color: #0b2b26;">₹${formatINR(totalGrand)}</td>
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society • Park+ Vendor Financial Ledger</div>
+          <div>Confidential Document</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    } else {
+      window.print();
+    }
+  }, [filtered, invoices, filterStatus, search]);
+
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -557,7 +766,36 @@ export default function ParkPlusTracker({ isAdmin = false }) {
             })}
           </div>
 
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Action buttons */}
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <button
+              onClick={handleExportCSV}
+              style={{
+                padding: '7px 14px', borderRadius: 10,
+                border: '1.5px solid rgba(61,63,52,0.18)',
+                background: '#fff', color: '#1d2a24',
+                fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
+                transition: 'all 0.15s'
+              }}
+              title="Export invoices to CSV"
+            >
+              📥 Export CSV
+            </button>
+            <button
+              onClick={handleExportPDF}
+              style={{
+                padding: '7px 14px', borderRadius: 10,
+                border: '1.5px solid rgba(61,63,52,0.18)',
+                background: '#fff', color: '#1d2a24',
+                fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
+                display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
+                transition: 'all 0.15s'
+              }}
+              title="Print or export as PDF"
+            >
+              📄 Print PDF
+            </button>
             {saveStatus && (
               <span style={{ fontSize: '0.8rem', color: saveStatus.includes('✓') ? '#065f46' : '#991b1b', fontWeight: 700 }}>
                 {saveStatus}
