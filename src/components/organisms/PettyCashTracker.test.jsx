@@ -55,4 +55,10 @@ describe('PettyCashTracker', () => {
     expect(result.monthlyCommonShare).toBeCloseTo(2000 * (87 / 231), 2);
     expect(result.pendingCumulativeCommonShare).toBeCloseTo((1000 + 2000) * (87 / 231) - 800, 2);
   });
+
+  it('renders the Vendor & Payee Analytics tab without breaking', () => {
+    const html = renderToStaticMarkup(<PettyCashTracker />);
+    expect(html).toContain('Vendor &amp; Payee Analytics');
+    expect(html).toContain('A Building Expenses');
+  });
 });

@@ -2,10 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import ALL_PETTY_CASH_HISTORY from '../../data/pettyCashAllHistory.json';
 
 const PETTY_CASH_DOC_IDS = {
   buildingA: 'buildingA',
-  common: 'common'
+  common: 'common',
+  history: 'history'
 };
 
 const SUB_TABS = [
@@ -20,6 +22,12 @@ const SUB_TABS = [
     label: 'Common Expenses',
     eyebrow: 'Common Ledger',
     description: 'Shared petty cash workspace for common expenses across the society.'
+  },
+  {
+    id: 'vendorAnalytics',
+    label: '🔍 Vendor & Payee Analytics',
+    eyebrow: 'Spending Audit',
+    description: 'Search any vendor or contractor to track how much society has spent on them across all years.'
   }
 ];
 
@@ -460,6 +468,653 @@ export function calculateCommonSettlementBalance({ activeMonthId, monthSummaries
   };
 }
 
+function getFYFromDate(dateStr) {
+  if (!dateStr) return 'FY 2026-27';
+  const parts = dateStr.split('-');
+  const y = parseInt(parts[0], 10);
+  const m = parseInt(parts[1], 10);
+  if (isNaN(y) || isNaN(m)) return 'FY 2026-27';
+  const fyStart = m >= 4 ? y : y - 1;
+  return `FY ${fyStart}-${String(fyStart + 1).slice(2)}`;
+}
+
+function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
+  const [searchQuery, setSearchFilter] = useState('Rushi Dhide');
+  const [scope, setScope] = useState('all');
+
+  const dataset = useMemo(() => {
+    const raw = scope === 'all' ? allHistory : currentEntries;
+    return (raw || []).filter((e) => toNumber(e.payment) > 0);
+  }, [scope, allHistory, currentEntries]);
+
+  const normalizeVendorKey = (v = '') => {
+    const s = v.toLowerCase().trim();
+    if (s.includes('rushi') || s.includes('rshikesh') || s.includes('rushikesh') || s.includes('rishi') || s.includes('rudhi') || s.includes('dhide') || s.includes('dede')) {
+      return 'Rushi Dhide / Dede';
+    }
+    if (s.includes('uttareshwar') || s.includes('uttareswar')) {
+      return 'Uttareswar (Waterman)';
+    }
+    if (s.includes('siddu')) {
+      return 'Siddu Lende (Common Expenses)';
+    }
+    if (s.includes('rana')) {
+      return 'Rana Biswas (Plumbing)';
+    }
+    if (s.includes('parmeshwar') || s.includes('pitale')) {
+      return 'Parmeshwar Pitale (Plumbing)';
+    }
+    if (s.includes('igs') || s.includes('solar')) {
+      return 'IGS Enterprises (Solar)';
+    }
+    if (s.includes('mamata') || s.includes('stationery')) {
+      return 'Mamata Stationery';
+    }
+    if (s.includes('suryavanshi')) {
+      return 'Swapnil Suryavanshi (Plumbing)';
+    }
+    if (s.includes('mmr')) {
+      return 'MMR Technologies';
+    }
+    return v.trim() || 'Other';
+  };
+
+  const leaderboard = useMemo(() => {
+    const map = new Map();
+    dataset.forEach((e) => {
+      const key = normalizeVendorKey(e.vendor);
+      if (!map.has(key)) {
+        map.set(key, { vendor: key, count: 0, totalAmount: 0, entries: [] });
+      }
+      const item = map.get(key);
+      item.count += 1;
+      item.totalAmount += toNumber(e.payment);
+      item.entries.push(e);
+    });
+    return Array.from(map.values()).sort((a, b) => b.totalAmount - a.totalAmount);
+  }, [dataset]);
+
+  const totalExpenseAcrossAll = useMemo(() => {
+    return dataset.reduce((sum, e) => sum + toNumber(e.payment), 0);
+  }, [dataset]);
+
+  const filteredEntries = useMemo(() => {
+    if (!searchQuery.trim()) return dataset;
+    const q = searchQuery.toLowerCase().trim();
+
+    return dataset.filter((e) => {
+      const v = (e.vendor || '').toLowerCase();
+      const p = (e.purpose || '').toLowerCase();
+      const r = (e.remarks || '').toLowerCase();
+
+      if (q.includes('rushi') || q.includes('dede') || q.includes('dhide')) {
+        return (
+          v.includes('rushi') ||
+          v.includes('rshikesh') ||
+          v.includes('rushikesh') ||
+          v.includes('rishi') ||
+          v.includes('rudhi') ||
+          v.includes('dede') ||
+          v.includes('dhide') ||
+          p.includes('dhide') ||
+          p.includes('rushi')
+        );
+      }
+      return v.includes(q) || p.includes(q) || r.includes(q);
+    });
+  }, [dataset, searchQuery]);
+
+  const filteredTotal = useMemo(() => {
+    return filteredEntries.reduce((sum, e) => sum + toNumber(e.payment), 0);
+  }, [filteredEntries]);
+
+  const averagePerJob = useMemo(() => {
+    return filteredEntries.length > 0 ? filteredTotal / filteredEntries.length : 0;
+  }, [filteredTotal, filteredEntries]);
+
+  const fyBreakdown = useMemo(() => {
+    const map = {};
+    filteredEntries.forEach((e) => {
+      const fy = getFYFromDate(e.date);
+      if (!map[fy]) map[fy] = { count: 0, amount: 0 };
+      map[fy].count += 1;
+      map[fy].amount += toNumber(e.payment);
+    });
+    return Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
+  }, [filteredEntries]);
+
+  const handleExportVendorExcel = () => {
+    const workbook = XLSX.utils.book_new();
+    const rows = filteredEntries.map((e, idx) => ({
+      '#': idx + 1,
+      Date: formatShortDate(e.date),
+      'Vendor / Payee': e.vendor,
+      'Purpose / Description': e.purpose,
+      'Amount Paid (INR)': toNumber(e.payment),
+      'Financial Year': getFYFromDate(e.date),
+      Remarks: e.remarks || ''
+    }));
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(rows), 'Vendor Report');
+    XLSX.writeFile(workbook, `Vendor_Report_${(searchQuery || 'All').replace(/[^a-zA-Z0-9]/g, '_')}.xlsx`);
+  };
+
+  const handlePrintVendorPDF = () => {
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const title = searchQuery ? `Vendor Audit: ${searchQuery}` : 'Complete Vendor Expenditure Report';
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Majestique Euriska - ${title}</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .summary-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+          }
+          .summary-card {
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+          }
+          .summary-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 2px; }
+          .summary-value { font-size: 15px; font-weight: 800; color: #0f172a; }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: left; padding: 8px 10px; border: 1px solid #94a3b8; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; }
+          td { padding: 7px 10px; border: 1px solid #cbd5e1; color: #0f172a; }
+          tr:nth-child(even) { background: #f8fafc; }
+          
+          .amount-outflow { color: #dc2626; font-weight: 700; text-align: right; }
+          tfoot tr { background: #e2e8f0; font-weight: 800; }
+          tfoot td { border: 1px solid #94a3b8; padding: 8px 10px; }
+          
+          .footer {
+            margin-top: 24px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 10px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 portrait; }
+            thead { display: table-header-group; }
+            tfoot { display: table-footer-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🏢 Majestique Euriska Co-Op Housing Society</h1>
+            <div class="subtitle">Expenditure Audit Statement • ${title}</div>
+          </div>
+          <div class="meta">
+            <div><strong>Report Date:</strong> ${generatedDate}</div>
+            <div><strong>Total Jobs:</strong> ${filteredEntries.length} Transactions</div>
+          </div>
+        </div>
+
+        <div class="summary-bar">
+          <div class="summary-card">
+            <div class="summary-title">Total Amount Paid</div>
+            <div class="summary-value" style="color: #dc2626;">${formatCurrency(filteredTotal)}</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-title">Transactions Recorded</div>
+            <div class="summary-value">${filteredEntries.length} Entries</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-title">Average Paid per Job</div>
+            <div class="summary-value">${formatCurrency(averagePerJob)}</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-title">Date Range</div>
+            <div class="summary-value" style="font-size: 11px; margin-top: 3px;">
+              ${filteredEntries.length ? `${formatShortDate(filteredEntries[0].date)} → ${formatShortDate(filteredEntries[filteredEntries.length - 1].date)}` : 'N/A'}
+            </div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 30px; text-align: center;">#</th>
+              <th style="width: 85px;">Date</th>
+              <th style="width: 140px;">Payee / Vendor</th>
+              <th>Purpose / Job Details</th>
+              <th style="width: 85px;">FY</th>
+              <th style="width: 100px; text-align: right;">Amount (₹)</th>
+              <th style="width: 130px;">Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredEntries.map((e, idx) => `
+              <tr>
+                <td style="text-align: center; color: #64748b;">${idx + 1}</td>
+                <td>${formatShortDate(e.date)}</td>
+                <td style="font-weight: 700;">${e.vendor || '—'}</td>
+                <td>${e.purpose || '—'}</td>
+                <td>${getFYFromDate(e.date)}</td>
+                <td class="amount-outflow">${formatCurrency(toNumber(e.payment))}</td>
+                <td style="color: #64748b; font-style: italic;">${e.remarks || ''}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" style="text-align: right;">Total Paid:</td>
+              <td class="amount-outflow">${formatCurrency(filteredTotal)}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society • Vendor Audit Report</div>
+          <div>Confidential Accounting Record</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    } else {
+      window.print();
+    }
+  };
+
+  const quickVendors = [
+    { label: 'All Payees', query: '' },
+    { label: 'Rushi Dhide / Dede (Drainage)', query: 'Rushi Dhide' },
+    { label: 'Uttareswar (Waterman)', query: 'Uttareswar' },
+    { label: 'Siddu Lende (Common)', query: 'Siddu' },
+    { label: 'Rana Biswas (Plumbing)', query: 'Rana Biswas' },
+    { label: 'Parmeshwar Pitale (Plumbing)', query: 'Parmeshwar Pitale' },
+    { label: 'Swapnil Suryavanshi (Plumbing)', query: 'Swapnil Suryavanshi' },
+    { label: 'IGS Enterprises (Solar)', query: 'Solar' },
+    { label: 'Mamata Stationery', query: 'Mamata Stationery' }
+  ];
+
+  return (
+    <div style={{ padding: '24px' }}>
+      {/* Top Search & Filter Bar */}
+      <div
+        style={{
+          background: '#F8FAFC',
+          border: '1px solid rgba(61, 63, 52, 0.08)',
+          borderRadius: '20px',
+          padding: '20px',
+          marginBottom: '22px'
+        }}
+      >
+        <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ flex: '1 1 320px', position: 'relative' }}>
+            <input
+              type="text"
+              placeholder="🔍 Search vendor, contractor, or expense type (e.g. Rushi Dhide, Waterman, Drainage)..."
+              value={searchQuery}
+              onChange={(e) => setSearchFilter(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: '1px solid rgba(61, 63, 52, 0.16)',
+                fontSize: '0.95rem',
+                outline: 'none',
+                background: '#fff',
+                boxSizing: 'border-box'
+              }}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchFilter('')}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: '#98a2b3',
+                  fontSize: '1.1rem',
+                  cursor: 'pointer'
+                }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => setScope('all')}
+              style={{
+                border: 'none',
+                borderRadius: '999px',
+                padding: '10px 16px',
+                background: scope === 'all' ? '#0B2B26' : '#E5E7EB',
+                color: scope === 'all' ? '#fff' : '#374151',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer'
+              }}
+            >
+              🌟 All History (2023–2026)
+            </button>
+            <button
+              type="button"
+              onClick={() => setScope('fy2627')}
+              style={{
+                border: 'none',
+                borderRadius: '999px',
+                padding: '10px 16px',
+                background: scope === 'fy2627' ? '#0B2B26' : '#E5E7EB',
+                color: scope === 'fy2627' ? '#fff' : '#374151',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer'
+              }}
+            >
+              📅 FY 2026–27 Only
+            </button>
+            <button
+              type="button"
+              onClick={handleExportVendorExcel}
+              style={{
+                border: '1px solid #D0D5DD',
+                borderRadius: '12px',
+                padding: '10px 14px',
+                background: '#fff',
+                color: '#344054',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              📥 Excel
+            </button>
+            <button
+              type="button"
+              onClick={handlePrintVendorPDF}
+              style={{
+                border: '1px solid #D0D5DD',
+                borderRadius: '12px',
+                padding: '10px 14px',
+                background: '#fff',
+                color: '#344054',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              📄 Print PDF
+            </button>
+          </div>
+        </div>
+
+        {/* Quick Vendor Chips */}
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '14px', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', marginRight: '4px' }}>
+            Popular Payees:
+          </span>
+          {quickVendors.map((qv) => {
+            const isSelected = searchQuery.toLowerCase() === qv.query.toLowerCase();
+            return (
+              <button
+                key={qv.label}
+                type="button"
+                onClick={() => setSearchFilter(qv.query)}
+                style={{
+                  border: isSelected ? '1px solid #C49B4F' : '1px solid #E5E7EB',
+                  borderRadius: '999px',
+                  padding: '6px 12px',
+                  background: isSelected ? '#C49B4F' : '#fff',
+                  color: isSelected ? '#0B2B26' : '#475467',
+                  fontSize: '0.82rem',
+                  fontWeight: isSelected ? 800 : 600,
+                  cursor: 'pointer'
+                }}
+              >
+                {qv.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* KPI Metrics Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '22px' }}>
+        <div style={{ background: '#FEF3F2', padding: '18px 20px', borderRadius: '16px', border: '1px solid rgba(180, 35, 24, 0.18)' }}>
+          <div style={{ fontSize: '0.78rem', color: '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Total Spent {searchQuery ? `on "${searchQuery}"` : ''}
+          </div>
+          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#B42318', marginTop: '6px', fontVariantNumeric: 'tabular-nums' }}>
+            {formatCurrency(filteredTotal)}
+          </div>
+          <div style={{ fontSize: '0.8rem', color: '#667085', marginTop: '4px' }}>
+            {totalExpenseAcrossAll > 0 ? `${((filteredTotal / totalExpenseAcrossAll) * 100).toFixed(1)}% of total cash outflow` : ''}
+          </div>
+        </div>
+
+        <div style={{ background: '#F8FAFC', padding: '18px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
+          <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Total Transactions / Jobs
+          </div>
+          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#101828', marginTop: '6px' }}>
+            {filteredEntries.length} <span style={{ fontSize: '0.9rem', color: '#667085', fontWeight: 600 }}>Entries</span>
+          </div>
+          <div style={{ fontSize: '0.8rem', color: '#667085', marginTop: '4px' }}>
+            Across {fyBreakdown.length} Financial Years
+          </div>
+        </div>
+
+        <div style={{ background: '#F8FAFC', padding: '18px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
+          <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Average Spent per Job
+          </div>
+          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#101828', marginTop: '6px', fontVariantNumeric: 'tabular-nums' }}>
+            {formatCurrency(averagePerJob)}
+          </div>
+          <div style={{ fontSize: '0.8rem', color: '#667085', marginTop: '4px' }}>
+            Mean transaction value
+          </div>
+        </div>
+
+        <div style={{ background: '#F8FAFC', padding: '18px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
+          <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Active Timeline
+          </div>
+          <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#101828', marginTop: '10px' }}>
+            {filteredEntries.length > 0
+              ? `${formatShortDate(filteredEntries[0].date)} → ${formatShortDate(filteredEntries[filteredEntries.length - 1].date)}`
+              : 'No Records'}
+          </div>
+          <div style={{ fontSize: '0.8rem', color: '#667085', marginTop: '4px' }}>
+            Earliest to latest recorded payment
+          </div>
+        </div>
+      </div>
+
+      {/* Financial Year Breakdown Chips */}
+      {fyBreakdown.length > 0 && (
+        <div style={{ marginBottom: '22px' }}>
+          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#344054', marginBottom: '10px' }}>
+            📅 Year-by-Year Spending Breakdown:
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
+            {fyBreakdown.map(([fy, data]) => (
+              <div
+                key={fy}
+                style={{
+                  background: '#fff',
+                  border: '1px solid rgba(61, 63, 52, 0.1)',
+                  borderRadius: '12px',
+                  padding: '12px 14px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '0.85rem', color: '#101828' }}>{fy}</div>
+                  <div style={{ fontSize: '0.75rem', color: '#667085' }}>{data.count} Payments</div>
+                </div>
+                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#B42318', fontVariantNumeric: 'tabular-nums' }}>
+                  {formatCurrency(data.amount)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Transaction Table */}
+      <div style={{ overflowX: 'auto', border: '1px solid rgba(61, 63, 52, 0.08)', borderRadius: '18px', background: '#fff', boxShadow: '0 4px 16px rgba(16, 24, 40, 0.03)', marginBottom: '28px' }}>
+        <table style={{ width: '100%', minWidth: '950px', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <thead>
+            <tr>
+              <th style={{ ...headerCellStyle, width: '40px', textAlign: 'center' }}>#</th>
+              <th style={{ ...headerCellStyle, width: '110px' }}>Date</th>
+              <th style={{ ...headerCellStyle, width: '180px' }}>Payee / Vendor</th>
+              <th style={{ ...headerCellStyle, minWidth: '220px' }}>Purpose / Job Details</th>
+              <th style={{ ...headerCellStyle, width: '110px' }}>FY</th>
+              <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right' }}>Amount Paid (₹)</th>
+              <th style={{ ...headerCellStyle, width: '180px' }}>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredEntries.length === 0 ? (
+              <tr>
+                <td colSpan={7} style={emptyCellStyle}>
+                  No payment records found matching "{searchQuery}".
+                </td>
+              </tr>
+            ) : (
+              filteredEntries.map((entry, idx) => (
+                <tr key={entry.id || idx} style={{ background: idx % 2 === 1 ? '#fcfdfd' : '#ffffff' }}>
+                  <td style={{ ...bodyCellStyle, textAlign: 'center', color: '#98a2b3', fontSize: '0.82rem' }}>{idx + 1}</td>
+                  <td style={{ ...bodyCellStyle, fontWeight: 600, color: '#344054', whiteSpace: 'nowrap' }}>{formatShortDate(entry.date)}</td>
+                  <td style={{ ...bodyCellStyle, fontWeight: 800, color: '#101828' }}>{entry.vendor || '—'}</td>
+                  <td style={{ ...bodyCellStyle, color: '#1d2939' }}>{entry.purpose || '—'}</td>
+                  <td style={{ ...bodyCellStyle, color: '#667085', fontSize: '0.84rem' }}>{getFYFromDate(entry.date)}</td>
+                  <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                    {formatCurrency(toNumber(entry.payment))}
+                  </td>
+                  <td style={{ ...bodyCellStyle, color: '#667085', fontSize: '0.88rem' }}>{entry.remarks || <span style={{ color: '#cbd5e1' }}>—</span>}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+          <tfoot>
+            <tr style={{ background: '#F8FAFC', borderTop: '2px solid rgba(61, 63, 52, 0.12)' }}>
+              <td colSpan={5} style={{ ...bodyCellStyle, fontWeight: 800, color: '#101828', textAlign: 'right', fontSize: '0.92rem' }}>
+                Total Paid ({filteredEntries.length} Transactions):
+              </td>
+              <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                {formatCurrency(filteredTotal)}
+              </td>
+              <td style={bodyCellStyle} />
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      {/* Top 15 Payees Leaderboard */}
+      <div style={{ background: '#F8FAFC', border: '1px solid rgba(61, 63, 52, 0.08)', borderRadius: '20px', padding: '20px' }}>
+        <h4 style={{ margin: '0 0 14px 0', color: '#101828', fontSize: '1.05rem', fontWeight: 800 }}>
+          🏆 Society Top Payees & Contractors Leaderboard
+        </h4>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', background: '#fff', borderRadius: '12px', overflow: 'hidden' }}>
+            <thead>
+              <tr>
+                <th style={{ ...headerCellStyle, width: '50px', textAlign: 'center' }}>Rank</th>
+                <th style={{ ...headerCellStyle, minWidth: '200px' }}>Vendor / Payee Name</th>
+                <th style={{ ...headerCellStyle, width: '120px', textAlign: 'center' }}>Jobs Count</th>
+                <th style={{ ...headerCellStyle, width: '160px', textAlign: 'right' }}>Total Paid (₹)</th>
+                <th style={{ ...headerCellStyle, width: '140px', textAlign: 'right' }}>% of Total Outflow</th>
+                <th style={{ ...headerCellStyle, width: '100px', textAlign: 'center' }}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaderboard.slice(0, 15).map((item, index) => (
+                <tr key={item.vendor} style={{ background: index % 2 === 1 ? '#fcfdfd' : '#ffffff' }}>
+                  <td style={{ ...bodyCellStyle, textAlign: 'center', fontWeight: 800, color: index < 3 ? '#C49B4F' : '#667085' }}>
+                    #{index + 1}
+                  </td>
+                  <td style={{ ...bodyCellStyle, fontWeight: 700, color: '#101828' }}>{item.vendor}</td>
+                  <td style={{ ...bodyCellStyle, textAlign: 'center', color: '#475467' }}>{item.count} Jobs</td>
+                  <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums' }}>
+                    {formatCurrency(item.totalAmount)}
+                  </td>
+                  <td style={{ ...bodyCellStyle, textAlign: 'right', color: '#667085', fontVariantNumeric: 'tabular-nums' }}>
+                    {totalExpenseAcrossAll > 0 ? `${((item.totalAmount / totalExpenseAcrossAll) * 100).toFixed(1)}%` : '0%'}
+                  </td>
+                  <td style={{ ...bodyCellStyle, textAlign: 'center' }}>
+                    <button
+                      type="button"
+                      onClick={() => setSearchFilter(item.vendor)}
+                      style={{
+                        border: 'none',
+                        background: '#0B2B26',
+                        color: '#fff',
+                        borderRadius: '6px',
+                        padding: '4px 10px',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Audit ↗
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SummaryCard({ label, value, accent, caption }) {
   return (
     <div
@@ -503,6 +1158,8 @@ export default function PettyCashTracker({ isAdmin = false }) {
     buildingA: DEFAULT_BUILDING_A_ENTRIES,
     common: DEFAULT_COMMON_ENTRIES
   });
+  const [historyEntries, setHistoryEntries] = useState(() => ALL_PETTY_CASH_HISTORY);
+  const [tableSearch, setTableSearch] = useState('');
   const [activeMonthByTab, setActiveMonthByTab] = useState(() => ({
     buildingA: getCurrentFiscalMonthId('buildingA'),
     common: getCurrentFiscalMonthId('common')
@@ -517,7 +1174,9 @@ export default function PettyCashTracker({ isAdmin = false }) {
   const loadedRef = useRef(false);
 
   useEffect(() => {
-    setFormData(createEmptyForm(activeMonthByTab[subTab]));
+    if (subTab !== 'vendorAnalytics') {
+      setFormData(createEmptyForm(activeMonthByTab[subTab]));
+    }
   }, [activeMonthByTab, subTab]);
 
   useEffect(() => {
@@ -535,9 +1194,10 @@ export default function PettyCashTracker({ isAdmin = false }) {
 
       try {
         await ensureFirebaseSession();
-        const [buildingASnapshot, commonSnapshot] = await Promise.all([
+        const [buildingASnapshot, commonSnapshot, historySnapshot] = await Promise.all([
           getDoc(doc(db, 'pettyCash', PETTY_CASH_DOC_IDS.buildingA)),
-          getDoc(doc(db, 'pettyCash', PETTY_CASH_DOC_IDS.common))
+          getDoc(doc(db, 'pettyCash', PETTY_CASH_DOC_IDS.common)),
+          getDoc(doc(db, 'pettyCash', PETTY_CASH_DOC_IDS.history))
         ]);
 
         if (cancelled) {
@@ -552,6 +1212,13 @@ export default function PettyCashTracker({ isAdmin = false }) {
             ? commonSnapshot.data().entries || DEFAULT_COMMON_ENTRIES
             : DEFAULT_COMMON_ENTRIES
         });
+
+        if (historySnapshot.exists()) {
+          const hData = historySnapshot.data();
+          if (Array.isArray(hData.entries) && hData.entries.length > 0) {
+            setHistoryEntries(hData.entries);
+          }
+        }
         setSaveStatus('saved');
         setSaveMessage('Synced');
       } catch (error) {
@@ -626,12 +1293,23 @@ export default function PettyCashTracker({ isAdmin = false }) {
     [entriesByTab]
   );
 
-  const activeMonthId = activeMonthByTab[subTab];
+  const effectiveTab = subTab === 'vendorAnalytics' ? 'buildingA' : subTab;
+  const activeMonthId = activeMonthByTab[effectiveTab] || getCurrentFiscalMonthId(effectiveTab);
   const activeMonthSummary =
-    monthSummariesByTab[subTab].find((month) => month.id === activeMonthId) || monthSummariesByTab[subTab][0];
+    monthSummariesByTab[effectiveTab]?.find((month) => month.id === activeMonthId) ||
+    monthSummariesByTab[effectiveTab]?.[0] || {
+      id: '2026-08',
+      label: 'August 2026',
+      entries: [],
+      receipts: 0,
+      payments: 0,
+      openingBalance: 0,
+      closingBalance: 0
+    };
+
   const fiscalTotals = useMemo(() => {
-    const entries = entriesByTab[subTab];
-    const monthSummaries = monthSummariesByTab[subTab];
+    const entries = entriesByTab[effectiveTab] || [];
+    const monthSummaries = monthSummariesByTab[effectiveTab] || [];
     const totalReceipts = entries.reduce((sum, entry) => sum + toNumber(entry.receipt), 0);
     const totalPayments = entries.reduce((sum, entry) => sum + toNumber(entry.payment), 0);
 
@@ -641,7 +1319,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
       closingBalance: monthSummaries[monthSummaries.length - 1]?.closingBalance || 0,
       totalTransactions: entries.length
     };
-  }, [entriesByTab, monthSummariesByTab, subTab]);
+  }, [entriesByTab, monthSummariesByTab, effectiveTab]);
 
   const activeSubTabMeta = SUB_TABS.find((tab) => tab.id === subTab);
 
@@ -733,15 +1411,16 @@ export default function PettyCashTracker({ isAdmin = false }) {
   };
 
   const handleExport = () => {
+    const targetTab = subTab === 'vendorAnalytics' ? 'buildingA' : subTab;
     const workbook = XLSX.utils.book_new();
-    const monthRows = monthSummariesByTab[subTab].map((month) => ({
+    const monthRows = (monthSummariesByTab[targetTab] || []).map((month) => ({
       Month: month.label,
       'Opening Balance': month.openingBalance,
       'Receipts': month.receipts,
       'Payments': month.payments,
       'Closing Balance': month.closingBalance
     }));
-    const entryRows = withRunningBalance(entriesByTab[subTab]).map((entry) => ({
+    const entryRows = withRunningBalance(entriesByTab[targetTab] || []).map((entry) => ({
       Date: formatShortDate(entry.date),
       Particulars: entry.vendor,
       Description: entry.purpose,
@@ -753,13 +1432,14 @@ export default function PettyCashTracker({ isAdmin = false }) {
 
     XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(monthRows), 'Monthly Summary');
     XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(entryRows), 'Entries');
-    XLSX.writeFile(workbook, `Petty_Cash_${subTab}_FY2026_27.xlsx`);
+    XLSX.writeFile(workbook, `Petty_Cash_${targetTab}_FY2026_27.xlsx`);
   };
 
   const handleExportPDF = () => {
     const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const targetTab = subTab === 'vendorAnalytics' ? 'buildingA' : subTab;
     const listToPrint = activeMonthSummary.entries;
-    const tabName = subTab === 'common' ? 'Common Expenses Ledger' : 'A Building Operating Ledger';
+    const tabName = targetTab === 'common' ? 'Common Expenses Ledger' : 'A Building Operating Ledger';
 
     const printDoc = `
       <!DOCTYPE html>
@@ -979,7 +1659,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
               fontWeight: 700
             }}
           >
-            FY 2026-27
+            {subTab === 'vendorAnalytics' ? '🔍 Spending Audit' : 'FY 2026-27'}
           </div>
           <div
             style={{
@@ -990,50 +1670,54 @@ export default function PettyCashTracker({ isAdmin = false }) {
               fontWeight: 700
             }}
           >
-            {activeMonthSummary.label}
+            {subTab === 'vendorAnalytics' ? 'Multi-Year History' : activeMonthSummary.label}
           </div>
-          <button
-            type="button"
-            onClick={handleExport}
-            style={{
-              border: 'none',
-              background: '#fff',
-              color: '#0B2B26',
-              padding: '12px 18px',
-              borderRadius: '14px',
-              fontWeight: 800,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            📥 Export Excel
-          </button>
-          <button
-            type="button"
-            onClick={handleExportPDF}
-            style={{
-              border: '1px solid rgba(255,255,255,0.3)',
-              background: 'rgba(255,255,255,0.16)',
-              color: '#fff',
-              padding: '12px 18px',
-              borderRadius: '14px',
-              fontWeight: 800,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            📄 Print PDF
-          </button>
+          {subTab !== 'vendorAnalytics' && (
+            <>
+              <button
+                type="button"
+                onClick={handleExport}
+                style={{
+                  border: 'none',
+                  background: '#fff',
+                  color: '#0B2B26',
+                  padding: '12px 18px',
+                  borderRadius: '14px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                📥 Export Excel
+              </button>
+              <button
+                type="button"
+                onClick={handleExportPDF}
+                style={{
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  background: 'rgba(255,255,255,0.16)',
+                  color: '#fff',
+                  padding: '12px 18px',
+                  borderRadius: '14px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                📄 Print PDF
+              </button>
+            </>
+          )}
         </div>
       </div>
 
 
 
-      {(() => {
+      {subTab !== 'vendorAnalytics' && (() => {
         const {
           pendingCumulativeCommonShare,
           monthlySettled,
@@ -1220,358 +1904,408 @@ export default function PettyCashTracker({ isAdmin = false }) {
             })}
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              gap: '10px',
-              overflowX: 'auto',
-              paddingTop: '18px',
-              marginTop: '18px',
-              borderTop: '1px solid rgba(61, 63, 52, 0.08)'
-            }}
-          >
-            {getFiscalMonths(subTab).map((month) => {
-              const isActive = month.id === activeMonthId;
+          {subTab !== 'vendorAnalytics' && (
+            <div
+              style={{
+                display: 'flex',
+                gap: '10px',
+                overflowX: 'auto',
+                paddingTop: '18px',
+                marginTop: '18px',
+                borderTop: '1px solid rgba(61, 63, 52, 0.08)'
+              }}
+            >
+              {getFiscalMonths(subTab).map((month) => {
+                const isActive = month.id === activeMonthId;
 
-              return (
-                <button
-                  key={month.id}
-                  type="button"
-                  onClick={() =>
-                    setActiveMonthByTab((current) => ({
-                      ...current,
-                      [subTab]: month.id
-                    }))
-                  }
-                  style={{
-                    flex: '0 0 auto',
-                    border: 'none',
-                    borderRadius: '999px',
-                    padding: '10px 16px',
-                    background: isActive ? '#C49B4F' : '#F8FAFC',
-                    color: isActive ? '#0B2B26' : '#475467',
-                    fontWeight: 700,
-                    cursor: 'pointer'
-                  }}
-                >
-                  {month.label}
-                </button>
-              );
-            })}
-          </div>
+                return (
+                  <button
+                    key={month.id}
+                    type="button"
+                    onClick={() =>
+                      setActiveMonthByTab((current) => ({
+                        ...current,
+                        [subTab]: month.id
+                      }))
+                    }
+                    style={{
+                      flex: '0 0 auto',
+                      border: 'none',
+                      borderRadius: '999px',
+                      padding: '10px 16px',
+                      background: isActive ? '#C49B4F' : '#F8FAFC',
+                      color: isActive ? '#0B2B26' : '#475467',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {month.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        <div
-          style={{
-            padding: '24px'
-          }}
-        >
-          <div style={{ minWidth: 0 }}>
-            {/* Month Balance KPI Summary Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '22px' }}>
-              <div style={{ background: '#F8FAFC', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
-                <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Opening Balance</div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: activeMonthSummary.openingBalance >= 0 ? '#101828' : '#B42318', marginTop: '6px' }}>
-                  {formatCurrency(activeMonthSummary.openingBalance)}
-                </div>
-              </div>
-              <div style={{ background: '#F0FDF4', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(11, 110, 79, 0.18)' }}>
-                <div style={{ fontSize: '0.78rem', color: '#0B6E4F', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Month Receipts (Inflow)</div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0B6E4F', marginTop: '6px' }}>
-                  +{formatCurrency(activeMonthSummary.receipts)}
-                </div>
-              </div>
-              <div style={{ background: '#FEF3F2', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(180, 35, 24, 0.18)' }}>
-                <div style={{ fontSize: '0.78rem', color: '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Month Payments (Expenses)</div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#B42318', marginTop: '6px' }}>
-                  -{formatCurrency(activeMonthSummary.payments)}
-                </div>
-              </div>
-              <div style={{ background: activeMonthSummary.closingBalance >= 0 ? '#F0FDF4' : '#FFF4F4', padding: '16px 20px', borderRadius: '16px', border: `1px solid ${activeMonthSummary.closingBalance >= 0 ? 'rgba(11, 110, 79, 0.25)' : 'rgba(180, 35, 24, 0.25)'}` }}>
-                <div style={{ fontSize: '0.78rem', color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Closing Balance ({activeMonthSummary.label})</div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', marginTop: '6px' }}>
-                  {formatCurrency(activeMonthSummary.closingBalance)}
-                </div>
-              </div>
-            </div>
-
-            {isAdmin && (
-              <div
-                style={{
-                  background: '#F8FAFC',
-                  border: '1px solid rgba(61, 63, 52, 0.08)',
-                  borderRadius: '18px',
-                  padding: '18px',
-                  marginBottom: '18px'
-                }}
-              >
-                <h4 style={{ margin: 0, color: '#101828', fontSize: '1rem', marginBottom: '14px' }}>
-                  Add Entry to {activeMonthSummary.label}
-                </h4>
-                <form onSubmit={handleAddEntry} style={{ marginTop: '14px', display: 'grid', gap: '12px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1.4fr 1.8fr', gap: '12px' }}>
-                    <input
-                      style={fieldStyle}
-                      type="date"
-                      value={formData.date}
-                      onChange={(event) => handleFieldChange('date', event.target.value)}
-                    />
-                    <select
-                      style={fieldStyle}
-                      value={formData.vendor}
-                      onChange={(event) => {
-                        const val = event.target.value;
-                        setFormData((prev) => ({
-                          ...prev,
-                          vendor: val,
-                          receipt: val === 'Expenses' || val === 'Common Settlement' ? '' : prev.receipt,
-                          payment: val === 'Petty cash' || val === 'Event' ? '' : prev.payment
-                        }));
-                      }}
-                    >
-                      <option value="" disabled>Select Category</option>
-                      <option value="Petty cash">Petty cash</option>
-                      <option value="Event">Event</option>
-                      <option value="Expenses">Expenses</option>
-                      <option value="Common Settlement">Common Settlement</option>
-                    </select>
-                    <input
-                      style={fieldStyle}
-                      placeholder="Description / Vendor"
-                      value={formData.purpose}
-                      onChange={(event) => handleFieldChange('purpose', event.target.value)}
-                    />
+        {subTab === 'vendorAnalytics' ? (
+          <VendorAnalyticsView
+            allHistory={historyEntries}
+            currentEntries={entriesByTab.buildingA}
+          />
+        ) : (
+          <div
+            style={{
+              padding: '24px'
+            }}
+          >
+            <div style={{ minWidth: 0 }}>
+              {/* Month Balance KPI Summary Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '22px' }}>
+                <div style={{ background: '#F8FAFC', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
+                  <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Opening Balance</div>
+                  <div style={{ fontSize: '1.35rem', fontWeight: 800, color: activeMonthSummary.openingBalance >= 0 ? '#101828' : '#B42318', marginTop: '6px' }}>
+                    {formatCurrency(activeMonthSummary.openingBalance)}
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '12px' }}>
-                    {(formData.vendor === 'Petty cash' || formData.vendor === 'Event') && (
-                      <input
-                        style={fieldStyle}
-                        type="number"
-                        placeholder="Receipt Amount"
-                        value={formData.receipt}
-                        onChange={(event) => handleFieldChange('receipt', event.target.value)}
-                      />
-                    )}
-                    {(formData.vendor === 'Expenses' || formData.vendor === 'Common Settlement') && (
-                      <input
-                        style={fieldStyle}
-                        type="number"
-                        placeholder="Payment Amount"
-                        value={formData.payment}
-                        onChange={(event) => handleFieldChange('payment', event.target.value)}
-                      />
-                    )}
-                    {!formData.vendor && (
-                      <div style={{ ...fieldStyle, background: '#f8fafc', color: '#94a3b8', display: 'flex', alignItems: 'center' }}>
-                        Select category
-                      </div>
-                    )}
-                    <input
-                      style={fieldStyle}
-                      placeholder="Remarks"
-                      value={formData.remarks}
-                      onChange={(event) => handleFieldChange('remarks', event.target.value)}
-                    />
+                </div>
+                <div style={{ background: '#F0FDF4', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(11, 110, 79, 0.18)' }}>
+                  <div style={{ fontSize: '0.78rem', color: '#0B6E4F', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Month Receipts (Inflow)</div>
+                  <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0B6E4F', marginTop: '6px' }}>
+                    +{formatCurrency(activeMonthSummary.receipts)}
+                  </div>
+                </div>
+                <div style={{ background: '#FEF3F2', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(180, 35, 24, 0.18)' }}>
+                  <div style={{ fontSize: '0.78rem', color: '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Month Payments (Expenses)</div>
+                  <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#B42318', marginTop: '6px' }}>
+                    -{formatCurrency(activeMonthSummary.payments)}
+                  </div>
+                </div>
+                <div style={{ background: activeMonthSummary.closingBalance >= 0 ? '#F0FDF4' : '#FFF4F4', padding: '16px 20px', borderRadius: '16px', border: `1px solid ${activeMonthSummary.closingBalance >= 0 ? 'rgba(11, 110, 79, 0.25)' : 'rgba(180, 35, 24, 0.25)'}` }}>
+                  <div style={{ fontSize: '0.78rem', color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Closing Balance ({activeMonthSummary.label})</div>
+                  <div style={{ fontSize: '1.35rem', fontWeight: 800, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', marginTop: '6px' }}>
+                    {formatCurrency(activeMonthSummary.closingBalance)}
+                  </div>
+                </div>
+              </div>
+
+              {/* In-table Search Bar */}
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 280px', position: 'relative' }}>
+                  <input
+                    type="text"
+                    placeholder={`🔍 Search in ${activeMonthSummary.label} (e.g. Rushi, Waterman, Stationery, Cable)...`}
+                    value={tableSearch}
+                    onChange={(e) => setTableSearch(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(61, 63, 52, 0.14)',
+                      fontSize: '0.9rem',
+                      outline: 'none',
+                      background: '#fff',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                  {tableSearch && (
                     <button
-                      type="submit"
+                      type="button"
+                      onClick={() => setTableSearch('')}
                       style={{
+                        position: 'absolute',
+                        right: '10px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
                         border: 'none',
-                        borderRadius: '12px',
-                        padding: '0 18px',
-                        background: '#0B6E4F',
-                        color: '#fff',
-                        fontWeight: 800,
+                        color: '#98a2b3',
                         cursor: 'pointer'
                       }}
                     >
-                      Add
+                      ✕
                     </button>
-                  </div>
-                </form>
+                  )}
+                </div>
               </div>
-            )}
 
-            <div style={{ overflowX: 'auto', border: '1px solid rgba(61, 63, 52, 0.08)', borderRadius: '18px', background: '#fff', boxShadow: '0 4px 16px rgba(16, 24, 40, 0.03)' }}>
-              <table style={{ width: '100%', minWidth: '1020px', borderCollapse: 'collapse', textAlign: 'left' }}>
-                <thead>
-                  <tr>
-                    <th style={{ ...headerCellStyle, width: '125px', whiteSpace: 'nowrap' }}>Date</th>
-                    <th style={{ ...headerCellStyle, width: '200px' }}>Particulars</th>
-                    <th style={{ ...headerCellStyle, minWidth: '220px' }}>Description</th>
-                    <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right', whiteSpace: 'nowrap' }}>Receipt (₹)</th>
-                    <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right', whiteSpace: 'nowrap' }}>Payment (₹)</th>
-                    <th style={{ ...headerCellStyle, width: '145px', textAlign: 'right', whiteSpace: 'nowrap' }}>Balance (₹)</th>
-                    <th style={{ ...headerCellStyle, width: '190px' }}>Remarks</th>
-                    {isAdmin && <th style={{ ...headerCellStyle, width: '90px', textAlign: 'center', whiteSpace: 'nowrap' }}>Action</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoading ? (
-                    <tr>
-                      <td colSpan={isAdmin ? 8 : 7} style={emptyCellStyle}>
-                        Loading petty cash data...
-                      </td>
-                    </tr>
-                  ) : activeMonthSummary.entries.length === 0 ? (
-                    <tr>
-                      <td colSpan={isAdmin ? 8 : 7} style={emptyCellStyle}>
-                        No entries in {activeMonthSummary.label}. July 2026 is ready to start for A Building.
-                      </td>
-                    </tr>
-                  ) : (
-                    activeMonthSummary.entries.map((entry, idx) => (
-                      <tr
-                        key={entry.id}
-                        style={{
-                          background: idx % 2 === 0 ? '#ffffff' : '#fcfdfd',
-                          transition: 'background 0.15s ease'
+              {isAdmin && (
+                <div
+                  style={{
+                    background: '#F8FAFC',
+                    border: '1px solid rgba(61, 63, 52, 0.08)',
+                    borderRadius: '18px',
+                    padding: '18px',
+                    marginBottom: '18px'
+                  }}
+                >
+                  <h4 style={{ margin: 0, color: '#101828', fontSize: '1rem', marginBottom: '14px' }}>
+                    Add Entry to {activeMonthSummary.label}
+                  </h4>
+                  <form onSubmit={handleAddEntry} style={{ marginTop: '14px', display: 'grid', gap: '12px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1.4fr 1.8fr', gap: '12px' }}>
+                      <input
+                        style={fieldStyle}
+                        type="date"
+                        value={formData.date}
+                        onChange={(event) => handleFieldChange('date', event.target.value)}
+                      />
+                      <select
+                        style={fieldStyle}
+                        value={formData.vendor}
+                        onChange={(event) => {
+                          const val = event.target.value;
+                          setFormData((prev) => ({
+                            ...prev,
+                            vendor: val,
+                            receipt: val === 'Expenses' || val === 'Common Settlement' ? '' : prev.receipt,
+                            payment: val === 'Petty cash' || val === 'Event' ? '' : prev.payment
+                          }));
                         }}
                       >
-                        <td style={{ ...bodyCellStyle, whiteSpace: 'nowrap', fontWeight: 600, color: '#475467' }}>
-                          {isAdmin && editingEntryId === entry.id ? (
-                            <input
-                              type="date"
-                              value={entry.date}
-                              onChange={(event) => updateEntry(entry.id, 'date', event.target.value)}
-                              style={inlineInputStyle}
-                            />
-                          ) : (
-                            formatShortDate(entry.date)
-                          )}
+                        <option value="" disabled>Select Category</option>
+                        <option value="Petty cash">Petty cash</option>
+                        <option value="Event">Event</option>
+                        <option value="Expenses">Expenses</option>
+                        <option value="Common Settlement">Common Settlement</option>
+                      </select>
+                      <input
+                        style={fieldStyle}
+                        placeholder="Description / Vendor"
+                        value={formData.purpose}
+                        onChange={(event) => handleFieldChange('purpose', event.target.value)}
+                      />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '12px' }}>
+                      {(formData.vendor === 'Petty cash' || formData.vendor === 'Event') && (
+                        <input
+                          style={fieldStyle}
+                          type="number"
+                          placeholder="Receipt Amount"
+                          value={formData.receipt}
+                          onChange={(event) => handleFieldChange('receipt', event.target.value)}
+                        />
+                      )}
+                      {(formData.vendor === 'Expenses' || formData.vendor === 'Common Settlement') && (
+                        <input
+                          style={fieldStyle}
+                          type="number"
+                          placeholder="Payment Amount"
+                          value={formData.payment}
+                          onChange={(event) => handleFieldChange('payment', event.target.value)}
+                        />
+                      )}
+                      {!formData.vendor && (
+                        <div style={{ ...fieldStyle, background: '#f8fafc', color: '#94a3b8', display: 'flex', alignItems: 'center' }}>
+                          Select category
+                        </div>
+                      )}
+                      <input
+                        style={fieldStyle}
+                        placeholder="Remarks"
+                        value={formData.remarks}
+                        onChange={(event) => handleFieldChange('remarks', event.target.value)}
+                      />
+                      <button
+                        type="submit"
+                        style={{
+                          border: 'none',
+                          borderRadius: '12px',
+                          padding: '0 18px',
+                          background: '#0B6E4F',
+                          color: '#fff',
+                          fontWeight: 800,
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              <div style={{ overflowX: 'auto', border: '1px solid rgba(61, 63, 52, 0.08)', borderRadius: '18px', background: '#fff', boxShadow: '0 4px 16px rgba(16, 24, 40, 0.03)' }}>
+                <table style={{ width: '100%', minWidth: '1020px', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <thead>
+                    <tr>
+                      <th style={{ ...headerCellStyle, width: '125px', whiteSpace: 'nowrap' }}>Date</th>
+                      <th style={{ ...headerCellStyle, width: '200px' }}>Particulars</th>
+                      <th style={{ ...headerCellStyle, minWidth: '220px' }}>Description</th>
+                      <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right', whiteSpace: 'nowrap' }}>Receipt (₹)</th>
+                      <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right', whiteSpace: 'nowrap' }}>Payment (₹)</th>
+                      <th style={{ ...headerCellStyle, width: '145px', textAlign: 'right', whiteSpace: 'nowrap' }}>Balance (₹)</th>
+                      <th style={{ ...headerCellStyle, width: '190px' }}>Remarks</th>
+                      {isAdmin && <th style={{ ...headerCellStyle, width: '90px', textAlign: 'center', whiteSpace: 'nowrap' }}>Action</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {isLoading ? (
+                      <tr>
+                        <td colSpan={isAdmin ? 8 : 7} style={emptyCellStyle}>
+                          Loading petty cash data...
                         </td>
-                        <td style={{ ...bodyCellStyle, fontWeight: 700, color: '#101828' }}>
-                          {isAdmin && editingEntryId === entry.id ? (
-                            <select
-                              style={inlineInputStyle}
-                              value={entry.vendor || ''}
-                              onChange={(event) => {
-                                const val = event.target.value;
-                                updateEntry(entry.id, 'vendor', val);
-                                if (val === 'Expenses' || val === 'Common Settlement') updateEntry(entry.id, 'receipt', '');
-                                if (val === 'Petty cash' || val === 'Event') updateEntry(entry.id, 'payment', '');
-                              }}
-                            >
-                              <option value="" disabled>Select Category</option>
-                              <option value="Petty cash">Petty cash</option>
-                              <option value="Event">Event</option>
-                              <option value="Expenses">Expenses</option>
-                              <option value="Common Settlement">Common Settlement</option>
-                            </select>
-                          ) : (
-                            entry.vendor || '--'
-                          )}
-                        </td>
-                        <td style={{ ...bodyCellStyle, color: '#344054' }}>
-                          {isAdmin && editingEntryId === entry.id ? (
-                            <input
-                              value={entry.purpose || ''}
-                              onChange={(event) => updateEntry(entry.id, 'purpose', event.target.value)}
-                              style={inlineInputStyle}
-                            />
-                          ) : (
-                            entry.purpose || '--'
-                          )}
-                        </td>
-                        <td style={{ ...bodyCellStyle, textAlign: 'right', color: '#0B6E4F', fontWeight: 700, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
-                          {isAdmin && editingEntryId === entry.id && (entry.vendor === 'Petty cash' || entry.vendor === 'Event') ? (
-                            <input
-                              type="number"
-                              value={entry.receipt || ''}
-                              onChange={(event) => updateEntry(entry.id, 'receipt', event.target.value)}
-                              style={{ ...inlineInputStyle, textAlign: 'right', color: '#0B6E4F', fontWeight: 700 }}
-                            />
-                          ) : toNumber(entry.receipt) > 0 ? (
-                            formatCurrency(toNumber(entry.receipt))
-                          ) : (
-                            <span style={{ color: '#98a2b3' }}>—</span>
-                          )}
-                        </td>
-                        <td style={{ ...bodyCellStyle, textAlign: 'right', color: '#B42318', fontWeight: 700, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
-                          {isAdmin && editingEntryId === entry.id && (entry.vendor === 'Expenses' || entry.vendor === 'Common Settlement') ? (
-                            <input
-                              type="number"
-                              value={entry.payment || ''}
-                              onChange={(event) => updateEntry(entry.id, 'payment', event.target.value)}
-                              style={{ ...inlineInputStyle, textAlign: 'right', color: '#B42318', fontWeight: 700 }}
-                            />
-                          ) : toNumber(entry.payment) > 0 ? (
-                            formatCurrency(toNumber(entry.payment))
-                          ) : (
-                            <span style={{ color: '#98a2b3' }}>—</span>
-                          )}
-                        </td>
-                        <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: entry.balance >= 0 ? '#0B6E4F' : '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
-                          {formatCurrency(entry.balance)}
-                        </td>
-                        <td style={{ ...bodyCellStyle, color: '#667085', fontSize: '0.88rem' }}>
-                          {isAdmin && editingEntryId === entry.id ? (
-                            <input
-                              value={entry.remarks || ''}
-                              onChange={(event) => updateEntry(entry.id, 'remarks', event.target.value)}
-                              style={inlineInputStyle}
-                            />
-                          ) : (
-                            entry.remarks || <span style={{ color: '#cbd5e1' }}>—</span>
-                          )}
-                        </td>
-                        {isAdmin && (
-                          <td style={{ ...bodyCellStyle, textAlign: 'center' }}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                              {editingEntryId === entry.id ? (
-                                <button
-                                  type="button"
-                                  onClick={() => setEditingEntryId(null)}
-                                  style={{ border: 'none', background: 'transparent', color: '#0B6E4F', cursor: 'pointer', padding: '4px' }}
-                                  title="Done Editing"
-                                >
-                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                </button>
-                              ) : (
-                                <button
-                                  type="button"
-                                  onClick={() => setEditingEntryId(entry.id)}
-                                  style={{ border: 'none', background: 'transparent', color: '#667085', cursor: 'pointer', padding: '4px' }}
-                                  title="Edit Entry"
-                                >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                                </button>
-                              )}
-                              <button
-                                type="button"
-                                onClick={() => removeEntry(entry.id)}
-                                style={{ border: 'none', background: 'transparent', color: '#B42318', cursor: 'pointer', padding: '4px' }}
-                                title="Delete Entry"
-                              >
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                              </button>
-                            </div>
-                          </td>
-                        )}
                       </tr>
-                    ))
-                  )}
-                </tbody>
-                <tfoot>
-                  <tr style={{ background: '#F8FAFC', borderTop: '2px solid rgba(61, 63, 52, 0.12)' }}>
-                    <td colSpan={3} style={{ ...bodyCellStyle, fontWeight: 800, color: '#101828', textAlign: 'right', fontSize: '0.92rem' }}>
-                      {activeMonthSummary.label} Total:
-                    </td>
-                    <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#0B6E4F', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
-                      {formatCurrency(activeMonthSummary.receipts)}
-                    </td>
-                    <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
-                      {formatCurrency(activeMonthSummary.payments)}
-                    </td>
-                    <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
-                      {formatCurrency(activeMonthSummary.closingBalance)}
-                    </td>
-                    <td colSpan={isAdmin ? 2 : 1} style={bodyCellStyle} />
-                  </tr>
-                </tfoot>
-              </table>
+                    ) : activeMonthSummary.entries.length === 0 ? (
+                      <tr>
+                        <td colSpan={isAdmin ? 8 : 7} style={emptyCellStyle}>
+                          No entries in {activeMonthSummary.label}. July 2026 is ready to start for A Building.
+                        </td>
+                      </tr>
+                    ) : (
+                      activeMonthSummary.entries
+                        .filter((entry) => {
+                          if (!tableSearch.trim()) return true;
+                          const q = tableSearch.toLowerCase().trim();
+                          return (
+                            (entry.vendor || '').toLowerCase().includes(q) ||
+                            (entry.purpose || '').toLowerCase().includes(q) ||
+                            (entry.remarks || '').toLowerCase().includes(q) ||
+                            (entry.payment || '').toString().includes(q) ||
+                            (entry.receipt || '').toString().includes(q)
+                          );
+                        })
+                        .map((entry, index) => (
+                        <tr
+                          key={entry.id || `${activeMonthSummary.id}-${index}`}
+                          style={{
+                            background: index % 2 === 1 ? '#fcfdfd' : '#ffffff',
+                            transition: 'background 0.15s ease'
+                          }}
+                        >
+                          <td style={{ ...bodyCellStyle, fontWeight: 600, color: '#344054', whiteSpace: 'nowrap' }}>
+                            {isAdmin && editingEntryId === entry.id ? (
+                              <input
+                                type="date"
+                                value={entry.date}
+                                onChange={(event) => updateEntry(entry.id, 'date', event.target.value)}
+                                style={inlineInputStyle}
+                              />
+                            ) : (
+                              formatShortDate(entry.date)
+                            )}
+                          </td>
+                          <td style={{ ...bodyCellStyle, fontWeight: 700, color: '#101828' }}>
+                            {isAdmin && editingEntryId === entry.id ? (
+                              <input
+                                value={entry.vendor}
+                                onChange={(event) => updateEntry(entry.id, 'vendor', event.target.value)}
+                                style={inlineInputStyle}
+                              />
+                            ) : (
+                              entry.vendor
+                            )}
+                          </td>
+                          <td style={{ ...bodyCellStyle, color: '#1d2939' }}>
+                            {isAdmin && editingEntryId === entry.id ? (
+                              <input
+                                value={entry.purpose}
+                                onChange={(event) => updateEntry(entry.id, 'purpose', event.target.value)}
+                                style={inlineInputStyle}
+                              />
+                            ) : (
+                              entry.purpose
+                            )}
+                          </td>
+                          <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 700, color: '#0B6E4F', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                            {isAdmin && editingEntryId === entry.id ? (
+                              <input
+                                type="number"
+                                value={entry.receipt || ''}
+                                onChange={(event) => updateEntry(entry.id, 'receipt', event.target.value)}
+                                style={{ ...inlineInputStyle, textAlign: 'right' }}
+                              />
+                            ) : toNumber(entry.receipt) > 0 ? (
+                              formatCurrency(toNumber(entry.receipt))
+                            ) : (
+                              <span style={{ color: '#98a2b3' }}>—</span>
+                            )}
+                          </td>
+                          <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 700, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                            {isAdmin && editingEntryId === entry.id ? (
+                              <input
+                                type="number"
+                                value={entry.payment || ''}
+                                onChange={(event) => updateEntry(entry.id, 'payment', event.target.value)}
+                                style={{ ...inlineInputStyle, textAlign: 'right' }}
+                              />
+                            ) : toNumber(entry.payment) > 0 ? (
+                              formatCurrency(toNumber(entry.payment))
+                            ) : (
+                              <span style={{ color: '#98a2b3' }}>—</span>
+                            )}
+                          </td>
+                          <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: entry.balance >= 0 ? '#0B6E4F' : '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                            {formatCurrency(entry.balance)}
+                          </td>
+                          <td style={{ ...bodyCellStyle, color: '#667085', fontSize: '0.88rem' }}>
+                            {isAdmin && editingEntryId === entry.id ? (
+                              <input
+                                value={entry.remarks || ''}
+                                onChange={(event) => updateEntry(entry.id, 'remarks', event.target.value)}
+                                style={inlineInputStyle}
+                              />
+                            ) : (
+                              entry.remarks || <span style={{ color: '#cbd5e1' }}>—</span>
+                            )}
+                          </td>
+                          {isAdmin && (
+                            <td style={{ ...bodyCellStyle, textAlign: 'center' }}>
+                              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                {editingEntryId === entry.id ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingEntryId(null)}
+                                    style={{ border: 'none', background: 'transparent', color: '#0B6E4F', cursor: 'pointer', padding: '4px' }}
+                                    title="Done Editing"
+                                  >
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingEntryId(entry.id)}
+                                    style={{ border: 'none', background: 'transparent', color: '#667085', cursor: 'pointer', padding: '4px' }}
+                                    title="Edit Entry"
+                                  >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => removeEntry(entry.id)}
+                                  style={{ border: 'none', background: 'transparent', color: '#B42318', cursor: 'pointer', padding: '4px' }}
+                                  title="Delete Entry"
+                                >
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                </button>
+                              </div>
+                            </td>
+                          )}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                  <tfoot>
+                    <tr style={{ background: '#F8FAFC', borderTop: '2px solid rgba(61, 63, 52, 0.12)' }}>
+                      <td colSpan={3} style={{ ...bodyCellStyle, fontWeight: 800, color: '#101828', textAlign: 'right', fontSize: '0.92rem' }}>
+                        {activeMonthSummary.label} Total:
+                      </td>
+                      <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#0B6E4F', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                        {formatCurrency(activeMonthSummary.receipts)}
+                      </td>
+                      <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                        {formatCurrency(activeMonthSummary.payments)}
+                      </td>
+                      <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                        {formatCurrency(activeMonthSummary.closingBalance)}
+                      </td>
+                      <td colSpan={isAdmin ? 2 : 1} style={bodyCellStyle} />
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

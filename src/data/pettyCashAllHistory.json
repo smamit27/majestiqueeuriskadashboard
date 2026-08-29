@@ -1,0 +1,1613 @@
+[
+  {
+    "id": 1782921800000,
+    "date": "2023-05-01",
+    "vendor": "",
+    "purpose": "",
+    "receipt": "",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800001,
+    "date": "2023-05-03",
+    "vendor": "Uttareshwar",
+    "purpose": "Waterman Salary",
+    "receipt": "10000",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800002,
+    "date": "2023-05-03",
+    "vendor": "Mamata Stationery",
+    "purpose": "Stationery",
+    "receipt": "",
+    "payment": "837",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800003,
+    "date": "2023-05-03",
+    "vendor": "Prime Enterprises",
+    "purpose": "xerox",
+    "receipt": "",
+    "payment": "45",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800004,
+    "date": "2023-06-02",
+    "vendor": "MMR Technologes",
+    "purpose": "Ofice Expenses",
+    "receipt": "",
+    "payment": "500",
+    "remarks": "PC Password Reset"
+  },
+  {
+    "id": 1782921800005,
+    "date": "2023-06-03",
+    "vendor": "Varad Electronics",
+    "purpose": "Data Cable",
+    "receipt": "",
+    "payment": "300",
+    "remarks": "Lan cable"
+  },
+  {
+    "id": 1782921800006,
+    "date": "2023-06-03",
+    "vendor": "Bhagyashree Shope",
+    "purpose": "Ofice Expenses",
+    "receipt": "",
+    "payment": "324",
+    "remarks": "LAL Heat"
+  },
+  {
+    "id": 1782921800007,
+    "date": "2023-06-03",
+    "vendor": "",
+    "purpose": "",
+    "receipt": "",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800008,
+    "date": "2023-06-04",
+    "vendor": "Rshikesh Dhide",
+    "purpose": "Chember Cleaning",
+    "receipt": "15000",
+    "payment": "4000",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800009,
+    "date": "2023-06-04",
+    "vendor": "Utareshwar",
+    "purpose": "waterman Salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800010,
+    "date": "2023-06-14",
+    "vendor": "Mamata Stationery",
+    "purpose": "Stationery",
+    "receipt": "",
+    "payment": "300",
+    "remarks": "Paper Rim"
+  },
+  {
+    "id": 1782921800011,
+    "date": "2023-06-16",
+    "vendor": "Swapnil Chopkar",
+    "purpose": "solar Repairing",
+    "receipt": "",
+    "payment": "1000",
+    "remarks": "Solar Tube Replacement"
+  },
+  {
+    "id": 1782921800012,
+    "date": "2023-06-18",
+    "vendor": "Rajan",
+    "purpose": "Electrical Repaiing",
+    "receipt": "",
+    "payment": "200",
+    "remarks": "Tube Light itting 02 nos"
+  },
+  {
+    "id": 1782921800013,
+    "date": "2023-07-06",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800014,
+    "date": "2023-07-07",
+    "vendor": "Uttareswar",
+    "purpose": "Waerman Salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800015,
+    "date": "2023-07-09",
+    "vendor": "C builing",
+    "purpose": "Common Expenses Share",
+    "receipt": "",
+    "payment": "2889",
+    "remarks": "Electria Material Purchace"
+  },
+  {
+    "id": 1782921800016,
+    "date": "2023-07-15",
+    "vendor": "Swapnil Suryavanshi",
+    "purpose": "Plumbing Charge",
+    "receipt": "",
+    "payment": "300",
+    "remarks": "407 lekage work"
+  },
+  {
+    "id": 1782921800017,
+    "date": "2023-07-15",
+    "vendor": "B Building",
+    "purpose": "Common Expenses Share",
+    "receipt": "",
+    "payment": "893",
+    "remarks": "Swimming pool Ladder reparing"
+  },
+  {
+    "id": 1782921800018,
+    "date": "2023-07-19",
+    "vendor": "Swapnil Suryavanshi",
+    "purpose": "Plumbing Charge",
+    "receipt": "",
+    "payment": "865",
+    "remarks": "Garden area Nosal fitting"
+  },
+  {
+    "id": 1782921800019,
+    "date": "2023-07-20",
+    "vendor": "Sanjeev Yadav",
+    "purpose": "Transportation charges",
+    "receipt": "",
+    "payment": "1200",
+    "remarks": "Ladder transportation"
+  },
+  {
+    "id": 1782921800020,
+    "date": "2023-07-21",
+    "vendor": "Rushikesh Dhide",
+    "purpose": "chember claning",
+    "receipt": "",
+    "payment": "4000",
+    "remarks": "all cheber clening"
+  },
+  {
+    "id": 1782921800021,
+    "date": "2023-07-21",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "2218",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800022,
+    "date": "2023-07-21",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "A and C Building share",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800023,
+    "date": "2023-07-21",
+    "vendor": "2615",
+    "purpose": "",
+    "receipt": "Amount Receive",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800024,
+    "date": "2023-07-21",
+    "vendor": "Salim Key Maker",
+    "purpose": "Clubhouse Door Key making",
+    "receipt": "",
+    "payment": "1200",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800025,
+    "date": "2023-07-21",
+    "vendor": "Naik Krushi Udyog",
+    "purpose": "Pestiside purchase",
+    "receipt": "",
+    "payment": "295",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800026,
+    "date": "2023-08-03",
+    "vendor": "Balasaheb kanal",
+    "purpose": "Electrical repairng charges",
+    "receipt": "",
+    "payment": "350",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800027,
+    "date": "2023-08-03",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800028,
+    "date": "2023-08-03",
+    "vendor": "C builing",
+    "purpose": "Common Expenses Share",
+    "receipt": "",
+    "payment": "1574",
+    "remarks": "Pump And garden tools"
+  },
+  {
+    "id": 1782921800029,
+    "date": "2023-08-03",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman Salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800030,
+    "date": "2023-08-03",
+    "vendor": "B Building",
+    "purpose": "Common Expenses Share",
+    "receipt": "",
+    "payment": "1958",
+    "remarks": "Street Light Purchase"
+  },
+  {
+    "id": 1782921800031,
+    "date": "2023-08-05",
+    "vendor": "Swapnil Suryavanshi",
+    "purpose": "Plumbing Charges",
+    "receipt": "",
+    "payment": "500",
+    "remarks": "302 parkingand 202 parking lekage work"
+  },
+  {
+    "id": 1782921800032,
+    "date": "2023-08-05",
+    "vendor": "JC Collection",
+    "purpose": "xerox",
+    "receipt": "",
+    "payment": "105",
+    "remarks": "Bylow bokXerox"
+  },
+  {
+    "id": 1782921800033,
+    "date": "2023-08-15",
+    "vendor": "Sham Power Tools",
+    "purpose": "Plumbing Material",
+    "receipt": "",
+    "payment": "788",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800034,
+    "date": "2023-08-23",
+    "vendor": "Sham Power Tools",
+    "purpose": "Plumbing Material",
+    "receipt": "",
+    "payment": "156",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800035,
+    "date": "2024-03-31",
+    "vendor": "Mamata Stationery",
+    "purpose": "Battery Seal",
+    "receipt": "",
+    "payment": "40",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800036,
+    "date": "2024-09-25",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800037,
+    "date": "2024-10-05",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800038,
+    "date": "2024-10-05",
+    "vendor": "Siddu lende",
+    "purpose": "Reumbursment common Expenses",
+    "receipt": "",
+    "payment": "3286",
+    "remarks": "Comon Exp  2546"
+  },
+  {
+    "id": 1782921800039,
+    "date": "2024-10-14",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800040,
+    "date": "2024-10-14",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800041,
+    "date": "2024-10-14",
+    "vendor": "Shree krushna H/W",
+    "purpose": "Drinking Water line Plumbing materiakl",
+    "receipt": "",
+    "payment": "810",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800042,
+    "date": "2024-10-14",
+    "vendor": "Swapnil Suryavanshi",
+    "purpose": "Drinking Water line Plumbing Charges",
+    "receipt": "",
+    "payment": "500",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800043,
+    "date": "2024-10-14",
+    "vendor": "Sidduu Lende",
+    "purpose": "Common Expenses",
+    "receipt": "",
+    "payment": "2246",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800044,
+    "date": "2024-10-28",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800045,
+    "date": "2024-11-01",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800046,
+    "date": "2024-11-14",
+    "vendor": "Swapnil Suryavanshi",
+    "purpose": "Common A 1003 parking Work",
+    "receipt": "",
+    "payment": "1000",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800047,
+    "date": "2024-11-16",
+    "vendor": "Swapnil Suryavanshi",
+    "purpose": "Common Area Plumbing Work",
+    "receipt": "",
+    "payment": "1050",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800048,
+    "date": "2024-11-16",
+    "vendor": "Shree krushna H/W",
+    "purpose": "Plumbing Material",
+    "receipt": "",
+    "payment": "120",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800049,
+    "date": "2024-11-29",
+    "vendor": "IGS Enterprises",
+    "purpose": "Solar Pipe Insstalation",
+    "receipt": "",
+    "payment": "800",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800050,
+    "date": "2024-11-30",
+    "vendor": "Swapnil Suryavanshi",
+    "purpose": "A1004 parking Plumbing work",
+    "receipt": "",
+    "payment": "1000",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800051,
+    "date": "2024-12-01",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800052,
+    "date": "2024-12-02",
+    "vendor": "Meera H/W",
+    "purpose": "Tube light purchase",
+    "receipt": "",
+    "payment": "840",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800053,
+    "date": "2024-12-03",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800054,
+    "date": "2024-12-27",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expense",
+    "receipt": "",
+    "payment": "6529",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800055,
+    "date": "2025-01-01",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800056,
+    "date": "2025-01-05",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800057,
+    "date": "2025-01-07",
+    "vendor": "Pawan Lights",
+    "purpose": "Tube light purchase",
+    "receipt": "",
+    "payment": "1000",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800058,
+    "date": "2025-01-24",
+    "vendor": "Rana Biswas",
+    "purpose": "Plumbing work",
+    "receipt": "",
+    "payment": "2700",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800059,
+    "date": "2025-01-27",
+    "vendor": "Siddu lende",
+    "purpose": "Republic day share",
+    "receipt": "",
+    "payment": "3107",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800060,
+    "date": "2025-02-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800061,
+    "date": "2025-02-04",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800062,
+    "date": "2025-02-13",
+    "vendor": "Rajan",
+    "purpose": "Tube light fitting charges",
+    "receipt": "",
+    "payment": "300",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800063,
+    "date": "2025-02-15",
+    "vendor": "Rushi Dhide",
+    "purpose": "Pipe line cleaning charges",
+    "receipt": "",
+    "payment": "1000",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800064,
+    "date": "2025-03-05",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800065,
+    "date": "2025-03-05",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800066,
+    "date": "2025-03-05",
+    "vendor": "Nelson pope",
+    "purpose": "Sneak cath in lift basement",
+    "receipt": "",
+    "payment": "300",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800067,
+    "date": "2025-03-28",
+    "vendor": "Rana Biswas",
+    "purpose": "Main Lobby lekage work",
+    "receipt": "",
+    "payment": "1200",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800068,
+    "date": "2025-03-30",
+    "vendor": "Rushi Dhide",
+    "purpose": "Drainage Cleaning",
+    "receipt": "",
+    "payment": "2800",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800069,
+    "date": "2025-04-05",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800070,
+    "date": "2025-04-05",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800071,
+    "date": "2025-04-12",
+    "vendor": "Nobel Inphotech",
+    "purpose": "Printer Repairing",
+    "receipt": "",
+    "payment": "550",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800072,
+    "date": "2025-04-12",
+    "vendor": "Shree krushna H/W",
+    "purpose": "Lift Tube light purchase",
+    "receipt": "",
+    "payment": "160",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800073,
+    "date": "2025-04-30",
+    "vendor": "Shree krushna H/W",
+    "purpose": "Utility water line Plumbing Material",
+    "receipt": "",
+    "payment": "265",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800074,
+    "date": "2025-04-30",
+    "vendor": "Rana Biswas",
+    "purpose": "Utility water line Plumbing work",
+    "receipt": "",
+    "payment": "600",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800075,
+    "date": "2025-05-03",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800076,
+    "date": "2025-05-05",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800077,
+    "date": "2025-05-30",
+    "vendor": "Mamata Stationery",
+    "purpose": "Paper Rim Purchase",
+    "receipt": "",
+    "payment": "300",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800078,
+    "date": "2025-06-03",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800079,
+    "date": "2025-06-05",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800080,
+    "date": "2025-06-03",
+    "vendor": "Rana Biswas",
+    "purpose": "Drainage Cleaning",
+    "receipt": "",
+    "payment": "800",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800081,
+    "date": "2025-06-04",
+    "vendor": "Siddu lende",
+    "purpose": "common expenses",
+    "receipt": "",
+    "payment": "3975",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800082,
+    "date": "2025-06-15",
+    "vendor": "Jaslok Sweets",
+    "purpose": "SGM Snakes purchase",
+    "receipt": "",
+    "payment": "1040",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800083,
+    "date": "2025-06-18",
+    "vendor": "Shree krushna H/W",
+    "purpose": "Plumbing Material purchase Drinking Line",
+    "receipt": "",
+    "payment": "640",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800084,
+    "date": "2025-06-18",
+    "vendor": "Rana Biswas",
+    "purpose": "Plumbing Charges",
+    "receipt": "",
+    "payment": "800",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800085,
+    "date": "2025-06-24",
+    "vendor": "Rushi Dhide",
+    "purpose": "drainage Cleaning near 1004 Parking",
+    "receipt": "",
+    "payment": "500",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800086,
+    "date": "2025-07-03",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800087,
+    "date": "2025-07-03",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800088,
+    "date": "2025-07-03",
+    "vendor": "Ramdev Hardware",
+    "purpose": "Lock",
+    "receipt": "",
+    "payment": "80",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800089,
+    "date": "2025-05-03",
+    "vendor": "Shyam Power tools",
+    "purpose": "lock set for lunch room",
+    "receipt": "",
+    "payment": "230",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800090,
+    "date": "2025-07-05",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expense",
+    "receipt": "",
+    "payment": "3555",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800091,
+    "date": "2025-07-16",
+    "vendor": "Shree krushna H/W",
+    "purpose": "Tube Lights Purchase",
+    "receipt": "",
+    "payment": "840",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800092,
+    "date": "2025-07-23",
+    "vendor": "Shree krushna H/W",
+    "purpose": "Lock Purchase",
+    "receipt": "",
+    "payment": "260",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800093,
+    "date": "2025-08-01",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800094,
+    "date": "2025-08-03",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800095,
+    "date": "2025-08-15",
+    "vendor": "Siddu lende",
+    "purpose": "15 Aug Expenses",
+    "receipt": "",
+    "payment": "3605",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800096,
+    "date": "2025-08-15",
+    "vendor": "",
+    "purpose": "",
+    "receipt": "",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800097,
+    "date": "2025-08-01",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800098,
+    "date": "2025-09-01",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800099,
+    "date": "2025-09-03",
+    "vendor": "Rishi Dhide",
+    "purpose": "Drainage Cleaning",
+    "receipt": "",
+    "payment": "1700",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800100,
+    "date": "2025-09-06",
+    "vendor": "Rana Biswas",
+    "purpose": "Flat No. 207 and 607 Plumbing work",
+    "receipt": "",
+    "payment": "400",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800101,
+    "date": "2025-09-08",
+    "vendor": "Krushna H/W",
+    "purpose": "Tube light purchase",
+    "receipt": "",
+    "payment": "810",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800102,
+    "date": "2025-09-08",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "7000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800103,
+    "date": "2025-10-04",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800104,
+    "date": "2025-10-04",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "18250",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800105,
+    "date": "2025-10-17",
+    "vendor": "siddu Lende",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "4250",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800106,
+    "date": "2025-10-20",
+    "vendor": "Shivshankr Singh",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "2500",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800107,
+    "date": "2025-10-20",
+    "vendor": "Bikas Nath",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "250",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800108,
+    "date": "2025-10-20",
+    "vendor": "Mintu Nath",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "250",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800109,
+    "date": "2025-10-20",
+    "vendor": "Nikas",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "250",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800110,
+    "date": "2025-10-20",
+    "vendor": "Rajib",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "250",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800111,
+    "date": "2025-10-20",
+    "vendor": "Ramesh",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "250",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800112,
+    "date": "2025-10-20",
+    "vendor": "Buddhdev",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "250",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800113,
+    "date": "2025-10-20",
+    "vendor": "Upendra",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "250",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800114,
+    "date": "2025-10-20",
+    "vendor": "Ratnu",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "250",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800115,
+    "date": "2025-10-20",
+    "vendor": "Rani Varde",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "750",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800116,
+    "date": "2025-10-20",
+    "vendor": "Khandu Mama",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "750",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800117,
+    "date": "2025-10-20",
+    "vendor": "Khade Mama",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "750",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800118,
+    "date": "2025-10-20",
+    "vendor": "Noorjaha",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "750",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800119,
+    "date": "2025-10-20",
+    "vendor": "Parvin",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "750",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800120,
+    "date": "2025-10-20",
+    "vendor": "Rukmini",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "750",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800121,
+    "date": "2025-10-20",
+    "vendor": "Nasrin",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "750",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800122,
+    "date": "2025-10-20",
+    "vendor": "Rupali",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "750",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800123,
+    "date": "2025-10-20",
+    "vendor": "Naushad",
+    "purpose": "Diwali Bonus",
+    "receipt": "",
+    "payment": "1500",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800124,
+    "date": "2025-10-31",
+    "vendor": "Parmar H/W",
+    "purpose": "Drinking Water Line Plumbing Material",
+    "receipt": "",
+    "payment": "1898",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800125,
+    "date": "2025-10-31",
+    "vendor": "Rana Biswas",
+    "purpose": "Drinking Water line Plumbing Charges",
+    "receipt": "",
+    "payment": "500",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800126,
+    "date": "2025-11-02",
+    "vendor": "Jaslok Sweets",
+    "purpose": "AGM Expnens",
+    "receipt": "",
+    "payment": "920",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800127,
+    "date": "2025-11-03",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "8000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800128,
+    "date": "2025-11-04",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800129,
+    "date": "2025-11-08",
+    "vendor": "Shree Graphics",
+    "purpose": "10 nos Voucher Book Purchase",
+    "receipt": "",
+    "payment": "800",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800130,
+    "date": "2025-11-14",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses Sep 25 to 14 Nov 25",
+    "receipt": "",
+    "payment": "4350",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800131,
+    "date": "2025-12-01",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800132,
+    "date": "2025-12-05",
+    "vendor": "Rushi Dhide",
+    "purpose": "Drainage Cleaning Near 407 Parking",
+    "receipt": "",
+    "payment": "1500",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800133,
+    "date": "2025-12-05",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800134,
+    "date": "2025-12-08",
+    "vendor": "Siddu lende",
+    "purpose": "Coomon Expenses 14 Nov to 10 Dec 25",
+    "receipt": "",
+    "payment": "1318",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800135,
+    "date": "2025-12-26",
+    "vendor": "Rushi Dhide",
+    "purpose": "Drainage Cleaning Near Bathroom",
+    "receipt": "",
+    "payment": "1500",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800136,
+    "date": "2026-01-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800137,
+    "date": "2026-01-03",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800138,
+    "date": "2026-01-08",
+    "vendor": "Rushi Dhide",
+    "purpose": "Drainage Cleaning basement Chembers 05 Nos",
+    "receipt": "",
+    "payment": "2200",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800139,
+    "date": "2026-01-04",
+    "vendor": "Mamata Stationery",
+    "purpose": "Paper Rim Purchase",
+    "receipt": "",
+    "payment": "330",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800140,
+    "date": "2026-01-22",
+    "vendor": "Ramdev Hardware",
+    "purpose": "Plumbing Material Purchase",
+    "receipt": "",
+    "payment": "952",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800141,
+    "date": "2026-01-26",
+    "vendor": "Siddu lende",
+    "purpose": "Repubic day Expenses",
+    "receipt": "",
+    "payment": "2870",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800142,
+    "date": "2026-02-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800143,
+    "date": "2026-02-02",
+    "vendor": "Malhar Computers",
+    "purpose": "Printer Repairing",
+    "receipt": "",
+    "payment": "850",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800144,
+    "date": "2026-02-02",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800145,
+    "date": "2026-02-02",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses month of Jan 26",
+    "receipt": "",
+    "payment": "798",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800146,
+    "date": "2026-02-02",
+    "vendor": "Rana Biswas",
+    "purpose": "Lekage and Plumbing Work near 1004 Parking",
+    "receipt": "",
+    "payment": "500",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800147,
+    "date": "2026-02-19",
+    "vendor": "Rohan Kotkar",
+    "purpose": "Convex Mirror Purchase Share",
+    "receipt": "",
+    "payment": "2712",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800148,
+    "date": "2026-03-04",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800149,
+    "date": "2026-03-04",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800150,
+    "date": "2026-03-04",
+    "vendor": "Parmeshwar Pitale",
+    "purpose": "A building Bathroom Plumbing work",
+    "receipt": "",
+    "payment": "1220",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800151,
+    "date": "2026-03-08",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses Share",
+    "receipt": "",
+    "payment": "2207",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800152,
+    "date": "2026-03-09",
+    "vendor": "Ayan Shaikh",
+    "purpose": "Snake Catcher A building",
+    "receipt": "",
+    "payment": "500",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800153,
+    "date": "2026-03-14",
+    "vendor": "Rushi Dhide",
+    "purpose": "Drainage Cleaning basement Chembers",
+    "receipt": "",
+    "payment": "1000",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800154,
+    "date": "2026-04-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800155,
+    "date": "2026-04-04",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800156,
+    "date": "2026-04-05",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses month of Mar 26",
+    "receipt": "",
+    "payment": "2131",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800157,
+    "date": "2026-04-29",
+    "vendor": "Parmeshwar Pitale",
+    "purpose": "Bathroom out side Plumbing Work",
+    "receipt": "",
+    "payment": "430",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800158,
+    "date": "2026-04-29",
+    "vendor": "Shree krushna H/W",
+    "purpose": "10w LED purchase",
+    "receipt": "",
+    "payment": "1200",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800159,
+    "date": "2026-05-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800160,
+    "date": "2026-05-05",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800161,
+    "date": "2026-05-05",
+    "vendor": "IGS Enterprises",
+    "purpose": "Solar Pipe Insstalation",
+    "receipt": "",
+    "payment": "800",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800162,
+    "date": "2026-05-30",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses",
+    "receipt": "",
+    "payment": "4370",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800163,
+    "date": "2026-06-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800164,
+    "date": "2026-06-03",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800165,
+    "date": "2026-06-03",
+    "vendor": "IGS Enterprises",
+    "purpose": "Solar Lekage work",
+    "receipt": "",
+    "payment": "600",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800166,
+    "date": "2026-07-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "15000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800167,
+    "date": "2026-07-02",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800168,
+    "date": "2026-07-02",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses",
+    "receipt": "",
+    "payment": "4963",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800169,
+    "date": "2026-07-05",
+    "vendor": "Goving Bansode",
+    "purpose": "Printer Repairing",
+    "receipt": "",
+    "payment": "700",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800170,
+    "date": "2026-08-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800171,
+    "date": "2026-08-03",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800172,
+    "date": "2026-08-03",
+    "vendor": "Siddu lende",
+    "purpose": "Coomon Expenses Jul 26",
+    "receipt": "",
+    "payment": "2825",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800173,
+    "date": "2026-08-08",
+    "vendor": "H M Carpet",
+    "purpose": "Carpet",
+    "receipt": "",
+    "payment": "2800",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800174,
+    "date": "2026-08-12",
+    "vendor": "Parmeshwar Pitale",
+    "purpose": "Flat No. 408 Outside Lekage work",
+    "receipt": "",
+    "payment": "3000",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800175,
+    "date": "2026-08-16",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses Independence Day 15 Aug",
+    "receipt": "",
+    "payment": "4696",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800176,
+    "date": "2026-08-18",
+    "vendor": "Sukanya Electricals",
+    "purpose": "Street Light Purchase 01 Nos",
+    "receipt": "",
+    "payment": "550",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800177,
+    "date": "2026-08-24",
+    "vendor": "Rushi Dhide",
+    "purpose": "Drainage Cleaning",
+    "receipt": "",
+    "payment": "1000",
+    "remarks": "A Wing"
+  },
+  {
+    "id": 1782921800178,
+    "date": "2026-08-30",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses Month of Aug 26",
+    "receipt": "",
+    "payment": "2246",
+    "remarks": "12184"
+  }
+]
