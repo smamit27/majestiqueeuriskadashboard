@@ -24,13 +24,15 @@ describe('PettyCashTracker', () => {
     expect(html).toContain('April 2026');
     expect(html).toContain('July 2026');
     expect(html).toContain('March 2027');
+    expect(html).toContain('Export Excel');
+    expect(html).toContain('Print PDF');
   });
 
-  it('renders July 2026 as the initial A building month context', () => {
+  it('renders the current fiscal month as the initial A building month context', () => {
     const html = renderToStaticMarkup(<PettyCashTracker isAdmin />);
 
-    expect(html).toContain('Add Entry to July 2026');
-    expect(html).toContain('July 2026 is ready to start for A Building');
+    expect(html).toContain('Add Entry to August 2026');
+    expect(html).toContain('Uttareswar');
     expect(html).toContain('FY 2026-27');
   });
 

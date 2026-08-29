@@ -31,6 +31,7 @@ import NotificationCenter from './components/organisms/NotificationCenter.jsx';
 import GlobalSearch from './components/organisms/GlobalSearch.jsx';
 import ParkPlusTracker from './components/organisms/ParkPlusTracker.jsx';
 import BankStatementTracker from './components/organisms/BankStatementTracker.jsx';
+import FixedDepositTracker from './components/organisms/FixedDepositTracker.jsx';
 import TenantTracker from './components/organisms/TenantTracker.jsx';
 import EmergencyNumbers from './components/organisms/EmergencyNumbers.jsx';
 

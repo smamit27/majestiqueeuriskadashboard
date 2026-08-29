@@ -9,7 +9,7 @@
     "remarks": "Auto-adjusted to match ledger balances"
   },
   {
-    "id": 1782921846534,
+    "id": 1782921800154,
     "date": "2026-04-02",
     "vendor": "Fund Received",
     "purpose": "",
@@ -18,7 +18,7 @@
     "remarks": ""
   },
   {
-    "id": 1782921846535,
+    "id": 1782921800155,
     "date": "2026-04-04",
     "vendor": "Uttareswar",
     "purpose": "Waterman salary",
@@ -27,7 +27,7 @@
     "remarks": ""
   },
   {
-    "id": 1782921846536,
+    "id": 1782921800156,
     "date": "2026-04-05",
     "vendor": "Siddu lende",
     "purpose": "Common Expenses month of Mar 26",
@@ -36,16 +36,16 @@
     "remarks": ""
   },
   {
-    "id": 1782921846537,
+    "id": 1782921800157,
     "date": "2026-04-29",
-    "vendor": "Rana Biswas",
+    "vendor": "Parmeshwar Pitale",
     "purpose": "Bathroom out side Plumbing Work",
     "receipt": "",
     "payment": "430",
     "remarks": ""
   },
   {
-    "id": 1782921846538,
+    "id": 1782921800158,
     "date": "2026-04-29",
     "vendor": "Shree krushna H/W",
     "purpose": "10w LED purchase",
@@ -54,7 +54,7 @@
     "remarks": ""
   },
   {
-    "id": 1782921846539,
+    "id": 1782921800159,
     "date": "2026-05-02",
     "vendor": "Fund Received",
     "purpose": "",
@@ -63,7 +63,7 @@
     "remarks": ""
   },
   {
-    "id": 1782921846540,
+    "id": 1782921800160,
     "date": "2026-05-05",
     "vendor": "Uttareswar",
     "purpose": "Waterman salary",
@@ -72,7 +72,7 @@
     "remarks": ""
   },
   {
-    "id": 1782921846541,
+    "id": 1782921800161,
     "date": "2026-05-05",
     "vendor": "IGS Enterprises",
     "purpose": "Solar Pipe Insstalation",
@@ -81,7 +81,7 @@
     "remarks": ""
   },
   {
-    "id": 1782921846542,
+    "id": 1782921800162,
     "date": "2026-05-30",
     "vendor": "Siddu lende",
     "purpose": "Common Expenses",
@@ -90,7 +90,7 @@
     "remarks": ""
   },
   {
-    "id": 1782921846543,
+    "id": 1782921800163,
     "date": "2026-06-02",
     "vendor": "Fund Received",
     "purpose": "",
@@ -99,7 +99,7 @@
     "remarks": ""
   },
   {
-    "id": 1782921846544,
+    "id": 1782921800164,
     "date": "2026-06-03",
     "vendor": "Uttareswar",
     "purpose": "Waterman salary",
@@ -108,12 +108,129 @@
     "remarks": ""
   },
   {
-    "id": 1782921846545,
+    "id": 1782921800165,
     "date": "2026-06-03",
     "vendor": "IGS Enterprises",
     "purpose": "Solar Lekage work",
     "receipt": "",
     "payment": "600",
     "remarks": ""
+  },
+  {
+    "id": 1782921800166,
+    "date": "2026-07-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "15000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800167,
+    "date": "2026-07-02",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800168,
+    "date": "2026-07-02",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses",
+    "receipt": "",
+    "payment": "4963",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800169,
+    "date": "2026-07-05",
+    "vendor": "Goving Bansode",
+    "purpose": "Printer Repairing",
+    "receipt": "",
+    "payment": "700",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800170,
+    "date": "2026-08-02",
+    "vendor": "Fund Received",
+    "purpose": "",
+    "receipt": "10000",
+    "payment": "",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800171,
+    "date": "2026-08-03",
+    "vendor": "Uttareswar",
+    "purpose": "Waterman salary",
+    "receipt": "",
+    "payment": "5650",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800172,
+    "date": "2026-08-03",
+    "vendor": "Siddu lende",
+    "purpose": "Coomon Expenses Jul 26",
+    "receipt": "",
+    "payment": "2825",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800173,
+    "date": "2026-08-08",
+    "vendor": "H M Carpet",
+    "purpose": "Carpet",
+    "receipt": "",
+    "payment": "2800",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800174,
+    "date": "2026-08-12",
+    "vendor": "Parmeshwar Pitale",
+    "purpose": "Flat No. 408 Outside Lekage work",
+    "receipt": "",
+    "payment": "3000",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800175,
+    "date": "2026-08-16",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses Independence Day 15 Aug",
+    "receipt": "",
+    "payment": "4696",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800176,
+    "date": "2026-08-18",
+    "vendor": "Sukanya Electricals",
+    "purpose": "Street Light Purchase 01 Nos",
+    "receipt": "",
+    "payment": "550",
+    "remarks": ""
+  },
+  {
+    "id": 1782921800177,
+    "date": "2026-08-24",
+    "vendor": "Rushi Dhide",
+    "purpose": "Drainage Cleaning",
+    "receipt": "",
+    "payment": "1000",
+    "remarks": "A Wing"
+  },
+  {
+    "id": 1782921800178,
+    "date": "2026-08-30",
+    "vendor": "Siddu lende",
+    "purpose": "Common Expenses Month of Aug 26",
+    "receipt": "",
+    "payment": "2246",
+    "remarks": "12184"
   }
 ]

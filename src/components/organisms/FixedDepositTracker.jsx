@@ -109,7 +109,7 @@ export default function FixedDepositTracker({ isAdmin }) {
     }
   };
 
-  const [activeSubTab, setActiveSubTab] = useState('active'); // 'active' | 'history' | 'create' | 'calculator'
+  const [activeSubTab, setActiveSubTab] = useState('summary'); // 'summary' | 'active' | 'history' | 'create' | 'calculator'
   
   // Form states for creating FD
   const [bankName, setBankName] = useState('HDFC Bank');
@@ -527,6 +527,12 @@ export default function FixedDepositTracker({ isAdmin }) {
       {/* Selector and Actions Bar using global tab layout */}
       <div className="attendance-month-tabs" role="tablist" style={{ padding: '0 0 12px 0', borderBottom: '1px solid var(--line)' }}>
         <button
+          className={`attendance-month-tab ${activeSubTab === 'summary' ? 'attendance-month-tab--active' : ''}`}
+          onClick={() => setActiveSubTab('summary')}
+        >
+          📊 FD Summary Poster
+        </button>
+        <button
           className={`attendance-month-tab ${activeSubTab === 'active' ? 'attendance-month-tab--active' : ''}`}
           onClick={() => setActiveSubTab('active')}
         >
@@ -557,6 +563,162 @@ export default function FixedDepositTracker({ isAdmin }) {
 
 
       {/* SUBTAB Content Switch */}
+
+
+      {/* 0. SUMMARY POSTER BOARD */}
+      {activeSubTab === 'summary' && (() => {
+        fdSummarySerial = 0;
+        return (
+          <div className="fd-summary-board">
+            <div className="fd-summary-board__header">
+              <h2 className="fd-summary-board__title">{summaryData.title}</h2>
+            </div>
+
+            {summaryData.banks.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--muted)' }}>
+                No active Fixed Deposits available for summary statement.
+              </div>
+            ) : (
+              <div className="fd-summary-bank-list">
+                {summaryData.banks.map((bank) => (
+                  <div
+                    key={bank.bankName}
+                    className="fd-summary-bank"
+                    style={{
+                      '--fd-border': bank.theme.border,
+                      '--fd-head': bank.theme.head,
+                      '--fd-soft': bank.theme.soft,
+                      '--fd-soft-alt': bank.theme.softAlt,
+                      '--fd-total-bg': bank.theme.totalBg,
+                      '--fd-total-color': bank.theme.totalColor
+                    }}
+                  >
+                    <div className="fd-summary-bank__brand-wrap">
+                      {renderSummaryBrand(bank.bankName, bank.theme.variant)}
+                    </div>
+
+                    <div className="fd-summary-table-wrap">
+                      <table className="fd-summary-table">
+                        <thead>
+                          <tr>
+                            <th style={{ width: '60px' }}>Sr No.</th>
+                            <th>{bank.theme.accountLabel}</th>
+                            <th>Name of Deposit</th>
+                            <th>Principal Amount (₹)</th>
+                            <th>Rate (% p.a.)</th>
+                            <th>Tenure</th>
+                            <th>Maturity Date</th>
+                            <th>Maturity Amount (₹)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bank.deposits.map((deposit, idx) => {
+                            const serial = ++fdSummarySerial;
+                            return (
+                              <tr
+                                key={deposit.id || deposit.fdNumber}
+                                className={idx % 2 === 1 ? 'fd-summary-table__row--alt' : ''}
+                              >
+                                <td className="fd-summary-table__cell fd-summary-table__cell--serial">{serial}</td>
+                                <td
+                                  className="fd-summary-table__cell fd-summary-table__cell--number"
+                                  style={{
+                                    color: deposit.fdNumberColor || undefined,
+                                    textDecoration: deposit.fdNumberUnderline ? 'underline' : undefined
+                                  }}
+                                >
+                                  {deposit.fdNumber}
+                                </td>
+                                <td className="fd-summary-table__cell fd-summary-table__cell--purpose">
+                                  <div className="fd-summary-table__deposit-line1">
+                                    {deposit.depositLine1 || deposit.depositName || deposit.bankName}
+                                  </div>
+                                  {deposit.depositLine2 && (
+                                    <div
+                                      className="fd-summary-table__deposit-line2"
+                                      style={{ color: deposit.depositLine2Color || undefined }}
+                                    >
+                                      {deposit.depositLine2}
+                                    </div>
+                                  )}
+                                </td>
+                                <td className="fd-summary-table__cell fd-summary-table__cell--money">
+                                  {formatSummaryAmount(deposit.principal)}
+                                </td>
+                                <td className="fd-summary-table__cell fd-summary-table__cell--center">
+                                  {deposit.interestRate}%
+                                </td>
+                                <td className="fd-summary-table__cell fd-summary-table__cell--center">
+                                  {deposit.tenureMonths ? `${deposit.tenureMonths} M` : '-'}
+                                </td>
+                                <td className="fd-summary-table__cell fd-summary-table__cell--center">
+                                  {fmtDate(deposit.maturityDate)}
+                                </td>
+                                <td className="fd-summary-table__cell fd-summary-table__cell--money">
+                                  {formatSummaryAmount(deposit.maturityValue)}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                          <tr className="fd-summary-table__subtotal">
+                            <td colSpan={3} className="fd-summary-table__subtotal-label">
+                              {bank.totalLabel}
+                            </td>
+                            <td className="fd-summary-table__subtotal-value">
+                              {formatSummaryAmount(bank.principalTotal)}
+                            </td>
+                            <td colSpan={3} className="fd-summary-table__subtotal-gap"></td>
+                            <td className="fd-summary-table__subtotal-value">
+                              {formatSummaryAmount(bank.maturityTotal)}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {summaryData.banks.length > 0 && (
+              <>
+                <div className="fd-summary-grand-wrap">
+                  <table className="fd-summary-grand">
+                    <tbody>
+                      <tr>
+                        <td colSpan={3} className="fd-summary-grand__label">
+                          GRAND TOTAL ({summaryData.grandLabel})
+                        </td>
+                        <td className="fd-summary-grand__value">
+                          {formatSummaryAmount(summaryData.grandPrincipal)}
+                        </td>
+                        <td colSpan={3} className="fd-summary-grand__dash">-</td>
+                        <td className="fd-summary-grand__value">
+                          {formatSummaryAmount(summaryData.grandMaturity)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="fd-summary-interest">
+                  <div className="fd-summary-interest__label-wrap">
+                    <div className="fd-summary-interest__icon">₹</div>
+                    <div className="fd-summary-interest__label">TOTAL EXPECTED INTEREST EARNINGS</div>
+                  </div>
+                  <div className="fd-summary-interest__value">
+                    ₹{formatSummaryAmount(summaryData.grandInterest)}
+                  </div>
+                </div>
+
+                <p className="fd-summary-note">
+                  * Society Fixed Deposits are maintained with Scheduled Commercial Banks under approved society statutory reserves and sinking fund resolutions.
+                </p>
+              </>
+            )}
+          </div>
+        );
+      })()}
 
 
       {/* 1. ACTIVE FIXED DEPOSITS */}

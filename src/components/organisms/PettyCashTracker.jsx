@@ -23,8 +23,6 @@ const SUB_TABS = [
   }
 ];
 
-const DEFAULT_MONTH_ID = '2026-07';
-
 const FISCAL_MONTHS_A_BUILDING = Array.from({ length: 12 }, (_, index) => {
   const date = new Date(Date.UTC(2026, 3 + index, 1));
   const year = date.getUTCFullYear();
@@ -48,6 +46,24 @@ const FISCAL_MONTHS_COMMON = [
 ];
 
 const getFiscalMonths = (tab) => tab === 'common' ? FISCAL_MONTHS_COMMON : FISCAL_MONTHS_A_BUILDING;
+
+export function getCurrentFiscalMonthId(tab = 'buildingA') {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const currentMonthId = `${year}-${month}`;
+
+  const fiscalMonths = getFiscalMonths(tab);
+  const matched = fiscalMonths.find(m => m.id === currentMonthId || m.matchMonths?.includes(currentMonthId));
+  if (matched) {
+    return matched.id;
+  }
+
+  if (currentMonthId < fiscalMonths[0].id) {
+    return fiscalMonths[0].id;
+  }
+  return fiscalMonths[fiscalMonths.length - 1].id;
+}
 
 const DEFAULT_BUILDING_A_ENTRIES = [
   {
@@ -89,7 +105,7 @@ const DEFAULT_BUILDING_A_ENTRIES = [
   {
     id: 1782921846537,
     date: '2026-04-29',
-    vendor: 'Rana Biswas',
+    vendor: 'Parmeshwar Pitale',
     purpose: 'Bathroom out side Plumbing Work',
     receipt: '',
     payment: '430',
@@ -134,8 +150,8 @@ const DEFAULT_BUILDING_A_ENTRIES = [
   {
     id: 1782921846542,
     date: '2026-05-30',
-    vendor: 'Common Settlement',
-    purpose: 'Siddu lende - April May Common Expenses',
+    vendor: 'Siddu lende',
+    purpose: 'Common Expenses',
     receipt: '',
     payment: '4370',
     remarks: ''
@@ -166,6 +182,123 @@ const DEFAULT_BUILDING_A_ENTRIES = [
     receipt: '',
     payment: '600',
     remarks: ''
+  },
+  {
+    id: 1782921846546,
+    date: '2026-07-02',
+    vendor: 'Fund Received',
+    purpose: '',
+    receipt: '15000',
+    payment: '',
+    remarks: ''
+  },
+  {
+    id: 1782921846547,
+    date: '2026-07-02',
+    vendor: 'Uttareswar',
+    purpose: 'Waterman salary',
+    receipt: '',
+    payment: '5650',
+    remarks: ''
+  },
+  {
+    id: 1782921846548,
+    date: '2026-07-02',
+    vendor: 'Siddu lende',
+    purpose: 'Common Expenses',
+    receipt: '',
+    payment: '4963',
+    remarks: ''
+  },
+  {
+    id: 1782921846549,
+    date: '2026-07-05',
+    vendor: 'Goving Bansode',
+    purpose: 'Printer Repairing',
+    receipt: '',
+    payment: '700',
+    remarks: ''
+  },
+  {
+    id: 1782921846550,
+    date: '2026-08-02',
+    vendor: 'Fund Received',
+    purpose: '',
+    receipt: '10000',
+    payment: '',
+    remarks: ''
+  },
+  {
+    id: 1782921846551,
+    date: '2026-08-03',
+    vendor: 'Uttareswar',
+    purpose: 'Waterman salary',
+    receipt: '',
+    payment: '5650',
+    remarks: ''
+  },
+  {
+    id: 1782921846552,
+    date: '2026-08-03',
+    vendor: 'Siddu lende',
+    purpose: 'Coomon Expenses Jul 26',
+    receipt: '',
+    payment: '2825',
+    remarks: ''
+  },
+  {
+    id: 1782921846553,
+    date: '2026-08-08',
+    vendor: 'H M Carpet',
+    purpose: 'Carpet',
+    receipt: '',
+    payment: '2800',
+    remarks: ''
+  },
+  {
+    id: 1782921846554,
+    date: '2026-08-12',
+    vendor: 'Parmeshwar Pitale',
+    purpose: 'Flat No. 408 Outside Lekage work',
+    receipt: '',
+    payment: '3000',
+    remarks: ''
+  },
+  {
+    id: 1782921846555,
+    date: '2026-08-16',
+    vendor: 'Siddu lende',
+    purpose: 'Common Expenses Independence Day 15 Aug',
+    receipt: '',
+    payment: '4696',
+    remarks: ''
+  },
+  {
+    id: 1782921846556,
+    date: '2026-08-18',
+    vendor: 'Sukanya Electricals',
+    purpose: 'Street Light Purchase 01 Nos',
+    receipt: '',
+    payment: '550',
+    remarks: ''
+  },
+  {
+    id: 1782921846557,
+    date: '2026-08-24',
+    vendor: 'Rushi Dhide',
+    purpose: 'Drainage Cleaning',
+    receipt: '',
+    payment: '1000',
+    remarks: 'A Wing / B Wing'
+  },
+  {
+    id: 1782921846558,
+    date: '2026-08-30',
+    vendor: 'Siddu lende',
+    purpose: 'Common Expenses Month of Aug 26',
+    receipt: '',
+    payment: '2246',
+    remarks: '12184 / 13162'
   }
 ];
 
@@ -370,11 +503,11 @@ export default function PettyCashTracker({ isAdmin = false }) {
     buildingA: DEFAULT_BUILDING_A_ENTRIES,
     common: DEFAULT_COMMON_ENTRIES
   });
-  const [activeMonthByTab, setActiveMonthByTab] = useState({
-    buildingA: DEFAULT_MONTH_ID,
-    common: DEFAULT_MONTH_ID
-  });
-  const [formData, setFormData] = useState(createEmptyForm(DEFAULT_MONTH_ID));
+  const [activeMonthByTab, setActiveMonthByTab] = useState(() => ({
+    buildingA: getCurrentFiscalMonthId('buildingA'),
+    common: getCurrentFiscalMonthId('common')
+  }));
+  const [formData, setFormData] = useState(() => createEmptyForm(getCurrentFiscalMonthId('buildingA')));
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMessage, setSaveMessage] = useState('');
@@ -623,14 +756,175 @@ export default function PettyCashTracker({ isAdmin = false }) {
     XLSX.writeFile(workbook, `Petty_Cash_${subTab}_FY2026_27.xlsx`);
   };
 
+  const handleExportPDF = () => {
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const listToPrint = activeMonthSummary.entries;
+    const tabName = subTab === 'common' ? 'Common Expenses Ledger' : 'A Building Operating Ledger';
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Majestique Euriska - ${tabName} (${activeMonthSummary.label})</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .summary-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+          }
+          .summary-card {
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+          }
+          .summary-card.inflow { background: #f0fdf4; border-color: #bbf7d0; }
+          .summary-card.outflow { background: #fef2f2; border-color: #fecaca; }
+          .summary-card.closing { background: ${activeMonthSummary.closingBalance >= 0 ? '#f0fdf4' : '#fff1f2'}; border-color: ${activeMonthSummary.closingBalance >= 0 ? '#bbf7d0' : '#fecdd3'}; }
+          .summary-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 2px; }
+          .summary-value { font-size: 15px; font-weight: 800; color: #0f172a; }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: left; padding: 8px 10px; border: 1px solid #94a3b8; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; }
+          td { padding: 7px 10px; border: 1px solid #cbd5e1; color: #0f172a; }
+          tr:nth-child(even) { background: #f8fafc; }
+          
+          .amount-inflow { color: #059669; font-weight: 700; text-align: right; }
+          .amount-outflow { color: #dc2626; font-weight: 700; text-align: right; }
+          .amount-balance { font-weight: 800; text-align: right; }
+          
+          tfoot tr { background: #e2e8f0; font-weight: 800; }
+          tfoot td { border: 1px solid #94a3b8; padding: 8px 10px; }
+          
+          .footer {
+            margin-top: 24px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 10px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 landscape; }
+            thead { display: table-header-group; }
+            tfoot { display: table-footer-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🏢 Majestique Euriska Co-Op Housing Society</h1>
+            <div class="subtitle">${tabName} • FY 2026–27 (${activeMonthSummary.label})</div>
+          </div>
+          <div class="meta">
+            <div><strong>Report Date:</strong> ${generatedDate}</div>
+            <div><strong>Month:</strong> ${activeMonthSummary.label} (${listToPrint.length} Entries)</div>
+          </div>
+        </div>
+
+        <div class="summary-bar">
+          <div class="summary-card">
+            <div class="summary-title">Opening Balance</div>
+            <div class="summary-value">${formatCurrency(activeMonthSummary.openingBalance)}</div>
+          </div>
+          <div class="summary-card inflow">
+            <div class="summary-title" style="color: #059669;">Total Receipts (Inflow)</div>
+            <div class="summary-value" style="color: #059669;">+${formatCurrency(activeMonthSummary.receipts)}</div>
+          </div>
+          <div class="summary-card outflow">
+            <div class="summary-title" style="color: #dc2626;">Total Payments (Expenses)</div>
+            <div class="summary-value" style="color: #dc2626;">-${formatCurrency(activeMonthSummary.payments)}</div>
+          </div>
+          <div class="summary-card closing">
+            <div class="summary-title" style="color: ${activeMonthSummary.closingBalance >= 0 ? '#059669' : '#dc2626'};">Closing Balance (${activeMonthSummary.label})</div>
+            <div class="summary-value" style="color: ${activeMonthSummary.closingBalance >= 0 ? '#059669' : '#dc2626'};">${formatCurrency(activeMonthSummary.closingBalance)}</div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 32px; text-align: center;">#</th>
+              <th style="width: 85px;">Date</th>
+              <th style="width: 160px;">Particulars</th>
+              <th>Description</th>
+              <th style="width: 100px; text-align: right;">Receipt (₹)</th>
+              <th style="width: 100px; text-align: right;">Payment (₹)</th>
+              <th style="width: 110px; text-align: right;">Balance (₹)</th>
+              <th style="width: 160px;">Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${listToPrint.length === 0 ? `
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 24px; color: #64748b;">No transactions recorded for ${activeMonthSummary.label}.</td>
+              </tr>
+            ` : listToPrint.map((entry, index) => `
+              <tr>
+                <td style="text-align: center; color: #64748b; font-weight: 600;">${index + 1}</td>
+                <td style="white-space: nowrap;">${formatShortDate(entry.date)}</td>
+                <td style="font-weight: 700;">${entry.vendor || '—'}</td>
+                <td>${entry.purpose || '—'}</td>
+                <td class="amount-inflow">${toNumber(entry.receipt) > 0 ? formatCurrency(toNumber(entry.receipt)) : '—'}</td>
+                <td class="amount-outflow">${toNumber(entry.payment) > 0 ? formatCurrency(toNumber(entry.payment)) : '—'}</td>
+                <td class="amount-balance" style="color: ${entry.balance >= 0 ? '#059669' : '#dc2626'};">${formatCurrency(entry.balance)}</td>
+                <td style="color: #64748b; font-style: italic;">${entry.remarks || ''}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" style="text-align: right;">${activeMonthSummary.label} Total:</td>
+              <td class="amount-inflow">${formatCurrency(activeMonthSummary.receipts)}</td>
+              <td class="amount-outflow">${formatCurrency(activeMonthSummary.payments)}</td>
+              <td class="amount-balance" style="color: ${activeMonthSummary.closingBalance >= 0 ? '#059669' : '#dc2626'};">${formatCurrency(activeMonthSummary.closingBalance)}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society • Petty Cash Accounting Statement</div>
+          <div>Page 1 • Official Financial Record</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    } else {
+      window.print();
+    }
+  };
+
   const handleSelectSubTab = (nextTab) => {
     setSubTab(nextTab);
-    if (nextTab === 'buildingA') {
-      setActiveMonthByTab((current) => ({
-        ...current,
-        buildingA: DEFAULT_MONTH_ID
-      }));
-    }
   };
 
   const activeSaveTone =
@@ -708,10 +1002,31 @@ export default function PettyCashTracker({ isAdmin = false }) {
               padding: '12px 18px',
               borderRadius: '14px',
               fontWeight: 800,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            Export Ledger
+            📥 Export Excel
+          </button>
+          <button
+            type="button"
+            onClick={handleExportPDF}
+            style={{
+              border: '1px solid rgba(255,255,255,0.3)',
+              background: 'rgba(255,255,255,0.16)',
+              color: '#fff',
+              padding: '12px 18px',
+              borderRadius: '14px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            📄 Print PDF
           </button>
         </div>
       </div>
@@ -952,6 +1267,34 @@ export default function PettyCashTracker({ isAdmin = false }) {
           }}
         >
           <div style={{ minWidth: 0 }}>
+            {/* Month Balance KPI Summary Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '22px' }}>
+              <div style={{ background: '#F8FAFC', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
+                <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Opening Balance</div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: activeMonthSummary.openingBalance >= 0 ? '#101828' : '#B42318', marginTop: '6px' }}>
+                  {formatCurrency(activeMonthSummary.openingBalance)}
+                </div>
+              </div>
+              <div style={{ background: '#F0FDF4', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(11, 110, 79, 0.18)' }}>
+                <div style={{ fontSize: '0.78rem', color: '#0B6E4F', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Month Receipts (Inflow)</div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0B6E4F', marginTop: '6px' }}>
+                  +{formatCurrency(activeMonthSummary.receipts)}
+                </div>
+              </div>
+              <div style={{ background: '#FEF3F2', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(180, 35, 24, 0.18)' }}>
+                <div style={{ fontSize: '0.78rem', color: '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Month Payments (Expenses)</div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#B42318', marginTop: '6px' }}>
+                  -{formatCurrency(activeMonthSummary.payments)}
+                </div>
+              </div>
+              <div style={{ background: activeMonthSummary.closingBalance >= 0 ? '#F0FDF4' : '#FFF4F4', padding: '16px 20px', borderRadius: '16px', border: `1px solid ${activeMonthSummary.closingBalance >= 0 ? 'rgba(11, 110, 79, 0.25)' : 'rgba(180, 35, 24, 0.25)'}` }}>
+                <div style={{ fontSize: '0.78rem', color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Closing Balance ({activeMonthSummary.label})</div>
+                <div style={{ fontSize: '1.35rem', fontWeight: 800, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', marginTop: '6px' }}>
+                  {formatCurrency(activeMonthSummary.closingBalance)}
+                </div>
+              </div>
+            </div>
+
             {isAdmin && (
               <div
                 style={{
@@ -1048,36 +1391,43 @@ export default function PettyCashTracker({ isAdmin = false }) {
               </div>
             )}
 
-            <div style={{ overflowX: 'auto', border: '1px solid rgba(61, 63, 52, 0.08)', borderRadius: '18px' }}>
-              <table style={{ width: '100%', minWidth: '920px', borderCollapse: 'collapse' }}>
+            <div style={{ overflowX: 'auto', border: '1px solid rgba(61, 63, 52, 0.08)', borderRadius: '18px', background: '#fff', boxShadow: '0 4px 16px rgba(16, 24, 40, 0.03)' }}>
+              <table style={{ width: '100%', minWidth: '1020px', borderCollapse: 'collapse', textAlign: 'left' }}>
                 <thead>
                   <tr>
-                    <th style={headerCellStyle}>Date</th>
-                    <th style={headerCellStyle}>Particulars</th>
-                    <th style={headerCellStyle}>Description</th>
-                    <th style={{ ...headerCellStyle, textAlign: 'right' }}>Receipt</th>
-                    <th style={{ ...headerCellStyle, textAlign: 'right' }}>Payment</th>
-                    <th style={headerCellStyle}>Remarks</th>
-                    {isAdmin && <th style={headerCellStyle}>Action</th>}
+                    <th style={{ ...headerCellStyle, width: '125px', whiteSpace: 'nowrap' }}>Date</th>
+                    <th style={{ ...headerCellStyle, width: '200px' }}>Particulars</th>
+                    <th style={{ ...headerCellStyle, minWidth: '220px' }}>Description</th>
+                    <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right', whiteSpace: 'nowrap' }}>Receipt (₹)</th>
+                    <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right', whiteSpace: 'nowrap' }}>Payment (₹)</th>
+                    <th style={{ ...headerCellStyle, width: '145px', textAlign: 'right', whiteSpace: 'nowrap' }}>Balance (₹)</th>
+                    <th style={{ ...headerCellStyle, width: '190px' }}>Remarks</th>
+                    {isAdmin && <th style={{ ...headerCellStyle, width: '90px', textAlign: 'center', whiteSpace: 'nowrap' }}>Action</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {isLoading ? (
                     <tr>
-                      <td colSpan={isAdmin ? 7 : 6} style={emptyCellStyle}>
+                      <td colSpan={isAdmin ? 8 : 7} style={emptyCellStyle}>
                         Loading petty cash data...
                       </td>
                     </tr>
                   ) : activeMonthSummary.entries.length === 0 ? (
                     <tr>
-                      <td colSpan={isAdmin ? 7 : 6} style={emptyCellStyle}>
+                      <td colSpan={isAdmin ? 8 : 7} style={emptyCellStyle}>
                         No entries in {activeMonthSummary.label}. July 2026 is ready to start for A Building.
                       </td>
                     </tr>
                   ) : (
-                    activeMonthSummary.entries.map((entry) => (
-                      <tr key={entry.id}>
-                        <td style={bodyCellStyle}>
+                    activeMonthSummary.entries.map((entry, idx) => (
+                      <tr
+                        key={entry.id}
+                        style={{
+                          background: idx % 2 === 0 ? '#ffffff' : '#fcfdfd',
+                          transition: 'background 0.15s ease'
+                        }}
+                      >
+                        <td style={{ ...bodyCellStyle, whiteSpace: 'nowrap', fontWeight: 600, color: '#475467' }}>
                           {isAdmin && editingEntryId === entry.id ? (
                             <input
                               type="date"
@@ -1089,7 +1439,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                             formatShortDate(entry.date)
                           )}
                         </td>
-                        <td style={bodyCellStyle}>
+                        <td style={{ ...bodyCellStyle, fontWeight: 700, color: '#101828' }}>
                           {isAdmin && editingEntryId === entry.id ? (
                             <select
                               style={inlineInputStyle}
@@ -1108,10 +1458,10 @@ export default function PettyCashTracker({ isAdmin = false }) {
                               <option value="Common Settlement">Common Settlement</option>
                             </select>
                           ) : (
-                            <strong>{entry.vendor || '--'}</strong>
+                            entry.vendor || '--'
                           )}
                         </td>
-                        <td style={bodyCellStyle}>
+                        <td style={{ ...bodyCellStyle, color: '#344054' }}>
                           {isAdmin && editingEntryId === entry.id ? (
                             <input
                               value={entry.purpose || ''}
@@ -1122,7 +1472,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                             entry.purpose || '--'
                           )}
                         </td>
-                        <td style={{ ...bodyCellStyle, textAlign: 'right', color: '#0B6E4F', fontWeight: 700 }}>
+                        <td style={{ ...bodyCellStyle, textAlign: 'right', color: '#0B6E4F', fontWeight: 700, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
                           {isAdmin && editingEntryId === entry.id && (entry.vendor === 'Petty cash' || entry.vendor === 'Event') ? (
                             <input
                               type="number"
@@ -1130,11 +1480,13 @@ export default function PettyCashTracker({ isAdmin = false }) {
                               onChange={(event) => updateEntry(entry.id, 'receipt', event.target.value)}
                               style={{ ...inlineInputStyle, textAlign: 'right', color: '#0B6E4F', fontWeight: 700 }}
                             />
-                          ) : (
+                          ) : toNumber(entry.receipt) > 0 ? (
                             formatCurrency(toNumber(entry.receipt))
+                          ) : (
+                            <span style={{ color: '#98a2b3' }}>—</span>
                           )}
                         </td>
-                        <td style={{ ...bodyCellStyle, textAlign: 'right', color: '#B42318', fontWeight: 700 }}>
+                        <td style={{ ...bodyCellStyle, textAlign: 'right', color: '#B42318', fontWeight: 700, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
                           {isAdmin && editingEntryId === entry.id && (entry.vendor === 'Expenses' || entry.vendor === 'Common Settlement') ? (
                             <input
                               type="number"
@@ -1142,11 +1494,16 @@ export default function PettyCashTracker({ isAdmin = false }) {
                               onChange={(event) => updateEntry(entry.id, 'payment', event.target.value)}
                               style={{ ...inlineInputStyle, textAlign: 'right', color: '#B42318', fontWeight: 700 }}
                             />
-                          ) : (
+                          ) : toNumber(entry.payment) > 0 ? (
                             formatCurrency(toNumber(entry.payment))
+                          ) : (
+                            <span style={{ color: '#98a2b3' }}>—</span>
                           )}
                         </td>
-                        <td style={bodyCellStyle}>
+                        <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: entry.balance >= 0 ? '#0B6E4F' : '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                          {formatCurrency(entry.balance)}
+                        </td>
+                        <td style={{ ...bodyCellStyle, color: '#667085', fontSize: '0.88rem' }}>
                           {isAdmin && editingEntryId === entry.id ? (
                             <input
                               value={entry.remarks || ''}
@@ -1154,38 +1511,40 @@ export default function PettyCashTracker({ isAdmin = false }) {
                               style={inlineInputStyle}
                             />
                           ) : (
-                            entry.remarks || '--'
+                            entry.remarks || <span style={{ color: '#cbd5e1' }}>—</span>
                           )}
                         </td>
                         {isAdmin && (
-                          <td style={{ ...bodyCellStyle, display: 'flex', gap: '8px' }}>
-                            {editingEntryId === entry.id ? (
+                          <td style={{ ...bodyCellStyle, textAlign: 'center' }}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                              {editingEntryId === entry.id ? (
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingEntryId(null)}
+                                  style={{ border: 'none', background: 'transparent', color: '#0B6E4F', cursor: 'pointer', padding: '4px' }}
+                                  title="Done Editing"
+                                >
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingEntryId(entry.id)}
+                                  style={{ border: 'none', background: 'transparent', color: '#667085', cursor: 'pointer', padding: '4px' }}
+                                  title="Edit Entry"
+                                >
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                </button>
+                              )}
                               <button
                                 type="button"
-                                onClick={() => setEditingEntryId(null)}
-                                style={{ border: 'none', background: 'transparent', color: '#0B6E4F', cursor: 'pointer', padding: '4px' }}
-                                title="Done Editing"
+                                onClick={() => removeEntry(entry.id)}
+                                style={{ border: 'none', background: 'transparent', color: '#B42318', cursor: 'pointer', padding: '4px' }}
+                                title="Delete Entry"
                               >
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                               </button>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => setEditingEntryId(entry.id)}
-                                style={{ border: 'none', background: 'transparent', color: '#667085', cursor: 'pointer', padding: '4px' }}
-                                title="Edit Entry"
-                              >
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => removeEntry(entry.id)}
-                              style={{ border: 'none', background: 'transparent', color: '#B42318', cursor: 'pointer', padding: '4px' }}
-                              title="Delete Entry"
-                            >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                            </button>
+                            </div>
                           </td>
                         )}
                       </tr>
@@ -1193,15 +1552,18 @@ export default function PettyCashTracker({ isAdmin = false }) {
                   )}
                 </tbody>
                 <tfoot>
-                  <tr style={{ background: '#F8FAFC' }}>
-                    <td colSpan={3} style={{ ...bodyCellStyle, fontWeight: 800 }}>
-                      {activeMonthSummary.label} total
+                  <tr style={{ background: '#F8FAFC', borderTop: '2px solid rgba(61, 63, 52, 0.12)' }}>
+                    <td colSpan={3} style={{ ...bodyCellStyle, fontWeight: 800, color: '#101828', textAlign: 'right', fontSize: '0.92rem' }}>
+                      {activeMonthSummary.label} Total:
                     </td>
-                    <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#0B6E4F' }}>
+                    <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#0B6E4F', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
                       {formatCurrency(activeMonthSummary.receipts)}
                     </td>
-                    <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318' }}>
+                    <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
                       {formatCurrency(activeMonthSummary.payments)}
+                    </td>
+                    <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                      {formatCurrency(activeMonthSummary.closingBalance)}
                     </td>
                     <td colSpan={isAdmin ? 2 : 1} style={bodyCellStyle} />
                   </tr>
@@ -1229,24 +1591,27 @@ const fieldStyle = {
 const headerCellStyle = {
   padding: '14px 16px',
   textAlign: 'left',
-  fontSize: '0.78rem',
+  fontSize: '0.8rem',
   textTransform: 'uppercase',
-  letterSpacing: '0.06em',
-  color: '#667085',
+  letterSpacing: '0.05em',
+  color: '#475467',
   background: '#F8FAFC',
-  borderBottom: '1px solid rgba(61, 63, 52, 0.08)'
+  borderBottom: '1px solid rgba(61, 63, 52, 0.1)',
+  fontWeight: 700
 };
 
 const bodyCellStyle = {
   padding: '14px 16px',
-  borderBottom: '1px solid rgba(61, 63, 52, 0.08)',
-  verticalAlign: 'top'
+  borderBottom: '1px solid rgba(61, 63, 52, 0.06)',
+  verticalAlign: 'middle',
+  fontSize: '0.92rem'
 };
 
 const emptyCellStyle = {
-  padding: '28px 16px',
+  padding: '36px 16px',
   textAlign: 'center',
-  color: '#667085'
+  color: '#667085',
+  fontSize: '0.95rem'
 };
 
 const inlineInputStyle = {
