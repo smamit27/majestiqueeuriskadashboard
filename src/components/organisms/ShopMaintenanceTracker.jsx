@@ -400,6 +400,406 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
     await commitShops(nextShops, 'Ledger row deleted');
   };
 
+  const handlePrintShopPDF = useCallback(() => {
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const pendingAmount = totalRegularMain - totalReceipts;
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Shop Maintenance Statement - ${activeShop.shopNo} - Majestique Euriska</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 19px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .shop-banner {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+          .shop-title { font-size: 16px; font-weight: 800; color: #0f172a; }
+          .shop-owner { font-size: 13px; color: #334155; margin-top: 2px; }
+
+          .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+          }
+          .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: center;
+          }
+          .kpi-label { font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 700; }
+          .kpi-value { font-size: 16px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+
+          .rate-slabs {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 10px;
+            color: #92400e;
+            margin-bottom: 14px;
+          }
+
+          .fy-heading {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #1e293b;
+            margin: 14px 0 6px 0;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 14px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: right; padding: 6px 8px; border: 1px solid #94a3b8; font-size: 10px; }
+          th:first-child { text-align: left; }
+          td { padding: 6px 8px; border: 1px solid #cbd5e1; color: #0f172a; text-align: right; }
+          td:first-child { text-align: left; }
+          tr:nth-child(even) { background: #f8fafc; }
+          .subtotal-row { background: #e2e8f0 !important; font-weight: 700; }
+
+          .signatures { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 14px; border-top: 1px dashed #cbd5e1; }
+          .sig-box { text-align: center; font-size: 11px; color: #475569; }
+          .sig-line { margin-top: 36px; border-top: 1px solid #94a3b8; padding-top: 4px; font-weight: 600; }
+
+          .footer {
+            margin-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 8px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 portrait; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🏪 MAJESTIQUE EURISKA CO-OP HOUSING SOCIETY</h1>
+            <div class="subtitle">Commercial Wing • Shop Maintenance Account Ledger Statement</div>
+          </div>
+          <div class="meta">
+            <div><strong>Report Date:</strong> ${generatedDate}</div>
+            <div><strong>Shop:</strong> ${activeShop.shopNo} • ${activeShop.name}</div>
+          </div>
+        </div>
+
+        <div class="shop-banner">
+          <div>
+            <div class="shop-title">${activeShop.shopNo} — ${activeShop.name}</div>
+            <div class="shop-owner">Contact Number: <strong>${activeShop.contactNo || 'N/A'}</strong></div>
+          </div>
+          <div style="text-align: right;">
+            <span style="display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: ${pendingAmount > 0 ? '#fee2e2' : '#d1fae5'}; color: ${pendingAmount > 0 ? '#991b1b' : '#065f46'}; border: 1px solid ${pendingAmount > 0 ? '#fca5a5' : '#86efac'};">
+              ${pendingAmount > 0 ? `⚠️ Outstanding: ₹${formatValue(pendingAmount)}` : '✓ All Paid / Nil Balance'}
+            </span>
+          </div>
+        </div>
+
+        <div class="rate-slabs">
+          <strong>Official Society Rate Slabs:</strong> Oct 2021 – Jun 2024: <strong>₹1,100 / month</strong> (33 months) • Jul 2024 – Current: <strong>₹1,500 / month</strong>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Maintenance Billed</div>
+            <div class="kpi-value" style="color: #0369a1;">₹${formatValue(totalRegularMain)}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total Receipts Received</div>
+            <div class="kpi-value" style="color: #15803d;">₹${formatValue(totalReceipts)}</div>
+          </div>
+          <div class="kpi-card" style="background: ${pendingAmount > 0 ? '#fef2f2' : '#f0fdf4'}; border-color: ${pendingAmount > 0 ? '#fca5a5' : '#86efac'};">
+            <div class="kpi-label" style="color: ${pendingAmount > 0 ? '#991b1b' : '#15803d'};">Pending Balance</div>
+            <div class="kpi-value" style="color: ${pendingAmount > 0 ? '#991b1b' : '#15803d'};">₹${formatValue(pendingAmount)}</div>
+          </div>
+        </div>
+
+        ${yearGroups.map(yg => `
+          <div class="fy-heading">
+            <span>Financial Year: ${yg.year}</span>
+            <span style="font-size: 10px; font-weight: normal; color: #64748b;">Subtotal Due: ₹${formatValue(yg.regularMainTotal)} | Received: ₹${formatValue(yg.receiptsTotal)}</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 140px;">Month</th>
+                <th>Regular Maintenance (₹)</th>
+                <th>Receipt Amount (₹)</th>
+                <th>Net Balance (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${yg.entries.map(e => `
+                <tr>
+                  <td style="font-weight: 600;">${e.month}</td>
+                  <td>₹${formatValue(e.regularMain)}</td>
+                  <td style="${Number(e.receipts) > 0 ? 'font-weight: 700; color: #15803d;' : 'color: #94a3b8;'}">
+                    ${Number(e.receipts) > 0 ? `₹${formatValue(e.receipts)}` : '—'}
+                  </td>
+                  <td style="font-weight: 700; color: ${e.netAmount > 0 ? '#991b1b' : '#15803d'};">
+                    ₹${formatValue(e.netAmount)}
+                  </td>
+                </tr>
+              `).join('')}
+              <tr class="subtotal-row">
+                <td>FY Subtotal</td>
+                <td>₹${formatValue(yg.regularMainTotal)}</td>
+                <td style="color: #15803d;">₹${formatValue(yg.receiptsTotal)}</td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+        `).join('')}
+
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-line">Shop Owner / Representative</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Commercial Wing Coordinator</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Society Treasurer / Chairman</div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society Ltd. • Shop Maintenance Ledger</div>
+          <div>Confidential Document</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    }
+  }, [activeShop, totalRegularMain, totalReceipts, yearGroups]);
+
+  const handlePrintAllShopsPDF = useCallback(() => {
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const totalBilledAll = shops.reduce((acc, s) => acc + s.ledger.reduce((sum, e) => sum + (e.regularMain || 0), 0), 0);
+    const totalPaidAll = shops.reduce((acc, s) => acc + s.ledger.reduce((sum, e) => sum + (Number(e.receipts) || 0), 0), 0);
+    const totalPendingAll = totalBilledAll - totalPaidAll;
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Shop Maintenance Portfolio Summary - Majestique Euriska</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 19px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+          }
+          .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: center;
+          }
+          .kpi-label { font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 700; }
+          .kpi-value { font-size: 16px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+
+          .rate-slabs {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 10px;
+            color: #92400e;
+            margin-bottom: 14px;
+          }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 14px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: right; padding: 7px 10px; border: 1px solid #94a3b8; font-size: 10px; }
+          th:first-child, th:nth-child(2), th:nth-child(3) { text-align: left; }
+          td { padding: 7px 10px; border: 1px solid #cbd5e1; color: #0f172a; text-align: right; }
+          td:first-child, td:nth-child(2), td:nth-child(3) { text-align: left; }
+          tr:nth-child(even) { background: #f8fafc; }
+          .total-row { background: #e2e8f0 !important; font-weight: 800; }
+
+          .signatures { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 14px; border-top: 1px dashed #cbd5e1; }
+          .sig-box { text-align: center; font-size: 11px; color: #475569; }
+          .sig-line { margin-top: 36px; border-top: 1px solid #94a3b8; padding-top: 4px; font-weight: 600; }
+
+          .footer {
+            margin-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 8px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 portrait; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🏪 MAJESTIQUE EURISKA CO-OP HOUSING SOCIETY</h1>
+            <div class="subtitle">Commercial Wing • All Shops Maintenance Portfolio Summary (Shop 1–8)</div>
+          </div>
+          <div class="meta">
+            <div><strong>Report Date:</strong> ${generatedDate}</div>
+            <div><strong>Total Commercial Units:</strong> 8 Shops</div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Society Billed</div>
+            <div class="kpi-value" style="color: #0369a1;">₹${formatValue(totalBilledAll)}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total Collections Received</div>
+            <div class="kpi-value" style="color: #15803d;">₹${formatValue(totalPaidAll)}</div>
+          </div>
+          <div class="kpi-card" style="background: ${totalPendingAll > 0 ? '#fef2f2' : '#f0fdf4'}; border-color: ${totalPendingAll > 0 ? '#fca5a5' : '#86efac'};">
+            <div class="kpi-label" style="color: ${totalPendingAll > 0 ? '#991b1b' : '#15803d'};">Overall Pending Balance</div>
+            <div class="kpi-value" style="color: ${totalPendingAll > 0 ? '#991b1b' : '#15803d'};">₹${formatValue(totalPendingAll)}</div>
+          </div>
+        </div>
+
+        <div class="rate-slabs">
+          <strong>Commercial Rate Structure:</strong> Oct 2021 – Jun 2024: <strong>₹1,100 / mo</strong> • Jul 2024 – Current: <strong>₹1,500 / mo</strong>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 70px;">Shop #</th>
+              <th>Owner / Business Name</th>
+              <th>Contact No</th>
+              <th>Total Billed (₹)</th>
+              <th>Total Paid (₹)</th>
+              <th>Pending Balance (₹)</th>
+              <th style="text-align: center; width: 100px;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${shops.map(s => {
+              const shopBilled = s.ledger.reduce((sum, e) => sum + (e.regularMain || 0), 0);
+              const shopPaid = s.ledger.reduce((sum, e) => sum + (Number(e.receipts) || 0), 0);
+              const shopPending = shopBilled - shopPaid;
+              const isCleared = shopPending <= 0;
+
+              return `
+                <tr>
+                  <td style="font-weight: 700;">${s.shopNo}</td>
+                  <td>${s.name || '—'}</td>
+                  <td>${s.contactNo || '—'}</td>
+                  <td>₹${formatValue(shopBilled)}</td>
+                  <td style="color: #15803d; font-weight: 600;">₹${formatValue(shopPaid)}</td>
+                  <td style="font-weight: 700; color: ${shopPending > 0 ? '#991b1b' : '#15803d'};">₹${formatValue(shopPending)}</td>
+                  <td style="text-align: center;">
+                    <span style="display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 9px; font-weight: 700; background: ${isCleared ? '#d1fae5' : '#fee2e2'}; color: ${isCleared ? '#065f46' : '#991b1b'};">
+                      ${isCleared ? '✓ Cleared' : '⚠️ Pending'}
+                    </span>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+            <tr class="total-row">
+              <td colspan="3" style="text-align: left;">Grand Total (All 8 Shops)</td>
+              <td>₹${formatValue(totalBilledAll)}</td>
+              <td style="color: #15803d;">₹${formatValue(totalPaidAll)}</td>
+              <td style="color: #991b1b; font-size: 12px;">₹${formatValue(totalPendingAll)}</td>
+              <td style="text-align: center;">—</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-line">Prepared By (Manager)</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Commercial Wing Coordinator</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Society Treasurer / Chairman</div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society Ltd. • Master Commercial Ledger</div>
+          <div>Confidential Document</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    }
+  }, [shops]);
+
   const toggleShopSelection = (shopId) => {
     setSelectedShops(prev => 
       prev.includes(shopId) ? prev.filter(id => id !== shopId) : [...prev, shopId]
@@ -441,10 +841,31 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
             {saveMessage}
           </div>
 
-          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '12px 16px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.2)', textAlign: 'right' }}>
-            <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>Overall Pending (Shop 1-8)</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 4, color: overallPending > 0 ? '#fec84b' : '#34d399' }}>{formatValue(overallPending)}</div>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+            <div style={{ background: 'rgba(255,255,255,0.1)', padding: '10px 16px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.2)', textAlign: 'right' }}>
+              <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>Overall Pending (Shop 1-8)</div>
+              <div style={{ fontSize: '1.3rem', fontWeight: 800, marginTop: 2, color: overallPending > 0 ? '#fec84b' : '#34d399' }}>{formatValue(overallPending)}</div>
+            </div>
+
+            <button
+              onClick={handlePrintAllShopsPDF}
+              style={{
+                padding: '9px 16px',
+                borderRadius: 8,
+                background: 'rgba(255,255,255,0.15)',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.3)',
+                fontWeight: 700,
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+                backdropFilter: 'blur(6px)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              🖨️ Print Summary (All Shops)
+            </button>
           </div>
+
           {isAdmin ? (
             <button
               onClick={() => setIsInsertModalOpen(true)}
@@ -507,6 +928,25 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
             <h3 style={{ margin: '4px 0 0', fontSize: '1.15rem', fontWeight: 800 }}>{activeShop.shopNo}</h3>
             <p style={{ margin: '4px 0 0', color: '#667085', fontSize: '0.9rem' }}>{activeShop.name}</p>
           </div>
+          <button
+            onClick={handlePrintShopPDF}
+            style={{
+              padding: '8px 16px',
+              borderRadius: 8,
+              background: '#0b2b26',
+              color: '#fff',
+              border: 'none',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              fontSize: '0.85rem',
+              boxShadow: '0 4px 12px rgba(11,43,38,0.18)'
+            }}
+          >
+            🖨️ Print {activeShop.shopNo} Statement (PDF)
+          </button>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 16 }}>

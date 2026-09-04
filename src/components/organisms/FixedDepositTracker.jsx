@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from '../../firebase.js';
 import { useCollection } from '../../hooks/useCollection.js';
@@ -109,12 +109,17 @@ export default function FixedDepositTracker({ isAdmin }) {
     }
   };
 
-  const [activeSubTab, setActiveSubTab] = useState('summary'); // 'summary' | 'active' | 'history' | 'create' | 'calculator'
-  
+  const [activeSubTab, setActiveSubTab] = useState('summary'); // 'summary' | 'active' | 'history' | 'calculator'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [bankFilter, setBankFilter] = useState('All');
+  const [fundFilter, setFundFilter] = useState('All');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   // Form states for creating FD
   const [bankName, setBankName] = useState('HDFC Bank');
   const [customBankName, setCustomBankName] = useState('');
   const [fdNumber, setFdNumber] = useState('');
+  const [depositName, setDepositName] = useState('');
   const [principal, setPrincipal] = useState('');
   const [interestRate, setInterestRate] = useState('');
   const [tenureMonths, setTenureMonths] = useState('');
@@ -137,7 +142,7 @@ export default function FixedDepositTracker({ isAdmin }) {
   const [calcTenure, setCalcTenure] = useState('12');
   const [calcCompounding, setCalcCompounding] = useState('4'); // 4 = Quarterly, 12 = Monthly, 1 = Yearly
 
-  // Fetch FD records using our custom hook
+  // Fetch FD records using custom hook
   const { items: rawFds, source, error: syncError } = useCollection('fixedDeposits', mockFixedDeposits);
 
   const fdsList = useMemo(() => {
@@ -153,7 +158,6 @@ export default function FixedDepositTracker({ isAdmin }) {
     }).format(val || 0);
   };
 
-  // Helper to format dates
   const fmtDate = (dateStr) => {
     if (!dateStr) return 'N/A';
     try {
@@ -167,14 +171,13 @@ export default function FixedDepositTracker({ isAdmin }) {
     }
   };
 
-  // Calculate quarterly compound maturity value
+  // Quarterly compound maturity formula: A = P * (1 + r/400) ^ (4 * t)
   const calculateMaturity = (p, r, m) => {
     const principalNum = parseFloat(p) || 0;
     const rateNum = parseFloat(r) || 0;
     const monthsNum = parseFloat(m) || 0;
     if (principalNum <= 0 || rateNum <= 0 || monthsNum <= 0) return 0;
     
-    // Quarterly compounding formula: A = P * (1 + r/400) ^ (4 * t)
     const years = monthsNum / 12;
     const value = principalNum * Math.pow(1 + (rateNum / 400), 4 * years);
     return Math.round(value);
@@ -202,7 +205,7 @@ export default function FixedDepositTracker({ isAdmin }) {
   const stats = useMemo(() => {
     let totalActivePrincipal = 0;
     let totalActiveMaturity = 0;
-    let totalRealizedInterest = 0; // Broken or Matured realized interest
+    let totalRealizedInterest = 0;
     
     activeFds.forEach(f => {
       totalActivePrincipal += (f.principal || 0);
@@ -264,6 +267,22 @@ export default function FixedDepositTracker({ isAdmin }) {
     };
   }, [activeFds]);
 
+  // Filtered active FDs for ledger view
+  const filteredActiveFds = useMemo(() => {
+    return activeFds.filter(fd => {
+      const matchQuery = !searchQuery || 
+        (fd.fdNumber || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (fd.bankName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (fd.depositName || fd.depositLine1 || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (fd.fundType || '').toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchBank = bankFilter === 'All' || fd.bankName === bankFilter;
+      const matchFund = fundFilter === 'All' || fd.fundType === fundFilter;
+
+      return matchQuery && matchBank && matchFund;
+    });
+  }, [activeFds, searchQuery, bankFilter, fundFilter]);
+
   // Compute Maturity Date dynamically for the form
   const computedMaturityDate = useMemo(() => {
     if (!startDate || !tenureMonths) return '';
@@ -301,6 +320,9 @@ export default function FixedDepositTracker({ isAdmin }) {
     const newFd = {
       fdNumber,
       bankName: finalBank,
+      depositName: depositName || `MAJESTIQUE EURISKA - ${fundType.toUpperCase()}`,
+      depositLine1: depositName || `MAJESTIQUE EURISKA A BLDG`,
+      depositLine2: fundType.toUpperCase(),
       principal: parseFloat(principal),
       interestRate: parseFloat(interestRate),
       tenureMonths: parseInt(tenureMonths),
@@ -317,7 +339,6 @@ export default function FixedDepositTracker({ isAdmin }) {
       if (isFirebaseConfigured && db) {
         await addDoc(collection(db, 'fixedDeposits'), newFd);
       } else {
-        // Mock fallback
         mockFixedDeposits.unshift({
           id: 'FD-' + Date.now(),
           ...newFd
@@ -325,17 +346,17 @@ export default function FixedDepositTracker({ isAdmin }) {
       }
 
       setFormSuccess(`Fixed Deposit for ${fmtAmt(principal)} has been successfully created!`);
-      // Reset form
       setFdNumber('');
+      setDepositName('');
       setPrincipal('');
       setInterestRate('');
       setTenureMonths('');
       setNotes('');
-      // Delay switch back to list
       setTimeout(() => {
+        setIsCreateModalOpen(false);
         setActiveSubTab('active');
         setFormSuccess('');
-      }, 1500);
+      }, 1200);
     } catch (err) {
       console.error(err);
       setFormError('Failed to save Fixed Deposit record.');
@@ -360,7 +381,6 @@ export default function FixedDepositTracker({ isAdmin }) {
       if (isFirebaseConfigured && db) {
         await updateDoc(doc(db, 'fixedDeposits', breakingFd.id), updatePayload);
       } else {
-        // Mock fallback update
         const index = mockFixedDeposits.findIndex(x => x.id === breakingFd.id);
         if (index !== -1) {
           mockFixedDeposits[index] = { ...mockFixedDeposits[index], ...updatePayload };
@@ -413,6 +433,224 @@ export default function FixedDepositTracker({ isAdmin }) {
     return { maturity, interest };
   }, [calcPrincipal, calcRate, calcTenure, calcCompounding]);
 
+  // ── Export CSV ─────────────────────────────────────────────────────────────
+  const handleExportCSV = useCallback(() => {
+    const listToExport = activeSubTab === 'history' ? historyFds : activeFds;
+    const headers = 'FD Number,Bank Name,Deposit Name,Fund Type,Principal Amount,Interest Rate %,Tenure Months,Start Date,Maturity Date,Maturity Value,Status,Notes\n';
+    const rows = listToExport.map(f => {
+      const num = (f.fdNumber || '').replace(/"/g, '""');
+      const bank = (f.bankName || '').replace(/"/g, '""');
+      const name = (f.depositName || f.depositLine1 || '').replace(/"/g, '""');
+      const fund = (f.fundType || '').replace(/"/g, '""');
+      const notesStr = (f.notes || '').replace(/"/g, '""');
+      return `"${num}","${bank}","${name}","${fund}","${f.principal || 0}","${f.interestRate || 0}","${f.tenureMonths || ''}","${f.startDate || ''}","${f.maturityDate || ''}","${f.maturityValue || ''}","${f.status}","${notesStr}"`;
+    }).join('\n');
+
+    const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `Majestique_Euriska_Fixed_Deposits_${activeSubTab}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [activeFds, historyFds, activeSubTab]);
+
+  // ── Print PDF Report ───────────────────────────────────────────────────────
+  const handlePrintPDF = useCallback(() => {
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const totalExpectedGain = summaryData.grandInterest;
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Fixed Deposit Treasury Statement - Majestique Euriska</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 19px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+          }
+          .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: center;
+          }
+          .kpi-label { font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 700; }
+          .kpi-value { font-size: 16px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+
+          .bank-heading {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #1e3a8a;
+            margin: 18px 0 8px 0;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1.5px solid #cbd5e1;
+            padding-bottom: 4px;
+          }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 14px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: right; padding: 7px 8px; border: 1px solid #94a3b8; font-size: 10px; }
+          th:first-child, th:nth-child(2), th:nth-child(3) { text-align: left; }
+          td { padding: 6px 8px; border: 1px solid #cbd5e1; color: #0f172a; text-align: right; }
+          td:first-child, td:nth-child(2), td:nth-child(3) { text-align: left; }
+          tr:nth-child(even) { background: #f8fafc; }
+          .subtotal-row { background: #e2e8f0 !important; font-weight: 700; color: #0f172a; }
+          .grand-table { margin-top: 10px; border: 2px solid #0f172a; }
+
+          .signatures { margin-top: 36px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 14px; border-top: 1px dashed #cbd5e1; }
+          .sig-box { text-align: center; font-size: 11px; color: #475569; }
+          .sig-line { margin-top: 36px; border-top: 1px solid #94a3b8; padding-top: 4px; font-weight: 600; }
+
+          .footer {
+            margin-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 8px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 landscape; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🏦 MAJESTIQUE EURISKA CO-OP HOUSING SOCIETY</h1>
+            <div class="subtitle">Fixed Deposit Treasury Valuation &amp; Sinking Fund Portfolio Statement</div>
+          </div>
+          <div class="meta">
+            <div><strong>Statement Date:</strong> ${generatedDate}</div>
+            <div><strong>Active Deposits:</strong> ${activeFds.length} Accounts</div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Active Principal</div>
+            <div class="kpi-value" style="color: #0369a1;">₹${formatSummaryAmount(summaryData.grandPrincipal)}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Expected Maturity Value</div>
+            <div class="kpi-value" style="color: #d97706;">₹${formatSummaryAmount(summaryData.grandMaturity)}</div>
+          </div>
+          <div class="kpi-card" style="background: #f0fdf4; border-color: #86efac;">
+            <div class="kpi-label" style="color: #15803d;">Total Expected Interest Gains</div>
+            <div class="kpi-value" style="color: #15803d;">₹${formatSummaryAmount(totalExpectedGain)}</div>
+          </div>
+        </div>
+
+        ${summaryData.banks.map((bank) => `
+          <div class="bank-heading">
+            <span>${bank.bankName} Fixed Deposits</span>
+            <span style="font-size: 11px; font-weight: normal; color: #475569;">Total Principal: ₹${formatSummaryAmount(bank.principalTotal)}</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 35px; text-align: center;">#</th>
+                <th style="width: 140px;">FD / Account No.</th>
+                <th>Deposit Purpose / Account Title</th>
+                <th style="width: 130px;">Principal (₹)</th>
+                <th style="width: 75px; text-align: center;">ROI (% p.a.)</th>
+                <th style="width: 70px; text-align: center;">Tenure</th>
+                <th style="width: 90px; text-align: center;">Maturity Date</th>
+                <th style="width: 140px;">Maturity Value (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${bank.deposits.map((fd, i) => `
+                <tr>
+                  <td style="text-align: center; color: #64748b;">${i + 1}</td>
+                  <td style="font-weight: 700; font-family: monospace;">${fd.fdNumber}</td>
+                  <td>
+                    <strong>${fd.depositLine1 || fd.depositName || fd.bankName}</strong>
+                    ${fd.depositLine2 ? `<div style="font-size: 9px; color: #64748b;">${fd.depositLine2}</div>` : ''}
+                  </td>
+                  <td style="font-weight: 600;">₹${formatSummaryAmount(fd.principal)}</td>
+                  <td style="text-align: center;">${fd.interestRate}%</td>
+                  <td style="text-align: center;">${fd.tenureMonths ? `${fd.tenureMonths} M` : '—'}</td>
+                  <td style="text-align: center;">${fmtDate(fd.maturityDate)}</td>
+                  <td style="font-weight: 700; color: #15803d;">₹${formatSummaryAmount(fd.maturityValue)}</td>
+                </tr>
+              `).join('')}
+              <tr class="subtotal-row">
+                <td colspan="3" style="text-align: left;">${bank.totalLabel}</td>
+                <td>₹${formatSummaryAmount(bank.principalTotal)}</td>
+                <td colspan="3" style="text-align: center;">—</td>
+                <td style="color: #15803d;">₹${formatSummaryAmount(bank.maturityTotal)}</td>
+              </tr>
+            </tbody>
+          </table>
+        `).join('')}
+
+        <table class="grand-table">
+          <tbody>
+            <tr style="background: #0f172a; color: #ffffff; font-weight: 800; font-size: 12px;">
+              <td colspan="3" style="text-align: left; padding: 10px; color: #ffffff;">GRAND TOTAL PORTFOLIO (${summaryData.grandLabel})</td>
+              <td style="padding: 10px; color: #ffffff;">₹${formatSummaryAmount(summaryData.grandPrincipal)}</td>
+              <td colspan="3" style="text-align: center; color: #94a3b8;">—</td>
+              <td style="padding: 10px; color: #4ade80; font-size: 13px;">₹${formatSummaryAmount(summaryData.grandMaturity)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-line">Society Secretary</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Society Treasurer</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Society Chairman</div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society Ltd. • Treasury & Reserve Fund Management</div>
+          <div>Confidential Document • Page 1 of 1</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    }
+  }, [summaryData, activeFds]);
+
   // ── Lock Screen Guard ───────────────────────────────────────────────
   if (!isUnlocked) {
     return (
@@ -464,94 +702,162 @@ export default function FixedDepositTracker({ isAdmin }) {
   let fdSummarySerial = 0;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, fontFamily: 'Inter, system-ui, sans-serif' }}>
       
-      {/* Module Title */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+      {/* HERO BANNER (matching ManagerTaskTracker) */}
+      <div style={{
+        background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
+        borderRadius: 20,
+        padding: '22px 26px',
+        color: '#fff',
+        boxShadow: '0 8px 32px rgba(11,43,38,0.24)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16
+      }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: '1.75rem', fontWeight: '900', color: 'var(--text-strong)', letterSpacing: '-0.02em' }}>
-            💼 Fixed Deposits (FD) Tracker
+          <p style={{ margin: 0, fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#c49b4f' }}>
+            🏦 Society Assets & Treasury
+          </p>
+          <h2 style={{ margin: '6px 0 8px', fontSize: '1.45rem', fontWeight: 800 }}>
+            Fixed Deposit Portfolio & Sinking Funds
           </h2>
-          <p style={{ margin: '6px 0 0', fontSize: '0.9rem', color: 'var(--muted)' }}>
-            Monitor and manage residential society reserves, sinking funds, and long-term interest-bearing accounts.
+          <p style={{ margin: 0, color: 'rgba(255,255,255,0.78)', fontSize: '0.9rem', maxWidth: 640 }}>
+            Monitor and manage residential society reserves, statutory sinking funds, and long-term interest-bearing accounts across Scheduled Commercial Banks.
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{
-            fontSize: '0.75rem',
-            padding: '6px 12px',
-            borderRadius: '20px',
-            fontWeight: '700',
-            background: source === 'firebase' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(245, 158, 11, 0.08)',
-            color: source === 'firebase' ? '#10b981' : '#f59e0b',
-            border: `1px solid ${source === 'firebase' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`,
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)'
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10 }}>
+          <div style={{
+            fontSize: '0.74rem',
+            padding: '4px 10px',
+            borderRadius: 999,
+            fontWeight: 800,
+            background: source === 'firebase' ? 'rgba(52, 211, 153, 0.18)' : 'rgba(251, 191, 36, 0.18)',
+            color: source === 'firebase' ? '#34d399' : '#fde047',
+            border: '1px solid rgba(255,255,255,0.2)'
           }}>
             {source === 'firebase' ? '⚡ Live Sync Active' : '📋 Demo Mode'}
-          </span>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button
+              onClick={handlePrintPDF}
+              style={{
+                padding: '8px 14px',
+                borderRadius: 8,
+                background: 'rgba(255,255,255,0.14)',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.28)',
+                fontWeight: 700,
+                cursor: 'pointer',
+                fontSize: '0.84rem',
+                backdropFilter: 'blur(6px)'
+              }}
+            >
+              🖨️ Print Portfolio (PDF)
+            </button>
+            <button
+              onClick={handleExportCSV}
+              style={{
+                padding: '8px 14px',
+                borderRadius: 8,
+                background: 'rgba(255,255,255,0.14)',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.28)',
+                fontWeight: 700,
+                cursor: 'pointer',
+                fontSize: '0.84rem'
+              }}
+            >
+              ⬇ Export CSV
+            </button>
+            {isAdmin && (
+              <button
+                onClick={() => setIsCreateModalOpen(true)}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: 8,
+                  background: '#c49b4f',
+                  color: '#fff',
+                  border: 'none',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  fontSize: '0.84rem',
+                  boxShadow: '0 4px 12px rgba(196,155,79,0.35)'
+                }}
+              >
+                + Open New FD
+              </button>
+            )}
+            <button
+              onClick={() => setIsUnlocked(false)}
+              style={{
+                padding: '8px 12px',
+                borderRadius: 8,
+                background: 'transparent',
+                color: 'rgba(255,255,255,0.6)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                cursor: 'pointer',
+                fontSize: '0.8rem'
+              }}
+              title="Lock Workspace"
+            >
+              🔒 Lock
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Sync warnings */}
       {syncError && (
-        <div className="notice-banner" style={{ background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.15)', borderRadius: '12px' }}>
+        <div style={{ background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5', borderRadius: 12, padding: '10px 16px', fontSize: '0.88rem' }}>
           ⚠️ {syncError}
         </div>
       )}
 
-      {/* Primary KPI Metrics */}
-      <div className="metrics-grid">
-        <div className="metric-card metric-card--teal">
-          <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Total Active Principal</p>
-          <h3 style={{ color: 'var(--teal)' }}>{fmtAmt(stats.activePrincipal)}</h3>
-          <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>
-            Locked across <strong>{stats.activeCount}</strong> active deposits
-          </p>
+      {/* Primary KPI Metrics Ribbon */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
+        <div style={{ background: '#fff', padding: '16px 18px', borderRadius: 14, border: '1px solid rgba(61,63,52,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748b' }}>Total Active Principal</div>
+          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0b2b26', marginTop: 4 }}>{fmtAmt(stats.activePrincipal)}</div>
+          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 4 }}>Across <strong>{stats.activeCount}</strong> active deposits</div>
         </div>
-        <div className="metric-card metric-card--sand">
-          <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Active Maturity Value</p>
-          <h3 style={{ color: 'var(--amber)' }}>{fmtAmt(stats.activeMaturityValue)}</h3>
-          <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>
-            Receivable at future maturity dates
-          </p>
+        <div style={{ background: '#fff', padding: '16px 18px', borderRadius: 14, border: '1px solid rgba(61,63,52,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748b' }}>Expected Maturity Value</div>
+          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#b45309', marginTop: 4 }}>{fmtAmt(stats.activeMaturityValue)}</div>
+          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 4 }}>Projected future value</div>
         </div>
-        <div className="metric-card metric-card--pine">
-          <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Realized Net Interest</p>
-          <h3 style={{ color: 'var(--pine)' }}>{fmtAmt(stats.realizedInterest)}</h3>
-          <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>
-            Credited from <strong>{stats.historyCount}</strong> closed deposits
-          </p>
+        <div style={{ background: '#f0fdf4', padding: '16px 18px', borderRadius: 14, border: '1px solid #bbf7d0', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#166534' }}>Projected Interest Gain</div>
+          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#15803d', marginTop: 4 }}>{fmtAmt(stats.activeMaturityValue - stats.activePrincipal)}</div>
+          <div style={{ fontSize: '0.72rem', color: '#166534', marginTop: 4 }}>Estimated net yield</div>
+        </div>
+        <div style={{ background: '#fff', padding: '16px 18px', borderRadius: 14, border: '1px solid rgba(61,63,52,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748b' }}>Realized Interest (Past)</div>
+          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#1e3a8a', marginTop: 4 }}>{fmtAmt(stats.realizedInterest)}</div>
+          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 4 }}>From <strong>{stats.historyCount}</strong> closed accounts</div>
         </div>
       </div>
 
-      {/* Selector and Actions Bar using global tab layout */}
-      <div className="attendance-month-tabs" role="tablist" style={{ padding: '0 0 12px 0', borderBottom: '1px solid var(--line)' }}>
+      {/* SUB-TAB BAR */}
+      <div className="attendance-month-tabs" role="tablist" style={{ padding: '0 0 10px 0', borderBottom: '1px solid var(--line)' }}>
         <button
           className={`attendance-month-tab ${activeSubTab === 'summary' ? 'attendance-month-tab--active' : ''}`}
           onClick={() => setActiveSubTab('summary')}
         >
-          📊 FD Summary Poster
+          📊 Bank Breakdown &amp; Posters
         </button>
         <button
           className={`attendance-month-tab ${activeSubTab === 'active' ? 'attendance-month-tab--active' : ''}`}
           onClick={() => setActiveSubTab('active')}
         >
-          📈 Active FDs ({stats.activeCount})
+          📈 Active Deposits ({stats.activeCount})
         </button>
         <button
           className={`attendance-month-tab ${activeSubTab === 'history' ? 'attendance-month-tab--active' : ''}`}
           onClick={() => setActiveSubTab('history')}
         >
-          📋 Closed &amp; Audit ({stats.historyCount})
+          📋 Deposit History ({stats.historyCount})
         </button>
-        {isAdmin && (
-          <button
-            className={`attendance-month-tab ${activeSubTab === 'create' ? 'attendance-month-tab--active' : ''}`}
-            onClick={() => setActiveSubTab('create')}
-          >
-            ➕ Make New FD
-          </button>
-        )}
         <button
           className={`attendance-month-tab ${activeSubTab === 'calculator' ? 'attendance-month-tab--active' : ''}`}
           onClick={() => setActiveSubTab('calculator')}
@@ -561,114 +867,157 @@ export default function FixedDepositTracker({ isAdmin }) {
         </button>
       </div>
 
-
-      {/* SUBTAB Content Switch */}
-
-
-      {/* 0. SUMMARY POSTER BOARD */}
+      {/* SUB-TAB 1: CLEAN & PLAIN SUMMARY STATEMENT */}
       {activeSubTab === 'summary' && (() => {
         fdSummarySerial = 0;
         return (
-          <div className="fd-summary-board">
-            <div className="fd-summary-board__header">
-              <h2 className="fd-summary-board__title">{summaryData.title}</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {/* Clean Section Header */}
+            <div style={{ background: '#ffffff', borderRadius: 16, padding: '20px 24px', border: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <p style={{ margin: 0, fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#196c6c' }}>
+                  Treasury Balance Sheet
+                </p>
+                <h2 style={{ margin: '4px 0 0', fontSize: '1.3rem', fontWeight: 800, color: '#0f172a' }}>
+                  {summaryData.title}
+                </h2>
+                <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: '0.88rem' }}>
+                  Consolidated statutory reserve &amp; sinking fund portfolio across Scheduled Commercial Banks.
+                </p>
+              </div>
+              <button
+                onClick={handlePrintPDF}
+                style={{
+                  padding: '9px 16px',
+                  borderRadius: 8,
+                  background: '#0b2b26',
+                  color: '#fff',
+                  border: 'none',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  fontSize: '0.84rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  boxShadow: '0 4px 12px rgba(11,43,38,0.18)'
+                }}
+              >
+                🖨️ Print Statement (PDF)
+              </button>
             </div>
 
             {summaryData.banks.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--muted)' }}>
-                No active Fixed Deposits available for summary statement.
+              <div style={{ textAlign: 'center', padding: '48px 20px', background: '#fff', borderRadius: 16, border: '1px solid var(--line)', color: '#64748b' }}>
+                <span style={{ fontSize: '2rem', display: 'block', marginBottom: 8 }}>📭</span>
+                <strong>No active Fixed Deposits found for summary statement.</strong>
               </div>
             ) : (
-              <div className="fd-summary-bank-list">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 {summaryData.banks.map((bank) => (
                   <div
                     key={bank.bankName}
-                    className="fd-summary-bank"
                     style={{
-                      '--fd-border': bank.theme.border,
-                      '--fd-head': bank.theme.head,
-                      '--fd-soft': bank.theme.soft,
-                      '--fd-soft-alt': bank.theme.softAlt,
-                      '--fd-total-bg': bank.theme.totalBg,
-                      '--fd-total-color': bank.theme.totalColor
+                      background: '#ffffff',
+                      borderRadius: 16,
+                      border: '1px solid #e2e8f0',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                      overflow: 'hidden'
                     }}
                   >
-                    <div className="fd-summary-bank__brand-wrap">
-                      {renderSummaryBrand(bank.bankName, bank.theme.variant)}
+                    {/* Plain, clean bank bar */}
+                    <div style={{
+                      padding: '16px 20px',
+                      background: '#f8fafc',
+                      borderBottom: '1px solid #e2e8f0',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: 12
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{
+                          padding: '6px 12px',
+                          borderRadius: 8,
+                          fontSize: '0.85rem',
+                          fontWeight: 800,
+                          background: bank.bankName.includes('HDFC') ? '#eff6ff' : bank.bankName.includes('ICICI') ? '#fff7ed' : '#f1f5f9',
+                          color: bank.bankName.includes('HDFC') ? '#1e40af' : bank.bankName.includes('ICICI') ? '#c2410c' : '#334155',
+                          border: `1px solid ${bank.bankName.includes('HDFC') ? '#bfdbfe' : bank.bankName.includes('ICICI') ? '#fed7aa' : '#cbd5e1'}`
+                        }}>
+                          🏛️ {bank.bankName}
+                        </span>
+                        <span style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: 600 }}>
+                          {bank.deposits.length} Active {bank.deposits.length === 1 ? 'Deposit' : 'Deposits'}
+                        </span>
+                      </div>
+
+                      <div style={{ fontSize: '0.88rem', color: '#334155' }}>
+                        Total Principal: <strong style={{ color: '#0f172a' }}>₹{formatSummaryAmount(bank.principalTotal)}</strong>
+                      </div>
                     </div>
 
-                    <div className="fd-summary-table-wrap">
-                      <table className="fd-summary-table">
+                    {/* Clean Table */}
+                    <div className="attendance-table-scroll">
+                      <table className="attendance-table" style={{ margin: 0 }}>
                         <thead>
-                          <tr>
-                            <th style={{ width: '60px' }}>Sr No.</th>
-                            <th>{bank.theme.accountLabel}</th>
+                          <tr style={{ background: '#f8fafc' }}>
+                            <th style={{ width: 50, textAlign: 'center' }}>Sr No.</th>
+                            <th style={{ width: 150 }}>{bank.theme.accountLabel || 'FD No.'}</th>
                             <th>Name of Deposit</th>
-                            <th>Principal Amount (₹)</th>
-                            <th>Rate (% p.a.)</th>
-                            <th>Tenure</th>
-                            <th>Maturity Date</th>
-                            <th>Maturity Amount (₹)</th>
+                            <th style={{ width: 140, textAlign: 'right' }}>Principal Amount (₹)</th>
+                            <th style={{ width: 90, textAlign: 'center' }}>Rate (% p.a.)</th>
+                            <th style={{ width: 80, textAlign: 'center' }}>Tenure</th>
+                            <th style={{ width: 110, textAlign: 'center' }}>Maturity Date</th>
+                            <th style={{ width: 140, textAlign: 'right' }}>Maturity Amount (₹)</th>
                           </tr>
                         </thead>
                         <tbody>
                           {bank.deposits.map((deposit, idx) => {
                             const serial = ++fdSummarySerial;
                             return (
-                              <tr
-                                key={deposit.id || deposit.fdNumber}
-                                className={idx % 2 === 1 ? 'fd-summary-table__row--alt' : ''}
-                              >
-                                <td className="fd-summary-table__cell fd-summary-table__cell--serial">{serial}</td>
-                                <td
-                                  className="fd-summary-table__cell fd-summary-table__cell--number"
-                                  style={{
-                                    color: deposit.fdNumberColor || undefined,
-                                    textDecoration: deposit.fdNumberUnderline ? 'underline' : undefined
-                                  }}
-                                >
+                              <tr key={deposit.id || deposit.fdNumber}>
+                                <td style={{ textAlign: 'center', color: '#64748b' }}>{serial}</td>
+                                <td style={{ fontWeight: 700, fontFamily: 'monospace', color: '#0f172a' }}>
                                   {deposit.fdNumber}
                                 </td>
-                                <td className="fd-summary-table__cell fd-summary-table__cell--purpose">
-                                  <div className="fd-summary-table__deposit-line1">
+                                <td>
+                                  <strong style={{ color: '#0f172a' }}>
                                     {deposit.depositLine1 || deposit.depositName || deposit.bankName}
-                                  </div>
+                                  </strong>
                                   {deposit.depositLine2 && (
-                                    <div
-                                      className="fd-summary-table__deposit-line2"
-                                      style={{ color: deposit.depositLine2Color || undefined }}
-                                    >
+                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 2 }}>
                                       {deposit.depositLine2}
                                     </div>
                                   )}
                                 </td>
-                                <td className="fd-summary-table__cell fd-summary-table__cell--money">
+                                <td style={{ textAlign: 'right', fontWeight: 600, color: '#0f172a' }}>
                                   {formatSummaryAmount(deposit.principal)}
                                 </td>
-                                <td className="fd-summary-table__cell fd-summary-table__cell--center">
+                                <td style={{ textAlign: 'center', fontWeight: 600, color: '#065f46' }}>
                                   {deposit.interestRate}%
                                 </td>
-                                <td className="fd-summary-table__cell fd-summary-table__cell--center">
+                                <td style={{ textAlign: 'center', color: '#64748b' }}>
                                   {deposit.tenureMonths ? `${deposit.tenureMonths} M` : '-'}
                                 </td>
-                                <td className="fd-summary-table__cell fd-summary-table__cell--center">
+                                <td style={{ textAlign: 'center', color: '#334155' }}>
                                   {fmtDate(deposit.maturityDate)}
                                 </td>
-                                <td className="fd-summary-table__cell fd-summary-table__cell--money">
+                                <td style={{ textAlign: 'right', fontWeight: 700, color: '#15803d' }}>
                                   {formatSummaryAmount(deposit.maturityValue)}
                                 </td>
                               </tr>
                             );
                           })}
-                          <tr className="fd-summary-table__subtotal">
-                            <td colSpan={3} className="fd-summary-table__subtotal-label">
+                          <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
+                            <td colSpan={3} style={{ textAlign: 'left', padding: '12px 16px', color: '#334155' }}>
                               {bank.totalLabel}
                             </td>
-                            <td className="fd-summary-table__subtotal-value">
+                            <td style={{ textAlign: 'right', padding: '12px 16px', color: '#0f172a' }}>
                               {formatSummaryAmount(bank.principalTotal)}
                             </td>
-                            <td colSpan={3} className="fd-summary-table__subtotal-gap"></td>
-                            <td className="fd-summary-table__subtotal-value">
+                            <td colSpan={3} style={{ textAlign: 'center', color: '#94a3b8' }}>—</td>
+                            <td style={{ textAlign: 'right', padding: '12px 16px', color: '#15803d' }}>
                               {formatSummaryAmount(bank.maturityTotal)}
                             </td>
                           </tr>
@@ -680,747 +1029,560 @@ export default function FixedDepositTracker({ isAdmin }) {
               </div>
             )}
 
+            {/* Clean Consolidated Grand Total & Expected Interest Card */}
             {summaryData.banks.length > 0 && (
-              <>
-                <div className="fd-summary-grand-wrap">
-                  <table className="fd-summary-grand">
-                    <tbody>
-                      <tr>
-                        <td colSpan={3} className="fd-summary-grand__label">
-                          GRAND TOTAL ({summaryData.grandLabel})
-                        </td>
-                        <td className="fd-summary-grand__value">
-                          {formatSummaryAmount(summaryData.grandPrincipal)}
-                        </td>
-                        <td colSpan={3} className="fd-summary-grand__dash">-</td>
-                        <td className="fd-summary-grand__value">
-                          {formatSummaryAmount(summaryData.grandMaturity)}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #cbd5e1', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14, paddingBottom: 16, borderBottom: '1px solid #e2e8f0' }}>
+                  <div>
+                    <div style={{ fontSize: '0.74rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 800, color: '#64748b' }}>
+                      Consolidated Portfolio
+                    </div>
+                    <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginTop: 2 }}>
+                      GRAND TOTAL ({summaryData.grandLabel})
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div>
+                      <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 700 }}>Total Principal Invested</div>
+                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginTop: 2 }}>
+                        <span>₹</span><span>{formatSummaryAmount(summaryData.grandPrincipal)}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 700 }}>Total Expected Maturity</div>
+                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#d97706', marginTop: 2 }}>
+                        <span>₹</span><span>{formatSummaryAmount(summaryData.grandMaturity)}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="fd-summary-interest">
-                  <div className="fd-summary-interest__label-wrap">
-                    <div className="fd-summary-interest__icon">₹</div>
-                    <div className="fd-summary-interest__label">TOTAL EXPECTED INTEREST EARNINGS</div>
+                {/* Total Expected Interest Highlight Banner */}
+                <div style={{
+                  background: '#f0fdf4',
+                  border: '1px solid #86efac',
+                  borderRadius: 12,
+                  padding: '16px 20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: 12
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ fontSize: '1.4rem' }}>💰</span>
+                    <div>
+                      <div style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#166534' }}>
+                        TOTAL EXPECTED INTEREST EARNINGS
+                      </div>
+                      <div style={{ fontSize: '0.82rem', color: '#15803d' }}>
+                        Net accumulated interest proceeds upon maturity of active deposits
+                      </div>
+                    </div>
                   </div>
-                  <div className="fd-summary-interest__value">
+
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#15803d' }}>
                     ₹{formatSummaryAmount(summaryData.grandInterest)}
                   </div>
                 </div>
 
-                <p className="fd-summary-note">
+                <p style={{ margin: 0, fontSize: '0.78rem', color: '#94a3b8', fontStyle: 'italic' }}>
                   * Society Fixed Deposits are maintained with Scheduled Commercial Banks under approved society statutory reserves and sinking fund resolutions.
                 </p>
-              </>
+              </div>
             )}
           </div>
         );
       })()}
 
-
-      {/* 1. ACTIVE FIXED DEPOSITS */}
+      {/* SUB-TAB 2: ACTIVE FIXED DEPOSITS TABLE */}
       {activeSubTab === 'active' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {activeFds.length === 0 ? (
-            <div className="section-card" style={{ textAlign: 'center', padding: '48px 24px', borderRadius: '16px', color: 'var(--muted)' }}>
-              <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '12px' }}>📭</span>
-              <h3 style={{ margin: '0 0 6px', fontWeight: '800' }}>No Active Fixed Deposits</h3>
-              <p style={{ maxWidth: '420px', margin: '0 auto', fontSize: '0.9rem', lineHeight: '1.4' }}>There are currently no active Fixed Deposits registered for the society. Go to the "Make New FD" tab to record one.</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          
+          {/* Filter Bar */}
+          <div style={{ background: '#f8fafc', border: '1px solid var(--line)', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <input
+                type="search"
+                placeholder="🔍 Search FD number, bank, deposit purpose..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="attendance-register-input"
+                style={{ textAlign: 'left', height: 40, fontSize: '0.9rem', background: '#fff' }}
+              />
             </div>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
-              {activeFds.map(fd => {
-                const elapsed = getElapsedProgress(fd.startDate, fd.maturityDate);
-                const isMature = elapsed >= 100;
-                return (
-                  <div 
-                    key={fd.id} 
-                    className="section-card" 
-                    style={{
-                      padding: '24px',
-                      borderRadius: '20px',
-                      position: 'relative',
-                      border: `1.5px solid ${isMature ? 'var(--gold)' : 'var(--line)'}`,
-                      background: isMature ? 'linear-gradient(180deg, var(--bg-card) 0%, rgba(245,158,11,0.02) 100%)' : 'var(--bg-card)',
-                      boxShadow: isMature ? '0 10px 24px rgba(245,158,11,0.06)' : '0 8px 16px rgba(0,0,0,0.02)',
-                      transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-                    }}
-                  >
-                    {isMature && (
-                      <span style={{
-                        position: 'absolute',
-                        top: '16px',
-                        right: '16px',
-                        fontSize: '0.7rem',
-                        background: '#b98216',
-                        color: 'white',
-                        padding: '4px 10px',
-                        borderRadius: '12px',
-                        fontWeight: '800',
-                        letterSpacing: '0.04em',
-                        boxShadow: '0 4px 8px rgba(185,130,22,0.2)'
-                      }}>
-                        🔔 MATURED
-                      </span>
-                    )}
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                          {fd.bankName}
-                        </span>
-                        <strong style={{ fontSize: '1.15rem', fontFamily: 'monospace', color: 'var(--text-strong)', letterSpacing: '-0.5px' }}>
-                          {fd.fdNumber}
-                        </strong>
-                      </div>
-                      <span style={{
-                        fontSize: '0.72rem',
-                        fontWeight: '700',
-                        padding: '4px 10px',
-                        borderRadius: '6px',
-                        background: fd.fundType === 'Sinking Fund' ? 'rgba(25, 108, 108, 0.08)' : 'rgba(185, 130, 22, 0.08)',
-                        color: fd.fundType === 'Sinking Fund' ? 'var(--teal)' : 'var(--gold)',
-                        border: `1px solid ${fd.fundType === 'Sinking Fund' ? 'rgba(25, 108, 108, 0.15)' : 'rgba(185, 130, 22, 0.15)'}`
-                      }}>
-                        {fd.fundType}
-                      </span>
-                    </div>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              <select
+                value={bankFilter}
+                onChange={e => setBankFilter(e.target.value)}
+                className="attendance-register-input"
+                style={{ height: 40, fontSize: '0.85rem', width: 140, background: '#fff' }}
+              >
+                <option value="All">All Banks</option>
+                <option value="HDFC Bank">HDFC Bank</option>
+                <option value="ICICI Bank">ICICI Bank</option>
+              </select>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 12px', margin: '20px 0', borderBottom: '1px solid var(--line)', paddingBottom: '16px' }}>
-                      <div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block', marginBottom: '2px' }}>Principal Invested</span>
-                        <strong style={{ fontSize: '1.25rem', color: 'var(--teal)', fontWeight: '800' }}>{fmtAmt(fd.principal)}</strong>
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block', marginBottom: '2px' }}>Interest Rate</span>
-                        <strong style={{ fontSize: '1.25rem', color: 'var(--text-strong)', fontWeight: '800' }}>{fd.interestRate}% <span style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--muted)' }}>p.a.</span></strong>
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block', marginBottom: '2px' }}>Tenure</span>
-                        <span style={{ fontSize: '0.95rem', fontWeight: '700', color: 'var(--text)' }}>{fd.tenureMonths} Months</span>
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block', marginBottom: '2px' }}>Expected Yield</span>
-                        <strong style={{ fontSize: '1.15rem', color: 'var(--pine)', fontWeight: '800' }}>
-                          +{fmtAmt((fd.maturityValue || 0) - fd.principal)}
-                        </strong>
-                      </div>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div style={{ margin: '16px 0 16px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '6px' }}>
-                        <span>Start: {fmtDate(fd.startDate)}</span>
-                        <span>Matures: {fmtDate(fd.maturityDate)}</span>
-                      </div>
-                      <div style={{ height: '8px', background: 'var(--bg-strong)', borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--line)' }}>
-                        <div style={{
-                          height: '100%',
-                          width: `${elapsed}%`,
-                          background: isMature ? 'linear-gradient(90deg, var(--gold) 0%, #d97706 100%)' : 'linear-gradient(90deg, var(--teal) 0%, #0d9488 100%)',
-                          transition: 'width 0.4s ease'
-                        }} />
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--muted)', marginTop: '4px' }}>
-                        <span>Progress</span>
-                        <span style={{ fontWeight: '700', color: isMature ? 'var(--gold)' : 'var(--teal)' }}>{elapsed}% Completed</span>
-                      </div>
-                    </div>
-
-                    {/* Notes */}
-                    {fd.notes && (
-                      <div style={{
-                        margin: '12px 0 18px',
-                        padding: '10px 12px',
-                        borderRadius: '8px',
-                        background: 'var(--bg-strong)',
-                        borderLeft: '3px solid var(--line)',
-                        fontSize: '0.78rem',
-                        color: 'var(--muted)',
-                        lineHeight: '1.4'
-                      }}>
-                        "{fd.notes}"
-                      </div>
-                    )}
-
-                    {/* Actions */}
-                    {isAdmin && (
-                      <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid var(--line)', paddingTop: '14px' }}>
-                        {isMature ? (
-                          <button
-                            className="action-btn"
-                            style={{ 
-                              flex: 1, 
-                              background: 'var(--pine)', 
-                              color: 'white', 
-                              border: 'none',
-                              padding: '10px',
-                              borderRadius: '8px',
-                              fontWeight: '700',
-                              cursor: 'pointer'
-                            }}
-                            onClick={() => handleMarkMatured(fd)}
-                          >
-                            ✔️ Log Maturity payout
-                          </button>
-                        ) : (
-                          <>
-                            <button
-                              className="action-btn"
-                              style={{ 
-                                flex: 1, 
-                                borderColor: 'var(--coral)', 
-                                color: 'var(--coral)',
-                                background: 'transparent',
-                                borderRadius: '8px',
-                                fontWeight: '700',
-                                cursor: 'pointer'
-                              }}
-                              onClick={() => setBreakingFd(fd)}
-                            >
-                              💔 Break FD Prematurely
-                            </button>
-                            <button
-                              className="action-btn"
-                              style={{ 
-                                padding: '8px 16px', 
-                                borderColor: 'var(--gold)', 
-                                color: 'var(--gold)',
-                                background: 'transparent',
-                                borderRadius: '8px',
-                                fontWeight: '700',
-                                cursor: 'pointer'
-                              }}
-                              onClick={() => handleMarkMatured(fd)}
-                              title="Mark Matured"
-                            >
-                              ✔️ Mature
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+              <select
+                value={fundFilter}
+                onChange={e => setFundFilter(e.target.value)}
+                className="attendance-register-input"
+                style={{ height: 40, fontSize: '0.85rem', width: 150, background: '#fff' }}
+              >
+                <option value="All">All Fund Types</option>
+                <option value="Sinking Fund">Sinking Fund</option>
+                <option value="General Fund">General Fund</option>
+                <option value="Repair Fund">Repair Fund</option>
+              </select>
             </div>
-          )}
-        </div>
-      )}
+          </div>
 
-      {/* 2. HISTORY OF MATURED/BROKEN FDS */}
-      {activeSubTab === 'history' && (
-        <div className="section-card" style={{ padding: '24px', borderRadius: '20px' }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: '1.15rem', fontWeight: '800', color: 'var(--text-strong)' }}>Closed Investments Audit Log</h3>
-          {historyFds.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--muted)' }}>
-              No closed or broken Fixed Deposits found in history.
-            </div>
-          ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+          {/* Active Ledger Table */}
+          <div className="table-card">
+            <div className="attendance-table-scroll">
+              <table className="attendance-table">
                 <thead>
-                  <tr style={{ borderBottom: '2px solid var(--line)', textAlign: 'left', color: 'var(--muted)', fontWeight: '700' }}>
-                    <th style={{ padding: '12px 10px' }}>FD Number</th>
-                    <th style={{ padding: '12px 10px' }}>Bank</th>
-                    <th style={{ padding: '12px 10px' }}>Principal</th>
-                    <th style={{ padding: '12px 10px' }}>Rate</th>
-                    <th style={{ padding: '12px 10px' }}>Fund Category</th>
-                    <th style={{ padding: '12px 10px' }}>Maturity Date</th>
-                    <th style={{ padding: '12px 10px' }}>Proceeds Received</th>
-                    <th style={{ padding: '12px 10px' }}>Net Yield</th>
-                    <th style={{ padding: '12px 10px' }}>Status</th>
+                  <tr style={{ background: '#f8fafc' }}>
+                    <th style={{ width: 40, textAlign: 'center' }}>#</th>
+                    <th style={{ width: 130 }}>FD / Account #</th>
+                    <th style={{ width: 120 }}>Bank</th>
+                    <th>Deposit Name / Purpose</th>
+                    <th style={{ width: 120, textAlign: 'right' }}>Principal (₹)</th>
+                    <th style={{ width: 85, textAlign: 'center' }}>ROI</th>
+                    <th style={{ width: 110, textAlign: 'center' }}>Maturity Date</th>
+                    <th style={{ width: 130, textAlign: 'right' }}>Maturity Value (₹)</th>
+                    <th style={{ width: 110, textAlign: 'center' }}>Progress</th>
+                    {isAdmin && <th style={{ width: 120, textAlign: 'center' }}>Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
-                  {historyFds.map(fd => {
-                    const isBroken = fd.status === 'Broken';
-                    const finalReceived = isBroken ? (fd.brokenAmount || 0) : (fd.maturityValue || 0);
-                    const netYield = finalReceived - fd.principal;
-                    const yieldPercent = ((netYield / fd.principal) * 100).toFixed(2);
-                    
-                    return (
-                      <tr key={fd.id} style={{ borderBottom: '1px solid var(--line)', verticalAlign: 'middle' }}>
-                        <td style={{ padding: '14px 10px', fontFamily: 'monospace', fontWeight: '700', fontSize: '0.82rem' }}>{fd.fdNumber}</td>
-                        <td style={{ padding: '14px 10px' }}>{fd.bankName}</td>
-                        <td style={{ padding: '14px 10px', fontWeight: '600' }}>{fmtAmt(fd.principal)}</td>
-                        <td style={{ padding: '14px 10px' }}>{fd.interestRate}%</td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{
-                            fontSize: '0.7rem',
-                            padding: '3px 8px',
-                            borderRadius: '4px',
-                            background: fd.fundType === 'Sinking Fund' ? 'rgba(25,108,108,0.06)' : 'rgba(185,130,22,0.06)',
-                            color: fd.fundType === 'Sinking Fund' ? 'var(--teal)' : 'var(--gold)',
-                            border: `1px solid ${fd.fundType === 'Sinking Fund' ? 'rgba(25,108,108,0.1)' : 'rgba(185,130,22,0.1)'}`
-                          }}>
-                            {fd.fundType}
-                          </span>
-                        </td>
-                        <td style={{ padding: '14px 10px', color: 'var(--muted)' }}>
-                          {isBroken ? `Broken on ${fmtDate(fd.brokenDate)}` : fmtDate(fd.maturityDate)}
-                        </td>
-                        <td style={{ padding: '14px 10px', fontWeight: '700', color: isBroken ? 'var(--coral)' : 'var(--pine)' }}>
-                          {fmtAmt(finalReceived)}
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <strong style={{ color: netYield >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
-                            {netYield >= 0 ? '+' : ''}{fmtAmt(netYield)}
-                          </strong>
-                          <span style={{ fontSize: '0.7rem', color: 'var(--muted)', display: 'block', marginTop: '2px' }}>
-                            ({yieldPercent}%)
-                          </span>
-                        </td>
-                        <td style={{ padding: '14px 10px' }}>
-                          <span style={{
-                            fontSize: '0.72rem',
-                            fontWeight: '700',
-                            padding: '4px 10px',
-                            borderRadius: '20px',
-                            background: isBroken ? 'rgba(239, 68, 68, 0.08)' : 'rgba(16, 185, 129, 0.08)',
-                            color: isBroken ? 'var(--coral)' : 'var(--pine)',
-                            border: `1px solid ${isBroken ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)'}`
-                          }}>
-                            {fd.status.toUpperCase()}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {filteredActiveFds.length === 0 ? (
+                    <tr>
+                      <td colSpan={isAdmin ? 10 : 9} style={{ textAlign: 'center', padding: '40px', color: 'var(--muted)' }}>
+                        {searchQuery ? `No deposits matching "${searchQuery}"` : 'No active deposits found.'}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredActiveFds.map((fd, i) => {
+                      const elapsed = getElapsedProgress(fd.startDate, fd.maturityDate);
+                      const isMature = elapsed >= 100;
+
+                      return (
+                        <tr key={fd.id || fd.fdNumber}>
+                          <td style={{ textAlign: 'center', color: '#64748b' }}>{i + 1}</td>
+                          <td style={{ fontWeight: 700, fontFamily: 'monospace', color: '#0f172a' }}>{fd.fdNumber}</td>
+                          <td>
+                            <span style={{
+                              display: 'inline-block', padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
+                              background: fd.bankName?.includes('HDFC') ? '#eff6ff' : fd.bankName?.includes('ICICI') ? '#fff7ed' : '#f1f5f9',
+                              color: fd.bankName?.includes('HDFC') ? '#1e40af' : fd.bankName?.includes('ICICI') ? '#c2410c' : '#334155'
+                            }}>
+                              {fd.bankName}
+                            </span>
+                          </td>
+                          <td>
+                            <strong>{fd.depositName || fd.depositLine1 || 'Fixed Deposit'}</strong>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{fd.fundType || 'Sinking Fund'}</div>
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 600 }}>{formatSummaryAmount(fd.principal)}</td>
+                          <td style={{ textAlign: 'center', fontWeight: 700, color: '#065f46' }}>{fd.interestRate}%</td>
+                          <td style={{ textAlign: 'center', color: isMature ? '#dc2626' : 'inherit', fontWeight: isMature ? 700 : 'normal' }}>
+                            {fmtDate(fd.maturityDate)}
+                            {isMature && <span style={{ display: 'block', fontSize: '0.65rem', color: '#dc2626' }}>Matured!</span>}
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 700, color: '#15803d' }}>{formatSummaryAmount(fd.maturityValue)}</td>
+                          <td style={{ textAlign: 'center' }}>
+                            <div style={{ width: '100%', background: '#e2e8f0', height: 6, borderRadius: 3, overflow: 'hidden' }}>
+                              <div style={{ width: `${elapsed}%`, background: isMature ? '#16a34a' : '#3b82f6', height: '100%' }}></div>
+                            </div>
+                            <span style={{ fontSize: '0.7rem', color: '#64748b' }}>{elapsed}%</span>
+                          </td>
+                          {isAdmin && (
+                            <td style={{ textAlign: 'center' }}>
+                              <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                                <button
+                                  onClick={() => handleMarkMatured(fd)}
+                                  className="button-secondary"
+                                  style={{ padding: '3px 8px', fontSize: '0.72rem', color: '#16a34a' }}
+                                  title="Mark Matured"
+                                >
+                                  ✓ Matured
+                                </button>
+                                <button
+                                  onClick={() => setBreakingFd(fd)}
+                                  className="button-secondary"
+                                  style={{ padding: '3px 8px', fontSize: '0.72rem', color: '#dc2626' }}
+                                  title="Break FD Prematurely"
+                                >
+                                  ✕ Break
+                                </button>
+                              </div>
+                            </td>
+                          )}
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
-          )}
-        </div>
-      )}
-
-      {/* 3. CREATE FD FORM */}
-      {activeSubTab === 'create' && isAdmin && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-          {/* Form Card */}
-          <div className="section-card" style={{ padding: '24px', borderRadius: '20px' }}>
-            <h3 style={{ margin: '0 0 20px', fontSize: '1.15rem', fontWeight: '800', color: 'var(--text-strong)' }}>Initiate New Fixed Deposit Record</h3>
-            
-            {formError && (
-              <div style={{ padding: '12px', background: 'rgba(239, 68, 68, 0.06)', border: '1px solid rgba(239, 68, 68, 0.15)', color: '#ef4444', borderRadius: '8px', fontSize: '0.85rem', marginBottom: '18px' }}>
-                ⚠️ {formError}
-              </div>
-            )}
-            {formSuccess && (
-              <div style={{ padding: '12px', background: 'rgba(16, 185, 129, 0.06)', border: '1px solid rgba(16, 185, 129, 0.15)', color: '#10b981', borderRadius: '8px', fontSize: '0.85rem', marginBottom: '18px' }}>
-                🎉 {formSuccess}
-              </div>
-            )}
-
-            <form onSubmit={handleMakeFdSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div className="form-group">
-                  <label style={{ fontSize: '0.78rem', fontWeight: '700', display: 'block', marginBottom: '6px', color: 'var(--muted)' }}>Bank Name *</label>
-                  <select
-                    className="form-control"
-                    value={bankName}
-                    onChange={(e) => setBankName(e.target.value)}
-                    style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', outline: 'none' }}
-                  >
-                    <option value="HDFC Bank">HDFC Bank</option>
-                    <option value="ICICI Bank">ICICI Bank</option>
-                    <option value="SBI Bank">State Bank of India</option>
-                    <option value="Axis Bank">Axis Bank</option>
-                    <option value="IDBI Bank">IDBI Bank</option>
-                    <option value="Other">Other (Write-in)</option>
-                  </select>
-                </div>
-                
-                {bankName === 'Other' && (
-                  <div className="form-group">
-                    <label style={{ fontSize: '0.78rem', fontWeight: '700', display: 'block', marginBottom: '6px', color: 'var(--muted)' }}>Specify Bank *</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Bank Name"
-                      value={customBankName}
-                      onChange={(e) => setCustomBankName(e.target.value)}
-                      required
-                      style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', outline: 'none' }}
-                    />
-                  </div>
-                )}
-
-                <div className="form-group">
-                  <label style={{ fontSize: '0.78rem', fontWeight: '700', display: 'block', marginBottom: '6px', color: 'var(--muted)' }}>FD Account/Cert Number *</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="e.g. 502000..."
-                    value={fdNumber}
-                    onChange={(e) => setFdNumber(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', outline: 'none' }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div className="form-group">
-                  <label style={{ fontSize: '0.78rem', fontWeight: '700', display: 'block', marginBottom: '6px', color: 'var(--muted)' }}>Principal Amount (₹) *</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    placeholder="e.g. 500000"
-                    value={principal}
-                    onChange={(e) => setPrincipal(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', outline: 'none' }}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label style={{ fontSize: '0.78rem', fontWeight: '700', display: 'block', marginBottom: '6px', color: 'var(--muted)' }}>Interest Rate (% p.a.) *</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    className="form-control"
-                    placeholder="e.g. 7.15"
-                    value={interestRate}
-                    onChange={(e) => setInterestRate(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', outline: 'none' }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div className="form-group">
-                  <label style={{ fontSize: '0.78rem', fontWeight: '700', display: 'block', marginBottom: '6px', color: 'var(--muted)' }}>Tenure (Months) *</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    placeholder="e.g. 12"
-                    value={tenureMonths}
-                    onChange={(e) => setTenureMonths(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', outline: 'none' }}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label style={{ fontSize: '0.78rem', fontWeight: '700', display: 'block', marginBottom: '6px', color: 'var(--muted)' }}>Start Date *</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', outline: 'none' }}
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label style={{ fontSize: '0.78rem', fontWeight: '700', display: 'block', marginBottom: '6px', color: 'var(--muted)' }}>Fund Category *</label>
-                <select
-                  className="form-control"
-                  value={fundType}
-                  onChange={(e) => setFundType(e.target.value)}
-                  style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', outline: 'none' }}
-                >
-                  <option value="Sinking Fund">Sinking Fund (Wing A/Common)</option>
-                  <option value="Reserve Fund">Reserve Fund (General Surplus)</option>
-                  <option value="General Fund">General Society Operations Fund</option>
-                  <option value="Infrastructure Fund">Infrastructure & Redevelopment Fund</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label style={{ fontSize: '0.78rem', fontWeight: '700', display: 'block', marginBottom: '6px', color: 'var(--muted)' }}>Notes / Resolution Details</label>
-                <textarea
-                  className="form-control"
-                  placeholder="e.g. Approved in AGM Min 14. Used for Lift AMC safety reserve."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows="3"
-                  style={{ width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', fontFamily: 'inherit', outline: 'none' }}
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="action-btn action-btn--primary"
-                disabled={isSubmitting}
-                style={{ 
-                  width: '100%', 
-                  padding: '12px', 
-                  marginTop: '10px', 
-                  display: 'flex', 
-                  justifyContent: 'center',
-                  background: 'var(--teal)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '10px',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(25, 108, 108, 0.15)'
-                }}
-              >
-                {isSubmitting ? 'Creating Deposit...' : '💾 Save Fixed Deposit'}
-              </button>
-            </form>
-          </div>
-
-          {/* Real-time Calculation Panel */}
-          <div className="section-card" style={{ padding: '20px', background: 'var(--bg-strong)' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: '1.05rem', color: 'var(--text-strong)' }}>Maturity Forecast</h3>
-            
-            {principal && interestRate && tenureMonths ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: '8px', border: '1px solid var(--line)' }}>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>Initial Investment (P)</span>
-                  <strong style={{ fontSize: '1.4rem', color: 'var(--text-strong)' }}>{fmtAmt(principal)}</strong>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                  <div style={{ background: 'var(--bg-card)', padding: '12px', borderRadius: '8px', border: '1px solid var(--line)' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>Est. Yield (I)</span>
-                    <strong style={{ fontSize: '1.2rem', color: 'var(--pine)' }}>
-                      +{fmtAmt(computedMaturityValue - principal)}
-                    </strong>
-                  </div>
-                  <div style={{ background: 'var(--bg-card)', padding: '12px', borderRadius: '8px', border: '1px solid var(--line)' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>Maturity Date</span>
-                    <strong style={{ fontSize: '1.0', color: 'var(--text)' }}>
-                      {fmtDate(computedMaturityDate)}
-                    </strong>
-                  </div>
-                </div>
-
-                <div style={{ background: 'linear-gradient(135deg, rgba(25,108,108,0.1), rgba(185,130,22,0.1))', padding: '20px', borderRadius: '10px', border: '1px solid var(--gold)', textAlign: 'center' }}>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--muted)', display: 'block', fontWeight: '700' }}>TOTAL RECEIVABLE VALUE</span>
-                  <strong style={{ fontSize: '1.8rem', color: 'var(--teal)', display: 'block', marginTop: '4px' }}>
-                    {fmtAmt(computedMaturityValue)}
-                  </strong>
-                  <span style={{ fontSize: '0.68rem', color: 'var(--muted)', marginTop: '6px', display: 'block' }}>
-                    *Calculated assuming standard Indian quarterly compound interest payout structure.
-                  </span>
-                </div>
-
-                <div style={{ padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', fontSize: '0.78rem', color: 'var(--muted)' }}>
-                  <strong>💡 Sinking Fund Guideline:</strong> According to housing society bylaws, sinking fund deposits should remain locked in government or approved scheduled commercial banks (such as HDFC, ICICI, SBI) to ensure capital safety.
-                </div>
-              </div>
-            ) : (
-              <div style={{ textAlign: 'center', color: 'var(--muted)', padding: '50px 0' }}>
-                Fill out the investment amount, interest rate, and tenure on the form to view real-time maturity projections.
-              </div>
-            )}
           </div>
         </div>
       )}
 
-      {/* 4. STANDALONE INTEREST SIMULATOR */}
+      {/* SUB-TAB 3: DEPOSIT HISTORY & CLOSED AUDIT */}
+      {activeSubTab === 'history' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div className="table-card">
+            <div className="attendance-table-scroll">
+              <table className="attendance-table">
+                <thead>
+                  <tr style={{ background: '#f8fafc' }}>
+                    <th style={{ width: 40, textAlign: 'center' }}>#</th>
+                    <th style={{ width: 130 }}>FD #</th>
+                    <th style={{ width: 120 }}>Bank</th>
+                    <th>Deposit Name</th>
+                    <th style={{ width: 120, textAlign: 'right' }}>Principal (₹)</th>
+                    <th style={{ width: 120, textAlign: 'right' }}>Proceeds Realized (₹)</th>
+                    <th style={{ width: 120, textAlign: 'right' }}>Net Gain (₹)</th>
+                    <th style={{ width: 100, textAlign: 'center' }}>Status</th>
+                    <th>Notes &amp; Audit Trail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {historyFds.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} style={{ textAlign: 'center', padding: 40, color: 'var(--muted)' }}>
+                        No closed, broken, or matured Fixed Deposits on record.
+                      </td>
+                    </tr>
+                  ) : (
+                    historyFds.map((fd, i) => {
+                      const proceeds = fd.status === 'Broken' ? (fd.brokenAmount || 0) : (fd.maturityValue || 0);
+                      const gain = Math.max(0, proceeds - (fd.principal || 0));
+
+                      return (
+                        <tr key={fd.id || i}>
+                          <td style={{ textAlign: 'center', color: '#64748b' }}>{i + 1}</td>
+                          <td style={{ fontWeight: 700, fontFamily: 'monospace' }}>{fd.fdNumber}</td>
+                          <td>{fd.bankName}</td>
+                          <td>{fd.depositName || fd.depositLine1 || 'Fixed Deposit'}</td>
+                          <td style={{ textAlign: 'right' }}>{formatSummaryAmount(fd.principal)}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 600 }}>{formatSummaryAmount(proceeds)}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 700, color: '#15803d' }}>+₹{formatSummaryAmount(gain)}</td>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{
+                              display: 'inline-block', padding: '2px 8px', borderRadius: 999, fontSize: '0.72rem', fontWeight: 700,
+                              background: fd.status === 'Broken' ? '#fee2e2' : '#d1fae5',
+                              color: fd.status === 'Broken' ? '#991b1b' : '#065f46'
+                            }}>
+                              {fd.status}
+                            </span>
+                          </td>
+                          <td style={{ fontSize: '0.78rem', color: '#64748b' }}>{fd.notes || '—'}</td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SUB-TAB 4: ACCRUED INTEREST RETURNS SIMULATOR */}
       {activeSubTab === 'calculator' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
-          {/* Inputs */}
-          <div className="section-card" style={{ padding: '20px' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: '1.05rem', color: 'var(--text-strong)' }}>Simulator Parameters</h3>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div className="form-group">
-                <label style={{ fontSize: '0.75rem', fontWeight: '700', display: 'block', marginBottom: '4px', color: 'var(--muted)' }}>Investment Principal (₹)</label>
-                <input
-                  type="range"
-                  min="50000"
-                  max="5000000"
-                  step="50000"
-                  value={calcPrincipal}
-                  onChange={(e) => setCalcPrincipal(e.target.value)}
-                  style={{ width: '100%', accentColor: 'var(--teal)' }}
-                />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+          <div className="section-card" style={{ padding: 24, borderRadius: 18 }}>
+            <h4 style={{ margin: '0 0 16px 0', color: '#0b2b26' }}>🧮 Fixed Deposit Yield Simulator</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Principal Amount (₹)</label>
                 <input
                   type="number"
-                  className="form-control"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
                   value={calcPrincipal}
-                  onChange={(e) => setCalcPrincipal(e.target.value)}
-                  style={{ width: '100%', padding: '8px', marginTop: '6px', borderRadius: '6px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)' }}
+                  onChange={e => setCalcPrincipal(e.target.value)}
                 />
               </div>
-
-              <div className="form-group">
-                <label style={{ fontSize: '0.75rem', fontWeight: '700', display: 'block', marginBottom: '4px', color: 'var(--muted)' }}>Interest Rate (% p.a.)</label>
-                <input
-                  type="range"
-                  min="3.0"
-                  max="12.0"
-                  step="0.05"
-                  value={calcRate}
-                  onChange={(e) => setCalcRate(e.target.value)}
-                  style={{ width: '100%', accentColor: 'var(--teal)' }}
-                />
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Annual Interest Rate (% p.a.)</label>
                 <input
                   type="number"
                   step="0.05"
-                  className="form-control"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
                   value={calcRate}
-                  onChange={(e) => setCalcRate(e.target.value)}
-                  style={{ width: '100%', padding: '8px', marginTop: '6px', borderRadius: '6px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)' }}
+                  onChange={e => setCalcRate(e.target.value)}
                 />
               </div>
-
-              <div className="form-group">
-                <label style={{ fontSize: '0.75rem', fontWeight: '700', display: 'block', marginBottom: '4px', color: 'var(--muted)' }}>Tenure (Months)</label>
-                <input
-                  type="range"
-                  min="3"
-                  max="120"
-                  step="3"
-                  value={calcTenure}
-                  onChange={(e) => setCalcTenure(e.target.value)}
-                  style={{ width: '100%', accentColor: 'var(--teal)' }}
-                />
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Tenure (Months)</label>
                 <input
                   type="number"
-                  className="form-control"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
                   value={calcTenure}
-                  onChange={(e) => setCalcTenure(e.target.value)}
-                  style={{ width: '100%', padding: '8px', marginTop: '6px', borderRadius: '6px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)' }}
+                  onChange={e => setCalcTenure(e.target.value)}
                 />
               </div>
-
-              <div className="form-group">
-                <label style={{ fontSize: '0.75rem', fontWeight: '700', display: 'block', marginBottom: '4px', color: 'var(--muted)' }}>Compounding Frequency</label>
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Compounding Frequency</label>
                 <select
-                  className="form-control"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
                   value={calcCompounding}
-                  onChange={(e) => setCalcCompounding(e.target.value)}
-                  style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)' }}
+                  onChange={e => setCalcCompounding(e.target.value)}
                 >
-                  <option value="12">Monthly Compounding</option>
-                  <option value="4">Quarterly Compounding (Standard Bank FD)</option>
-                  <option value="2">Half-yearly Compounding</option>
-                  <option value="1">Yearly Compounding (Simple compounding)</option>
+                  <option value="4">Quarterly (Bank Standard)</option>
+                  <option value="12">Monthly</option>
+                  <option value="1">Yearly / Simple</option>
                 </select>
               </div>
             </div>
           </div>
 
-          {/* Results Output */}
-          <div className="section-card" style={{ padding: '20px', background: 'var(--bg-strong)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: '1.05rem', color: 'var(--text-strong)', textAlign: 'center' }}>Simulated Growth Curve</h3>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'stretch' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div style={{ background: 'var(--bg-card)', padding: '14px', borderRadius: '8px', border: '1px solid var(--line)', textAlign: 'center' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--muted)', display: 'block' }}>Principal Invested</span>
-                  <strong style={{ fontSize: '1.25rem', color: 'var(--text-strong)' }}>{fmtAmt(calcPrincipal)}</strong>
-                </div>
-                <div style={{ background: 'var(--bg-card)', padding: '14px', borderRadius: '8px', border: '1px solid var(--line)', textAlign: 'center' }}>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--muted)', display: 'block' }}>Yield Interest (Est)</span>
-                  <strong style={{ fontSize: '1.25rem', color: 'var(--pine)' }}>+{fmtAmt(calculatedSimValue.interest)}</strong>
-                </div>
+          <div className="section-card" style={{ padding: 24, borderRadius: 18, background: '#f8fafc', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', fontWeight: 700 }}>Simulation Summary</div>
+            <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ background: '#fff', padding: '14px 16px', borderRadius: 12, border: '1px solid var(--line)' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Estimated Maturity Value</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0b2b26', marginTop: 2 }}>₹{formatSummaryAmount(calculatedSimValue.maturity)}</div>
               </div>
-
-              <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.1), rgba(25,108,108,0.1))', padding: '24px 16px', borderRadius: '10px', border: '2px solid var(--teal)', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block', fontWeight: '700' }}>TOTAL ACCRUED VALUE</span>
-                <strong style={{ fontSize: '2.1rem', color: 'var(--teal)', display: 'block', marginTop: '4px' }}>
-                  {fmtAmt(calculatedSimValue.maturity)}
-                </strong>
-                <span style={{ fontSize: '0.7rem', color: 'var(--muted)', marginTop: '8px', display: 'block' }}>
-                  Total yield represents a <strong>{((calculatedSimValue.interest / (parseFloat(calcPrincipal) || 1)) * 100).toFixed(2)}%</strong> gross return.
-                </span>
+              <div style={{ background: '#f0fdf4', padding: '14px 16px', borderRadius: 12, border: '1px solid #86efac' }}>
+                <div style={{ fontSize: '0.75rem', color: '#166534' }}>Total Projected Interest Gain</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#15803d', marginTop: 2 }}>+₹{formatSummaryAmount(calculatedSimValue.interest)}</div>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* PREMATURE BREAK FD MODAL */}
-      {breakingFd && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.6)',
-          backdropFilter: 'blur(4px)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000,
-          padding: '16px'
-        }}>
-          <div className="section-card" style={{ maxWidth: '500px', width: '100%', padding: '24px', background: 'var(--bg-card)' }}>
-            <h3 style={{ margin: '0 0 10px', fontSize: '1.18rem', color: 'var(--text-strong)' }}>Premature Liquidation (Break FD)</h3>
-            <p style={{ margin: '0 0 16px', fontSize: '0.8rem', color: 'var(--muted)' }}>
-              Enter details of the premature closure for FD certificate <strong>{breakingFd.fdNumber}</strong> ({breakingFd.bankName}).
-            </p>
+      {/* CREATE FD MODAL (matching TaskModal) */}
+      {isCreateModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+          onClick={() => setIsCreateModalOpen(false)}>
+          <div style={{ background: '#fffaf2', borderRadius: 22, padding: '28px', width: '100%', maxWidth: 650, maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 40px 100px rgba(0,0,0,0.28)' }}
+            onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <div>
+                <p style={{ margin: 0, fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#196c6c' }}>
+                  Treasury Investment
+                </p>
+                <h3 style={{ margin: '2px 0 0', fontSize: '1.25rem', fontWeight: 800, color: '#0b2b26' }}>
+                  ➕ Open New Fixed Deposit
+                </h3>
+              </div>
+              <button onClick={() => setIsCreateModalOpen(false)} style={{ background: 'rgba(61,63,52,0.08)', border: 'none', borderRadius: 10, width: 36, height: 36, cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+            </div>
 
-            <form onSubmit={handleBreakSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div style={{ background: 'var(--bg-strong)', padding: '10px', borderRadius: '6px' }}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--muted)', display: 'block' }}>Principal Invested</span>
-                  <strong style={{ fontSize: '1.1rem', color: 'var(--text-strong)' }}>{fmtAmt(breakingFd.principal)}</strong>
-                </div>
-                <div style={{ background: 'var(--bg-strong)', padding: '10px', borderRadius: '6px' }}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--muted)', display: 'block' }}>Expected Maturity</span>
-                  <strong style={{ fontSize: '1.1rem', color: 'var(--text)' }}>{fmtAmt(breakingFd.maturityValue)}</strong>
-                </div>
+            {formError && <div style={{ color: '#dc2626', background: '#fee2e2', padding: '8px 12px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 12 }}>⚠️ {formError}</div>}
+            {formSuccess && <div style={{ color: '#16a34a', background: '#dcfce7', padding: '8px 12px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 12 }}>✓ {formSuccess}</div>}
+
+            <form onSubmit={handleMakeFdSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Bank Name *</label>
+                <select
+                  value={bankName}
+                  onChange={e => setBankName(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
+                  required
+                >
+                  <option value="HDFC Bank">HDFC Bank</option>
+                  <option value="ICICI Bank">ICICI Bank</option>
+                  <option value="Other">Other Bank</option>
+                </select>
               </div>
 
-              <div className="form-group">
-                <label style={{ fontSize: '0.75rem', display: 'block', fontWeight: '700', marginBottom: '4px', color: 'var(--muted)' }}>Liquidation/Breaking Date *</label>
+              {bankName === 'Other' && (
+                <div>
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Custom Bank Name *</label>
+                  <input
+                    value={customBankName}
+                    onChange={e => setCustomBankName(e.target.value)}
+                    className="attendance-register-input"
+                    style={{ textAlign: 'left' }}
+                    placeholder="e.g. State Bank of India"
+                    required
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>FD / Account Number *</label>
+                <input
+                  value={fdNumber}
+                  onChange={e => setFdNumber(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
+                  placeholder="e.g. 50300123456789"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Principal Amount (₹) *</label>
+                <input
+                  type="number"
+                  value={principal}
+                  onChange={e => setPrincipal(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Interest Rate (% p.a.) *</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={interestRate}
+                  onChange={e => setInterestRate(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
+                  placeholder="e.g. 7.25"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Tenure (Months) *</label>
+                <input
+                  type="number"
+                  value={tenureMonths}
+                  onChange={e => setTenureMonths(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
+                  placeholder="e.g. 12"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Start Date *</label>
                 <input
                   type="date"
-                  className="form-control"
-                  value={brokenDate}
-                  onChange={(e) => setBrokenDate(e.target.value)}
+                  value={startDate}
+                  onChange={e => setStartDate(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
                   required
-                  style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)' }}
                 />
               </div>
 
-              <div className="form-group">
-                <label style={{ fontSize: '0.75rem', display: 'block', fontWeight: '700', marginBottom: '4px', color: 'var(--muted)' }}>Actual Proceeds/Cash Credited (₹) *</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Enter total amount returned by bank"
-                  value={brokenAmount}
-                  onChange={(e) => setBrokenAmount(e.target.value)}
-                  required
-                  style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)' }}
-                />
-              </div>
-
-              <div className="form-group">
-                <label style={{ fontSize: '0.75rem', display: 'block', fontWeight: '700', marginBottom: '4px', color: 'var(--muted)' }}>Reason / Fund Utilization Details</label>
-                <textarea
-                  className="form-control"
-                  placeholder="Provide details on why this FD was liquidated prematurely..."
-                  value={breakNotes}
-                  onChange={(e) => setBreakNotes(e.target.value)}
-                  rows="2"
-                  style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'var(--bg-strong)', border: '1px solid var(--line)', color: 'var(--text)', fontFamily: 'inherit' }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button
-                  type="button"
-                  className="action-btn"
-                  style={{ flex: 1, borderColor: 'var(--line)', color: 'var(--text)' }}
-                  onClick={() => setBreakingFd(null)}
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Fund Classification</label>
+                <select
+                  value={fundType}
+                  onChange={e => setFundType(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
                 >
+                  <option value="Sinking Fund">Sinking Fund</option>
+                  <option value="General Fund">General Fund</option>
+                  <option value="Repair Fund">Repair Fund</option>
+                  <option value="Reserve Fund">Reserve Fund</option>
+                </select>
+              </div>
+
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Deposit Name / Purpose</label>
+                <input
+                  value={depositName}
+                  onChange={e => setDepositName(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
+                  placeholder="e.g. MAJESTIQUE EURISKA A BLDG SINKING FUND"
+                />
+              </div>
+
+              {computedMaturityValue > 0 && (
+                <div style={{ gridColumn: '1 / -1', background: '#f0fdf4', padding: '12px 16px', borderRadius: 10, border: '1px solid #86efac', display: 'flex', justifyContent: 'space-between' }}>
+                  <div>
+                    <span style={{ fontSize: '0.75rem', color: '#166534' }}>Estimated Maturity:</span>{' '}
+                    <strong>{fmtDate(computedMaturityDate)}</strong>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.75rem', color: '#166534' }}>Projected Amount:</span>{' '}
+                    <strong style={{ color: '#15803d', fontSize: '1rem' }}>₹{formatSummaryAmount(computedMaturityValue)}</strong>
+                  </div>
+                </div>
+              )}
+
+              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 10 }}>
+                <button type="button" onClick={() => setIsCreateModalOpen(false)} className="button-secondary" style={{ padding: '8px 18px' }}>
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="action-btn"
-                  style={{ flex: 1, background: 'var(--coral)', color: 'white', border: 'none' }}
-                >
-                  💔 Confirm Liquidation
+                <button type="submit" className="button-primary" style={{ padding: '8px 22px' }} disabled={isSubmitting}>
+                  {isSubmitting ? 'Creating...' : 'Confirm & Save FD'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* PREMATURE BREAK MODAL */}
+      {breakingFd && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+          onClick={() => setBreakingFd(null)}>
+          <div style={{ background: '#fff', borderRadius: 20, padding: 24, width: '100%', maxWidth: 480, boxShadow: '0 30px 80px rgba(0,0,0,0.3)' }}
+            onClick={e => e.stopPropagation()}>
+            <h3 style={{ margin: '0 0 8px 0', color: '#dc2626' }}>Premature Deposit Liquidation</h3>
+            <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 16px 0' }}>
+              Break FD <strong>{breakingFd.fdNumber}</strong> ({fmtAmt(breakingFd.principal)}) before maturity.
+            </p>
+
+            <form onSubmit={handleBreakSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 4 }}>Liquidation Date</label>
+                <input
+                  type="date"
+                  value={brokenDate}
+                  onChange={e => setBrokenDate(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 4 }}>Total Proceeds Received (₹)</label>
+                <input
+                  type="number"
+                  value={brokenAmount}
+                  onChange={e => setBrokenAmount(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left' }}
+                  placeholder="Principal + penalty-adjusted interest"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: 4 }}>Reason / Cancellation Notes</label>
+                <textarea
+                  value={breakNotes}
+                  onChange={e => setBreakNotes(e.target.value)}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', minHeight: 60 }}
+                  placeholder="Reason for premature liquidation..."
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 10 }}>
+                <button type="button" onClick={() => setBreakingFd(null)} className="button-secondary">
+                  Cancel
+                </button>
+                <button type="submit" className="button-primary" style={{ background: '#dc2626', borderColor: '#dc2626' }}>
+                  Confirm Liquidation
                 </button>
               </div>
             </form>

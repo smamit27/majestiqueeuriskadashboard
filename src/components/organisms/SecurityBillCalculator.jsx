@@ -297,6 +297,241 @@ export default function SecurityBillCalculator() {
 
   useEffect(() => () => clearTimeout(autoSaveTimer.current), []);
 
+  function handlePrintPDF() {
+    const currentBill = calcBill(form, selectedMonth, attSummary);
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const vendorMornTotal = n(form.vendorMornSalary) * 2;
+    const vendorEveTotal = n(form.vendorEveSalary) * 2;
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Security Bill - ${formatLongMonth(selectedMonth)} - Majestique Euriska</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 19px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+          }
+          .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 8px 12px;
+            text-align: center;
+          }
+          .kpi-label { font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 700; }
+          .kpi-value { font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+
+          .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #1e293b; margin: 14px 0 6px 0; }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 14px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: right; padding: 6px 8px; border: 1px solid #94a3b8; font-size: 10px; }
+          th:first-child { text-align: left; }
+          td { padding: 6px 8px; border: 1px solid #cbd5e1; color: #0f172a; text-align: right; }
+          td:first-child { text-align: left; }
+          tr:nth-child(even) { background: #f8fafc; }
+          .total-row { background: #e2e8f0 !important; font-weight: 800; color: #0f172a; }
+          .grand-cell { font-size: 13px; color: #15803d; font-weight: 800; }
+
+          .tag {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 4px;
+            background: #dcfce7;
+            color: #166534;
+            margin-left: 4px;
+          }
+
+          .signatures { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 14px; border-top: 1px dashed #cbd5e1; }
+          .sig-box { text-align: center; font-size: 11px; color: #475569; }
+          .sig-line { margin-top: 36px; border-top: 1px solid #94a3b8; padding-top: 4px; font-weight: 600; }
+
+          .footer {
+            margin-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 8px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 portrait; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🛡️ MAJESTIQUE EURISKA CO-OP HOUSING SOCIETY</h1>
+            <div class="subtitle">Security & Guard Deployment Monthly Bill Breakdown</div>
+          </div>
+          <div class="meta">
+            <div><strong>Billing Month:</strong> ${formatLongMonth(selectedMonth)}</div>
+            <div><strong>Generated On:</strong> ${generatedDate}</div>
+            <div><strong>Flats Ratio:</strong> A (${form.flatsA}) · B (${form.flatsB}) · C (${form.flatsC}) = ${currentBill.totalFlats} Flats</div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">A Building Share</div>
+            <div class="kpi-value" style="color: #0369a1;">₹${fmt(currentBill.details['A Building']?.total || 0)}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">B Building Share</div>
+            <div class="kpi-value" style="color: #0369a1;">₹${fmt(currentBill.details['B Building']?.total || 0)}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">C Building Share</div>
+            <div class="kpi-value" style="color: #0369a1;">₹${fmt(currentBill.details['C Building']?.total || 0)}</div>
+          </div>
+          <div class="kpi-card" style="background: #f0fdf4; border-color: #86efac;">
+            <div class="kpi-label" style="color: #15803d;">Grand Total Bill</div>
+            <div class="kpi-value" style="color: #15803d;">₹${fmt(currentBill.grandTotal)}</div>
+          </div>
+        </div>
+
+        <div class="section-title">1. Building-Wise Cost Breakdown</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Building</th>
+              <th>Flats (Share %)</th>
+              ${currentBill.usedAttendance ? '<th>Shifts (M / E)</th>' : ''}
+              <th>Main Gate Share (₹)</th>
+              <th>Chauhan Cost (₹)</th>
+              <th>Vendor Guard (₹)</th>
+              <th>Total Due (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${currentBill.buildings.map(b => {
+              const data = currentBill.details[b];
+              const k = ATT_KEYS[b];
+              const isChauhanPost = b === currentBill.actualChauhanLoc;
+              return `
+                <tr>
+                  <td style="font-weight: 700;">
+                    ${b}
+                    ${isChauhanPost ? '<span class="tag">Chauhan Shift</span>' : ''}
+                  </td>
+                  <td>${data.flats} flats (${data.flatRatioPct}%)</td>
+                  ${currentBill.usedAttendance ? `<td>${isChauhanPost ? '<em>Chauhan</em>' : `${attSummary?.[`${k}Morn`] || 0}M / ${attSummary?.[`${k}Eve`] || 0}E`}</td>` : ''}
+                  <td>₹${fmt(data.mainGate)}</td>
+                  <td style="${data.chauhan > 0 ? 'font-weight: 600; color: #0B2B26;' : ''}">₹${fmt(data.chauhan)}</td>
+                  <td style="${data.vendor > 0 ? 'font-weight: 600; color: #C49B4F;' : ''}">₹${fmt(data.vendor)}</td>
+                  <td style="font-weight: 700; color: #15803d;">₹${fmt(data.total)}</td>
+                </tr>
+              `;
+            }).join('')}
+            <tr class="total-row">
+              <td>Grand Total</td>
+              <td>${currentBill.totalFlats} flats</td>
+              ${currentBill.usedAttendance ? '<td>—</td>' : ''}
+              <td>₹${fmt(currentBill.mainGateTotal)}</td>
+              <td>₹${fmt(n(form.chauhanSalary))}</td>
+              <td>₹${fmt(vendorMornTotal + vendorEveTotal)}</td>
+              <td class="grand-cell">₹${fmt(currentBill.grandTotal)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">2. Deployment & Rate Parameters</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Rate / Salary (₹)</th>
+              <th>Deployment / Shift Details</th>
+              <th>Monthly Total (₹)</th>
+              <th>Apportionment Rule</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Main Gate Guards</td>
+              <td>₹${fmt(form.mainGateGuardSalary)} / guard</td>
+              <td>${form.mainGateMorning} Morning + ${form.mainGateEvening} Evening guards</td>
+              <td>₹${fmt(currentBill.mainGateTotal)}</td>
+              <td>Shared across all flats by unit ratio</td>
+            </tr>
+            <tr>
+              <td>Internal Supervisor / Guard (Chauhan)</td>
+              <td>₹${fmt(form.chauhanSalary)} / mo</td>
+              <td>Rotated to <strong>${currentBill.actualChauhanLoc}</strong> (${currentBill.chauhanDaysWorked} days)</td>
+              <td>₹${fmt(n(form.chauhanSalary))}</td>
+              <td>100% assigned to ${currentBill.actualChauhanLoc}</td>
+            </tr>
+            <tr>
+              <td>Vendor Guards (Morning Shift)</td>
+              <td>₹${fmt(form.vendorMornSalary)} / guard</td>
+              <td>12-Hour Morning shift</td>
+              <td>₹${fmt(vendorMornTotal)}</td>
+              <td>Directly charged to vendor-deployed buildings</td>
+            </tr>
+            <tr>
+              <td>Vendor Guards (Evening Shift)</td>
+              <td>₹${fmt(form.vendorEveSalary)} / guard</td>
+              <td>12-Hour Evening shift</td>
+              <td>₹${fmt(vendorEveTotal)}</td>
+              <td>Directly charged to vendor-deployed buildings</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-line">Security Agency Supervisor</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Security Committee Lead</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Society Treasurer / Chairman</div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society Ltd. • Official Security Billing Record</div>
+          <div>Page 1 of 1</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    }
+  }
+
   function handleDownloadExcel() {
     const bill = calcBill(form, selectedMonth, attSummary);
     const vendorMornTotal = n(form.vendorMornSalary) * 2; // Assuming 2 buildings have vendors
@@ -538,9 +773,17 @@ export default function SecurityBillCalculator() {
                 <p className="eyebrow">Building Breakdown</p>
                 <h3>Final Security Bill — {formatLongMonth(selectedMonth)}</h3>
               </div>
-              <div className="attendance-table-card__actions">
+              <div className="attendance-table-card__actions" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  className="button-secondary"
+                  type="button"
+                  onClick={handlePrintPDF}
+                  style={{ background: '#f8fafc', fontWeight: 600 }}
+                >
+                  🖨️ Print Bill (PDF)
+                </button>
                 <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
-                  ⬇ Download
+                  ⬇ Excel
                 </button>
               </div>
             </div>

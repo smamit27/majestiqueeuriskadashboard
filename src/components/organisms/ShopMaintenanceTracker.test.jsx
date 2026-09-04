@@ -64,4 +64,11 @@ describe('ShopMaintenanceTracker', () => {
       expect(screen.getAllByRole('button', { name: /delete/i }).length).toBeGreaterThan(0);
     });
   });
+
+  it('renders Print Summary (All Shops) and Print Shop Statement buttons', () => {
+    render(<ShopMaintenanceTracker isAdmin={false} />);
+
+    expect(screen.getByRole('button', { name: /print summary \(all shops\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /print shop 1 statement \(pdf\)/i })).toBeInTheDocument();
+  });
 });

@@ -253,6 +253,257 @@ export default function HousekeepingBillCalculator() {
   // Calculate bill live using current form state
   const bill = calcBill(form, month, attendance);
 
+  function handlePrintPDF() {
+    if (!bill) return;
+    const days = daysInMonth(month);
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const tractorTripsCount = attendance && !form.overrideTractorTrips ? attendance.tractorTrip : (form.tractorTrips !== '' ? n(form.tractorTrips) : 0);
+    const commonDaysCount = attendance ? attendance.common : (form.commonCount !== '' ? (n(form.commonCount) * days - n(form.commonAbsent)) : days);
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Housekeeping Bill - ${formatLongMonth(month)} - Majestique Euriska</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 19px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+          }
+          .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 8px 12px;
+            text-align: center;
+          }
+          .kpi-label { font-size: 10px; text-transform: uppercase; color: #64748b; font-weight: 700; }
+          .kpi-value { font-size: 15px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+
+          .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #1e293b; margin: 14px 0 6px 0; }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 14px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: right; padding: 6px 8px; border: 1px solid #94a3b8; font-size: 10px; }
+          th:first-child { text-align: left; }
+          td { padding: 6px 8px; border: 1px solid #cbd5e1; color: #0f172a; text-align: right; }
+          td:first-child { text-align: left; }
+          tr:nth-child(even) { background: #f8fafc; }
+          .total-row { background: #e2e8f0 !important; font-weight: 800; color: #0f172a; }
+          .grand-cell { font-size: 13px; color: #15803d; font-weight: 800; }
+
+          .signatures { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 14px; border-top: 1px dashed #cbd5e1; }
+          .sig-box { text-align: center; font-size: 11px; color: #475569; }
+          .sig-line { margin-top: 36px; border-top: 1px solid #94a3b8; padding-top: 4px; font-weight: 600; }
+
+          .footer {
+            margin-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 8px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 portrait; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🧹 MAJESTIQUE EURISKA CO-OP HOUSING SOCIETY</h1>
+            <div class="subtitle">Housekeeping & Facility Management Monthly Bill Breakdown</div>
+          </div>
+          <div class="meta">
+            <div><strong>Billing Month:</strong> ${formatLongMonth(month)}</div>
+            <div><strong>Generated On:</strong> ${generatedDate}</div>
+            <div><strong>Ratio:</strong> A (${form.unitsA}) · B (${form.unitsB}) · C (${form.unitsC}) = ${n(form.unitsA) + n(form.unitsB) + n(form.unitsC)} Flats</div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">A Building Share</div>
+            <div class="kpi-value" style="color: #0369a1;">₹${fmt(bill.rows[0].total)}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">B Building Share</div>
+            <div class="kpi-value" style="color: #0369a1;">₹${fmt(bill.rows[1].total)}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">C Building Share</div>
+            <div class="kpi-value" style="color: #0369a1;">₹${fmt(bill.rows[2].total)}</div>
+          </div>
+          <div class="kpi-card" style="background: #f0fdf4; border-color: #86efac;">
+            <div class="kpi-label" style="color: #15803d;">Grand Total Bill</div>
+            <div class="kpi-value" style="color: #15803d;">₹${fmt(bill.grandTotal)}</div>
+          </div>
+        </div>
+
+        <div class="section-title">1. Summary Breakdown per Building</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Building</th>
+              <th>Days Present</th>
+              <th>Wage (₹)</th>
+              <th>Supervisor (₹)</th>
+              <th>Common (₹)</th>
+              <th>Garbage (₹)</th>
+              <th>Tractor (₹)</th>
+              <th>STP (₹)</th>
+              <th>Total Share (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${bill.rows.map(r => `
+              <tr>
+                <td style="font-weight: 700;">${r.label}</td>
+                <td>${r.days.toFixed(1)} days</td>
+                <td>₹${fmt(r.wage)}</td>
+                <td>₹${fmt(r.sup)}</td>
+                <td>₹${fmt(r.com)}</td>
+                <td>₹${fmt(r.garb)}</td>
+                <td>₹${fmt(r.tract)}</td>
+                <td>₹${fmt(r.stp)}</td>
+                <td style="font-weight: 700; color: #15803d;">₹${fmt(r.total)}</td>
+              </tr>
+            `).join('')}
+            <tr class="total-row">
+              <td>Grand Total</td>
+              <td>—</td>
+              <td>₹${fmt(bill.rows.reduce((s, r) => s + r.wage, 0))}</td>
+              <td>₹${fmt(bill.rows.reduce((s, r) => s + r.sup, 0))}</td>
+              <td>₹${fmt(bill.rows.reduce((s, r) => s + r.com, 0))}</td>
+              <td>₹${fmt(bill.rows.reduce((s, r) => s + r.garb, 0))}</td>
+              <td>₹${fmt(bill.rows.reduce((s, r) => s + r.tract, 0))}</td>
+              <td>₹${fmt(bill.rows.reduce((s, r) => s + r.stp, 0))}</td>
+              <td class="grand-cell">₹${fmt(bill.grandTotal)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">2. Cost Parameters & Basis of Computation</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Cost Head</th>
+              <th>Base Rate / Monthly Wage</th>
+              <th>Attendance / Utilization</th>
+              <th>Net Total</th>
+              <th>Cost Splitting Rule</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A Building Manpower</td>
+              <td>₹${fmt(form.aWage)} / mo</td>
+              <td>${bill.rows[0].days.toFixed(1)} days</td>
+              <td>₹${fmt(bill.rows[0].wage)}</td>
+              <td>100% charged to A Building</td>
+            </tr>
+            <tr>
+              <td>B Building Manpower</td>
+              <td>₹${fmt(form.bWage)} / mo</td>
+              <td>${bill.rows[1].days.toFixed(1)} days</td>
+              <td>₹${fmt(bill.rows[1].wage)}</td>
+              <td>100% charged to B Building</td>
+            </tr>
+            <tr>
+              <td>C Building Manpower</td>
+              <td>₹${fmt(form.cWage)} / mo</td>
+              <td>${bill.rows[2].days.toFixed(1)} days</td>
+              <td>₹${fmt(bill.rows[2].wage)}</td>
+              <td>100% charged to C Building</td>
+            </tr>
+            <tr>
+              <td>Supervisor</td>
+              <td>₹${fmt(form.supervisorSalary)} / mo</td>
+              <td>${attendance ? attendance.supervisor : (form.supervisorDays || days)} days</td>
+              <td>₹${fmt(bill.rows.reduce((s, r) => s + r.sup, 0))}</td>
+              <td>Prorated by flat ratio (A: 87, B: 96, C: 48)</td>
+            </tr>
+            <tr>
+              <td>Common Staff</td>
+              <td>₹${fmt(form.commonSalary)} / mo</td>
+              <td>${commonDaysCount} total person-days</td>
+              <td>₹${fmt(bill.comNet)}</td>
+              <td>Prorated by flat ratio</td>
+            </tr>
+            <tr>
+              <td>Garbage Collection</td>
+              <td>₹${fmt(form.garbageTotal)} / mo</td>
+              <td>Monthly Fixed</td>
+              <td>₹${fmt(form.garbageTotal)}</td>
+              <td>Prorated by flat ratio</td>
+            </tr>
+            <tr>
+              <td>Tractor Garbage Trips</td>
+              <td>₹${fmt(form.tractorRate)} / trip</td>
+              <td>${tractorTripsCount} Trips</td>
+              <td>₹${fmt(n(form.tractorRate) * tractorTripsCount)}</td>
+              <td>Prorated by flat ratio</td>
+            </tr>
+            <tr>
+              <td>STP Operator</td>
+              <td>₹${fmt(form.stpSalary)} / mo</td>
+              <td>Monthly Fixed</td>
+              <td>₹${fmt(form.stpSalary)}</td>
+              <td>Prorated by flat ratio</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-line">Housekeeping Supervisor / Vendor</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Housekeeping Committee Lead</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Society Treasurer / Chairman</div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society Ltd. • Official Housekeeping Billing Record</div>
+          <div>Page 1 of 1</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    }
+  }
+
   function handleDownloadExcel() {
     if (!bill) return;
     const days = daysInMonth(month);
@@ -344,7 +595,7 @@ export default function HousekeepingBillCalculator() {
               <span>{badge.i}</span>
               <span>{isLoading ? 'Loading…' : saveMsg || 'Ready'}</span>
             </div>
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <button
                 className="button-secondary"
                 type="button"
@@ -353,8 +604,17 @@ export default function HousekeepingBillCalculator() {
               >
                 {isSaving ? 'Saving…' : '💾 Save'}
               </button>
+              <button
+                className="button-secondary"
+                type="button"
+                onClick={handlePrintPDF}
+                disabled={!bill}
+                style={{ background: '#f8fafc', fontWeight: 600 }}
+              >
+                🖨️ Print Bill (PDF)
+              </button>
               <button className="button-secondary" type="button" onClick={handleDownloadExcel} disabled={!bill}>
-                ⬇ Download
+                ⬇ Excel
               </button>
               <button
                 className="button-secondary"

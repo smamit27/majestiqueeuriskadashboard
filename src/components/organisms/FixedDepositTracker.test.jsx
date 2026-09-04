@@ -90,4 +90,17 @@ describe('FixedDepositTracker summary poster', () => {
     expect(screen.getByText('3,00,000.00')).toBeInTheDocument();
     expect(screen.getByText('₹30,000.00')).toBeInTheDocument();
   });
+
+  it('renders Print Portfolio PDF and Export CSV buttons when unlocked', async () => {
+    const user = userEvent.setup();
+
+    render(<FixedDepositTracker isAdmin={true} />);
+
+    await user.type(screen.getByLabelText(/authorization password/i), '$05CeLRO');
+    await user.click(screen.getByRole('button', { name: /unlock fd workspace/i }));
+
+    expect(await screen.findByRole('button', { name: /print portfolio \(pdf\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /export csv/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /\+ open new fd/i })).toBeInTheDocument();
+  });
 });
