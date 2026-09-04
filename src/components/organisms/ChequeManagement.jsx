@@ -34,6 +34,16 @@ function formatLongMonth(mv) {
 const n = (v) => parseFloat(v) || 0;
 const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+const DEFAULT_SEPTEMBER_2026_CHEQUES = [
+  { id: 1725451400001, srNo: 1, date: '2026-09-04', chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', purpose: 'Housekeeping / Waterman Salary', amount: '12900', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400002, srNo: 2, date: '2026-09-04', chequeNo: '535', vendor: 'Shubham Enterprises', purpose: 'Maintenance & Repairs / Operations', amount: '36536', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400003, srNo: 3, date: '2026-09-04', chequeNo: '536', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", purpose: 'Inter-Building Common Share Settlement / Transfer', amount: '8662', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400004, srNo: 4, date: '2026-09-04', chequeNo: '537', vendor: 'Sai Swimming Pool Maintenance Services', purpose: 'Swimming Pool Monthly AMC / Maintenance', amount: '4519', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400005, srNo: 5, date: '2026-09-04', chequeNo: '538', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400006, srNo: 6, date: '2026-09-04', chequeNo: '539', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400007, srNo: 7, date: '2026-09-04', chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', whoPaid: 'A Building', isPaid: true }
+];
+
 export default function ChequeManagement({ isAdmin = false }) {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
   const [subTab, setSubTab] = useState('buildingA'); // 'buildingA' or 'common'
@@ -82,6 +92,12 @@ export default function ChequeManagement({ isAdmin = false }) {
               if (!aData.some(c => c.chequeNo === '493')) {
                 aData.push({ id: Date.now() + 103, srNo: aData.length + 1, date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false });
               }
+            } else if (selectedMonth === '2026-09') {
+              DEFAULT_SEPTEMBER_2026_CHEQUES.forEach((defChq) => {
+                if (!aData.some(c => String(c.chequeNo) === String(defChq.chequeNo))) {
+                  aData.push({ ...defChq, srNo: aData.length + 1 });
+                }
+              });
             }
             setChequesA(aData);
           } else {
@@ -90,6 +106,8 @@ export default function ChequeManagement({ isAdmin = false }) {
               initialA = [
                 { id: Date.now() + 103, srNo: 1, date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false }
               ];
+            } else if (selectedMonth === '2026-09') {
+              initialA = [...DEFAULT_SEPTEMBER_2026_CHEQUES];
             } else {
               initialA = [{ id: Date.now(), srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building', isPaid: false }];
             }
@@ -172,6 +190,7 @@ export default function ChequeManagement({ isAdmin = false }) {
 
   const [formData, setFormData] = useState({
     date: '',
+    deductedDate: '',
     chequeNo: '',
     vendor: '',
     purpose: '',
@@ -206,6 +225,7 @@ export default function ChequeManagement({ isAdmin = false }) {
 
     const newCheque = {
       ...formData,
+      isPaid: formData.isPaid || Boolean(formData.deductedDate),
       srNo: currentList.length + 1,
       id: Date.now()
     };
@@ -225,11 +245,13 @@ export default function ChequeManagement({ isAdmin = false }) {
     // Reset form
     setFormData({
       date: '',
+      deductedDate: '',
       chequeNo: '',
       vendor: '',
       purpose: '',
       amount: '',
-      whoPaid: 'A Building'
+      whoPaid: 'A Building',
+      isPaid: false
     });
   };
 
@@ -335,6 +357,7 @@ export default function ChequeManagement({ isAdmin = false }) {
         'Sr. No': c.srNo,
         'Month': formatLongMonth(selectedMonth),
         'Cheque Date': c.date,
+        'Amount Deducted Date': c.deductedDate || 'Pending',
         'Cheque No': c.chequeNo,
         'Vendor Name': c.vendor,
         'Remarks / Purpose': c.purpose,
@@ -456,10 +479,14 @@ export default function ChequeManagement({ isAdmin = false }) {
         <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>
           ➕ Add {subTab === 'common' ? 'Common' : 'Building A'} Cheque Entry
         </h4>
-        <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+        <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
           <div className="field-group">
             <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Cheque Date <span style={{ color: '#ef4444' }}>*</span></label>
             <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.date} onChange={e => handleFormChange('date', e.target.value)} required />
+          </div>
+          <div className="field-group">
+            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Amount Deducted Date</label>
+            <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.deductedDate || ''} onChange={e => handleFormChange('deductedDate', e.target.value)} />
           </div>
           <div className="field-group">
             <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Cheque No <span style={{ color: '#ef4444' }}>*</span></label>
@@ -518,32 +545,33 @@ export default function ChequeManagement({ isAdmin = false }) {
       {/* Main Table */}
       <div className="table-card">
         <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: subTab === 'common' ? 1400 : 1100 }}>
+          <table className="attendance-table" style={{ minWidth: subTab === 'common' ? 1500 : 1200 }}>
             <thead>
               <tr style={{ background: '#f8fafc' }}>
-                <th style={{ width: 60 }}>Sr.</th>
-                <th style={{ width: 140 }}>Cheque Date</th>
-                <th style={{ width: 120 }}>Cheque No</th>
-                <th style={{ width: 220 }}>Vendor Name</th>
+                <th style={{ width: 50 }}>Sr.</th>
+                <th style={{ width: 130 }}>Cheque Date</th>
+                <th style={{ width: 135 }}>Deducted Date</th>
+                <th style={{ width: 110 }}>Cheque No</th>
+                <th style={{ width: 200 }}>Vendor Name</th>
                 <th>Remarks / Purpose</th>
-                <th style={{ width: 140, textAlign: 'right' }}>Total (₹)</th>
+                <th style={{ width: 130, textAlign: 'right' }}>Total (₹)</th>
                 {subTab === 'common' && (
                   <>
-                    <th style={{ width: 130, textAlign: 'right', background: '#f0fdf4' }}>A Share (87)</th>
-                    <th style={{ width: 130, textAlign: 'right', background: '#f0f9ff' }}>B Share (96)</th>
-                    <th style={{ width: 130, textAlign: 'right', background: '#fff7ed' }}>C Share (48)</th>
+                    <th style={{ width: 120, textAlign: 'right', background: '#f0fdf4' }}>A Share (87)</th>
+                    <th style={{ width: 120, textAlign: 'right', background: '#f0f9ff' }}>B Share (96)</th>
+                    <th style={{ width: 120, textAlign: 'right', background: '#fff7ed' }}>C Share (48)</th>
                   </>
                 )}
-                <th style={{ width: 130 }}>Who Paid</th>
+                <th style={{ width: 120 }}>Who Paid</th>
                 <th style={{ width: 70, textAlign: 'center' }}>Paid?</th>
-                <th style={{ width: 50 }}></th>
+                <th style={{ width: 40 }}></th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={subTab === 'common' ? 12 : 9} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
+                <tr><td colSpan={subTab === 'common' ? 13 : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
               ) : filteredCheques.length === 0 ? (
-                <tr><td colSpan={subTab === 'common' ? 12 : 9} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
+                <tr><td colSpan={subTab === 'common' ? 13 : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
                   {searchText ? `No cheques found matching "${searchText}"` : 'No cheques recorded.'}
                 </td></tr>
               ) : (
@@ -558,6 +586,21 @@ export default function ChequeManagement({ isAdmin = false }) {
                     <tr key={c.id || i} style={rowStyle}>
                       <td style={strikeStyle}>{i + 1}</td>
                       <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value)} readOnly={!isAdmin} style={strikeStyle} /></td>
+                      <td>
+                        <input
+                          className="attendance-register-input"
+                          type="date"
+                          value={c.deductedDate || ''}
+                          onChange={e => {
+                            updateRow(actualIdx, 'deductedDate', e.target.value);
+                            if (e.target.value && !c.isPaid) {
+                              updateRow(actualIdx, 'isPaid', true);
+                            }
+                          }}
+                          readOnly={!isAdmin}
+                          title="Date amount was deducted/debited from bank"
+                        />
+                      </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value)} readOnly={!isAdmin} style={strikeStyle} />
@@ -593,7 +636,7 @@ export default function ChequeManagement({ isAdmin = false }) {
             </tbody>
             <tfoot>
               <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
-                <td colSpan={5} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
+                <td colSpan={6} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
                 <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmount)}</td>
                 {subTab === 'common' && (
                   <>
@@ -602,7 +645,7 @@ export default function ChequeManagement({ isAdmin = false }) {
                     <td style={{ textAlign: 'right', color: '#ea580c' }}>₹{fmt(totalAmount * FLATS.C / FLATS.Total)}</td>
                   </>
                 )}
-                <td colSpan={2}></td>
+                <td colSpan={3}></td>
               </tr>
             </tfoot>
           </table>

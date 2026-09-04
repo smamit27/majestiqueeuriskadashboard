@@ -369,5 +369,20 @@ export const financeSeedData = {
       { chequeNo: '', vendor: 'Naushad Ali', amount: '2787.00', purpose: 'Gardner Salary' },
       { chequeNo: '', vendor: 'B Building', amount: '1137.00', purpose: 'Clubhouse Electricity bill Share' }
     ]
+  },
+  'finance_2026-09': {
+    month: '2026-09',
+    income: [
+      { source: 'Maintenance Collection (Vivish / Direct)', amount: '', remark: 'September 2026 Maintenance Collections' }
+    ],
+    expenses: [
+      { chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', amount: '12900.00', purpose: 'Housekeeping / Waterman Salary' },
+      { chequeNo: '535', vendor: 'Shubham Enterprises', amount: '36536.00', purpose: 'Maintenance & Repairs / Operations' },
+      { chequeNo: '536', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", amount: '8662.00', purpose: 'Inter-Building Common Share Settlement' },
+      { chequeNo: '537', vendor: 'Sai Swimming Pool Maintenance Services', amount: '4519.00', purpose: 'Swimming Pool Monthly AMC' },
+      { chequeNo: '538', vendor: 'Sandip Raju Wavare', amount: '50103.00', purpose: 'Housekeeping / Staff Services' },
+      { chequeNo: '539', vendor: 'Rajib Madan Patra', amount: '2636.00', purpose: 'Plumbing & Electrical Maintenance Repairs' },
+      { chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', amount: '3955.00', purpose: 'Water Tanker Supply Charges' }
+    ]
   }
 };

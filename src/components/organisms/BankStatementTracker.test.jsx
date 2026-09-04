@@ -106,4 +106,82 @@ describe('BankStatementTracker - Ledger Entries Sorting', () => {
       expect(amountsAsc[i]).toBeLessThanOrEqual(amountsAsc[i + 1]);
     }
   });
+
+  it('renders August 2026 statement period and verified metrics correctly', async () => {
+    const user = userEvent.setup();
+
+    render(<BankStatementTracker isAdmin={false} />);
+
+    // Unlock workspace
+    await user.type(screen.getByPlaceholderText('Enter password...'), '$05CeLRO');
+    await user.click(screen.getByRole('button', { name: /Unlock Auditor Workspace/i }));
+
+    // Click August 2026 Month button
+    const augustBtn = await screen.findByRole('button', { name: /August 2026/i });
+    expect(augustBtn).toBeInTheDocument();
+    await user.click(augustBtn);
+
+    // Verify August 2026 summary metrics
+    const periodElements = screen.getAllByText(/August 3, 2026 - August 29, 2026/i);
+    expect(periodElements.length).toBeGreaterThan(0);
+    expect(screen.getByText(/₹4,24,339.27/i)).toBeInTheDocument(); // Opening balance
+    expect(screen.getByText(/₹4,62,925.87/i)).toBeInTheDocument(); // Closing balance
+    expect(screen.getByText(/₹2,48,629.60/i)).toBeInTheDocument(); // Total Credits
+    expect(screen.getByText(/₹2,10,043.00/i)).toBeInTheDocument(); // Total Debits
+  });
+
+  it('provides 5-Month Financial Trend Comparison PDF print buttons and generates report', async () => {
+    const user = userEvent.setup();
+
+    // Mock window.open
+    const mockDocumentWrite = vi.fn();
+    const mockDocumentClose = vi.fn();
+    const mockPrint = vi.fn();
+    const mockWindowOpen = vi.fn().mockReturnValue({
+      document: {
+        write: mockDocumentWrite,
+        close: mockDocumentClose
+      },
+      print: mockPrint
+    });
+    vi.stubGlobal('open', mockWindowOpen);
+
+    render(<BankStatementTracker isAdmin={false} />);
+
+    // Unlock workspace
+    await user.type(screen.getByPlaceholderText('Enter password...'), '$05CeLRO');
+    await user.click(screen.getByRole('button', { name: /Unlock Auditor Workspace/i }));
+
+    // 1. Check header button in 5-Month Trend Comparison bar
+    const printHeaderBtn = await screen.findByRole('button', { name: /Print 5-Month Trend \(PDF\)/i });
+    expect(printHeaderBtn).toBeInTheDocument();
+
+    // Click header print button
+    await user.click(printHeaderBtn);
+    expect(mockWindowOpen).toHaveBeenCalledWith('', '_blank');
+    expect(mockDocumentWrite).toHaveBeenCalled();
+    const writtenHtml = mockDocumentWrite.mock.calls[0][0];
+    expect(writtenHtml).toContain('5-Month Financial Trend Comparison & Profit/Loss Report');
+    expect(writtenHtml).toContain('April 2026');
+    expect(writtenHtml).toContain('May 2026');
+    expect(writtenHtml).toContain('June 2026');
+    expect(writtenHtml).toContain('July 2026');
+    expect(writtenHtml).toContain('August 2026');
+    expect(writtenHtml).toContain('3,13,837.14'); // Cumulative net profit
+    expect(writtenHtml).toContain('4,62,925.87'); // Final closing balance
+
+    // 2. Switch to Reports tab and verify dedicated card
+    const reportsTab = await screen.findByRole('button', { name: /Reports & Print/i });
+    await user.click(reportsTab);
+
+    const reportCardPrintBtn = await screen.findByRole('button', { name: /Print 5-Month Trend Report \(PDF\)/i });
+    expect(reportCardPrintBtn).toBeInTheDocument();
+
+    // Click report tab print button
+    await user.click(reportCardPrintBtn);
+    expect(mockWindowOpen).toHaveBeenCalledTimes(2);
+
+    vi.unstubAllGlobals();
+  });
 });
+

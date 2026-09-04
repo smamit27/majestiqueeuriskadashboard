@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import { financeSeedData } from '../../data/financeSeedData.js';
 
 const getMonthsForYear = (startYear) => {
   return Array.from({ length: 12 }, (_, i) => {
@@ -107,6 +108,18 @@ export default function FinanceTracker({ isAdmin = false }) {
           }
         }
 
+        if (chequesList.length === 0 && selectedMonth === '2026-09') {
+          chequesList = [
+            { chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', purpose: 'Housekeeping / Waterman Salary', amount: '12900', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '535', vendor: 'Shubham Enterprises', purpose: 'Maintenance & Repairs / Operations', amount: '36536', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '536', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", purpose: 'Inter-Building Common Share Settlement / Transfer', amount: '8662', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '537', vendor: 'Sai Swimming Pool Maintenance Services', purpose: 'Swimming Pool Monthly AMC / Maintenance', amount: '4519', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '538', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '539', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', isLinked: true, sourceTab: 'A Building' }
+          ];
+        }
+
         if (!cancelled) {
           setChequeExpenses(chequesList);
 
@@ -124,9 +137,15 @@ export default function FinanceTracker({ isAdmin = false }) {
             setExpenses(loadedExpenses.length > 0 ? loadedExpenses : [{ chequeNo: '', vendor: '', amount: '', purpose: '' }]);
             setSaveMsg(`${formatLongMonth(selectedMonth)}`);
           } else {
-            setIncome([{ source: '', amount: '', remark: '' }]);
-            setExpenses([{ chequeNo: '', vendor: '', amount: '', purpose: '' }]);
-            setSaveMsg(`New tracker — ${formatLongMonth(selectedMonth)}`);
+            const fallback = financeSeedData[recordId];
+            if (fallback) {
+              setIncome(fallback.income?.length > 0 ? fallback.income : [{ source: '', amount: '', remark: '' }]);
+              setExpenses(fallback.expenses?.length > 0 ? fallback.expenses : [{ chequeNo: '', vendor: '', amount: '', purpose: '' }]);
+            } else {
+              setIncome([{ source: '', amount: '', remark: '' }]);
+              setExpenses([{ chequeNo: '', vendor: '', amount: '', purpose: '' }]);
+            }
+            setSaveMsg(`${formatLongMonth(selectedMonth)}`);
           }
         }
       } catch (err) {

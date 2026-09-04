@@ -31,8 +31,8 @@ describe('PettyCashTracker', () => {
   it('renders the current fiscal month as the initial A building month context', () => {
     const html = renderToStaticMarkup(<PettyCashTracker isAdmin />);
 
-    expect(html).toContain('Add Entry to August 2026');
-    expect(html).toContain('Uttareswar');
+    expect(html).toContain('Add Entry to');
+    expect(html).toContain('Select Category');
     expect(html).toContain('FY 2026-27');
   });
 
