@@ -711,6 +711,24 @@ export default function ParkingBlueprintMap({
               <feGaussianBlur stdDeviation="3.5" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
+
+            {/* Top-Down 2D Metallic Car Gradients */}
+            <linearGradient id="carBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#10b981" />
+              <stop offset="50%" stopColor="#059669" />
+              <stop offset="100%" stopColor="#047857" />
+            </linearGradient>
+
+            <linearGradient id="carGlassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#022c22" />
+              <stop offset="100%" stopColor="#064e3b" />
+            </linearGradient>
+
+            <linearGradient id="carRoofGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#047857" />
+              <stop offset="50%" stopColor="#065f46" />
+              <stop offset="100%" stopColor="#047857" />
+            </linearGradient>
           </defs>
 
           {/* Background Paper Plate */}
@@ -968,69 +986,130 @@ export default function ParkingBlueprintMap({
                   height={slot.h}
                   rx="4"
                   fill={isAllotted 
-                    ? (isHighlighted ? '#059669' : '#065f46') 
+                    ? (isHighlighted ? '#064e3b' : '#042f24') 
                     : (isSelected ? '#0284c7' : colors.slotVacant)}
                   stroke={isSelected 
                     ? '#38bdf8' 
                     : isHighlighted 
                       ? '#fbbf24' 
                       : isAllotted 
-                        ? '#34d399' 
+                        ? '#10b981' 
                         : colors.roadBorder}
                   strokeWidth={isSelected || isHighlighted ? 2 : 1}
                   strokeDasharray={isAllotted ? 'none' : '3 2'}
                 />
 
-                {/* Car Silhouette Icon inside Bay */}
+                {/* Top-Down Realistic Car Graphic inside Allotted Bay */}
                 {isAllotted ? (
-                  <g transform={slot.orient === 'V' 
-                    ? `translate(${slot.w / 2 - 8}, ${slot.h / 2 - 12})` 
-                    : `translate(${slot.w / 2 - 12}, ${slot.h / 2 - 8})`
-                  }>
-                    {/* Small Car representation */}
-                    <rect
-                      x="0"
-                      y="0"
-                      width={slot.orient === 'V' ? 16 : 24}
-                      height={slot.orient === 'V' ? 24 : 16}
-                      rx="3"
-                      fill="#10b981"
-                      opacity="0.9"
-                    />
-                    <rect
-                      x={slot.orient === 'V' ? 2 : 4}
-                      y={slot.orient === 'V' ? 4 : 2}
-                      width={slot.orient === 'V' ? 12 : 16}
-                      height={slot.orient === 'V' ? 16 : 12}
-                      rx="2"
-                      fill="#064e3b"
-                    />
+                  <g>
+                    {slot.orient === 'V' ? (
+                      // ── Vertical Bay Car (Top to Bottom) ──
+                      <g transform={`translate(${slot.w / 2 - 13}, ${slot.h / 2 - 16})`}>
+                        {/* Car Shadow */}
+                        <rect x="2" y="2" width="26" height="32" rx="4" fill="rgba(0,0,0,0.4)" />
+
+                        {/* Wheels (4 Black Tires) */}
+                        <rect x="0" y="4" width="2.5" height="6" rx="1" fill="#090d16" />
+                        <rect x="23.5" y="4" width="2.5" height="6" rx="1" fill="#090d16" />
+                        <rect x="0" y="22" width="2.5" height="6" rx="1" fill="#090d16" />
+                        <rect x="23.5" y="22" width="2.5" height="6" rx="1" fill="#090d16" />
+
+                        {/* Car Body Chassis */}
+                        <rect x="1.5" y="1" width="23" height="30" rx="4" fill="url(#carBodyGrad)" stroke="#34d399" strokeWidth="0.8" />
+
+                        {/* Front Windshield */}
+                        <path d="M 4 8 L 22 8 L 20 4 L 6 4 Z" fill="url(#carGlassGrad)" stroke="#6ee7b7" strokeWidth="0.4" />
+                        {/* Car Roof */}
+                        <rect x="4" y="8" width="18" height="15" rx="2" fill="url(#carRoofGrad)" />
+                        {/* Rear Windshield */}
+                        <path d="M 4 23 L 22 23 L 20 27 L 6 27 Z" fill="url(#carGlassGrad)" stroke="#6ee7b7" strokeWidth="0.4" />
+
+                        {/* Headlights */}
+                        <circle cx="4" cy="2" r="1.2" fill="#fef08a" />
+                        <circle cx="22" cy="2" r="1.2" fill="#fef08a" />
+                        {/* Taillights */}
+                        <rect x="3.5" y="29.5" width="4" height="1" rx="0.5" fill="#ef4444" />
+                        <rect x="18.5" y="29.5" width="4" height="1" rx="0.5" fill="#ef4444" />
+
+                        {/* Flat No Badge on Car Roof */}
+                        <rect x="3" y="10" width="20" height="11" rx="2.5" fill="#064e3b" stroke="#34d399" strokeWidth="0.5" />
+                        <text x="13" y="18.5" fill="#ffffff" fontSize="6.5" fontWeight="900" textAnchor="middle">
+                          {flatItem.flat}
+                        </text>
+                      </g>
+                    ) : (
+                      // ── Horizontal Bay Car (Left to Right) ──
+                      <g transform={`translate(${slot.w / 2 - 20}, ${slot.h / 2 - 11})`}>
+                        {/* Car Shadow */}
+                        <rect x="2" y="2" width="40" height="22" rx="4" fill="rgba(0,0,0,0.4)" />
+
+                        {/* Wheels (4 Black Tires) */}
+                        <rect x="6" y="0" width="6" height="2" rx="1" fill="#090d16" />
+                        <rect x="28" y="0" width="6" height="2" rx="1" fill="#090d16" />
+                        <rect x="6" y="20" width="6" height="2" rx="1" fill="#090d16" />
+                        <rect x="28" y="20" width="6" height="2" rx="1" fill="#090d16" />
+
+                        {/* Car Body Chassis */}
+                        <rect x="1" y="1.5" width="38" height="19" rx="4" fill="url(#carBodyGrad)" stroke="#34d399" strokeWidth="0.8" />
+
+                        {/* Front Windshield (Right Front) */}
+                        <path d="M 30 3 L 34 5 L 34 17 L 30 19 Z" fill="url(#carGlassGrad)" stroke="#6ee7b7" strokeWidth="0.4" />
+                        {/* Car Roof */}
+                        <rect x="10" y="3" width="20" height="16" rx="2" fill="url(#carRoofGrad)" />
+                        {/* Rear Windshield */}
+                        <path d="M 10 3 L 6 5 L 6 17 L 10 19 Z" fill="url(#carGlassGrad)" stroke="#6ee7b7" strokeWidth="0.4" />
+
+                        {/* Headlights */}
+                        <circle cx="38" cy="4" r="1.2" fill="#fef08a" />
+                        <circle cx="38" cy="18" r="1.2" fill="#fef08a" />
+                        {/* Taillights */}
+                        <rect x="1.5" y="3" width="1" height="4" rx="0.5" fill="#ef4444" />
+                        <rect x="1.5" y="15" width="1" height="4" rx="0.5" fill="#ef4444" />
+
+                        {/* Flat No Badge on Car Roof */}
+                        <rect x="11" y="4.5" width="18" height="13" rx="2.5" fill="#064e3b" stroke="#34d399" strokeWidth="0.5" />
+                        <text x="20" y="14" fill="#ffffff" fontSize="7.5" fontWeight="900" textAnchor="middle">
+                          {flatItem.flat}
+                        </text>
+                      </g>
+                    )}
+
+                    {/* Slot number badge in top corner */}
+                    <text
+                      x={slot.orient === 'V' ? 6 : 6}
+                      y={slot.orient === 'V' ? 7 : 7}
+                      fill="#a7f3d0"
+                      fontSize="5.5"
+                      fontWeight="800"
+                    >
+                      {slot.num}
+                    </text>
                   </g>
-                ) : null}
-
-                {/* Slot Label (e.g. OP 1, 9, 21, etc.) */}
-                <text
-                  x={slot.w / 2}
-                  y={isAllotted ? (slot.orient === 'V' ? 9 : 9) : (slot.orient === 'V' ? slot.h / 2 - 3 : slot.h / 2 - 3)}
-                  fill={isAllotted ? '#a7f3d0' : colors.textSecondary}
-                  fontSize={slot.label.length > 3 ? "6.5" : "7.5"}
-                  fontWeight="800"
-                  textAnchor="middle"
-                >
-                  {slot.label}
-                </text>
-
-                {/* Allotted Flat Number (e.g. A-102, A-506, etc.) */}
-                <text
-                  x={slot.w / 2}
-                  y={isAllotted ? (slot.orient === 'V' ? slot.h - 3 : slot.h - 3) : (slot.orient === 'V' ? slot.h / 2 + 7 : slot.h / 2 + 7)}
-                  fill={isAllotted ? '#ffffff' : '#94a3b8'}
-                  fontSize={isAllotted ? "7.5" : "6"}
-                  fontWeight={isAllotted ? "900" : "600"}
-                  textAnchor="middle"
-                >
-                  {isAllotted ? flatItem.flat : 'FREE'}
-                </text>
+                ) : (
+                  // Vacant slot representation
+                  <g>
+                    <text
+                      x={slot.w / 2}
+                      y={slot.h / 2 - 3}
+                      fill={colors.textSecondary}
+                      fontSize={slot.label.length > 3 ? "6.5" : "7.5"}
+                      fontWeight="800"
+                      textAnchor="middle"
+                    >
+                      {slot.label}
+                    </text>
+                    <text
+                      x={slot.w / 2}
+                      y={slot.h / 2 + 7}
+                      fill="#64748b"
+                      fontSize="6"
+                      fontWeight="700"
+                      textAnchor="middle"
+                    >
+                      FREE
+                    </text>
+                  </g>
+                )}
               </g>
             );
           })}
@@ -1120,6 +1199,41 @@ export default function ParkingBlueprintMap({
                     <strong>Reference:</strong> {selectedFlatRecord.remarks}
                   </div>
                 )}
+
+                {/* Parked Vehicle Visual Preview */}
+                <div style={{
+                  marginTop: 10,
+                  background: 'rgba(2, 44, 34, 0.6)',
+                  border: '1px solid #059669',
+                  borderRadius: 8,
+                  padding: '8px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10
+                }}>
+                  <div style={{
+                    width: 44,
+                    height: 28,
+                    background: 'linear-gradient(180deg, #10b981 0%, #047857 100%)',
+                    borderRadius: 5,
+                    border: '1px solid #34d399',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.1rem',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.4)'
+                  }}>
+                    🚗
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#f8fafc' }}>
+                      Designated Parking Bay • {selectedSlotData.label}
+                    </div>
+                    <div style={{ fontSize: '0.64rem', color: '#6ee7b7' }}>
+                      Allocated to Flat {selectedFlatRecord.flat} (Floor {selectedFlatRecord.floor})
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div style={{

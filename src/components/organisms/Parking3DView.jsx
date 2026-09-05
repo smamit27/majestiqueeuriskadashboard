@@ -1481,35 +1481,72 @@ export default function Parking3DView({
                 >
                   {/* Slot Number Label */}
                   <span style={{
-                    fontSize: '0.55rem',
+                    position: 'absolute',
+                    top: 2,
+                    left: 3,
+                    fontSize: '0.52rem',
                     fontWeight: 800,
                     color: isAllotted ? '#a7f3d0' : '#94a3b8',
-                    zIndex: 2
+                    zIndex: 20
                   }}>
-                    {slot.label}
+                    {slot.num}
                   </span>
 
-                  {/* 3D Extruded Car Model if Allotted */}
+                  {/* 3D Realistic Extruded Car Model if Allotted */}
                   {isAllotted ? (
                     <div style={{
                       position: 'absolute',
-                      inset: '2px 3px',
-                      background: themes.carBody,
-                      borderRadius: 3,
-                      transform: 'translateZ(12px)',
-                      boxShadow: '0 6px 12px rgba(0,0,0,0.6)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#ffffff',
-                      fontWeight: 900,
-                      fontSize: '0.58rem',
-                      border: '1px solid #34d399'
+                      inset: slot.orient === 'V' ? '4px 3px' : '3px 4px',
+                      transformStyle: 'preserve-3d',
+                      transform: 'translateZ(10px)'
                     }}>
-                      <span>{flatItem.flat}</span>
+                      {/* 3D Car Chassis Body */}
+                      <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(180deg, #10b981 0%, #047857 100%)',
+                        borderRadius: 4,
+                        border: '1px solid #34d399',
+                        boxShadow: '0 8px 16px rgba(0,0,0,0.7)',
+                        transformStyle: 'preserve-3d'
+                      }}>
+                        {/* 4 Wheels (Black 3D Tires) */}
+                        <div style={{ position: 'absolute', left: -1.5, top: 3, width: 2, height: 5, background: '#090d16', borderRadius: 1 }} />
+                        <div style={{ position: 'absolute', right: -1.5, top: 3, width: 2, height: 5, background: '#090d16', borderRadius: 1 }} />
+                        <div style={{ position: 'absolute', left: -1.5, bottom: 3, width: 2, height: 5, background: '#090d16', borderRadius: 1 }} />
+                        <div style={{ position: 'absolute', right: -1.5, bottom: 3, width: 2, height: 5, background: '#090d16', borderRadius: 1 }} />
+
+                        {/* Headlights (Warm Yellow) */}
+                        <div style={{ position: 'absolute', left: 2, top: 1, width: 2.5, height: 1.5, background: '#fef08a', borderRadius: 1, boxShadow: '0 0 4px #fde047' }} />
+                        <div style={{ position: 'absolute', right: 2, top: 1, width: 2.5, height: 1.5, background: '#fef08a', borderRadius: 1, boxShadow: '0 0 4px #fde047' }} />
+
+                        {/* Taillights (Red) */}
+                        <div style={{ position: 'absolute', left: 2, bottom: 0, width: 2.5, height: 1, background: '#ef4444', borderRadius: 0.5 }} />
+                        <div style={{ position: 'absolute', right: 2, bottom: 0, width: 2.5, height: 1, background: '#ef4444', borderRadius: 0.5 }} />
+
+                        {/* 3D Extruded Car Cabin & Roof */}
+                        <div style={{
+                          position: 'absolute',
+                          inset: slot.orient === 'V' ? '6px 2px' : '2px 6px',
+                          background: 'linear-gradient(180deg, #065f46 0%, #022c22 100%)',
+                          border: '0.8px solid #6ee7b7',
+                          borderRadius: 3,
+                          transform: 'translateZ(7px)',
+                          boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#ffffff',
+                          fontWeight: 900,
+                          fontSize: slot.orient === 'V' ? '0.58rem' : '0.64rem',
+                          letterSpacing: '-0.02em'
+                        }}>
+                          <span>{flatItem.flat}</span>
+                        </div>
+                      </div>
                     </div>
                   ) : (
-                    <span style={{ fontSize: '0.48rem', color: '#64748b' }}>FREE</span>
+                    <span style={{ fontSize: '0.5rem', color: '#64748b', fontWeight: 700 }}>FREE</span>
                   )}
                 </div>
               );
@@ -1600,6 +1637,41 @@ export default function Parking3DView({
                     <strong>Reference:</strong> {selectedFlatRecord.remarks}
                   </div>
                 )}
+
+                {/* Parked Vehicle Visual Preview */}
+                <div style={{
+                  marginTop: 10,
+                  background: 'rgba(2, 44, 34, 0.6)',
+                  border: '1px solid #059669',
+                  borderRadius: 8,
+                  padding: '8px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10
+                }}>
+                  <div style={{
+                    width: 44,
+                    height: 28,
+                    background: 'linear-gradient(180deg, #10b981 0%, #047857 100%)',
+                    borderRadius: 5,
+                    border: '1px solid #34d399',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.1rem',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.4)'
+                  }}>
+                    🚗
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#f8fafc' }}>
+                      Designated Parking Bay • {selectedSlotData.label}
+                    </div>
+                    <div style={{ fontSize: '0.64rem', color: '#6ee7b7' }}>
+                      Allocated to Flat {selectedFlatRecord.flat} (Floor {selectedFlatRecord.floor})
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div style={{
