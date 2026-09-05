@@ -1259,8 +1259,8 @@ export const initialParkingData = [
   }
 ];
 
-// Open Parking slot catalog for visual map representation (OP-01 through OP-60)
-export const OPEN_PARKING_SLOTS = Array.from({ length: 60 }, (_, i) => {
+// Open Parking slot catalog for visual map representation (OP-01 through OP-61)
+export const OPEN_PARKING_SLOTS = Array.from({ length: 61 }, (_, i) => {
   const slotNum = String(i + 1).padStart(2, '0');
   return `OP-${slotNum}`;
 });

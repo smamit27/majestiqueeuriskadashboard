@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 import { initialParkingData, OPEN_PARKING_SLOTS } from '../../data/parkingAllotmentData.js';
+import ParkingBlueprintMap from './ParkingBlueprintMap.jsx';
+import Parking3DView from './Parking3DView.jsx';
 
 const PARKING_DOC_ID = 'a_wing_parking_v3';
 const PARKING_COLLECTION = 'parkingAllotments';
@@ -33,7 +35,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [floorFilter, setFloorFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
-  const [viewMode, setViewMode] = useState('table'); // 'table' | 'grid' | 'floors'
+  const [viewMode, setViewMode] = useState('table'); // 'table' | '2d' | '3d' | 'grid' | 'floors'
   const [selectedSlotForDetail, setSelectedSlotForDetail] = useState(null);
   const [editingFlat, setEditingFlat] = useState(null);
   const [saveStatus, setSaveStatus] = useState('');
@@ -517,6 +519,8 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
         }}>
           {[
             { mode: 'table', icon: '📋', label: 'Table' },
+            { mode: '2d', icon: '🗺️', label: '2D Layout' },
+            { mode: '3d', icon: '🏙️', label: '3D Model' },
             { mode: 'grid', icon: '🅿️', label: 'OP Grid' },
             { mode: 'floors', icon: '🏢', label: 'Floors' },
           ].map(v => (
@@ -788,7 +792,51 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
         </div>
       )}
 
-      {/* ── Grid Map View (OP-01 to OP-60) ── */}
+      {/* ── 2D Architectural Site Layout (OPEN PARKING LAYOUT — 61 SPACES) ── */}
+      {viewMode === '2d' && (
+        <ParkingBlueprintMap
+          parkingRecords={parkingRecords}
+          occupiedSlotMap={stats.occupiedSlotMap}
+          searchQuery={searchQuery}
+          floorFilter={floorFilter}
+          statusFilter={statusFilter}
+          onSelectSlot={(record) => {
+            if (record?.flat) {
+              setEditingFlat(record);
+            } else if (record?.parkingNo) {
+              setSelectedSlotForDetail({ slotId: record.parkingNo, flatItem: null });
+            }
+          }}
+          onEditFlat={(flatItem) => {
+            setEditingFlat(flatItem);
+          }}
+          isAdmin={isAdmin}
+        />
+      )}
+
+      {/* ── 3D Isometric Site Model ── */}
+      {viewMode === '3d' && (
+        <Parking3DView
+          parkingRecords={parkingRecords}
+          occupiedSlotMap={stats.occupiedSlotMap}
+          searchQuery={searchQuery}
+          floorFilter={floorFilter}
+          statusFilter={statusFilter}
+          onSelectSlot={(record) => {
+            if (record?.flat) {
+              setEditingFlat(record);
+            } else if (record?.parkingNo) {
+              setSelectedSlotForDetail({ slotId: record.parkingNo, flatItem: null });
+            }
+          }}
+          onEditFlat={(flatItem) => {
+            setEditingFlat(flatItem);
+          }}
+          isAdmin={isAdmin}
+        />
+      )}
+
+      {/* ── Grid Map View (OP-01 to OP-61) ── */}
       {viewMode === 'grid' && (
         <div style={{
           background: '#fffefb',

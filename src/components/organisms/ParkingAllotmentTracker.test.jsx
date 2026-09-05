@@ -83,8 +83,21 @@ describe('ParkingAllotmentTracker', () => {
     expect(screen.queryByText('A-101')).not.toBeInTheDocument();
   });
 
-  it('switches between Table, OP Grid, and Floor matrix views', async () => {
+  it('switches between Table, 2D Layout, 3D Model, OP Grid, and Floor matrix views', async () => {
     render(<ParkingAllotmentTracker isAdmin={false} />);
+
+    // Click 2D Layout view
+    const layout2dBtn = screen.getByRole('button', { name: /2D Layout/i });
+    fireEvent.click(layout2dBtn);
+
+    expect(screen.getByText(/OPEN PARKING LAYOUT — 61 SPACES/i)).toBeInTheDocument();
+    expect(screen.getByText(/Master 2D Blueprint Plan/i)).toBeInTheDocument();
+
+    // Click 3D Model view
+    const model3dBtn = screen.getByRole('button', { name: /3D Model/i });
+    fireEvent.click(model3dBtn);
+
+    expect(screen.getByText(/3D ISOMETRIC SITE MODEL — 61 OPEN SPACES/i)).toBeInTheDocument();
 
     // Click OP Grid view
     const gridBtn = screen.getByRole('button', { name: /OP Grid/i });
