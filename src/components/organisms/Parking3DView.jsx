@@ -82,6 +82,272 @@ export default function Parking3DView({
     setIsDownloadOpen(false);
   };
 
+  const handleDownload3DPNG = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1600;
+    canvas.height = 2200;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const isDay = lightingMode === 'daylight';
+    const isCyber = lightingMode === 'cyberpunk';
+    
+    // Background gradient
+    const bgGrad = ctx.createRadialGradient(800, 700, 100, 800, 1100, 1200);
+    if (isDay) {
+      bgGrad.addColorStop(0, '#f8fafc');
+      bgGrad.addColorStop(1, '#e2e8f0');
+    } else if (isCyber) {
+      bgGrad.addColorStop(0, '#100028');
+      bgGrad.addColorStop(1, '#05000c');
+    } else {
+      bgGrad.addColorStop(0, '#0c2333');
+      bgGrad.addColorStop(1, '#030b10');
+    }
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title Header Block
+    ctx.fillStyle = isDay ? '#0f172a' : '#f8fafc';
+    ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('MAJESTIQUE EURISKA — 3D ISOMETRIC PARKING MODEL', 80, 90);
+
+    ctx.font = '600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = isDay ? '#475569' : '#94a3b8';
+    ctx.fillText('Master 3D Site Blueprint • 61 Open Parking Bays • Wing "A" Allotments & Landmarks', 80, 125);
+
+    // Header badge
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.roundRect(1250, 60, 270, 48, 10);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('61 OPEN SPACES', 1385, 90);
+    ctx.textAlign = 'left';
+
+    // Summary KPI Bar
+    const slotList = Object.entries(LAYOUT_61_SLOTS).map(([key, slot]) => {
+      const flatItem = parkingRecords.find(p => p.parkingNo && normalizeOpKey(p.parkingNo) === key);
+      return { key, ...slot, flat: flatItem?.flat, status: flatItem ? 'Allotted' : 'Vacant' };
+    });
+    const allottedCount = slotList.filter(s => s.status === 'Allotted').length;
+    const vacantCount = slotList.length - allottedCount;
+
+    // KPI Cards
+    const kpiY = 160;
+    const kpis = [
+      { label: 'TOTAL OPEN BAYS', val: '61 SPACES', color: '#0284c7' },
+      { label: 'ALLOTTED BAYS', val: `${allottedCount} FLATS`, color: '#059669' },
+      { label: 'VACANT OPEN BAYS', val: `${vacantCount} AVAILABLE`, color: '#d97706' },
+      { label: 'COVERED RESIDENTIAL', val: '50 UNITS', color: '#6366f1' },
+    ];
+    kpis.forEach((kpi, i) => {
+      const kx = 80 + i * 365;
+      ctx.fillStyle = isDay ? '#ffffff' : '#081722';
+      ctx.strokeStyle = isDay ? '#cbd5e1' : '#1e3a4d';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(kx, kpiY, 340, 75, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = kpi.color;
+      ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(kpi.val, kx + 20, kpiY + 40);
+
+      ctx.fillStyle = isDay ? '#64748b' : '#94a3b8';
+      ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(kpi.label, kx + 20, kpiY + 62);
+    });
+
+    // Site Baseplate (Offset: x=80, y=270, w=1440, h=1800)
+    const ox = 80;
+    const oy = 265;
+    const sx = 1.92;
+    const sy = 1.68;
+
+    // Ground Plate
+    ctx.fillStyle = isDay ? '#f1f5f9' : '#071620';
+    ctx.strokeStyle = isDay ? '#94a3b8' : '#1e4e63';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(ox, oy, 1440, 1820, 20);
+    ctx.fill();
+    ctx.stroke();
+
+    // Driveway Road Network
+    ctx.fillStyle = isDay ? '#cbd5e1' : '#0f2432';
+    ctx.fillRect(ox + 40, oy + 40, 1360, 1740);
+
+    // Helpers to transform coords
+    const mapX = (x) => ox + 40 + x * sx * 0.94;
+    const mapY = (y) => oy + 40 + y * sy * 0.94;
+    const mapW = (w) => w * sx * 0.94;
+    const mapH = (h) => h * sy * 0.94;
+
+    // Helper for Extruded 3D Building Box
+    const draw3DBox = (bx, by, bw, bh, depth, fillTop, fillSide, strokeCol, label, sublabel, icon) => {
+      const rx = mapX(bx);
+      const ry = mapY(by);
+      const rw = mapW(bw);
+      const rh = mapH(bh);
+
+      // Side extrusion shadow/walls
+      ctx.fillStyle = fillSide;
+      ctx.strokeStyle = strokeCol;
+      ctx.lineWidth = 2;
+
+      // Bottom / side extrusion
+      ctx.beginPath();
+      ctx.moveTo(rx, ry + rh);
+      ctx.lineTo(rx, ry + rh + depth);
+      ctx.lineTo(rx + rw, ry + rh + depth);
+      ctx.lineTo(rx + rw, ry + rh);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(rx + rw, ry);
+      ctx.lineTo(rx + rw + depth * 0.5, ry - depth * 0.5);
+      ctx.lineTo(rx + rw + depth * 0.5, ry + rh + depth * 0.5);
+      ctx.lineTo(rx + rw, ry + rh);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Top Roof Face
+      ctx.fillStyle = fillTop;
+      ctx.beginPath();
+      ctx.roundRect(rx, ry, rw, rh, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      // Labels
+      ctx.fillStyle = isDay ? '#78350f' : '#ffffff';
+      ctx.textAlign = 'center';
+      if (icon) {
+        ctx.font = '24px sans-serif';
+        ctx.fillText(icon, rx + rw / 2, ry + rh / 2 - 8);
+      }
+      ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(label, rx + rw / 2, ry + rh / 2 + (icon ? 18 : 6));
+      if (sublabel) {
+        ctx.font = '600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillStyle = isDay ? '#92400e' : '#fde68a';
+        ctx.fillText(sublabel, rx + rw / 2, ry + rh / 2 + (icon ? 36 : 24));
+      }
+      ctx.textAlign = 'left';
+    };
+
+    // 1. Outside Shops (Top)
+    draw3DBox(80, 20, 480, 48, 12, isDay ? '#e0e7ff' : '#1e2544', '#131b33', '#818cf8', 'OUTSIDE SHOPS (SH-1 to SH-8)', 'Commercial Road Frontage', '🏪');
+
+    // 2. Main Gate
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.roundRect(mapX(20), mapY(25), mapW(40), mapH(38), 6);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('MAIN', mapX(20) + mapW(40)/2, mapY(25) + 16);
+    ctx.fillText('GATE', mapX(20) + mapW(40)/2, mapY(25) + 30);
+    ctx.textAlign = 'left';
+
+    // 3. "A" Building
+    draw3DBox(300, 130, 320, 140, 25, isDay ? '#fef3c7' : '#92400e', '#592507', '#f59e0b', 'A BUILDING (TOWER)', 'Flats A-101 to A-1108 (11 Floors)', '🏢');
+
+    // 4. Kids Play Area Lawn & Gajibo & MP Theater
+    const px = mapX(260);
+    const py = mapY(365);
+    const pw = mapW(440);
+    const ph = mapH(70);
+    ctx.fillStyle = isDay ? '#dcfce7' : '#064e3b';
+    ctx.strokeStyle = '#22c55e';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(px, py, pw, ph, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    draw3DBox(270, 370, 50, 50, 12, '#b45309', '#78350f', '#fde68a', 'GAJIBO', '', '🛖');
+    ctx.fillStyle = isDay ? '#15803d' : '#86efac';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🌳 KIDS PLAY AREA & SANDPIT', px + pw/2 - 20, py + ph/2 + 6);
+    draw3DBox(570, 365, 80, 70, 15, isDay ? '#fef3c7' : '#d97706', '#92400e', '#fde68a', 'MP THEATER', 'Cultural Deck', '🎭');
+
+    // 5. "B" Building
+    draw3DBox(280, 500, 330, 125, 25, isDay ? '#dbeafe' : '#1e3a8a', '#112255', '#3b82f6', 'B BUILDING (MIDDLE TOWER)', 'Residential Floors', '🏢');
+
+    // 6. Club House & Swimming Pool
+    draw3DBox(280, 680, 140, 95, 10, '#0284c7', '#034a70', '#38bdf8', 'SWIMMING POOL', 'Infinity Pool', '🏊');
+    draw3DBox(430, 680, 180, 95, 20, isDay ? '#ffedd5' : '#ea580c', '#9a3412', '#fb923c', 'CLUB HOUSE & GYM', 'Community Hall & Deck', '🏛️');
+
+    // 7. "C" Building
+    draw3DBox(280, 840, 330, 130, 25, isDay ? '#fee2e2' : '#991b1b', '#5c0f0f', '#ef4444', 'C BUILDING (TOWER)', 'Residential Floors', '🏢');
+
+    // 8. DG Room (Bottom-Right)
+    draw3DBox(630, 990, 70, 45, 10, isDay ? '#f1f5f9' : '#334155', '#1e293b', '#64748b', 'DG ROOM', 'Power Backup', '⚡');
+
+    // 9. STP & OWC (Bottom-Left)
+    draw3DBox(195, 740, 55, 30, 8, isDay ? '#e2e8f0' : '#1e293b', '#0f172a', '#64748b', 'OWC', '', '♻️');
+    draw3DBox(195, 990, 55, 30, 8, isDay ? '#e2e8f0' : '#1e293b', '#0f172a', '#64748b', 'STP', '', '💧');
+
+    // 10. Draw All 61 3D Parking Slots
+    Object.entries(LAYOUT_61_SLOTS).forEach(([key, slot]) => {
+      const flatItem = parkingRecords.find(p => p.parkingNo && normalizeOpKey(p.parkingNo) === key);
+      const isOccupied = !!flatItem;
+      const sxPos = mapX(slot.x);
+      const syPos = mapY(slot.y);
+      const swPos = mapW(slot.w);
+      const shPos = mapH(slot.h);
+
+      ctx.fillStyle = isOccupied ? '#059669' : (isDay ? '#ffffff' : '#0a1a24');
+      ctx.strokeStyle = isOccupied ? '#10b981' : (isDay ? '#94a3b8' : '#334155');
+      ctx.lineWidth = 1.5;
+
+      ctx.beginPath();
+      ctx.roundRect(sxPos, syPos, swPos, shPos, 4);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      if (isOccupied) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 11px monospace';
+        ctx.fillText(key, sxPos + swPos / 2, syPos + (slot.orient === 'H' ? 14 : 16));
+
+        ctx.fillStyle = '#fef08a';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText(flatItem.flat, sxPos + swPos / 2, syPos + (slot.orient === 'H' ? 27 : 32));
+      } else {
+        ctx.fillStyle = isDay ? '#64748b' : '#94a3b8';
+        ctx.font = 'bold 11px monospace';
+        ctx.fillText(key, sxPos + swPos / 2, syPos + shPos / 2 + 4);
+      }
+    });
+
+    // Footer Info
+    ctx.textAlign = 'left';
+    ctx.fillStyle = isDay ? '#64748b' : '#94a3b8';
+    ctx.font = '600 13px sans-serif';
+    ctx.fillText('Majestique Euriska Co-Op Housing Society • Wing A Parking Register • Official 3D Isometric Site Drawing', 80, 2140);
+    ctx.textAlign = 'right';
+    ctx.fillText('Generated on ' + new Date().toLocaleDateString('en-GB'), 1520, 2140);
+
+    // Save as PNG
+    const pngUrl = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = pngUrl;
+    link.download = 'Majestique_Euriska_3D_Isometric_Layout_61_Spaces.png';
+    link.click();
+    setIsDownloadOpen(false);
+  };
+
   const handleDownloadPoster = () => {
     const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     const slotList = Object.entries(LAYOUT_61_SLOTS).map(([key, slot]) => {
@@ -250,13 +516,25 @@ export default function Parking3DView({
       </html>
     `;
 
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.open();
-      printWindow.document.write(posterDoc);
-      printWindow.document.close();
-    } else {
-      window.print();
+    // Direct HTML file download so popup blocker never blocks
+    const blob = new Blob([posterDoc], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Majestique_Euriska_3D_Architectural_Poster.html';
+    link.click();
+    URL.revokeObjectURL(url);
+
+    // Also attempt window print fallback
+    try {
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.open();
+        printWindow.document.write(posterDoc);
+        printWindow.document.close();
+      }
+    } catch (e) {
+      console.log('Popup prevented, file downloaded directly', e);
     }
     setIsDownloadOpen(false);
   };
@@ -607,14 +885,14 @@ export default function Parking3DView({
                 padding: 6,
                 boxShadow: '0 10px 25px rgba(0,0,0,0.7)',
                 zIndex: 60,
-                minWidth: '220px',
+                minWidth: '240px',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 4
               }}>
                 <button
                   type="button"
-                  onClick={handleDownloadPoster}
+                  onClick={handleDownload3DPNG}
                   style={{
                     padding: '8px 10px',
                     borderRadius: 6,
@@ -632,10 +910,38 @@ export default function Parking3DView({
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <Printer size={15} color="#38bdf8" />
+                  <FileImage size={16} color="#38bdf8" />
                   <div>
-                    <div>3D Architectural Poster / Sheet</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>High-Res Printable Presentation</div>
+                    <div style={{ color: '#38bdf8' }}>High-Res 3D Image (PNG)</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>1600 × 2200 3D Isometric Snapshot</div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadPoster}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left',
+                    borderTop: '1px solid #1e293b'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <Printer size={15} color="#4ade80" />
+                  <div>
+                    <div>3D Presentation Sheet (HTML)</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Printable Architectural Report</div>
                   </div>
                 </button>
 
@@ -660,7 +966,7 @@ export default function Parking3DView({
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <FileImage size={15} color="#fbbf24" />
+                  <FileText size={15} color="#fbbf24" />
                   <div>
                     <div>Original Layout (JPG)</div>
                     <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Builder Master Reference</div>
@@ -688,7 +994,7 @@ export default function Parking3DView({
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <FileCode size={15} color="#4ade80" />
+                  <FileCode size={15} color="#a855f7" />
                   <div>
                     <div>3D Model JSON Spec</div>
                     <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Slot Coordinates & Metadata</div>
