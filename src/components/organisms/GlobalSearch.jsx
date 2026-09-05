@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { id: 'water_management', label: 'Visualization Work',     icon: '🗺️', group: 'Navigation (Admin)' },
   { id: 'petty_cash',       label: 'Petty Cash',             icon: '💵', group: 'Navigation (Admin)' },
   { id: 'park_plus',        label: 'Park+ Payments',         icon: '🅿️', group: 'Navigation (Admin)' },
+  { id: 'parking_allotment',label: 'Parking Allotment',      icon: '🚗', group: 'Navigation (Admin)' },
   { id: 'statement_auditor',label: 'Statement Auditor',      icon: '📑', group: 'Navigation (Admin)' },
   { id: 'fixed_deposits',   label: 'Fixed Deposits',         icon: '🏦', group: 'Navigation (Admin)' },
   { id: 'tenant_tracking',  label: 'Tenant Tracker',         icon: '🏢', group: 'Navigation (Admin)' },

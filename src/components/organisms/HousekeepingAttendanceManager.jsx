@@ -409,6 +409,181 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
     setSaveMsg(`Excel downloaded for ${formatLongMonthLabel(selectedMonth)}.`);
   }
 
+  // ── PDF export ───────────────────────────────────────────────────────────
+  function handleExportPDF() {
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const longMonth = formatLongMonthLabel(selectedMonth);
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Majestique Euriska - Housekeeping Staff Attendance (${longMonth})</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .summary-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 12px;
+            flex-wrap: wrap;
+          }
+          .summary-item { font-weight: 600; color: #334155; }
+          .summary-item strong { color: #0f172a; }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: center; padding: 7px 8px; border: 1px solid #94a3b8; font-size: 10px; letter-spacing: 0.03em; }
+          th.th-date { text-align: left; }
+          td { padding: 6px 8px; border: 1px solid #cbd5e1; color: #0f172a; text-align: center; }
+          td.td-date { text-align: left; font-weight: 600; }
+          tr:nth-child(even) { background: #f8fafc; }
+          tr.sunday-row { background: #fff5f5; }
+          .sunday-label { color: #dc2626; font-weight: 700; }
+          tfoot tr { background: #f1f5f9; font-weight: 700; }
+          tfoot th { border-top: 2px solid #0f172a; color: #0f172a; background: #e2e8f0; }
+          
+          .sig-section {
+            margin-top: 28px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+          }
+          .sig-box {
+            width: 200px;
+            border-top: 1px solid #64748b;
+            text-align: center;
+            font-size: 11px;
+            color: #475569;
+            padding-top: 6px;
+          }
+          
+          .footer {
+            margin-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 8px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 portrait; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🧹 Majestique Euriska - Housekeeping Attendance Register</h1>
+            <div class="subtitle">Monthly Housekeeping & Cleaning Manpower Deployment • FY April 2026 – March 2027</div>
+          </div>
+          <div class="meta">
+            <div><strong>Month:</strong> ${longMonth}</div>
+            <div><strong>Generated:</strong> ${generatedDate}</div>
+          </div>
+        </div>
+
+        <div class="summary-bar">
+          <div class="summary-item">Month: <strong>${longMonth}</strong></div>
+          <div>•</div>
+          <div class="summary-item">Days in Month: <strong>${summary.daysInMonth}</strong></div>
+          <div>•</div>
+          <div class="summary-item">Staff in Roster: <strong>${staffMembers.length}</strong></div>
+          <div>•</div>
+          <div class="summary-item">Monthly Manpower: <strong>${summary.manpowerTotal}</strong></div>
+          <div>•</div>
+          <div class="summary-item">Tractor Trips: <strong>${summary.tractorTripTotal}</strong></div>
+          <div>•</div>
+          <div class="summary-item">Avg / Day: <strong>${summary.avgDaily}</strong></div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="th-date" style="width: 105px;">Date</th>
+              <th style="width: 50px;">Day</th>
+              ${MANPOWER_COLUMNS.map(col => `
+                <th>${col.label}</th>
+              `).join('')}
+              <th style="width: 60px; font-weight: 800;">Total</th>
+              <th style="width: 80px;">Tractor Trip</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${monthDays.map(d => {
+              const row = entries[d.dateKey] || emptyRow();
+              const total = rowTotal(row);
+              const isSunday = d.date.getDay() === 0;
+              return `
+                <tr class="${isSunday ? 'sunday-row' : ''}">
+                  <td class="td-date">${d.formattedDate}</td>
+                  <td class="${isSunday ? 'sunday-label' : ''}">${d.weekday}</td>
+                  ${MANPOWER_COLUMNS.map(col => `
+                    <td>${getNum(row[col.key]) || '0'}</td>
+                  `).join('')}
+                  <td style="font-weight: 700;">${total}</td>
+                  <td>${getNum(row.tractorTrip) || '0'}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="2" style="text-align: right; text-transform: uppercase; letter-spacing: 0.05em;">Total:</th>
+              ${MANPOWER_COLUMNS.map(col => `
+                <th>${summary.colTotals[col.key]}</th>
+              `).join('')}
+              <th style="font-weight: 800; font-size: 11px;">${summary.manpowerTotal}</th>
+              <th>${summary.tractorTripTotal}</th>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="sig-section">
+          <div class="sig-box">Housekeeping Agency Supervisor</div>
+          <div class="sig-box">Estate Manager / Society Office</div>
+          <div class="sig-box">Authorised Signatory / Committee</div>
+        </div>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society • Housekeeping Staff Deployment Register</div>
+          <div>Confidential • Official Society Records</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    }
+  }
+
   // ── Save-status badge ─────────────────────────────────────────────────────
   const statusBadge = {
     idle: { color: '#6b7280', icon: '●', text: 'Ready' },
@@ -532,6 +707,9 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
             <p>Auto-saves to cloud.</p>
             <button className="button-secondary" type="button" onClick={handleDownloadExcel}>
               ⬇ Download
+            </button>
+            <button className="button-secondary" type="button" onClick={handleExportPDF} title="Print or export as PDF">
+              📄 Print PDF
             </button>
             {isAdmin && (
               <button
