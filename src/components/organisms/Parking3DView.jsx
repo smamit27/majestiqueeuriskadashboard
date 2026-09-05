@@ -12,7 +12,12 @@ import {
   Building, 
   Sparkles,
   Info,
-  Edit3
+  Edit3,
+  Download,
+  FileImage,
+  FileText,
+  FileCode,
+  Printer
 } from 'lucide-react';
 import { LAYOUT_61_SLOTS, normalizeOpKey } from './ParkingBlueprintMap.jsx';
 
@@ -34,6 +39,227 @@ export default function Parking3DView({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [lightingMode, setLightingMode] = useState('dusk'); // 'dusk' | 'daylight' | 'cyberpunk'
   const [selectedSlotKey, setSelectedSlotKey] = useState(null);
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+
+  // ── Download Handlers for 3D View ──────────────────────────────────────────
+  const handleDownloadOriginalLayout = () => {
+    const link = document.createElement('a');
+    link.href = '/open_parking_layout.jpg';
+    link.download = 'Majestique_Euriska_Master_Architectural_Layout_61_Spaces.jpg';
+    link.click();
+    setIsDownloadOpen(false);
+  };
+
+  const handleDownloadJSON = () => {
+    const exportData = {
+      project: 'Majestique Euriska - Wing A Parking Allotment (3D Model Spec)',
+      totalSlots: 61,
+      cameraSettings: { pitch: cameraPitch, yaw: cameraYaw, zoom: zoomLevel },
+      lightingMode,
+      generatedAt: new Date().toISOString(),
+      slots: Object.entries(LAYOUT_61_SLOTS).map(([key, slot]) => {
+        const flatItem = parkingRecords.find(p => p.parkingNo && normalizeOpKey(p.parkingNo) === key);
+        return {
+          slotId: key,
+          slotNumber: slot.num,
+          label: slot.label,
+          zone: slot.zone,
+          coordinates: { x: slot.x, y: slot.y, w: slot.w, h: slot.h, orient: slot.orient },
+          allocatedFlat: flatItem ? flatItem.flat : null,
+          status: flatItem ? 'Allotted' : 'Available',
+          floor: flatItem ? flatItem.floor : null
+        };
+      })
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Majestique_Euriska_3D_Parking_Model_Data.json';
+    link.click();
+    URL.revokeObjectURL(url);
+    setIsDownloadOpen(false);
+  };
+
+  const handleDownloadPoster = () => {
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const slotList = Object.entries(LAYOUT_61_SLOTS).map(([key, slot]) => {
+      const flatItem = parkingRecords.find(p => p.parkingNo && normalizeOpKey(p.parkingNo) === key);
+      return {
+        key,
+        num: slot.num,
+        label: slot.label,
+        zone: slot.zone,
+        flat: flatItem ? flatItem.flat : null,
+        status: flatItem ? 'Allotted' : 'Vacant'
+      };
+    });
+
+    const allottedCount = slotList.filter(s => s.status === 'Allotted').length;
+    const vacantCount = slotList.filter(s => s.status === 'Vacant').length;
+
+    const posterDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Majestique Euriska - 3D Architectural Site & Parking Poster</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0284c7; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; }
+          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .badge { display: inline-block; background: #0284c7; color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; }
+          
+          .kpi-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+          }
+          .kpi-card {
+            flex: 1;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+          }
+          .kpi-val { font-size: 18px; font-weight: 800; color: #0284c7; }
+          .kpi-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-top: 2px; }
+
+          .grid-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+          }
+          .slot-card {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 6px 8px;
+            background: #ffffff;
+            font-size: 11px;
+          }
+          .slot-card.occupied {
+            background: #ecfdf5;
+            border-color: #10b981;
+          }
+          .slot-id { font-weight: 800; font-family: monospace; color: #0f172a; }
+          .flat-tag { font-weight: 800; color: #047857; margin-top: 2px; font-size: 11px; }
+          .vacant-tag { color: #94a3b8; font-style: italic; margin-top: 2px; }
+          .zone-tag { font-size: 9px; color: #64748b; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+          .legend-box {
+            display: flex;
+            gap: 16px;
+            padding: 10px 14px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-size: 11px;
+            margin-bottom: 16px;
+          }
+
+          .footer {
+            margin-top: 20px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 10px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 landscape; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <div class="badge">ARCHITECTURAL 3D SITE SPECIFICATION</div>
+            <h1 class="title" style="margin-top: 6px;">MAJESTIQUE EURISKA — 3D SITE & OPEN PARKING MODEL</h1>
+            <div class="subtitle">Master Isometric Tower Layout • 61 Open Parking Spaces • Building "A" Allocation Reference</div>
+          </div>
+          <div style="text-align: right; font-size: 11px; color: #64748b;">
+            <div><strong>Date:</strong> ${generatedDate}</div>
+            <div><strong>Lighting Profile:</strong> ${lightingMode.toUpperCase()}</div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-val">61</div>
+            <div class="kpi-label">Total Open Bays (OP 1–61)</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val" style="color: #059669;">${allottedCount}</div>
+            <div class="kpi-label">Allotted Open Bays</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val" style="color: #64748b;">${vacantCount}</div>
+            <div class="kpi-label">Vacant Open Bays</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-val">5</div>
+            <div class="kpi-label">Main Landmark Zones</div>
+          </div>
+        </div>
+
+        <div class="legend-box">
+          <div><strong>Building A:</strong> Flats A-101 to A-1108 (Ground to 11th Floor)</div>
+          <div>•</div>
+          <div><strong>Amenities:</strong> Kids Play Area, Gajibo, Amboli Place, Club House & Pool</div>
+          <div>•</div>
+          <div><strong>Utilities:</strong> STP & OWC (West), DG Room (East)</div>
+        </div>
+
+        <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #334155; margin: 0 0 10px;">
+          All 61 Open Parking Bays Schedule
+        </h3>
+
+        <div class="grid-container">
+          ${slotList.map(s => `
+            <div class="slot-card ${s.status === 'Allotted' ? 'occupied' : ''}">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="slot-id">${s.key}</span>
+                <span style="font-size: 9px; font-weight: 700; color: ${s.status === 'Allotted' ? '#059669' : '#64748b'}">
+                  ${s.status === 'Allotted' ? '● ALLOTTED' : '○ VACANT'}
+                </span>
+              </div>
+              ${s.flat ? `<div class="flat-tag">FLAT: ${s.flat}</div>` : `<div class="vacant-tag">Available</div>`}
+              <div class="zone-tag" title="${s.zone}">${s.zone}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Operative Housing Society • Wing A Parking Administration</div>
+          <div>Confidential Society Record • Official 3D Master Layout</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() { window.print(); }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(posterDoc);
+      printWindow.document.close();
+    } else {
+      window.print();
+    }
+    setIsDownloadOpen(false);
+  };
 
   // Map slot number to flat allotment record
   const slotToFlatMap = useMemo(() => {
@@ -344,6 +570,132 @@ export default function Parking3DView({
                 {p.label}
               </button>
             ))}
+          </div>
+
+          {/* Download 3D Dropdown */}
+          <div style={{ position: 'relative' }}>
+            <button
+              type="button"
+              onClick={() => setIsDownloadOpen(!isDownloadOpen)}
+              style={{
+                padding: '6px 12px',
+                borderRadius: 8,
+                border: '1px solid #0284c7',
+                background: '#0284c7',
+                color: '#ffffff',
+                fontSize: '0.74rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                boxShadow: '0 2px 6px rgba(2,132,199,0.3)'
+              }}
+            >
+              <Download size={14} />
+              <span>Download 3D</span>
+            </button>
+
+            {isDownloadOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '110%',
+                right: 0,
+                background: '#0f172a',
+                border: '1px solid #334155',
+                borderRadius: 10,
+                padding: 6,
+                boxShadow: '0 10px 25px rgba(0,0,0,0.7)',
+                zIndex: 60,
+                minWidth: '220px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4
+              }}>
+                <button
+                  type="button"
+                  onClick={handleDownloadPoster}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <Printer size={15} color="#38bdf8" />
+                  <div>
+                    <div>3D Architectural Poster / Sheet</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>High-Res Printable Presentation</div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadOriginalLayout}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left',
+                    borderTop: '1px solid #1e293b'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <FileImage size={15} color="#fbbf24" />
+                  <div>
+                    <div>Original Layout (JPG)</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Builder Master Reference</div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadJSON}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left',
+                    borderTop: '1px solid #1e293b'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <FileCode size={15} color="#4ade80" />
+                  <div>
+                    <div>3D Model JSON Spec</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Slot Coordinates & Metadata</div>
+                  </div>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Zoom Buttons */}

@@ -39,6 +39,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
   const [selectedSlotForDetail, setSelectedSlotForDetail] = useState(null);
   const [editingFlat, setEditingFlat] = useState(null);
   const [saveStatus, setSaveStatus] = useState('');
+  const [isGlobalDownloadOpen, setIsGlobalDownloadOpen] = useState(false);
 
   // ── Load from Firebase or Seed Data ──────────────────────────────────────
   useEffect(() => {
@@ -546,8 +547,146 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
           ))}
         </div>
 
-        {/* Action Buttons: Export CSV & Print PDF */}
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        {/* Action Buttons: Export CSV & Print PDF & Download Layouts */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', position: 'relative' }}>
+          {/* Download Layouts Dropdown */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setIsGlobalDownloadOpen(!isGlobalDownloadOpen)}
+              style={{
+                padding: '7px 14px',
+                borderRadius: 10,
+                border: '1.5px solid #0284c7',
+                background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontFamily: 'inherit',
+                boxShadow: '0 2px 6px rgba(2,132,199,0.3)',
+                transition: 'all 0.15s ease'
+              }}
+              title="Download 2D and 3D Parking Layouts"
+            >
+              📥 Download Layouts ▾
+            </button>
+
+            {isGlobalDownloadOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '115%',
+                right: 0,
+                background: '#0f172a',
+                border: '1px solid #334155',
+                borderRadius: 12,
+                padding: 6,
+                boxShadow: '0 12px 30px rgba(0,0,0,0.45)',
+                zIndex: 70,
+                minWidth: '240px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4
+              }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setViewMode('2d');
+                    setIsGlobalDownloadOpen(false);
+                  }}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 8,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.76rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <span style={{ fontSize: '1.1rem' }}>🗺️</span>
+                  <div>
+                    <div>2D Layout (PNG / SVG)</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Vector CAD & High-Res Image</div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setViewMode('3d');
+                    setIsGlobalDownloadOpen(false);
+                  }}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 8,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.76rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <span style={{ fontSize: '1.1rem' }}>🏙️</span>
+                  <div>
+                    <div>3D Layout Poster & JSON</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Architectural 3D Presentation</div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const link = document.createElement('a');
+                    link.href = '/open_parking_layout.jpg';
+                    link.download = 'Majestique_Euriska_Master_Architectural_Layout_61_Spaces.jpg';
+                    link.click();
+                    setIsGlobalDownloadOpen(false);
+                  }}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 8,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.76rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left',
+                    borderTop: '1px solid #1e293b'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <span style={{ fontSize: '1.1rem' }}>📄</span>
+                  <div>
+                    <div>Master Builder Blueprint (JPG)</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Official Reference Image</div>
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
+
           <button
             onClick={handleExportCSV}
             style={{

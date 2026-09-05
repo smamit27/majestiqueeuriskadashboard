@@ -14,7 +14,11 @@ import {
   TreePine,
   ShieldCheck,
   Building,
-  Sparkles
+  Sparkles,
+  Download,
+  FileImage,
+  FileCode,
+  FileText
 } from 'lucide-react';
 
 // Helper to normalize OP slot keys (e.g. 'OP-01', 'OP-1', 'OP 1', '1' -> 'OP-01')
@@ -134,8 +138,63 @@ export default function ParkingBlueprintMap({
   const [activeZone, setActiveZone] = useState('ALL');
   const [themeMode, setThemeMode] = useState('architectural'); // 'architectural' | 'cad' | 'light'
   const [selectedSlotKey, setSelectedSlotKey] = useState(null);
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
 
   const containerRef = useRef(null);
+  const svgRef = useRef(null);
+
+  // ── Download Handlers ──────────────────────────────────────────────────────
+  const handleDownloadSVG = () => {
+    const svgEl = svgRef.current;
+    if (!svgEl) return;
+    const serializer = new XMLSerializer();
+    const source = serializer.serializeToString(svgEl);
+    const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Majestique_Euriska_2D_Parking_Layout_61_Spaces.svg';
+    link.click();
+    URL.revokeObjectURL(url);
+    setIsDownloadOpen(false);
+  };
+
+  const handleDownloadPNG = () => {
+    const svgEl = svgRef.current;
+    if (!svgEl) return;
+    const serializer = new XMLSerializer();
+    const source = serializer.serializeToString(svgEl);
+    const svgBlob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1500;
+      canvas.height = 2200;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = themeMode === 'architectural' ? '#ffffff' : '#071822';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      
+      const pngUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = pngUrl;
+      link.download = 'Majestique_Euriska_2D_Parking_Layout_61_Spaces.png';
+      link.click();
+      setIsDownloadOpen(false);
+    };
+    img.src = url;
+  };
+
+  const handleDownloadOriginalLayout = () => {
+    const link = document.createElement('a');
+    link.href = '/open_parking_layout.jpg';
+    link.download = 'Majestique_Euriska_Original_Architectural_Layout_61_Spaces.jpg';
+    link.click();
+    setIsDownloadOpen(false);
+  };
 
   // Map slot number to flat allotment record
   const slotToFlatMap = useMemo(() => {
@@ -407,6 +466,131 @@ export default function ParkingBlueprintMap({
             ))}
           </div>
 
+          {/* Download Dropdown */}
+          <div style={{ position: 'relative' }}>
+            <button
+              type="button"
+              onClick={() => setIsDownloadOpen(!isDownloadOpen)}
+              style={{
+                padding: '6px 12px',
+                borderRadius: 8,
+                border: '1px solid #0284c7',
+                background: '#0284c7',
+                color: '#ffffff',
+                fontSize: '0.74rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                boxShadow: '0 2px 6px rgba(2,132,199,0.3)'
+              }}
+            >
+              <Download size={14} />
+              <span>Download 2D</span>
+            </button>
+
+            {isDownloadOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '110%',
+                right: 0,
+                background: '#0f172a',
+                border: '1px solid #334155',
+                borderRadius: 10,
+                padding: 6,
+                boxShadow: '0 10px 25px rgba(0,0,0,0.7)',
+                zIndex: 60,
+                minWidth: '220px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4
+              }}>
+                <button
+                  type="button"
+                  onClick={handleDownloadPNG}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <FileImage size={15} color="#38bdf8" />
+                  <div>
+                    <div>High-Res PNG Image</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>1500 × 2200 Master Blueprint</div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadSVG}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <FileCode size={15} color="#4ade80" />
+                  <div>
+                    <div>Vector SVG Graphic</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Scalable CAD Vector File</div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadOriginalLayout}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.74rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left',
+                    borderTop: '1px solid #1e293b'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <FileText size={15} color="#fbbf24" />
+                  <div>
+                    <div>Original Layout (JPG)</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Builder Master Reference</div>
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
+
           {/* Zoom Controls */}
           <div style={{ display: 'flex', background: 'rgba(0,0,0,0.08)', borderRadius: 8, border: `1px solid ${colors.roadBorder}`, overflow: 'hidden' }}>
             <button
@@ -501,6 +685,7 @@ export default function ParkingBlueprintMap({
         }}
       >
         <svg
+          ref={svgRef}
           viewBox="0 0 750 1100"
           style={{
             width: '100%',
