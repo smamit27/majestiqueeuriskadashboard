@@ -212,7 +212,7 @@ export default function Parking3DView({
         <div class="legend-box">
           <div><strong>Building A:</strong> Flats A-101 to A-1108 (Ground to 11th Floor)</div>
           <div>•</div>
-          <div><strong>Amenities:</strong> Kids Play Area, Gajibo, Amboli Place, Club House & Pool</div>
+          <div><strong>Amenities:</strong> Kids Play Area, Gajibo, MP Theater, Club House & Pool</div>
           <div>•</div>
           <div><strong>Utilities:</strong> STP & OWC (West), DG Room (East)</div>
         </div>
@@ -866,7 +866,7 @@ export default function Parking3DView({
             </div>
 
             {/* ══════════════════════════════════════════════════════════════════
-                2. 3D KIDS PLAY AREA, GAJIBO & TEMPLE
+                2. 3D KIDS PLAY AREA, GAJIBO & MP THEATER
                ══════════════════════════════════════════════════════════════════ */}
             <div style={{
               position: 'absolute',
@@ -923,7 +923,7 @@ export default function Parking3DView({
                 <span>🎪 SWINGS</span>
               </div>
 
-              {/* Amboli / Temple Place */}
+              {/* MP Theater */}
               <div style={{
                 position: 'absolute',
                 left: 310,
@@ -943,8 +943,8 @@ export default function Parking3DView({
                 fontSize: '0.62rem',
                 fontWeight: 800
               }}>
-                <div style={{ fontSize: '1rem' }}>🛕</div>
-                <div>TEMPLE</div>
+                <div style={{ fontSize: '1rem' }}>🎭</div>
+                <div>MP THEATER</div>
               </div>
             </div>
 

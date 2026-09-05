@@ -637,7 +637,7 @@ export default function ParkingBlueprintMap({
         {[
           { key: 'ALL', label: '🌐 Full Site' },
           { key: 'A_BUILDING', label: '🏢 A Building & Shops (Top)', color: '#d97706' },
-          { key: 'PLAYGROUND', label: '🌳 Play Area & Temple', color: '#16a34a' },
+          { key: 'PLAYGROUND', label: '🌳 Play Area & MP Theater', color: '#16a34a' },
           { key: 'B_BUILDING', label: '🏢 B Building (Middle)', color: '#2563eb' },
           { key: 'CLUBHOUSE', label: '🏊 Club House', color: '#9333ea' },
           { key: 'C_BUILDING', label: '🏢 C Building & DG (Bottom)', color: '#dc2626' }
@@ -813,7 +813,7 @@ export default function ParkingBlueprintMap({
           </g>
 
           {/* ══════════════════════════════════════════════════════════════════════
-              4. KIDS PLAY AREA, GAJIBO & AMBOLI / TEMPLE PLACE
+              4. KIDS PLAY AREA, GAJIBO & MP THEATER
              ══════════════════════════════════════════════════════════════════════ */}
           <g transform="translate(260, 365)" style={{ cursor: 'pointer' }} onClick={() => focusZone('PLAYGROUND')}>
             {/* Gajibo */}
@@ -842,15 +842,15 @@ export default function ParkingBlueprintMap({
               <polygon points="91,18 87,12 95,12" fill="#475569" />
             </g>
 
-            {/* Amboli / Temple Place */}
+            {/* MP Theater */}
             <g transform="translate(310, 0)">
               <rect x="0" y="0" width="80" height="70" rx="6" fill="#fef3c7" stroke="#d97706" strokeWidth="1.2" />
-              <text x="40" y="32" fill="#d97706" fontSize="18" textAnchor="middle">🛕</text>
-              <text x="40" y="48" fill="#92400e" fontSize="7.5" fontWeight="800" textAnchor="middle">
-                Amboli /
+              <text x="40" y="32" fill="#d97706" fontSize="18" textAnchor="middle">🎭</text>
+              <text x="40" y="50" fill="#92400e" fontSize="8" fontWeight="800" textAnchor="middle">
+                MP
               </text>
-              <text x="40" y="58" fill="#92400e" fontSize="7.5" fontWeight="800" textAnchor="middle">
-                Temple Place
+              <text x="40" y="60" fill="#92400e" fontSize="8" fontWeight="800" textAnchor="middle">
+                Theater
               </text>
             </g>
           </g>
