@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 // Register PWA service worker (auto-updates on new deploy)
 if ('serviceWorker' in navigator) {
   import('virtual:pwa-register').then(({ registerSW }) => {
-    registerSW({ immediate: false });
+    registerSW({ immediate: true });
   }).catch(() => {
     // PWA registration is optional; ignore failure in dev
   });
