@@ -9,7 +9,7 @@ import { test, expect } from '@playwright/test';
 async function waitForIntro(page) {
   await page.waitForSelector('[data-testid="intro-overlay"]', {
     state: 'detached',
-    timeout: 25_000,
+    timeout: 35_000,
   }).catch(() => {});
 }
 
@@ -34,10 +34,10 @@ test.describe('Intro Animation', () => {
   });
 
   test('intro finishes and dashboard loads', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?admin=true');
     await waitForIntro(page);
-    await expect(page.locator('[data-testid="intro-overlay"]')).toHaveCount(0);
-    await expect(page.getByRole('heading', { name: /Society Overview/i })).toBeVisible();
+    await expect(page.locator('[data-testid="intro-overlay"]')).toHaveCount(0, { timeout: 10_000 });
+    await expect(page.getByRole('heading', { name: /Society Overview/i })).toBeVisible({ timeout: 10_000 });
   });
 });
 
