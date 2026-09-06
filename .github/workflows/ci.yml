@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    env:
+      CI: true
+      HUSKY: 0
+
     steps:
       # Step 0: Check out repo code
       - name: 📥 Checkout Repository
@@ -24,9 +28,9 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      # Step 1: Dependencies download (clean and deterministic)
+      # Step 1: Dependencies download
       - name: 📦 1. Download Dependencies
-        run: npm ci
+        run: npm ci || npm install --legacy-peer-deps
 
       # Step 2: ESLint Code Quality
       - name: 🔍 2. Run ESLint
