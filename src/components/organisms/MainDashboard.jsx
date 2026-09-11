@@ -24,6 +24,7 @@ const QUICK_LINKS = [
   { id: 'security',         icon: '🛡️', label: 'Security' },
   { id: 'electricity',      icon: '⚡', label: 'Electricity' },
   { id: 'tanker',           icon: '🚛', label: 'Water Tanker' },
+  { id: 'water_tanks',      icon: '💧', label: 'Water Tanks' },
   { id: 'cheques',          icon: '🧾', label: 'Cheques' },
   { id: 'solar',            icon: '☀️', label: 'Solar' },
   { id: 'announcements',    icon: '📢', label: 'Notices' },

@@ -18,6 +18,7 @@ const NAV_ITEMS = [
   { id: 'security',         label: 'Security',               icon: '🛡️', group: 'Navigation (Admin)' },
   { id: 'housekeeping',     label: 'Housekeeping',           icon: '🧹', group: 'Navigation (Admin)' },
   { id: 'tanker',           label: 'Water Tanker',           icon: '🚛', group: 'Navigation (Admin)' },
+  { id: 'water_tanks',      label: 'Water Tank Management',  icon: '💧', group: 'Navigation' },
   { id: 'finance',          label: 'Income & Expenses',      icon: '💰', group: 'Navigation (Admin)' },
   { id: 'maintenance',      label: 'Maintenance',            icon: '📊', group: 'Navigation (Admin)' },
   { id: 'shop_maintenance', label: 'Shop Maintenance',       icon: '🏬', group: 'Navigation (Admin)' },

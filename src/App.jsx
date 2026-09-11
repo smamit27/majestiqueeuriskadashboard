@@ -21,6 +21,7 @@ import ManagerTaskTracker from './components/organisms/ManagerTaskTracker.jsx';
 import AmcTracker from './components/organisms/AmcTracker.jsx';
 import SpecialMaintenanceTracker from './components/organisms/SpecialMaintenanceTracker.jsx';
 import WaterManagement from './components/organisms/WaterManagement.jsx';
+import WaterTankManagement from './components/organisms/WaterTankManagement.jsx';
 import PettyCashTracker from './components/organisms/PettyCashTracker.jsx';
 import ShopMaintenanceTracker from './components/organisms/ShopMaintenanceTracker.jsx';
 import AIChatButton from './components/AIChat/AIChatButton.jsx';
@@ -126,6 +127,13 @@ const TAB_ICONS = {
   water_management: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
   ),
+  water_tanks: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>
+      <path d="M12 18v-4"/>
+      <path d="M9 15h6"/>
+    </svg>
+  ),
   petty_cash: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M12 12h.01"/><path d="M16 12h.01"/><path d="M8 12h.01"/></svg>
   ),
@@ -161,8 +169,13 @@ const TAB_ICONS = {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState(() => {
-    if (typeof window !== 'undefined' && window.location.search.includes('admin=true')) {
-      return 'society_overview';
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const requestedTab = params.get('tab');
+      if (requestedTab) return requestedTab;
+      if (params.get('admin') === 'true') {
+        return 'society_overview';
+      }
     }
     return 'emergency';
   });
@@ -337,6 +350,12 @@ export default function App() {
           label: 'Emergency',
           metric: 'Quick Help & 112',
           render: () => <EmergencyNumbers isAdmin={false} />
+        },
+        {
+          id: 'water_tanks',
+          label: 'Water Tank Management',
+          metric: '5,39,400 L Capacity & 3D Plan',
+          render: () => <WaterTankManagement isAdmin={false} />
         }
       ];
     }
@@ -366,6 +385,12 @@ export default function App() {
         label: 'Water Tanker',
         metric: 'Water Tanker Billing',
         render: () => <TankerModule isAdmin={isAdmin} />
+      },
+      {
+        id: 'water_tanks',
+        label: 'Water Tank Management',
+        metric: '5,39,400 L Capacity & 3D Plan',
+        render: () => <WaterTankManagement isAdmin={isAdmin} />
       },
       {
         id: 'finance',
@@ -504,10 +529,11 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    if (!isAdmin && activeTab !== 'emergency') {
+    const validTabIds = tabItems.map((item) => item.id);
+    if (!validTabIds.includes(activeTab)) {
       setActiveTab('emergency');
     }
-  }, [isAdmin, activeTab]);
+  }, [tabItems, activeTab]);
 
   useEffect(() => {
     if (isAdmin && activeTab === 'emergency' && prevTab === null) {
