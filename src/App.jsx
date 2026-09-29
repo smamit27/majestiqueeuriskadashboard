@@ -36,6 +36,7 @@ import FixedDepositTracker from './components/organisms/FixedDepositTracker.jsx'
 import TenantTracker from './components/organisms/TenantTracker.jsx';
 import ParkingAllotmentTracker from './components/organisms/ParkingAllotmentTracker.jsx';
 import EmergencyNumbers from './components/organisms/EmergencyNumbers.jsx';
+import BuilderDiscuss from './components/organisms/BuilderDiscuss.jsx';
 
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
@@ -164,6 +165,9 @@ const TAB_ICONS = {
   ),
   emergency: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  ),
+  builder_discuss: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 8h.01"/><path d="M11 8h6"/><path d="M7 12h.01"/><path d="M11 12h6"/></svg>
   )
 };
 
@@ -493,6 +497,12 @@ export default function App() {
         label: 'Parking Allotment',
         metric: 'A-101 to A-1108 Roster',
         render: () => <ParkingAllotmentTracker isAdmin={isAdmin} />
+      },
+      {
+        id: 'builder_discuss',
+        label: 'Builder Discuss',
+        metric: 'Eisha Pending Works & Escalations',
+        render: () => <BuilderDiscuss isAdmin={isAdmin} />
       },
       {
         id: 'emergency',

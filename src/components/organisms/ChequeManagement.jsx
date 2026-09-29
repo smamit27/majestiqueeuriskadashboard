@@ -44,11 +44,31 @@ const DEFAULT_SEPTEMBER_2026_CHEQUES = [
   { id: 1725451400007, srNo: 7, date: '2026-09-04', chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', whoPaid: 'A Building', isPaid: true }
 ];
 
+function getRealCurrentMonth() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+const isMonthLockedByDefault = (month) => {
+  const current = getRealCurrentMonth();
+  return month < current;
+};
+const MASTER_UNLOCK_PASSWORD = '$05CeLRO';
+
 export default function ChequeManagement({ isAdmin = false }) {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
   const [subTab, setSubTab] = useState('buildingA'); // 'buildingA' or 'common'
   const [searchText, setSearchText] = useState('');
   
+  // Lock & Password state: automatically locks any month prior to current month
+  const [unlockedMonths, setUnlockedMonths] = useState({});
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [unlockPassword, setUnlockPassword] = useState('');
+  const [unlockError, setUnlockError] = useState('');
+
+  const isCurrentMonthLocked = isMonthLockedByDefault(selectedMonth) && !unlockedMonths[selectedMonth];
+  const canEdit = isAdmin && !isCurrentMonthLocked;
+
   const [chequesA, setChequesA] = useState([{ id: 1, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building' }]);
   const [chequesCommon, setChequesCommon] = useState([{ id: 1, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building' }]);
   
@@ -172,14 +192,14 @@ export default function ChequeManagement({ isAdmin = false }) {
       }, { merge: true });
       setSaveStatus('saved');
       setSaveMsg('Saved ✓');
-    } catch (err) {
+    } catch (_err) {
       setSaveStatus('error');
       setSaveMsg('Failed');
     }
   }, []);
 
   const triggerAutoSave = (newData, isCommon = false) => {
-    if (!isLoadedRef.current) return;
+    if (!isLoadedRef.current || !canEdit) return;
     clearTimeout(autoSaveTimer.current);
     setSaveStatus('pending');
     setSaveMsg('Unsaved changes...');
@@ -205,8 +225,8 @@ export default function ChequeManagement({ isAdmin = false }) {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!isAdmin) {
-      alert('You do not have permission to perform this action.');
+    if (!canEdit) {
+      alert('This period is locked against modifications. Please unlock with password first.');
       return;
     }
     if (!formData.vendor || !formData.amount || !formData.chequeNo) {
@@ -256,7 +276,7 @@ export default function ChequeManagement({ isAdmin = false }) {
   };
 
   const updateRow = (idx, field, val) => {
-    if (!isAdmin) return;
+    if (!canEdit) return;
     const isCommon = subTab === 'common';
     const next = isCommon ? [...chequesCommon] : [...chequesA];
     next[idx] = { ...next[idx], [field]: val };
@@ -271,7 +291,7 @@ export default function ChequeManagement({ isAdmin = false }) {
   };
 
   const removeRow = (idx) => {
-    if (!isAdmin) return;
+    if (!canEdit) return;
     const isCommon = subTab === 'common';
     const currentList = isCommon ? chequesCommon : chequesA;
     const next = currentList.filter((_, i) => i !== idx).map((c, i) => ({ ...c, srNo: i + 1 }));
@@ -282,6 +302,18 @@ export default function ChequeManagement({ isAdmin = false }) {
     } else {
       setChequesA(next);
       triggerAutoSave(next, false);
+    }
+  };
+
+  const handleUnlockSubmit = (e) => {
+    e.preventDefault();
+    if (unlockPassword === MASTER_UNLOCK_PASSWORD) {
+      setUnlockedMonths(prev => ({ ...prev, [selectedMonth]: true }));
+      setShowUnlockModal(false);
+      setUnlockPassword('');
+      setUnlockError('');
+    } else {
+      setUnlockError('Incorrect authorization password. Access denied.');
     }
   };
 
@@ -417,21 +449,50 @@ export default function ChequeManagement({ isAdmin = false }) {
       {/* Month Tabs */}
       <div className="table-card" style={{ padding: 0 }}>
         <div className="attendance-month-tabs" role="tablist">
-          {FINANCIAL_YEAR_MONTHS.map(mv => (
-            <button
-              key={mv}
-              className={`attendance-month-tab ${selectedMonth === mv ? 'attendance-month-tab--active' : ''}`}
-              onClick={() => setSelectedMonth(mv)}
-            >
-              {formatMonthLabel(mv)}
-            </button>
-          ))}
+          {FINANCIAL_YEAR_MONTHS.map(mv => {
+            const isLocked = isMonthLockedByDefault(mv);
+            const isUnlocked = isLocked && Boolean(unlockedMonths[mv]);
+            return (
+              <button
+                key={mv}
+                className={`attendance-month-tab ${selectedMonth === mv ? 'attendance-month-tab--active' : ''}`}
+                onClick={() => setSelectedMonth(mv)}
+                title={isLocked ? (isUnlocked ? `${formatLongMonth(mv)} (Unlocked for Editing)` : `Closed Month (Locked) — ${formatLongMonth(mv)}`) : `${formatLongMonth(mv)} (Active Period)`}
+                style={{ position: 'relative' }}
+              >
+                <span>{formatMonthLabel(mv)}</span>
+                {isLocked && (
+                  <span 
+                    style={{ marginLeft: '5px', fontSize: '0.8em', opacity: isUnlocked ? 0.7 : 1 }} 
+                    aria-label={isUnlocked ? 'Period Unlocked' : 'Period Locked'}
+                  >
+                    {isUnlocked ? '🔓' : '🔒'}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
         
         <div className="attendance-table-card__header">
           <div>
             <p className="eyebrow">{subTab === 'common' ? 'Society Shared Expenses' : 'A Building Ledger'}</p>
-            <h3>{subTab === 'common' ? 'Common Work Cheques' : 'Building A Cheques'} — {formatMonthLabel(selectedMonth)}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <h3 style={{ margin: 0 }}>{subTab === 'common' ? 'Common Work Cheques' : 'Building A Cheques'} — {formatMonthLabel(selectedMonth)}</h3>
+              {isMonthLockedByDefault(selectedMonth) && (
+                <span style={{
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  padding: '3px 8px',
+                  borderRadius: '6px',
+                  background: unlockedMonths[selectedMonth] ? '#dcfce7' : '#fef3c7',
+                  color: unlockedMonths[selectedMonth] ? '#166534' : '#92400e',
+                  border: unlockedMonths[selectedMonth] ? '1px solid #86efac' : '1px solid #fde68a'
+                }}>
+                  {unlockedMonths[selectedMonth] ? '🔓 AUDIT UNLOCKED' : '🔒 CLOSED MONTH LOCKED'}
+                </span>
+              )}
+            </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
              <span>{badge.icon}</span>
@@ -439,6 +500,86 @@ export default function ChequeManagement({ isAdmin = false }) {
           </div>
         </div>
       </div>
+
+      {/* Lock System Notification & Controls */}
+      {isMonthLockedByDefault(selectedMonth) && (
+        isCurrentMonthLocked ? (
+          <div style={{
+            background: '#fffbeb',
+            border: '1.5px solid #fde68a',
+            borderRadius: '14px',
+            padding: '16px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔒</span>
+              <div>
+                <h4 style={{ margin: '0 0 3px 0', color: '#92400e', fontSize: '0.96rem', fontWeight: 700 }}>
+                  Closed Month Locked: {formatLongMonth(selectedMonth)}
+                </h4>
+                <p style={{ margin: 0, color: '#b45309', fontSize: '0.86rem' }}>
+                  Past months are automatically locked when a new month begins. Enter authorization password to make changes.
+                </p>
+              </div>
+            </div>
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => { setShowUnlockModal(true); setUnlockError(''); setUnlockPassword(''); }}
+                className="button-primary"
+                style={{
+                  background: '#d97706',
+                  borderColor: '#b45309',
+                  padding: '9px 18px',
+                  fontSize: '0.88rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 2px 4px rgba(217, 119, 6, 0.2)'
+                }}
+              >
+                🔑 Unlock with Password
+              </button>
+            )}
+          </div>
+        ) : (
+          <div style={{
+            background: '#f0fdf4',
+            border: '1.5px solid #bbf7d0',
+            borderRadius: '14px',
+            padding: '12px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '1.4rem' }}>🔓</span>
+              <div>
+                <span style={{ fontWeight: 700, color: '#166534', fontSize: '0.92rem' }}>
+                  {formatLongMonth(selectedMonth)} Unlocked (Temporary Edit Access Active)
+                </span>
+                <p style={{ margin: '2px 0 0 0', color: '#15803d', fontSize: '0.84rem' }}>
+                  You can now add, edit, or remove cheque entries for {formatLongMonth(selectedMonth)}.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setUnlockedMonths(prev => ({ ...prev, [selectedMonth]: false }))}
+              className="button-secondary"
+              style={{ padding: '7px 16px', fontSize: '0.84rem', borderColor: '#86efac', color: '#166534', background: 'white' }}
+            >
+              🔒 Re-lock Month
+            </button>
+          </div>
+        )
+      )}
 
       {/* Missing Cheque Alert Banner — Building A only, June 2026+ */}
       {missingCheques.length > 0 && (
@@ -475,50 +616,72 @@ export default function ChequeManagement({ isAdmin = false }) {
 
       {/* ADD NEW CHEQUE FORM */}
       {isAdmin && (
-      <div className="section-card" style={{ padding: '24px' }}>
-        <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>
-          ➕ Add {subTab === 'common' ? 'Common' : 'Building A'} Cheque Entry
-        </h4>
-        <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Cheque Date <span style={{ color: '#ef4444' }}>*</span></label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.date} onChange={e => handleFormChange('date', e.target.value)} required />
+        isCurrentMonthLocked ? (
+          <div className="section-card" style={{ padding: '22px 24px', background: '#f8fafc', border: '1.5px dashed #cbd5e1', borderRadius: '14px', textAlign: 'center' }}>
+            <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+              <span style={{ fontSize: '1.8rem', display: 'block', marginBottom: '6px' }}>🔒</span>
+              <h4 style={{ margin: '0 0 6px 0', color: '#475569', fontSize: '1rem' }}>
+                Adding Cheques Disabled for {formatLongMonth(selectedMonth)}
+              </h4>
+              <p style={{ margin: '0 0 14px 0', color: '#64748b', fontSize: '0.88rem', lineHeight: 1.4 }}>
+                Past closed months are automatically locked against unintended changes. Enter the password to unlock edits for this month.
+              </p>
+              <button
+                type="button"
+                onClick={() => { setShowUnlockModal(true); setUnlockError(''); setUnlockPassword(''); }}
+                className="button-secondary"
+                style={{ padding: '8px 18px', fontSize: '0.86rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                🔑 Enter Password to Enable Adding Cheques
+              </button>
+            </div>
           </div>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Amount Deducted Date</label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.deductedDate || ''} onChange={e => handleFormChange('deductedDate', e.target.value)} />
+        ) : (
+          <div className="section-card" style={{ padding: '24px' }}>
+            <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>
+              ➕ Add {subTab === 'common' ? 'Common' : 'Building A'} Cheque Entry
+            </h4>
+            <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Cheque Date <span style={{ color: '#ef4444' }}>*</span></label>
+                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.date} onChange={e => handleFormChange('date', e.target.value)} required />
+              </div>
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Amount Deducted Date</label>
+                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.deductedDate || ''} onChange={e => handleFormChange('deductedDate', e.target.value)} />
+              </div>
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Cheque No <span style={{ color: '#ef4444' }}>*</span></label>
+                <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Cheque #" value={formData.chequeNo} onChange={e => handleFormChange('chequeNo', e.target.value)} required />
+              </div>
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Vendor Name <span style={{ color: '#ef4444' }}>*</span></label>
+                <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Payee Name" value={formData.vendor} onChange={e => handleFormChange('vendor', e.target.value)} required />
+              </div>
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Total Amount (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+                <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="0.00" value={formData.amount} onChange={e => handleFormChange('amount', e.target.value)} required />
+              </div>
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Who Paid <span style={{ color: '#ef4444' }}>*</span></label>
+                <select className="attendance-register-input" style={{ textAlign: 'left' }} value={formData.whoPaid} onChange={e => handleFormChange('whoPaid', e.target.value)} required>
+                  <option value="">-- Select Payer --</option>
+                  <option>A Building</option>
+                  <option>B Building</option>
+                  <option>C Building</option>
+                  <option>Petty Cash</option>
+                </select>
+              </div>
+              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Remarks / Purpose</label>
+                <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Describe the payment purpose..." value={formData.purpose} onChange={e => handleFormChange('purpose', e.target.value)} />
+              </div>
+              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+                <button type="submit" className="button-primary" style={{ padding: '8px 24px', width: 'auto' }}>Add to Ledger</button>
+              </div>
+            </form>
           </div>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Cheque No <span style={{ color: '#ef4444' }}>*</span></label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Cheque #" value={formData.chequeNo} onChange={e => handleFormChange('chequeNo', e.target.value)} required />
-          </div>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Vendor Name <span style={{ color: '#ef4444' }}>*</span></label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Payee Name" value={formData.vendor} onChange={e => handleFormChange('vendor', e.target.value)} required />
-          </div>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Total Amount (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="0.00" value={formData.amount} onChange={e => handleFormChange('amount', e.target.value)} required />
-          </div>
-          <div className="field-group">
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Who Paid <span style={{ color: '#ef4444' }}>*</span></label>
-            <select className="attendance-register-input" style={{ textAlign: 'left' }} value={formData.whoPaid} onChange={e => handleFormChange('whoPaid', e.target.value)} required>
-              <option value="">-- Select Payer --</option>
-              <option>A Building</option>
-              <option>B Building</option>
-              <option>C Building</option>
-              <option>Petty Cash</option>
-            </select>
-          </div>
-          <div className="field-group" style={{ gridColumn: '1 / -1' }}>
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Remarks / Purpose</label>
-            <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Describe the payment purpose..." value={formData.purpose} onChange={e => handleFormChange('purpose', e.target.value)} />
-          </div>
-          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-            <button type="submit" className="button-primary" style={{ padding: '8px 24px', width: 'auto' }}>Add to Ledger</button>
-          </div>
-        </form>
-      </div>
+        )
       )}
 
       {/* Share Calculator (only for Common tab) */}
@@ -585,7 +748,7 @@ export default function ChequeManagement({ isAdmin = false }) {
                   return (
                     <tr key={c.id || i} style={rowStyle}>
                       <td style={strikeStyle}>{i + 1}</td>
-                      <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value)} readOnly={!isAdmin} style={strikeStyle} /></td>
+                      <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value)} readOnly={!canEdit} style={strikeStyle} /></td>
                       <td>
                         <input
                           className="attendance-register-input"
@@ -597,19 +760,19 @@ export default function ChequeManagement({ isAdmin = false }) {
                               updateRow(actualIdx, 'isPaid', true);
                             }
                           }}
-                          readOnly={!isAdmin}
+                          readOnly={!canEdit}
                           title="Date amount was deducted/debited from bank"
                         />
                       </td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value)} readOnly={!isAdmin} style={strikeStyle} />
+                          <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value)} readOnly={!canEdit} style={strikeStyle} />
                           {isCancelled && <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', fontWeight: 700, padding: '2px 5px', borderRadius: '4px', whiteSpace: 'nowrap' }}>CANCELLED</span>}
                         </div>
                       </td>
-                      <td><input className="attendance-register-input" style={{ fontWeight: 600, ...strikeStyle }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value)} readOnly={!isAdmin} /></td>
-                      <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value)} readOnly={!isAdmin} style={isCancelled || isPaid ? { color: '#9ca3af' } : {}} /></td>
-                      <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700, ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : isPaid ? { textDecoration: 'line-through', color: '#16a34a' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value)} readOnly={!isAdmin} /></td>
+                      <td><input className="attendance-register-input" style={{ fontWeight: 600, ...strikeStyle }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value)} readOnly={!canEdit} /></td>
+                      <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value)} readOnly={!canEdit} style={isCancelled || isPaid ? { color: '#9ca3af' } : {}} /></td>
+                      <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700, ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : isPaid ? { textDecoration: 'line-through', color: '#16a34a' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value)} readOnly={!canEdit} /></td>
                       {subTab === 'common' && (
                         <>
                           <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#16a34a', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
@@ -618,7 +781,7 @@ export default function ChequeManagement({ isAdmin = false }) {
                         </>
                       )}
                       <td>
-                        <select className="attendance-register-input" value={c.whoPaid} onChange={e => updateRow(actualIdx, 'whoPaid', e.target.value)} disabled={!isAdmin} style={strikeStyle}>
+                        <select className="attendance-register-input" value={c.whoPaid} onChange={e => updateRow(actualIdx, 'whoPaid', e.target.value)} disabled={!canEdit} style={strikeStyle}>
                           <option>A Building</option>
                           <option>B Building</option>
                           <option>C Building</option>
@@ -626,9 +789,9 @@ export default function ChequeManagement({ isAdmin = false }) {
                         </select>
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                         <input type="checkbox" checked={c.isPaid || false} onChange={e => updateRow(actualIdx, 'isPaid', e.target.checked)} disabled={!isAdmin} style={{ transform: 'scale(1.2)' }} />
+                         <input type="checkbox" checked={c.isPaid || false} onChange={e => updateRow(actualIdx, 'isPaid', e.target.checked)} disabled={!canEdit} style={{ transform: 'scale(1.2)' }} />
                       </td>
-                      <td>{isAdmin && <button className="button-icon" onClick={() => removeRow(actualIdx)} style={{ opacity: 0.3 }}>✕</button>}</td>
+                      <td>{canEdit && <button className="button-icon" onClick={() => removeRow(actualIdx)} style={{ opacity: 0.3 }}>✕</button>}</td>
                     </tr>
                   );
                 })
@@ -651,6 +814,113 @@ export default function ChequeManagement({ isAdmin = false }) {
           </table>
         </div>
       </div>
+
+      {/* Password Unlock Modal */}
+      {showUnlockModal && (
+        <div 
+          role="dialog" 
+          aria-modal="true"
+          aria-labelledby="cheque-unlock-dialog-title"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.55)',
+            backdropFilter: 'blur(5px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '20px'
+          }}
+        >
+          <div 
+            className="table-card" 
+            style={{ 
+              maxWidth: '460px', 
+              width: '100%', 
+              padding: '28px', 
+              background: 'white', 
+              borderRadius: '18px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              border: '1px solid #e2e8f0'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
+              <div style={{
+                width: '46px',
+                height: '46px',
+                borderRadius: '12px',
+                background: '#fef3c7',
+                border: '1px solid #fde68a',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                flexShrink: 0
+              }}>
+                🔐
+              </div>
+              <div>
+                <h3 id="cheque-unlock-dialog-title" style={{ margin: 0, fontSize: '1.2rem', color: 'var(--ink)' }}>
+                  Unlock Cheque Tracker — {formatLongMonth(selectedMonth)}
+                </h3>
+                <p style={{ margin: '2px 0 0 0', fontSize: '0.82rem', color: 'var(--muted)' }}>
+                  Closed Month Audit Protection
+                </p>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.9rem', color: '#4b5563', marginBottom: '18px', lineHeight: 1.5 }}>
+              This past month is locked. Please enter the treasurer or administrator authorization password to unlock editing for {formatLongMonth(selectedMonth)}.
+            </p>
+
+            <form onSubmit={handleUnlockSubmit}>
+              <div className="field-group" style={{ marginBottom: '18px' }}>
+                <label htmlFor="cheque-unlock-password" className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>
+                  Authorization Password
+                </label>
+                <input
+                  id="cheque-unlock-password"
+                  type="password"
+                  placeholder="Enter authorization password..."
+                  value={unlockPassword}
+                  onChange={(e) => { setUnlockPassword(e.target.value); setUnlockError(''); }}
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%', height: '44px', fontSize: '0.95rem', background: '#f8fafc' }}
+                  autoFocus
+                  required
+                />
+                {unlockError && (
+                  <p style={{ color: '#dc2626', fontSize: '0.84rem', marginTop: '6px', fontWeight: 600 }}>
+                    ⚠️ {unlockError}
+                  </p>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                <button
+                  type="button"
+                  onClick={() => { setShowUnlockModal(false); setUnlockPassword(''); setUnlockError(''); }}
+                  className="button-secondary"
+                  style={{ padding: '9px 18px' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="button-primary"
+                  style={{ padding: '9px 22px', background: '#d97706', borderColor: '#b45309' }}
+                >
+                  Unlock Editing
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
