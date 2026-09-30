@@ -122,6 +122,170 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
     document.body.removeChild(link);
   };
 
+  const handlePrintDossier = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Majestique Euriska - Complete Forensic Audit Dossier</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 24px; color: #1e293b; font-size: 11px; }
+          h1 { color: #0b2b26; font-size: 18px; margin: 0 0 3px 0; text-transform: uppercase; }
+          h2 { color: #b45309; font-size: 12px; margin: 0 0 12px 0; text-transform: uppercase; }
+          h3 { color: #0b2b26; font-size: 12px; margin: 18px 0 6px 0; border-bottom: 2px solid #0b2b26; padding-bottom: 4px; text-transform: uppercase; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 10px; }
+          th, td { border: 1px solid #cbd5e1; padding: 4px 6px; text-align: left; }
+          th { background: #0b2b26; color: #ffffff; font-weight: bold; }
+          .num { text-align: right; }
+          .center { text-align: center; }
+          .total { font-weight: bold; background: #f1f5f9; }
+          .success { font-weight: bold; background: #ecfdf5; }
+          .highlight { background: #fef2f2; }
+        </style>
+      </head>
+      <body>
+        <h1>Majestique Euriska A Bldg Co-op Hsg Society Ltd.</h1>
+        <h2>Forensic Audit Dossier & Builder Recovery Negotiation Report</h2>
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 14px;">
+          UDIN: 26162502TFCJWK8860 | Bank A/c: BOM 60305942224 | Date: ${new Date().toLocaleDateString('en-IN')}
+        </div>
+
+        <h3>1. Executive Summary & Key Metrics</h3>
+        <table>
+          <tr>
+            <td><strong>BOM Total Inflows:</strong> ${fmtINR(s.totalInflows)}</td>
+            <td><strong>BOM Total Outflows:</strong> ${fmtINR(s.totalOutflows)}</td>
+          </tr>
+          <tr>
+            <td><strong>Society Handover Transfer:</strong> ${fmtINR(s.societyHandoverTransfer)}</td>
+            <td><strong>Unaccounted Bank Shortfall:</strong> ${fmtINR(s.unaccountedBankShortfall)}</td>
+          </tr>
+          <tr>
+            <td><strong>Wing B Outflow Drain:</strong> ${fmtINR(s.wingBOutflows)} (30.59%)</td>
+            <td><strong>CA Certified Dues (Floor):</strong> ${fmtINR(s.caNetAuditedDues)}</td>
+          </tr>
+        </table>
+
+        <h3>2. Full & Final (F&F) Settlement Tiers</h3>
+        <table>
+          <thead>
+            <tr><th>Tier</th><th>Amount (₹)</th><th>Status</th><th>Audit Justification</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tier 1: Certified Floor</strong></td>
+              <td class="num"><strong>₹12,07,058</strong></td>
+              <td>100% Certified Minimum</td>
+              <td>₹9,00,790 Principal Surplus + ₹3,06,268 statutory interest @ 8% p.a. (51 months) under CA UDIN.</td>
+            </tr>
+            <tr class="success">
+              <td><strong>Tier 2: Realistic Target (F&F)</strong></td>
+              <td class="num"><strong>₹19,41,755</strong></td>
+              <td><strong>Recommended F&F (Target: ₹18L–₹20L)</strong></td>
+              <td>Base ₹12.07L + ₹4,09,211 Missing Invoices (Schindler lift ₹1.24L, pools, gardens) + ₹1,39,070 GST ITC + 8% interest.</td>
+            </tr>
+            <tr>
+              <td><strong>Tier 3: Opening Demand Anchor</strong></td>
+              <td class="num"><strong>₹30,49,153</strong></td>
+              <td>Opening Anchor (₹28L–₹31L)</td>
+              <td>Tier 2 + ₹5,09,271 BOM passbook shortfall + ₹2,70,000 builder supervision self-debit + cash withdrawals + interest.</td>
+            </tr>
+            <tr>
+              <td><strong>Tier 4: MahaRERA Scope</strong></td>
+              <td class="num"><strong>₹45,75,525</strong></td>
+              <td>Litigation Filing Scope</td>
+              <td>Tier 3 + ₹7,27,249 Wing B cross-subsidy recovery (47.5%) + MahaRERA statutory interest @ 10.75% p.a. (₹13.72L) + compensation.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>3. Key Payee Forensic Cross-Match (12 Major Vendors)</h3>
+        <table>
+          <thead>
+            <tr><th>Vendor</th><th>Category</th><th class="num">BOM Paid (₹)</th><th class="num">Wing A (₹)</th><th class="num">Wing B (₹)</th><th>Audit Status</th><th>Finding</th></tr>
+          </thead>
+          <tbody>
+            ${VENDOR_FORENSIC_MATRIX.map(v => `
+              <tr class="${v.bomTotalPaid === 0 || v.bomWingBPaid > v.bomWingAPaid ? 'highlight' : ''}">
+                <td><strong>${v.vendor}</strong></td>
+                <td>${v.category}</td>
+                <td class="num">${fmtINR(v.bomTotalPaid)}</td>
+                <td class="num">${fmtINR(v.bomWingAPaid)}</td>
+                <td class="num">${fmtINR(v.bomWingBPaid)}</td>
+                <td>${v.caMissingCategory}</td>
+                <td style="font-size: 9px;">${v.auditFinding}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <h3>4. CA Annexure 4: Complete 23 Missing Invoices List (Total ₹4,09,211)</h3>
+        <table>
+          <thead>
+            <tr><th>#</th><th>Date</th><th>Vendor / Payee</th><th>Nature</th><th class="num">Doc (₹)</th><th class="num">Wing A (₹)</th><th>Classification</th><th>Verification Finding</th></tr>
+          </thead>
+          <tbody>
+            ${MISSING_BILLS_RECONCILIATION_LIST.map((m, idx) => `
+              <tr class="${m.type.includes('Part A') ? 'highlight' : ''}">
+                <td class="center">${idx + 1}</td>
+                <td>${m.pmtVoucherDate}</td>
+                <td><strong>${m.vendor}</strong></td>
+                <td>${m.nature}</td>
+                <td class="num">${fmtINR(m.docAmt)}</td>
+                <td class="num"><strong>${fmtINR(m.allocatedAmt)}</strong></td>
+                <td>${m.type}</td>
+                <td style="font-size: 9px;">${m.forensicNote}</td>
+              </tr>
+            `).join('')}
+            <tr class="total">
+              <td colspan="5">TOTAL 23 MISSING INVOICES CLAIMED WITHOUT BILLS</td>
+              <td class="num"><strong>${fmtINR(s.caTotalMissingBills)}</strong></td>
+              <td colspan="2">Disallowed in CA Forensic Audit</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>5. Bank of Maharashtra A/c 60305942224 Passbook Ledger (135 Transactions)</h3>
+        <table>
+          <thead>
+            <tr><th>#</th><th>Date</th><th>Vch No</th><th>Type</th><th>Particulars</th><th class="center">Wing</th><th class="num">Debit (₹)</th><th class="num">Credit (₹)</th><th>Audit Tag</th></tr>
+          </thead>
+          <tbody>
+            ${ENRICHED_BOM_TRANSACTIONS.map(t => `
+              <tr class="${t.wing === 'B' || t.forensicCat === 'supervision_unvouched' || t.forensicCat === 'cash_withdrawal' ? 'highlight' : ''}">
+                <td class="center">${t.id}</td>
+                <td>${t.date}</td>
+                <td>${t.vchNo || '—'}</td>
+                <td>${t.vchType || '—'}</td>
+                <td><strong>${t.particulars}</strong></td>
+                <td class="center"><strong>${t.wing}</strong></td>
+                <td class="num">${t.debit ? fmtINR(t.debit) : '—'}</td>
+                <td class="num">${t.credit ? fmtINR(t.credit) : '—'}</td>
+                <td style="font-size: 9px;">${t.forensicTag}</td>
+              </tr>
+            `).join('')}
+            <tr class="total">
+              <td colspan="6">GRAND TOTAL (135 TRANSACTIONS)</td>
+              <td class="num">${fmtINR(s.totalInflows)}</td>
+              <td class="num">${fmtINR(s.totalOutflows)}</td>
+              <td>Net: ${fmtINR(s.calculatedBankBalance)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #cbd5e1; font-size: 10px; color: #64748b;">
+          Certified based on Bank of Maharashtra Passbook & CA Hardik Mehta Independent Forensic Audit (UDIN: 26162502TFCJWK8860).
+        </div>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, color: '#1f2937' }}>
 
@@ -233,6 +397,48 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
             >
               🎯 Expected Recovery Calculator
             </button>
+            <a
+              href="/downloads/Majestique_Euriska_Builder_Forensic_Audit_Full_Dossier.pdf"
+              download="Majestique_Euriska_Builder_Forensic_Audit_Full_Dossier.pdf"
+              style={{
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 7,
+                background: '#c49b4f',
+                color: '#062b24',
+                padding: '9px 15px',
+                borderRadius: 10,
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(196, 155, 79, 0.4)'
+              }}
+            >
+              📥 Download Complete PDF Dossier
+            </a>
+            <button
+              onClick={handlePrintDossier}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 7,
+                background: 'rgba(255, 255, 255, 0.16)',
+                color: '#ffffff',
+                border: '1px solid rgba(255, 255, 255, 0.35)',
+                padding: '9px 15px',
+                borderRadius: 10,
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                backdropFilter: 'blur(8px)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.26)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.16)'; }}
+            >
+              🖨️ Print / Save PDF
+            </button>
             <button
               onClick={handleExportCSV}
               style={{
@@ -253,7 +459,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.22)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'; }}
             >
-              📥 Export Forensic CSV
+              📊 Export CSV
             </button>
             {onNavigateTab && (
               <button

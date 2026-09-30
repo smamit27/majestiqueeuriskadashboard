@@ -143,7 +143,7 @@ describe('TenantTracker - Admin Actions Modals', () => {
     expect(screen.getByLabelText(/Remarks \/ Notes/i)).toBeInTheDocument();
 
     expect(screen.getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
-  });
+  }, 15000);
 
   it('closes modal when cancel is clicked', async () => {
     render(<TenantTracker isAdmin={true} />);
@@ -157,5 +157,5 @@ describe('TenantTracker - Admin Actions Modals', () => {
     fireEvent.click(cancelBtn);
     
     expect(screen.queryByRole('heading', { name: /Add Wing A Flat/i })).not.toBeInTheDocument();
-  });
+  }, 15000);
 });

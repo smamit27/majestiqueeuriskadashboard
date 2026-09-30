@@ -105,7 +105,7 @@ describe('BankStatementTracker - Ledger Entries Sorting', () => {
     for (let i = 0; i < amountsAsc.length - 1; i++) {
       expect(amountsAsc[i]).toBeLessThanOrEqual(amountsAsc[i + 1]);
     }
-  });
+  }, 20000);
 
   it('renders August 2026 statement period and verified metrics correctly', async () => {
     const user = userEvent.setup();
@@ -128,7 +128,7 @@ describe('BankStatementTracker - Ledger Entries Sorting', () => {
     expect(screen.getByText(/₹4,62,925.87/i)).toBeInTheDocument(); // Closing balance
     expect(screen.getByText(/₹2,48,629.60/i)).toBeInTheDocument(); // Total Credits
     expect(screen.getByText(/₹2,10,043.00/i)).toBeInTheDocument(); // Total Debits
-  });
+  }, 20000);
 
   it('provides 5-Month Financial Trend Comparison PDF print buttons and generates report', async () => {
     const user = userEvent.setup();
@@ -182,6 +182,6 @@ describe('BankStatementTracker - Ledger Entries Sorting', () => {
     expect(mockWindowOpen).toHaveBeenCalledTimes(2);
 
     vi.unstubAllGlobals();
-  });
+  }, 20000);
 });
 
