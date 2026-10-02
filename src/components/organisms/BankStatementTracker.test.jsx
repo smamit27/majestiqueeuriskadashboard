@@ -184,5 +184,58 @@ describe('BankStatementTracker - Ledger Entries Sorting', () => {
 
     vi.unstubAllGlobals();
   }, 20000);
+
+  it('correctly classifies B Building and C Building transactions as Inter-Building FT', async () => {
+    const { isInterBuildingTx, getInterBuildingTarget } = await import('./BankStatementTracker.jsx');
+
+    const bDesc1 = "CHQ DEP CTS CLG2 MODEL COLONY PUNE - CTS: MAJESTIQUE EURISKA B BUILDING SAHAKARI :UNION BANK OF INDIA";
+    const bDesc2 = "CHQ DEP CTS CLG2 MODEL COLONY PUNE - CTS: MAJESTIQUE EURISKA B BUILD SAH GRUHA SANMARY :UNION BANK OF INDIA";
+    const cDesc1 = "FT - CR - 50200065450992 - MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR";
+    const cDesc2 = "MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR DR - 50200065450992 - MAJESTIQUE EURISK A C BLDG SA GRU SAN MAR";
+    const nonInter = "NEFT CR-ICIC0SF0002-VIVISH TECHNOLOGIES PRIVATE LIMITED-MAJESTIQUEEURISKAABLDGSAGRUSANMAR-IN42624557107343";
+
+    expect(isInterBuildingTx(bDesc1)).toBe(true);
+    expect(getInterBuildingTarget(bDesc1)).toBe('B Building');
+
+    expect(isInterBuildingTx(bDesc2)).toBe(true);
+    expect(getInterBuildingTarget(bDesc2)).toBe('B Building');
+
+    expect(isInterBuildingTx(cDesc1)).toBe(true);
+    expect(getInterBuildingTarget(cDesc1)).toBe('C Building');
+
+    expect(isInterBuildingTx(cDesc2)).toBe(true);
+    expect(getInterBuildingTarget(cDesc2)).toBe('C Building');
+
+    expect(isInterBuildingTx(nonInter)).toBe(false);
+    expect(getInterBuildingTarget(nonInter)).toBe(null);
+  });
+
+  it('renders Inter-Building filter buttons and Audit reconciliation cards', async () => {
+    const user = userEvent.setup();
+
+    render(<BankStatementTracker isAdmin={false} />);
+
+    // Unlock workspace
+    await user.type(screen.getByPlaceholderText('Enter password...'), '$05CeLRO');
+    await user.click(screen.getByRole('button', { name: /Unlock Auditor Workspace/i }));
+
+    // Click Transactions Log Sub-tab
+    const logTab = await screen.findByRole('button', { name: /Transactions Log/i });
+    await user.click(logTab);
+
+    // Verify filter buttons exist
+    expect(screen.getByRole('button', { name: /Inter-Building FT/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /B Building FT/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /C Building FT/i })).toBeInTheDocument();
+
+    // Click Audit sub-tab
+    const auditTab = await screen.findByRole('button', { name: /Forensic Audit/i });
+    await user.click(auditTab);
+
+    // Verify Inter-Building Audit section
+    expect(screen.getByText(/Inter-Building Fund Transfers \(Building A ↔ B ↔ C\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/🏢 B Building Transfers/i)).toBeInTheDocument();
+    expect(screen.getByText(/🏢 C Building Transfers/i)).toBeInTheDocument();
+  }, 20000);
 });
 

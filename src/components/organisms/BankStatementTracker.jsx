@@ -7,6 +7,45 @@ import {
 import { APRIL_2026_DATA, MAY_2026_DATA, JUNE_2026_DATA, JULY_2026_DATA, AUGUST_2026_DATA, SEPTEMBER_2026_DATA, ALL_TIME_DATA, FY2025_26_DATA, FY2024_25_DATA, FY2023_24_DATA, FY2022_23_DATA, parseRawBankStatement } from './bankStatementData';
 import FixedDepositTracker from './FixedDepositTracker';
 
+// Helper: check if transaction description corresponds to an inter-building transfer (B Building or C Building)
+export const isInterBuildingTx = (desc = '') => {
+  if (!desc || typeof desc !== 'string') return false;
+  const d = desc.toUpperCase();
+  return (
+    d.includes('50200065450992') ||
+    d.includes('EURISKA C') ||
+    d.includes('C BLDG') ||
+    d.includes('C BUILDING') ||
+    d.includes('EURISKA B') ||
+    d.includes('B BLDG') ||
+    d.includes('B BUILDING') ||
+    d.includes('B BUODING')
+  );
+};
+
+// Helper: extract target building ('B Building' or 'C Building')
+export const getInterBuildingTarget = (desc = '') => {
+  if (!desc || typeof desc !== 'string') return null;
+  const d = desc.toUpperCase();
+  if (
+    d.includes('50200065450992') ||
+    d.includes('EURISKA C') ||
+    d.includes('C BLDG') ||
+    d.includes('C BUILDING')
+  ) {
+    return 'C Building';
+  }
+  if (
+    d.includes('EURISKA B') ||
+    d.includes('B BLDG') ||
+    d.includes('B BUILDING') ||
+    d.includes('B BUODING')
+  ) {
+    return 'B Building';
+  }
+  return null;
+};
+
 export default function BankStatementTracker({ isAdmin }) {
   const [password, setPassword] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -55,6 +94,30 @@ export default function BankStatementTracker({ isAdmin }) {
   const EXPENSE_CATEGORIES = activeData.expenseCategories;
   const TIMELINE_DATA    = activeData.timelineData;
   const TRANSACTIONS_LIST= activeData.transactionsList;
+
+  const interBuildingStats = useMemo(() => {
+    if (!TRANSACTIONS_LIST) return null;
+    const bTxs = TRANSACTIONS_LIST.filter(t => getInterBuildingTarget(t.desc) === 'B Building');
+    const cTxs = TRANSACTIONS_LIST.filter(t => getInterBuildingTarget(t.desc) === 'C Building');
+    
+    const bIn = bTxs.filter(t => t.type === 'CR').reduce((s, t) => s + t.amount, 0);
+    const bOut = bTxs.filter(t => t.type === 'DR').reduce((s, t) => s + t.amount, 0);
+    const bInCount = bTxs.filter(t => t.type === 'CR').length;
+    const bOutCount = bTxs.filter(t => t.type === 'DR').length;
+    
+    const cIn = cTxs.filter(t => t.type === 'CR').reduce((s, t) => s + t.amount, 0);
+    const cOut = cTxs.filter(t => t.type === 'DR').reduce((s, t) => s + t.amount, 0);
+    const cInCount = cTxs.filter(t => t.type === 'CR').length;
+    const cOutCount = cTxs.filter(t => t.type === 'DR').length;
+
+    return {
+      bIn, bOut, bInCount, bOutCount,
+      cIn, cOut, cInCount, cOutCount,
+      totalIn: bIn + cIn,
+      totalOut: bOut + cOut,
+      totalCount: bTxs.length + cTxs.length
+    };
+  }, [TRANSACTIONS_LIST]);
 
   const fdPrincipalFlow = useMemo(() => {
     if (!TRANSACTIONS_LIST) return 0;
@@ -621,8 +684,9 @@ export default function BankStatementTracker({ isAdmin }) {
     if (d.includes('FD BOOKING') || d.includes('SWEEP IN') || d.includes('SWEEP-IN') || d.includes('FIXED DEPOSIT') || d.includes('FD CRED') || d.includes('FD REDEEM') || d.includes('REDEEM PRINCIPAL') || d.includes('REDEEM INTEREST')) return 'FD';
     if (d.includes('TATA PLAY'))                                                    return 'TATA_PLAY';
     if (d.startsWith('UPI') || d.includes('UPI SETTLEMENT') || d.includes('UPI-') || d.includes('IMPS-')) return 'UPI_IMPS';
+    // Both B Building CTS cheques and C Building FT (50200065450992) are Inter-Building FT (must be checked BEFORE generic CHQ DEP)
+    if (isInterBuildingTx(d))                                                       return 'INTER_FT';
     if (d.includes('CHQ DEP') || d.includes('CHEQUE DEP'))                          return 'CHQ_DEP';
-    if (d.includes('MAJESTIQUE EURISKA C') || d.includes('MAJESTIQUE EURISKA B')) return 'INTER_FT';
     if (tx.type === 'DR' && (d.includes('CHQ PAID') || d.includes('SELF - CHQ') || d.includes('SAFETY SOLUTIONS') || d.includes('DR -'))) return 'CHQ_PAID';
     return 'OTHER';
   };
@@ -652,7 +716,13 @@ export default function BankStatementTracker({ isAdmin }) {
     if (typeFilter !== 'ALL') {
       result = result.filter(t => t.type === typeFilter);
     }
-    if (sourceFilter !== 'ALL') {
+    if (sourceFilter === 'INTER_FT') {
+      result = result.filter(t => isInterBuildingTx(t.desc));
+    } else if (sourceFilter === 'INTER_B') {
+      result = result.filter(t => getInterBuildingTarget(t.desc) === 'B Building');
+    } else if (sourceFilter === 'INTER_C') {
+      result = result.filter(t => getInterBuildingTarget(t.desc) === 'C Building');
+    } else if (sourceFilter !== 'ALL') {
       result = result.filter(t => getSourceKey(t) === sourceFilter);
     }
     result.sort((a, b) => {
@@ -731,10 +801,17 @@ export default function BankStatementTracker({ isAdmin }) {
       return { border: '#3b82f6', label: 'Tata Play Refund', dot: '#3b82f6' };
     if (d.startsWith('UPI') || d.includes('UPI SETTLEMENT') || d.includes('UPI-') || d.includes('IMPS-'))
       return { border: '#8b5cf6', label: 'UPI / IMPS', dot: '#8b5cf6' };
+    if (isInterBuildingTx(d)) {
+      const bldg = getInterBuildingTarget(d);
+      return {
+        border: '#196c6c',
+        label: bldg ? `Inter-Building FT (${bldg})` : 'Inter-Building FT',
+        dot: '#196c6c',
+        buildingTag: bldg
+      };
+    }
     if (d.includes('CHQ DEP') || d.includes('CHEQUE DEP'))
       return { border: '#b98216', label: 'Cheque Deposit', dot: '#b98216' };
-    if (d.includes('MAJESTIQUE EURISKA C') || d.includes('MAJESTIQUE EURISKA B'))
-      return { border: '#196c6c', label: 'Inter-Building Transfer', dot: '#196c6c' };
     if (tx.type === 'DR' && (d.includes('CHQ PAID') || d.includes('SELF - CHQ') || d.includes('SAFETY SOLUTIONS') || d.includes('DR -')))
       return { border: '#c2644a', label: 'Cheque Payment (DR)', dot: '#c2644a' };
     return { border: 'transparent', label: 'Other', dot: '#9ca3af' };
@@ -746,7 +823,7 @@ export default function BankStatementTracker({ isAdmin }) {
     { dot: '#b98216', label: 'Cheque Deposit (CR)',      desc: 'Physical cheques deposited (CHQ DEP / CTS clearing)' },
     { dot: '#8b5cf6', label: 'UPI / IMPS',              desc: 'UPI settlements, IMPS member transfers' },
     { dot: '#3b82f6', label: 'Tata Play Refund',        desc: 'Broadband / OTT vendor credit/refund' },
-    { dot: '#196c6c', label: 'Inter-Building Transfer', desc: 'Fund transfers between A ↔ B ↔ C buildings' },
+    { dot: '#196c6c', label: 'Inter-Building Transfer', desc: 'Fund transfers between A ↔ B ↔ C buildings (Union Bank & HDFC 50200065450992)' },
     { dot: '#c2644a', label: 'Cheque Payment (DR)',      desc: 'Outgoing vendor / staff cheques (CHQ PAID)' },
   ];
 
@@ -758,6 +835,8 @@ export default function BankStatementTracker({ isAdmin }) {
     { key: 'UPI_IMPS', label: 'UPI / IMPS',         dot: '#8b5cf6' },
     { key: 'TATA_PLAY',label: 'Tata Play',           dot: '#3b82f6' },
     { key: 'INTER_FT', label: 'Inter-Building FT',  dot: '#196c6c' },
+    { key: 'INTER_B',  label: '↳ B Building FT',    dot: '#0d9488' },
+    { key: 'INTER_C',  label: '↳ C Building FT',    dot: '#0284c7' },
     { key: 'CHQ_PAID', label: 'Cheque Payment (DR)', dot: '#c2644a' },
     { key: 'OTHER',    label: 'Other',               dot: '#6b7280' },
   ];
@@ -847,6 +926,28 @@ export default function BankStatementTracker({ isAdmin }) {
                       <span className={`badge ${tx.type === 'CR' ? 'badge--green' : 'badge--coral'}`} style={{ marginRight: '8px', padding: '2px 6px', fontSize: '0.7rem' }}>
                         {tx.type}
                       </span>
+                      {txStyle.buildingTag && (
+                        <span
+                          className="inter-building-badge"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px',
+                            marginRight: '6px',
+                            padding: '1px 7px',
+                            borderRadius: '4px',
+                            fontSize: '0.70rem',
+                            fontWeight: '700',
+                            background: txStyle.buildingTag === 'B Building' ? 'rgba(13, 148, 136, 0.15)' : 'rgba(2, 132, 199, 0.15)',
+                            color: txStyle.buildingTag === 'B Building' ? '#0d9488' : '#0284c7',
+                            border: `1px solid ${txStyle.buildingTag === 'B Building' ? 'rgba(13, 148, 136, 0.35)' : 'rgba(2, 132, 199, 0.35)'}`,
+                            letterSpacing: '0.02em',
+                            verticalAlign: 'middle'
+                          }}
+                        >
+                          🏢 {txStyle.buildingTag} FT
+                        </span>
+                      )}
                       <span style={{ fontWeight: '500', color: txStyle.border !== 'transparent' ? txStyle.border : 'inherit' }}>
                         {tx.desc}
                       </span>
@@ -1505,6 +1606,136 @@ export default function BankStatementTracker({ isAdmin }) {
             </div>
           </div>
 
+          {/* Inter-Building Reconciliation Section */}
+          <div className="section-card" style={{ border: '2px solid #196c6c', background: 'rgba(25, 108, 108, 0.03)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
+              <div>
+                <span className="badge" style={{ background: '#196c6c', color: 'white', marginBottom: '6px', display: 'inline-block' }}>
+                  🏢 INTER-BUILDING AUDIT & RECONCILIATION
+                </span>
+                <h3 className="section-card__title" style={{ margin: '4px 0', color: '#196c6c' }}>
+                  Inter-Building Fund Transfers (Building A ↔ B ↔ C)
+                </h3>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>
+                  Detailed tracking of fund transfers between Majestique Euriska A Building and sister societies (B & C Buildings).
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  className="action-btn"
+                  onClick={() => { setActiveSubTab('ledger'); setSourceFilter('INTER_B'); }}
+                  style={{ fontSize: '0.78rem', padding: '6px 12px', background: '#0d9488', color: 'white' }}
+                >
+                  View B Building FT ({interBuildingStats ? interBuildingStats.bInCount + interBuildingStats.bOutCount : 0})
+                </button>
+                <button
+                  className="action-btn"
+                  onClick={() => { setActiveSubTab('ledger'); setSourceFilter('INTER_C'); }}
+                  style={{ fontSize: '0.78rem', padding: '6px 12px', background: '#0284c7', color: 'white' }}
+                >
+                  View C Building FT ({interBuildingStats ? interBuildingStats.cInCount + interBuildingStats.cOutCount : 0})
+                </button>
+                <button
+                  className="action-btn"
+                  onClick={() => { setActiveSubTab('ledger'); setSourceFilter('INTER_FT'); }}
+                  style={{ fontSize: '0.78rem', padding: '6px 12px', background: 'var(--teal)', color: 'white' }}
+                >
+                  View All Inter-FT
+                </button>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginTop: '12px' }}>
+              {/* B Building Card */}
+              <div style={{ padding: '16px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid rgba(13, 148, 136, 0.3)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <strong style={{ color: '#0d9488', fontSize: '0.92rem' }}>🏢 B Building Transfers</strong>
+                  <span className="badge" style={{ background: 'rgba(13, 148, 136, 0.15)', color: '#0d9488' }}>
+                    Union Bank CTS
+                  </span>
+                </div>
+                <p style={{ fontSize: '0.78rem', color: 'var(--muted)', margin: '0 0 12px 0' }}>
+                  Transfers received via physical clearing cheques from Union Bank of India (Model Colony / CTS).
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.84rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Inflows Received (CR):</span>
+                    <strong style={{ color: 'var(--pine)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.bIn : 0)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Transactions Count:</span>
+                    <span>{interBuildingStats ? interBuildingStats.bInCount : 0} CR cheques</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--line)', paddingTop: '6px' }}>
+                    <span>Net Transfer from B:</span>
+                    <strong style={{ color: 'var(--pine)' }}>+{fmtAmt(interBuildingStats ? interBuildingStats.bIn : 0)}</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* C Building Card */}
+              <div style={{ padding: '16px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid rgba(2, 132, 199, 0.3)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <strong style={{ color: '#0284c7', fontSize: '0.92rem' }}>🏢 C Building Transfers</strong>
+                  <span className="badge" style={{ background: 'rgba(2, 132, 199, 0.15)', color: '#0284c7' }}>
+                    HDFC 50200065450992
+                  </span>
+                </div>
+                <p style={{ fontSize: '0.78rem', color: 'var(--muted)', margin: '0 0 12px 0' }}>
+                  Direct internal fund transfers (FT CR/DR) through shared society account 50200065450992.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.84rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Inflows Received (CR):</span>
+                    <strong style={{ color: 'var(--pine)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.cIn : 0)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Outflows Paid (DR):</span>
+                    <strong style={{ color: 'var(--coral)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.cOut : 0)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Transactions Count:</span>
+                    <span>{interBuildingStats ? interBuildingStats.cInCount : 0} CR / {interBuildingStats ? interBuildingStats.cOutCount : 0} DR</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--line)', paddingTop: '6px' }}>
+                    <span>Net Balance with C:</span>
+                    <strong style={{ color: (interBuildingStats && (interBuildingStats.cIn - interBuildingStats.cOut) >= 0) ? 'var(--pine)' : 'var(--coral)' }}>
+                      {interBuildingStats ? fmtAmt(interBuildingStats.cIn - interBuildingStats.cOut) : '₹0.00'}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Combined Inter-Building Net */}
+              <div style={{ padding: '16px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid rgba(25, 108, 108, 0.3)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <strong style={{ color: '#196c6c', fontSize: '0.92rem' }}>📊 Inter-Building Net Position</strong>
+                  <span className="badge badge--teal">Total Shared</span>
+                </div>
+                <p style={{ fontSize: '0.78rem', color: 'var(--muted)', margin: '0 0 12px 0' }}>
+                  Consolidated shared amenities and maintenance fund transfers with B and C Buildings.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.84rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Total Inflows (CR):</span>
+                    <strong style={{ color: 'var(--pine)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.totalIn : 0)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Total Outflows (DR):</span>
+                    <strong style={{ color: 'var(--coral)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.totalOut : 0)}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--line)', paddingTop: '6px' }}>
+                    <span>Net Inter-Building Surplus:</span>
+                    <strong style={{ color: (interBuildingStats && (interBuildingStats.totalIn - interBuildingStats.totalOut) >= 0) ? 'var(--pine)' : 'var(--coral)' }}>
+                      {interBuildingStats ? fmtAmt(interBuildingStats.totalIn - interBuildingStats.totalOut) : '₹0.00'}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '20px' }}>
             <div className="section-card">
               <h3 className="section-card__title">Top Management Action Items</h3>
@@ -1748,15 +1979,16 @@ export default function BankStatementTracker({ isAdmin }) {
                     return !d.includes('VIVISH') && (d.startsWith('UPI') || d.includes('UPI-') || d.includes('IMPS-') || d.includes('UPI SETTLEMENT'));
                   });
                   const tataTx   = crTx.filter(t => t.desc.toUpperCase().includes('TATA PLAY'));
-                  const chqDepTx = crTx.filter(t => t.desc.toUpperCase().includes('CHQ DEP') || t.desc.toUpperCase().includes('CHEQUE DEP'));
-                  const interTx  = crTx.filter(t => t.desc.toUpperCase().includes('MAJESTIQUE EURISKA C') || t.desc.toUpperCase().includes('MAJESTIQUE EURISKA B'));
+                  const interTx  = crTx.filter(t => isInterBuildingTx(t.desc));
+                  const interBTx = interTx.filter(t => getInterBuildingTarget(t.desc) === 'B Building');
+                  const interCTx = interTx.filter(t => getInterBuildingTarget(t.desc) === 'C Building');
+                  const chqDepTx = crTx.filter(t => !isInterBuildingTx(t.desc) && (t.desc.toUpperCase().includes('CHQ DEP') || t.desc.toUpperCase().includes('CHEQUE DEP')));
                   const otherCr  = crTx.filter(t =>
                     !t.desc.toUpperCase().includes('VIVISH') &&
                     !t.desc.toUpperCase().includes('TATA PLAY') &&
+                    !isInterBuildingTx(t.desc) &&
                     !t.desc.toUpperCase().includes('CHQ DEP') &&
                     !t.desc.toUpperCase().includes('CHEQUE DEP') &&
-                    !t.desc.toUpperCase().includes('MAJESTIQUE EURISKA C') &&
-                    !t.desc.toUpperCase().includes('MAJESTIQUE EURISKA B') &&
                     !t.desc.toUpperCase().startsWith('UPI') &&
                     !t.desc.toUpperCase().includes('UPI SETTLEMENT')
                   );
@@ -1766,13 +1998,17 @@ export default function BankStatementTracker({ isAdmin }) {
                   const sumT  = tataTx.reduce((s, t) => s + t.amount, 0);
                   const sumC  = chqDepTx.reduce((s, t) => s + t.amount, 0);
                   const sumI  = interTx.reduce((s, t) => s + t.amount, 0);
+                  const sumIB = interBTx.reduce((s, t) => s + t.amount, 0);
+                  const sumIC = interCTx.reduce((s, t) => s + t.amount, 0);
                   const sumO  = otherCr.reduce((s, t) => s + t.amount, 0);
 
                   const incomeGroupRows = [
                     { category: 'Maintenance Collections via Vivish PG (NEFT)', count: vivishTx.length, total: sumV, pct: (sumV/totalCR)*100 },
                     { category: 'Direct Cheque Deposits (CHQ DEP / CTS)', count: chqDepTx.length, total: sumC, pct: (sumC/totalCR)*100 },
                     { category: 'UPI / IMPS Direct Member Payments', count: upiTx.length, total: sumU, pct: (sumU/totalCR)*100 },
-                    { category: 'Inter-Building Transfer Received', count: interTx.length, total: sumI, pct: (sumI/totalCR)*100 },
+                    { category: 'Inter-Building FT Received (Total B & C)', count: interTx.length, total: sumI, pct: (sumI/totalCR)*100 },
+                    ...(interBTx.length > 0 ? [{ category: '  ↳ B Building Inter-FT (Union Bank CTS)', count: interBTx.length, total: sumIB, pct: (sumIB/totalCR)*100 }] : []),
+                    ...(interCTx.length > 0 ? [{ category: '  ↳ C Building Inter-FT (HDFC 50200065450992)', count: interCTx.length, total: sumIC, pct: (sumIC/totalCR)*100 }] : []),
                     { category: 'Tata Play Vendor Refund / Reversal', count: tataTx.length, total: sumT, pct: (sumT/totalCR)*100 },
                     { category: 'Other Direct Deposits & Transfers', count: otherCr.length, total: sumO, pct: (sumO/totalCR)*100 },
                   ].filter(r => r.count > 0);

@@ -86,12 +86,12 @@ export const ALL_TIME_DATA = {
   netCashFlow: 415002.22,
   vendorsData: allVendorsData,
   incomeCategories: [
-    { name: "Vivish PG Maintenance NEFT", value: 1140771.45, count: 356, color: "#196c6c" },
-    { name: "Tata Play Broadband Refunds", value: 134258.00, count: 6, color: "#5f665f" },
-    { name: "Cheque Deposits (CTS Clearing)", value: 86970.00, count: 11, color: "#31553e" },
-    { name: "Direct Member UPI / IMPS", value: 51116.00, count: 12, color: "#a855f7" },
-    { name: "Inter-Building Transfers (C/B)", value: 32603.00, count: 8, color: "#c2644a" },
-    { name: "Other Direct Collections", value: 139157.69, count: 28, color: "#b98216" }
+    { name: "Vivish PG Maintenance NEFT", value: 1367108.22, count: 449, color: "#196c6c" },
+    { name: "Tata Play Broadband Refunds", value: 142254.00, count: 8, color: "#5f665f" },
+    { name: "Inter-Building Transfers (B & C Bldg)", value: 108458.00, count: 20, color: "#0d9488" },
+    { name: "Direct Cheque Deposits (CTS Clearing)", value: 92393.00, count: 8, color: "#31553e" },
+    { name: "Direct Member UPI / IMPS", value: 129335.00, count: 19, color: "#a855f7" },
+    { name: "Other Direct Collections", value: 84364.00, count: 4, color: "#b98216" }
   ],
   expenseCategories: [
     { name: "Security, Housekeeping & Staff", value: 358803, color: "#196c6c" },
