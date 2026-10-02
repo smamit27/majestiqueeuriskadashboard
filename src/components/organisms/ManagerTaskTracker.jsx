@@ -57,7 +57,16 @@ const INITIAL_COMMON = [
   { id:'CT-011', taskCategory:'Swimming Pool: Drain Cover, Sand Change', area:'Common Area', taskDescription:'', vendorName:'', assignedTo:'', startDate:'', deadline:'', priority:'', status:'Pending', remarks:'' },
 ];
 const INITIAL_A_BUILDING = [
-  { id:'AB-001', taskCategory:'A Building Work', area:'A Building', taskDescription:'', vendorName:'', assignedTo:'Siddu', startDate:'', deadline:'', priority:'', status:'Pending', remarks:'' },
+  { id:'AB-002', taskCategory:'Tenant Rent Agreement: 506 & 1008', area:'A Building', taskDescription:'Tenant Rent agreement for Flat 506 and Flat 1008', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'', priority:'High', status:'Pending', remarks:'' },
+  { id:'AB-003', taskCategory:'Flat No 403 Owner Talk', area:'A Building', taskDescription:'Discussion with Flat 403 owner regarding pending matters', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'', priority:'Medium', status:'Pending', remarks:'' },
+  { id:'AB-004', taskCategory:'Pending Painting Work: 1004', area:'A Building', taskDescription:'Pending painting work of Flat 1004', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'', priority:'Medium', status:'Pending', remarks:'' },
+  { id:'AB-005', taskCategory:'Send Notice to Shop Owners', area:'A Building', taskDescription:'Send official notice to all shop owners', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'', priority:'High', status:'Pending', remarks:'' },
+  { id:'AB-006', taskCategory:'Parking Allotment Letter', area:'A Building', taskDescription:'Issue parking allotment letters to residents', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'2026-10-10', priority:'High', status:'Pending', remarks:'Deadline: 10th October 2026' },
+  { id:'AB-007', taskCategory:'Cockroach/Rat Pest Control', area:'A Building', taskDescription:'Arrange cockroach and rat pest control treatment for the building', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'', priority:'Medium', status:'Pending', remarks:'' },
+  { id:'AB-008', taskCategory:'Solar Discussion', area:'A Building', taskDescription:'Solar panel installation discussion and planning', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'2026-12-01', priority:'Medium', status:'Pending', remarks:'Max deadline: next 2 months' },
+  { id:'AB-009', taskCategory:'Builder Discussion', area:'A Building', taskDescription:'Discussion with builder regarding pending issues', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'2026-12-01', priority:'Medium', status:'Pending', remarks:'Max deadline: next 2 months' },
+  { id:'AB-010', taskCategory:'Appointment of Auditor', area:'A Building', taskDescription:'Appointment of auditor for society accounts and compliance', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'', priority:'High', status:'Pending', remarks:'' },
+  { id:'AB-011', taskCategory:'Committee Role Assignment Discussion', area:'A Building', taskDescription:'Discussion on committee role assignments and responsibilities', vendorName:'', assignedTo:'Siddu', startDate:'2026-10-01', deadline:'', priority:'Medium', status:'Pending', remarks:'' },
 ];
 
 // ─── Pure helpers ───────────────────────────────────────────────────────────────
@@ -268,6 +277,7 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
         const unsub = onSnapshot(collection(db, colName),
           snap => {
             if (snap.empty) {
+              // Collection is empty → seed all initial tasks
               fallback.forEach(t => {
                 const { id, ...data } = t;
                 setDoc(doc(db, colName, id), { ...data, updatedAt: serverTimestamp() });
@@ -275,6 +285,15 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
               setTasks(prev => ({ ...prev, [tab.id]: fallback }));
             } else {
               const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+              // Merge any missing seed tasks into Firestore
+              const existingIds = new Set(items.map(i => i.id));
+              fallback.forEach(t => {
+                if (!existingIds.has(t.id)) {
+                  const { id, ...data } = t;
+                  setDoc(doc(db, colName, id), { ...data, updatedAt: serverTimestamp() });
+                  items.push(t);
+                }
+              });
               items.sort((a, b) => a.id > b.id ? 1 : -1);
               setTasks(prev => ({ ...prev, [tab.id]: items }));
             }

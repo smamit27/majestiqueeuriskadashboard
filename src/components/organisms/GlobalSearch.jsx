@@ -25,6 +25,8 @@ const NAV_ITEMS = [
   { id: 'cheques',          label: 'Cheque Tracker',         icon: '🧾', group: 'Navigation (Admin)' },
   { id: 'electricity',      label: 'Electricity Bills',      icon: '⚡', group: 'Navigation (Admin)' },
   { id: 'solar',            label: 'Solar Management',       icon: '☀️', group: 'Navigation (Admin)' },
+  { id: 'builder_discuss',  label: 'Builder Discuss (Eisha)', icon: '🏗️', group: 'Navigation (Admin)' },
+  { id: 'agm_records',      label: 'AGM 2026 Minutes & Meetings', icon: '📜', group: 'Navigation (Admin)' },
 ];
 
 const RECENTLY_KEY = 'majestique_gsearch_recent';

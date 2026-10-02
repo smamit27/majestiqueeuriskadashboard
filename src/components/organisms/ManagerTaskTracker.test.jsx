@@ -54,8 +54,8 @@ describe('ManagerTaskTracker Component', () => {
     const aBuildingTab = screen.getByRole('button', { name: /A Building Work/i });
     fireEvent.click(aBuildingTab);
 
-    // Initial A building task is AB-001
-    expect(screen.getByText('AB-001')).toBeInTheDocument();
+    // Initial A building task is AB-002
+    expect(screen.getByText('AB-002')).toBeInTheDocument();
   });
 
   it('filters tasks by search input', () => {

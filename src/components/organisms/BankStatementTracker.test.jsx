@@ -130,7 +130,7 @@ describe('BankStatementTracker - Ledger Entries Sorting', () => {
     expect(screen.getByText(/₹2,10,043.00/i)).toBeInTheDocument(); // Total Debits
   }, 20000);
 
-  it('provides 5-Month Financial Trend Comparison PDF print buttons and generates report', async () => {
+  it('provides 6-Month Financial Trend Comparison PDF print buttons and generates report', async () => {
     const user = userEvent.setup();
 
     // Mock window.open
@@ -152,8 +152,8 @@ describe('BankStatementTracker - Ledger Entries Sorting', () => {
     await user.type(screen.getByPlaceholderText('Enter password...'), '$05CeLRO');
     await user.click(screen.getByRole('button', { name: /Unlock Auditor Workspace/i }));
 
-    // 1. Check header button in 5-Month Trend Comparison bar
-    const printHeaderBtn = await screen.findByRole('button', { name: /Print 5-Month Trend \(PDF\)/i });
+    // 1. Check header button in 6-Month Trend Comparison bar
+    const printHeaderBtn = await screen.findByRole('button', { name: /Print 6-Month Trend \(PDF\)/i });
     expect(printHeaderBtn).toBeInTheDocument();
 
     // Click header print button
@@ -161,20 +161,21 @@ describe('BankStatementTracker - Ledger Entries Sorting', () => {
     expect(mockWindowOpen).toHaveBeenCalledWith('', '_blank');
     expect(mockDocumentWrite).toHaveBeenCalled();
     const writtenHtml = mockDocumentWrite.mock.calls[0][0];
-    expect(writtenHtml).toContain('5-Month Financial Trend Comparison & Profit/Loss Report');
+    expect(writtenHtml).toContain('6-Month Financial Trend Comparison & Profit/Loss Report');
     expect(writtenHtml).toContain('April 2026');
     expect(writtenHtml).toContain('May 2026');
     expect(writtenHtml).toContain('June 2026');
     expect(writtenHtml).toContain('July 2026');
     expect(writtenHtml).toContain('August 2026');
-    expect(writtenHtml).toContain('3,13,837.14'); // Cumulative net profit
-    expect(writtenHtml).toContain('4,62,925.87'); // Final closing balance
+    expect(writtenHtml).toContain('September 2026');
+    expect(writtenHtml).toContain('4,15,002.22'); // Cumulative net profit
+    expect(writtenHtml).toContain('5,64,090.95'); // Final closing balance
 
     // 2. Switch to Reports tab and verify dedicated card
     const reportsTab = await screen.findByRole('button', { name: /Reports & Print/i });
     await user.click(reportsTab);
 
-    const reportCardPrintBtn = await screen.findByRole('button', { name: /Print 5-Month Trend Report \(PDF\)/i });
+    const reportCardPrintBtn = await screen.findByRole('button', { name: /Print 6-Month Trend Report \(PDF\)/i });
     expect(reportCardPrintBtn).toBeInTheDocument();
 
     // Click report tab print button

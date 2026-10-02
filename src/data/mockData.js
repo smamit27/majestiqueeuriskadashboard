@@ -150,6 +150,33 @@ export const dues = [
 
 export const announcements = [
   {
+    id: 'ANN-AGM-2026',
+    title: 'AGM 2026 Minutes & Resolutions Published',
+    audience: 'All Residents',
+    priority: 'High',
+    postedOn: '2026-09-06',
+    summary: 'The Minutes of the Annual General Body Meeting held on 06.09.2026 have been formally recorded and signed. 7 resolutions adopted (Audit Passed, ₹3L FD Mandate, Solar Project Tenders, Shop Dues Recovery). Full signed minutes available in AGM & Meetings archive.',
+    pinned: true
+  },
+  {
+    id: 'ANN-AGM-2025',
+    title: 'AGM 2025 Minutes & Resolutions Archived',
+    audience: 'All Residents',
+    priority: 'High',
+    postedOn: '2025-11-02',
+    summary: 'The Minutes of the Annual General Body Meeting held on 02.11.2025: 16 resolutions approved (FY 2024-25 Financial Report, Roadside Trash & Cleanliness Fines ₹300, Driveway Parking ₹300/mo Fine, Bird Net, Pesticide Control, FD Policy, Tenant Police Verification, Committee Member Prashant A-505 appointed, and External Wall Painting Prohibitions). Full signed minutes stored in AGM archive.',
+    pinned: false
+  },
+  {
+    id: 'ANN-SGM-2025',
+    title: 'SGM 2025 Minutes & Maintenance Revision Archived',
+    audience: 'All Residents',
+    priority: 'High',
+    postedOn: '2025-06-18',
+    summary: 'Minutes of Special General Meeting held on 15.06.2025: Monthly maintenance revised effective 01.07.2025 (₹2,850 maintenance + ₹150 sinking fund = ₹3,000/flat, +10% tenant surcharge), EPDM safety flooring approved for children play area, and Mr. Balaji Chaudhari appointed statutory auditor for FY 23-24 & 24-25.',
+    pinned: false
+  },
+  {
     id: 'ANN-001',
     title: 'Water tank cleaning on Saturday',
     audience: 'All Towers',

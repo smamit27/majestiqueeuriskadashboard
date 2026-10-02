@@ -7,6 +7,7 @@ import fy25_26Data from './fy25_26Data.json';
 import juneData from './juneStatementData.json';
 import julyData from './julyStatementData.json';
 import mayData from './mayStatementData.json';
+import septemberData from './septemberStatementData.json';
 
 export const FY2022_23_DATA = fy22_23Data;
 export const FY2023_24_DATA = fy23_24Data;
@@ -17,14 +18,16 @@ export const MAY_2026_DATA = mayData;
 export const JUNE_2026_DATA = juneData;
 export const JULY_2026_DATA = julyData;
 export const AUGUST_2026_DATA = augustData;
+export const SEPTEMBER_2026_DATA = septemberData;
 
-// All-Time Combined Dataset (01 April 2026 - 29 August 2026)
+// All-Time Combined Dataset (01 April 2026 - 30 September 2026)
 const allTxs = [
   ...aprilData.transactionsList,
   ...mayData.transactionsList,
   ...juneData.transactionsList,
   ...JULY_2026_DATA.transactionsList,
-  ...augustData.transactionsList
+  ...augustData.transactionsList,
+  ...septemberData.transactionsList
 ];
 
 // Aggregate Vendors across all 5 months
@@ -75,12 +78,12 @@ const allVendorsData = Object.keys(vendorAgg).map((name, idx) => ({
 })).sort((a, b) => b.total - a.total).map((v, i) => ({ ...v, rank: i + 1 }));
 
 export const ALL_TIME_DATA = {
-  period: "April 1, 2026 – August 29, 2026 (5-Month Cumulative)",
+  period: "April 1, 2026 – September 30, 2026 (6-Month Cumulative)",
   openingBalance: 149088.73,
-  closingBalance: 462925.87,
-  totalCredits: 1584876.14,
-  totalDebits: 1271039.00,
-  netCashFlow: 313837.14,
+  closingBalance: 564090.95,
+  totalCredits: 1923912.22,
+  totalDebits: 1508910.00,
+  netCashFlow: 415002.22,
   vendorsData: allVendorsData,
   incomeCategories: [
     { name: "Vivish PG Maintenance NEFT", value: 1140771.45, count: 356, color: "#196c6c" },
@@ -103,7 +106,8 @@ export const ALL_TIME_DATA = {
     { date: "May", balance: 333303.54, credit: 392044.31, debit: 223527.00 },
     { date: "June", balance: 465193.55, credit: 369080.01, debit: 237190.00 },
     { date: "July", balance: 424339.27, credit: 296237.72, debit: 337092.00 },
-    { date: "August", balance: 462925.87, credit: 248629.60, debit: 210043.00 }
+    { date: "August", balance: 462925.87, credit: 248629.60, debit: 210043.00 },
+    { date: "September", balance: 564090.95, credit: 339036.08, debit: 237871.00 }
   ],
   transactionsList: allTxs
 };

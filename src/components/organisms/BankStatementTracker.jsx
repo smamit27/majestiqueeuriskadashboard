@@ -4,7 +4,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell
 } from 'recharts';
 
-import { APRIL_2026_DATA, MAY_2026_DATA, JUNE_2026_DATA, JULY_2026_DATA, AUGUST_2026_DATA, ALL_TIME_DATA, FY2025_26_DATA, FY2024_25_DATA, FY2023_24_DATA, FY2022_23_DATA, parseRawBankStatement } from './bankStatementData';
+import { APRIL_2026_DATA, MAY_2026_DATA, JUNE_2026_DATA, JULY_2026_DATA, AUGUST_2026_DATA, SEPTEMBER_2026_DATA, ALL_TIME_DATA, FY2025_26_DATA, FY2024_25_DATA, FY2023_24_DATA, FY2022_23_DATA, parseRawBankStatement } from './bankStatementData';
 import FixedDepositTracker from './FixedDepositTracker';
 
 export default function BankStatementTracker({ isAdmin }) {
@@ -13,7 +13,7 @@ export default function BankStatementTracker({ isAdmin }) {
   const [errorMsg, setErrorMsg] = useState('');
   const [activeSubTab, setActiveSubTab] = useState('dashboard');
 
-  // Month / Period selector state: 'ALL_TIME' | 'FY2025_26' | 'FY2024_25' | 'FY2023_24' | 'FY2022_23' | 'APRIL_2026' | 'MAY_2026' | 'JUNE_2026' | 'JULY_2026' | 'AUGUST_2026' | 'CUSTOM'
+  // Month / Period selector state: 'ALL_TIME' | 'FY2025_26' | 'FY2024_25' | 'FY2023_24' | 'FY2022_23' | 'APRIL_2026' | 'MAY_2026' | 'JUNE_2026' | 'JULY_2026' | 'AUGUST_2026' | 'SEPTEMBER_2026' | 'CUSTOM'
   const [selectedPeriod, setSelectedPeriod] = useState('ALL_TIME');
   const [customParsedData, setCustomParsedData] = useState(null);
 
@@ -39,8 +39,9 @@ export default function BankStatementTracker({ isAdmin }) {
     if (selectedPeriod === 'JUNE_2026') return JUNE_2026_DATA;
     if (selectedPeriod === 'JULY_2026') return JULY_2026_DATA;
     if (selectedPeriod === 'AUGUST_2026') return AUGUST_2026_DATA;
+    if (selectedPeriod === 'SEPTEMBER_2026') return SEPTEMBER_2026_DATA;
     if (selectedPeriod === 'CUSTOM' && customParsedData) return customParsedData;
-    return AUGUST_2026_DATA;
+    return SEPTEMBER_2026_DATA;
   }, [selectedPeriod, customParsedData]);
 
   const STATEMENT_PERIOD = activeData.period;
@@ -149,16 +150,30 @@ export default function BankStatementTracker({ isAdmin }) {
         closing: 462925.87,
         status: '✅ Restored Surplus Rebound',
         drivers: 'NRG Security (₹49k), C Bldg Inter-FT (₹42.7k), Shubham Maintenance (₹35k)'
+      },
+      {
+        month: 'September 2026',
+        period: '01/09/26 – 30/09/26',
+        opening: 462925.87,
+        cr: 339036.08,
+        crCount: 84,
+        dr: 237871.00,
+        drCount: 11,
+        net: 101165.08,
+        margin: '+29.84%',
+        closing: 564090.95,
+        status: '🌟 Strong Surplus Month',
+        drivers: 'MSEDCL (₹1.01L), Security (₹50.1k), Shubham (₹36.5k)'
       }
     ];
 
     const cumOpening = 149088.73;
-    const cumClosing = 462925.87;
-    const cumCredits = 1584876.14;
-    const cumDebits = 1271039.00;
-    const cumNet = 313837.14;
-    const cumMargin = '+19.80%';
-    const reserveGrowth = '+210.51%';
+    const cumClosing = 564090.95;
+    const cumCredits = 1923912.22;
+    const cumDebits = 1508910.00;
+    const cumNet = 415002.22;
+    const cumMargin = '+21.57%';
+    const reserveGrowth = '+278.30%';
 
     // Income breakdown rows
     const incomeRows = ALL_TIME_DATA.incomeCategories.map(c => `
@@ -208,7 +223,7 @@ export default function BankStatementTracker({ isAdmin }) {
     <html lang="en">
     <head>
       <meta charset="UTF-8">
-      <title>5-Month Financial Trend Comparison & Profit/Loss Report (Apr - Aug 2026)</title>
+      <title>6-Month Financial Trend Comparison & Profit/Loss Report (Apr - Sep 2026)</title>
       <style>
         @page { size: A4 landscape; margin: 10mm 12mm; }
         body {
@@ -390,12 +405,12 @@ export default function BankStatementTracker({ isAdmin }) {
           <div class="society-sub">Reg. No: PNA/PNA(S)/HSG/(TC)/18320/2022-23 | HDFC Bank A/C: 50200075533530 | Mohammedwadi, Pune 411060</div>
         </div>
         <div class="report-badge">
-          <div class="report-title">5-Month Financial Trend & Profit/Loss Audit</div>
-          <div class="report-period">April 2026 – August 2026 (5 Months Comprehensive)</div>
+          <div class="report-title">6-Month Financial Trend & Profit/Loss Audit</div>
+          <div class="report-period">April 2026 – September 2026 (6 Months Comprehensive)</div>
         </div>
       </div>
 
-      <!-- 5-Month Executive KPI Summary -->
+      <!-- 6-Month Executive KPI Summary -->
       <div class="kpi-grid">
         <div class="kpi-card">
           <div class="kpi-label">Opening Balance (01-Apr-2026)</div>
@@ -403,14 +418,14 @@ export default function BankStatementTracker({ isAdmin }) {
           <div class="kpi-sub">Initial Society Reserve</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Total Receipts (5 Mos CR)</div>
+          <div class="kpi-label">Total Receipts (6 Mos CR)</div>
           <div class="kpi-val" style="color:#31553e">${fmt(cumCredits)}</div>
-          <div class="kpi-sub">506 Credit Inflow Txs</div>
+          <div class="kpi-sub">590 Credit Inflow Txs</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Total Expenses (5 Mos DR)</div>
+          <div class="kpi-label">Total Expenses (6 Mos DR)</div>
           <div class="kpi-val" style="color:#c2644a">${fmt(cumDebits)}</div>
-          <div class="kpi-sub">58 Vendor / Outflow Txs</div>
+          <div class="kpi-sub">69 Vendor / Outflow Txs</div>
         </div>
         <div class="kpi-card highlight">
           <div class="kpi-label" style="color:#16a34a">🌟 Cumulative Net Profit / Surplus</div>
@@ -418,9 +433,9 @@ export default function BankStatementTracker({ isAdmin }) {
           <div class="kpi-sub" style="color:#15803d;font-weight:700">Margin: ${cumMargin} of Receipts</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Closing Balance (29-Aug-2026)</div>
+          <div class="kpi-label">Closing Balance (30-Sep-2026)</div>
           <div class="kpi-val" style="color:#196c6c">${fmt(cumClosing)}</div>
-          <div class="kpi-sub" style="color:#16a34a;font-weight:700">Growth: ${reserveGrowth} (+₹3.14L)</div>
+          <div class="kpi-sub" style="color:#16a34a;font-weight:700">Growth: ${reserveGrowth} (+₹4.15L)</div>
         </div>
       </div>
 
@@ -444,14 +459,14 @@ export default function BankStatementTracker({ isAdmin }) {
         </tbody>
         <tfoot>
           <tr>
-            <td>5-MONTH TOTAL</td>
+            <td>6-MONTH TOTAL</td>
             <td style="text-align:right;font-family:monospace">${fmt(cumOpening)}</td>
             <td style="text-align:right;color:#31553e;font-family:monospace">${fmt(cumCredits)}</td>
             <td style="text-align:right;color:#c2644a;font-family:monospace">${fmt(cumDebits)}</td>
             <td style="text-align:right;color:#16a34a;font-size:12px;font-family:monospace">+ ${fmt(cumNet)}</td>
             <td style="text-align:center;color:#16a34a">${cumMargin}</td>
             <td style="text-align:right;color:#196c6c;font-family:monospace">${fmt(cumClosing)}</td>
-            <td style="color:#16a34a"><strong>🌟 OVERALL PROFIT (+₹3,13,837.14)</strong></td>
+            <td style="color:#16a34a"><strong>🌟 OVERALL PROFIT (+₹4,15,002.22)</strong></td>
           </tr>
         </tfoot>
       </table>
@@ -459,7 +474,7 @@ export default function BankStatementTracker({ isAdmin }) {
       <!-- Side by Side Breakdown of Income & Major Expenses -->
       <div class="grid-2">
         <div>
-          <div class="section-heading">📥 Cumulative Receipts & Inflow Sources (5-Month Aggregate)</div>
+          <div class="section-heading">📥 Cumulative Receipts & Inflow Sources (6-Month Aggregate)</div>
           <table>
             <thead>
               <tr>
@@ -474,8 +489,8 @@ export default function BankStatementTracker({ isAdmin }) {
             </tbody>
             <tfoot>
               <tr>
-                <td>TOTAL 5-MONTH RECEIPTS</td>
-                <td style="text-align:center">506</td>
+                <td>TOTAL 6-MONTH RECEIPTS</td>
+                <td style="text-align:center">590</td>
                 <td style="text-align:right;color:#31553e">${fmt(cumCredits)}</td>
                 <td style="text-align:right">100.00%</td>
               </tr>
@@ -484,7 +499,7 @@ export default function BankStatementTracker({ isAdmin }) {
         </div>
 
         <div>
-          <div class="section-heading">📤 Cumulative Expenditure Breakdown (5-Month Aggregate)</div>
+          <div class="section-heading">📤 Cumulative Expenditure Breakdown (6-Month Aggregate)</div>
           <table>
             <thead>
               <tr>
@@ -498,7 +513,7 @@ export default function BankStatementTracker({ isAdmin }) {
             </tbody>
             <tfoot>
               <tr>
-                <td>TOTAL 5-MONTH EXPENDITURE</td>
+                <td>TOTAL 6-MONTH EXPENDITURE</td>
                 <td style="text-align:right;color:#c2644a">${fmt(cumDebits)}</td>
                 <td style="text-align:right">100.00%</td>
               </tr>
@@ -508,7 +523,7 @@ export default function BankStatementTracker({ isAdmin }) {
       </div>
 
       <!-- Top Payees and Vendors -->
-      <div class="section-heading">🏢 Top 10 Vendor / Service Outflows (5-Month Cumulative)</div>
+      <div class="section-heading">🏢 Top 10 Vendor / Service Outflows (6-Month Cumulative)</div>
       <table>
         <thead>
           <tr>
@@ -527,10 +542,10 @@ export default function BankStatementTracker({ isAdmin }) {
       <div class="observations-card">
         <strong>📋 Executive Audit Takeaways & Financial Health Assessment:</strong>
         <ul>
-          <li><strong>Sustained Profitability:</strong> 4 out of 5 months delivered robust operational surpluses. Cumulative 5-month net profit stands at <strong>+ ₹ 3,13,837.14</strong> (19.80% operating margin).</li>
-          <li><strong>Robust Reserve Fund Expansion:</strong> The Society's liquid bank reserves expanded from <strong>₹ 1,49,088.73</strong> (01-Apr-2026) to <strong>₹ 4,62,925.87</strong> (29-Aug-2026), representing a <strong>+210.51% net increase</strong> in liquid reserves.</li>
-          <li><strong>Controlled July Deficit:</strong> July 2026 recorded a temporary deficit of -₹40,854.28 solely due to the quarterly Schindler Lift AMC amortization (₹89,208). August 2026 immediately returned to a positive net cash flow (+₹38,586.60).</li>
-          <li><strong>Audit Compliance:</strong> All 564 bank transactions have been cross-verified with HDFC core banking statements.</li>
+          <li><strong>Sustained Profitability:</strong> 5 out of 6 months delivered robust operational surpluses. Cumulative 6-month net profit stands at <strong>+ ₹ 4,15,002.22</strong> (21.57% operating margin).</li>
+          <li><strong>Robust Reserve Fund Expansion:</strong> The Society's liquid bank reserves expanded from <strong>₹ 1,49,088.73</strong> (01-Apr-2026) to <strong>₹ 5,64,090.95</strong> (30-Sep-2026), representing a <strong>+278.30% net increase</strong> in liquid reserves.</li>
+          <li><strong>Controlled July Deficit:</strong> July 2026 recorded a temporary deficit of -₹40,854.28 solely due to the quarterly Schindler Lift AMC amortization (₹89,208). August & September immediately returned to positive net cash flow (+₹38,586.60 & +₹1,01,165.08 respectively).</li>
+          <li><strong>Audit Compliance:</strong> All 659 bank transactions have been cross-verified with HDFC core banking statements.</li>
         </ul>
       </div>
 
@@ -903,7 +918,7 @@ export default function BankStatementTracker({ isAdmin }) {
             onClick={() => setSelectedPeriod('ALL_TIME')}
             style={selectedPeriod === 'ALL_TIME' ? { background: '#31553e', color: 'white', fontWeight: '700' } : { borderColor: '#31553e', color: '#31553e' }}
           >
-            🌟 FY 26 (Apr – Aug 26)
+            🌟 FY 26 (Apr – Sep 26)
           </button>
 
           <button
@@ -978,6 +993,14 @@ export default function BankStatementTracker({ isAdmin }) {
             📅 August 2026
           </button>
 
+          <button
+            className={`action-btn ${selectedPeriod === 'SEPTEMBER_2026' ? 'action-btn--primary' : ''}`}
+            onClick={() => setSelectedPeriod('SEPTEMBER_2026')}
+            style={selectedPeriod === 'SEPTEMBER_2026' ? { background: '#196c6c', color: 'white' } : {}}
+          >
+            📅 September 2026
+          </button>
+
           {customParsedData && (
             <button
               className={`action-btn ${selectedPeriod === 'CUSTOM' ? 'action-btn--primary' : ''}`}
@@ -1011,7 +1034,7 @@ export default function BankStatementTracker({ isAdmin }) {
               ? 'FY 2023-24 Monthly Financial Breakdown (Apr 2023 – Mar 2024)'
               : selectedPeriod === 'FY2022_23'
               ? 'FY 2022-23 Monthly Financial Breakdown (Dec 2022 – Mar 2023)'
-              : '5-Month Financial Trend Comparison: April, May, June, July & August 2026'}
+              : '6-Month Financial Trend Comparison: April, May, June, July, August & September 2026'}
           </h4>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.78rem', color: 'var(--muted)' }}>
@@ -1033,9 +1056,9 @@ export default function BankStatementTracker({ isAdmin }) {
                 borderRadius: '6px',
                 cursor: 'pointer'
               }}
-              title="Print / Save PDF for 5-Month Financial Trend Comparison & Overall Profit/Loss"
+              title="Print / Save PDF for 6-Month Financial Trend Comparison & Overall Profit/Loss"
             >
-              🖨️ Print 5-Month Trend (PDF)
+              🖨️ Print 6-Month Trend (PDF)
             </button>
           </div>
         </div>
@@ -1084,7 +1107,7 @@ export default function BankStatementTracker({ isAdmin }) {
             </div>
           </div>
         ) : (
-          /* Standard 5-month 2026 view */
+          /* Standard 6-month 2026 view */
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
             <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--line)' }}>
               <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>April 2026 Net Flow</span>
@@ -1111,10 +1134,15 @@ export default function BankStatementTracker({ isAdmin }) {
               <strong style={{ fontSize: '1.02rem', color: 'var(--pine)' }}>+ ₹ 38,586.60</strong>
               <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Inflow: ₹2.49L | Outflow: ₹2.10L</span>
             </div>
+            <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--line)' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>September 2026 Net Flow</span>
+              <strong style={{ fontSize: '1.02rem', color: 'var(--pine)' }}>+ ₹ 1,01,165.08</strong>
+              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Inflow: ₹3.39L | Outflow: ₹2.38L</span>
+            </div>
             <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '2px solid var(--pine)' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--pine)', fontWeight: '700', display: 'block' }}>🌟 Overall Profit (5 Months)</span>
-              <strong style={{ fontSize: '1.05rem', color: 'var(--pine)' }}>+ ₹ 3,13,837.14</strong>
-              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Bal: ₹1.49L → ₹4.63L (+210.5%)</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--pine)', fontWeight: '700', display: 'block' }}>🌟 Overall Profit (6 Months)</span>
+              <strong style={{ fontSize: '1.05rem', color: 'var(--pine)' }}>+ ₹ 4,15,002.22</strong>
+              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Bal: ₹1.49L → ₹5.64L (+278.3%)</span>
             </div>
           </div>
         )}
@@ -1651,15 +1679,15 @@ export default function BankStatementTracker({ isAdmin }) {
       {activeSubTab === 'reports' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-          {/* 5-Month Executive Financial Trend PDF Report Card */}
+          {/* 6-Month Executive Financial Trend PDF Report Card */}
           <div className="section-card" style={{ border: '2px solid var(--pine)', background: 'linear-gradient(135deg, rgba(49,85,62,0.08), rgba(25,108,108,0.05))', padding: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
               <div>
                 <h3 className="section-card__title" style={{ color: 'var(--pine)', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 6px 0' }}>
-                  <span>📊</span> 5-Month Financial Trend & Profit/Loss Comparison (April – August 2026)
+                  <span>📊</span> 6-Month Financial Trend & Profit/Loss Comparison (April – September 2026)
                 </h3>
                 <p style={{ color: 'var(--muted)', fontSize: '0.88rem', margin: '0 0 10px 0', maxWidth: '750px' }}>
-                  Generate and print the official 5-Month Comparative Audit Statement with full breakdown of monthly receipts, vendor expenditures, overall profit of <strong>+₹3,13,837.14</strong>, operating margins, and society reserve growth from ₹1.49L to ₹4.63L (+210.5%).
+                  Generate and print the official 6-Month Comparative Audit Statement with full breakdown of monthly receipts, vendor expenditures, overall profit of <strong>+₹4,15,002.22</strong>, operating margins, and society reserve growth from ₹1.49L to ₹5.64L (+278.3%).
                 </p>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', fontSize: '0.75rem', color: 'var(--muted)' }}>
                   <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>✅ Apr: +₹15.7k</span>
@@ -1667,7 +1695,8 @@ export default function BankStatementTracker({ isAdmin }) {
                   <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>🌟 Jun: +₹1.32L</span>
                   <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>⚠️ Jul: -₹40.9k</span>
                   <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>✅ Aug: +₹38.6k</span>
-                  <span style={{ background: '#dcfce7', color: '#166534', padding: '3px 8px', borderRadius: '4px', fontWeight: '700' }}>Overall Profit: +₹3.14 Lakhs</span>
+                  <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>🌟 Sep: +₹1.01L</span>
+                  <span style={{ background: '#dcfce7', color: '#166534', padding: '3px 8px', borderRadius: '4px', fontWeight: '700' }}>Overall Profit: +₹4.15 Lakhs</span>
                 </div>
               </div>
 
@@ -1687,7 +1716,7 @@ export default function BankStatementTracker({ isAdmin }) {
                 }}
                 onClick={handlePrint5MonthTrendReport}
               >
-                🖨️ Print 5-Month Trend Report (PDF)
+                🖨️ Print 6-Month Trend Report (PDF)
               </button>
             </div>
           </div>

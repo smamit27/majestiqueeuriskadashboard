@@ -37,6 +37,7 @@ import TenantTracker from './components/organisms/TenantTracker.jsx';
 import ParkingAllotmentTracker from './components/organisms/ParkingAllotmentTracker.jsx';
 import EmergencyNumbers from './components/organisms/EmergencyNumbers.jsx';
 import BuilderDiscuss from './components/organisms/BuilderDiscuss.jsx';
+import AgmMeetingTracker from './components/organisms/AgmMeetingTracker.jsx';
 
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase.js';
@@ -168,6 +169,9 @@ const TAB_ICONS = {
   ),
   builder_discuss: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 8h.01"/><path d="M11 8h6"/><path d="M7 12h.01"/><path d="M11 12h6"/></svg>
+  ),
+  agm_records: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
   )
 };
 
@@ -503,6 +507,12 @@ export default function App() {
         label: 'Builder Discuss',
         metric: 'Eisha Pending Works & Escalations',
         render: () => <BuilderDiscuss isAdmin={isAdmin} />
+      },
+      {
+        id: 'agm_records',
+        label: 'AGM & Meetings',
+        metric: 'AGM 2026 Minutes & Resolutions',
+        render: () => <AgmMeetingTracker isAdmin={isAdmin} />
       },
       {
         id: 'emergency',
