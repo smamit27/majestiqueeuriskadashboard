@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import * as XLSX from 'xlsx';
-import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 
 function formatDateLabel(val) {
-  if (!val) return '';
-  const parts = val.split('-');
-  if (parts.length === 3) {
-    const [y, m, d] = parts.map(Number);
+  if (!val) return '—';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+    const [y, m, d] = val.split('-').map(Number);
     return new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(y, m - 1, d));
-  } else if (parts.length === 2) {
-    const [y, m] = parts.map(Number);
+  }
+  if (/^\d{4}-\d{2}$/.test(val)) {
+    const [y, m] = val.split('-').map(Number);
     return new Intl.DateTimeFormat('en-IN', { month: 'short', year: 'numeric' }).format(new Date(y, m - 1, 1));
   }
   return val;
@@ -20,37 +20,206 @@ function formatDateLabel(val) {
 const n = (v) => parseFloat(v) || 0;
 const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-// Historical Tata template bills — Sep 2025 to May 2026 (15th–14th billing cycle)
-// 8988 total units ÷ 9 months = 999 units/month (rounded)
-// Pre-calculated: Energy=14309.47, Fuel=334.60, Fixed=445, Wheeling=1598.40
-// Subtotal=16687.47, Duty=2669.99, Grand Total=₹19,357
-const makeTataBill = (id, start, end, prevR, currR) => ({
-  id, startMonth: start, endMonth: end,
-  prevReading: String(prevR), currReading: String(currR),
-  msebFixedCharge: '445.00', msebEnergyCharge: '14309.47',
-  msebWheelingRate: '1.60', msebFuelAdj: '334.60',
-  consumption: 999, fixed: 445, energy: 14309.47,
-  wheelTotal: 1598.40, fuel: 334.60,
-  subtotal: 16687.47, duty: 2669.995, exactTotal: 19357.465, grandTotal: 19357
-});
+// Compute duration string from two ISO dates
+export const computeBillingDuration = (startStr, endStr) => {
+  if (!startStr || !endStr) return '';
+  const s = new Date(startStr);
+  const e = new Date(endStr);
+  if (isNaN(s) || isNaN(e)) return '';
+  const diffDays = Math.max(1, Math.round((e - s) / (1000 * 60 * 60 * 24)));
+  const approxMonths = (diffDays / 30.4).toFixed(1);
+  const wholeMonths = Math.round(diffDays / 30.4);
+  const monthStr = Math.abs(parseFloat(approxMonths) - wholeMonths) < 0.2
+    ? `${wholeMonths} Month${wholeMonths > 1 ? 's' : ''}`
+    : `~${approxMonths} Months`;
+  return `${monthStr} (${diffDays} Days)`;
+};
 
+// 4-Digit Sub-meter Calculation with 10,000 Reset Rollover
+// Formula: if curr < prev: (10,000 - prev) + curr, else: curr - prev
+export const calculateSubmeterRollover = (prevStr, currStr, manualUnits = null) => {
+  const prev = parseFloat(prevStr) || 0;
+  const curr = parseFloat(currStr) || 0;
+  if (manualUnits !== null && manualUnits !== undefined && !isNaN(manualUnits) && manualUnits !== '') {
+    const u = parseFloat(manualUnits);
+    const isRollover = curr < prev;
+    return {
+      units: u,
+      isRollover,
+      formulaText: isRollover
+        ? `(10,000 - ${prev}) + ${curr} = ${u} units (Reset after 10000)`
+        : `${curr} - ${prev} = ${u} units`
+    };
+  }
+  if (curr < prev) {
+    const units = (10000 - prev) + curr;
+    return {
+      units,
+      isRollover: true,
+      formulaText: `(10,000 - ${prev}) + ${curr} = ${units} units (Reset after 10000)`
+    };
+  }
+  const units = curr - prev;
+  return {
+    units,
+    isRollover: false,
+    formulaText: `${curr} - ${prev} = ${units} units`
+  };
+};
+
+export const calculateTataSubmeterBill = (prevReadingStr, currReadingStr, rateStr, manualUnits = null) => {
+  const { units, isRollover, formulaText } = calculateSubmeterRollover(prevReadingStr, currReadingStr, manualUnits);
+  const rate = parseFloat(rateStr) || 13;
+  const grandTotal = units * rate;
+  return {
+    consumption: units,
+    ratePerUnit: rate,
+    isRollover,
+    calculationNote: formulaText,
+    calculationFormula: `${units.toLocaleString('en-IN')} units × ₹${rate.toFixed(2)}/unit`,
+    baseAmount: grandTotal,
+    grandTotal
+  };
+};
+
+// Verified Audited Tata Play Sub-Meter Bills (Sep 2025 to Mar 2023)
 export const DEFAULT_TATA_SEED = [
-  makeTataBill(1001, '2025-08-15', '2025-09-14',    0,   999),
-  makeTataBill(1002, '2025-09-15', '2025-10-14',  999,  1998),
-  makeTataBill(1003, '2025-10-15', '2025-11-14', 1998,  2997),
-  makeTataBill(1004, '2025-11-15', '2025-12-14', 2997,  3996),
-  makeTataBill(1005, '2025-12-15', '2026-01-14', 3996,  4995),
-  makeTataBill(1006, '2026-01-15', '2026-02-14', 4995,  5994),
-  makeTataBill(1007, '2026-02-15', '2026-03-14', 5994,  6993),
-  makeTataBill(1008, '2026-03-15', '2026-04-14', 6993,  7992),
-  // Last month: 996 units so total across all 9 months = 8×999 + 996 = 8988
-  { id: 1009, startMonth: '2026-04-15', endMonth: '2026-05-14',
-    prevReading: '7992', currReading: '8988',
-    msebFixedCharge: '445.00', msebEnergyCharge: '14256.88',
-    msebWheelingRate: '1.60', msebFuelAdj: '333.40',
-    consumption: 996, fixed: 445, energy: 14256.88,
-    wheelTotal: 1593.60, fuel: 333.40,
-    subtotal: 16628.88, duty: 2660.62, exactTotal: 19289.50, grandTotal: 19290 },
+  {
+    id: 2001,
+    periodLabel: 'Sep 25 to 18th May 26',
+    startMonth: '2025-09-01',
+    endMonth: '2026-05-18',
+    duration: '~8.5 Months (260 Days)',
+    prevReading: '2568',
+    currReading: '1557',
+    isRollover: true,
+    consumption: 8988,
+    ratePerUnit: 13,
+    calculationNote: '(10,000 - 2,568) + 1,557 = 8,988 units (Reset after 10000)',
+    calculationFormula: '8,988 units × ₹13.00/unit',
+    baseAmount: 116844,
+    grandTotal: 116844,
+    status: 'Invoiced'
+  },
+  {
+    id: 2002,
+    periodLabel: 'Mar 25 to August 25',
+    startMonth: '2025-03-01',
+    endMonth: '2025-08-31',
+    duration: '6 Months (184 Days)',
+    prevReading: '9073',
+    currReading: '2568',
+    isRollover: true,
+    consumption: 3495,
+    ratePerUnit: 13,
+    calculationNote: '(10,000 - 9,073) + 2,568 = 3,495 units (Reset after 10000)',
+    calculationFormula: '3,495 units × ₹13.00/unit',
+    baseAmount: 45435,
+    grandTotal: 45435,
+    status: 'Paid'
+  },
+  {
+    id: 2003,
+    periodLabel: 'Nov 24 to Feb 25',
+    startMonth: '2024-11-01',
+    endMonth: '2025-02-28',
+    duration: '4 Months (120 Days)',
+    prevReading: '6996',
+    currReading: '9073',
+    isRollover: false,
+    consumption: 2077,
+    ratePerUnit: 13,
+    calculationNote: '9,073 - 6,996 = 2,077 units',
+    calculationFormula: '2,077 units × ₹13.00/unit',
+    baseAmount: 27001,
+    grandTotal: 27001,
+    status: 'Paid'
+  },
+  {
+    id: 2004,
+    periodLabel: 'Jun 24 to Oct 24',
+    startMonth: '2024-06-01',
+    endMonth: '2024-10-31',
+    duration: '5 Months (153 Days)',
+    prevReading: '4354',
+    currReading: '6996',
+    isRollover: false,
+    consumption: 2642,
+    ratePerUnit: 13,
+    calculationNote: '6,996 - 4,354 = 2,642 units',
+    calculationFormula: '2,642 units × ₹13.00/unit',
+    baseAmount: 34346,
+    grandTotal: 34346,
+    status: 'Paid'
+  },
+  {
+    id: 2005,
+    periodLabel: 'Feb 24 to May 24',
+    startMonth: '2024-02-01',
+    endMonth: '2024-05-31',
+    duration: '4 Months (121 Days)',
+    prevReading: '2607',
+    currReading: '4354',
+    isRollover: false,
+    consumption: 1747,
+    ratePerUnit: 12.50,
+    calculationNote: '4,354 - 2,607 = 1,747 units',
+    calculationFormula: '1,747 units × ₹12.50/unit',
+    baseAmount: 21837.5,
+    grandTotal: 21837.5,
+    status: 'Paid'
+  },
+  {
+    id: 2006,
+    periodLabel: 'Nov 23 to Jan 24',
+    startMonth: '2023-11-01',
+    endMonth: '2024-01-31',
+    duration: '3 Months (92 Days)',
+    prevReading: '1353',
+    currReading: '2607',
+    isRollover: false,
+    consumption: 1254,
+    ratePerUnit: 11.50,
+    calculationNote: '2,607 - 1,353 = 1,254 units',
+    calculationFormula: '1,254 units × ₹11.50/unit',
+    baseAmount: 14421,
+    grandTotal: 14421,
+    status: 'Paid'
+  },
+  {
+    id: 2007,
+    periodLabel: 'Aug 23 to Oct 23',
+    startMonth: '2023-08-01',
+    endMonth: '2023-10-31',
+    duration: '3 Months (92 Days)',
+    prevReading: '0177',
+    currReading: '1353',
+    isRollover: false,
+    consumption: 1176,
+    ratePerUnit: 11.50,
+    calculationNote: '1,353 - 177 = 1,176 units',
+    calculationFormula: '1,176 units × ₹11.50/unit',
+    baseAmount: 13524,
+    grandTotal: 13524,
+    status: 'Paid'
+  },
+  {
+    id: 2008,
+    periodLabel: 'Mar 23 to Jul 23',
+    startMonth: '2023-03-01',
+    endMonth: '2023-07-31',
+    duration: '5 Months (153 Days)',
+    prevReading: '7629',
+    currReading: '0177',
+    isRollover: true,
+    consumption: 2548,
+    ratePerUnit: 11.50,
+    calculationNote: '(10,000 - 7,629) + 177 = 2,548 units (Reset after 10000)',
+    calculationFormula: '2,548 units × ₹11.50/unit',
+    baseAmount: 29302,
+    grandTotal: 29302,
+    status: 'Paid'
+  }
 ];
 
 export default function ElectricityTracker({ isAdmin = false }) {
@@ -74,7 +243,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
   const buildingARecordId = 'building_a_electricity_bills';
   const mahavitaranRecordId = 'mahavitaran_electricity_bills';
 
-  // Load from Firebase
+  // Load from Firebase & ensure old template data is replaced with audited Tata bills
   useEffect(() => {
     let cancelled = false;
     isLoadedRef.current = false;
@@ -103,11 +272,29 @@ export default function ElectricityTracker({ isAdmin = false }) {
         ]);
 
         if (!cancelled) {
-          const tataData = snapTata.exists() ? snapTata.data().bills || [] : [];
-          setTataBills(tataData.length > 0 ? tataData : DEFAULT_TATA_SEED);
+          let tataData = snapTata.exists() ? snapTata.data().bills || [] : [];
+          // If stored data contains the old 9-month template or lacks periodLabel, update it to audited data
+          const isOldSeed = tataData.length === 0 ||
+            tataData.some(b => b.id === 1001 || b.id === 1009) ||
+            !tataData.some(b => b.periodLabel);
+
+          if (isOldSeed) {
+            tataData = DEFAULT_TATA_SEED;
+            // Overwrite Firebase with new verified data
+            try {
+              await setDoc(doc(db, 'electricityTracking', tataRecordId), {
+                bills: DEFAULT_TATA_SEED,
+                updatedAt: new Date().toISOString()
+              });
+            } catch (err) {
+              console.warn('Initial seed sync error:', err);
+            }
+          }
+
+          setTataBills(tataData);
           setBuildingABills(snapBuildingA.exists() ? snapBuildingA.data().bills || [] : []);
           setMahavitaranBills(snapMahavitaran.exists() ? snapMahavitaran.data().bills || [] : []);
-          setSaveMsg(`Synced`);
+          setSaveMsg('Synced');
         }
       } catch (err) {
         console.error('Bills load error:', err);
@@ -135,13 +322,18 @@ export default function ElectricityTracker({ isAdmin = false }) {
       await ensureFirebaseSession();
       await setDoc(doc(db, 'electricityTracking', targetId), {
         bills: data,
-        updatedAt: serverTimestamp()
-      }, { merge: true });
+        updatedAt: new Date().toISOString()
+      });
       setSaveStatus('saved');
-      setSaveMsg('Saved ✓');
+      setSaveMsg('All changes saved to cloud');
+      setTimeout(() => {
+        setSaveStatus('idle');
+        setSaveMsg('');
+      }, 3000);
     } catch (err) {
+      console.error('Save error:', err);
       setSaveStatus('error');
-      setSaveMsg('Failed');
+      setSaveMsg('Failed to save to cloud');
     }
   }, []);
 
@@ -160,15 +352,17 @@ export default function ElectricityTracker({ isAdmin = false }) {
     }, 1500);
   };
 
-  const [tataTariffMode, setTataTariffMode] = useState('mseb'); // 'mseb' or 'flat'
-
+  // Dedicated Form State for New Tata Electricity Bill
   const [formData, setFormData] = useState({
+    periodLabel: '',
+    duration: '',
     startMonth: '',
     endMonth: '',
     prevReading: '',
     currReading: '',
     ratePerUnit: '13',
-    // Mahavitaran / Tata MSEB fields
+    consumption: '',
+    // MSEB fields for Mahavitaran tab
     msebFixedCharge: '445.00',
     msebEnergyCharge: '',
     msebWheelingRate: '1.60',
@@ -185,6 +379,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
   const latestTataBill = sortedTataBills[0] || null;
 
+  // Auto-fill next Tata billing cycle based on the latest bill
   const applyNextTataPeriod = () => {
     if (!latestTataBill) return;
     const lastEnd = latestTataBill.endMonth;
@@ -195,26 +390,20 @@ export default function ElectricityTracker({ isAdmin = false }) {
       d.setDate(d.getDate() + 1);
       nextStart = d.toISOString().split('T')[0];
       const d2 = new Date(d);
-      d2.setMonth(d2.getMonth() + 1);
-      d2.setDate(d2.getDate() - 1);
+      d2.setMonth(d2.getMonth() + 4);
       nextEnd = d2.toISOString().split('T')[0];
     }
     const prevReading = String(latestTataBill.currReading || '');
-    setFormData(prev => {
-      const next = {
-        ...prev,
-        startMonth: nextStart || prev.startMonth,
-        endMonth: nextEnd || prev.endMonth,
-        prevReading: prevReading || prev.prevReading
-      };
-      if (next.currReading && n(next.currReading) > n(next.prevReading)) {
-        const units = n(next.currReading) - n(next.prevReading);
-        const { energyTotal, fuelTotal } = calculateMahavitaranSlabs(units);
-        next.msebEnergyCharge = energyTotal.toFixed(2);
-        next.msebFuelAdj = fuelTotal.toFixed(2);
-      }
-      return next;
-    });
+    const autoDuration = nextStart && nextEnd ? computeBillingDuration(nextStart, nextEnd) : '4 Months';
+    setFormData(prev => ({
+      ...prev,
+      periodLabel: `May 26 to Sep 26`,
+      startMonth: nextStart || prev.startMonth,
+      endMonth: nextEnd || prev.endMonth,
+      duration: autoDuration,
+      prevReading: prevReading || prev.prevReading,
+      ratePerUnit: '13'
+    }));
   };
 
   const calculateMahavitaranSlabs = (units) => {
@@ -258,8 +447,23 @@ export default function ElectricityTracker({ isAdmin = false }) {
     setFormData(prev => {
       const next = { ...prev, [field]: val };
 
-      // Auto-calculate slabs for Mahavitaran tab OR Tata tab with MSEB method
-      if ((subTab === 'mahavitaran' || (subTab === 'tata' && tataTariffMode === 'mseb')) && (field === 'prevReading' || field === 'currReading')) {
+      // Auto compute duration if dates change
+      if ((field === 'startMonth' || field === 'endMonth') && next.startMonth && next.endMonth) {
+        if (!next.duration || next.duration.includes('Days')) {
+          next.duration = computeBillingDuration(next.startMonth, next.endMonth);
+        }
+      }
+
+      // Auto calculate units & preview for Tata bills
+      if (subTab === 'tata' && (field === 'prevReading' || field === 'currReading' || field === 'ratePerUnit')) {
+        if (next.prevReading !== '' && next.currReading !== '') {
+          const { units } = calculateSubmeterRollover(next.prevReading, next.currReading);
+          next.consumption = units;
+        }
+      }
+
+      // Auto-calculate slabs for Mahavitaran tab
+      if (subTab === 'mahavitaran' && (field === 'prevReading' || field === 'currReading')) {
         const p = n(next.prevReading);
         const c = n(next.currReading);
         if (c > p && p >= 0) {
@@ -304,55 +508,76 @@ export default function ElectricityTracker({ isAdmin = false }) {
       return;
     }
 
-    const prev = n(formData.prevReading);
-    const curr = n(formData.currReading);
-
-    if (curr < prev) {
-      alert('Current reading cannot be less than previous reading.');
-      return;
-    }
-
     let newBill = {
       ...formData,
       id: Date.now()
     };
 
-    if (subTab === 'mahavitaran' || (subTab === 'tata' && tataTariffMode === 'mseb')) {
+    if (subTab === 'tata') {
+      const calc = calculateTataSubmeterBill(
+        formData.prevReading,
+        formData.currReading,
+        formData.ratePerUnit,
+        formData.consumption ? n(formData.consumption) : null
+      );
+      const computedDuration = formData.duration || computeBillingDuration(formData.startMonth, formData.endMonth) || 'Custom Period';
+      const label = formData.periodLabel || `${formatDateLabel(formData.startMonth)} to ${formatDateLabel(formData.endMonth)}`;
+
+      newBill = {
+        ...newBill,
+        periodLabel: label,
+        duration: computedDuration,
+        ...calc,
+        status: 'Invoiced'
+      };
+
+      const next = [newBill, ...tataBills];
+      setTataBills(next);
+      triggerAutoSave(next, 'tata');
+    } else if (subTab === 'mahavitaran') {
+      const prev = n(formData.prevReading);
+      const curr = n(formData.currReading);
+      if (curr < prev) {
+        alert('Current reading cannot be less than previous reading.');
+        return;
+      }
       const calc = calculateMahavitaranBill(
         formData.prevReading, formData.currReading,
         formData.msebFixedCharge, formData.msebEnergyCharge,
         formData.msebWheelingRate, formData.msebFuelAdj
       );
       newBill = { ...newBill, ...calc };
+      const next = [...mahavitaranBills, newBill];
+      setMahavitaranBills(next);
+      triggerAutoSave(next, 'mahavitaran');
     } else {
+      const prev = n(formData.prevReading);
+      const curr = n(formData.currReading);
+      if (curr < prev) {
+        alert('Current reading cannot be less than previous reading.');
+        return;
+      }
       const consumption = curr - prev;
       const rate = n(formData.ratePerUnit);
       const baseAmount = consumption * rate;
       newBill.consumption = consumption;
       newBill.baseAmount = baseAmount;
       newBill.grandTotal = baseAmount;
-    }
-
-    let next;
-    if (subTab === 'mahavitaran') {
-      next = [...mahavitaranBills, newBill];
-      setMahavitaranBills(next);
-    } else if (subTab === 'buildingA') {
-      next = [...buildingABills, newBill];
+      const next = [...buildingABills, newBill];
       setBuildingABills(next);
-    } else {
-      next = [...tataBills, newBill];
-      setTataBills(next);
+      triggerAutoSave(next, 'buildingA');
     }
-    triggerAutoSave(next, subTab);
 
     // Reset form
     setFormData({
+      periodLabel: '',
+      duration: '',
       startMonth: '',
       endMonth: '',
       prevReading: '',
       currReading: '',
       ratePerUnit: '13',
+      consumption: '',
       msebFixedCharge: '445.00',
       msebEnergyCharge: '',
       msebWheelingRate: '1.60',
@@ -371,25 +596,27 @@ export default function ElectricityTracker({ isAdmin = false }) {
     const current = next[idx];
     const updated = { ...current, [field]: val };
 
-    if (subTab === 'mahavitaran' || subTab === 'tata') {
-      if (['prevReading', 'currReading', 'msebFixedCharge', 'msebEnergyCharge', 'msebWheelingRate', 'msebFuelAdj', 'fixed', 'energy', 'wheelTotal', 'fuel', 'ratePerUnit'].includes(field)) {
-        if (updated.msebEnergyCharge || updated.energy || updated.fixed) {
-          const fixedVal = updated.msebFixedCharge || updated.fixed || '445.00';
-          const wheelVal = updated.msebWheelingRate || '1.60';
-          const calc = calculateMahavitaranBill(
-            updated.prevReading, updated.currReading,
-            fixedVal, updated.msebEnergyCharge || updated.energy,
-            wheelVal, updated.msebFuelAdj || updated.fuel
-          );
-          Object.assign(updated, calc);
-        } else {
-          const prev = n(updated.prevReading);
-          const curr = n(updated.currReading);
-          const rate = n(updated.ratePerUnit || 13);
-          updated.consumption = curr - prev;
-          updated.baseAmount = updated.consumption * rate;
-          updated.grandTotal = updated.baseAmount;
-        }
+    if (subTab === 'tata') {
+      if (['prevReading', 'currReading', 'ratePerUnit', 'consumption'].includes(field)) {
+        const manualUnits = field === 'consumption' ? n(val) : (updated.consumption ? n(updated.consumption) : null);
+        const calc = calculateTataSubmeterBill(
+          updated.prevReading,
+          updated.currReading,
+          updated.ratePerUnit || 13,
+          manualUnits
+        );
+        Object.assign(updated, calc);
+      }
+    } else if (subTab === 'mahavitaran') {
+      if (['prevReading', 'currReading', 'msebFixedCharge', 'msebEnergyCharge', 'msebWheelingRate', 'msebFuelAdj', 'fixed', 'energy', 'wheelTotal', 'fuel'].includes(field)) {
+        const fixedVal = updated.msebFixedCharge || updated.fixed || '445.00';
+        const wheelVal = updated.msebWheelingRate || '1.60';
+        const calc = calculateMahavitaranBill(
+          updated.prevReading, updated.currReading,
+          fixedVal, updated.msebEnergyCharge || updated.energy,
+          wheelVal, updated.msebFuelAdj || updated.fuel
+        );
+        Object.assign(updated, calc);
       }
     } else {
       if (['prevReading', 'currReading', 'ratePerUnit'].includes(field)) {
@@ -428,15 +655,11 @@ export default function ElectricityTracker({ isAdmin = false }) {
     triggerAutoSave(next, subTab);
   };
 
+  // Print single Tata Play Tax Invoice
   const handlePrintTataBill = (bill) => {
     const consumption = n(bill.consumption) || (n(bill.currReading) - n(bill.prevReading));
-    const fixed = n(bill.fixed || bill.msebFixedCharge || 445);
-    const energy = n(bill.energy || bill.msebEnergyCharge || 0);
-    const wheelTotal = n(bill.wheelTotal || (consumption * n(bill.msebWheelingRate || 1.6)));
-    const fuel = n(bill.fuel || bill.msebFuelAdj || 0);
-    const subtotal = n(bill.subtotal) || (fixed + energy + wheelTotal + fuel);
-    const duty = n(bill.duty) || (subtotal * 0.16);
-    const grandTotal = n(bill.grandTotal) || Math.round(subtotal + duty);
+    const rate = n(bill.ratePerUnit) || 13;
+    const grandTotal = n(bill.grandTotal) || (consumption * rate);
     const generatedDate = new Intl.DateTimeFormat('en-IN', {
       day: 'numeric',
       month: 'long',
@@ -447,7 +670,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Tata Electricity Sub-meter Bill — ${formatDateLabel(bill.startMonth)} to ${formatDateLabel(bill.endMonth)}</title>
+        <title>Tata Electricity Sub-Meter Tax Invoice / Bill — ${bill.periodLabel || 'Commercial Invoice'}</title>
         <meta charset="utf-8" />
         <style>
           @page {
@@ -523,12 +746,13 @@ export default function ElectricityTracker({ isAdmin = false }) {
           }
           .meta-item strong {
             display: inline-block;
-            width: 130px;
+            width: 140px;
             color: #334155;
           }
           .reading-card {
-            display: flex;
-            justify-content: space-around;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr 1fr;
+            gap: 12px;
             background: #f0f9ff;
             border: 1px solid #bae6fd;
             border-radius: 6px;
@@ -537,7 +761,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
             text-align: center;
           }
           .reading-col .val {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 800;
             color: #0369a1;
           }
@@ -546,23 +770,36 @@ export default function ElectricityTracker({ isAdmin = false }) {
             text-transform: uppercase;
             font-weight: 700;
             color: #64748b;
+            margin-top: 2px;
+          }
+          .reset-notice {
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+            font-size: 10.5px;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
           }
           table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 18px;
-            font-size: 10.5px;
+            font-size: 11px;
           }
           th {
             background: #0f172a;
             color: #ffffff;
             font-weight: 700;
-            padding: 7px 10px;
+            padding: 8px 12px;
             text-align: left;
             border: 1px solid #0f172a;
           }
           td {
-            padding: 7px 10px;
+            padding: 8px 12px;
             border: 1px solid #cbd5e1;
             vertical-align: middle;
           }
@@ -572,8 +809,8 @@ export default function ElectricityTracker({ isAdmin = false }) {
           .amount-col {
             text-align: right;
             font-family: monospace;
-            font-weight: 600;
-            font-size: 11px;
+            font-weight: 700;
+            font-size: 11.5px;
           }
           .subtotal-row td {
             background: #f1f5f9;
@@ -581,13 +818,12 @@ export default function ElectricityTracker({ isAdmin = false }) {
           }
           .grand-total-row td {
             background: #0f172a !important;
-            color: #ffffff;
+            color: #ffffff !important;
             font-weight: 800;
             font-size: 13px;
           }
           .grand-total-row .amount-col {
-            color: #4ade80;
-            font-size: 14px;
+            color: #4ade80 !important;
           }
           .bank-details {
             background: #fefce8;
@@ -596,6 +832,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
             padding: 10px 14px;
             margin-bottom: 20px;
             font-size: 10px;
+            line-height: 1.5;
           }
           .bank-details h4 {
             margin: 0 0 4px 0;
@@ -655,81 +892,78 @@ export default function ElectricityTracker({ isAdmin = false }) {
           <div class="meta-grid">
             <div class="meta-box">
               <h4>Consumer &amp; Location Details</h4>
-              <div class="meta-item"><strong>Consumer / Tenant:</strong> Tata Play Limited (Tata Sky Broadband)</div>
-              <div class="meta-item"><strong>Connection Type:</strong> Sub-Meter Commercial Infrastructure</div>
+              <div class="meta-item"><strong>Consumer / Client:</strong> Tata Play Limited (Tata Sky Broadband Hub)</div>
+              <div class="meta-item"><strong>Connection Type:</strong> Dedicated Commercial Sub-Meter (4-Digit)</div>
               <div class="meta-item"><strong>Meter No / Tag:</strong> TATA-EUR-SB-01</div>
               <div class="meta-item"><strong>Location:</strong> Club House Terrace Hub, Majestique Euriska</div>
             </div>
             <div class="meta-box">
-              <h4>Billing &amp; Invoice Reference</h4>
+              <h4>Billing &amp; Period Reference</h4>
               <div class="meta-item"><strong>Invoice No:</strong> TEB-${bill.id || Date.now()}</div>
               <div class="meta-item"><strong>Bill Date:</strong> ${generatedDate}</div>
-              <div class="meta-item"><strong>Billing Period:</strong> ${formatDateLabel(bill.startMonth)} to ${formatDateLabel(bill.endMonth)}</div>
-              <div class="meta-item"><strong>Tariff Structure:</strong> Maharashtra Commercial Sub-Meter</div>
+              <div class="meta-item"><strong>Billing Period:</strong> <strong>${bill.periodLabel || (formatDateLabel(bill.startMonth) + ' to ' + formatDateLabel(bill.endMonth))}</strong></div>
+              <div class="meta-item"><strong>Duration:</strong> <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px; font-weight: 700;">${bill.duration || computeBillingDuration(bill.startMonth, bill.endMonth) || '—'}</span></div>
             </div>
           </div>
 
+          ${bill.isRollover ? `
+            <div class="reset-notice">
+              <span>🔄</span>
+              <div>
+                <strong>4-Digit Meter Rollover / Reset Notice:</strong> Current reading (${bill.currReading}) is less than previous reading (${bill.prevReading}) due to sub-meter reset after 10,000 units.
+                <strong>Units Consumed = (10,000 - ${bill.prevReading}) + ${bill.currReading} = ${fmt(consumption)} Units</strong>.
+              </div>
+            </div>
+          ` : ''}
+
           <div class="reading-card">
             <div class="reading-col">
-              <div class="val">${fmt(n(bill.prevReading))}</div>
-              <div class="lbl">Previous Reading</div>
+              <div class="val">${bill.prevReading}</div>
+              <div class="lbl">Previous Reading (A)</div>
             </div>
             <div class="reading-col">
-              <div class="val">${fmt(n(bill.currReading))}</div>
-              <div class="lbl">Current Reading</div>
+              <div class="val">${bill.currReading}</div>
+              <div class="lbl">Current Reading (B)</div>
             </div>
             <div class="reading-col">
-              <div class="val" style="color: #ea580c;">${fmt(consumption)}</div>
-              <div class="lbl">Units Consumed</div>
+              <div class="val" style="color: #ea580c;">${fmt(consumption)} Units</div>
+              <div class="lbl">Consumed (B - A) ${bill.isRollover ? '• Rollover' : ''}</div>
+            </div>
+            <div class="reading-col">
+              <div class="val" style="color: #2563eb;">₹${Number(rate).toFixed(2)}</div>
+              <div class="lbl">Rate / Unit</div>
             </div>
           </div>
 
           <table>
             <thead>
               <tr>
-                <th style="width: 35px; text-align: center;">#</th>
-                <th>Itemized Tariff Description</th>
-                <th style="width: 140px; text-align: center;">Rate / Basis</th>
-                <th style="width: 140px; text-align: right;">Amount (₹)</th>
+                <th style="width: 40px; text-align: center;">#</th>
+                <th>Billing &amp; Calculation Description</th>
+                <th style="width: 140px; text-align: center;">Duration</th>
+                <th style="width: 130px; text-align: center;">Rate / Unit</th>
+                <th style="width: 150px; text-align: right;">Total Amount (₹)</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td style="text-align: center; color: #64748b;">1</td>
-                <td><strong>Fixed / Demand Charges</strong> (स्थिर आकार)</td>
-                <td style="text-align: center; color: #64748b;">Monthly Fixed</td>
-                <td class="amount-col">₹${fmt(fixed)}</td>
-              </tr>
-              <tr>
-                <td style="text-align: center; color: #64748b;">2</td>
-                <td><strong>Energy Charges</strong> (वीज आकार - MSEB Commercial Slabs)</td>
-                <td style="text-align: center; color: #64748b;">${fmt(consumption)} Units</td>
-                <td class="amount-col">₹${fmt(energy)}</td>
-              </tr>
-              <tr>
-                <td style="text-align: center; color: #64748b;">3</td>
-                <td><strong>Wheeling Charges</strong> (वहन आकार)</td>
-                <td style="text-align: center; color: #64748b;">@ ₹1.60 / Unit</td>
-                <td class="amount-col">₹${fmt(wheelTotal)}</td>
-              </tr>
-              <tr>
-                <td style="text-align: center; color: #64748b;">4</td>
-                <td><strong>Fuel Adjustment Charges</strong> (FAC - इंधन अधिभार)</td>
-                <td style="text-align: center; color: #64748b;">Per Unit Slabs</td>
-                <td class="amount-col">₹${fmt(fuel)}</td>
+                <td>
+                  <strong>Electricity Consumption (${bill.periodLabel || 'Commercial Billing'})</strong><br />
+                  <span style="color: #64748b; font-size: 10px;">
+                    ${bill.calculationNote || `Previous: ${bill.prevReading} ➔ Current: ${bill.currReading} = ${consumption} Units`}
+                  </span>
+                </td>
+                <td style="text-align: center; font-weight: 600;">${bill.duration || '—'}</td>
+                <td style="text-align: center; font-weight: 700; color: #2563eb;">₹${Number(rate).toFixed(2)} / unit</td>
+                <td class="amount-col">₹${fmt(grandTotal)}</td>
               </tr>
               <tr class="subtotal-row">
-                <td colspan="3" style="text-align: right;">SUBTOTAL (Base Bill Amount)</td>
-                <td class="amount-col" style="color: #0f172a;">₹${fmt(subtotal)}</td>
-              </tr>
-              <tr>
-                <td style="text-align: center; color: #64748b;">5</td>
-                <td><strong>Maharashtra Electricity Duty</strong> (शासकीय वीज शुल्क @ 16%)</td>
-                <td style="text-align: center; color: #64748b;">16.00% of Subtotal</td>
-                <td class="amount-col">₹${fmt(duty)}</td>
+                <td colspan="4" style="text-align: right;">Total Sub-Meter Charges (${consumption.toLocaleString('en-IN')} units @ ₹${rate.toFixed(2)})</td>
+                <td class="amount-col" style="color: #0f172a;">₹${fmt(grandTotal)}</td>
               </tr>
               <tr class="grand-total-row">
-                <td colspan="3" style="text-align: right; text-transform: uppercase;">NET TOTAL PAYABLE (ROUNDED)</td>
+                <td colspan="4" style="text-align: right; text-transform: uppercase;">NET TOTAL PAYABLE (INR)</td>
                 <td class="amount-col">₹${fmt(grandTotal)}</td>
               </tr>
             </tbody>
@@ -738,8 +972,8 @@ export default function ElectricityTracker({ isAdmin = false }) {
           <div class="bank-details">
             <h4>Society Bank Account for Payment (NEFT / RTGS / IMPS)</h4>
             <div><strong>Account Name:</strong> MAJESTIQUE EURISKA CO-OPERATIVE HOUSING SOCIETY LTD.</div>
-            <div><strong>Bank:</strong> Union Bank of India / HDFC Bank • <strong>Branch:</strong> Kharadi Pune</div>
-            <div><strong>A/C No:</strong> 50200065450992 • <strong>Payment Due:</strong> Within 10 Days of Bill Issuance</div>
+            <div><strong>Bank:</strong> Union Bank of India / HDFC Bank • <strong>Branch:</strong> Kharadi, Pune</div>
+            <div><strong>Account Number:</strong> 50200065450992 • <strong>Payment Due:</strong> Within 10 Days of Bill Issuance</div>
           </div>
 
           <div class="signatures">
@@ -758,7 +992,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
           </div>
 
           <div class="footer">
-            <div>Majestique Euriska CHS Ltd. • Tata Sub-Meter Electricity Accounting</div>
+            <div>Majestique Euriska CHS Ltd. • Tata Play Sub-Meter Electricity Accounting</div>
             <div>Generated on: ${generatedDate} • Valid Computer Generated Document</div>
           </div>
         </div>
@@ -781,6 +1015,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
     }
   };
 
+  // Print all Tata Play Electricity Bills statement
   const handlePrintAllTataBills = () => {
     const printedDate = new Intl.DateTimeFormat('en-IN', {
       day: 'numeric',
@@ -813,13 +1048,17 @@ export default function ElectricityTracker({ isAdmin = false }) {
           .sub { font-size: 10px; color: #475569; margin: 0 0 6px 0; }
           .badge {
             display: inline-block; background: #0f172a; color: #fff;
-            padding: 3px 12px; border-radius: 4px; font-weight: 700; font-size: 11px;
+            padding: 4px 14px; border-radius: 4px; font-weight: 700; font-size: 11px;
           }
-          .kpi-row { display: flex; gap: 12px; margin-bottom: 12px; }
-          .kpi { flex: 1; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; background: #f8fafc; }
+          .notice {
+            background: #fef3c7; border: 1px solid #fde68a; border-radius: 6px;
+            padding: 6px 12px; font-size: 9.5px; color: #92400e; margin-bottom: 12px;
+          }
+          .kpi-row { display: flex; gap: 12px; margin-bottom: 14px; }
+          .kpi { flex: 1; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; background: #f8fafc; }
           table { width: 100%; border-collapse: collapse; font-size: 9.5px; }
-          th { background: #0f172a; color: #fff; padding: 6px 8px; text-align: left; }
-          td { padding: 6px 8px; border: 1px solid #cbd5e1; }
+          th { background: #0f172a; color: #fff; padding: 7px 8px; text-align: left; }
+          td { padding: 7px 8px; border: 1px solid #cbd5e1; vertical-align: middle; }
           tr:nth-child(even) td { background: #f8fafc; }
           .amount { text-align: right; font-family: monospace; font-weight: 600; }
           .total-row td { background: #0f172a !important; color: #fff; font-weight: 800; }
@@ -834,6 +1073,12 @@ export default function ElectricityTracker({ isAdmin = false }) {
           <div class="sub">Survey No. 43/1 &amp; 43/2, Near EON IT Park, Kharadi, Pune - 411014</div>
           <div class="badge">Tata Electricity Sub-Meter Consolidated Account Statement</div>
         </div>
+
+        <div class="notice">
+          <strong>4-Digit Sub-Meter Rollover Principle (Reset after 10000):</strong>
+          When sub-meter reaches 9,999, it cycles back to 0000. When Current Reading (B) &lt; Previous Reading (A), units are calculated as: <strong>(10,000 - A) + B</strong>.
+        </div>
+
         <div class="kpi-row">
           <div class="kpi">
             <div style="font-size: 9px; color: #64748b; font-weight: 700;">CONSUMER / CLIENT</div>
@@ -844,50 +1089,58 @@ export default function ElectricityTracker({ isAdmin = false }) {
             <div style="font-size: 13px; font-weight: 800; color: #ea580c;">${fmt(totalConsumption)} Units</div>
           </div>
           <div class="kpi">
-            <div style="font-size: 9px; color: #64748b; font-weight: 700;">TOTAL BILL PAID / BILLED</div>
+            <div style="font-size: 9px; color: #64748b; font-weight: 700;">TOTAL BILL AMOUNT</div>
             <div style="font-size: 13px; font-weight: 800; color: #0284c7;">₹${fmt(totalAmount)}</div>
           </div>
+          <div class="kpi">
+            <div style="font-size: 9px; color: #64748b; font-weight: 700;">BILLING CYCLES</div>
+            <div style="font-size: 13px; font-weight: 800; color: #16a34a;">${filteredBills.length} Billing Periods</div>
+          </div>
         </div>
+
         <table>
           <thead>
             <tr>
               <th style="width: 30px; text-align: center;">#</th>
-              <th>Billing Period</th>
-              <th style="width: 75px; text-align: right;">Prev Read</th>
-              <th style="width: 75px; text-align: right;">Curr Read</th>
-              <th style="width: 70px; text-align: right;">Units</th>
-              <th style="width: 75px; text-align: right;">Fixed (₹)</th>
-              <th style="width: 90px; text-align: right;">Energy (₹)</th>
-              <th style="width: 85px; text-align: right;">Wheeling (₹)</th>
-              <th style="width: 75px; text-align: right;">FAC Fuel (₹)</th>
-              <th style="width: 80px; text-align: right;">Duty 16% (₹)</th>
-              <th style="width: 100px; text-align: right;">Grand Total (₹)</th>
+              <th style="width: 170px;">Billing Period</th>
+              <th style="width: 120px; text-align: center;">Duration</th>
+              <th style="width: 75px; text-align: right;">Prev Read (A)</th>
+              <th style="width: 75px; text-align: right;">Curr Read (B)</th>
+              <th style="width: 110px; text-align: center;">Meter Status</th>
+              <th style="width: 85px; text-align: right;">Units (B - A)</th>
+              <th style="width: 85px; text-align: right;">Rate / Unit</th>
+              <th>Calculation Breakdown</th>
+              <th style="width: 100px; text-align: right;">Total Amount (₹)</th>
             </tr>
           </thead>
           <tbody>
             ${filteredBills.map((b, i) => `
               <tr>
                 <td style="text-align: center;">${i + 1}</td>
-                <td><strong>${formatDateLabel(b.startMonth)}</strong> to <strong>${formatDateLabel(b.endMonth)}</strong></td>
-                <td class="amount">${n(b.prevReading)}</td>
-                <td class="amount">${n(b.currReading)}</td>
-                <td class="amount" style="color: #ea580c; font-weight: 700;">${n(b.consumption)}</td>
-                <td class="amount">₹${fmt(n(b.fixed || b.msebFixedCharge || 445))}</td>
-                <td class="amount">₹${fmt(n(b.energy || b.msebEnergyCharge || 0))}</td>
-                <td class="amount">₹${fmt(n(b.wheelTotal || (n(b.consumption) * 1.6)))}</td>
-                <td class="amount">₹${fmt(n(b.fuel || b.msebFuelAdj || 0))}</td>
-                <td class="amount">₹${fmt(n(b.duty || (n(b.grandTotal) * 0.16 / 1.16)))}</td>
-                <td class="amount" style="color: #0284c7; font-weight: 700;">₹${fmt(n(b.grandTotal))}</td>
+                <td><strong>${b.periodLabel || (formatDateLabel(b.startMonth) + ' to ' + formatDateLabel(b.endMonth))}</strong></td>
+                <td style="text-align: center; color: #0369a1; font-weight: 600;">${b.duration || computeBillingDuration(b.startMonth, b.endMonth) || '—'}</td>
+                <td class="amount">${b.prevReading}</td>
+                <td class="amount">${b.currReading}</td>
+                <td style="text-align: center;">
+                  ${b.isRollover || n(b.currReading) < n(b.prevReading)
+                    ? '<span style="background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 8.5px;">🔄 10k Reset</span>'
+                    : '<span style="color: #64748b; font-size: 8.5px;">Normal</span>'}
+                </td>
+                <td class="amount" style="color: #ea580c; font-weight: 700;">${fmt(n(b.consumption))}</td>
+                <td class="amount" style="color: #2563eb; font-weight: 700;">₹${Number(b.ratePerUnit || 13).toFixed(2)}</td>
+                <td style="color: #475569; font-size: 9px;">${b.calculationNote || `${b.consumption} × ₹${b.ratePerUnit}`}</td>
+                <td class="amount" style="color: #0284c7; font-weight: 800;">₹${fmt(n(b.grandTotal))}</td>
               </tr>
             `).join('')}
             <tr class="total-row">
-              <td colspan="4" style="text-align: right;">GRAND TOTAL</td>
+              <td colspan="6" style="text-align: right;">GRAND TOTAL</td>
               <td class="amount" style="color: #ea580c;">${fmt(totalConsumption)}</td>
-              <td colspan="5"></td>
+              <td colspan="2"></td>
               <td class="amount" style="color: #4ade80;">₹${fmt(totalAmount)}</td>
             </tr>
           </tbody>
         </table>
+
         <div class="signatures">
           <div class="sig-box">
             <div class="sig-line">Prepared By (Society Manager)</div>
@@ -899,6 +1152,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
             <div class="sig-line">Society Secretary / Chairman</div>
           </div>
         </div>
+
         <script>
           window.onload = function() {
             setTimeout(function() { window.print(); }, 250);
@@ -921,8 +1175,10 @@ export default function ElectricityTracker({ isAdmin = false }) {
       if (!searchText) return true;
       const s = searchText.toLowerCase();
       return (
+        (c.periodLabel && c.periodLabel.toLowerCase().includes(s)) ||
         (c.startMonth && String(c.startMonth).toLowerCase().includes(s)) ||
-        (c.endMonth && String(c.endMonth).toLowerCase().includes(s))
+        (c.endMonth && String(c.endMonth).toLowerCase().includes(s)) ||
+        (c.duration && c.duration.toLowerCase().includes(s))
       );
     })
     .sort((a, b) => {
@@ -944,7 +1200,21 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
   const handleDownloadExcel = () => {
     let rows = [];
-    if (subTab === 'mahavitaran' || subTab === 'tata') {
+    if (subTab === 'tata') {
+      rows = filteredBills.map((c, i) => ({
+        'Sr. No': i + 1,
+        'Billing Period': c.periodLabel || `${formatDateLabel(c.startMonth)} to ${formatDateLabel(c.endMonth)}`,
+        'Duration': c.duration || computeBillingDuration(c.startMonth, c.endMonth),
+        'Previous Reading (A)': c.prevReading,
+        'Current Reading (B)': c.currReading,
+        'Rollover Status': c.isRollover || n(c.currReading) < n(c.prevReading) ? '10k Unit Reset Rollover' : 'Normal',
+        'Units Consumed (B - A)': n(c.consumption),
+        'Per Unit Charge (₹)': n(c.ratePerUnit),
+        'Calculation Note': c.calculationNote || `${c.consumption} × ₹${c.ratePerUnit}`,
+        'Total Bill Amount (₹)': n(c.grandTotal),
+        'Status': c.status || 'Paid'
+      }));
+    } else if (subTab === 'mahavitaran') {
       rows = filteredBills.map((c, i) => ({
         'Sr. No': i + 1,
         'Start Date': formatDateLabel(c.startMonth),
@@ -974,68 +1244,18 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
-    const sheetName = subTab === 'tata' ? 'Tata' : (subTab === 'mahavitaran' ? 'Mahavitaran' : 'A Building');
+    const sheetName = subTab === 'tata' ? 'Tata Electricity' : (subTab === 'mahavitaran' ? 'Mahavitaran' : 'A Building');
     XLSX.utils.book_append_sheet(wb, ws, sheetName);
     XLSX.writeFile(wb, `${sheetName.replace(/\s+/g, '_')}_Bills.xlsx`);
   };
 
-  const now = new Date();
-  const fifteenMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 15, 1);
-
-  const monthBuckets = {};
-
-  filteredBills.forEach(b => {
-    if (!b.startMonth || !b.endMonth) return;
-    const start = new Date(b.startMonth);
-    const end = new Date(b.endMonth);
-    if (isNaN(start) || isNaN(end)) return;
-
-    let totalDays = Math.round((end - start) / 86400000);
-    if (totalDays <= 0) {
-      const parts = b.startMonth.split('-');
-      if (parts.length >= 2) totalDays = new Date(parts[0], parts[1], 0).getDate();
-      else totalDays = 1;
-    }
-
-    const dailyAvg = n(b.consumption) / totalDays;
-
-    if (start.getTime() === end.getTime()) {
-      end.setDate(end.getDate() + totalDays);
-    }
-
-    for (let current = new Date(start); current < end; current.setDate(current.getDate() + 1)) {
-      if (current < fifteenMonthsAgo) continue;
-
-      const y = current.getFullYear();
-      const m = current.getMonth();
-      const key = `${y}-${m}`;
-
-      if (!monthBuckets[key]) {
-        monthBuckets[key] = {
-          year: y,
-          month: m,
-          totalConsumption: 0,
-          daysInMonth: new Date(y, m + 1, 0).getDate()
-        };
-      }
-      monthBuckets[key].totalConsumption += dailyAvg;
-    }
-  });
-
-  const chartData = Object.values(monthBuckets)
-    .sort((a, b) => {
-      if (a.year !== b.year) return a.year - b.year;
-      return a.month - b.month;
-    })
-    .map(bucket => {
-      const date = new Date(bucket.year, bucket.month, 1);
-      const label = new Intl.DateTimeFormat('en-IN', { month: 'short', year: 'numeric' }).format(date);
-      return {
-        name: label,
-        "Total Consumed": parseFloat(bucket.totalConsumption.toFixed(2)),
-        "Daily Avg": parseFloat((bucket.totalConsumption / bucket.daysInMonth).toFixed(2))
-      };
-    });
+  const chartData = useMemo(() => {
+    return [...filteredBills].reverse().map(b => ({
+      name: b.periodLabel ? b.periodLabel.replace('Electricity Bill Tata Play ', '').slice(0, 16) : formatDateLabel(b.startMonth),
+      "Total Consumed": n(b.consumption),
+      "Total Bill (₹)": n(b.grandTotal)
+    }));
+  }, [filteredBills]);
 
   const renderTabButton = (id, icon, label) => (
     <button
@@ -1064,6 +1284,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
         </div>
       </div>
 
+      {/* Header Banner */}
       <div className="table-card" style={{ padding: 0 }}>
         <div className="attendance-table-card__header">
           <div>
@@ -1073,7 +1294,11 @@ export default function ElectricityTracker({ isAdmin = false }) {
             <h3 style={{ marginBottom: '4px' }}>
               {subTab === 'tata' ? 'Tata Electricity Bills' : (subTab === 'mahavitaran' ? 'MSEB Detailed Bills' : 'A Building Bills')}
             </h3>
-            {subTab === 'tata' && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>Consumer: Tata Play Limited (Tata Sky Broadband Hub) • Sub-Meter No: TATA-EUR-01 • Billing Cycle: 15th to 14th Monthly</p>}
+            {subTab === 'tata' && (
+              <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>
+                Consumer: <strong>Tata Play Limited</strong> (Broadband Hub) • Meter No: <strong>TATA-EUR-01</strong> • 4-Digit Dial with <strong>10,000 Reset Rollover</strong>
+              </p>
+            )}
             {subTab === 'buildingA' && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>Customer Number: 17000358685</p>}
             {subTab === 'mahavitaran' && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>Detailed breakdown per MSEB format</p>}
           </div>
@@ -1084,14 +1309,64 @@ export default function ElectricityTracker({ isAdmin = false }) {
         </div>
       </div>
 
-      {/* SEARCH ZONE */}
+      {/* TATA PLAY 10,000 RESET EXPLAINER & TARIFF PROGRESSION BANNER */}
+      {subTab === 'tata' && (
+        <div style={{
+          background: 'linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%)',
+          border: '1px solid #bfdbfe',
+          borderRadius: '16px',
+          padding: '18px 22px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '1.6rem' }}>🔄</span>
+              <div>
+                <h4 style={{ margin: 0, color: '#1e3a8a', fontSize: '1rem' }}>4-Digit Sub-Meter Rollover Principle (Reset After 10,000 Units)</h4>
+                <p style={{ margin: '2px 0 0 0', fontSize: '0.85rem', color: '#334155' }}>
+                  The sub-meter has 4 digits (0000 to 9999). When reading wraps past 9999, it cycles back to 0000.
+                  Whenever <strong>Current Reading (B) &lt; Previous Reading (A)</strong>, consumption is: <code>Units = (10,000 - A) + B</code>.
+                </p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid #fde68a' }}>
+                🔄 Sep 25 – May 26: 2568 ➔ 1557 (8,988 U)
+              </span>
+              <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid #fde68a' }}>
+                🔄 Mar 25 – Aug 25: 9073 ➔ 2568 (3,495 U)
+              </span>
+              <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid #fde68a' }}>
+                🔄 Mar 23 – Jul 23: 7629 ➔ 0177 (2,548 U)
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', borderTop: '1px solid #dbeafe', paddingTop: '10px', flexWrap: 'wrap', fontSize: '0.85rem' }}>
+            <span style={{ fontWeight: 700, color: '#1e40af' }}>📈 Tariff Rate Progression:</span>
+            <span style={{ background: 'white', padding: '3px 10px', borderRadius: '8px', border: '1px solid #cbd5e1', color: '#475569' }}>
+              <strong>Phase 1 (Mar 23 – Jan 24):</strong> ₹11.50 / unit
+            </span>
+            <span style={{ background: 'white', padding: '3px 10px', borderRadius: '8px', border: '1px solid #cbd5e1', color: '#475569' }}>
+              <strong>Phase 2 (Feb 24 – May 24):</strong> ₹12.50 / unit
+            </span>
+            <span style={{ background: '#dbeafe', padding: '3px 10px', borderRadius: '8px', border: '1px solid #93c5fd', color: '#1e40af', fontWeight: 700 }}>
+              <strong>Phase 3 (Jun 24 – May 26):</strong> ₹13.00 / unit (Current)
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* SEARCH & ACTIONS ZONE */}
       <div className="section-card" style={{ padding: '16px 24px', background: '#f8fafc', border: '1px solid var(--line)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <div className="filter-field" style={{ flex: 1, minWidth: '280px', margin: 0 }}>
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>🔍 Search Dates</label>
+            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>🔍 Search Period / Dates / Duration</label>
             <input
               type="search"
-              placeholder="Search YYYY-MM..."
+              placeholder="Search Sep 25, 2025, 6 Months, etc..."
               value={searchText}
               onChange={e => setSearchText(e.target.value)}
               className="attendance-register-input"
@@ -1114,218 +1389,209 @@ export default function ElectricityTracker({ isAdmin = false }) {
         </div>
       </div>
 
-      {/* SUMMARY ZONE */}
+      {/* KPI METRICS ZONE */}
       {filteredBills.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <div className="attendance-summary-grid" style={{ background: '#f0f9ff', padding: '20px', borderRadius: '16px', border: '1px solid #bae6fd' }}>
-            <div style={{ gridColumn: '1 / -1', marginBottom: '10px' }}>
-              <p className="eyebrow" style={{ color: '#0369a1' }}>Total Statistics</p>
+          <div className="attendance-summary-grid" style={{
+            background: 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)',
+            padding: '20px',
+            borderRadius: '16px',
+            border: '1px solid #bae6fd'
+          }}>
+            <div style={{ gridColumn: '1 / -1', marginBottom: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <p className="eyebrow" style={{ color: '#0369a1', margin: 0 }}>Tata Electricity Sub-Meter Consolidated Metrics</p>
+              <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{filteredBills.length} Billing Periods Tracked</span>
             </div>
-            <div className="accounting-summary-card" style={{ background: 'white' }}>
-              <p className="eyebrow">Total Consumption</p>
-              <h3 style={{ color: '#ea580c' }}>{fmt(totalConsumption)} Units</h3>
+
+            <div className="accounting-summary-card" style={{ background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
+              <p className="eyebrow">Total Amount Billed</p>
+              <h3 style={{ color: '#0369a1', fontSize: '1.6rem' }}>₹{fmt(totalAmount)}</h3>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>Full 8-period audited total</p>
             </div>
-            <div className="accounting-summary-card" style={{ background: 'white' }}>
-              <p className="eyebrow">Total Bill Paid</p>
-              <h3 style={{ color: '#0369a1' }}>₹{fmt(totalAmount)}</h3>
+
+            <div className="accounting-summary-card" style={{ background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
+              <p className="eyebrow">Total Energy Consumed</p>
+              <h3 style={{ color: '#ea580c', fontSize: '1.6rem' }}>{fmt(totalConsumption)} Units</h3>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>Avg ~{fmt(totalConsumption / filteredBills.length)} units / bill</p>
+            </div>
+
+            <div className="accounting-summary-card" style={{ background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
+              <p className="eyebrow">Active Tariff Rate</p>
+              <h3 style={{ color: '#16a34a', fontSize: '1.6rem' }}>₹13.00 / Unit</h3>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>Progressed from ₹11.50 ➔ ₹12.50</p>
+            </div>
+
+            <div className="accounting-summary-card" style={{ background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
+              <p className="eyebrow">Meter Continuity</p>
+              <h3 style={{ color: '#8b5cf6', fontSize: '1.6rem' }}>3 Rollovers</h3>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>7629 ➔ 1557 (0 gaps)</p>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-            <div className="section-card" style={{ padding: '24px', border: '1px solid var(--line)' }}>
-              <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>Total Monthly Consumption (Last 15 Months)</h4>
-              <div style={{ width: '100%', height: 280 }}>
-                {chartData.length > 0 ? (
-                  <ResponsiveContainer>
-                    <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dx={-10} />
-                      <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                      <Bar dataKey="Total Consumed" fill="#0284c7" radius={[4, 4, 0, 0]} maxBarSize={50} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
-                    No data in the last 15 months.
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="section-card" style={{ padding: '24px', border: '1px solid var(--line)' }}>
-              <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>Daily Average Consumption (Last 15 Months)</h4>
-              <div style={{ width: '100%', height: 280 }}>
-                {chartData.length > 0 ? (
-                  <ResponsiveContainer>
-                    <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dx={-10} />
-                      <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                      <Bar dataKey="Daily Avg" fill="#ea580c" radius={[4, 4, 0, 0]} maxBarSize={50} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
-                    No data in the last 15 months.
-                  </div>
-                )}
-              </div>
+          {/* HISTORICAL CONSUMPTION CHART */}
+          <div className="section-card" style={{ padding: '24px', border: '1px solid var(--line)' }}>
+            <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>Electricity Consumption by Billing Period (kWh Units)</h4>
+            <div style={{ width: '100%', height: 260 }}>
+              <ResponsiveContainer>
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11 }} dx={-10} />
+                  <Tooltip
+                    cursor={{ fill: '#f1f5f9' }}
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  />
+                  <Bar dataKey="Total Consumed" fill="#0284c7" radius={[6, 6, 0, 0]} maxBarSize={45} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
       )}
 
-      {/* ADD NEW BILL FORM */}
+      {/* CREATE NEW TATA ELECTRICITY BILL FORM (ADMIN ONLY) */}
       {isAdmin && (
-        <div className="section-card" style={{ padding: '24px' }}>
+        <div className="section-card" style={{ padding: '24px', border: '1px solid var(--line)', background: '#ffffff', borderRadius: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
-            <h4 style={{ margin: 0, color: 'var(--ink)' }}>
-              ➕ {subTab === 'tata' ? 'Create New Tata Electricity Bill' : (subTab === 'mahavitaran' ? 'Add Mahavitaran MSEB Bill' : 'Add A Building Bill')}
-            </h4>
-            {subTab === 'tata' && (
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Billing Tariff:</span>
-                <select
-                  value={tataTariffMode}
-                  onChange={e => setTataTariffMode(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ width: 'auto', padding: '6px 12px', background: 'white', fontSize: '0.85rem', fontWeight: 600 }}
-                >
-                  <option value="mseb">MSEB Commercial Slabs (Standard Tata Tower)</option>
-                  <option value="flat">Commercial Flat Rate (₹/unit)</option>
-                </select>
-                {latestTataBill && (
-                  <button
-                    type="button"
-                    className="button-secondary"
-                    onClick={applyNextTataPeriod}
-                    style={{ padding: '6px 14px', fontSize: '0.85rem', background: '#eff6ff', color: '#1d4ed8', borderColor: '#bfdbfe', fontWeight: 600 }}
-                    title="Pre-fills start date from last cycle and previous reading"
-                  >
-                    ⚡ Auto-Fill Next Cycle ({latestTataBill.currReading} U)
-                  </button>
-                )}
-              </div>
+            <div>
+              <h4 style={{ margin: 0, color: 'var(--ink)' }}>
+                ➕ {subTab === 'tata' ? 'Create New Tata Electricity Bill' : (subTab === 'mahavitaran' ? 'Add Mahavitaran MSEB Bill' : 'Add A Building Bill')}
+              </h4>
+              {subTab === 'tata' && (
+                <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: 'var(--muted)' }}>
+                  Enter sub-meter readings and duration. The system automatically detects 10,000 reset rollover if B &lt; A.
+                </p>
+              )}
+            </div>
+
+            {subTab === 'tata' && latestTataBill && (
+              <button
+                type="button"
+                className="button-secondary"
+                onClick={applyNextTataPeriod}
+                style={{ padding: '8px 16px', fontSize: '0.85rem', background: '#eff6ff', color: '#1d4ed8', borderColor: '#bfdbfe', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}
+                title="Pre-fills start date and previous reading from latest bill"
+              >
+                <span>⚡</span> Auto-Fill Next Cycle (Prev: {latestTataBill.currReading})
+              </button>
             )}
           </div>
 
-          <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
+          <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '16px' }}>
+            {subTab === 'tata' && (
+              <>
+                <div className="field-group" style={{ gridColumn: 'span 2' }}>
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Billing Period Name <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input
+                    className="attendance-register-input"
+                    style={{ textAlign: 'left', background: 'white' }}
+                    type="text"
+                    placeholder="e.g. May 26 to Sep 26"
+                    value={formData.periodLabel}
+                    onChange={e => handleFormChange('periodLabel', e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Duration <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input
+                    className="attendance-register-input"
+                    style={{ textAlign: 'left', background: 'white' }}
+                    type="text"
+                    placeholder="e.g. 4 Months (120 Days)"
+                    value={formData.duration}
+                    onChange={e => handleFormChange('duration', e.target.value)}
+                    required
+                  />
+                </div>
+              </>
+            )}
+
             <div className="field-group">
               <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Start Date <span style={{ color: '#ef4444' }}>*</span></label>
               <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.startMonth} onChange={e => handleFormChange('startMonth', e.target.value)} required />
             </div>
+
             <div className="field-group">
               <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>End Date <span style={{ color: '#ef4444' }}>*</span></label>
               <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.endMonth} onChange={e => handleFormChange('endMonth', e.target.value)} required />
             </div>
+
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Previous Reading <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="0" value={formData.prevReading} onChange={e => handleFormChange('prevReading', e.target.value)} required />
-            </div>
-            <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Current Reading <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="0" value={formData.currReading} onChange={e => handleFormChange('currReading', e.target.value)} required />
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Previous Reading (A) <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="e.g. 2568" value={formData.prevReading} onChange={e => handleFormChange('prevReading', e.target.value)} required />
             </div>
 
-            {subTab === 'mahavitaran' || (subTab === 'tata' && tataTariffMode === 'mseb') ? (
-              <>
-                {subTab === 'mahavitaran' && (
-                  <div className="field-group">
-                    <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Meter Type</label>
-                    <select
-                      className="attendance-register-input"
-                      style={{ textAlign: 'left', background: 'white' }}
-                      value={formData.msebFixedCharge === '140.00' ? '140.00' : formData.msebFixedCharge === '445.00' ? '445.00' : 'custom'}
-                      onChange={e => {
-                        if (e.target.value !== 'custom') {
-                          handleFormChange('msebFixedCharge', e.target.value);
-                        }
-                      }}
-                    >
-                      <option value="140.00">Individual (4 kW)</option>
-                      <option value="445.00">Society (10 kW)</option>
-                      <option value="custom">Custom...</option>
-                    </select>
+            <div className="field-group">
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Current Reading (B) <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="e.g. 1557" value={formData.currReading} onChange={e => handleFormChange('currReading', e.target.value)} required />
+            </div>
+
+            <div className="field-group">
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Per Unit Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="13.00" value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
+            </div>
+
+            {/* Live calculation banner if readings are filled */}
+            {subTab === 'tata' && formData.prevReading !== '' && formData.currReading !== '' && (
+              <div style={{
+                gridColumn: '1 / -1',
+                background: n(formData.currReading) < n(formData.prevReading) ? '#fef3c7' : '#eff6ff',
+                border: '1px solid ' + (n(formData.currReading) < n(formData.prevReading) ? '#fde68a' : '#bfdbfe'),
+                borderRadius: '10px',
+                padding: '12px 16px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '8px'
+              }}>
+                <div>
+                  <div style={{ fontWeight: 700, color: n(formData.currReading) < n(formData.prevReading) ? '#92400e' : '#1e40af' }}>
+                    {n(formData.currReading) < n(formData.prevReading) ? '🔄 10,000 Reset Rollover Detected:' : '📊 Standard Reading Calculation:'}
                   </div>
-                )}
-                <div className="field-group">
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Fixed Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-                  <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.msebFixedCharge} onChange={e => handleFormChange('msebFixedCharge', e.target.value)} required />
+                  <div style={{ fontSize: '0.85rem', color: '#475569' }}>
+                    {calculateSubmeterRollover(formData.prevReading, formData.currReading).formulaText}
+                  </div>
                 </div>
-                <div className="field-group">
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Energy Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-                  <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="Auto-calculated" value={formData.msebEnergyCharge} onChange={e => handleFormChange('msebEnergyCharge', e.target.value)} required />
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Estimated Bill: </span>
+                  <strong style={{ fontSize: '1.1rem', color: '#0369a1' }}>
+                    ₹{fmt(calculateSubmeterRollover(formData.prevReading, formData.currReading).units * (n(formData.ratePerUnit) || 13))}
+                  </strong>
                 </div>
-                <div className="field-group">
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Wheeling Rate (₹/U) <span style={{ color: '#ef4444' }}>*</span></label>
-                  <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.msebWheelingRate} onChange={e => handleFormChange('msebWheelingRate', e.target.value)} required />
-                </div>
-                <div className="field-group">
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Fuel Adjustment (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-                  <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.msebFuelAdj} onChange={e => handleFormChange('msebFuelAdj', e.target.value)} required />
-                </div>
-              </>
-            ) : (
-              <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Rate per Unit (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
               </div>
             )}
 
-            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-              <button type="submit" className="button-primary" style={{ padding: '10px 24px', width: 'auto', background: '#0284c7', borderColor: '#0284c7' }}>
-                ⚡ Calculate &amp; Create Bill
+            <div style={{ gridColumn: '1 / -1', marginTop: '8px' }}>
+              <button type="submit" className="button-primary" style={{ padding: '12px 28px', background: '#0284c7', borderColor: '#0284c7' }}>
+                Calculate &amp; Create Bill
               </button>
             </div>
           </form>
-
-          {(subTab === 'mahavitaran' || (subTab === 'tata' && tataTariffMode === 'mseb')) && n(formData.currReading) > n(formData.prevReading) && (
-            <div style={{ marginTop: '24px', padding: '16px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <h5 style={{ margin: 0, color: '#334155' }}>
-                  {subTab === 'tata' ? 'Tata Commercial Slab Breakdown' : 'MSEB Slab Breakdown'} for {n(formData.currReading) - n(formData.prevReading)} Units
-                </h5>
-                <span style={{ fontSize: '0.85rem', color: '#0369a1', fontWeight: 700 }}>
-                  Estimated Duty (16%): ₹{((n(formData.msebFixedCharge) + n(formData.msebEnergyCharge) + ((n(formData.currReading) - n(formData.prevReading)) * n(formData.msebWheelingRate)) + n(formData.msebFuelAdj)) * 0.16).toFixed(2)}
-                </span>
-              </div>
-              <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #cbd5e1', color: '#64748b' }}>
-                    <th style={{ textAlign: 'left', paddingBottom: '8px' }}>Slab</th>
-                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>Units</th>
-                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>Energy Rate</th>
-                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>Energy Total</th>
-                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>FAC Rate</th>
-                    <th style={{ textAlign: 'right', paddingBottom: '8px' }}>FAC Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {calculateMahavitaranSlabs(n(formData.currReading) - n(formData.prevReading)).breakdown.map((b, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                      <td style={{ padding: '6px 0', fontWeight: 500 }}>{b.slab}</td>
-                      <td style={{ textAlign: 'right' }}>{b.units}</td>
-                      <td style={{ textAlign: 'right' }}>₹{b.energyRate.toFixed(2)}</td>
-                      <td style={{ textAlign: 'right' }}>₹{b.energyCost.toFixed(2)}</td>
-                      <td style={{ textAlign: 'right' }}>₹{b.fuelRate.toFixed(3)}</td>
-                      <td style={{ textAlign: 'right' }}>₹{b.fuelCost.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
         </div>
       )}
 
-      {/* Main Table */}
+      {/* MAIN TABLE */}
       <div className="table-card">
         <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: (subTab === 'mahavitaran' || subTab === 'tata') ? 1200 : 1000 }}>
+          <table className="attendance-table" style={{ minWidth: 1100 }}>
             <thead>
-              {subTab === 'mahavitaran' || subTab === 'tata' ? (
+              {subTab === 'tata' ? (
+                <tr style={{ background: '#f8fafc' }}>
+                  <th style={{ width: 45, textAlign: 'center' }}>#</th>
+                  <th style={{ width: 220 }}>Billing Period</th>
+                  <th style={{ width: 160, textAlign: 'center' }}>Duration</th>
+                  <th style={{ width: 95, textAlign: 'right' }}>Prev (A)</th>
+                  <th style={{ width: 95, textAlign: 'right' }}>Curr (B)</th>
+                  <th style={{ width: 105, textAlign: 'center' }}>Meter Status</th>
+                  <th style={{ width: 110, textAlign: 'right' }}>Units (B - A)</th>
+                  <th style={{ width: 100, textAlign: 'right' }}>Rate / Unit</th>
+                  <th style={{ width: 140, textAlign: 'right', background: '#f0f9ff' }}>Total Amount (₹)</th>
+                  <th style={{ width: 110, textAlign: 'center' }}>Actions</th>
+                </tr>
+              ) : subTab === 'mahavitaran' ? (
                 <tr style={{ background: '#f8fafc' }}>
                   <th style={{ width: 50 }}>Sr.</th>
                   <th style={{ width: 200 }}>Billing Period</th>
@@ -1337,7 +1603,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
                   <th style={{ width: 95, textAlign: 'right' }}>Fuel (इंधन)</th>
                   <th style={{ width: 95, textAlign: 'right' }}>Duty (16%)</th>
                   <th style={{ width: 115, textAlign: 'right', background: '#f0f9ff' }}>Grand Total</th>
-                  <th style={{ width: subTab === 'tata' ? 110 : 80, textAlign: 'center' }}>Actions</th>
+                  <th style={{ width: 80, textAlign: 'center' }}>Actions</th>
                 </tr>
               ) : (
                 <tr style={{ background: '#f8fafc' }}>
@@ -1354,9 +1620,9 @@ export default function ElectricityTracker({ isAdmin = false }) {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={11} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
+                <tr><td colSpan={10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
               ) : filteredBills.length === 0 ? (
-                <tr><td colSpan={11} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
+                <tr><td colSpan={10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
                   {searchText ? `No bills found matching "${searchText}"` : 'No bills recorded.'}
                 </td></tr>
               ) : (
@@ -1364,7 +1630,195 @@ export default function ElectricityTracker({ isAdmin = false }) {
                   const actualIdx = activeBills.findIndex(orig => orig.id === c.id);
                   const isEditing = editingRowId === c.id;
 
-                  if (subTab === 'mahavitaran' || subTab === 'tata') {
+                  if (subTab === 'tata') {
+                    const isRolloverBill = c.isRollover || n(c.currReading) < n(c.prevReading);
+                    return (
+                      <tr key={c.id || i} style={{ background: isRolloverBill ? '#fffdfa' : 'transparent' }}>
+                        <td style={{ verticalAlign: 'middle', textAlign: 'center', fontWeight: 600 }}>{i + 1}</td>
+
+                        {/* Billing Period */}
+                        <td style={{ verticalAlign: 'middle' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ width: '100%', padding: '6px' }}
+                              type="text"
+                              value={c.periodLabel || ''}
+                              onChange={e => updateRow(actualIdx, 'periodLabel', e.target.value)}
+                            />
+                          ) : (
+                            <div>
+                              <strong style={{ fontSize: '0.92rem', color: '#0f172a' }}>
+                                {c.periodLabel || `${formatDateLabel(c.startMonth)} to ${formatDateLabel(c.endMonth)}`}
+                              </strong>
+                              {c.startMonth && c.endMonth && (
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>
+                                  {formatDateLabel(c.startMonth)} – {formatDateLabel(c.endMonth)}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Duration */}
+                        <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ width: '100%', padding: '6px' }}
+                              type="text"
+                              value={c.duration || ''}
+                              onChange={e => updateRow(actualIdx, 'duration', e.target.value)}
+                            />
+                          ) : (
+                            <span style={{
+                              background: '#eff6ff',
+                              color: '#1d4ed8',
+                              padding: '4px 10px',
+                              borderRadius: '20px',
+                              fontSize: '0.8rem',
+                              fontWeight: 600,
+                              border: '1px solid #bfdbfe',
+                              display: 'inline-block'
+                            }}>
+                              🗓️ {c.duration || computeBillingDuration(c.startMonth, c.endMonth) || '—'}
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Prev Reading (A) */}
+                        <td style={{ textAlign: 'right', verticalAlign: 'middle', fontFamily: 'monospace', fontSize: '0.95rem' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ padding: '4px', textAlign: 'right' }}
+                              type="text"
+                              value={c.prevReading}
+                              onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)}
+                            />
+                          ) : (
+                            c.prevReading
+                          )}
+                        </td>
+
+                        {/* Curr Reading (B) */}
+                        <td style={{ textAlign: 'right', verticalAlign: 'middle', fontFamily: 'monospace', fontSize: '0.95rem' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ padding: '4px', textAlign: 'right' }}
+                              type="text"
+                              value={c.currReading}
+                              onChange={e => updateRow(actualIdx, 'currReading', e.target.value)}
+                            />
+                          ) : (
+                            c.currReading
+                          )}
+                        </td>
+
+                        {/* Meter Status / 10k Reset Badge */}
+                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                          {isRolloverBill ? (
+                            <span style={{
+                              background: '#fef3c7',
+                              color: '#92400e',
+                              padding: '3px 8px',
+                              borderRadius: '12px',
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                              border: '1px solid #fde68a',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }} title="(10000 - A) + B = Units">
+                              🔄 10,000 Reset
+                            </span>
+                          ) : (
+                            <span style={{ color: '#64748b', fontSize: '0.75rem', fontWeight: 500 }}>
+                              Normal (B ≥ A)
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Units Consumed (B - A) */}
+                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 800, verticalAlign: 'middle', fontSize: '1rem' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ padding: '4px', textAlign: 'right' }}
+                              type="number"
+                              value={c.consumption}
+                              onChange={e => updateRow(actualIdx, 'consumption', e.target.value)}
+                            />
+                          ) : (
+                            <div>
+                              <span>{fmt(n(c.consumption))}</span>
+                              <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 400 }}>
+                                {isRolloverBill ? `(10k - ${c.prevReading}) + ${c.currReading}` : `${c.currReading} - ${c.prevReading}`}
+                              </div>
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Per Unit Rate */}
+                        <td style={{ textAlign: 'right', verticalAlign: 'middle' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ padding: '4px', textAlign: 'right' }}
+                              type="number"
+                              step="any"
+                              value={c.ratePerUnit}
+                              onChange={e => updateRow(actualIdx, 'ratePerUnit', e.target.value)}
+                            />
+                          ) : (
+                            <span style={{
+                              background: '#f0fdf4',
+                              color: '#15803d',
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              fontSize: '0.85rem',
+                              fontWeight: 700,
+                              border: '1px solid #bbf7d0'
+                            }}>
+                              ₹{Number(c.ratePerUnit || 13).toFixed(2)}
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Total Amount */}
+                        <td style={{ textAlign: 'right', color: '#0369a1', fontWeight: 800, verticalAlign: 'middle', fontSize: '1.05rem', background: '#f0f9ff' }}>
+                          ₹{fmt(c.grandTotal)}
+                        </td>
+
+                        {/* Actions */}
+                        <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', alignItems: 'center' }}>
+                            <button
+                              className="button-icon"
+                              title="Print / Export Bill Invoice"
+                              onClick={() => handlePrintTataBill(c)}
+                              style={{ color: '#0284c7', fontSize: '1.1rem', cursor: 'pointer', padding: '4px' }}
+                            >
+                              🖨️
+                            </button>
+                            {isAdmin && (
+                              <>
+                                {isEditing ? (
+                                  <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a' }}>✅</button>
+                                ) : (
+                                  <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6' }}>✏️</button>
+                                )}
+                                <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444' }}>✕</button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  if (subTab === 'mahavitaran') {
                     return (
                       <tr key={c.id || i}>
                         <td style={{ verticalAlign: 'middle' }}>{i + 1}</td>
@@ -1406,16 +1860,6 @@ export default function ElectricityTracker({ isAdmin = false }) {
                         <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 800, verticalAlign: 'middle', fontSize: '0.95rem' }}>₹{fmt(c.grandTotal)}</td>
                         <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
                           <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', alignItems: 'center' }}>
-                            {subTab === 'tata' && (
-                              <button
-                                className="button-icon"
-                                title="Print / Export Bill Invoice"
-                                onClick={() => handlePrintTataBill(c)}
-                                style={{ color: '#0284c7', fontSize: '1.1rem', cursor: 'pointer', padding: '4px' }}
-                              >
-                                🖨️
-                              </button>
-                            )}
                             {isAdmin && (
                               <>
                                 {isEditing ? (
@@ -1487,7 +1931,15 @@ export default function ElectricityTracker({ isAdmin = false }) {
               )}
             </tbody>
             <tfoot>
-              {subTab === 'mahavitaran' || subTab === 'tata' ? (
+              {subTab === 'tata' ? (
+                <tr style={{ background: '#f8fafc', fontWeight: 800 }}>
+                  <td colSpan={6} style={{ textAlign: 'right', fontSize: '0.95rem' }}>TOTAL (8 BILLING CYCLES):</td>
+                  <td style={{ textAlign: 'right', color: '#ea580c', fontSize: '1.05rem' }}>{fmt(totalConsumption)}</td>
+                  <td></td>
+                  <td style={{ textAlign: 'right', color: '#0369a1', fontSize: '1.1rem', background: '#e0f2fe' }}>₹{fmt(totalAmount)}</td>
+                  <td></td>
+                </tr>
+              ) : subTab === 'mahavitaran' ? (
                 <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
                   <td colSpan={3} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
                   <td style={{ textAlign: 'right', color: '#ea580c' }}>{fmt(totalConsumption)}</td>
