@@ -111,6 +111,9 @@ const TAB_ICONS = {
   electricity: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
   ),
+  tata_electricity: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+  ),
   tanker: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
   ),
@@ -425,9 +428,9 @@ export default function App() {
         render: () => <ChequeManagement isAdmin={isAdmin} />
       },
       {
-        id: 'electricity',
-        label: 'Electricity Bills',
-        metric: 'Utility Tracking',
+        id: 'tata_electricity',
+        label: 'Tata Electricity Bill',
+        metric: 'Sub-meter Billing & Invoicing',
         render: () => <ElectricityTracker isAdmin={isAdmin} />
       },
       {
@@ -523,7 +526,8 @@ export default function App() {
     ];
   }, [isAdmin, dashboardStats, staffData.items, staffPresent]);
 
-  const activeTabPanel = tabItems.find((item) => item.id === activeTab) || tabItems[0];
+  const normalizedActiveTab = activeTab === 'electricity' ? 'tata_electricity' : activeTab;
+  const activeTabPanel = tabItems.find((item) => item.id === normalizedActiveTab) || tabItems[0];
 
   const handleTabChange = useCallback((tabId) => {
     if (tabId === activeTab) return;

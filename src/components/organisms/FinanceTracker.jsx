@@ -350,6 +350,318 @@ export default function FinanceTracker({ isAdmin = false }) {
     XLSX.writeFile(wb, `Finance_Tracker_${selectedMonth}.xlsx`);
   };
 
+  const handlePrintPdf = () => {
+    const validIncome = income.filter(r => (r.source && r.source.trim()) || n(r.amount) > 0);
+    const validExpenses = combinedExpenses.filter(r => (r.vendor && r.vendor.trim()) || n(r.amount) > 0 || r.chequeNo);
+    const printedDate = new Intl.DateTimeFormat('en-IN', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(new Date());
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Income &amp; Expenses — ${formatLongMonth(selectedMonth)}</title>
+        <meta charset="utf-8" />
+        <style>
+          @page {
+            size: A4 portrait;
+            margin: 12mm 10mm 12mm 10mm;
+          }
+          * { box-sizing: border-box; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #0f172a;
+            margin: 0;
+            padding: 12px;
+            background: #ffffff;
+            font-size: 11px;
+            line-height: 1.4;
+          }
+          .society-header {
+            text-align: center;
+            border-bottom: 2px solid #1e3a8a;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+          }
+          .society-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: 0.5px;
+            margin: 0 0 4px 0;
+            text-transform: uppercase;
+          }
+          .society-sub {
+            font-size: 10px;
+            color: #475569;
+            margin: 0 0 3px 0;
+          }
+          .doc-badge {
+            display: inline-block;
+            background: #1e3a8a;
+            color: #ffffff;
+            padding: 4px 14px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            margin-top: 6px;
+            text-transform: uppercase;
+          }
+          .kpi-grid {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+          }
+          .kpi-card {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+          }
+          .kpi-card.income {
+            border-left: 4px solid #10b981;
+            background: #f0fdf4;
+          }
+          .kpi-card.expense {
+            border-left: 4px solid #ef4444;
+            background: #fef2f2;
+          }
+          .kpi-card.balance {
+            border-left: 4px solid #2563eb;
+            background: #eff6ff;
+          }
+          .kpi-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 2px;
+          }
+          .kpi-val {
+            font-size: 16px;
+            font-weight: 800;
+          }
+          .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 10px;
+            margin: 12px 0 6px 0;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+          }
+          .section-income {
+            background: #ecfdf5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+          }
+          .section-expense {
+            background: #fef2f2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 10px;
+          }
+          th {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            text-align: left;
+            padding: 6px 8px;
+            border: 1px solid #cbd5e1;
+          }
+          td {
+            padding: 5px 8px;
+            border: 1px solid #e2e8f0;
+            vertical-align: middle;
+          }
+          tr:nth-child(even) td {
+            background: #f8fafc;
+          }
+          .total-row td {
+            font-weight: 800;
+            background: #f1f5f9 !important;
+            border-top: 2px solid #64748b;
+          }
+          .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 26px;
+            page-break-inside: avoid;
+          }
+          .sig-box {
+            text-align: center;
+            width: 28%;
+          }
+          .sig-line {
+            border-top: 1px solid #64748b;
+            padding-top: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #334155;
+          }
+          .print-footer {
+            margin-top: 16px;
+            padding-top: 8px;
+            border-top: 1px dashed #cbd5e1;
+            font-size: 9px;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+          }
+          @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="society-header">
+          <div class="society-title">Majestique Euriska Co-operative Housing Society Ltd.</div>
+          <div class="society-sub">Reg. No: PNA/PNA(2)/HSG/(TC)/17066/2021-2022 • Survey No. 43/1 &amp; 43/2, Near EON IT Park, Kharadi, Pune - 411014</div>
+          <div class="doc-badge">Statement of Income &amp; Expenses — ${formatLongMonth(selectedMonth)}</div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card income">
+            <div class="kpi-label">Total Monthly Income</div>
+            <div class="kpi-val" style="color: #059669;">₹${fmt(totalIncome)}</div>
+          </div>
+          <div class="kpi-card expense">
+            <div class="kpi-label">Total Monthly Expenses</div>
+            <div class="kpi-val" style="color: #dc2626;">₹${fmt(totalExpense)}</div>
+          </div>
+          <div class="kpi-card balance">
+            <div class="kpi-label">Net Balance / Surplus</div>
+            <div class="kpi-val" style="color: ${balance >= 0 ? '#2563eb' : '#ea580c'};">₹${fmt(balance)}</div>
+          </div>
+        </div>
+
+        <!-- Income Section -->
+        <div class="section-title section-income">
+          <span>📥 INCOME DETAILS</span>
+          <span>Total: ₹${fmt(totalIncome)}</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 35px; text-align: center;">#</th>
+              <th>Source / Particulars</th>
+              <th>Remark / Note</th>
+              <th style="width: 120px; text-align: right;">Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${validIncome.length === 0 ? '<tr><td colspan="4" style="text-align:center; padding:10px; color:#94a3b8;">No income entries recorded for this month.</td></tr>' :
+              validIncome.map((r, i) => `
+                <tr>
+                  <td style="text-align: center; color: #64748b;">${i + 1}</td>
+                  <td style="font-weight: 600;">${r.source || '—'}</td>
+                  <td style="color: #475569;">${r.remark || '—'}</td>
+                  <td style="text-align: right; font-weight: 700; color: #059669;">₹${fmt(r.amount)}</td>
+                </tr>
+              `).join('')
+            }
+            <tr class="total-row">
+              <td colspan="3" style="text-align: right;">TOTAL INCOME</td>
+              <td style="text-align: right; color: #059669;">₹${fmt(totalIncome)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Expenses Section -->
+        <div class="section-title section-expense">
+          <span>📤 EXPENDITURE DETAILS</span>
+          <span>Total: ₹${fmt(totalExpense)}</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 35px; text-align: center;">#</th>
+              <th style="width: 70px; text-align: center;">Chq No</th>
+              <th>Beneficiary / Vendor</th>
+              <th>Purpose / Head of Expense</th>
+              <th style="width: 75px; text-align: center;">Type</th>
+              <th style="width: 120px; text-align: right;">Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${validExpenses.length === 0 ? '<tr><td colspan="6" style="text-align:center; padding:10px; color:#94a3b8;">No expense entries recorded for this month.</td></tr>' :
+              validExpenses.map((r, i) => `
+                <tr>
+                  <td style="text-align: center; color: #64748b;">${i + 1}</td>
+                  <td style="text-align: center; font-family: monospace; font-weight: 600;">${r.chequeNo ? '#' + r.chequeNo : '—'}</td>
+                  <td style="font-weight: 600;">${r.vendor || '—'}</td>
+                  <td style="color: #475569;">${r.purpose || '—'}</td>
+                  <td style="text-align: center; font-size: 8.5px; color: ${r.isLinked ? '#0284c7' : '#64748b'};">${r.isLinked ? 'Linked Chq' : 'Manual'}</td>
+                  <td style="text-align: right; font-weight: 700; color: #dc2626;">₹${fmt(r.amount)}</td>
+                </tr>
+              `).join('')
+            }
+            <tr class="total-row">
+              <td colspan="5" style="text-align: right;">TOTAL EXPENDITURE</td>
+              <td style="text-align: right; color: #dc2626;">₹${fmt(totalExpense)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Net Summary Box -->
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong>Summary for ${formatLongMonth(selectedMonth)}:</strong>
+            <span style="color: #64748b; margin-left: 8px;">Income (₹${fmt(totalIncome)}) − Expenses (₹${fmt(totalExpense)})</span>
+          </div>
+          <div style="font-size: 13px; font-weight: 800; color: ${balance >= 0 ? '#10b981' : '#ef4444'};">
+            Closing Balance: ₹${fmt(balance)}
+          </div>
+        </div>
+
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-line">Prepared By (Manager)</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Society Treasurer</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">Society Secretary / Chairman</div>
+          </div>
+        </div>
+
+        <div class="print-footer">
+          <div>Majestique Euriska CHS Ltd. • Financial Management &amp; Accounts</div>
+          <div>Printed on: ${printedDate} • Generated from Society Dashboard</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWin = window.open('', '_blank');
+    if (printWin) {
+      printWin.document.write(printDoc);
+      printWin.document.close();
+    }
+  };
+
   const handleManualSave = () => {
     clearTimeout(autoSaveTimer.current);
     saveToFirebase(income, expenses, recordId, selectedMonth);
@@ -474,6 +786,14 @@ export default function FinanceTracker({ isAdmin = false }) {
             </button>
             <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '8px 16px' }}>
               ⬇ Export Excel
+            </button>
+            <button
+              className="button-primary"
+              onClick={handlePrintPdf}
+              style={{ padding: '8px 16px', background: '#0284c7', borderColor: '#0284c7', display: 'flex', alignItems: 'center', gap: '6px' }}
+              title="Print or Save PDF Statement"
+            >
+              <span>🖨️</span> Export PDF
             </button>
           </div>
         </div>

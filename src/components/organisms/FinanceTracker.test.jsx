@@ -159,6 +159,42 @@ describe('FinanceTracker – Excel export', () => {
   });
 });
 
+describe('FinanceTracker – PDF export', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders the Export PDF button for users', async () => {
+    render(<FinanceTracker />);
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /export pdf/i })).toBeInTheDocument()
+    );
+  });
+
+  it('triggers window.open and writes HTML print document when Export PDF is clicked', async () => {
+    const user = userEvent.setup();
+    let writtenDoc = '';
+    const mockPrintWindow = {
+      document: {
+        write: vi.fn((html) => { writtenDoc = html; }),
+        close: vi.fn(),
+      },
+    };
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(mockPrintWindow);
+
+    render(<FinanceTracker />);
+    await waitFor(() => screen.getByRole('button', { name: /export pdf/i }));
+    await user.click(screen.getByRole('button', { name: /export pdf/i }));
+
+    expect(openSpy).toHaveBeenCalledWith('', '_blank');
+    expect(mockPrintWindow.document.write).toHaveBeenCalled();
+    expect(writtenDoc).toContain('Majestique Euriska Co-operative Housing Society Ltd.');
+    expect(writtenDoc).toContain('Statement of Income &amp; Expenses');
+    expect(writtenDoc).toContain('window.print()');
+    openSpy.mockRestore();
+  });
+});
+
 describe('FinanceTracker – locked months (April and May 2026)', () => {
   it('disables editing, hides Add Row, hides Save button, and sets inputs to readOnly for April 2026', async () => {
     const user = userEvent.setup();

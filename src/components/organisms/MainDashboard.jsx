@@ -41,7 +41,7 @@ const QUICK_LINKS = [
   { id: 'maintenance',      icon: '📊', label: 'Maintenance' },
   { id: 'housekeeping',     icon: '🧹', label: 'Housekeeping' },
   { id: 'security',         icon: '🛡️', label: 'Security' },
-  { id: 'electricity',      icon: '⚡', label: 'Electricity' },
+  { id: 'tata_electricity', icon: '⚡', label: 'Tata Electricity' },
   { id: 'tanker',           icon: '🚛', label: 'Water Tanker' },
   { id: 'water_tanks',      icon: '💧', label: 'Water Tanks' },
   { id: 'cheques',          icon: '🧾', label: 'Cheques' },

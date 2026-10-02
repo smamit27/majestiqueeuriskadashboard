@@ -373,16 +373,26 @@ export const financeSeedData = {
   'finance_2026-09': {
     month: '2026-09',
     income: [
-      { source: 'Maintenance Collection (Vivish / Direct)', amount: '', remark: 'September 2026 Maintenance Collections' }
+      { source: 'Maintenance (Vivish PG Collections)', amount: '220709.08', remark: '74 Member Online Payments' },
+      { source: 'Inter-Building Inflows', amount: '42064.00', remark: 'B & C Building Cost Sharing' },
+      { source: 'UPI Settlements', amount: '29285.00', remark: 'Society QR / Direct UPI' },
+      { source: 'Cheque Deposits (CTS)', amount: '28060.00', remark: 'Member Maintenance Cheques' },
+      { source: 'Refund (Tata Play)', amount: '3993.00', remark: 'Tata Play Broadband Electricity Reversal' },
+      { source: 'Direct Member IMPS', amount: '3300.00', remark: 'Direct Bank NEFT/IMPS Transfer' },
+      { source: 'Other Credits & Rebates', amount: '11625.00', remark: 'Interest & Sundry Receipts' }
     ],
     expenses: [
-      { chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', amount: '12900.00', purpose: 'Housekeeping / Waterman Salary' },
+      { chequeNo: '541', vendor: 'MSEDCL', amount: '56840.00', purpose: 'A Building Electricity Bill' },
+      { chequeNo: '542', vendor: 'MSEDCL', amount: '44420.00', purpose: 'Common Area Electricity Bill' },
+      { chequeNo: '538', vendor: 'Sandip Raju Wavare', amount: '50103.00', purpose: 'Security Guard Charges' },
       { chequeNo: '535', vendor: 'Shubham Enterprises', amount: '36536.00', purpose: 'Maintenance & Repairs / Operations' },
+      { chequeNo: '533', vendor: 'Self Withdrawal', amount: '15000.00', purpose: 'Petty Cash Handling' },
+      { chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', amount: '12900.00', purpose: 'Housekeeping / Waterman Salary' },
       { chequeNo: '536', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", amount: '8662.00', purpose: 'Inter-Building Common Share Settlement' },
       { chequeNo: '537', vendor: 'Sai Swimming Pool Maintenance Services', amount: '4519.00', purpose: 'Swimming Pool Monthly AMC' },
-      { chequeNo: '538', vendor: 'Sandip Raju Wavare', amount: '50103.00', purpose: 'Housekeeping / Staff Services' },
+      { chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', amount: '3955.00', purpose: 'Water Tanker Supply Charges' },
       { chequeNo: '539', vendor: 'Rajib Madan Patra', amount: '2636.00', purpose: 'Plumbing & Electrical Maintenance Repairs' },
-      { chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', amount: '3955.00', purpose: 'Water Tanker Supply Charges' }
+      { chequeNo: '530', vendor: 'IGS Enterprises', amount: '2300.00', purpose: 'Miscellaneous Office / Gate Expense' }
     ]
   }
 };
