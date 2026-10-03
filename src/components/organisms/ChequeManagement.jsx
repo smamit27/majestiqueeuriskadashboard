@@ -451,44 +451,34 @@ export default function ChequeManagement({ isAdmin = false }) {
   const totalRecovered = bReceivedAmount + cReceivedAmount;
   const totalOutstanding = bPendingAmount + cPendingAmount;
 
-  // Missing Cheque Detection — only for Building A tab, June 2026 onwards
+  // Missing Cheque Detection — checks BOTH Building A and Common Work, June 2026 onwards
   const getMissingCheques = () => {
-    if (subTab !== 'buildingA') return [];
-    
     // Only check months from Jun 2026 onwards
     const [selYear, selMonthNum] = selectedMonth.split('-').map(Number);
     const cutoffYear = 2026, cutoffMonth = 6;
     if (selYear < cutoffYear || (selYear === cutoffYear && selMonthNum < cutoffMonth)) return [];
 
-    // Get all numeric cheque numbers from A building cheques this month
-    // Exclude cancelled cheques (amount = 0)
-    const numbers = chequesA
-      .filter(c => n(c.amount) !== 0) // Skip cancelled cheques
-      .map(c => {
-        const stripped = String(c.chequeNo || '').replace(/\D/g, '');
-        return stripped ? Number(stripped) : null;
-      })
-      .filter(num => num !== null)
-      .sort((a, b) => a - b);
-
-    if (numbers.length <= 5) return []; // Only check if more than 5 active cheques
-
-    // Gaps in Building A sequence that are NOT issued under Common Work
-    const commonNumbers = new Set(
-      chequesCommon
+    // Combine all numeric cheque numbers from BOTH Building A and Common Work
+    const extractNumbers = (cheques) =>
+      cheques
+        .filter(c => n(c.amount) !== 0) // Skip cancelled cheques (amount = 0)
         .map(c => {
           const stripped = String(c.chequeNo || '').replace(/\D/g, '');
           return stripped ? Number(stripped) : null;
         })
-        .filter(Boolean)
-    );
+        .filter(num => num !== null);
 
+    const allNumbers = [...new Set([...extractNumbers(chequesA), ...extractNumbers(chequesCommon)])].sort((a, b) => a - b);
+
+    if (allNumbers.length < 2) return []; // Need at least 2 cheques to detect a gap
+
+    const allNumbersSet = new Set(allNumbers);
     const missing = [];
-    for (let i = 0; i < numbers.length - 1; i++) {
-      const diff = numbers[i + 1] - numbers[i];
+    for (let i = 0; i < allNumbers.length - 1; i++) {
+      const diff = allNumbers[i + 1] - allNumbers[i];
       if (diff > 1 && diff <= 4) {
-        for (let j = numbers[i] + 1; j < numbers[i + 1]; j++) {
-          if (!commonNumbers.has(j)) {
+        for (let j = allNumbers[i] + 1; j < allNumbers[i + 1]; j++) {
+          if (!allNumbersSet.has(j)) {
             missing.push(j);
           }
         }
@@ -712,7 +702,7 @@ export default function ChequeManagement({ isAdmin = false }) {
         )
       )}
 
-      {/* Missing Cheque Alert Banner — Building A only, June 2026+ */}
+      {/* Missing Cheque Alert Banner — Both tabs, June 2026+ */}
       {missingCheques.length > 0 && (
         <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '12px', padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
           <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>⚠️</span>
