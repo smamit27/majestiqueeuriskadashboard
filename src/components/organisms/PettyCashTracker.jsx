@@ -305,8 +305,107 @@ const DEFAULT_BUILDING_A_ENTRIES = [
     vendor: 'Siddu lende',
     purpose: 'Common Expenses Month of Aug 26',
     receipt: '',
-    payment: '2246',
+    payment: '1923',
     remarks: '12184 / 13162'
+  },
+  {
+    id: 1782921846559,
+    date: '2026-09-01',
+    vendor: 'Fund Received',
+    purpose: 'Petty Cash Top-up',
+    receipt: '15000',
+    payment: '',
+    remarks: 'Society Refill'
+  },
+  {
+    id: 1782921846560,
+    date: '2026-09-02',
+    vendor: 'Uttareswar',
+    purpose: 'Waterman salary',
+    receipt: '',
+    payment: '5650',
+    remarks: ''
+  },
+  {
+    id: 1782921846561,
+    date: '2026-09-03',
+    vendor: 'Parmeshwar Pitale',
+    purpose: 'Flat No 303, 403 and Drainage Chocup Clean near 1003 parking',
+    receipt: '',
+    payment: '2000',
+    remarks: 'Plumbing & Drainage'
+  },
+  {
+    id: 1782921846562,
+    date: '2026-09-03',
+    vendor: 'IGS Enterprises',
+    purpose: 'Solar Tube Replacement',
+    receipt: '',
+    payment: '1700',
+    remarks: 'Solar water system'
+  },
+  {
+    id: 1782921846563,
+    date: '2026-09-04',
+    vendor: 'JCCollection',
+    purpose: 'Printout for Audit Report anAGM documents',
+    receipt: '',
+    payment: '122',
+    remarks: 'AGM 2026 printing'
+  },
+  {
+    id: 1782921846564,
+    date: '2026-09-06',
+    vendor: 'Aggarwals',
+    purpose: 'Samosa purchse for AGM',
+    receipt: '',
+    payment: '1500',
+    remarks: 'AGM 2026 refreshment'
+  },
+  {
+    id: 1782921846565,
+    date: '2026-09-06',
+    vendor: 'Jaslok Sweets',
+    purpose: 'Tea and Water Bottle for AGM',
+    receipt: '',
+    payment: '520',
+    remarks: 'AGM 2026 refreshment'
+  },
+  {
+    id: 1782921846566,
+    date: '2026-09-24',
+    vendor: 'Ramdev Hardware',
+    purpose: 'Plumbing Material for near 106 parking Lekage work',
+    receipt: '',
+    payment: '445',
+    remarks: '106 parking leakage'
+  },
+  {
+    id: 1782921846567,
+    date: '2026-09-24',
+    vendor: 'Parmeshwar Pitale',
+    purpose: 'Plumbing charges for near 106 parking Lekage work',
+    receipt: '',
+    payment: '500',
+    remarks: '106 parking leakage labor'
+  },
+  {
+    id: 1782921846568,
+    date: '2026-09-29',
+    vendor: 'Shree krushna H/W',
+    purpose: 'Tube Lights Purchase',
+    receipt: '',
+    payment: '1200',
+    remarks: 'Society lights'
+  },
+  {
+    id: 1782921846569,
+    date: '2026-09-30',
+    vendor: 'Siddu lende',
+    purpose: 'Common expenses',
+    receipt: '',
+    payment: '2081',
+    remarks: 'Month of Sep 26'
   }
 ];
 

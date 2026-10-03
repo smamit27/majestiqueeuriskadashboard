@@ -61,4 +61,18 @@ describe('PettyCashTracker', () => {
     expect(html).toContain('Vendor &amp; Payee Analytics');
     expect(html).toContain('A Building Expenses');
   });
+
+  it('contains September 2026 entries including AGM expenses and Waterman salary in history', async () => {
+    const { default: ALL_PETTY_CASH_HISTORY } = await import('../../data/pettyCashAllHistory.json');
+    const html = renderToStaticMarkup(<PettyCashTracker />);
+    expect(html).toContain('September 2026');
+
+    const septEntries = ALL_PETTY_CASH_HISTORY.filter(e => e.date.startsWith('2026-09'));
+    expect(septEntries.length).toBe(11);
+    expect(septEntries.some(e => e.vendor === 'Uttareswar' && e.payment === '5650')).toBe(true);
+    expect(septEntries.some(e => e.vendor === 'Aggarwals' && e.payment === '1500')).toBe(true);
+    expect(septEntries.some(e => e.vendor === 'Jaslok Sweets' && e.payment === '520')).toBe(true);
+    expect(septEntries.some(e => e.vendor === 'Fund Received' && e.receipt === '15000')).toBe(true);
+  });
 });
+
