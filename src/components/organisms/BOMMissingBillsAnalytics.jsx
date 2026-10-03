@@ -146,8 +146,9 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
         </style>
       </head>
       <body>
-        <h1>Majestique Euriska A Bldg Co-op Hsg Society Ltd.</h1>
-        <h2>Forensic Audit Dossier & Builder Recovery Negotiation Report</h2>
+        <h1>Majestique Euriska 'A' Building Co-Op Hsg Society Ltd.</h1>
+        <div style="font-size: 11px; color: #475569; margin-bottom: 2px;">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
+        <h2 style="margin-top: 4px;">Forensic Audit Dossier &amp; Builder Recovery Negotiation Report</h2>
         <div style="font-size: 10px; color: #64748b; margin-bottom: 14px;">
           UDIN: 26162502TFCJWK8860 | Bank A/c: BOM 60305942224 | Date: ${new Date().toLocaleDateString('en-IN')}
         </div>

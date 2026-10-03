@@ -529,7 +529,7 @@ export default function FinanceTracker({ isAdmin = false }) {
       <body>
         <div class="society-header">
           <div class="society-title">Majestique Euriska Co-operative Housing Society Ltd.</div>
-          <div class="society-sub">Reg. No: PNA/PNA(2)/HSG/(TC)/17066/2021-2022 • Survey No. 43/1 &amp; 43/2, Near EON IT Park, Kharadi, Pune - 411014</div>
+          <div class="society-sub">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, District Pune, Pune - 411060</div>
           <div class="doc-badge">Statement of Income &amp; Expenses — ${formatLongMonth(selectedMonth)}</div>
         </div>
 

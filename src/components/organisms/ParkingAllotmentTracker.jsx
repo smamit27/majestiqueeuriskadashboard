@@ -255,8 +255,9 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
       <body>
         <div class="header">
           <div>
-            <h1 class="title">🚗 Majestique Euriska - Building "A" Parking Allotment</h1>
-            <div class="subtitle">Official Wing A Parking Register (Flats A-101 to A-1108)</div>
+            <h1 class="title">🚗 MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
+            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Official Wing A Parking Register (Flats A-101 to A-1108)</div>
           </div>
           <div class="meta">
             <div><strong>Report Date:</strong> ${generatedDate}</div>

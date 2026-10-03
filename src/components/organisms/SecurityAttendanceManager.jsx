@@ -473,7 +473,7 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
         <div class="header">
           <div>
             <h1 class="title">🛡️ Majestique Euriska - Security Attendance Register</h1>
-            <div class="subtitle">Guard Deployment Entry Table & Daily Post Coverage • FY April 2026 – March 2027</div>
+            <div class="subtitle">Guard Deployment Entry Table & Daily Post Coverage • Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
           </div>
           <div class="meta">
             <div><strong>Month:</strong> ${longMonth}</div>

@@ -326,8 +326,9 @@ export default function HousekeepingBillCalculator() {
       <body>
         <div class="header">
           <div>
-            <h1 class="title">🧹 MAJESTIQUE EURISKA CO-OP HOUSING SOCIETY</h1>
-            <div class="subtitle">Housekeeping & Facility Management Monthly Bill Breakdown</div>
+            <h1 class="title">🧹 MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
+            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Housekeeping &amp; Facility Management Monthly Bill Breakdown</div>
           </div>
           <div class="meta">
             <div><strong>Billing Month:</strong> ${formatLongMonth(month)}</div>

@@ -516,8 +516,9 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
       <body>
         <div class="header">
           <div>
-            <h1 class="title">📋 Majestique Euriska - ${tabLabel}</h1>
-            <div class="subtitle">Task & Deadline Tracker — Society Manager Task Ledger</div>
+            <h1 class="title">📋 MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
+            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${tabLabel} — Society Manager Task &amp; Deadline Ledger</div>
           </div>
           <div class="meta">
             <div><strong>Report Date:</strong> ${generatedDate}</div>

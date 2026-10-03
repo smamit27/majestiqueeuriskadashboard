@@ -464,8 +464,8 @@ export default function BankStatementTracker({ isAdmin }) {
     <body>
       <div class="header-box">
         <div>
-          <div class="society-title">🏢 MAJESTIQUE EURISKA A BUILDING CO-OP HOUSING SOCIETY LTD.</div>
-          <div class="society-sub">Reg. No: PNA/PNA(S)/HSG/(TC)/18320/2022-23 | HDFC Bank A/C: 50200075533530 | Mohammedwadi, Pune 411060</div>
+          <div class="society-title">🏢 MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</div>
+          <div class="society-sub">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019 | HDFC Bank A/C: 50200075533530 | S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
         </div>
         <div class="report-badge">
           <div class="report-title">6-Month Financial Trend & Profit/Loss Audit</div>
@@ -2056,8 +2056,8 @@ export default function BankStatementTracker({ isAdmin }) {
                   </head><body>
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #196c6c;padding-bottom:12px;margin-bottom:16px">
                       <div>
-                        <h1>🏢 MAJESTIQUE EURISKA A BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
-                        <div style="font-size:12px;color:#475569">Registration No: PNA/PNA(S)/HSG/(TC)/18320/2022-23 | Account #50200075533530</div>
+                        <h1>🏢 MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
+                        <div style="font-size:12px;color:#475569">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019 | HDFC Bank A/C: 50200075533530 | S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
                       </div>
                       <div style="text-align:right">
                         <div style="font-weight:700;color:#196c6c">INCOME & EXPENSE STATEMENT</div>

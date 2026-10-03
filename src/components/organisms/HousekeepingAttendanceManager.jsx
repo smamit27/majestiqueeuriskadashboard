@@ -490,7 +490,7 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
         <div class="header">
           <div>
             <h1 class="title">🧹 Majestique Euriska - Housekeeping Attendance Register</h1>
-            <div class="subtitle">Monthly Housekeeping & Cleaning Manpower Deployment • FY April 2026 – March 2027</div>
+            <div class="subtitle">Monthly Housekeeping & Cleaning Manpower Deployment • Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
           </div>
           <div class="meta">
             <div><strong>Month:</strong> ${longMonth}</div>

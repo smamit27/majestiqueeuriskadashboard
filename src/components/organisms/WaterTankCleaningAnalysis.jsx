@@ -52,8 +52,9 @@ export default function WaterTankCleaningAnalysis() {
       <body>
         <div class="header">
           <div>
-            <h1 class="title">MAJESTIQUE EURISKA CO-OP HOUSING SOCIETY</h1>
-            <div class="subtitle">Detailed Water Tank Capacity & Cleaning Bill Analysis • A, B and C Buildings</div>
+            <h1 class="title">MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
+            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Detailed Water Tank Capacity &amp; Cleaning Bill Analysis • A, B and C Buildings</div>
           </div>
           <div class="badge">Official Invoiced Rate Audit</div>
         </div>
@@ -237,7 +238,7 @@ export default function WaterTankCleaningAnalysis() {
 
         <div class="footer">
           <div>Report Generated: ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
-          <div>Society Office: Majestique Euriska CHS</div>
+          <div>Society Office: S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
           <div>Treasurer / Chairman: __________________________</div>
         </div>
       </body>

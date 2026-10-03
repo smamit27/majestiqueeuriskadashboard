@@ -586,8 +586,9 @@ export default function ParkPlusTracker({ isAdmin = false }) {
       <body>
         <div class="header">
           <div>
-            <h1 class="title">🅿️ Majestique Euriska - Park+ Payment Tracker</h1>
-            <div class="subtitle">RFID & Automated Gate Solution — Vendor Invoices & Payment Ledger</div>
+            <h1 class="title">🅿️ MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
+            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">RFID &amp; Automated Gate Solution — Vendor Invoices &amp; Payment Ledger</div>
           </div>
           <div class="meta">
             <div><strong>Report Date:</strong> ${generatedDate}</div>

@@ -884,7 +884,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
           <div class="header">
             <div class="title">Majestique Euriska Co-Op Housing Society Ltd.</div>
             <div class="subtitle">
-              Registration No: PNA/PNA(2)/HSG/(TC)/17066/2021-2022 • Survey No. 43/1 &amp; 43/2, Near EON IT Park, Kharadi, Pune - 411014
+              Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, District Pune, Pune - 411060
             </div>
             <div class="invoice-tag">Tata Electricity Sub-Meter Tax Invoice / Bill</div>
           </div>
@@ -971,9 +971,9 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
           <div class="bank-details">
             <h4>Society Bank Account for Payment (NEFT / RTGS / IMPS)</h4>
-            <div><strong>Account Name:</strong> MAJESTIQUE EURISKA CO-OPERATIVE HOUSING SOCIETY LTD.</div>
-            <div><strong>Bank:</strong> Union Bank of India / HDFC Bank • <strong>Branch:</strong> Kharadi, Pune</div>
-            <div><strong>Account Number:</strong> 50200065450992 • <strong>Payment Due:</strong> Within 10 Days of Bill Issuance</div>
+            <div><strong>Account Name:</strong> MAJESTIQUE EURISKA 'A' BUILDING CO-OPERATIVE HOUSING SOCIETY LTD.</div>
+            <div><strong>Bank:</strong> HDFC Bank / Union Bank of India • <strong>Branch:</strong> Mohammed Wadi, Pune</div>
+            <div><strong>Account Number:</strong> 50200075533530 • <strong>Payment Due:</strong> Within 10 Days of Bill Issuance</div>
           </div>
 
           <div class="signatures">
@@ -1069,8 +1069,8 @@ export default function ElectricityTracker({ isAdmin = false }) {
       </head>
       <body>
         <div class="header">
-          <div class="title">Majestique Euriska Co-operative Housing Society Ltd.</div>
-          <div class="sub">Survey No. 43/1 &amp; 43/2, Near EON IT Park, Kharadi, Pune - 411014</div>
+          <div class="title">Majestique Euriska 'A' Building Co-operative Housing Society Ltd.</div>
+          <div class="sub">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, District Pune, Pune - 411060</div>
           <div class="badge">Tata Electricity Sub-Meter Consolidated Account Statement</div>
         </div>
 

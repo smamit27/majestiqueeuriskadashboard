@@ -116,8 +116,9 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
       <body>
         <div class="header">
           <div>
-            <h1 class="title">MAJESTIQUE EURISKA CO-OP HOUSING SOCIETY</h1>
-            <div class="subtitle">Official Water Tank Capacity, Pipeline Architecture & Compliance Log</div>
+            <h1 class="title">MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
+            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Official Water Tank Capacity, Pipeline Architecture &amp; Compliance Log</div>
           </div>
           <div class="badge">Official Technical Spec</div>
         </div>
@@ -270,7 +271,7 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
 
         <div class="footer">
           <div>Generated on: ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-          <div>Society Office: Majestique Euriska CHS, Pune</div>
+          <div>Society Office: S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
           <div>Authorized Signatory: _________________________</div>
         </div>
       </body>
