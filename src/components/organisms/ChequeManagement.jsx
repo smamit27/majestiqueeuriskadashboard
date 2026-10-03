@@ -320,6 +320,63 @@ export default function ChequeManagement({ isAdmin = false }) {
     }
   };
 
+  // State for editing existing cheques in modal
+  const [editModalData, setEditModalData] = useState(null);
+
+  const handleOpenEditModal = (c, actualIdx) => {
+    if (!canEdit) {
+      if (isCurrentMonthLocked) {
+        setShowUnlockModal(true);
+        return;
+      }
+      alert('You need admin privileges to edit cheque details.');
+      return;
+    }
+    setEditModalData({
+      index: actualIdx,
+      isCommon: subTab === 'common',
+      cheque: {
+        date: c.date || '',
+        deductedDate: c.deductedDate || '',
+        chequeNo: c.chequeNo || '',
+        vendor: c.vendor || '',
+        purpose: c.purpose || '',
+        remark: c.remark || '',
+        amount: c.amount || '',
+        whoPaid: c.whoPaid || 'A Building',
+        isPaid: Boolean(c.isPaid),
+        bPaidDate: c.bPaidDate || '',
+        cPaidDate: c.cPaidDate || ''
+      }
+    });
+  };
+
+  const handleEditFieldChange = (field, val) => {
+    setEditModalData(prev => prev ? ({
+      ...prev,
+      cheque: { ...prev.cheque, [field]: val }
+    }) : null);
+  };
+
+  const handleSaveEditModal = (e) => {
+    e.preventDefault();
+    if (!editModalData) return;
+    const { index, isCommon, cheque } = editModalData;
+    const next = isCommon ? [...chequesCommon] : [...chequesA];
+    next[index] = {
+      ...next[index],
+      ...cheque,
+      isPaid: cheque.isPaid || Boolean(cheque.deductedDate)
+    };
+    if (isCommon) {
+      setChequesCommon(next);
+    } else {
+      setChequesA(next);
+    }
+    triggerAutoSave(next, isCommon);
+    setEditModalData(null);
+  };
+
   const handleUnlockSubmit = (e) => {
     e.preventDefault();
     if (unlockPassword === MASTER_UNLOCK_PASSWORD) {
@@ -909,7 +966,7 @@ export default function ChequeManagement({ isAdmin = false }) {
                 )}
                 <th style={{ width: 120 }}>Who Paid</th>
                 <th style={{ width: 70, textAlign: 'center' }}>Paid?</th>
-                <th style={{ width: 40 }}></th>
+                <th style={{ width: 85, textAlign: 'center' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -1108,7 +1165,30 @@ export default function ChequeManagement({ isAdmin = false }) {
                       <td style={{ textAlign: 'center' }}>
                          <input type="checkbox" checked={c.isPaid || false} onChange={e => updateRow(actualIdx, 'isPaid', e.target.checked)} disabled={!canEdit} style={{ transform: 'scale(1.2)' }} />
                       </td>
-                      <td>{canEdit && <button className="button-icon" onClick={() => removeRow(actualIdx)} style={{ opacity: 0.3 }}>✕</button>}</td>
+                      <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenEditModal(c, actualIdx)}
+                            className="button-secondary"
+                            style={{ padding: '3px 8px', fontSize: '0.75rem', height: 'auto', borderRadius: '4px', cursor: 'pointer' }}
+                            title="Edit Cheque Details"
+                          >
+                            ✏️ Edit
+                          </button>
+                          {canEdit && (
+                            <button
+                              type="button"
+                              className="button-icon"
+                              onClick={() => removeRow(actualIdx)}
+                              style={{ opacity: 0.3 }}
+                              title="Delete Cheque"
+                            >
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   );
                 })
@@ -1141,6 +1221,236 @@ export default function ChequeManagement({ isAdmin = false }) {
           </table>
         </div>
       </div>
+
+      {/* Edit Cheque Modal */}
+      {editModalData && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cheque-edit-dialog-title"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.55)',
+            backdropFilter: 'blur(5px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '20px'
+          }}
+        >
+          <div
+            className="table-card"
+            style={{
+              maxWidth: '620px',
+              width: '100%',
+              padding: '26px',
+              background: 'white',
+              borderRadius: '18px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              border: '1px solid #e2e8f0',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '10px',
+                  background: '#eff6ff',
+                  border: '1px solid #bfdbfe',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.3rem',
+                  flexShrink: 0
+                }}>
+                  ✏️
+                </div>
+                <div>
+                  <h3 id="cheque-edit-dialog-title" style={{ margin: 0, fontSize: '1.2rem', color: 'var(--ink)' }}>
+                    Edit Cheque {editModalData.cheque.chequeNo ? `#${editModalData.cheque.chequeNo}` : 'Entry'}
+                  </h3>
+                  <p style={{ margin: '2px 0 0 0', fontSize: '0.82rem', color: 'var(--muted)' }}>
+                    {editModalData.isCommon ? '🤝 Common Work Cheque' : '🏢 Building A Cheque'} • {formatLongMonth(selectedMonth)}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditModalData(null)}
+                style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: '#64748b' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditModal} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Cheque Date <span style={{ color: '#ef4444' }}>*</span></label>
+                <input
+                  type="date"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.cheque.date}
+                  onChange={e => handleEditFieldChange('date', e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Amount Deducted Date</label>
+                <input
+                  type="date"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.cheque.deductedDate}
+                  onChange={e => handleEditFieldChange('deductedDate', e.target.value)}
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Cheque No <span style={{ color: '#ef4444' }}>*</span></label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.cheque.chequeNo}
+                  onChange={e => handleEditFieldChange('chequeNo', e.target.value)}
+                  placeholder="Cheque #"
+                  required
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Total Amount (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%', fontWeight: 700 }}
+                  value={editModalData.cheque.amount}
+                  onChange={e => handleEditFieldChange('amount', e.target.value)}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+
+              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Payee / Vendor Name <span style={{ color: '#ef4444' }}>*</span></label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%', fontWeight: 600 }}
+                  value={editModalData.cheque.vendor}
+                  onChange={e => handleEditFieldChange('vendor', e.target.value)}
+                  placeholder="Vendor / Payee Name"
+                  required
+                />
+              </div>
+
+              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Purpose / Head of Expense</label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.cheque.purpose}
+                  onChange={e => handleEditFieldChange('purpose', e.target.value)}
+                  placeholder="Payment purpose description..."
+                />
+              </div>
+
+              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Remark / Notes</label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.cheque.remark}
+                  onChange={e => handleEditFieldChange('remark', e.target.value)}
+                  placeholder="Additional remark / note for this cheque..."
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Who Paid</label>
+                <select
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.cheque.whoPaid}
+                  onChange={e => handleEditFieldChange('whoPaid', e.target.value)}
+                >
+                  <option>A Building</option>
+                  <option>B Building</option>
+                  <option>C Building</option>
+                  <option>Petty Cash</option>
+                </select>
+              </div>
+
+              <div className="field-group" style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '24px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600 }}>
+                  <input
+                    type="checkbox"
+                    checked={editModalData.cheque.isPaid}
+                    onChange={e => handleEditFieldChange('isPaid', e.target.checked)}
+                    style={{ transform: 'scale(1.2)' }}
+                  />
+                  <span>Cheque Cleared / Deducted</span>
+                </label>
+              </div>
+
+              {editModalData.isCommon && isPaybackTrackingActive && (
+                <>
+                  <div className="field-group">
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>B Paid Back Date</label>
+                    <input
+                      type="date"
+                      className="attendance-register-input"
+                      style={{ textAlign: 'left', width: '100%' }}
+                      value={editModalData.cheque.bPaidDate}
+                      onChange={e => handleEditFieldChange('bPaidDate', e.target.value)}
+                    />
+                  </div>
+                  <div className="field-group">
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>C Paid Back Date</label>
+                    <input
+                      type="date"
+                      className="attendance-register-input"
+                      style={{ textAlign: 'left', width: '100%' }}
+                      value={editModalData.cheque.cPaidDate}
+                      onChange={e => handleEditFieldChange('cPaidDate', e.target.value)}
+                    />
+                  </div>
+                </>
+              )}
+
+              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px', borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
+                <button
+                  type="button"
+                  onClick={() => setEditModalData(null)}
+                  className="button-secondary"
+                  style={{ padding: '9px 18px' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="button-primary"
+                  style={{ padding: '9px 24px' }}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Password Unlock Modal */}
       {showUnlockModal && (

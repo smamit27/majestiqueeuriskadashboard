@@ -230,6 +230,23 @@ describe('ChequeManagement Component - B and C Payback Tracking for Common Work'
     expect(screen.queryByDisplayValue('540')).not.toBeInTheDocument();
     expect(screen.queryByDisplayValue('542')).not.toBeInTheDocument();
   });
+
+  it('renders Edit button for existing cheques and opens Edit Cheque Modal', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<ChequeManagement isAdmin={true} />);
+
+    // Look for Edit buttons in the table
+    const editButtons = await screen.findAllByRole('button', { name: /✏️ Edit/i });
+    expect(editButtons.length).toBeGreaterThan(0);
+
+    // Click the first Edit button
+    await user.click(editButtons[0]);
+
+    // Modal dialog should open
+    expect(screen.getByRole('dialog', { name: /Edit Cheque/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Additional remark / note for this cheque...')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Save Changes/i })).toBeInTheDocument();
+  });
 });
 
 
