@@ -191,5 +191,17 @@ describe('ChequeManagement Component - B and C Payback Tracking for Common Work'
     expect(screen.queryByRole('columnheader', { name: /B Paid Back Date/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('columnheader', { name: /C Paid Back Date/i })).not.toBeInTheDocument();
   });
+
+  it('excludes cheques 537, 540, and 542 from Building A in September 2026', async () => {
+    render(<ChequeManagement isAdmin={true} />);
+
+    // In September 2026 Building A, cheques 537, 540, and 542 should not be in Building A ledger
+    const inputs = screen.getAllByRole('textbox');
+    const values = inputs.map(input => input.value);
+
+    expect(values).not.toContain('537');
+    expect(values).not.toContain('540');
+    expect(values).not.toContain('542');
+  });
 });
 

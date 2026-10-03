@@ -38,10 +38,8 @@ const DEFAULT_SEPTEMBER_2026_CHEQUES = [
   { id: 1725451400001, srNo: 1, date: '2026-09-04', chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', purpose: 'Housekeeping / Waterman Salary', amount: '12900', whoPaid: 'A Building', isPaid: true },
   { id: 1725451400002, srNo: 2, date: '2026-09-04', chequeNo: '535', vendor: 'Shubham Enterprises', purpose: 'Maintenance & Repairs / Operations', amount: '36536', whoPaid: 'A Building', isPaid: true },
   { id: 1725451400003, srNo: 3, date: '2026-09-04', chequeNo: '536', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", purpose: 'Inter-Building Common Share Settlement / Transfer', amount: '8662', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400004, srNo: 4, date: '2026-09-04', chequeNo: '537', vendor: 'Sai Swimming Pool Maintenance Services', purpose: 'Swimming Pool Monthly AMC / Maintenance', amount: '4519', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400005, srNo: 5, date: '2026-09-04', chequeNo: '538', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400006, srNo: 6, date: '2026-09-04', chequeNo: '539', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400007, srNo: 7, date: '2026-09-04', chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', whoPaid: 'A Building', isPaid: true }
+  { id: 1725451400005, srNo: 4, date: '2026-09-04', chequeNo: '538', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400006, srNo: 5, date: '2026-09-04', chequeNo: '539', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', whoPaid: 'A Building', isPaid: true }
 ];
 
 const DEFAULT_SEPTEMBER_2026_COMMON_CHEQUES = [
@@ -158,11 +156,14 @@ export default function ChequeManagement({ isAdmin = false }) {
                 aData.push({ id: Date.now() + 103, srNo: aData.length + 1, date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false });
               }
             } else if (selectedMonth === '2026-09') {
+              // 537, 540, 542 are Common Work cheques; remove them from Building A
+              aData = aData.filter(c => !['537', '540', '542'].includes(String(c.chequeNo || '').trim()));
               DEFAULT_SEPTEMBER_2026_CHEQUES.forEach((defChq) => {
                 if (!aData.some(c => String(c.chequeNo) === String(defChq.chequeNo))) {
                   aData.push({ ...defChq, srNo: aData.length + 1 });
                 }
               });
+              aData = aData.map((c, idx) => ({ ...c, srNo: idx + 1 }));
             }
             setChequesA(aData);
           } else {
@@ -464,13 +465,24 @@ export default function ChequeManagement({ isAdmin = false }) {
 
     if (numbers.length <= 5) return []; // Only check if more than 5 active cheques
 
-    // Find small gaps (1-3 missing) in the sequence
+    // Gaps in Building A sequence that are NOT issued under Common Work
+    const commonNumbers = new Set(
+      chequesCommon
+        .map(c => {
+          const stripped = String(c.chequeNo || '').replace(/\D/g, '');
+          return stripped ? Number(stripped) : null;
+        })
+        .filter(Boolean)
+    );
+
     const missing = [];
     for (let i = 0; i < numbers.length - 1; i++) {
       const diff = numbers[i + 1] - numbers[i];
       if (diff > 1 && diff <= 4) {
         for (let j = numbers[i] + 1; j < numbers[i + 1]; j++) {
-          missing.push(j);
+          if (!commonNumbers.has(j)) {
+            missing.push(j);
+          }
         }
       }
     }
