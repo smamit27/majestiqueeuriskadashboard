@@ -11,22 +11,23 @@ const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2,
 
 export default function ChequeTracker() {
   const [entries, setEntries] = useState([
-    { id: 1, srNo: 1, month: 'Feb 2026', date: '17 Feb', chequeNo: '428', vendor: 'Mansi Electrical', purpose: 'Pump Repairing and Panel Contractor Replacement', totalAmount: '13050', whoPaid: 'A Building', aShare: '4914.94', bShare: '5423.38', bReceiveDate: '05.03.26', cShare: '2711.69', cReceiveDate: '19.02.26', remarks: '' },
-    { id: 2, srNo: 2, month: 'Feb 2026', date: '25 Jan', chequeNo: '427', vendor: 'MSEDCL', purpose: 'Club House Electricity BIll', totalAmount: '1260', whoPaid: 'A Building', aShare: '474.55', bShare: '523.64', bReceiveDate: '16.02.26', cShare: '261.82', cReceiveDate: '19.02.26', remarks: '' },
-    { id: 3, srNo: 3, month: 'Feb 2026', date: '3 Jan', chequeNo: '405', vendor: 'Tanaji Hande', purpose: 'Kids Play Area Lebor', totalAmount: '15000', whoPaid: 'A Building', aShare: '5649.35', bShare: '6233.77', bReceiveDate: '06.01.26', cShare: '3116.88', cReceiveDate: '09.01.26', remarks: '' },
-    { id: 4, srNo: 4, month: 'Feb 2026', date: '15 Feb', chequeNo: '435', vendor: 'MSEDCL', purpose: 'Common Electricity Share', totalAmount: '60410', whoPaid: 'A Building', aShare: '22751.82', bShare: '25105.45', bReceiveDate: '16.02.26', cShare: '12552.73', cReceiveDate: '19.02.26', remarks: '' },
-    { id: 5, srNo: 5, month: 'Feb 2026', date: '20 Jan', chequeNo: '423', vendor: 'Ghule Petrolium', purpose: 'DG Fuel', totalAmount: '18072', whoPaid: 'A Building', aShare: '6806.34', bShare: '7510.44', bReceiveDate: '31.01.26', cShare: '3755.22', cReceiveDate: '19.02.26', remarks: '' },
-    { id: 6, srNo: 6, month: 'Feb 2026', date: '10 Feb', chequeNo: '434', vendor: 'Nagendra Kumar', purpose: 'Kids Play Area Painting', totalAmount: '16000', whoPaid: 'A Building', aShare: '6025.97', bShare: '6649.35', bReceiveDate: '16.02.26', cShare: '3324.68', cReceiveDate: '19.02.26', remarks: '' },
-    { id: 7, srNo: 7, month: 'Mar 2026', date: '30 Mar', chequeNo: '452', vendor: 'Aditya Chaurasiya', purpose: 'Kids Play area Gate', totalAmount: '24260', whoPaid: 'A Building', aShare: '9136.88', bShare: '10082.08', bReceiveDate: '17.04.26', cShare: '5041.04', cReceiveDate: '10.04.26', remarks: '' },
-    { id: 8, srNo: 8, month: 'Apr 26', date: '08 Apr', chequeNo: '462', vendor: 'Parviom Techno Pvt Ltd', purpose: 'Park Plus', totalAmount: '23231', whoPaid: 'A Building', aShare: '8749.34', bShare: '9654.44', bReceiveDate: '17.04.26', cShare: '4827.22', cReceiveDate: '10.04.26', remarks: '' },
-    { id: 9, srNo: 9, month: 'Apr 26', date: '22 Apr', chequeNo: '', vendor: 'Shahabaz Fire', purpose: 'AMC cheque', totalAmount: '10006', whoPaid: 'A Building', aShare: '3768.49', bShare: '4158.34', bReceiveDate: '', cShare: '2079.17', cReceiveDate: '28.04.26', remarks: '' },
-    { id: 10, srNo: 10, month: 'Apr 26', date: '22 Apr', chequeNo: '470', vendor: 'Krishna Gutte', purpose: 'Clubhouse bird net', totalAmount: '5000', whoPaid: 'A Building', aShare: '1883.12', bShare: '2077.92', bReceiveDate: '', cShare: '1038.96', cReceiveDate: '28.04.26', remarks: '' }
+    { id: 1, srNo: 1, month: 'Feb 2026', date: '17 Feb', deductedDate: '23 Feb', chequeNo: '428', vendor: 'Mansi Electrical', purpose: 'Pump Repairing and Panel Contractor Replacement', totalAmount: '13050', whoPaid: 'A Building', aShare: '4914.94', bShare: '5423.38', bReceiveDate: '05.03.26', cShare: '2711.69', cReceiveDate: '19.02.26', remarks: '' },
+    { id: 2, srNo: 2, month: 'Feb 2026', date: '25 Jan', deductedDate: '05 Feb', chequeNo: '427', vendor: 'MSEDCL', purpose: 'Club House Electricity BIll', totalAmount: '1260', whoPaid: 'A Building', aShare: '474.55', bShare: '523.64', bReceiveDate: '16.02.26', cShare: '261.82', cReceiveDate: '19.02.26', remarks: '' },
+    { id: 3, srNo: 3, month: 'Feb 2026', date: '3 Jan', deductedDate: '08 Jan', chequeNo: '405', vendor: 'Tanaji Hande', purpose: 'Kids Play Area Lebor', totalAmount: '15000', whoPaid: 'A Building', aShare: '5649.35', bShare: '6233.77', bReceiveDate: '06.01.26', cShare: '3116.88', cReceiveDate: '09.01.26', remarks: '' },
+    { id: 4, srNo: 4, month: 'Feb 2026', date: '15 Feb', deductedDate: '19 Feb', chequeNo: '435', vendor: 'MSEDCL', purpose: 'Common Electricity Share', totalAmount: '60410', whoPaid: 'A Building', aShare: '22751.82', bShare: '25105.45', bReceiveDate: '16.02.26', cShare: '12552.73', cReceiveDate: '19.02.26', remarks: '' },
+    { id: 5, srNo: 5, month: 'Feb 2026', date: '20 Jan', deductedDate: '28 Jan', chequeNo: '423', vendor: 'Ghule Petrolium', purpose: 'DG Fuel', totalAmount: '18072', whoPaid: 'A Building', aShare: '6806.34', bShare: '7510.44', bReceiveDate: '31.01.26', cShare: '3755.22', cReceiveDate: '19.02.26', remarks: '' },
+    { id: 6, srNo: 6, month: 'Feb 2026', date: '10 Feb', deductedDate: '16 Feb', chequeNo: '434', vendor: 'Nagendra Kumar', purpose: 'Kids Play Area Painting', totalAmount: '16000', whoPaid: 'A Building', aShare: '6025.97', bShare: '6649.35', bReceiveDate: '16.02.26', cShare: '3324.68', cReceiveDate: '19.02.26', remarks: '' },
+    { id: 7, srNo: 7, month: 'Mar 2026', date: '30 Mar', deductedDate: '06 Apr', chequeNo: '452', vendor: 'Aditya Chaurasiya', purpose: 'Kids Play area Gate', totalAmount: '24260', whoPaid: 'A Building', aShare: '9136.88', bShare: '10082.08', bReceiveDate: '17.04.26', cShare: '5041.04', cReceiveDate: '10.04.26', remarks: '' },
+    { id: 8, srNo: 8, month: 'Apr 26', date: '08 Apr', deductedDate: '15 Apr', chequeNo: '462', vendor: 'Parviom Techno Pvt Ltd', purpose: 'Park Plus', totalAmount: '23231', whoPaid: 'A Building', aShare: '8749.34', bShare: '9654.44', bReceiveDate: '17.04.26', cShare: '4827.22', cReceiveDate: '10.04.26', remarks: '' },
+    { id: 9, srNo: 9, month: 'Apr 26', date: '22 Apr', deductedDate: '28 Apr', chequeNo: '', vendor: 'Shahabaz Fire', purpose: 'AMC cheque', totalAmount: '10006', whoPaid: 'A Building', aShare: '3768.49', bShare: '4158.34', bReceiveDate: '', cShare: '2079.17', cReceiveDate: '28.04.26', remarks: '' },
+    { id: 10, srNo: 10, month: 'Apr 26', date: '22 Apr', deductedDate: '28 Apr', chequeNo: '470', vendor: 'Krishna Gutte', purpose: 'Clubhouse bird net', totalAmount: '5000', whoPaid: 'A Building', aShare: '1883.12', bShare: '2077.92', bReceiveDate: '', cShare: '1038.96', cReceiveDate: '28.04.26', remarks: '' }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterMonth, setFilterMonth] = useState('All');
+  const [editModalData, setEditModalData] = useState(null);
 
   const isLoadedRef = useRef(false);
   const autoSaveTimer = useRef(null);
@@ -45,7 +46,9 @@ export default function ChequeTracker() {
         if (!cancelled) {
           const data = snap.data();
           if (snap.exists() && data?.entries && data.entries.length > 0) {
-            setEntries(data.entries);
+            // Ensure deductedDate field exists on loaded data
+            const enriched = data.entries.map(e => ({ deductedDate: '', ...e }));
+            setEntries(enriched);
             setSaveMsg('Data loaded');
           } else {
             // Seed the database if it's missing or empty
@@ -91,6 +94,7 @@ export default function ChequeTracker() {
       srNo: entries.length + 1,
       month: '',
       date: '',
+      deductedDate: '',
       chequeNo: '',
       vendor: '',
       purpose: '',
@@ -130,11 +134,41 @@ export default function ChequeTracker() {
     triggerAutoSave(next);
   };
 
+  // ✏️ Edit Modal handlers
+  const handleOpenEditModal = (entry) => {
+    setEditModalData({ entry: { ...entry } });
+  };
+
+  const handleEditFieldChange = (field, value) => {
+    setEditModalData(prev => ({
+      ...prev,
+      entry: { ...prev.entry, [field]: value }
+    }));
+  };
+
+  const handleSaveEditModal = (e) => {
+    e.preventDefault();
+    if (!editModalData) return;
+    const edited = editModalData.entry;
+    // Recalculate shares if amount changed
+    const amount = n(edited.totalAmount);
+    if (amount > 0) {
+      edited.aShare = (amount * (FLAT_COUNTS.A / TOTAL_FLATS)).toFixed(2);
+      edited.bShare = (amount * (FLAT_COUNTS.B / TOTAL_FLATS)).toFixed(2);
+      edited.cShare = (amount * (FLAT_COUNTS.C / TOTAL_FLATS)).toFixed(2);
+    }
+    const next = entries.map(en => en.id === edited.id ? edited : en);
+    setEntries(next);
+    triggerAutoSave(next);
+    setEditModalData(null);
+  };
+
   const handleDownloadExcel = () => {
     const ws = XLSX.utils.json_to_sheet(entries.map(e => ({
       'Sr No': e.srNo,
       'Month': e.month,
       'Cheque Date': e.date,
+      'Deducted Date': e.deductedDate || '',
       'Cheque No': e.chequeNo,
       'Vendor': e.vendor,
       'Purpose/Remarks': e.purpose,
@@ -160,16 +194,16 @@ export default function ChequeTracker() {
   const handleRestoreDefault = async () => {
     if (!window.confirm("Restore the 10 default cheque records? This will overwrite current entries.")) return;
     const defaults = [
-      { id: 1, srNo: 1, month: 'Feb 2026', date: '17 Feb', chequeNo: '428', vendor: 'Mansi Electrical', purpose: 'Pump Repairing and Panel Contractor Replacement', totalAmount: '13050', whoPaid: 'A Building', aShare: '4914.94', bShare: '5423.38', bReceiveDate: '05.03.26', cShare: '2711.69', cReceiveDate: '19.02.26', remarks: '' },
-      { id: 2, srNo: 2, month: 'Feb 2026', date: '25 Jan', chequeNo: '427', vendor: 'MSEDCL', purpose: 'Club House Electricity BIll', totalAmount: '1260', whoPaid: 'A Building', aShare: '474.55', bShare: '523.64', bReceiveDate: '16.02.26', cShare: '261.82', cReceiveDate: '19.02.26', remarks: '' },
-      { id: 3, srNo: 3, month: 'Feb 2026', date: '3 Jan', chequeNo: '405', vendor: 'Tanaji Hande', purpose: 'Kids Play Area Lebor', totalAmount: '15000', whoPaid: 'A Building', aShare: '5649.35', bShare: '6233.77', bReceiveDate: '06.01.26', cShare: '3116.88', cReceiveDate: '09.01.26', remarks: '' },
-      { id: 4, srNo: 4, month: 'Feb 2026', date: '15 Feb', chequeNo: '435', vendor: 'MSEDCL', purpose: 'Common Electricity Share', totalAmount: '60410', whoPaid: 'A Building', aShare: '22751.82', bShare: '25105.45', bReceiveDate: '16.02.26', cShare: '12552.73', cReceiveDate: '19.02.26', remarks: '' },
-      { id: 5, srNo: 5, month: 'Feb 2026', date: '20 Jan', chequeNo: '423', vendor: 'Ghule Petrolium', purpose: 'DG Fuel', totalAmount: '18072', whoPaid: 'A Building', aShare: '6806.34', bShare: '7510.44', bReceiveDate: '31.01.26', cShare: '3755.22', cReceiveDate: '19.02.26', remarks: '' },
-      { id: 6, srNo: 6, month: 'Feb 2026', date: '10 Feb', chequeNo: '434', vendor: 'Nagendra Kumar', purpose: 'Kids Play Area Painting', totalAmount: '16000', whoPaid: 'A Building', aShare: '6025.97', bShare: '6649.35', bReceiveDate: '16.02.26', cShare: '3324.68', cReceiveDate: '19.02.26', remarks: '' },
-      { id: 7, srNo: 7, month: 'Mar 2026', date: '30 Mar', chequeNo: '452', vendor: 'Aditya Chaurasiya', purpose: 'Kids Play area Gate', totalAmount: '24260', whoPaid: 'A Building', aShare: '9136.88', bShare: '10082.08', bReceiveDate: '17.04.26', cShare: '5041.04', cReceiveDate: '10.04.26', remarks: '' },
-      { id: 8, srNo: 8, month: 'Apr 26', date: '08 Apr', chequeNo: '462', vendor: 'Parviom Techno Pvt Ltd', purpose: 'Park Plus', totalAmount: '23231', whoPaid: 'A Building', aShare: '8749.34', bShare: '9654.44', bReceiveDate: '17.04.26', cShare: '4827.22', cReceiveDate: '10.04.26', remarks: '' },
-      { id: 9, srNo: 9, month: 'Apr 26', date: '22 Apr', chequeNo: '', vendor: 'Shahabaz Fire', purpose: 'AMC cheque', totalAmount: '10006', whoPaid: 'A Building', aShare: '3768.49', bShare: '4158.34', bReceiveDate: '', cShare: '2079.17', cReceiveDate: '28.04.26', remarks: '' },
-      { id: 10, srNo: 10, month: 'Apr 26', date: '22 Apr', chequeNo: '470', vendor: 'Krishna Gutte', purpose: 'Clubhouse bird net', totalAmount: '5000', whoPaid: 'A Building', aShare: '1883.12', bShare: '2077.92', bReceiveDate: '', cShare: '1038.96', cReceiveDate: '28.04.26', remarks: '' }
+      { id: 1, srNo: 1, month: 'Feb 2026', date: '17 Feb', deductedDate: '23 Feb', chequeNo: '428', vendor: 'Mansi Electrical', purpose: 'Pump Repairing and Panel Contractor Replacement', totalAmount: '13050', whoPaid: 'A Building', aShare: '4914.94', bShare: '5423.38', bReceiveDate: '05.03.26', cShare: '2711.69', cReceiveDate: '19.02.26', remarks: '' },
+      { id: 2, srNo: 2, month: 'Feb 2026', date: '25 Jan', deductedDate: '05 Feb', chequeNo: '427', vendor: 'MSEDCL', purpose: 'Club House Electricity BIll', totalAmount: '1260', whoPaid: 'A Building', aShare: '474.55', bShare: '523.64', bReceiveDate: '16.02.26', cShare: '261.82', cReceiveDate: '19.02.26', remarks: '' },
+      { id: 3, srNo: 3, month: 'Feb 2026', date: '3 Jan', deductedDate: '08 Jan', chequeNo: '405', vendor: 'Tanaji Hande', purpose: 'Kids Play Area Lebor', totalAmount: '15000', whoPaid: 'A Building', aShare: '5649.35', bShare: '6233.77', bReceiveDate: '06.01.26', cShare: '3116.88', cReceiveDate: '09.01.26', remarks: '' },
+      { id: 4, srNo: 4, month: 'Feb 2026', date: '15 Feb', deductedDate: '19 Feb', chequeNo: '435', vendor: 'MSEDCL', purpose: 'Common Electricity Share', totalAmount: '60410', whoPaid: 'A Building', aShare: '22751.82', bShare: '25105.45', bReceiveDate: '16.02.26', cShare: '12552.73', cReceiveDate: '19.02.26', remarks: '' },
+      { id: 5, srNo: 5, month: 'Feb 2026', date: '20 Jan', deductedDate: '28 Jan', chequeNo: '423', vendor: 'Ghule Petrolium', purpose: 'DG Fuel', totalAmount: '18072', whoPaid: 'A Building', aShare: '6806.34', bShare: '7510.44', bReceiveDate: '31.01.26', cShare: '3755.22', cReceiveDate: '19.02.26', remarks: '' },
+      { id: 6, srNo: 6, month: 'Feb 2026', date: '10 Feb', deductedDate: '16 Feb', chequeNo: '434', vendor: 'Nagendra Kumar', purpose: 'Kids Play Area Painting', totalAmount: '16000', whoPaid: 'A Building', aShare: '6025.97', bShare: '6649.35', bReceiveDate: '16.02.26', cShare: '3324.68', cReceiveDate: '19.02.26', remarks: '' },
+      { id: 7, srNo: 7, month: 'Mar 2026', date: '30 Mar', deductedDate: '06 Apr', chequeNo: '452', vendor: 'Aditya Chaurasiya', purpose: 'Kids Play area Gate', totalAmount: '24260', whoPaid: 'A Building', aShare: '9136.88', bShare: '10082.08', bReceiveDate: '17.04.26', cShare: '5041.04', cReceiveDate: '10.04.26', remarks: '' },
+      { id: 8, srNo: 8, month: 'Apr 26', date: '08 Apr', deductedDate: '15 Apr', chequeNo: '462', vendor: 'Parviom Techno Pvt Ltd', purpose: 'Park Plus', totalAmount: '23231', whoPaid: 'A Building', aShare: '8749.34', bShare: '9654.44', bReceiveDate: '17.04.26', cShare: '4827.22', cReceiveDate: '10.04.26', remarks: '' },
+      { id: 9, srNo: 9, month: 'Apr 26', date: '22 Apr', deductedDate: '28 Apr', chequeNo: '', vendor: 'Shahabaz Fire', purpose: 'AMC cheque', totalAmount: '10006', whoPaid: 'A Building', aShare: '3768.49', bShare: '4158.34', bReceiveDate: '', cShare: '2079.17', cReceiveDate: '28.04.26', remarks: '' },
+      { id: 10, srNo: 10, month: 'Apr 26', date: '22 Apr', deductedDate: '28 Apr', chequeNo: '470', vendor: 'Krishna Gutte', purpose: 'Clubhouse bird net', totalAmount: '5000', whoPaid: 'A Building', aShare: '1883.12', bShare: '2077.92', bReceiveDate: '', cShare: '1038.96', cReceiveDate: '28.04.26', remarks: '' }
     ];
     setEntries(defaults);
     await saveToFirebase(defaults);
@@ -218,10 +252,9 @@ export default function ChequeTracker() {
     const missingByMonth = [];
     const cutoff = new Date(2026, 5, 1); // June 2026 (month is 0-indexed)
     
-    // Group by month — only A Building
+    // Group by month
     const byMonth = {};
     entries.forEach(e => {
-      if (e.whoPaid !== 'A Building') return;
       const m = e.month?.trim();
       if (!m) return;
       // Only consider June 2026 onwards
@@ -232,36 +265,31 @@ export default function ChequeTracker() {
     });
 
     for (const [month, monthEntries] of Object.entries(byMonth)) {
-      if (monthEntries.length > 5) {
-        // Extract valid numeric cheque numbers
-        const numbers = monthEntries
-          .map(e => {
-            const stripped = e.chequeNo?.replace(/\D/g, '');
-            return stripped ? Number(stripped) : null;
-          })
-          .filter(n => n !== null)
-          .sort((a, b) => a - b);
-        
-        if (numbers.length < 2) continue;
+      // Extract valid numeric cheque numbers (skip cancelled/zero amount)
+      const numbers = monthEntries
+        .filter(e => n(e.totalAmount) !== 0)
+        .map(e => {
+          const stripped = e.chequeNo?.replace(/\D/g, '');
+          return stripped ? Number(stripped) : null;
+        })
+        .filter(num => num !== null)
+        .sort((a, b) => a - b);
+      
+      if (numbers.length < 2) continue;
 
-        // Only flag a gap if it is small (≤ 3 missing) relative to a run of consecutive cheques.
-        // We do this by checking pairs of consecutive numbers in our sorted list:
-        // If (next - prev) is between 2 and 4, we assume those are skipped numbers in a run.
-        // If (next - prev) > 4, we assume it's a completely different block (no alert needed).
-        const missing = [];
-        for (let i = 0; i < numbers.length - 1; i++) {
-          const diff = numbers[i + 1] - numbers[i];
-          if (diff > 1 && diff <= 4) {
-            // Small gap — these cheques are likely missing from a consecutive series
-            for (let j = numbers[i] + 1; j < numbers[i + 1]; j++) {
-              missing.push(j);
-            }
+      // Only flag a gap if it is small (≤ 3 missing) relative to a run of consecutive cheques.
+      const missing = [];
+      for (let i = 0; i < numbers.length - 1; i++) {
+        const diff = numbers[i + 1] - numbers[i];
+        if (diff > 1 && diff <= 4) {
+          for (let j = numbers[i] + 1; j < numbers[i + 1]; j++) {
+            missing.push(j);
           }
         }
-          
-        if (missing.length > 0) {
-          missingByMonth.push({ month, missing });
-        }
+      }
+        
+      if (missing.length > 0) {
+        missingByMonth.push({ month, missing });
       }
     }
     return missingByMonth;
@@ -352,12 +380,13 @@ export default function ChequeTracker() {
         </div>
 
         <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: 1650 }}>
+          <table className="attendance-table" style={{ minWidth: 1800 }}>
             <thead>
               <tr style={{ background: '#f8fafc' }}>
                 <th style={{ width: 60 }}>Sr.</th>
                 <th style={{ width: 120 }}>Month</th>
                 <th style={{ width: 120 }}>Cheque Date</th>
+                <th style={{ width: 120 }}>Deducted Date</th>
                 <th style={{ width: 100 }}>Cheque No</th>
                 <th style={{ width: 220 }}>Vendor Name</th>
                 <th style={{ width: 300 }}>Remarks / Purpose</th>
@@ -369,12 +398,12 @@ export default function ChequeTracker() {
                 <th style={{ width: 110, textAlign: 'right', background: '#fff7ed', color: '#c2410c' }}>C Share</th>
                 <th style={{ width: 140, background: '#fff7ed', color: '#c2410c' }}>Receive C</th>
                 <th>Final Remarks</th>
-                <th style={{ width: 50 }}></th>
+                <th style={{ width: 90 }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={15} style={{ textAlign: 'center', padding: 60 }}>
+                <tr><td colSpan={16} style={{ textAlign: 'center', padding: 60 }}>
                   <div style={{ opacity: 0.5 }}>Loading Accounting Records...</div>
                 </td></tr>
               ) : filteredEntries.map((e) => (
@@ -382,6 +411,7 @@ export default function ChequeTracker() {
                   <td><input className="attendance-register-input" value={e.srNo} onChange={v => updateRow(e.id, 'srNo', v.target.value)} /></td>
                   <td><input className="attendance-register-input" value={e.month} onChange={v => updateRow(e.id, 'month', v.target.value)} /></td>
                   <td><input className="attendance-register-input" value={e.date} onChange={v => updateRow(e.id, 'date', v.target.value)} /></td>
+                  <td><input className="attendance-register-input" value={e.deductedDate || ''} onChange={v => updateRow(e.id, 'deductedDate', v.target.value)} placeholder="—" /></td>
                   <td><input className="attendance-register-input" value={e.chequeNo} onChange={v => updateRow(e.id, 'chequeNo', v.target.value)} /></td>
                   <td><input className="attendance-register-input" style={{ fontWeight: 600 }} value={e.vendor} onChange={v => updateRow(e.id, 'vendor', v.target.value)} /></td>
                   <td><input className="attendance-register-input" value={e.purpose} onChange={v => updateRow(e.id, 'purpose', v.target.value)} /></td>
@@ -413,13 +443,21 @@ export default function ChequeTracker() {
                     />
                   </td>
                   <td><input className="attendance-register-input" value={e.remarks} onChange={v => updateRow(e.id, 'remarks', v.target.value)} /></td>
-                  <td><button className="button-icon" onClick={() => removeRow(e.id)} style={{ opacity: 0.3 }}>✕</button></td>
+                  <td style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                    <button
+                      className="button-icon"
+                      onClick={() => handleOpenEditModal(e)}
+                      title="Edit this cheque entry"
+                      style={{ opacity: 0.6, fontSize: '1rem' }}
+                    >✏️</button>
+                    <button className="button-icon" onClick={() => removeRow(e.id)} style={{ opacity: 0.3 }}>✕</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
             <tfoot className="accounting-table-footer">
               <tr>
-                <td colSpan={6} style={{ textAlign: 'right' }}>GRAND TOTALS:</td>
+                <td colSpan={7} style={{ textAlign: 'right' }}>GRAND TOTALS:</td>
                 <td style={{ textAlign: 'right' }}>₹{fmt(stats.totalPaidByA)}</td>
                 <td></td>
                 <td style={{ textAlign: 'right' }}>₹{fmt(stats.totalPaidByA * 0.3766)}</td>
@@ -442,6 +480,184 @@ export default function ChequeTracker() {
           <div style={{ color: badge, fontWeight: 700 }}>● {saveMsg || 'All changes saved'}</div>
         </div>
       </div>
+
+      {/* ✏️ Edit Cheque Modal */}
+      {editModalData && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setEditModalData(null)}>
+          <div
+            style={{ background: '#fff', borderRadius: '16px', maxWidth: '620px', width: '100%', maxHeight: '90vh', overflow: 'auto', boxShadow: '0 25px 60px rgba(0,0,0,0.3)', padding: '32px' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.2rem' }}>✏️ Edit Cheque Entry</h3>
+                <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: '0.85rem' }}>
+                  Cheque #{editModalData.entry.chequeNo || '—'} • {editModalData.entry.vendor || 'Unknown Vendor'}
+                </p>
+              </div>
+              <button onClick={() => setEditModalData(null)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', opacity: 0.4, lineHeight: 1 }}>✕</button>
+            </div>
+
+            <form onSubmit={handleSaveEditModal} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Month</label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.entry.month}
+                  onChange={e => handleEditFieldChange('month', e.target.value)}
+                  placeholder="e.g. Oct 2026"
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Cheque No <span style={{ color: '#ef4444' }}>*</span></label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.entry.chequeNo}
+                  onChange={e => handleEditFieldChange('chequeNo', e.target.value)}
+                  placeholder="Cheque #"
+                  required
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Cheque Date <span style={{ color: '#ef4444' }}>*</span></label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.entry.date}
+                  onChange={e => handleEditFieldChange('date', e.target.value)}
+                  placeholder="e.g. 17 Feb"
+                  required
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Deducted Date</label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.entry.deductedDate || ''}
+                  onChange={e => handleEditFieldChange('deductedDate', e.target.value)}
+                  placeholder="e.g. 20.02.26"
+                />
+              </div>
+
+              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Vendor Name <span style={{ color: '#ef4444' }}>*</span></label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%', fontWeight: 600 }}
+                  value={editModalData.entry.vendor}
+                  onChange={e => handleEditFieldChange('vendor', e.target.value)}
+                  placeholder="Vendor / Payee Name"
+                  required
+                />
+              </div>
+
+              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Purpose / Remarks</label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.entry.purpose}
+                  onChange={e => handleEditFieldChange('purpose', e.target.value)}
+                  placeholder="Payment purpose description..."
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Total Amount (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%', fontWeight: 700 }}
+                  value={editModalData.entry.totalAmount}
+                  onChange={e => handleEditFieldChange('totalAmount', e.target.value)}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Who Paid</label>
+                <select
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.entry.whoPaid}
+                  onChange={e => handleEditFieldChange('whoPaid', e.target.value)}
+                >
+                  <option>A Building</option>
+                  <option>B Building</option>
+                  <option>C Building</option>
+                </select>
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>B Receive Date</label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.entry.bReceiveDate}
+                  onChange={e => handleEditFieldChange('bReceiveDate', e.target.value)}
+                  placeholder="Pending"
+                />
+              </div>
+
+              <div className="field-group">
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>C Receive Date</label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.entry.cReceiveDate}
+                  onChange={e => handleEditFieldChange('cReceiveDate', e.target.value)}
+                  placeholder="Pending"
+                />
+              </div>
+
+              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Final Remarks</label>
+                <input
+                  type="text"
+                  className="attendance-register-input"
+                  style={{ textAlign: 'left', width: '100%' }}
+                  value={editModalData.entry.remarks}
+                  onChange={e => handleEditFieldChange('remarks', e.target.value)}
+                  placeholder="Additional remarks..."
+                />
+              </div>
+
+              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px', borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
+                <button
+                  type="button"
+                  onClick={() => setEditModalData(null)}
+                  className="button-secondary"
+                  style={{ padding: '9px 18px' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="button-primary"
+                  style={{ padding: '9px 24px' }}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

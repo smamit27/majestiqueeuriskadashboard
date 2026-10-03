@@ -117,6 +117,8 @@ export default function FinanceTracker({ isAdmin = false }) {
               .filter(c => c.vendor || c.amount || c.chequeNo)
               .map(c => ({
                 chequeNo: c.chequeNo || '',
+                date: c.date || '',
+                deductedDate: c.deductedDate || '',
                 vendor: c.vendor || '',
                 purpose: c.purpose || '',
                 amount: c.amount || '0',
@@ -134,13 +136,14 @@ export default function FinanceTracker({ isAdmin = false }) {
 
         if (chequesList.length === 0 && selectedMonth === '2026-09') {
           chequesList = [
-            { chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', purpose: 'Housekeeping / Waterman Salary', amount: '12900', isLinked: true, sourceTab: 'A Building' },
-            { chequeNo: '535', vendor: 'Shubham Enterprises', purpose: 'Maintenance & Repairs / Operations', amount: '36536', isLinked: true, sourceTab: 'A Building' },
-            { chequeNo: '536', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", purpose: 'Inter-Building Common Share Settlement / Transfer', amount: '8662', isLinked: true, sourceTab: 'A Building' },
-            { chequeNo: '537', vendor: 'Sai Swimming Pool Maintenance Services', purpose: 'Swimming Pool Monthly AMC / Maintenance', amount: '4519', isLinked: true, sourceTab: 'A Building' },
-            { chequeNo: '538', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', isLinked: true, sourceTab: 'A Building' },
-            { chequeNo: '539', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', isLinked: true, sourceTab: 'A Building' },
-            { chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', isLinked: true, sourceTab: 'A Building' }
+            { chequeNo: '534', date: '2026-09-04', deductedDate: '2026-09-08', vendor: 'Sidharam Parmeshwar Lende', purpose: 'Housekeeping / Waterman Salary', amount: '12900', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '535', date: '2026-09-04', deductedDate: '2026-09-10', vendor: 'Shubham Enterprises', purpose: 'Maintenance & Repairs / Operations', amount: '36536', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '536', date: '2026-09-04', deductedDate: '2026-09-09', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", purpose: 'Inter-Building Common Share Settlement / Transfer', amount: '8662', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '537', date: '2026-09-04', deductedDate: '2026-09-08', vendor: 'Sai Swimming Pool Maintenance Services', purpose: 'Swimming Pool Monthly AMC / Maintenance', amount: '4519', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '538', date: '2026-09-04', deductedDate: '2026-09-08', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '539', date: '2026-09-04', deductedDate: '2026-09-11', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '540', date: '2026-09-04', deductedDate: '2026-09-18', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', isLinked: true, sourceTab: 'A Building' },
+            { chequeNo: '542', date: '2026-09-17', deductedDate: '2026-09-30', vendor: 'MSEDCL', purpose: 'Common Area Electricity Bill', amount: '44420', isLinked: true, sourceTab: 'A Building' }
           ];
         }
 

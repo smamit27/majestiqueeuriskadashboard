@@ -35,13 +35,13 @@ const n = (v) => parseFloat(v) || 0;
 const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const DEFAULT_SEPTEMBER_2026_CHEQUES = [
-  { id: 1725451400001, srNo: 1, date: '2026-09-04', chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', purpose: 'Housekeeping / Waterman Salary', amount: '12900', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400002, srNo: 2, date: '2026-09-04', chequeNo: '535', vendor: 'Shubham Enterprises', purpose: 'Maintenance & Repairs / Operations', amount: '36536', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400003, srNo: 3, date: '2026-09-04', chequeNo: '536', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", purpose: 'Inter-Building Common Share Settlement / Transfer', amount: '8662', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400004, srNo: 4, date: '2026-09-04', chequeNo: '537', vendor: 'Sai Swimming Pool Maintenance Services', purpose: 'Swimming Pool Monthly AMC / Maintenance', amount: '4519', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400005, srNo: 5, date: '2026-09-04', chequeNo: '538', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400006, srNo: 6, date: '2026-09-04', chequeNo: '539', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400007, srNo: 7, date: '2026-09-04', chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400001, srNo: 1, date: '2026-09-04', deductedDate: '2026-09-08', chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', purpose: 'Housekeeping / Waterman Salary', amount: '12900', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400002, srNo: 2, date: '2026-09-04', deductedDate: '2026-09-10', chequeNo: '535', vendor: 'Shubham Enterprises', purpose: 'Maintenance & Repairs / Operations', amount: '36536', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400003, srNo: 3, date: '2026-09-04', deductedDate: '2026-09-09', chequeNo: '536', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", purpose: 'Inter-Building Common Share Settlement / Transfer', amount: '8662', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400004, srNo: 4, date: '2026-09-04', deductedDate: '2026-09-08', chequeNo: '537', vendor: 'Sai Swimming Pool Maintenance Services', purpose: 'Swimming Pool Monthly AMC / Maintenance', amount: '4519', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400005, srNo: 5, date: '2026-09-04', deductedDate: '2026-09-08', chequeNo: '538', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400006, srNo: 6, date: '2026-09-04', deductedDate: '2026-09-11', chequeNo: '539', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400007, srNo: 7, date: '2026-09-04', deductedDate: '2026-09-18', chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', whoPaid: 'A Building', isPaid: true },
   { id: 1725451400008, srNo: 8, date: '2026-09-17', deductedDate: '2026-09-30', chequeNo: '542', vendor: 'MSEDCL', purpose: 'Common Area Electricity Bill', amount: '44420', whoPaid: 'A Building', isPaid: true }
 ];
 
@@ -72,8 +72,8 @@ export default function ChequeManagement({ isAdmin = false }) {
   const isCurrentMonthLocked = isMonthLockedByDefault(selectedMonth) && !unlockedMonths[selectedMonth];
   const canEdit = isAdmin && !isCurrentMonthLocked;
 
-  const [chequesA, setChequesA] = useState([{ id: 1, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building' }]);
-  const [chequesCommon, setChequesCommon] = useState([{ id: 1, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building' }]);
+  const [chequesA, setChequesA] = useState([{ id: 1, srNo: 1, date: '', deductedDate: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building' }]);
+  const [chequesCommon, setChequesCommon] = useState([{ id: 1, srNo: 1, date: '', deductedDate: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building' }]);
   
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
@@ -113,12 +113,16 @@ export default function ChequeManagement({ isAdmin = false }) {
             let aData = snapA.data().cheques || [];
             if (selectedMonth === '2026-06') {
               if (!aData.some(c => c.chequeNo === '493')) {
-                aData.push({ id: Date.now() + 103, srNo: aData.length + 1, date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false });
+                aData.push({ id: Date.now() + 103, srNo: aData.length + 1, date: '2026-06-01', deductedDate: '', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false });
               }
             } else if (selectedMonth === '2026-09') {
               DEFAULT_SEPTEMBER_2026_CHEQUES.forEach((defChq) => {
-                if (!aData.some(c => String(c.chequeNo) === String(defChq.chequeNo))) {
+                const existing = aData.find(c => String(c.chequeNo) === String(defChq.chequeNo));
+                if (!existing) {
                   aData.push({ ...defChq, srNo: aData.length + 1 });
+                } else {
+                  if (!existing.date && defChq.date) existing.date = defChq.date;
+                  if (!existing.deductedDate && defChq.deductedDate) existing.deductedDate = defChq.deductedDate;
                 }
               });
               aData = aData.map((c, idx) => ({ ...c, srNo: idx + 1 }));
@@ -128,12 +132,12 @@ export default function ChequeManagement({ isAdmin = false }) {
             let initialA = [];
             if (selectedMonth === '2026-06') {
               initialA = [
-                { id: Date.now() + 103, srNo: 1, date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false }
+                { id: Date.now() + 103, srNo: 1, date: '2026-06-01', deductedDate: '', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false }
               ];
             } else if (selectedMonth === '2026-09') {
               initialA = [...DEFAULT_SEPTEMBER_2026_CHEQUES];
             } else {
-              initialA = [{ id: Date.now(), srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building', isPaid: false }];
+              initialA = [{ id: Date.now(), srNo: 1, date: '', deductedDate: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building', isPaid: false }];
             }
             setChequesA(initialA);
           }
@@ -160,13 +164,13 @@ export default function ChequeManagement({ isAdmin = false }) {
             let initialCommon = [];
             if (selectedMonth === '2026-06') {
               initialCommon = [
-                { id: Date.now() + 101, srNo: 1, date: '2026-06-15', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false },
-                { id: Date.now() + 102, srNo: 2, date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false }
+                { id: Date.now() + 101, srNo: 1, date: '2026-06-15', deductedDate: '', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false },
+                { id: Date.now() + 102, srNo: 2, date: '2026-06-12', deductedDate: '', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false }
               ];
             } else if (selectedMonth === '2026-09') {
               initialCommon = [...DEFAULT_SEPTEMBER_2026_COMMON_CHEQUES];
             } else {
-              initialCommon = [{ id: Date.now() + 100, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building', isPaid: false }];
+              initialCommon = [{ id: Date.now() + 100, srNo: 1, date: '', deductedDate: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building', isPaid: false }];
             }
             setChequesCommon(initialCommon);
           }
