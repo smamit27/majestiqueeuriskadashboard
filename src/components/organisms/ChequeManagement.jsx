@@ -223,6 +223,7 @@ export default function ChequeManagement({ isAdmin = false }) {
     chequeNo: '',
     vendor: '',
     purpose: '',
+    remark: '',
     amount: '',
     whoPaid: 'A Building',
     isPaid: false,
@@ -280,6 +281,7 @@ export default function ChequeManagement({ isAdmin = false }) {
       chequeNo: '',
       vendor: '',
       purpose: '',
+      remark: '',
       amount: '',
       whoPaid: 'A Building',
       isPaid: false,
@@ -331,7 +333,7 @@ export default function ChequeManagement({ isAdmin = false }) {
   };
 
   const activeCheques = subTab === 'common' ? chequesCommon : chequesA;
-  const isPaybackTrackingActive = subTab === 'common' && selectedMonth >= '2026-09';
+  const isPaybackTrackingActive = subTab === 'common' && selectedMonth >= '2026-08';
   
   const filteredCheques = activeCheques
     .filter(c => {
@@ -341,6 +343,8 @@ export default function ChequeManagement({ isAdmin = false }) {
         (c.chequeNo && String(c.chequeNo).toLowerCase().includes(s)) ||
         (c.date && String(c.date).toLowerCase().includes(s)) ||
         (c.vendor && String(c.vendor).toLowerCase().includes(s)) ||
+        (c.purpose && String(c.purpose).toLowerCase().includes(s)) ||
+        (c.remark && String(c.remark).toLowerCase().includes(s)) ||
         (c.bPaidDate && String(c.bPaidDate).toLowerCase().includes(s)) ||
         (c.cPaidDate && String(c.cPaidDate).toLowerCase().includes(s))
       );
@@ -462,14 +466,15 @@ export default function ChequeManagement({ isAdmin = false }) {
       };
       
       if (subTab === 'common') {
+        base['Remark'] = c.remark || '';
         const amt = n(c.amount);
         base['A Share (₹)'] = (amt * FLATS.A / FLATS.Total).toFixed(2);
         base['B Share (₹)'] = (amt * FLATS.B / FLATS.Total).toFixed(2);
-        if (selectedMonth >= '2026-09') {
+        if (selectedMonth >= '2026-08') {
           base['B Paid Back Date'] = c.bPaidDate || c.bReceiveDate || 'Pending';
         }
         base['C Share (₹)'] = (amt * FLATS.C / FLATS.Total).toFixed(2);
-        if (selectedMonth >= '2026-09') {
+        if (selectedMonth >= '2026-08') {
           base['C Paid Back Date'] = c.cPaidDate || c.cReceiveDate || 'Pending';
         }
       }
@@ -765,10 +770,16 @@ export default function ChequeManagement({ isAdmin = false }) {
                   </div>
                 </>
               )}
-              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Remarks / Purpose</label>
+              <div className="field-group" style={{ gridColumn: subTab === 'common' ? 'span 1' : '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>{subTab === 'common' ? 'Purpose / Head of Expense' : 'Remarks / Purpose'}</label>
                 <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Describe the payment purpose..." value={formData.purpose} onChange={e => handleFormChange('purpose', e.target.value)} />
               </div>
+              {subTab === 'common' && (
+                <div className="field-group" style={{ gridColumn: 'span 1' }}>
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Remark / Notes</label>
+                  <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Add note / remark for common work..." value={formData.remark || ''} onChange={e => handleFormChange('remark', e.target.value)} />
+                </div>
+              )}
               <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
                 <button type="submit" className="button-primary" style={{ padding: '8px 24px', width: 'auto' }}>Add to Ledger</button>
               </div>
@@ -789,7 +800,7 @@ export default function ChequeManagement({ isAdmin = false }) {
               </div>
               {isPaybackTrackingActive && (
                 <span style={{ fontSize: '0.78rem', fontWeight: 700, padding: '4px 10px', borderRadius: '6px', background: '#dbeafe', color: '#1e40af', border: '1px solid #93c5fd' }}>
-                  🤝 B & C Payback Tracking Active (From Sept 2026)
+                  🤝 B & C Payback Tracking Active (From August 2026)
                 </span>
               )}
            </div>
@@ -866,7 +877,7 @@ export default function ChequeManagement({ isAdmin = false }) {
       {/* Main Table */}
       <div className="table-card">
         <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: subTab === 'common' ? (isPaybackTrackingActive ? 1750 : 1500) : 1200 }}>
+          <table className="attendance-table" style={{ minWidth: subTab === 'common' ? (isPaybackTrackingActive ? 1850 : 1600) : 1200 }}>
             <thead>
               <tr style={{ background: '#f8fafc' }}>
                 <th style={{ width: 50 }}>Sr.</th>
@@ -874,7 +885,10 @@ export default function ChequeManagement({ isAdmin = false }) {
                 <th style={{ width: 135 }}>Deducted Date</th>
                 <th style={{ width: 110 }}>Cheque No</th>
                 <th style={{ width: 200 }}>Vendor Name</th>
-                <th>Remarks / Purpose</th>
+                <th>{subTab === 'common' ? 'Purpose' : 'Remarks / Purpose'}</th>
+                {subTab === 'common' && (
+                  <th style={{ width: 150 }}>Remark</th>
+                )}
                 <th style={{ width: 130, textAlign: 'right' }}>Total (₹)</th>
                 {subTab === 'common' && (
                   <>
@@ -900,9 +914,9 @@ export default function ChequeManagement({ isAdmin = false }) {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={subTab === 'common' ? (isPaybackTrackingActive ? 15 : 13) : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
+                <tr><td colSpan={subTab === 'common' ? (isPaybackTrackingActive ? 16 : 14) : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
               ) : filteredCheques.length === 0 ? (
-                <tr><td colSpan={subTab === 'common' ? (isPaybackTrackingActive ? 15 : 13) : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
+                <tr><td colSpan={subTab === 'common' ? (isPaybackTrackingActive ? 16 : 14) : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
                   {searchText ? `No cheques found matching "${searchText}"` : 'No cheques recorded.'}
                 </td></tr>
               ) : (
@@ -940,6 +954,19 @@ export default function ChequeManagement({ isAdmin = false }) {
                       </td>
                       <td><input className="attendance-register-input" style={{ fontWeight: 600, ...strikeStyle }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value)} readOnly={!canEdit} /></td>
                       <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value)} readOnly={!canEdit} style={isCancelled || isPaid ? { color: '#9ca3af' } : {}} /></td>
+                      {subTab === 'common' && (
+                        <td>
+                          <input 
+                            className="attendance-register-input" 
+                            placeholder="Add remark..." 
+                            value={c.remark || ''} 
+                            onChange={e => updateRow(actualIdx, 'remark', e.target.value)} 
+                            readOnly={!canEdit} 
+                            style={strikeStyle} 
+                            title="Remark / Note for common work"
+                          />
+                        </td>
+                      )}
                       <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700, ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : isPaid ? { textDecoration: 'line-through', color: '#16a34a' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value)} readOnly={!canEdit} /></td>
                       {subTab === 'common' && (
                         <>
@@ -1089,7 +1116,7 @@ export default function ChequeManagement({ isAdmin = false }) {
             </tbody>
             <tfoot>
               <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
-                <td colSpan={6} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
+                <td colSpan={subTab === 'common' ? 7 : 6} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
                 <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmount)}</td>
                 {subTab === 'common' && (
                   <>

@@ -227,10 +227,11 @@ describe('FinanceTracker – PDF export', () => {
     expect(writtenDoc).toContain('Tanaji Hunde');
     expect(writtenDoc).toContain('11,500.00');
     expect(writtenDoc).toContain('TOTAL COMMON EXPENSES (231 FLATS)');
+    expect(writtenDoc).toContain('Remark');
     openSpy.mockRestore();
   });
 
-  it('includes B and C payback tracking columns in Export PDF for September 2026', async () => {
+  it('includes B and C payback tracking columns and Remark column in Export PDF for August 2026 and September 2026', async () => {
     const user = userEvent.setup();
     let writtenDoc = '';
     const mockPrintWindow = {
@@ -245,15 +246,16 @@ describe('FinanceTracker – PDF export', () => {
     await waitFor(() => screen.getByRole('button', { name: /export pdf/i }));
 
     const tablist = screen.getAllByRole('button');
-    const sepTab = tablist.find(b => /sep/i.test(b.textContent ?? ''));
-    expect(sepTab).toBeDefined();
-    await user.click(sepTab);
+    const augTab = tablist.find(b => /aug/i.test(b.textContent ?? ''));
+    expect(augTab).toBeDefined();
+    await user.click(augTab);
 
     await user.click(screen.getByRole('button', { name: /export pdf/i }));
 
     expect(openSpy).toHaveBeenCalledWith('', '_blank');
     expect(writtenDoc).toContain('B Paid Date');
     expect(writtenDoc).toContain('C Paid Date');
+    expect(writtenDoc).toContain('Remark');
     expect(writtenDoc).toContain('Inter-Building Recovery');
     openSpy.mockRestore();
   });

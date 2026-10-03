@@ -403,7 +403,7 @@ export default function FinanceTracker({ isAdmin = false }) {
     const commonBShare = (totalCommonExpense * FLATS.B) / FLATS.Total;
     const commonCShare = (totalCommonExpense * FLATS.C) / FLATS.Total;
 
-    const isPaybackActive = selectedMonth >= '2026-09';
+    const isPaybackActive = selectedMonth >= '2026-08';
     let bReceivedAmount = 0;
     let bPendingAmount = 0;
     let cReceivedAmount = 0;
@@ -770,6 +770,7 @@ export default function FinanceTracker({ isAdmin = false }) {
                 <th style="width: 70px; text-align: center;">Date</th>
                 <th>Payee / Vendor</th>
                 <th>Purpose / Head of Expense</th>
+                <th style="width: 85px;">Remark</th>
                 <th style="width: 80px; text-align: right;">Total (₹)</th>
                 <th style="width: 75px; text-align: right;">A Share (87)</th>
                 <th style="width: 75px; text-align: right;">B Share (96)</th>
@@ -780,7 +781,7 @@ export default function FinanceTracker({ isAdmin = false }) {
               </tr>
             </thead>
             <tbody>
-              ${validCommonCheques.length === 0 ? `<tr><td colspan="${isPaybackActive ? 12 : 10}" style="text-align:center; padding:10px; color:#94a3b8;">No common work cheques recorded for this month.</td></tr>` :
+              ${validCommonCheques.length === 0 ? `<tr><td colspan="${isPaybackActive ? 13 : 11}" style="text-align:center; padding:10px; color:#94a3b8;">No common work cheques recorded for this month.</td></tr>` :
                 validCommonCheques.map((r, i) => {
                   const amt = n(r.amount);
                   const aShare = (amt * FLATS.A) / FLATS.Total;
@@ -795,6 +796,7 @@ export default function FinanceTracker({ isAdmin = false }) {
                       <td style="text-align: center; color: #475569;">${r.date || '—'}</td>
                       <td style="font-weight: 600;">${r.vendor || '—'}</td>
                       <td style="color: #475569;">${r.purpose || '—'}</td>
+                      <td style="color: #64748b; font-size: 8.5px;">${r.remark || '—'}</td>
                       <td style="text-align: right; font-weight: 700; color: #1e3a8a;">₹${fmt(amt)}</td>
                       <td style="text-align: right; font-weight: 600; color: #2563eb;">₹${fmt(aShare)}</td>
                       <td style="text-align: right; font-weight: 600; color: #059669;">₹${fmt(bShare)}</td>
@@ -815,7 +817,7 @@ export default function FinanceTracker({ isAdmin = false }) {
                 }).join('')
               }
               <tr class="total-row">
-                <td colspan="5" style="text-align: right;">TOTAL COMMON EXPENSES (231 FLATS)</td>
+                <td colspan="6" style="text-align: right;">TOTAL COMMON EXPENSES (231 FLATS)</td>
                 <td style="text-align: right; color: #1e3a8a;">₹${fmt(totalCommonExpense)}</td>
                 <td style="text-align: right; color: #2563eb;">₹${fmt(commonAShare)}</td>
                 <td style="text-align: right; color: #059669;">₹${fmt(commonBShare)}</td>

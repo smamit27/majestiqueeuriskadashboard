@@ -152,20 +152,22 @@ describe('ChequeManagement Component - B and C Payback Tracking for Common Work'
     const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
     await user.click(commonTab);
 
-    // Headers should include B Paid Back Date and C Paid Back Date
+    // Headers should include B Paid Back Date, C Paid Back Date, and Remark
     expect(screen.getByRole('columnheader', { name: /B Paid Back Date/i })).toBeInTheDocument();
     expect(screen.getByRole('columnheader', { name: /C Paid Back Date/i })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /Remark/i })).toBeInTheDocument();
 
     // Summary banner/card should display payback tracking
     expect(screen.getByText(/B & C Payback Tracking Active/i)).toBeInTheDocument();
     expect(screen.getByText(/Inter-Building Recovery/i)).toBeInTheDocument();
 
-    // Form should include fields for B Paid Back Date and C Paid Back Date
+    // Form should include fields for B Paid Back Date, C Paid Back Date, and Remark
     expect(screen.getByText('B Paid Back Date', { selector: 'label' })).toBeInTheDocument();
     expect(screen.getByText('C Paid Back Date', { selector: 'label' })).toBeInTheDocument();
+    expect(screen.getByText('Remark / Notes', { selector: 'label' })).toBeInTheDocument();
   });
 
-  it('does NOT render B or C Paid Back Date columns for Common Work in past months prior to September 2026', async () => {
+  it('renders B and C Paid Back Date columns and recovery tracking for Common Work in August 2026', async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<ChequeManagement isAdmin={true} />);
 
@@ -173,9 +175,28 @@ describe('ChequeManagement Component - B and C Payback Tracking for Common Work'
     const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
     await user.click(commonTab);
 
-    // Switch to August 2026 (prior to September 2026)
+    // Switch to August 2026
     const augTab = screen.getByRole('button', { name: /Aug 26/i });
     await user.click(augTab);
+
+    // In August 2026, payback tracking IS active
+    expect(screen.getByRole('columnheader', { name: /B Paid Back Date/i })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /C Paid Back Date/i })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /Remark/i })).toBeInTheDocument();
+    expect(screen.getByText(/B & C Payback Tracking Active/i)).toBeInTheDocument();
+  });
+
+  it('does NOT render B or C Paid Back Date columns for Common Work in past months prior to August 2026', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<ChequeManagement isAdmin={true} />);
+
+    // Switch to Common Work tab
+    const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
+    await user.click(commonTab);
+
+    // Switch to July 2026 (prior to August 2026)
+    const julTab = screen.getByRole('button', { name: /Jul 26/i });
+    await user.click(julTab);
 
     // Headers should NOT include B or C Paid Back Date
     expect(screen.queryByRole('columnheader', { name: /B Paid Back Date/i })).not.toBeInTheDocument();
