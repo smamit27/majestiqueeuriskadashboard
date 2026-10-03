@@ -1262,10 +1262,10 @@ export default function ElectricityTracker({ isAdmin = false }) {
       onClick={() => { setSubTab(id); setEditingRowId(null); }}
       className={`sub-tab-button ${subTab === id ? 'active' : ''}`}
       style={{
-        flex: 1, padding: '12px', borderRadius: '10px', border: 'none', cursor: 'pointer',
+        flex: 1, padding: '7px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer',
         background: subTab === id ? '#1e3a8a' : 'transparent',
         color: subTab === id ? 'white' : 'var(--muted)',
-        fontWeight: 600, transition: '0.2s'
+        fontWeight: 600, fontSize: '0.82rem', transition: '0.2s'
       }}
     >
       {icon} {label}
@@ -1273,11 +1273,11 @@ export default function ElectricityTracker({ isAdmin = false }) {
   );
 
   return (
-    <div className="electricity-tracker" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="electricity-tracker" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
       {/* Tab Navigation */}
-      <div className="table-card" style={{ padding: '8px', background: 'rgba(255,255,255,0.4)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
+      <div className="table-card" style={{ padding: '6px', background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '12px' }}>
+        <div style={{ display: 'flex', gap: '6px' }}>
           {renderTabButton('tata', '⚡️', 'Tata Electricity Bill')}
           {renderTabButton('buildingA', '🏢', 'A Building Electricity')}
           {renderTabButton('mahavitaran', '🔌', 'Mahavitaran (MSEB)')}
@@ -1285,24 +1285,24 @@ export default function ElectricityTracker({ isAdmin = false }) {
       </div>
 
       {/* Header Banner */}
-      <div className="table-card" style={{ padding: 0 }}>
-        <div className="attendance-table-card__header">
+      <div className="table-card" style={{ padding: 0, borderRadius: '12px', overflow: 'hidden' }}>
+        <div className="attendance-table-card__header" style={{ padding: '12px 18px 10px', alignItems: 'center' }}>
           <div>
-            <p className="eyebrow">
+            <p className="eyebrow" style={{ fontSize: '0.68rem', letterSpacing: '0.06em', marginBottom: '2px' }}>
               {subTab === 'tata' ? 'Tata Electricity Sub-Meter Billing' : (subTab === 'mahavitaran' ? 'Mahavitaran Dashboard' : 'A Building Dashboard')}
             </p>
-            <h3 style={{ marginBottom: '4px' }}>
+            <h3 style={{ margin: '0 0 2px 0', fontSize: '1.15rem', fontWeight: 700, fontFamily: 'inherit', letterSpacing: '-0.01em' }}>
               {subTab === 'tata' ? 'Tata Electricity Bills' : (subTab === 'mahavitaran' ? 'MSEB Detailed Bills' : 'A Building Bills')}
             </h3>
             {subTab === 'tata' && (
-              <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>
-                Consumer: <strong>Tata Play Limited</strong> (Broadband Hub) • Meter No: <strong>TATA-EUR-01</strong> • 4-Digit Dial with <strong>10,000 Reset Rollover</strong>
+              <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>
+                Consumer: <strong>Tata Play Limited</strong> (Broadband Hub) • Meter: <strong>TATA-EUR-01</strong> • 4-Digit Dial with <strong>10,000 Reset Rollover</strong>
               </p>
             )}
-            {subTab === 'buildingA' && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>Customer Number: 17000358685</p>}
-            {subTab === 'mahavitaran' && <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>Detailed breakdown per MSEB format</p>}
+            {subTab === 'buildingA' && <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>Customer Number: 17000358685</p>}
+            {subTab === 'mahavitaran' && <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>Detailed breakdown per MSEB format</p>}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: badge.color, fontWeight: 600, fontSize: '0.78rem' }}>
             <span>{badge.icon}</span>
             <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
           </div>
@@ -1312,75 +1312,74 @@ export default function ElectricityTracker({ isAdmin = false }) {
       {/* TATA PLAY 10,000 RESET EXPLAINER & TARIFF PROGRESSION BANNER */}
       {subTab === 'tata' && (
         <div style={{
-          background: 'linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%)',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)',
           border: '1px solid #bfdbfe',
-          borderRadius: '16px',
-          padding: '18px 22px',
+          borderRadius: '10px',
+          padding: '10px 14px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '12px'
+          gap: '8px'
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '1.6rem' }}>🔄</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '1.1rem' }}>🔄</span>
               <div>
-                <h4 style={{ margin: 0, color: '#1e3a8a', fontSize: '1rem' }}>4-Digit Sub-Meter Rollover Principle (Reset After 10,000 Units)</h4>
-                <p style={{ margin: '2px 0 0 0', fontSize: '0.85rem', color: '#334155' }}>
-                  The sub-meter has 4 digits (0000 to 9999). When reading wraps past 9999, it cycles back to 0000.
-                  Whenever <strong>Current Reading (B) &lt; Previous Reading (A)</strong>, consumption is: <code>Units = (10,000 - A) + B</code>.
+                <h4 style={{ margin: 0, color: '#1e3a8a', fontSize: '0.82rem', fontWeight: 700 }}>4-Digit Sub-Meter Rollover Principle (Reset After 10,000 Units)</h4>
+                <p style={{ margin: '1px 0 0 0', fontSize: '0.74rem', color: '#475569', lineHeight: 1.4 }}>
+                  Sub-meter resets to 0000 after 9999. When <strong>Current (B) &lt; Previous (A)</strong>, consumption is: <code>Units = (10,000 - A) + B</code>.
                 </p>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid #fde68a' }}>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+              <span style={{ background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #fde68a' }}>
                 🔄 Sep 25 – May 26: 2568 ➔ 1557 (8,988 U)
               </span>
-              <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid #fde68a' }}>
+              <span style={{ background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #fde68a' }}>
                 🔄 Mar 25 – Aug 25: 9073 ➔ 2568 (3,495 U)
               </span>
-              <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid #fde68a' }}>
+              <span style={{ background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #fde68a' }}>
                 🔄 Mar 23 – Jul 23: 7629 ➔ 0177 (2,548 U)
               </span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', borderTop: '1px solid #dbeafe', paddingTop: '10px', flexWrap: 'wrap', fontSize: '0.85rem' }}>
-            <span style={{ fontWeight: 700, color: '#1e40af' }}>📈 Tariff Rate Progression:</span>
-            <span style={{ background: 'white', padding: '3px 10px', borderRadius: '8px', border: '1px solid #cbd5e1', color: '#475569' }}>
-              <strong>Phase 1 (Mar 23 – Jan 24):</strong> ₹11.50 / unit
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', borderTop: '1px solid #dbeafe', paddingTop: '6px', flexWrap: 'wrap', fontSize: '0.72rem' }}>
+            <span style={{ fontWeight: 700, color: '#1e40af' }}>Tariff Rate Timeline:</span>
+            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+              <strong>Phase 1 (Mar 23 – Jan 24):</strong> ₹11.50 / u
             </span>
-            <span style={{ background: 'white', padding: '3px 10px', borderRadius: '8px', border: '1px solid #cbd5e1', color: '#475569' }}>
-              <strong>Phase 2 (Feb 24 – May 24):</strong> ₹12.50 / unit
+            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+              <strong>Phase 2 (Feb 24 – May 24):</strong> ₹12.50 / u
             </span>
-            <span style={{ background: '#dbeafe', padding: '3px 10px', borderRadius: '8px', border: '1px solid #93c5fd', color: '#1e40af', fontWeight: 700 }}>
-              <strong>Phase 3 (Jun 24 – May 26):</strong> ₹13.00 / unit (Current)
+            <span style={{ background: '#dbeafe', padding: '2px 8px', borderRadius: '6px', border: '1px solid #93c5fd', color: '#1e40af', fontWeight: 700 }}>
+              <strong>Phase 3 (Jun 24 – May 26):</strong> ₹13.00 / u (Current)
             </span>
           </div>
         </div>
       )}
 
       {/* SEARCH & ACTIONS ZONE */}
-      <div className="section-card" style={{ padding: '16px 24px', background: '#f8fafc', border: '1px solid var(--line)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-          <div className="filter-field" style={{ flex: 1, minWidth: '280px', margin: 0 }}>
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>🔍 Search Period / Dates / Duration</label>
+      <div className="section-card" style={{ padding: '10px 16px', background: '#f8fafc', border: '1px solid var(--line)', borderRadius: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <div className="filter-field" style={{ flex: 1, minWidth: '220px', margin: 0 }}>
+            <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>🔍 Search Period / Dates / Duration</label>
             <input
               type="search"
-              placeholder="Search Sep 25, 2025, 6 Months, etc..."
+              placeholder="Search period, date, units..."
               value={searchText}
               onChange={e => setSearchText(e.target.value)}
               className="attendance-register-input"
-              style={{ textAlign: 'left', height: '44px', fontSize: '1rem', background: 'white' }}
+              style={{ textAlign: 'left', height: '34px', fontSize: '0.8rem', background: 'white', padding: '4px 10px' }}
             />
           </div>
-          <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '10px 20px', height: '44px', marginTop: 'auto' }}>
+          <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '6px 14px', height: '34px', fontSize: '0.78rem', marginTop: 'auto' }}>
             ⬇ Export to Excel
           </button>
           {subTab === 'tata' && (
             <button
               className="button-primary"
               onClick={handlePrintAllTataBills}
-              style={{ padding: '10px 20px', height: '44px', marginTop: 'auto', background: '#0284c7', borderColor: '#0284c7', display: 'flex', alignItems: 'center', gap: '6px' }}
+              style={{ padding: '6px 14px', height: '34px', fontSize: '0.78rem', marginTop: 'auto', background: '#0284c7', borderColor: '#0284c7', display: 'flex', alignItems: 'center', gap: '6px' }}
               title="Print or export complete statement of Tata electricity bills"
             >
               <span>🖨️</span> Export PDF Summary
@@ -1391,57 +1390,57 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
       {/* KPI METRICS ZONE */}
       {filteredBills.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div className="attendance-summary-grid" style={{
             background: 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)',
-            padding: '20px',
-            borderRadius: '16px',
+            padding: '12px 16px',
+            borderRadius: '12px',
             border: '1px solid #bae6fd'
           }}>
-            <div style={{ gridColumn: '1 / -1', marginBottom: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <p className="eyebrow" style={{ color: '#0369a1', margin: 0 }}>Tata Electricity Sub-Meter Consolidated Metrics</p>
-              <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{filteredBills.length} Billing Periods Tracked</span>
+            <div style={{ gridColumn: '1 / -1', marginBottom: '2px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <p className="eyebrow" style={{ color: '#0369a1', margin: 0, fontSize: '0.68rem', letterSpacing: '0.05em' }}>Tata Electricity Sub-Meter Consolidated Metrics</p>
+              <span style={{ fontSize: '0.72rem', color: '#64748b' }}>{filteredBills.length} Billing Periods Tracked</span>
             </div>
 
-            <div className="accounting-summary-card" style={{ background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
-              <p className="eyebrow">Total Amount Billed</p>
-              <h3 style={{ color: '#0369a1', fontSize: '1.6rem' }}>₹{fmt(totalAmount)}</h3>
-              <p style={{ margin: '4px 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>Full 8-period audited total</p>
+            <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Total Amount Billed</p>
+              <h3 style={{ color: '#0369a1', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>₹{fmt(totalAmount)}</h3>
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>Full 8-period audited total</p>
             </div>
 
-            <div className="accounting-summary-card" style={{ background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
-              <p className="eyebrow">Total Energy Consumed</p>
-              <h3 style={{ color: '#ea580c', fontSize: '1.6rem' }}>{fmt(totalConsumption)} Units</h3>
-              <p style={{ margin: '4px 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>Avg ~{fmt(totalConsumption / filteredBills.length)} units / bill</p>
+            <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Total Energy Consumed</p>
+              <h3 style={{ color: '#ea580c', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>{fmt(totalConsumption)} Units</h3>
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>Avg ~{fmt(totalConsumption / filteredBills.length)} units / bill</p>
             </div>
 
-            <div className="accounting-summary-card" style={{ background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
-              <p className="eyebrow">Active Tariff Rate</p>
-              <h3 style={{ color: '#16a34a', fontSize: '1.6rem' }}>₹13.00 / Unit</h3>
-              <p style={{ margin: '4px 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>Progressed from ₹11.50 ➔ ₹12.50</p>
+            <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Active Tariff Rate</p>
+              <h3 style={{ color: '#16a34a', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>₹13.00 / Unit</h3>
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>Progressed from ₹11.50 ➔ ₹12.50</p>
             </div>
 
-            <div className="accounting-summary-card" style={{ background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
-              <p className="eyebrow">Meter Continuity</p>
-              <h3 style={{ color: '#8b5cf6', fontSize: '1.6rem' }}>3 Rollovers</h3>
-              <p style={{ margin: '4px 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>7629 ➔ 1557 (0 gaps)</p>
+            <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Meter Continuity</p>
+              <h3 style={{ color: '#8b5cf6', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>3 Rollovers</h3>
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>7629 ➔ 1557 (0 gaps)</p>
             </div>
           </div>
 
           {/* HISTORICAL CONSUMPTION CHART */}
-          <div className="section-card" style={{ padding: '24px', border: '1px solid var(--line)' }}>
-            <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>Electricity Consumption by Billing Period (kWh Units)</h4>
-            <div style={{ width: '100%', height: 260 }}>
+          <div className="section-card" style={{ padding: '14px 18px', border: '1px solid var(--line)', borderRadius: '10px' }}>
+            <h4 style={{ margin: '0 0 12px 0', color: 'var(--ink)', fontSize: '0.82rem', fontWeight: 700 }}>Electricity Consumption by Billing Period (kWh Units)</h4>
+            <div style={{ width: '100%', height: 190 }}>
               <ResponsiveContainer>
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11 }} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11 }} dx={-10} />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} dy={8} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 10 }} dx={-8} />
                   <Tooltip
                     cursor={{ fill: '#f1f5f9' }}
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    contentStyle={{ borderRadius: '6px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontSize: '0.75rem' }}
                   />
-                  <Bar dataKey="Total Consumed" fill="#0284c7" radius={[6, 6, 0, 0]} maxBarSize={45} />
+                  <Bar dataKey="Total Consumed" fill="#0284c7" radius={[4, 4, 0, 0]} maxBarSize={36} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -1451,14 +1450,14 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
       {/* CREATE NEW TATA ELECTRICITY BILL FORM (ADMIN ONLY) */}
       {isAdmin && (
-        <div className="section-card" style={{ padding: '24px', border: '1px solid var(--line)', background: '#ffffff', borderRadius: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
+        <div className="section-card" style={{ padding: '16px 20px', border: '1px solid var(--line)', background: '#ffffff', borderRadius: '12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
             <div>
-              <h4 style={{ margin: 0, color: 'var(--ink)' }}>
+              <h4 style={{ margin: 0, color: 'var(--ink)', fontSize: '0.88rem', fontWeight: 700 }}>
                 ➕ {subTab === 'tata' ? 'Create New Tata Electricity Bill' : (subTab === 'mahavitaran' ? 'Add Mahavitaran MSEB Bill' : 'Add A Building Bill')}
               </h4>
               {subTab === 'tata' && (
-                <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: 'var(--muted)' }}>
+                <p style={{ margin: '2px 0 0 0', fontSize: '0.74rem', color: 'var(--muted)' }}>
                   Enter sub-meter readings and duration. The system automatically detects 10,000 reset rollover if B &lt; A.
                 </p>
               )}
@@ -1469,7 +1468,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
                 type="button"
                 className="button-secondary"
                 onClick={applyNextTataPeriod}
-                style={{ padding: '8px 16px', fontSize: '0.85rem', background: '#eff6ff', color: '#1d4ed8', borderColor: '#bfdbfe', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}
+                style={{ padding: '5px 12px', fontSize: '0.76rem', background: '#eff6ff', color: '#1d4ed8', borderColor: '#bfdbfe', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}
                 title="Pre-fills start date and previous reading from latest bill"
               >
                 <span>⚡</span> Auto-Fill Next Cycle (Prev: {latestTataBill.currReading})
@@ -1477,14 +1476,14 @@ export default function ElectricityTracker({ isAdmin = false }) {
             )}
           </div>
 
-          <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '16px' }}>
+          <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px' }}>
             {subTab === 'tata' && (
               <>
                 <div className="field-group" style={{ gridColumn: 'span 2' }}>
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Billing Period Name <span style={{ color: '#ef4444' }}>*</span></label>
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Billing Period Name <span style={{ color: '#ef4444' }}>*</span></label>
                   <input
                     className="attendance-register-input"
-                    style={{ textAlign: 'left', background: 'white' }}
+                    style={{ textAlign: 'left', background: 'white', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }}
                     type="text"
                     placeholder="e.g. May 26 to Sep 26"
                     value={formData.periodLabel}
@@ -1494,10 +1493,10 @@ export default function ElectricityTracker({ isAdmin = false }) {
                 </div>
 
                 <div className="field-group">
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Duration <span style={{ color: '#ef4444' }}>*</span></label>
+                  <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Duration <span style={{ color: '#ef4444' }}>*</span></label>
                   <input
                     className="attendance-register-input"
-                    style={{ textAlign: 'left', background: 'white' }}
+                    style={{ textAlign: 'left', background: 'white', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }}
                     type="text"
                     placeholder="e.g. 4 Months (120 Days)"
                     value={formData.duration}
@@ -1509,28 +1508,28 @@ export default function ElectricityTracker({ isAdmin = false }) {
             )}
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Start Date <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.startMonth} onChange={e => handleFormChange('startMonth', e.target.value)} required />
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Start Date <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="date" value={formData.startMonth} onChange={e => handleFormChange('startMonth', e.target.value)} required />
             </div>
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>End Date <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.endMonth} onChange={e => handleFormChange('endMonth', e.target.value)} required />
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>End Date <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="date" value={formData.endMonth} onChange={e => handleFormChange('endMonth', e.target.value)} required />
             </div>
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Previous Reading (A) <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="e.g. 2568" value={formData.prevReading} onChange={e => handleFormChange('prevReading', e.target.value)} required />
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Previous Reading (A) <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="number" step="any" placeholder="e.g. 2568" value={formData.prevReading} onChange={e => handleFormChange('prevReading', e.target.value)} required />
             </div>
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Current Reading (B) <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="e.g. 1557" value={formData.currReading} onChange={e => handleFormChange('currReading', e.target.value)} required />
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Current Reading (B) <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="number" step="any" placeholder="e.g. 1557" value={formData.currReading} onChange={e => handleFormChange('currReading', e.target.value)} required />
             </div>
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Per Unit Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left' }} type="number" step="any" placeholder="13.00" value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Per Unit Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="number" step="any" placeholder="13.00" value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
             </div>
 
             {/* Live calculation banner if readings are filled */}
@@ -1539,33 +1538,33 @@ export default function ElectricityTracker({ isAdmin = false }) {
                 gridColumn: '1 / -1',
                 background: n(formData.currReading) < n(formData.prevReading) ? '#fef3c7' : '#eff6ff',
                 border: '1px solid ' + (n(formData.currReading) < n(formData.prevReading) ? '#fde68a' : '#bfdbfe'),
-                borderRadius: '10px',
-                padding: '12px 16px',
+                borderRadius: '8px',
+                padding: '8px 12px',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 flexWrap: 'wrap',
-                gap: '8px'
+                gap: '6px'
               }}>
                 <div>
-                  <div style={{ fontWeight: 700, color: n(formData.currReading) < n(formData.prevReading) ? '#92400e' : '#1e40af' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.75rem', color: n(formData.currReading) < n(formData.prevReading) ? '#92400e' : '#1e40af' }}>
                     {n(formData.currReading) < n(formData.prevReading) ? '🔄 10,000 Reset Rollover Detected:' : '📊 Standard Reading Calculation:'}
                   </div>
-                  <div style={{ fontSize: '0.85rem', color: '#475569' }}>
+                  <div style={{ fontSize: '0.72rem', color: '#475569' }}>
                     {calculateSubmeterRollover(formData.prevReading, formData.currReading).formulaText}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Estimated Bill: </span>
-                  <strong style={{ fontSize: '1.1rem', color: '#0369a1' }}>
+                  <span style={{ fontSize: '0.72rem', color: '#64748b' }}>Estimated Bill: </span>
+                  <strong style={{ fontSize: '0.95rem', color: '#0369a1' }}>
                     ₹{fmt(calculateSubmeterRollover(formData.prevReading, formData.currReading).units * (n(formData.ratePerUnit) || 13))}
                   </strong>
                 </div>
               </div>
             )}
 
-            <div style={{ gridColumn: '1 / -1', marginTop: '8px' }}>
-              <button type="submit" className="button-primary" style={{ padding: '12px 28px', background: '#0284c7', borderColor: '#0284c7' }}>
+            <div style={{ gridColumn: '1 / -1', marginTop: '4px' }}>
+              <button type="submit" className="button-primary" style={{ padding: '8px 20px', height: '34px', fontSize: '0.8rem', background: '#0284c7', borderColor: '#0284c7' }}>
                 Calculate &amp; Create Bill
               </button>
             </div>
@@ -1574,55 +1573,55 @@ export default function ElectricityTracker({ isAdmin = false }) {
       )}
 
       {/* MAIN TABLE */}
-      <div className="table-card">
-        <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: 1100 }}>
+      <div className="table-card" style={{ borderRadius: '12px', overflow: 'hidden' }}>
+        <div className="attendance-table-scroll" style={{ padding: '10px' }}>
+          <table className="attendance-table" style={{ minWidth: 980, fontSize: '0.78rem' }}>
             <thead>
               {subTab === 'tata' ? (
                 <tr style={{ background: '#f8fafc' }}>
-                  <th style={{ width: 45, textAlign: 'center' }}>#</th>
-                  <th style={{ width: 220 }}>Billing Period</th>
-                  <th style={{ width: 160, textAlign: 'center' }}>Duration</th>
-                  <th style={{ width: 95, textAlign: 'right' }}>Prev (A)</th>
-                  <th style={{ width: 95, textAlign: 'right' }}>Curr (B)</th>
-                  <th style={{ width: 105, textAlign: 'center' }}>Meter Status</th>
-                  <th style={{ width: 110, textAlign: 'right' }}>Units (B - A)</th>
-                  <th style={{ width: 100, textAlign: 'right' }}>Rate / Unit</th>
-                  <th style={{ width: 140, textAlign: 'right', background: '#f0f9ff' }}>Total Amount (₹)</th>
-                  <th style={{ width: 110, textAlign: 'center' }}>Actions</th>
+                  <th style={{ width: 35, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>#</th>
+                  <th style={{ width: 200, padding: '7px 8px', fontSize: '0.7rem' }}>Billing Period</th>
+                  <th style={{ width: 140, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Duration</th>
+                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Prev (A)</th>
+                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Curr (B)</th>
+                  <th style={{ width: 95, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Status</th>
+                  <th style={{ width: 95, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Units (B - A)</th>
+                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Rate / Unit</th>
+                  <th style={{ width: 120, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem', background: '#f0f9ff' }}>Total Amount (₹)</th>
+                  <th style={{ width: 80, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Actions</th>
                 </tr>
               ) : subTab === 'mahavitaran' ? (
                 <tr style={{ background: '#f8fafc' }}>
-                  <th style={{ width: 50 }}>Sr.</th>
-                  <th style={{ width: 200 }}>Billing Period</th>
-                  <th style={{ width: 95, textAlign: 'right' }}>Readings</th>
-                  <th style={{ width: 85, textAlign: 'right' }}>Units</th>
-                  <th style={{ width: 90, textAlign: 'right' }}>Fixed (स्थिर)</th>
-                  <th style={{ width: 110, textAlign: 'right' }}>Energy (वीज)</th>
-                  <th style={{ width: 105, textAlign: 'right' }}>Wheeling (वहन)</th>
-                  <th style={{ width: 95, textAlign: 'right' }}>Fuel (इंधन)</th>
-                  <th style={{ width: 95, textAlign: 'right' }}>Duty (16%)</th>
-                  <th style={{ width: 115, textAlign: 'right', background: '#f0f9ff' }}>Grand Total</th>
-                  <th style={{ width: 80, textAlign: 'center' }}>Actions</th>
+                  <th style={{ width: 45, padding: '7px 8px', fontSize: '0.7rem' }}>Sr.</th>
+                  <th style={{ width: 180, padding: '7px 8px', fontSize: '0.7rem' }}>Billing Period</th>
+                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Readings</th>
+                  <th style={{ width: 75, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Units</th>
+                  <th style={{ width: 80, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Fixed</th>
+                  <th style={{ width: 95, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Energy</th>
+                  <th style={{ width: 90, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Wheeling</th>
+                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Fuel</th>
+                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Duty</th>
+                  <th style={{ width: 105, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem', background: '#f0f9ff' }}>Grand Total</th>
+                  <th style={{ width: 70, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Actions</th>
                 </tr>
               ) : (
                 <tr style={{ background: '#f8fafc' }}>
-                  <th style={{ width: 60 }}>Sr.</th>
-                  <th style={{ width: 300 }}>Period</th>
-                  <th style={{ width: 120, textAlign: 'right' }}>Prev Read</th>
-                  <th style={{ width: 120, textAlign: 'right' }}>Curr Read</th>
-                  <th style={{ width: 100, textAlign: 'right' }}>Consumed</th>
-                  <th style={{ width: 100, textAlign: 'right' }}>Rate</th>
-                  <th style={{ width: 120, textAlign: 'right', background: '#f0f9ff' }}>Grand Total</th>
-                  <th style={{ width: 80, textAlign: 'center' }}>Actions</th>
+                  <th style={{ width: 45, padding: '7px 8px', fontSize: '0.7rem' }}>Sr.</th>
+                  <th style={{ width: 220, padding: '7px 8px', fontSize: '0.7rem' }}>Period</th>
+                  <th style={{ width: 100, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Prev Read</th>
+                  <th style={{ width: 100, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Curr Read</th>
+                  <th style={{ width: 90, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Consumed</th>
+                  <th style={{ width: 90, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Rate</th>
+                  <th style={{ width: 110, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem', background: '#f0f9ff' }}>Grand Total</th>
+                  <th style={{ width: 70, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Actions</th>
                 </tr>
               )}
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
+                <tr><td colSpan={10} style={{ textAlign: 'center', padding: 24, opacity: 0.5, fontSize: '0.78rem' }}>Loading records...</td></tr>
               ) : filteredBills.length === 0 ? (
-                <tr><td colSpan={10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
+                <tr><td colSpan={10} style={{ textAlign: 'center', padding: 24, opacity: 0.5, fontSize: '0.78rem' }}>
                   {searchText ? `No bills found matching "${searchText}"` : 'No bills recorded.'}
                 </td></tr>
               ) : (
@@ -1634,25 +1633,25 @@ export default function ElectricityTracker({ isAdmin = false }) {
                     const isRolloverBill = c.isRollover || n(c.currReading) < n(c.prevReading);
                     return (
                       <tr key={c.id || i} style={{ background: isRolloverBill ? '#fffdfa' : 'transparent' }}>
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center', fontWeight: 600 }}>{i + 1}</td>
+                        <td style={{ verticalAlign: 'middle', textAlign: 'center', fontWeight: 600, padding: '6px 8px', fontSize: '0.75rem' }}>{i + 1}</td>
 
                         {/* Billing Period */}
-                        <td style={{ verticalAlign: 'middle' }}>
+                        <td style={{ verticalAlign: 'middle', padding: '6px 8px' }}>
                           {isEditing ? (
                             <input
                               className="attendance-register-input"
-                              style={{ width: '100%', padding: '6px' }}
+                              style={{ width: '100%', padding: '4px', fontSize: '0.78rem' }}
                               type="text"
                               value={c.periodLabel || ''}
                               onChange={e => updateRow(actualIdx, 'periodLabel', e.target.value)}
                             />
                           ) : (
                             <div>
-                              <strong style={{ fontSize: '0.92rem', color: '#0f172a' }}>
+                              <strong style={{ fontSize: '0.8rem', color: '#0f172a' }}>
                                 {c.periodLabel || `${formatDateLabel(c.startMonth)} to ${formatDateLabel(c.endMonth)}`}
                               </strong>
                               {c.startMonth && c.endMonth && (
-                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>
+                                <div style={{ fontSize: '0.68rem', color: '#64748b' }}>
                                   {formatDateLabel(c.startMonth)} – {formatDateLabel(c.endMonth)}
                                 </div>
                               )}
@@ -1661,11 +1660,11 @@ export default function ElectricityTracker({ isAdmin = false }) {
                         </td>
 
                         {/* Duration */}
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                        <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
                           {isEditing ? (
                             <input
                               className="attendance-register-input"
-                              style={{ width: '100%', padding: '6px' }}
+                              style={{ width: '100%', padding: '4px', fontSize: '0.78rem' }}
                               type="text"
                               value={c.duration || ''}
                               onChange={e => updateRow(actualIdx, 'duration', e.target.value)}
@@ -1674,9 +1673,9 @@ export default function ElectricityTracker({ isAdmin = false }) {
                             <span style={{
                               background: '#eff6ff',
                               color: '#1d4ed8',
-                              padding: '4px 10px',
-                              borderRadius: '20px',
-                              fontSize: '0.8rem',
+                              padding: '2px 7px',
+                              borderRadius: '12px',
+                              fontSize: '0.7rem',
                               fontWeight: 600,
                               border: '1px solid #bfdbfe',
                               display: 'inline-block'
@@ -1687,11 +1686,11 @@ export default function ElectricityTracker({ isAdmin = false }) {
                         </td>
 
                         {/* Prev Reading (A) */}
-                        <td style={{ textAlign: 'right', verticalAlign: 'middle', fontFamily: 'monospace', fontSize: '0.95rem' }}>
+                        <td style={{ textAlign: 'right', verticalAlign: 'middle', fontFamily: 'SF Mono, Consolas, Monaco, monospace', fontSize: '0.8rem', padding: '6px 8px' }}>
                           {isEditing ? (
                             <input
                               className="attendance-register-input"
-                              style={{ padding: '4px', textAlign: 'right' }}
+                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
                               type="text"
                               value={c.prevReading}
                               onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)}
@@ -1702,11 +1701,11 @@ export default function ElectricityTracker({ isAdmin = false }) {
                         </td>
 
                         {/* Curr Reading (B) */}
-                        <td style={{ textAlign: 'right', verticalAlign: 'middle', fontFamily: 'monospace', fontSize: '0.95rem' }}>
+                        <td style={{ textAlign: 'right', verticalAlign: 'middle', fontFamily: 'SF Mono, Consolas, Monaco, monospace', fontSize: '0.8rem', padding: '6px 8px' }}>
                           {isEditing ? (
                             <input
                               className="attendance-register-input"
-                              style={{ padding: '4px', textAlign: 'right' }}
+                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
                               type="text"
                               value={c.currReading}
                               onChange={e => updateRow(actualIdx, 'currReading', e.target.value)}
@@ -1717,43 +1716,43 @@ export default function ElectricityTracker({ isAdmin = false }) {
                         </td>
 
                         {/* Meter Status / 10k Reset Badge */}
-                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                        <td style={{ textAlign: 'center', verticalAlign: 'middle', padding: '6px 8px' }}>
                           {isRolloverBill ? (
                             <span style={{
                               background: '#fef3c7',
                               color: '#92400e',
-                              padding: '3px 8px',
-                              borderRadius: '12px',
-                              fontSize: '0.75rem',
+                              padding: '2px 5px',
+                              borderRadius: '8px',
+                              fontSize: '0.68rem',
                               fontWeight: 700,
                               border: '1px solid #fde68a',
                               display: 'inline-flex',
                               alignItems: 'center',
-                              gap: '4px'
+                              gap: '3px'
                             }} title="(10000 - A) + B = Units">
-                              🔄 10,000 Reset
+                              🔄 10k Reset
                             </span>
                           ) : (
-                            <span style={{ color: '#64748b', fontSize: '0.75rem', fontWeight: 500 }}>
-                              Normal (B ≥ A)
+                            <span style={{ color: '#64748b', fontSize: '0.68rem', fontWeight: 500 }}>
+                              Normal
                             </span>
                           )}
                         </td>
 
                         {/* Units Consumed (B - A) */}
-                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 800, verticalAlign: 'middle', fontSize: '1rem' }}>
+                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 700, verticalAlign: 'middle', padding: '6px 8px' }}>
                           {isEditing ? (
                             <input
                               className="attendance-register-input"
-                              style={{ padding: '4px', textAlign: 'right' }}
+                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
                               type="number"
                               value={c.consumption}
                               onChange={e => updateRow(actualIdx, 'consumption', e.target.value)}
                             />
                           ) : (
                             <div>
-                              <span>{fmt(n(c.consumption))}</span>
-                              <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 400 }}>
+                              <span style={{ fontSize: '0.84rem' }}>{fmt(n(c.consumption))}</span>
+                              <div style={{ fontSize: '0.64rem', color: '#94a3b8', fontWeight: 400 }}>
                                 {isRolloverBill ? `(10k - ${c.prevReading}) + ${c.currReading}` : `${c.currReading} - ${c.prevReading}`}
                               </div>
                             </div>
@@ -1761,11 +1760,11 @@ export default function ElectricityTracker({ isAdmin = false }) {
                         </td>
 
                         {/* Per Unit Rate */}
-                        <td style={{ textAlign: 'right', verticalAlign: 'middle' }}>
+                        <td style={{ textAlign: 'right', verticalAlign: 'middle', padding: '6px 8px' }}>
                           {isEditing ? (
                             <input
                               className="attendance-register-input"
-                              style={{ padding: '4px', textAlign: 'right' }}
+                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
                               type="number"
                               step="any"
                               value={c.ratePerUnit}
@@ -1775,9 +1774,9 @@ export default function ElectricityTracker({ isAdmin = false }) {
                             <span style={{
                               background: '#f0fdf4',
                               color: '#15803d',
-                              padding: '3px 8px',
-                              borderRadius: '6px',
-                              fontSize: '0.85rem',
+                              padding: '2px 6px',
+                              borderRadius: '4px',
+                              fontSize: '0.75rem',
                               fontWeight: 700,
                               border: '1px solid #bbf7d0'
                             }}>
@@ -1787,29 +1786,29 @@ export default function ElectricityTracker({ isAdmin = false }) {
                         </td>
 
                         {/* Total Amount */}
-                        <td style={{ textAlign: 'right', color: '#0369a1', fontWeight: 800, verticalAlign: 'middle', fontSize: '1.05rem', background: '#f0f9ff' }}>
+                        <td style={{ textAlign: 'right', color: '#0369a1', fontWeight: 700, verticalAlign: 'middle', fontSize: '0.88rem', background: '#f0f9ff', padding: '6px 8px' }}>
                           ₹{fmt(c.grandTotal)}
                         </td>
 
                         {/* Actions */}
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
-                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', alignItems: 'center' }}>
+                        <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
+                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'center' }}>
                             <button
                               className="button-icon"
                               title="Print / Export Bill Invoice"
                               onClick={() => handlePrintTataBill(c)}
-                              style={{ color: '#0284c7', fontSize: '1.1rem', cursor: 'pointer', padding: '4px' }}
+                              style={{ color: '#0284c7', fontSize: '0.95rem', cursor: 'pointer', padding: '2px' }}
                             >
                               🖨️
                             </button>
                             {isAdmin && (
                               <>
                                 {isEditing ? (
-                                  <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a' }}>✅</button>
+                                  <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a', fontSize: '0.85rem' }}>✅</button>
                                 ) : (
-                                  <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6' }}>✏️</button>
+                                  <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6', fontSize: '0.85rem' }}>✏️</button>
                                 )}
-                                <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444' }}>✕</button>
+                                <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444', fontSize: '0.85rem' }}>✕</button>
                               </>
                             )}
                           </div>
@@ -1821,53 +1820,53 @@ export default function ElectricityTracker({ isAdmin = false }) {
                   if (subTab === 'mahavitaran') {
                     return (
                       <tr key={c.id || i}>
-                        <td style={{ verticalAlign: 'middle' }}>{i + 1}</td>
-                        <td>
+                        <td style={{ verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.75rem' }}>{i + 1}</td>
+                        <td style={{ padding: '6px 8px' }}>
                           {isEditing ? (
-                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                              <input className="attendance-register-input" style={{ width: '130px', padding: '6px' }} type="date" value={c.startMonth} onChange={e => updateRow(actualIdx, 'startMonth', e.target.value)} />
+                            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                              <input className="attendance-register-input" style={{ width: '110px', padding: '3px', fontSize: '0.75rem' }} type="date" value={c.startMonth} onChange={e => updateRow(actualIdx, 'startMonth', e.target.value)} />
                               <span>-</span>
-                              <input className="attendance-register-input" style={{ width: '130px', padding: '6px' }} type="date" value={c.endMonth} onChange={e => updateRow(actualIdx, 'endMonth', e.target.value)} />
+                              <input className="attendance-register-input" style={{ width: '110px', padding: '3px', fontSize: '0.75rem' }} type="date" value={c.endMonth} onChange={e => updateRow(actualIdx, 'endMonth', e.target.value)} />
                             </div>
                           ) : (
-                            <span style={{ fontWeight: 600, fontSize: '0.85rem' }}>{formatDateLabel(c.startMonth)} -<br />{formatDateLabel(c.endMonth)}</span>
+                            <span style={{ fontWeight: 600, fontSize: '0.78rem' }}>{formatDateLabel(c.startMonth)} -<br />{formatDateLabel(c.endMonth)}</span>
                           )}
                         </td>
-                        <td style={{ textAlign: 'right', fontSize: '0.85rem' }}>
+                        <td style={{ textAlign: 'right', fontSize: '0.75rem', padding: '6px 8px' }}>
                           {isEditing ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                              <input className="attendance-register-input" style={{ padding: '4px' }} type="number" step="any" value={c.prevReading} onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)} />
-                              <input className="attendance-register-input" style={{ padding: '4px' }} type="number" step="any" value={c.currReading} onChange={e => updateRow(actualIdx, 'currReading', e.target.value)} />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.prevReading} onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)} />
+                              <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.currReading} onChange={e => updateRow(actualIdx, 'currReading', e.target.value)} />
                             </div>
                           ) : (
                             <><span style={{ color: 'var(--muted)' }}>P: {n(c.prevReading)}</span><br /><span>C: {n(c.currReading)}</span></>
                           )}
                         </td>
-                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 700, verticalAlign: 'middle' }}>{n(c.consumption)}</td>
-                        <td style={{ textAlign: 'right' }}>
-                          {isEditing ? <input className="attendance-register-input" style={{ padding: '4px' }} type="number" step="any" value={c.msebFixedCharge || c.fixed} onChange={e => updateRow(actualIdx, 'msebFixedCharge', e.target.value)} /> : `₹${fmt(n(c.fixed || c.msebFixedCharge || 445))}`}
+                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 700, verticalAlign: 'middle', fontSize: '0.8rem', padding: '6px 8px' }}>{n(c.consumption)}</td>
+                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
+                          {isEditing ? <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.msebFixedCharge || c.fixed} onChange={e => updateRow(actualIdx, 'msebFixedCharge', e.target.value)} /> : `₹${fmt(n(c.fixed || c.msebFixedCharge || 445))}`}
                         </td>
-                        <td style={{ textAlign: 'right' }}>
-                          {isEditing ? <input className="attendance-register-input" style={{ padding: '4px' }} type="number" step="any" value={c.msebEnergyCharge || c.energy} onChange={e => updateRow(actualIdx, 'msebEnergyCharge', e.target.value)} /> : `₹${fmt(n(c.energy || c.msebEnergyCharge || 0))}`}
+                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
+                          {isEditing ? <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.msebEnergyCharge || c.energy} onChange={e => updateRow(actualIdx, 'msebEnergyCharge', e.target.value)} /> : `₹${fmt(n(c.energy || c.msebEnergyCharge || 0))}`}
                         </td>
-                        <td style={{ textAlign: 'right' }}>
-                          {isEditing ? <input className="attendance-register-input" style={{ padding: '4px' }} type="number" step="any" value={c.msebWheelingRate || c.wheelTotal} onChange={e => updateRow(actualIdx, 'msebWheelingRate', e.target.value)} /> : `₹${fmt(n(c.wheelTotal || (n(c.consumption) * 1.6)))}`}
+                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
+                          {isEditing ? <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.msebWheelingRate || c.wheelTotal} onChange={e => updateRow(actualIdx, 'msebWheelingRate', e.target.value)} /> : `₹${fmt(n(c.wheelTotal || (n(c.consumption) * 1.6)))}`}
                         </td>
-                        <td style={{ textAlign: 'right' }}>
-                          {isEditing ? <input className="attendance-register-input" style={{ padding: '4px' }} type="number" step="any" value={c.msebFuelAdj || c.fuel} onChange={e => updateRow(actualIdx, 'msebFuelAdj', e.target.value)} /> : `₹${fmt(n(c.fuel || c.msebFuelAdj || 0))}`}
+                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
+                          {isEditing ? <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.msebFuelAdj || c.fuel} onChange={e => updateRow(actualIdx, 'msebFuelAdj', e.target.value)} /> : `₹${fmt(n(c.fuel || c.msebFuelAdj || 0))}`}
                         </td>
-                        <td style={{ textAlign: 'right' }}>₹{fmt(n(c.duty || (n(c.grandTotal) * 0.16 / 1.16)))}</td>
-                        <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 800, verticalAlign: 'middle', fontSize: '0.95rem' }}>₹{fmt(c.grandTotal)}</td>
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
-                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', alignItems: 'center' }}>
+                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>₹{fmt(n(c.duty || (n(c.grandTotal) * 0.16 / 1.16)))}</td>
+                        <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 700, verticalAlign: 'middle', fontSize: '0.85rem', padding: '6px 8px' }}>₹{fmt(c.grandTotal)}</td>
+                        <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
+                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'center' }}>
                             {isAdmin && (
                               <>
                                 {isEditing ? (
-                                  <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a' }}>✅</button>
+                                  <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a', fontSize: '0.85rem' }}>✅</button>
                                 ) : (
-                                  <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6' }}>✏️</button>
+                                  <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6', fontSize: '0.85rem' }}>✏️</button>
                                 )}
-                                <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444' }}>✕</button>
+                                <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444', fontSize: '0.85rem' }}>✕</button>
                               </>
                             )}
                           </div>
@@ -1878,50 +1877,50 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
                   return (
                     <tr key={c.id || i}>
-                      <td style={{ verticalAlign: 'middle' }}>{i + 1}</td>
-                      <td>
+                      <td style={{ verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.75rem' }}>{i + 1}</td>
+                      <td style={{ padding: '6px 8px' }}>
                         {isEditing ? (
-                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                            <input className="attendance-register-input" style={{ width: '140px', padding: '6px' }} type="date" value={c.startMonth} onChange={e => updateRow(actualIdx, 'startMonth', e.target.value)} />
+                          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                            <input className="attendance-register-input" style={{ width: '120px', padding: '3px', fontSize: '0.75rem' }} type="date" value={c.startMonth} onChange={e => updateRow(actualIdx, 'startMonth', e.target.value)} />
                             <span>-</span>
-                            <input className="attendance-register-input" style={{ width: '140px', padding: '6px' }} type="date" value={c.endMonth} onChange={e => updateRow(actualIdx, 'endMonth', e.target.value)} />
+                            <input className="attendance-register-input" style={{ width: '120px', padding: '3px', fontSize: '0.75rem' }} type="date" value={c.endMonth} onChange={e => updateRow(actualIdx, 'endMonth', e.target.value)} />
                           </div>
                         ) : (
-                          <span style={{ fontWeight: 500 }}>{formatDateLabel(c.startMonth)} - {formatDateLabel(c.endMonth)}</span>
+                          <span style={{ fontWeight: 500, fontSize: '0.78rem' }}>{formatDateLabel(c.startMonth)} - {formatDateLabel(c.endMonth)}</span>
                         )}
                       </td>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
                         {isEditing ? (
-                          <input className="attendance-register-input" style={{ textAlign: 'right' }} type="number" step="any" value={c.prevReading} onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)} />
+                          <input className="attendance-register-input" style={{ textAlign: 'right', padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.prevReading} onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)} />
                         ) : (
                           n(c.prevReading)
                         )}
                       </td>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
                         {isEditing ? (
-                          <input className="attendance-register-input" style={{ textAlign: 'right' }} type="number" step="any" value={c.currReading} onChange={e => updateRow(actualIdx, 'currReading', e.target.value)} />
+                          <input className="attendance-register-input" style={{ textAlign: 'right', padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.currReading} onChange={e => updateRow(actualIdx, 'currReading', e.target.value)} />
                         ) : (
                           n(c.currReading)
                         )}
                       </td>
-                      <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 600, verticalAlign: 'middle' }}>{n(c.consumption)}</td>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 600, verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.8rem' }}>{n(c.consumption)}</td>
+                      <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
                         {isEditing ? (
-                          <input className="attendance-register-input" style={{ textAlign: 'right' }} type="number" step="any" value={c.ratePerUnit} onChange={e => updateRow(actualIdx, 'ratePerUnit', e.target.value)} />
+                          <input className="attendance-register-input" style={{ textAlign: 'right', padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.ratePerUnit} onChange={e => updateRow(actualIdx, 'ratePerUnit', e.target.value)} />
                         ) : (
                           `₹${n(c.ratePerUnit)}`
                         )}
                       </td>
-                      <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 700, verticalAlign: 'middle' }}>₹{fmt(c.grandTotal)}</td>
-                      <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                      <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 700, verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.85rem' }}>₹{fmt(c.grandTotal)}</td>
+                      <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
                         {isAdmin && (
-                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
                             {isEditing ? (
-                              <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a' }}>✅</button>
+                              <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a', fontSize: '0.85rem' }}>✅</button>
                             ) : (
-                              <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6' }}>✏️</button>
+                              <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6', fontSize: '0.85rem' }}>✏️</button>
                             )}
-                            <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444' }}>✕</button>
+                            <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444', fontSize: '0.85rem' }}>✕</button>
                           </div>
                         )}
                       </td>
@@ -1932,28 +1931,28 @@ export default function ElectricityTracker({ isAdmin = false }) {
             </tbody>
             <tfoot>
               {subTab === 'tata' ? (
-                <tr style={{ background: '#f8fafc', fontWeight: 800 }}>
-                  <td colSpan={6} style={{ textAlign: 'right', fontSize: '0.95rem' }}>TOTAL (8 BILLING CYCLES):</td>
-                  <td style={{ textAlign: 'right', color: '#ea580c', fontSize: '1.05rem' }}>{fmt(totalConsumption)}</td>
+                <tr style={{ background: '#f8fafc', fontWeight: 700, fontSize: '0.82rem' }}>
+                  <td colSpan={6} style={{ textAlign: 'right', padding: '8px' }}>TOTAL (8 BILLING CYCLES):</td>
+                  <td style={{ textAlign: 'right', color: '#ea580c', padding: '8px', fontSize: '0.88rem' }}>{fmt(totalConsumption)}</td>
                   <td></td>
-                  <td style={{ textAlign: 'right', color: '#0369a1', fontSize: '1.1rem', background: '#e0f2fe' }}>₹{fmt(totalAmount)}</td>
+                  <td style={{ textAlign: 'right', color: '#0369a1', fontSize: '0.92rem', background: '#e0f2fe', padding: '8px' }}>₹{fmt(totalAmount)}</td>
                   <td></td>
                 </tr>
               ) : subTab === 'mahavitaran' ? (
-                <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
-                  <td colSpan={3} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
-                  <td style={{ textAlign: 'right', color: '#ea580c' }}>{fmt(totalConsumption)}</td>
+                <tr style={{ background: '#f8fafc', fontWeight: 700, fontSize: '0.82rem' }}>
+                  <td colSpan={3} style={{ textAlign: 'right', padding: '8px' }}>GRAND TOTAL</td>
+                  <td style={{ textAlign: 'right', color: '#ea580c', padding: '8px', fontSize: '0.88rem' }}>{fmt(totalConsumption)}</td>
                   <td colSpan={4}></td>
                   <td></td>
-                  <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmount)}</td>
+                  <td style={{ textAlign: 'right', color: '#2563eb', padding: '8px', fontSize: '0.92rem' }}>₹{fmt(totalAmount)}</td>
                   <td></td>
                 </tr>
               ) : (
-                <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
-                  <td colSpan={4} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
-                  <td style={{ textAlign: 'right', color: '#ea580c' }}>{fmt(totalConsumption)}</td>
+                <tr style={{ background: '#f8fafc', fontWeight: 700, fontSize: '0.82rem' }}>
+                  <td colSpan={4} style={{ textAlign: 'right', padding: '8px' }}>GRAND TOTAL</td>
+                  <td style={{ textAlign: 'right', color: '#ea580c', padding: '8px', fontSize: '0.88rem' }}>{fmt(totalConsumption)}</td>
                   <td></td>
-                  <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmount)}</td>
+                  <td style={{ textAlign: 'right', color: '#2563eb', padding: '8px', fontSize: '0.92rem' }}>₹{fmt(totalAmount)}</td>
                   <td></td>
                 </tr>
               )}
