@@ -73,6 +73,44 @@ export function getCurrentFiscalMonthId(tab = 'buildingA') {
   return fiscalMonths[fiscalMonths.length - 1].id;
 }
 
+export function numberToWordsINR(amount) {
+  const num = Math.round(Math.abs(Number(amount) || 0));
+  if (num === 0) return 'Zero Rupees Only';
+
+  const units = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+  const convertTwoDigits = (n) => {
+    if (n === 0) return '';
+    if (n < 20) return units[n];
+    const t = Math.floor(n / 10);
+    const u = n % 10;
+    return tens[t] + (u ? ' ' + units[u] : '');
+  };
+
+  const convertThreeDigits = (n) => {
+    const h = Math.floor(n / 100);
+    const r = n % 100;
+    let str = '';
+    if (h) str += units[h] + ' Hundred';
+    if (r) str += (str ? ' ' : '') + convertTwoDigits(r);
+    return str;
+  };
+
+  const crore = Math.floor(num / 10000000);
+  const lakh = Math.floor((num % 10000000) / 100000);
+  const thousand = Math.floor((num % 100000) / 1000);
+  const hundred = num % 1000;
+
+  const parts = [];
+  if (crore) parts.push(convertThreeDigits(crore) + ' Crore');
+  if (lakh) parts.push(convertTwoDigits(lakh) + ' Lakh');
+  if (thousand) parts.push(convertTwoDigits(thousand) + ' Thousand');
+  if (hundred) parts.push(convertThreeDigits(hundred));
+
+  return parts.filter(Boolean).join(' ') + ' Rupees Only';
+}
+
 const DEFAULT_BUILDING_A_ENTRIES = [
   {
     id: 1782921846533,
@@ -1551,8 +1589,8 @@ export default function PettyCashTracker({ isAdmin = false }) {
           * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
           body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
           .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
-          .title { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; }
-          .subtitle { font-size: 13px; color: #475569; margin-top: 4px; }
+          .title { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0; text-transform: uppercase; }
+          .subtitle { font-size: 11px; color: #475569; margin-top: 3px; }
           .meta { font-size: 11px; color: #475569; text-align: right; }
           
           .summary-bar {
@@ -1585,6 +1623,21 @@ export default function PettyCashTracker({ isAdmin = false }) {
           tfoot tr { background: #e2e8f0; font-weight: 800; }
           tfoot td { border: 1px solid #94a3b8; padding: 8px 10px; }
           
+          .signatures {
+            margin-top: 32px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            page-break-inside: avoid;
+          }
+          .sig-box {
+            border-top: 1px solid #0f172a;
+            padding-top: 8px;
+            text-align: center;
+          }
+          .sig-title { font-weight: 700; font-size: 11px; color: #0f172a; }
+          .sig-sub { font-size: 9px; color: #64748b; margin-top: 2px; }
+
           .footer {
             margin-top: 24px;
             border-top: 1px solid #cbd5e1;
@@ -1608,8 +1661,8 @@ export default function PettyCashTracker({ isAdmin = false }) {
         <div class="header">
           <div>
             <h1 class="title">🏢 MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
-            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
-            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${tabName} • FY 2026–27 (${activeMonthSummary.label})</div>
+            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, District Pune, Pune - 411060</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${tabName} • Monthly Petty Cash Ledger (${activeMonthSummary.label}, FY 2026–27)</div>
           </div>
           <div class="meta">
             <div><strong>Report Date:</strong> ${generatedDate}</div>
@@ -1678,6 +1731,21 @@ export default function PettyCashTracker({ isAdmin = false }) {
           </tfoot>
         </table>
 
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-title">Prepared By (Society Manager)</div>
+            <div class="sig-sub">Cash Custodian / Entry Operator</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-title">Society Treasurer</div>
+            <div class="sig-sub">Verified with Physical Cash &amp; Vouchers</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-title">Secretary / Chairman</div>
+            <div class="sig-sub">Approved for Society Accounts</div>
+          </div>
+        </div>
+
         <div class="footer">
           <div>Majestique Euriska Co-Op Housing Society • Petty Cash Accounting Statement</div>
           <div>Page 1 • Official Financial Record</div>
@@ -1698,6 +1766,435 @@ export default function PettyCashTracker({ isAdmin = false }) {
     if (printWindow) {
       printWindow.document.open();
       printWindow.document.write(printDoc);
+      printWindow.document.close();
+    } else {
+      window.print();
+    }
+  };
+
+  const handlePrintAnnualPDF = () => {
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const targetTab = subTab === 'vendorAnalytics' ? 'buildingA' : subTab;
+    const tabName = targetTab === 'common' ? 'Common Expenses Ledger' : 'A Building Operating Ledger';
+    const monthsData = monthSummariesByTab[targetTab] || [];
+
+    const totalReceiptsFY = monthsData.reduce((sum, m) => sum + (m.receipts || 0), 0);
+    const totalPaymentsFY = monthsData.reduce((sum, m) => sum + (m.payments || 0), 0);
+    const firstMonthOpening = monthsData.length > 0 ? (monthsData[0].openingBalance || 0) : 0;
+    const latestClosing = monthsData.length > 0 ? monthsData[monthsData.length - 1].closingBalance : 0;
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Majestique Euriska - Full FY 2026-27 Statement (${tabName})</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .header { border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 18px; font-weight: 800; color: #0f172a; margin: 0; text-transform: uppercase; }
+          .subtitle { font-size: 11px; color: #475569; margin-top: 3px; }
+          .meta { font-size: 11px; color: #475569; text-align: right; }
+          
+          .summary-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+          }
+          .summary-card {
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+          }
+          .summary-card.inflow { background: #f0fdf4; border-color: #bbf7d0; }
+          .summary-card.outflow { background: #fef2f2; border-color: #fecaca; }
+          .summary-card.closing { background: ${latestClosing >= 0 ? '#f0fdf4' : '#fff1f2'}; border-color: ${latestClosing >= 0 ? '#bbf7d0' : '#fecdd3'}; }
+          .summary-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 2px; }
+          .summary-value { font-size: 15px; font-weight: 800; color: #0f172a; }
+          
+          table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 18px; }
+          th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: left; padding: 7px 10px; border: 1px solid #94a3b8; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; }
+          td { padding: 6px 10px; border: 1px solid #cbd5e1; color: #0f172a; }
+          tr:nth-child(even) { background: #f8fafc; }
+          
+          .amount-inflow { color: #059669; font-weight: 700; text-align: right; }
+          .amount-outflow { color: #dc2626; font-weight: 700; text-align: right; }
+          .amount-balance { font-weight: 800; text-align: right; }
+          
+          tfoot tr { background: #e2e8f0; font-weight: 800; }
+          tfoot td { border: 1px solid #94a3b8; padding: 8px 10px; }
+
+          .section-heading {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #0f172a;
+            margin: 16px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #cbd5e1;
+          }
+          
+          .signatures {
+            margin-top: 32px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            page-break-inside: avoid;
+          }
+          .sig-box {
+            border-top: 1px solid #0f172a;
+            padding-top: 8px;
+            text-align: center;
+          }
+          .sig-title { font-weight: 700; font-size: 11px; color: #0f172a; }
+          .sig-sub { font-size: 9px; color: #64748b; margin-top: 2px; }
+          
+          .footer {
+            margin-top: 24px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 10px;
+            font-size: 10px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+          }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A4 landscape; }
+            thead { display: table-header-group; }
+            tfoot { display: table-footer-group; }
+            tr { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <h1 class="title">🏢 MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</h1>
+            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, District Pune, Pune - 411060</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${tabName} • Financial Year 2026–27 Master Ledger</div>
+          </div>
+          <div class="meta">
+            <div><strong>Report Date:</strong> ${generatedDate}</div>
+            <div><strong>Fiscal Year:</strong> 2026–2027 (12 Months)</div>
+          </div>
+        </div>
+
+        <div class="summary-bar">
+          <div class="summary-card">
+            <div class="summary-title">FY Opening Balance</div>
+            <div class="summary-value">${formatCurrency(firstMonthOpening)}</div>
+          </div>
+          <div class="summary-card inflow">
+            <div class="summary-title" style="color: #059669;">Total FY Receipts</div>
+            <div class="summary-value" style="color: #059669;">+${formatCurrency(totalReceiptsFY)}</div>
+          </div>
+          <div class="summary-card outflow">
+            <div class="summary-title" style="color: #dc2626;">Total FY Payments</div>
+            <div class="summary-value" style="color: #dc2626;">-${formatCurrency(totalPaymentsFY)}</div>
+          </div>
+          <div class="summary-card closing">
+            <div class="summary-title" style="color: ${latestClosing >= 0 ? '#059669' : '#dc2626'};">Latest Closing Balance</div>
+            <div class="summary-value" style="color: ${latestClosing >= 0 ? '#059669' : '#dc2626'};">${formatCurrency(latestClosing)}</div>
+          </div>
+        </div>
+
+        <div class="section-heading">1. Monthly Consolidated Summary (FY 2026–27)</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 35px; text-align: center;">#</th>
+              <th>Month</th>
+              <th style="text-align: right; width: 140px;">Opening (₹)</th>
+              <th style="text-align: right; width: 140px;">Receipts (₹)</th>
+              <th style="text-align: right; width: 140px;">Payments (₹)</th>
+              <th style="text-align: right; width: 140px;">Closing (₹)</th>
+              <th style="text-align: center; width: 100px;">Entries</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${monthsData.map((m, idx) => `
+              <tr>
+                <td style="text-align: center; color: #64748b;">${idx + 1}</td>
+                <td style="font-weight: 700;">${m.label}</td>
+                <td style="text-align: right;">${formatCurrency(m.openingBalance)}</td>
+                <td class="amount-inflow">${m.receipts > 0 ? formatCurrency(m.receipts) : '—'}</td>
+                <td class="amount-outflow">${m.payments > 0 ? formatCurrency(m.payments) : '—'}</td>
+                <td class="amount-balance" style="color: ${m.closingBalance >= 0 ? '#059669' : '#dc2626'};">${formatCurrency(m.closingBalance)}</td>
+                <td style="text-align: center;">${(m.entries || []).length}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" style="text-align: right;">FY 2026-27 TOTAL:</td>
+              <td style="text-align: right;">${formatCurrency(firstMonthOpening)}</td>
+              <td class="amount-inflow">${formatCurrency(totalReceiptsFY)}</td>
+              <td class="amount-outflow">${formatCurrency(totalPaymentsFY)}</td>
+              <td class="amount-balance" style="color: ${latestClosing >= 0 ? '#059669' : '#dc2626'};">${formatCurrency(latestClosing)}</td>
+              <td style="text-align: center;">${monthsData.reduce((s, m) => s + (m.entries || []).length, 0)}</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="signatures">
+          <div class="sig-box">
+            <div class="sig-title">Prepared By (Society Manager)</div>
+            <div class="sig-sub">Cash Custodian / Entry Operator</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-title">Society Treasurer</div>
+            <div class="sig-sub">Verified with Cash In Hand &amp; Vouchers</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-title">Secretary / Chairman</div>
+            <div class="sig-sub">Approved by Managing Committee</div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Majestique Euriska Co-Op Housing Society • Annual Petty Cash Ledger</div>
+          <div>Official Financial Record • FY 2026-27</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    } else {
+      window.print();
+    }
+  };
+
+  const handlePrintVoucher = (entry) => {
+    const isPayment = toNumber(entry.payment) > 0;
+    const amountVal = isPayment ? toNumber(entry.payment) : toNumber(entry.receipt);
+    const voucherType = isPayment ? 'PAYMENT VOUCHER' : 'RECEIPT VOUCHER';
+    const voucherColor = isPayment ? '#dc2626' : '#059669';
+    const targetTab = subTab === 'vendorAnalytics' ? 'buildingA' : subTab;
+    const ledgerTitle = targetTab === 'common' ? 'Common Expenses Ledger' : 'A Building Operating Ledger';
+    const voucherNo = `ME/PCV/2026-27/${(entry.date || '').replace(/-/g, '')}-${String(entry.id || '101').replace(/\\D/g, '').slice(-3) || '001'}`;
+
+    const voucherDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Petty Cash Voucher - ${voucherNo}</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 24px; color: #0f172a; background: #ffffff; }
+          .voucher-frame {
+            border: 2px solid #0f172a;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 820px;
+            margin: 0 auto;
+            position: relative;
+          }
+          .society-title { font-size: 16px; font-weight: 800; text-align: center; color: #0f172a; text-transform: uppercase; letter-spacing: 0.04em; }
+          .society-sub { font-size: 10px; text-align: center; color: #475569; margin-top: 3px; }
+          
+          .voucher-badge {
+            margin: 14px auto 16px auto;
+            text-align: center;
+          }
+          .badge-pill {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 6px;
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+          }
+          
+          .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-top: 1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
+            padding: 10px 0;
+            margin-bottom: 18px;
+            font-size: 12px;
+            gap: 8px;
+          }
+          .meta-item { display: flex; justify-content: space-between; padding: 2px 8px; }
+          .meta-item strong { color: #334155; }
+          
+          .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+            font-size: 12px;
+          }
+          .detail-table th {
+            background: #f1f5f9;
+            padding: 8px 10px;
+            border: 1px solid #94a3b8;
+            text-align: left;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+          }
+          .detail-table td {
+            padding: 12px 10px;
+            border: 1px solid #cbd5e1;
+            vertical-align: top;
+          }
+          
+          .amount-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            border: 2px solid #0f172a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 22px;
+          }
+          .amount-words {
+            font-size: 12px;
+            font-style: italic;
+            color: #334155;
+            max-width: 65%;
+          }
+          .amount-figure {
+            font-size: 20px;
+            font-weight: 900;
+            color: ${voucherColor};
+          }
+          
+          .sig-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 36px;
+            padding-top: 10px;
+          }
+          .sig-box {
+            text-align: center;
+            border-top: 1px solid #0f172a;
+            padding-top: 8px;
+          }
+          .sig-title { font-size: 11px; font-weight: 700; color: #0f172a; }
+          .sig-sub { font-size: 9px; color: #64748b; margin-top: 2px; }
+          
+          @media print {
+            body { padding: 0; }
+            @page { margin: 1cm; size: A5 landscape; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="voucher-frame">
+          <div class="society-title">MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</div>
+          <div class="society-sub">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, District Pune, Pune - 411060</div>
+          
+          <div class="voucher-badge">
+            <span class="badge-pill">PETTY CASH ${voucherType}</span>
+          </div>
+
+          <div class="meta-grid">
+            <div class="meta-item">
+              <span><strong>Voucher No:</strong> ${voucherNo}</span>
+            </div>
+            <div class="meta-item" style="justify-content: flex-end;">
+              <span><strong>Date:</strong> ${formatShortDate(entry.date)}</span>
+            </div>
+            <div class="meta-item">
+              <span><strong>Ledger Account:</strong> ${ledgerTitle}</span>
+            </div>
+            <div class="meta-item" style="justify-content: flex-end;">
+              <span><strong>Mode:</strong> Cash in Hand</span>
+            </div>
+          </div>
+
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th style="width: 35%;">Particulars / Head of Account</th>
+                <th>Description / Purpose</th>
+                <th style="width: 25%; text-align: right;">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="font-weight: 800; font-size: 13px; color: #0f172a;">${entry.vendor || 'Expenses'}</div>
+                  <div style="font-size: 10px; color: #64748b; margin-top: 4px;">Paid ${isPayment ? 'To' : 'By'}: ${entry.vendor || 'Payee'}</div>
+                </td>
+                <td>
+                  <div style="font-size: 12px; color: #1e293b;">${entry.purpose || 'Society Maintenance & Operational Expense'}</div>
+                  ${entry.remarks ? `<div style="font-size: 10px; color: #64748b; margin-top: 6px; font-style: italic;"><strong>Remarks:</strong> ${entry.remarks}</div>` : ''}
+                </td>
+                <td style="text-align: right; font-weight: 800; font-size: 14px; color: ${voucherColor};">
+                  ${formatCurrency(amountVal)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="amount-box">
+            <div class="amount-words">
+              <strong>Amount in Words:</strong><br />
+              ${numberToWordsINR(amountVal)}
+            </div>
+            <div class="amount-figure">
+              ₹${formatCurrency(amountVal)}
+            </div>
+          </div>
+
+          <div class="sig-grid">
+            <div class="sig-box">
+              <div class="sig-title">Receiver's Signature</div>
+              <div class="sig-sub">Sign / Thumb &amp; Date</div>
+            </div>
+            <div class="sig-box">
+              <div class="sig-title">Prepared By (Manager)</div>
+              <div class="sig-sub">Cash Custodian</div>
+            </div>
+            <div class="sig-box">
+              <div class="sig-title">Treasurer / Secretary</div>
+              <div class="sig-sub">Verified &amp; Passed</div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(voucherDoc);
       printWindow.document.close();
     } else {
       window.print();
@@ -1808,8 +2305,28 @@ export default function PettyCashTracker({ isAdmin = false }) {
                   alignItems: 'center',
                   gap: '6px'
                 }}
+                title="Print or export current month petty cash statement as PDF"
               >
                 📄 Print PDF
+              </button>
+              <button
+                type="button"
+                onClick={handlePrintAnnualPDF}
+                style={{
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  background: 'rgba(255,255,255,0.16)',
+                  color: '#fff',
+                  padding: '12px 18px',
+                  borderRadius: '14px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+                title="Print or export full FY 2026-27 annual statement as PDF"
+              >
+                📑 Full Year PDF
               </button>
             </>
           )}
@@ -2088,8 +2605,8 @@ export default function PettyCashTracker({ isAdmin = false }) {
                 </div>
               </div>
 
-              {/* In-table Search Bar */}
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap' }}>
+              {/* In-table Search Bar & Export Action Toolbar */}
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                 <div style={{ flex: '1 1 280px', position: 'relative' }}>
                   <input
                     type="text"
@@ -2125,6 +2642,71 @@ export default function PettyCashTracker({ isAdmin = false }) {
                       ✕
                     </button>
                   )}
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={handleExportPDF}
+                    style={{
+                      padding: '9px 15px',
+                      background: '#0B6E4F',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '10px',
+                      fontWeight: 700,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      boxShadow: '0 2px 6px rgba(11,110,79,0.2)'
+                    }}
+                    title={`Print or Save PDF Statement for ${activeMonthSummary.label}`}
+                  >
+                    <span>🖨️</span> Export {activeMonthSummary.label} PDF
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handlePrintAnnualPDF}
+                    style={{
+                      padding: '9px 15px',
+                      background: '#0B2B26',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '10px',
+                      fontWeight: 700,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      boxShadow: '0 2px 6px rgba(11,43,38,0.2)'
+                    }}
+                    title="Print or Save Complete FY 2026-27 Master Statement as PDF"
+                  >
+                    <span>📑</span> Annual FY PDF
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleExport}
+                    style={{
+                      padding: '9px 14px',
+                      background: '#fff',
+                      color: '#344054',
+                      border: '1px solid #cbd5e1',
+                      borderRadius: '10px',
+                      fontWeight: 700,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                    title="Export to Excel"
+                  >
+                    <span>⬇</span> Excel
+                  </button>
                 </div>
               </div>
 
@@ -2235,19 +2817,19 @@ export default function PettyCashTracker({ isAdmin = false }) {
                       <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right', whiteSpace: 'nowrap' }}>Payment (₹)</th>
                       <th style={{ ...headerCellStyle, width: '145px', textAlign: 'right', whiteSpace: 'nowrap' }}>Balance (₹)</th>
                       <th style={{ ...headerCellStyle, width: '190px' }}>Remarks</th>
-                      {isAdmin && <th style={{ ...headerCellStyle, width: '90px', textAlign: 'center', whiteSpace: 'nowrap' }}>Action</th>}
+                      <th style={{ ...headerCellStyle, width: '130px', textAlign: 'center', whiteSpace: 'nowrap' }}>Voucher / Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {isLoading ? (
                       <tr>
-                        <td colSpan={isAdmin ? 8 : 7} style={emptyCellStyle}>
+                        <td colSpan={8} style={emptyCellStyle}>
                           Loading petty cash data...
                         </td>
                       </tr>
                     ) : activeMonthSummary.entries.length === 0 ? (
                       <tr>
-                        <td colSpan={isAdmin ? 8 : 7} style={emptyCellStyle}>
+                        <td colSpan={8} style={emptyCellStyle}>
                           No entries in {activeMonthSummary.label}. July 2026 is ready to start for A Building.
                         </td>
                       </tr>
@@ -2348,39 +2930,62 @@ export default function PettyCashTracker({ isAdmin = false }) {
                               entry.remarks || <span style={{ color: '#cbd5e1' }}>—</span>
                             )}
                           </td>
-                          {isAdmin && (
-                            <td style={{ ...bodyCellStyle, textAlign: 'center' }}>
-                              <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                                {editingEntryId === entry.id ? (
+                          <td style={{ ...bodyCellStyle, textAlign: 'center' }}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                              <button
+                                type="button"
+                                onClick={() => handlePrintVoucher(entry)}
+                                style={{
+                                  border: '1px solid #cbd5e1',
+                                  background: '#f8fafc',
+                                  color: '#0B2B26',
+                                  borderRadius: '8px',
+                                  padding: '5px 9px',
+                                  fontSize: '0.78rem',
+                                  fontWeight: 700,
+                                  cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  whiteSpace: 'nowrap'
+                                }}
+                                title="Print Cash Voucher (PDF)"
+                              >
+                                📄 Voucher
+                              </button>
+                              {isAdmin && (
+                                <>
+                                  {editingEntryId === entry.id ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => setEditingEntryId(null)}
+                                      style={{ border: 'none', background: 'transparent', color: '#0B6E4F', cursor: 'pointer', padding: '4px' }}
+                                      title="Done Editing"
+                                    >
+                                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </button>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={() => setEditingEntryId(entry.id)}
+                                      style={{ border: 'none', background: 'transparent', color: '#667085', cursor: 'pointer', padding: '4px' }}
+                                      title="Edit Entry"
+                                    >
+                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                    </button>
+                                  )}
                                   <button
                                     type="button"
-                                    onClick={() => setEditingEntryId(null)}
-                                    style={{ border: 'none', background: 'transparent', color: '#0B6E4F', cursor: 'pointer', padding: '4px' }}
-                                    title="Done Editing"
+                                    onClick={() => removeEntry(entry.id)}
+                                    style={{ border: 'none', background: 'transparent', color: '#B42318', cursor: 'pointer', padding: '4px' }}
+                                    title="Delete Entry"
                                   >
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                                   </button>
-                                ) : (
-                                  <button
-                                    type="button"
-                                    onClick={() => setEditingEntryId(entry.id)}
-                                    style={{ border: 'none', background: 'transparent', color: '#667085', cursor: 'pointer', padding: '4px' }}
-                                    title="Edit Entry"
-                                  >
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                                  </button>
-                                )}
-                                <button
-                                  type="button"
-                                  onClick={() => removeEntry(entry.id)}
-                                  style={{ border: 'none', background: 'transparent', color: '#B42318', cursor: 'pointer', padding: '4px' }}
-                                  title="Delete Entry"
-                                >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                </button>
-                              </div>
-                            </td>
-                          )}
+                                </>
+                              )}
+                            </div>
+                          </td>
                         </tr>
                       ))
                     )}
@@ -2399,7 +3004,8 @@ export default function PettyCashTracker({ isAdmin = false }) {
                       <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
                         {formatCurrency(activeMonthSummary.closingBalance)}
                       </td>
-                      <td colSpan={isAdmin ? 2 : 1} style={bodyCellStyle} />
+                      <td style={bodyCellStyle} />
+                      <td style={bodyCellStyle} />
                     </tr>
                   </tfoot>
                 </table>

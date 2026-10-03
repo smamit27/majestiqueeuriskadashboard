@@ -74,5 +74,22 @@ describe('PettyCashTracker', () => {
     expect(septEntries.some(e => e.vendor === 'Jaslok Sweets' && e.payment === '520')).toBe(true);
     expect(septEntries.some(e => e.vendor === 'Fund Received' && e.receipt === '15000')).toBe(true);
   });
+
+  it('correctly converts numeric amounts to Indian Rupees in words', async () => {
+    const { numberToWordsINR } = await import('./PettyCashTracker.jsx');
+    expect(numberToWordsINR(0)).toBe('Zero Rupees Only');
+    expect(numberToWordsINR(5650)).toBe('Five Thousand Six Hundred Fifty Rupees Only');
+    expect(numberToWordsINR(15000)).toBe('Fifteen Thousand Rupees Only');
+    expect(numberToWordsINR(1500)).toBe('One Thousand Five Hundred Rupees Only');
+    expect(numberToWordsINR(520)).toBe('Five Hundred Twenty Rupees Only');
+  });
+
+  it('renders Monthly PDF, Annual FY PDF, and individual Voucher buttons', () => {
+    const html = renderToStaticMarkup(<PettyCashTracker />);
+    expect(html).toContain('Export');
+    expect(html).toContain('Annual FY PDF');
+    expect(html).toContain('Full Year PDF');
+    expect(html).toContain('Voucher');
+  });
 });
 
