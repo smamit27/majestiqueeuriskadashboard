@@ -190,7 +190,71 @@ describe('FinanceTracker – PDF export', () => {
     expect(mockPrintWindow.document.write).toHaveBeenCalled();
     expect(writtenDoc).toContain('Majestique Euriska Co-operative Housing Society Ltd.');
     expect(writtenDoc).toContain('Statement of Income &amp; Expenses');
+    expect(writtenDoc).toContain('🤝 CHEQUE ISSUE FOR COMMON WORK');
+    expect(writtenDoc).toContain('87 Flats / 37.66%');
+    expect(writtenDoc).toContain('96 Flats / 41.56%');
+    expect(writtenDoc).toContain('48 Flats / 20.78%');
     expect(writtenDoc).toContain('window.print()');
+    openSpy.mockRestore();
+  });
+
+  it('includes Common Work cheques and society cost sharing in Export PDF for June 2026', async () => {
+    const user = userEvent.setup();
+    let writtenDoc = '';
+    const mockPrintWindow = {
+      document: {
+        write: vi.fn((html) => { writtenDoc = html; }),
+        close: vi.fn(),
+      },
+    };
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(mockPrintWindow);
+
+    render(<FinanceTracker />);
+    await waitFor(() => screen.getByRole('button', { name: /export pdf/i }));
+
+    const tablist = screen.getAllByRole('button');
+    const junTab = tablist.find(b => /jun/i.test(b.textContent ?? ''));
+    expect(junTab).toBeDefined();
+    await user.click(junTab);
+
+    await user.click(screen.getByRole('button', { name: /export pdf/i }));
+
+    expect(openSpy).toHaveBeenCalledWith('', '_blank');
+    expect(mockPrintWindow.document.write).toHaveBeenCalled();
+    expect(writtenDoc).toContain('🤝 CHEQUE ISSUE FOR COMMON WORK (SOCIETY SHARED EXPENSES)');
+    expect(writtenDoc).toContain('MESDCL');
+    expect(writtenDoc).toContain('57,420.00');
+    expect(writtenDoc).toContain('Tanaji Hunde');
+    expect(writtenDoc).toContain('11,500.00');
+    expect(writtenDoc).toContain('TOTAL COMMON EXPENSES (231 FLATS)');
+    openSpy.mockRestore();
+  });
+
+  it('includes B and C payback tracking columns in Export PDF for September 2026', async () => {
+    const user = userEvent.setup();
+    let writtenDoc = '';
+    const mockPrintWindow = {
+      document: {
+        write: vi.fn((html) => { writtenDoc = html; }),
+        close: vi.fn(),
+      },
+    };
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(mockPrintWindow);
+
+    render(<FinanceTracker />);
+    await waitFor(() => screen.getByRole('button', { name: /export pdf/i }));
+
+    const tablist = screen.getAllByRole('button');
+    const sepTab = tablist.find(b => /sep/i.test(b.textContent ?? ''));
+    expect(sepTab).toBeDefined();
+    await user.click(sepTab);
+
+    await user.click(screen.getByRole('button', { name: /export pdf/i }));
+
+    expect(openSpy).toHaveBeenCalledWith('', '_blank');
+    expect(writtenDoc).toContain('B Paid Date');
+    expect(writtenDoc).toContain('C Paid Date');
+    expect(writtenDoc).toContain('Inter-Building Recovery');
     openSpy.mockRestore();
   });
 });

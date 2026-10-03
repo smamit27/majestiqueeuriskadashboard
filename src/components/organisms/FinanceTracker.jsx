@@ -43,6 +43,13 @@ function formatLongMonth(mv) {
 const n = (v) => parseFloat(v) || 0;
 const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+const FLATS = {
+  A: 87,
+  B: 96,
+  C: 48,
+  Total: 231
+};
+
 export default function FinanceTracker({ isAdmin = false }) {
   const [selectedYear, setSelectedYear] = useState(getInitialYear);
   const months = useMemo(() => getMonthsForYear(selectedYear), [selectedYear]);
@@ -51,6 +58,7 @@ export default function FinanceTracker({ isAdmin = false }) {
   const [income, setIncome] = useState([{ source: '', amount: '', remark: '' }]);
   const [expenses, setExpenses] = useState([{ chequeNo: '', vendor: '', amount: '', purpose: '' }]);
   const [chequeExpenses, setChequeExpenses] = useState([]);
+  const [commonCheques, setCommonCheques] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg] = useState('');
@@ -74,6 +82,14 @@ export default function FinanceTracker({ isAdmin = false }) {
     async function load() {
       setIsLoading(true);
       if (!isFirebaseConfigured || !db) {
+        if (selectedMonth === '2026-06') {
+          setCommonCheques([
+            { chequeNo: '496', date: '2026-06-15', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false },
+            { chequeNo: '499', date: '2026-06-12', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false }
+          ]);
+        } else {
+          setCommonCheques([]);
+        }
         setIsLoading(false);
         isLoadedRef.current = true;
         return;
@@ -87,9 +103,13 @@ export default function FinanceTracker({ isAdmin = false }) {
 
         // Fetch cheques if selectedMonth is June 2026 or later
         let chequesList = [];
+        let commonList = [];
         if (selectedMonth >= '2026-06') {
           try {
-            const snapA = await getDoc(doc(db, 'chequesMonthly', `cheques_${selectedMonth}`));
+            const [snapA, snapCommon] = await Promise.all([
+              getDoc(doc(db, 'chequesMonthly', `cheques_${selectedMonth}`)),
+              getDoc(doc(db, 'chequesMonthly', `cheques_common_${selectedMonth}`))
+            ]);
 
             const listA = snapA.exists() ? (snapA.data().cheques || []) : [];
 
@@ -103,6 +123,10 @@ export default function FinanceTracker({ isAdmin = false }) {
                 isLinked: true,
                 sourceTab: 'A Building'
               }));
+
+            const listCommon = snapCommon.exists() ? (snapCommon.data().cheques || []) : [];
+            commonList = listCommon
+              .filter(c => (c.vendor || c.amount || c.chequeNo) && c.chequeNo !== '493');
           } catch (err) {
             console.error('Error loading cheques for finance tracker:', err);
           }
@@ -120,8 +144,21 @@ export default function FinanceTracker({ isAdmin = false }) {
           ];
         }
 
+        if (commonList.length === 0 && selectedMonth === '2026-06') {
+          commonList = [
+            { chequeNo: '496', date: '2026-06-15', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false },
+            { chequeNo: '499', date: '2026-06-12', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false }
+          ];
+        }
+
+        if (selectedMonth === '2026-09') {
+          // 537, 540, 542 belong to A Building only; remove from Common Work
+          commonList = commonList.filter(c => !['537', '540', '542'].includes(String(c.chequeNo || '').trim()));
+        }
+
         if (!cancelled) {
           setChequeExpenses(chequesList);
+          setCommonCheques(commonList);
 
           if (snap.exists()) {
             const data = snap.data();
@@ -353,6 +390,47 @@ export default function FinanceTracker({ isAdmin = false }) {
   const handlePrintPdf = () => {
     const validIncome = income.filter(r => (r.source && r.source.trim()) || n(r.amount) > 0);
     const validExpenses = combinedExpenses.filter(r => (r.vendor && r.vendor.trim()) || n(r.amount) > 0 || r.chequeNo);
+    const validCommonCheques = commonCheques
+      .filter(r => (r.vendor && r.vendor.trim()) || n(r.amount) > 0 || r.chequeNo)
+      .sort((a, b) => {
+        const numA = Number(String(a.chequeNo || '').replace(/\D/g, '')) || Infinity;
+        const numB = Number(String(b.chequeNo || '').replace(/\D/g, '')) || Infinity;
+        return numA - numB;
+      });
+
+    const totalCommonExpense = validCommonCheques.reduce((s, r) => s + n(r.amount), 0);
+    const commonAShare = (totalCommonExpense * FLATS.A) / FLATS.Total;
+    const commonBShare = (totalCommonExpense * FLATS.B) / FLATS.Total;
+    const commonCShare = (totalCommonExpense * FLATS.C) / FLATS.Total;
+
+    const isPaybackActive = selectedMonth >= '2026-09';
+    let bReceivedAmount = 0;
+    let bPendingAmount = 0;
+    let cReceivedAmount = 0;
+    let cPendingAmount = 0;
+
+    validCommonCheques.forEach(c => {
+      const amt = n(c.amount);
+      if (amt === 0) return;
+      const bShare = (amt * FLATS.B) / FLATS.Total;
+      const cShare = (amt * FLATS.C) / FLATS.Total;
+      if (c.bPaidDate || c.bReceiveDate) {
+        bReceivedAmount += bShare;
+      } else {
+        bPendingAmount += bShare;
+      }
+      if (c.cPaidDate || c.cReceiveDate) {
+        cReceivedAmount += cShare;
+      } else {
+        cPendingAmount += cShare;
+      }
+    });
+
+    const totalRecoveryDue = commonBShare + commonCShare;
+    const totalRecovered = bReceivedAmount + cReceivedAmount;
+    const totalOutstanding = bPendingAmount + cPendingAmount;
+    const showCommonSection = selectedMonth >= '2026-06' || validCommonCheques.length > 0;
+
     const printedDate = new Intl.DateTimeFormat('en-IN', {
       day: 'numeric',
       month: 'long',
@@ -466,6 +544,40 @@ export default function FinanceTracker({ isAdmin = false }) {
             background: #fef2f2;
             color: #991b1b;
             border-left: 4px solid #ef4444;
+          }
+          .section-common {
+            background: #eff6ff;
+            color: #1e3a8a;
+            border-left: 4px solid #3b82f6;
+          }
+          .cost-sharing-grid {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+          }
+          .cost-card {
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+          }
+          .cost-card-title {
+            font-size: 8.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 2px;
+          }
+          .cost-card-val {
+            font-size: 13px;
+            font-weight: 800;
+            color: #1e3a8a;
+          }
+          .cost-card-sub {
+            font-size: 8px;
+            color: #64748b;
+            margin-top: 2px;
           }
           table {
             width: 100%;
@@ -616,15 +728,123 @@ export default function FinanceTracker({ isAdmin = false }) {
           </tbody>
         </table>
 
+        ${showCommonSection ? `
+          <!-- Common Work Section -->
+          <div class="section-title section-common" style="margin-top: 14px;">
+            <span>🤝 CHEQUE ISSUE FOR COMMON WORK (SOCIETY SHARED EXPENSES)</span>
+            <span>Total: ₹${fmt(totalCommonExpense)}</span>
+          </div>
+
+          <div class="cost-sharing-grid">
+            <div class="cost-card" style="border-left: 3px solid #3b82f6;">
+              <div class="cost-card-title">🏢 A Building (87 Flats / 37.66%)</div>
+              <div class="cost-card-val">₹${fmt(commonAShare)}</div>
+              <div class="cost-card-sub">Society Responsibility: ₹${fmt(commonAShare)}</div>
+            </div>
+            <div class="cost-card" style="border-left: 3px solid #10b981;">
+              <div class="cost-card-title">🏢 B Building (96 Flats / 41.56%)</div>
+              <div class="cost-card-val">₹${fmt(commonBShare)}</div>
+              <div class="cost-card-sub">${isPaybackActive ? `Recd: ₹${fmt(bReceivedAmount)} | Due: ₹${fmt(bPendingAmount)}` : 'Apportioned Common Share'}</div>
+            </div>
+            <div class="cost-card" style="border-left: 3px solid #f59e0b;">
+              <div class="cost-card-title">🏢 C Building (48 Flats / 20.78%)</div>
+              <div class="cost-card-val">₹${fmt(commonCShare)}</div>
+              <div class="cost-card-sub">${isPaybackActive ? `Recd: ₹${fmt(cReceivedAmount)} | Due: ₹${fmt(cPendingAmount)}` : 'Apportioned Common Share'}</div>
+            </div>
+            ${isPaybackActive ? `
+            <div class="cost-card" style="border-left: 3px solid #8b5cf6; background: #faf5ff;">
+              <div class="cost-card-title">🤝 Inter-Building Recovery (B &amp; C)</div>
+              <div class="cost-card-val" style="color: #6d28d9;">₹${fmt(totalRecovered)} <span style="font-size: 10px; font-weight: normal; color: #64748b;">/ ₹${fmt(totalRecoveryDue)}</span></div>
+              <div class="cost-card-sub" style="color: ${totalOutstanding > 0 ? '#b91c1c' : '#15803d'}; font-weight: 600;">
+                ${totalOutstanding > 0 ? `Pending: ₹${fmt(totalOutstanding)}` : 'Fully Recovered ✓'}
+              </div>
+            </div>
+            ` : ''}
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 25px; text-align: center;">#</th>
+                <th style="width: 55px; text-align: center;">Chq No</th>
+                <th style="width: 70px; text-align: center;">Date</th>
+                <th>Payee / Vendor</th>
+                <th>Purpose / Head of Expense</th>
+                <th style="width: 80px; text-align: right;">Total (₹)</th>
+                <th style="width: 75px; text-align: right;">A Share (87)</th>
+                <th style="width: 75px; text-align: right;">B Share (96)</th>
+                ${isPaybackActive ? '<th style="width: 75px; text-align: center;">B Paid Date</th>' : ''}
+                <th style="width: 75px; text-align: right;">C Share (48)</th>
+                ${isPaybackActive ? '<th style="width: 75px; text-align: center;">C Paid Date</th>' : ''}
+                <th style="width: 65px; text-align: center;">Who Paid</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${validCommonCheques.length === 0 ? `<tr><td colspan="${isPaybackActive ? 12 : 10}" style="text-align:center; padding:10px; color:#94a3b8;">No common work cheques recorded for this month.</td></tr>` :
+                validCommonCheques.map((r, i) => {
+                  const amt = n(r.amount);
+                  const aShare = (amt * FLATS.A) / FLATS.Total;
+                  const bShare = (amt * FLATS.B) / FLATS.Total;
+                  const cShare = (amt * FLATS.C) / FLATS.Total;
+                  const bPaid = r.bPaidDate || r.bReceiveDate;
+                  const cPaid = r.cPaidDate || r.cReceiveDate;
+                  return `
+                    <tr>
+                      <td style="text-align: center; color: #64748b;">${i + 1}</td>
+                      <td style="text-align: center; font-family: monospace; font-weight: 600;">${r.chequeNo ? '#' + r.chequeNo : '—'}</td>
+                      <td style="text-align: center; color: #475569;">${r.date || '—'}</td>
+                      <td style="font-weight: 600;">${r.vendor || '—'}</td>
+                      <td style="color: #475569;">${r.purpose || '—'}</td>
+                      <td style="text-align: right; font-weight: 700; color: #1e3a8a;">₹${fmt(amt)}</td>
+                      <td style="text-align: right; font-weight: 600; color: #2563eb;">₹${fmt(aShare)}</td>
+                      <td style="text-align: right; font-weight: 600; color: #059669;">₹${fmt(bShare)}</td>
+                      ${isPaybackActive ? `
+                        <td style="text-align: center; font-size: 8.5px;">
+                          ${bPaid ? `<span style="color:#059669; font-weight:700;">✓ ${bPaid}</span>` : '<span style="color:#dc2626; font-weight:600;">Pending</span>'}
+                        </td>
+                      ` : ''}
+                      <td style="text-align: right; font-weight: 600; color: #d97706;">₹${fmt(cShare)}</td>
+                      ${isPaybackActive ? `
+                        <td style="text-align: center; font-size: 8.5px;">
+                          ${cPaid ? `<span style="color:#059669; font-weight:700;">✓ ${cPaid}</span>` : '<span style="color:#dc2626; font-weight:600;">Pending</span>'}
+                        </td>
+                      ` : ''}
+                      <td style="text-align: center; font-size: 8.5px; color: #475569;">${r.whoPaid || 'A Building'}</td>
+                    </tr>
+                  `;
+                }).join('')
+              }
+              <tr class="total-row">
+                <td colspan="5" style="text-align: right;">TOTAL COMMON EXPENSES (231 FLATS)</td>
+                <td style="text-align: right; color: #1e3a8a;">₹${fmt(totalCommonExpense)}</td>
+                <td style="text-align: right; color: #2563eb;">₹${fmt(commonAShare)}</td>
+                <td style="text-align: right; color: #059669;">₹${fmt(commonBShare)}</td>
+                ${isPaybackActive ? `<td style="text-align: center; font-size: 8.5px; color: #059669; font-weight: 700;">₹${fmt(bReceivedAmount)}</td>` : ''}
+                <td style="text-align: right; color: #d97706;">₹${fmt(commonCShare)}</td>
+                ${isPaybackActive ? `<td style="text-align: center; font-size: 8.5px; color: #d97706; font-weight: 700;">₹${fmt(cReceivedAmount)}</td>` : ''}
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        ` : ''}
+
         <!-- Net Summary Box -->
-        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <strong>Summary for ${formatLongMonth(selectedMonth)}:</strong>
-            <span style="color: #64748b; margin-left: 8px;">Income (₹${fmt(totalIncome)}) − Expenses (₹${fmt(totalExpense)})</span>
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; margin-top: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong>Summary for ${formatLongMonth(selectedMonth)}:</strong>
+              <span style="color: #64748b; margin-left: 8px;">Income (₹${fmt(totalIncome)}) − Expenses (₹${fmt(totalExpense)})</span>
+            </div>
+            <div style="font-size: 13px; font-weight: 800; color: ${balance >= 0 ? '#10b981' : '#ef4444'};">
+              Closing Balance: ₹${fmt(balance)}
+            </div>
           </div>
-          <div style="font-size: 13px; font-weight: 800; color: ${balance >= 0 ? '#10b981' : '#ef4444'};">
-            Closing Balance: ₹${fmt(balance)}
-          </div>
+          ${showCommonSection ? `
+            <div style="font-size: 9.5px; color: #475569; margin-top: 6px; border-top: 1px dashed #cbd5e1; padding-top: 6px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
+              <span><strong>Common Society Shared Work (231 Flats):</strong> Total: ₹${fmt(totalCommonExpense)} (A: ₹${fmt(commonAShare)} | B: ₹${fmt(commonBShare)} | C: ₹${fmt(commonCShare)})</span>
+              ${isPaybackActive ? `<span><strong>B &amp; C Recovery:</strong> Recovered ₹${fmt(totalRecovered)} / Due ₹${fmt(totalRecoveryDue)} (${totalOutstanding > 0 ? `Pending: ₹${fmt(totalOutstanding)}` : 'Fully Settled'})</span>` : ''}
+            </div>
+          ` : ''}
         </div>
 
         <div class="signatures">
