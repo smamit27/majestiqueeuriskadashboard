@@ -38,54 +38,14 @@ const DEFAULT_SEPTEMBER_2026_CHEQUES = [
   { id: 1725451400001, srNo: 1, date: '2026-09-04', chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', purpose: 'Housekeeping / Waterman Salary', amount: '12900', whoPaid: 'A Building', isPaid: true },
   { id: 1725451400002, srNo: 2, date: '2026-09-04', chequeNo: '535', vendor: 'Shubham Enterprises', purpose: 'Maintenance & Repairs / Operations', amount: '36536', whoPaid: 'A Building', isPaid: true },
   { id: 1725451400003, srNo: 3, date: '2026-09-04', chequeNo: '536', vendor: "Majestique Euriska 'B' Building Co-op Hsg Soc Ltd", purpose: 'Inter-Building Common Share Settlement / Transfer', amount: '8662', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400005, srNo: 4, date: '2026-09-04', chequeNo: '538', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', whoPaid: 'A Building', isPaid: true },
-  { id: 1725451400006, srNo: 5, date: '2026-09-04', chequeNo: '539', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', whoPaid: 'A Building', isPaid: true }
+  { id: 1725451400004, srNo: 4, date: '2026-09-04', chequeNo: '537', vendor: 'Sai Swimming Pool Maintenance Services', purpose: 'Swimming Pool Monthly AMC / Maintenance', amount: '4519', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400005, srNo: 5, date: '2026-09-04', chequeNo: '538', vendor: 'Sandip Raju Wavare', purpose: 'Housekeeping / Staff Deep Cleaning Services', amount: '50103', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400006, srNo: 6, date: '2026-09-04', chequeNo: '539', vendor: 'Rajib Madan Patra', purpose: 'Plumbing & Electrical Maintenance Repairs', amount: '2636', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400007, srNo: 7, date: '2026-09-04', chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', whoPaid: 'A Building', isPaid: true },
+  { id: 1725451400008, srNo: 8, date: '2026-09-17', deductedDate: '2026-09-30', chequeNo: '542', vendor: 'MSEDCL', purpose: 'Common Area Electricity Bill', amount: '44420', whoPaid: 'A Building', isPaid: true }
 ];
 
-const DEFAULT_SEPTEMBER_2026_COMMON_CHEQUES = [
-  {
-    id: 1725451500001,
-    srNo: 1,
-    date: '2026-09-17',
-    deductedDate: '2026-09-30',
-    chequeNo: '542',
-    vendor: 'MSEDCL',
-    purpose: 'Common Area Electricity Bill',
-    amount: '44420',
-    whoPaid: 'A Building',
-    isPaid: true,
-    bPaidDate: '2026-09-29',
-    cPaidDate: '2026-09-29'
-  },
-  {
-    id: 1725451500002,
-    srNo: 2,
-    date: '2026-09-04',
-    deductedDate: '2026-09-08',
-    chequeNo: '537',
-    vendor: 'Sai Swimming Pool Maintenance Services',
-    purpose: 'Swimming Pool Monthly AMC / Maintenance',
-    amount: '4519',
-    whoPaid: 'A Building',
-    isPaid: true,
-    bPaidDate: '2026-09-08',
-    cPaidDate: '2026-09-08'
-  },
-  {
-    id: 1725451500003,
-    srNo: 3,
-    date: '2026-09-04',
-    deductedDate: '2026-09-15',
-    chequeNo: '540',
-    vendor: 'Shree Swami Samarth water suppliers',
-    purpose: 'Water Tanker Supply Charges',
-    amount: '3955',
-    whoPaid: 'A Building',
-    isPaid: true,
-    bPaidDate: '2026-09-08',
-    cPaidDate: ''
-  }
-];
+const DEFAULT_SEPTEMBER_2026_COMMON_CHEQUES = [];
 
 function getRealCurrentMonth() {
   const d = new Date();
@@ -156,8 +116,6 @@ export default function ChequeManagement({ isAdmin = false }) {
                 aData.push({ id: Date.now() + 103, srNo: aData.length + 1, date: '2026-06-01', chequeNo: '493', vendor: 'CANCELLED', purpose: 'Cancel By Amit as month over', amount: '0', whoPaid: 'A Building', isPaid: false });
               }
             } else if (selectedMonth === '2026-09') {
-              // 537, 540, 542 are Common Work cheques; remove them from Building A
-              aData = aData.filter(c => !['537', '540', '542'].includes(String(c.chequeNo || '').trim()));
               DEFAULT_SEPTEMBER_2026_CHEQUES.forEach((defChq) => {
                 if (!aData.some(c => String(c.chequeNo) === String(defChq.chequeNo))) {
                   aData.push({ ...defChq, srNo: aData.length + 1 });
@@ -194,19 +152,8 @@ export default function ChequeManagement({ isAdmin = false }) {
                 commonData.push({ id: Date.now() + 102, srNo: commonData.length + 1, date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false });
               }
             } else if (selectedMonth === '2026-09') {
-              DEFAULT_SEPTEMBER_2026_COMMON_CHEQUES.forEach((defChq) => {
-                const existing = commonData.find(c => String(c.chequeNo) === String(defChq.chequeNo));
-                if (!existing) {
-                  commonData.push({ ...defChq, srNo: commonData.length + 1 });
-                } else {
-                  if (defChq.bPaidDate && !existing.bPaidDate && !existing.bReceiveDate) {
-                    existing.bPaidDate = defChq.bPaidDate;
-                  }
-                  if (defChq.cPaidDate && !existing.cPaidDate && !existing.cReceiveDate) {
-                    existing.cPaidDate = defChq.cPaidDate;
-                  }
-                }
-              });
+              // 537, 540, 542 belong to A Building only; remove from Common Work
+              commonData = commonData.filter(c => !['537', '540', '542'].includes(String(c.chequeNo || '').trim()));
             }
             setChequesCommon(commonData);
           } else {
@@ -831,7 +778,7 @@ export default function ChequeManagement({ isAdmin = false }) {
       )}
 
       {/* Share Calculator (only for Common tab) */}
-      {subTab === 'common' && totalAmount > 0 && (
+      {subTab === 'common' && (totalAmount > 0 || isPaybackTrackingActive) && (
         <div className="attendance-summary-grid" style={{ background: '#f0f9ff', padding: '20px', borderRadius: '16px', border: '1px solid #bae6fd', display: 'grid', gridTemplateColumns: isPaybackTrackingActive ? 'repeat(auto-fit, minmax(240px, 1fr))' : 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '4px' }}>
               <div>

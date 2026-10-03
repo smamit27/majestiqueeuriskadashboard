@@ -192,16 +192,23 @@ describe('ChequeManagement Component - B and C Payback Tracking for Common Work'
     expect(screen.queryByRole('columnheader', { name: /C Paid Back Date/i })).not.toBeInTheDocument();
   });
 
-  it('excludes cheques 537, 540, and 542 from Building A in September 2026', async () => {
+  it('retains cheques 537, 540, and 542 in Building A and removes them from Common Work in September 2026', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<ChequeManagement isAdmin={true} />);
 
-    // In September 2026 Building A, cheques 537, 540, and 542 should not be in Building A ledger
-    const inputs = screen.getAllByRole('textbox');
-    const values = inputs.map(input => input.value);
+    // In September 2026 Building A, cheques 537, 540, and 542 ARE present
+    const inputsA = await screen.findAllByDisplayValue(/537|540|542/);
+    expect(inputsA.length).toBeGreaterThanOrEqual(3);
 
-    expect(values).not.toContain('537');
-    expect(values).not.toContain('540');
-    expect(values).not.toContain('542');
+    // Switch to Common Work tab
+    const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
+    await user.click(commonTab);
+
+    // In Common Work, 537, 540, 542 are removed
+    expect(screen.queryByDisplayValue('537')).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue('540')).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue('542')).not.toBeInTheDocument();
   });
 });
+
 
