@@ -133,3 +133,63 @@ describe('ChequeManagement Component - Automatic Past Month Lock System', () => 
     expect(screen.getByText(/Closed Month Locked: June 2026/i)).toBeInTheDocument();
   });
 });
+
+describe('ChequeManagement Component - B and C Payback Tracking for Common Work', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 8, 20)); // 2026-09-20 (September 2026)
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('renders B and C Paid Back Date columns and recovery tracking for Common Work in September 2026', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<ChequeManagement isAdmin={true} />);
+
+    // Switch to Common Work tab
+    const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
+    await user.click(commonTab);
+
+    // Headers should include B Paid Back Date and C Paid Back Date
+    expect(screen.getByRole('columnheader', { name: /B Paid Back Date/i })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /C Paid Back Date/i })).toBeInTheDocument();
+
+    // Summary banner/card should display payback tracking
+    expect(screen.getByText(/B & C Payback Tracking Active/i)).toBeInTheDocument();
+    expect(screen.getByText(/Inter-Building Recovery/i)).toBeInTheDocument();
+
+    // Form should include fields for B Paid Back Date and C Paid Back Date
+    expect(screen.getByText('B Paid Back Date', { selector: 'label' })).toBeInTheDocument();
+    expect(screen.getByText('C Paid Back Date', { selector: 'label' })).toBeInTheDocument();
+  });
+
+  it('does NOT render B or C Paid Back Date columns for Common Work in past months prior to September 2026', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<ChequeManagement isAdmin={true} />);
+
+    // Switch to Common Work tab
+    const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
+    await user.click(commonTab);
+
+    // Switch to August 2026 (prior to September 2026)
+    const augTab = screen.getByRole('button', { name: /Aug 26/i });
+    await user.click(augTab);
+
+    // Headers should NOT include B or C Paid Back Date
+    expect(screen.queryByRole('columnheader', { name: /B Paid Back Date/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('columnheader', { name: /C Paid Back Date/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/B & C Payback Tracking Active/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Inter-Building Recovery/i)).not.toBeInTheDocument();
+  });
+
+  it('does NOT render B or C Paid Back Date columns on Building A tab', async () => {
+    render(<ChequeManagement isAdmin={true} />);
+
+    // Default tab is Building A
+    expect(screen.queryByRole('columnheader', { name: /B Paid Back Date/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('columnheader', { name: /C Paid Back Date/i })).not.toBeInTheDocument();
+  });
+});
+

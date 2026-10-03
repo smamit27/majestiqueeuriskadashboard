@@ -44,6 +44,51 @@ const DEFAULT_SEPTEMBER_2026_CHEQUES = [
   { id: 1725451400007, srNo: 7, date: '2026-09-04', chequeNo: '540', vendor: 'Shree Swami Samarth water suppliers', purpose: 'Water Tanker Supply Charges', amount: '3955', whoPaid: 'A Building', isPaid: true }
 ];
 
+const DEFAULT_SEPTEMBER_2026_COMMON_CHEQUES = [
+  {
+    id: 1725451500001,
+    srNo: 1,
+    date: '2026-09-17',
+    deductedDate: '2026-09-30',
+    chequeNo: '542',
+    vendor: 'MSEDCL',
+    purpose: 'Common Area Electricity Bill',
+    amount: '44420',
+    whoPaid: 'A Building',
+    isPaid: true,
+    bPaidDate: '2026-09-29',
+    cPaidDate: '2026-09-29'
+  },
+  {
+    id: 1725451500002,
+    srNo: 2,
+    date: '2026-09-04',
+    deductedDate: '2026-09-08',
+    chequeNo: '537',
+    vendor: 'Sai Swimming Pool Maintenance Services',
+    purpose: 'Swimming Pool Monthly AMC / Maintenance',
+    amount: '4519',
+    whoPaid: 'A Building',
+    isPaid: true,
+    bPaidDate: '2026-09-08',
+    cPaidDate: '2026-09-08'
+  },
+  {
+    id: 1725451500003,
+    srNo: 3,
+    date: '2026-09-04',
+    deductedDate: '2026-09-15',
+    chequeNo: '540',
+    vendor: 'Shree Swami Samarth water suppliers',
+    purpose: 'Water Tanker Supply Charges',
+    amount: '3955',
+    whoPaid: 'A Building',
+    isPaid: true,
+    bPaidDate: '2026-09-08',
+    cPaidDate: ''
+  }
+];
+
 function getRealCurrentMonth() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -147,6 +192,20 @@ export default function ChequeManagement({ isAdmin = false }) {
               if (!commonData.some(c => c.vendor === 'Tanaji Hunde' && String(c.amount) === '11500')) {
                 commonData.push({ id: Date.now() + 102, srNo: commonData.length + 1, date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false });
               }
+            } else if (selectedMonth === '2026-09') {
+              DEFAULT_SEPTEMBER_2026_COMMON_CHEQUES.forEach((defChq) => {
+                const existing = commonData.find(c => String(c.chequeNo) === String(defChq.chequeNo));
+                if (!existing) {
+                  commonData.push({ ...defChq, srNo: commonData.length + 1 });
+                } else {
+                  if (defChq.bPaidDate && !existing.bPaidDate && !existing.bReceiveDate) {
+                    existing.bPaidDate = defChq.bPaidDate;
+                  }
+                  if (defChq.cPaidDate && !existing.cPaidDate && !existing.cReceiveDate) {
+                    existing.cPaidDate = defChq.cPaidDate;
+                  }
+                }
+              });
             }
             setChequesCommon(commonData);
           } else {
@@ -156,6 +215,8 @@ export default function ChequeManagement({ isAdmin = false }) {
                 { id: Date.now() + 101, srNo: 1, date: '2026-06-15', chequeNo: '496', vendor: 'MESDCL', purpose: 'Electricity', amount: '57420', whoPaid: 'A Building', isPaid: false },
                 { id: Date.now() + 102, srNo: 2, date: '2026-06-12', chequeNo: '499', vendor: 'Tanaji Hunde', purpose: 'Gazibo - Received from B Building and C as well', amount: '11500', whoPaid: 'A Building', isPaid: false }
               ];
+            } else if (selectedMonth === '2026-09') {
+              initialCommon = [...DEFAULT_SEPTEMBER_2026_COMMON_CHEQUES];
             } else {
               initialCommon = [{ id: Date.now() + 100, srNo: 1, date: '', chequeNo: '', vendor: '', purpose: '', amount: '', whoPaid: 'A Building', isPaid: false }];
             }
@@ -216,7 +277,9 @@ export default function ChequeManagement({ isAdmin = false }) {
     purpose: '',
     amount: '',
     whoPaid: 'A Building',
-    isPaid: false
+    isPaid: false,
+    bPaidDate: '',
+    cPaidDate: ''
   });
 
   const handleFormChange = (field, val) => {
@@ -271,7 +334,9 @@ export default function ChequeManagement({ isAdmin = false }) {
       purpose: '',
       amount: '',
       whoPaid: 'A Building',
-      isPaid: false
+      isPaid: false,
+      bPaidDate: '',
+      cPaidDate: ''
     });
   };
 
@@ -318,6 +383,7 @@ export default function ChequeManagement({ isAdmin = false }) {
   };
 
   const activeCheques = subTab === 'common' ? chequesCommon : chequesA;
+  const isPaybackTrackingActive = subTab === 'common' && selectedMonth >= '2026-09';
   
   const filteredCheques = activeCheques
     .filter(c => {
@@ -326,7 +392,9 @@ export default function ChequeManagement({ isAdmin = false }) {
       return (
         (c.chequeNo && String(c.chequeNo).toLowerCase().includes(s)) ||
         (c.date && String(c.date).toLowerCase().includes(s)) ||
-        (c.vendor && String(c.vendor).toLowerCase().includes(s))
+        (c.vendor && String(c.vendor).toLowerCase().includes(s)) ||
+        (c.bPaidDate && String(c.bPaidDate).toLowerCase().includes(s)) ||
+        (c.cPaidDate && String(c.cPaidDate).toLowerCase().includes(s))
       );
     })
     .sort((a, b) => {
@@ -337,6 +405,42 @@ export default function ChequeManagement({ isAdmin = false }) {
     });
 
   const totalAmount = filteredCheques.reduce((s, c) => s + n(c.amount), 0);
+
+  // Inter-building payback tracking metrics (B: 96 flats, C: 48 flats)
+  const bTotalShare = (totalAmount * FLATS.B) / FLATS.Total;
+  const cTotalShare = (totalAmount * FLATS.C) / FLATS.Total;
+
+  let bReceivedAmount = 0;
+  let bPendingAmount = 0;
+  let cReceivedAmount = 0;
+  let cPendingAmount = 0;
+  let bPaidCount = 0;
+  let cPaidCount = 0;
+
+  filteredCheques.forEach(c => {
+    const amt = n(c.amount);
+    if (amt === 0) return;
+    const bShare = (amt * FLATS.B) / FLATS.Total;
+    const cShare = (amt * FLATS.C) / FLATS.Total;
+
+    if (c.bPaidDate || c.bReceiveDate) {
+      bReceivedAmount += bShare;
+      bPaidCount += 1;
+    } else {
+      bPendingAmount += bShare;
+    }
+
+    if (c.cPaidDate || c.cReceiveDate) {
+      cReceivedAmount += cShare;
+      cPaidCount += 1;
+    } else {
+      cPendingAmount += cShare;
+    }
+  });
+
+  const totalRecoveryDue = bTotalShare + cTotalShare;
+  const totalRecovered = bReceivedAmount + cReceivedAmount;
+  const totalOutstanding = bPendingAmount + cPendingAmount;
 
   // Missing Cheque Detection — only for Building A tab, June 2026 onwards
   const getMissingCheques = () => {
@@ -402,7 +506,13 @@ export default function ChequeManagement({ isAdmin = false }) {
         const amt = n(c.amount);
         base['A Share (₹)'] = (amt * FLATS.A / FLATS.Total).toFixed(2);
         base['B Share (₹)'] = (amt * FLATS.B / FLATS.Total).toFixed(2);
+        if (selectedMonth >= '2026-09') {
+          base['B Paid Back Date'] = c.bPaidDate || c.bReceiveDate || 'Pending';
+        }
         base['C Share (₹)'] = (amt * FLATS.C / FLATS.Total).toFixed(2);
+        if (selectedMonth >= '2026-09') {
+          base['C Paid Back Date'] = c.cPaidDate || c.cReceiveDate || 'Pending';
+        }
       }
       return base;
     });
@@ -672,6 +782,30 @@ export default function ChequeManagement({ isAdmin = false }) {
                   <option>Petty Cash</option>
                 </select>
               </div>
+              {isPaybackTrackingActive && (
+                <>
+                  <div className="field-group">
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>B Paid Back Date</label>
+                    <input 
+                      className="attendance-register-input" 
+                      style={{ textAlign: 'left' }} 
+                      type="date" 
+                      value={formData.bPaidDate || ''} 
+                      onChange={e => handleFormChange('bPaidDate', e.target.value)} 
+                    />
+                  </div>
+                  <div className="field-group">
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>C Paid Back Date</label>
+                    <input 
+                      className="attendance-register-input" 
+                      style={{ textAlign: 'left' }} 
+                      type="date" 
+                      value={formData.cPaidDate || ''} 
+                      onChange={e => handleFormChange('cPaidDate', e.target.value)} 
+                    />
+                  </div>
+                </>
+              )}
               <div className="field-group" style={{ gridColumn: '1 / -1' }}>
                 <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Remarks / Purpose</label>
                 <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Describe the payment purpose..." value={formData.purpose} onChange={e => handleFormChange('purpose', e.target.value)} />
@@ -686,29 +820,94 @@ export default function ChequeManagement({ isAdmin = false }) {
 
       {/* Share Calculator (only for Common tab) */}
       {subTab === 'common' && totalAmount > 0 && (
-        <div className="attendance-summary-grid" style={{ background: '#f0f9ff', padding: '20px', borderRadius: '16px', border: '1px solid #bae6fd' }}>
-           <div style={{ gridColumn: '1 / -1', marginBottom: '10px' }}>
-              <p className="eyebrow" style={{ color: '#0369a1' }}>Cost Sharing Calculation (Total {FLATS.Total} Flats)</p>
+        <div className="attendance-summary-grid" style={{ background: '#f0f9ff', padding: '20px', borderRadius: '16px', border: '1px solid #bae6fd', display: 'grid', gridTemplateColumns: isPaybackTrackingActive ? 'repeat(auto-fit, minmax(240px, 1fr))' : 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+           <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '4px' }}>
+              <div>
+                <p className="eyebrow" style={{ color: '#0369a1', margin: 0 }}>Cost Sharing Calculation (Total {FLATS.Total} Flats)</p>
+                <p style={{ margin: '2px 0 0 0', fontSize: '0.82rem', color: '#0284c7' }}>
+                  A: {FLATS.A} flats ({((FLATS.A / FLATS.Total) * 100).toFixed(1)}%) | B: {FLATS.B} flats ({((FLATS.B / FLATS.Total) * 100).toFixed(1)}%) | C: {FLATS.C} flats ({((FLATS.C / FLATS.Total) * 100).toFixed(1)}%)
+                </p>
+              </div>
+              {isPaybackTrackingActive && (
+                <span style={{ fontSize: '0.78rem', fontWeight: 700, padding: '4px 10px', borderRadius: '6px', background: '#dbeafe', color: '#1e40af', border: '1px solid #93c5fd' }}>
+                  🤝 B & C Payback Tracking Active (From Sept 2026)
+                </span>
+              )}
            </div>
-           <div className="accounting-summary-card" style={{ background: 'white' }}>
-              <p className="eyebrow">A Building Share (87)</p>
-              <h3 style={{ color: '#0369a1' }}>₹{fmt(totalAmount * FLATS.A / FLATS.Total)}</h3>
+
+           <div className="accounting-summary-card" style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+              <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#15803d' }}>A Building Share (87)</p>
+              <h3 style={{ color: '#16a34a', margin: '0 0 4px 0', fontSize: '1.4rem' }}>₹{fmt(totalAmount * FLATS.A / FLATS.Total)}</h3>
+              <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>A Building Resident Liability</p>
            </div>
-           <div className="accounting-summary-card" style={{ background: 'white' }}>
-              <p className="eyebrow">B Building Share (96)</p>
-              <h3 style={{ color: '#0369a1' }}>₹{fmt(totalAmount * FLATS.B / FLATS.Total)}</h3>
+
+           <div className="accounting-summary-card" style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#1d4ed8' }}>B Building Share (96)</p>
+                {isPaybackTrackingActive && (
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: bPendingAmount === 0 ? '#166534' : '#b45309' }}>
+                    {bPaidCount}/{filteredCheques.filter(c => n(c.amount) > 0).length} Paid
+                  </span>
+                )}
+              </div>
+              <h3 style={{ color: '#2563eb', margin: '0 0 6px 0', fontSize: '1.4rem' }}>₹{fmt(bTotalShare)}</h3>
+              {isPaybackTrackingActive ? (
+                <div style={{ fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '2px', borderTop: '1px dashed #e2e8f0', paddingTop: '6px' }}>
+                  <span style={{ color: '#15803d', fontWeight: 600 }}>✓ Received: ₹{fmt(bReceivedAmount)}</span>
+                  <span style={{ color: bPendingAmount > 0 ? '#b45309' : '#64748b', fontWeight: bPendingAmount > 0 ? 600 : 400 }}>
+                    ⏳ Pending: ₹{fmt(bPendingAmount)}
+                  </span>
+                </div>
+              ) : (
+                <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>B Building Share Portion</p>
+              )}
            </div>
-           <div className="accounting-summary-card" style={{ background: 'white' }}>
-              <p className="eyebrow">C Building Share (48)</p>
-              <h3 style={{ color: '#0369a1' }}>₹{fmt(totalAmount * FLATS.C / FLATS.Total)}</h3>
+
+           <div className="accounting-summary-card" style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#c2410c' }}>C Building Share (48)</p>
+                {isPaybackTrackingActive && (
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: cPendingAmount === 0 ? '#166534' : '#b45309' }}>
+                    {cPaidCount}/{filteredCheques.filter(c => n(c.amount) > 0).length} Paid
+                  </span>
+                )}
+              </div>
+              <h3 style={{ color: '#ea580c', margin: '0 0 6px 0', fontSize: '1.4rem' }}>₹{fmt(cTotalShare)}</h3>
+              {isPaybackTrackingActive ? (
+                <div style={{ fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '2px', borderTop: '1px dashed #e2e8f0', paddingTop: '6px' }}>
+                  <span style={{ color: '#15803d', fontWeight: 600 }}>✓ Received: ₹{fmt(cReceivedAmount)}</span>
+                  <span style={{ color: cPendingAmount > 0 ? '#b45309' : '#64748b', fontWeight: cPendingAmount > 0 ? 600 : 400 }}>
+                    ⏳ Pending: ₹{fmt(cPendingAmount)}
+                  </span>
+                </div>
+              ) : (
+                <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>C Building Share Portion</p>
+              )}
            </div>
+
+           {isPaybackTrackingActive && (
+             <div className="accounting-summary-card" style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
+                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#475569' }}>Inter-Building Recovery</p>
+                <h3 style={{ color: totalOutstanding > 0 ? '#d97706' : '#16a34a', margin: '0 0 6px 0', fontSize: '1.4rem' }}>
+                  ₹{fmt(totalRecovered)} <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 500 }}>/ ₹{fmt(totalRecoveryDue)}</span>
+                </h3>
+                <div style={{ fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '2px', borderTop: '1px dashed #cbd5e1', paddingTop: '6px' }}>
+                  <span style={{ color: totalOutstanding > 0 ? '#b45309' : '#15803d', fontWeight: 600 }}>
+                    {totalOutstanding > 0 ? `⏳ Outstanding: ₹${fmt(totalOutstanding)}` : '✓ All B & C Shares Settled'}
+                  </span>
+                  <span style={{ color: '#64748b' }}>
+                    Recovery Rate: {totalRecoveryDue > 0 ? ((totalRecovered / totalRecoveryDue) * 100).toFixed(1) : 0}%
+                  </span>
+                </div>
+             </div>
+           )}
         </div>
       )}
 
       {/* Main Table */}
       <div className="table-card">
         <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: subTab === 'common' ? 1500 : 1200 }}>
+          <table className="attendance-table" style={{ minWidth: subTab === 'common' ? (isPaybackTrackingActive ? 1750 : 1500) : 1200 }}>
             <thead>
               <tr style={{ background: '#f8fafc' }}>
                 <th style={{ width: 50 }}>Sr.</th>
@@ -721,8 +920,18 @@ export default function ChequeManagement({ isAdmin = false }) {
                 {subTab === 'common' && (
                   <>
                     <th style={{ width: 120, textAlign: 'right', background: '#f0fdf4' }}>A Share (87)</th>
-                    <th style={{ width: 120, textAlign: 'right', background: '#f0f9ff' }}>B Share (96)</th>
-                    <th style={{ width: 120, textAlign: 'right', background: '#fff7ed' }}>C Share (48)</th>
+                    <th style={{ width: isPaybackTrackingActive ? 110 : 120, textAlign: 'right', background: '#f0f9ff' }}>B Share (96)</th>
+                    {isPaybackTrackingActive && (
+                      <th style={{ width: 155, textAlign: 'center', background: '#eff6ff', color: '#1e40af', borderLeft: '1px solid #bfdbfe' }}>
+                        B Paid Back Date
+                      </th>
+                    )}
+                    <th style={{ width: isPaybackTrackingActive ? 110 : 120, textAlign: 'right', background: '#fff7ed' }}>C Share (48)</th>
+                    {isPaybackTrackingActive && (
+                      <th style={{ width: 155, textAlign: 'center', background: '#fffbeb', color: '#b45309', borderLeft: '1px solid #fde68a' }}>
+                        C Paid Back Date
+                      </th>
+                    )}
                   </>
                 )}
                 <th style={{ width: 120 }}>Who Paid</th>
@@ -732,9 +941,9 @@ export default function ChequeManagement({ isAdmin = false }) {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={subTab === 'common' ? 13 : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
+                <tr><td colSpan={subTab === 'common' ? (isPaybackTrackingActive ? 15 : 13) : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
               ) : filteredCheques.length === 0 ? (
-                <tr><td colSpan={subTab === 'common' ? 13 : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
+                <tr><td colSpan={subTab === 'common' ? (isPaybackTrackingActive ? 15 : 13) : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
                   {searchText ? `No cheques found matching "${searchText}"` : 'No cheques recorded.'}
                 </td></tr>
               ) : (
@@ -777,7 +986,129 @@ export default function ChequeManagement({ isAdmin = false }) {
                         <>
                           <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#16a34a', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
                           <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#2563eb', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
+                          {isPaybackTrackingActive && (
+                            <td style={{ textAlign: 'center', background: '#f8faff', borderLeft: '1px solid #dbeafe', verticalAlign: 'middle', padding: '6px 8px' }}>
+                              {isCancelled ? (
+                                <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>—</span>
+                              ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                  <input
+                                    type="date"
+                                    className="attendance-register-input"
+                                    value={c.bPaidDate || c.bReceiveDate || ''}
+                                    onChange={e => updateRow(actualIdx, 'bPaidDate', e.target.value)}
+                                    readOnly={!canEdit}
+                                    title="Date B Building paid back / reimbursed their share"
+                                    style={{ textAlign: 'center', fontSize: '0.82rem', padding: '4px' }}
+                                  />
+                                  {(c.bPaidDate || c.bReceiveDate) ? (
+                                    <div style={{
+                                      fontSize: '0.72rem',
+                                      fontWeight: 600,
+                                      color: '#166534',
+                                      background: '#dcfce7',
+                                      border: '1px solid #86efac',
+                                      borderRadius: '4px',
+                                      padding: '2px 6px',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      gap: '4px'
+                                    }}>
+                                      <span>✓ Paid Back</span>
+                                      {canEdit && (
+                                        <button
+                                          type="button"
+                                          onClick={() => updateRow(actualIdx, 'bPaidDate', '')}
+                                          title="Clear B payback date"
+                                          style={{ background: 'none', border: 'none', color: '#166534', cursor: 'pointer', padding: 0, fontWeight: 700, fontSize: '0.75rem', lineHeight: 1 }}
+                                        >
+                                          ✕
+                                        </button>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    n(c.amount) > 0 && (
+                                      <div style={{
+                                        fontSize: '0.72rem',
+                                        fontWeight: 600,
+                                        color: '#b45309',
+                                        background: '#fffbeb',
+                                        border: '1px solid #fde68a',
+                                        borderRadius: '4px',
+                                        padding: '2px 6px',
+                                        textAlign: 'center'
+                                      }}>
+                                        ⏳ Pending
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                            </td>
+                          )}
                           <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#ea580c', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
+                          {isPaybackTrackingActive && (
+                            <td style={{ textAlign: 'center', background: '#fffdfa', borderLeft: '1px solid #fef3c7', verticalAlign: 'middle', padding: '6px 8px' }}>
+                              {isCancelled ? (
+                                <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>—</span>
+                              ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                  <input
+                                    type="date"
+                                    className="attendance-register-input"
+                                    value={c.cPaidDate || c.cReceiveDate || ''}
+                                    onChange={e => updateRow(actualIdx, 'cPaidDate', e.target.value)}
+                                    readOnly={!canEdit}
+                                    title="Date C Building paid back / reimbursed their share"
+                                    style={{ textAlign: 'center', fontSize: '0.82rem', padding: '4px' }}
+                                  />
+                                  {(c.cPaidDate || c.cReceiveDate) ? (
+                                    <div style={{
+                                      fontSize: '0.72rem',
+                                      fontWeight: 600,
+                                      color: '#166534',
+                                      background: '#dcfce7',
+                                      border: '1px solid #86efac',
+                                      borderRadius: '4px',
+                                      padding: '2px 6px',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      gap: '4px'
+                                    }}>
+                                      <span>✓ Paid Back</span>
+                                      {canEdit && (
+                                        <button
+                                          type="button"
+                                          onClick={() => updateRow(actualIdx, 'cPaidDate', '')}
+                                          title="Clear C payback date"
+                                          style={{ background: 'none', border: 'none', color: '#166534', cursor: 'pointer', padding: 0, fontWeight: 700, fontSize: '0.75rem', lineHeight: 1 }}
+                                        >
+                                          ✕
+                                        </button>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    n(c.amount) > 0 && (
+                                      <div style={{
+                                        fontSize: '0.72rem',
+                                        fontWeight: 600,
+                                        color: '#b45309',
+                                        background: '#fffbeb',
+                                        border: '1px solid #fde68a',
+                                        borderRadius: '4px',
+                                        padding: '2px 6px',
+                                        textAlign: 'center'
+                                      }}>
+                                        ⏳ Pending
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                            </td>
+                          )}
                         </>
                       )}
                       <td>
@@ -805,7 +1136,17 @@ export default function ChequeManagement({ isAdmin = false }) {
                   <>
                     <td style={{ textAlign: 'right', color: '#16a34a' }}>₹{fmt(totalAmount * FLATS.A / FLATS.Total)}</td>
                     <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmount * FLATS.B / FLATS.Total)}</td>
+                    {isPaybackTrackingActive && (
+                      <td style={{ textAlign: 'center', fontSize: '0.78rem', color: '#1e40af', background: '#eff6ff', borderLeft: '1px solid #bfdbfe' }}>
+                        Rec: ₹{fmt(bReceivedAmount)}
+                      </td>
+                    )}
                     <td style={{ textAlign: 'right', color: '#ea580c' }}>₹{fmt(totalAmount * FLATS.C / FLATS.Total)}</td>
+                    {isPaybackTrackingActive && (
+                      <td style={{ textAlign: 'center', fontSize: '0.78rem', color: '#b45309', background: '#fffbeb', borderLeft: '1px solid #fde68a' }}>
+                        Rec: ₹{fmt(cReceivedAmount)}
+                      </td>
+                    )}
                   </>
                 )}
                 <td colSpan={3}></td>
