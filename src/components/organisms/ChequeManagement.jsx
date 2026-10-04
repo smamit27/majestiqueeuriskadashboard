@@ -33,6 +33,13 @@ function formatLongMonth(mv) {
 
 const n = (v) => parseFloat(v) || 0;
 const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;'
+}[char]));
 
 const DEFAULT_SEPTEMBER_2026_CHEQUES = [
   { id: 1725451400001, srNo: 1, date: '2026-09-04', deductedDate: '2026-09-08', chequeNo: '534', vendor: 'Sidharam Parmeshwar Lende', purpose: 'Housekeeping / Waterman Salary', amount: '12900', whoPaid: 'A Building', isPaid: true },
@@ -60,7 +67,6 @@ const MASTER_UNLOCK_PASSWORD = '$05CeLRO';
 
 export default function ChequeManagement({ isAdmin = false }) {
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
-  const [subTab, setSubTab] = useState('buildingA'); // 'buildingA' or 'common'
   const [searchText, setSearchText] = useState('');
   
   // Lock & Password state: automatically locks any month prior to current month
@@ -205,7 +211,7 @@ export default function ChequeManagement({ isAdmin = false }) {
       }, { merge: true });
       setSaveStatus('saved');
       setSaveMsg('Saved ✓');
-    } catch (_err) {
+    } catch {
       setSaveStatus('error');
       setSaveMsg('Failed');
     }
@@ -221,6 +227,8 @@ export default function ChequeManagement({ isAdmin = false }) {
     }, 1500);
   };
 
+  // formTarget tracks which section the add-form submits to
+  const [formTarget, setFormTarget] = useState('buildingA'); // 'buildingA' | 'common'
   const [formData, setFormData] = useState({
     date: '',
     deductedDate: '',
@@ -250,7 +258,8 @@ export default function ChequeManagement({ isAdmin = false }) {
       return;
     }
 
-    const currentList = subTab === 'common' ? chequesCommon : chequesA;
+    const isCommon = formTarget === 'common';
+    const currentList = isCommon ? chequesCommon : chequesA;
 
     // Check uniqueness
     const isDuplicate = currentList.some(c => c.chequeNo === formData.chequeNo.trim());
@@ -270,14 +279,14 @@ export default function ChequeManagement({ isAdmin = false }) {
     const final = next.filter(c => c.vendor || c.amount || c.chequeNo);
     const reindexed = final.map((c, i) => ({ ...c, srNo: i + 1 }));
 
-    if (subTab === 'common') {
+    if (isCommon) {
       setChequesCommon(reindexed);
       triggerAutoSave(reindexed, true);
     } else {
       setChequesA(reindexed);
       triggerAutoSave(reindexed, false);
     }
-    
+
     // Reset form
     setFormData({
       date: '',
@@ -294,12 +303,10 @@ export default function ChequeManagement({ isAdmin = false }) {
     });
   };
 
-  const updateRow = (idx, field, val) => {
+  const updateRow = (idx, field, val, isCommon) => {
     if (!canEdit) return;
-    const isCommon = subTab === 'common';
     const next = isCommon ? [...chequesCommon] : [...chequesA];
     next[idx] = { ...next[idx], [field]: val };
-    
     if (isCommon) {
       setChequesCommon(next);
       triggerAutoSave(next, true);
@@ -309,12 +316,10 @@ export default function ChequeManagement({ isAdmin = false }) {
     }
   };
 
-  const removeRow = (idx) => {
+  const removeRow = (idx, isCommon) => {
     if (!canEdit) return;
-    const isCommon = subTab === 'common';
     const currentList = isCommon ? chequesCommon : chequesA;
     const next = currentList.filter((_, i) => i !== idx).map((c, i) => ({ ...c, srNo: i + 1 }));
-    
     if (isCommon) {
       setChequesCommon(next);
       triggerAutoSave(next, true);
@@ -327,7 +332,7 @@ export default function ChequeManagement({ isAdmin = false }) {
   // State for editing existing cheques in modal
   const [editModalData, setEditModalData] = useState(null);
 
-  const handleOpenEditModal = (c, actualIdx) => {
+  const handleOpenEditModal = (c, actualIdx, isCommon) => {
     if (!canEdit) {
       if (isCurrentMonthLocked) {
         setShowUnlockModal(true);
@@ -338,7 +343,7 @@ export default function ChequeManagement({ isAdmin = false }) {
     }
     setEditModalData({
       index: actualIdx,
-      isCommon: subTab === 'common',
+      isCommon,
       cheque: {
         date: c.date || '',
         deductedDate: c.deductedDate || '',
@@ -393,10 +398,10 @@ export default function ChequeManagement({ isAdmin = false }) {
     }
   };
 
-  const activeCheques = subTab === 'common' ? chequesCommon : chequesA;
-  const isPaybackTrackingActive = subTab === 'common' && selectedMonth >= '2026-08';
-  
-  const filteredCheques = activeCheques
+  const isPaybackTrackingActive = selectedMonth >= '2026-08';
+
+  // Helper: filter + sort a cheque list
+  const filterList = (list) => list
     .filter(c => {
       if (!searchText) return true;
       const s = searchText.toLowerCase();
@@ -405,19 +410,21 @@ export default function ChequeManagement({ isAdmin = false }) {
         (c.date && String(c.date).toLowerCase().includes(s)) ||
         (c.vendor && String(c.vendor).toLowerCase().includes(s)) ||
         (c.purpose && String(c.purpose).toLowerCase().includes(s)) ||
-        (c.remark && String(c.remark).toLowerCase().includes(s)) ||
-        (c.bPaidDate && String(c.bPaidDate).toLowerCase().includes(s)) ||
-        (c.cPaidDate && String(c.cPaidDate).toLowerCase().includes(s))
+        (c.remark && String(c.remark).toLowerCase().includes(s))
       );
     })
     .sort((a, b) => {
-      // Primary sort: Cheque No ascending (lowest to highest)
       const numA = Number(String(a.chequeNo || '').replace(/\D/g, '')) || Infinity;
       const numB = Number(String(b.chequeNo || '').replace(/\D/g, '')) || Infinity;
       return numA - numB;
     });
 
-  const totalAmount = filteredCheques.reduce((s, c) => s + n(c.amount), 0);
+  const filteredA = filterList(chequesA);
+  const filteredCommon = filterList(chequesCommon);
+
+  const totalAmountA = filteredA.reduce((s, c) => s + n(c.amount), 0);
+  const totalAmountCommon = filteredCommon.reduce((s, c) => s + n(c.amount), 0);
+  const totalAmount = totalAmountCommon; // kept for share calc
 
   // Inter-building payback tracking metrics (B: 96 flats, C: 48 flats)
   const bTotalShare = (totalAmount * FLATS.B) / FLATS.Total;
@@ -430,25 +437,15 @@ export default function ChequeManagement({ isAdmin = false }) {
   let bPaidCount = 0;
   let cPaidCount = 0;
 
-  filteredCheques.forEach(c => {
+  filteredCommon.forEach(c => {
     const amt = n(c.amount);
     if (amt === 0) return;
     const bShare = (amt * FLATS.B) / FLATS.Total;
     const cShare = (amt * FLATS.C) / FLATS.Total;
-
-    if (c.bPaidDate || c.bReceiveDate) {
-      bReceivedAmount += bShare;
-      bPaidCount += 1;
-    } else {
-      bPendingAmount += bShare;
-    }
-
-    if (c.cPaidDate || c.cReceiveDate) {
-      cReceivedAmount += cShare;
-      cPaidCount += 1;
-    } else {
-      cPendingAmount += cShare;
-    }
+    if (c.bPaidDate || c.bReceiveDate) { bReceivedAmount += bShare; bPaidCount += 1; }
+    else { bPendingAmount += bShare; }
+    if (c.cPaidDate || c.cReceiveDate) { cReceivedAmount += cShare; cPaidCount += 1; }
+    else { cPendingAmount += cShare; }
   });
 
   const totalRecoveryDue = bTotalShare + cTotalShare;
@@ -502,8 +499,9 @@ export default function ChequeManagement({ isAdmin = false }) {
   }[saveStatus];
 
   const handleDownloadExcel = () => {
-    const rows = filteredCheques.map(c => {
+    const makeRows = (list, isCommon) => list.map(c => {
       const base = {
+        'Section': isCommon ? 'Common Work' : 'Building A',
         'Sr. No': c.srNo,
         'Month': formatLongMonth(selectedMonth),
         'Cheque Date': c.date,
@@ -515,61 +513,262 @@ export default function ChequeManagement({ isAdmin = false }) {
         'Who Paid': c.whoPaid,
         'Paid?': c.isPaid ? 'Yes' : 'No'
       };
-      
-      if (subTab === 'common') {
+      if (isCommon) {
         base['Remark'] = c.remark || '';
         const amt = n(c.amount);
         base['A Share (₹)'] = (amt * FLATS.A / FLATS.Total).toFixed(2);
         base['B Share (₹)'] = (amt * FLATS.B / FLATS.Total).toFixed(2);
-        if (selectedMonth >= '2026-08') {
-          base['B Paid Back Date'] = c.bPaidDate || c.bReceiveDate || 'Pending';
-        }
+        if (isPaybackTrackingActive) base['B Paid Back Date'] = c.bPaidDate || c.bReceiveDate || 'Pending';
         base['C Share (₹)'] = (amt * FLATS.C / FLATS.Total).toFixed(2);
-        if (selectedMonth >= '2026-08') {
-          base['C Paid Back Date'] = c.cPaidDate || c.cReceiveDate || 'Pending';
-        }
+        if (isPaybackTrackingActive) base['C Paid Back Date'] = c.cPaidDate || c.cReceiveDate || 'Pending';
       }
       return base;
     });
-    
+    const rows = [...makeRows(filteredA, false), ...makeRows(filteredCommon, true)];
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, subTab === 'common' ? 'Common Work' : 'Building A');
-    XLSX.writeFile(wb, `Cheques_${subTab}_${selectedMonth}.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, 'All Cheques');
+    XLSX.writeFile(wb, `Cheques_${selectedMonth}.xlsx`);
+  };
+
+  const handlePrintPdf = () => {
+    const pdfCheques = [
+      ...chequesA.map(cheque => ({ ...cheque, category: 'A Building' })),
+      ...chequesCommon.map(cheque => ({ ...cheque, category: 'Common Work' })),
+    ].filter(c => {
+      if (!searchText) return true;
+      const search = searchText.toLowerCase();
+      return [c.chequeNo, c.date, c.deductedDate, c.vendor, c.purpose, c.remark, c.bPaidDate, c.cPaidDate]
+        .some(value => String(value || '').toLowerCase().includes(search));
+    }).sort((a, b) => {
+      const numberA = Number(String(a.chequeNo || '').replace(/\D/g, '')) || Infinity;
+      const numberB = Number(String(b.chequeNo || '').replace(/\D/g, '')) || Infinity;
+      return numberA - numberB;
+    });
+    const includePaybackDates = selectedMonth >= '2026-08';
+    const columns = [
+      { label: 'Category', value: c => c.category },
+      { label: 'Sr.', value: (_c, index) => index + 1 },
+      { label: 'Cheque Date', value: c => c.date || '' },
+      { label: 'Amount Deducted Date', value: c => c.deductedDate || 'Pending' },
+      { label: 'Cheque No', value: c => c.chequeNo || '' },
+      { label: 'Vendor Name', value: c => c.vendor || '' },
+      { label: 'Remarks / Purpose', value: c => c.purpose || '' },
+      { label: 'Remark', value: c => c.category === 'Common Work' ? c.remark || '' : '' },
+      { label: 'Total (₹)', value: c => fmt(n(c.amount)), amount: true },
+      { label: 'A Share (₹)', value: c => c.category === 'Common Work' ? fmt(n(c.amount) * FLATS.A / FLATS.Total) : '', amount: true },
+      { label: 'B Share (₹)', value: c => c.category === 'Common Work' ? fmt(n(c.amount) * FLATS.B / FLATS.Total) : '', amount: true },
+    ];
+
+    if (includePaybackDates) {
+      columns.push({ label: 'B Paid Back Date', value: c => c.category === 'Common Work' ? c.bPaidDate || c.bReceiveDate || 'Pending' : '' });
+    }
+    columns.push({ label: 'C Share (₹)', value: c => c.category === 'Common Work' ? fmt(n(c.amount) * FLATS.C / FLATS.Total) : '', amount: true });
+    if (includePaybackDates) {
+      columns.push({ label: 'C Paid Back Date', value: c => c.category === 'Common Work' ? c.cPaidDate || c.cReceiveDate || 'Pending' : '' });
+    }
+    columns.push(
+      { label: 'Who Paid', value: c => c.whoPaid || '' },
+      { label: 'Paid?', value: c => c.isPaid ? 'Yes' : 'No' },
+    );
+
+    const headers = columns.map(column => `<th>${column.label}</th>`).join('');
+    const rows = pdfCheques.map((c, index) => `
+      <tr>${columns.map(column => `<td${column.amount ? ' class="amount"' : ''}>${escapeHtml(column.value(c, index))}</td>`).join('')}</tr>
+    `).join('');
+    const printedDate = new Intl.DateTimeFormat('en-IN', {
+      day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    }).format(new Date());
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Cheque Register - ${formatLongMonth(selectedMonth)}</title>
+        <meta charset="utf-8" />
+        <style>
+          @page { size: A4 landscape; margin: 10mm; }
+          * { box-sizing: border-box; }
+          body { font-family: Arial, sans-serif; color: #0f172a; margin: 0; }
+          h1 { color: #1e3a8a; font-size: 18px; margin: 0 0 4px; }
+          .subtitle { color: #475569; font-size: 10px; margin-bottom: 12px; }
+          table { border-collapse: collapse; width: 100%; font-size: 8px; }
+          th, td { border: 1px solid #cbd5e1; padding: 4px 3px; text-align: left; vertical-align: top; }
+          th { background: #eff6ff; color: #1e3a8a; font-weight: 700; }
+          tbody tr:nth-child(even) { background: #f8fafc; }
+          .amount { text-align: right; white-space: nowrap; }
+          .footer { color: #64748b; font-size: 8px; margin-top: 8px; text-align: right; }
+        </style>
+      </head>
+      <body>
+        <h1>Combined Cheque Register</h1>
+        <div class="subtitle">${formatLongMonth(selectedMonth)} · A Building and Common Work · ${pdfCheques.length} records</div>
+        <table>
+          <thead><tr>${headers}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="footer">Majestique Euriska CHS Ltd. · Printed on: ${printedDate}</div>
+        <script>window.onload = function() { setTimeout(function() { window.print(); }, 250); };</script>
+      </body>
+      </html>
+    `;
+
+    const printWin = window.open('', '_blank');
+    if (printWin) {
+      printWin.document.write(printDoc);
+      printWin.document.close();
+    }
+  };
+
+  // Reusable table renderer for either section
+  const renderChequeTable = (list, isCommon) => {
+    const colSpanBase = isCommon ? (isPaybackTrackingActive ? 16 : 14) : 10;
+    return (
+      <div className="attendance-table-scroll">
+        <table className="attendance-table" style={{ minWidth: isCommon ? (isPaybackTrackingActive ? 1850 : 1600) : 1200 }}>
+          <thead>
+            <tr style={{ background: isCommon ? '#f0fdf4' : '#eff6ff' }}>
+              <th style={{ width: 50 }}>Sr.</th>
+              <th style={{ width: 130 }}>Cheque Date</th>
+              <th style={{ width: 135 }}>Deducted Date</th>
+              <th style={{ width: 110 }}>Cheque No</th>
+              <th style={{ width: 200 }}>Vendor Name</th>
+              <th>{isCommon ? 'Purpose' : 'Remarks / Purpose'}</th>
+              {isCommon && <th style={{ width: 150 }}>Remark</th>}
+              <th style={{ width: 130, textAlign: 'right' }}>Total (₹)</th>
+              {isCommon && (
+                <>
+                  <th style={{ width: 120, textAlign: 'right', background: '#f0fdf4' }}>A Share (87)</th>
+                  <th style={{ width: isPaybackTrackingActive ? 110 : 120, textAlign: 'right', background: '#f0f9ff' }}>B Share (96)</th>
+                  {isPaybackTrackingActive && <th style={{ width: 155, textAlign: 'center', background: '#eff6ff', color: '#1e40af' }}>B Paid Back Date</th>}
+                  <th style={{ width: isPaybackTrackingActive ? 110 : 120, textAlign: 'right', background: '#fff7ed' }}>C Share (48)</th>
+                  {isPaybackTrackingActive && <th style={{ width: 155, textAlign: 'center', background: '#fffbeb', color: '#b45309' }}>C Paid Back Date</th>}
+                </>
+              )}
+              <th style={{ width: 120 }}>Who Paid</th>
+              <th style={{ width: 70, textAlign: 'center' }}>Paid?</th>
+              <th style={{ width: 85, textAlign: 'center' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr><td colSpan={colSpanBase} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
+            ) : list.length === 0 ? (
+              <tr><td colSpan={colSpanBase} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
+                {searchText ? `No cheques found matching "${searchText}"` : 'No cheques recorded.'}
+              </td></tr>
+            ) : (
+              list.map((c, i) => {
+                const sourceList = isCommon ? chequesCommon : chequesA;
+                const actualIdx = sourceList.findIndex(orig => orig.id === c.id);
+                const isCancelled = n(c.amount) === 0;
+                const isPaid = c.isPaid === true;
+                const rowStyle = isCancelled ? { background: '#f5f5f5', opacity: 0.65 } : isPaid ? { background: '#f0fdf4', opacity: 0.85 } : {};
+                const strikeStyle = isCancelled || isPaid ? { textDecoration: 'line-through', color: '#9ca3af' } : {};
+                return (
+                  <tr key={c.id || i} style={rowStyle}>
+                    <td style={strikeStyle}>{i + 1}</td>
+                    <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value, isCommon)} readOnly={!canEdit} style={strikeStyle} /></td>
+                    <td>
+                      <input className="attendance-register-input" type="date" value={c.deductedDate || ''}
+                        onChange={e => {
+                          updateRow(actualIdx, 'deductedDate', e.target.value, isCommon);
+                          if (e.target.value && !c.isPaid) updateRow(actualIdx, 'isPaid', true, isCommon);
+                        }}
+                        readOnly={!canEdit} title="Date amount was deducted/debited from bank"
+                      />
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value, isCommon)} readOnly={!canEdit} style={strikeStyle} />
+                        {isCancelled && <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', fontWeight: 700, padding: '2px 5px', borderRadius: '4px', whiteSpace: 'nowrap' }}>CANCELLED</span>}
+                      </div>
+                    </td>
+                    <td><input className="attendance-register-input" style={{ fontWeight: 600, ...strikeStyle }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value, isCommon)} readOnly={!canEdit} /></td>
+                    <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value, isCommon)} readOnly={!canEdit} style={isCancelled || isPaid ? { color: '#9ca3af' } : {}} /></td>
+                    {isCommon && (
+                      <td><input className="attendance-register-input" placeholder="Add remark..." value={c.remark || ''} onChange={e => updateRow(actualIdx, 'remark', e.target.value, isCommon)} readOnly={!canEdit} style={strikeStyle} title="Remark / Note for common work" /></td>
+                    )}
+                    <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700, ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : isPaid ? { textDecoration: 'line-through', color: '#16a34a' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value, isCommon)} readOnly={!canEdit} /></td>
+                    {isCommon && (
+                      <>
+                        <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#16a34a', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
+                        <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#2563eb', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
+                        {isPaybackTrackingActive && (
+                          <td style={{ textAlign: 'center', background: '#f8faff', borderLeft: '1px solid #dbeafe', verticalAlign: 'middle', padding: '6px 8px' }}>
+                            {isCancelled ? <span style={{ color: '#9ca3af' }}>—</span> : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <input type="date" className="attendance-register-input" value={c.bPaidDate || c.bReceiveDate || ''} onChange={e => updateRow(actualIdx, 'bPaidDate', e.target.value, isCommon)} readOnly={!canEdit} title="B Building paid back date" style={{ textAlign: 'center', fontSize: '0.82rem', padding: '4px' }} />
+                                {(c.bPaidDate || c.bReceiveDate) ? (
+                                  <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#166534', background: '#dcfce7', border: '1px solid #86efac', borderRadius: '4px', padding: '2px 6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                    <span>✓ Paid Back</span>
+                                    {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'bPaidDate', '', isCommon)} style={{ background: 'none', border: 'none', color: '#166534', cursor: 'pointer', padding: 0, fontWeight: 700, fontSize: '0.75rem' }}>✕</button>}
+                                  </div>
+                                ) : n(c.amount) > 0 && <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#b45309', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '2px 6px', textAlign: 'center' }}>⏳ Pending</div>}
+                              </div>
+                            )}
+                          </td>
+                        )}
+                        <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#ea580c', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
+                        {isPaybackTrackingActive && (
+                          <td style={{ textAlign: 'center', background: '#fffdfa', borderLeft: '1px solid #fef3c7', verticalAlign: 'middle', padding: '6px 8px' }}>
+                            {isCancelled ? <span style={{ color: '#9ca3af' }}>—</span> : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <input type="date" className="attendance-register-input" value={c.cPaidDate || c.cReceiveDate || ''} onChange={e => updateRow(actualIdx, 'cPaidDate', e.target.value, isCommon)} readOnly={!canEdit} title="C Building paid back date" style={{ textAlign: 'center', fontSize: '0.82rem', padding: '4px' }} />
+                                {(c.cPaidDate || c.cReceiveDate) ? (
+                                  <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#166534', background: '#dcfce7', border: '1px solid #86efac', borderRadius: '4px', padding: '2px 6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                    <span>✓ Paid Back</span>
+                                    {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'cPaidDate', '', isCommon)} style={{ background: 'none', border: 'none', color: '#166534', cursor: 'pointer', padding: 0, fontWeight: 700, fontSize: '0.75rem' }}>✕</button>}
+                                  </div>
+                                ) : n(c.amount) > 0 && <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#b45309', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '2px 6px', textAlign: 'center' }}>⏳ Pending</div>}
+                              </div>
+                            )}
+                          </td>
+                        )}
+                      </>
+                    )}
+                    <td>
+                      <select className="attendance-register-input" value={c.whoPaid} onChange={e => updateRow(actualIdx, 'whoPaid', e.target.value, isCommon)} disabled={!canEdit} style={strikeStyle}>
+                        <option>A Building</option><option>B Building</option><option>C Building</option><option>Petty Cash</option>
+                      </select>
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <input type="checkbox" checked={c.isPaid || false} onChange={e => updateRow(actualIdx, 'isPaid', e.target.checked, isCommon)} disabled={!canEdit} style={{ transform: 'scale(1.2)' }} />
+                    </td>
+                    <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        <button type="button" onClick={() => handleOpenEditModal(c, actualIdx, isCommon)} className="button-secondary" style={{ padding: '3px 8px', fontSize: '0.75rem', height: 'auto', borderRadius: '4px', cursor: 'pointer' }} title="Edit Cheque Details">✏️ Edit</button>
+                        {canEdit && <button type="button" className="button-icon" onClick={() => removeRow(actualIdx, isCommon)} style={{ opacity: 0.3 }} title="Delete Cheque">✕</button>}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+          <tfoot>
+            <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
+              <td colSpan={isCommon ? 7 : 6} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
+              <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(isCommon ? totalAmountCommon : totalAmountA)}</td>
+              {isCommon && (
+                <>
+                  <td style={{ textAlign: 'right', color: '#16a34a' }}>₹{fmt(totalAmountCommon * FLATS.A / FLATS.Total)}</td>
+                  <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmountCommon * FLATS.B / FLATS.Total)}</td>
+                  {isPaybackTrackingActive && <td style={{ textAlign: 'center', fontSize: '0.78rem', color: '#1e40af', background: '#eff6ff' }}>Rec: ₹{fmt(bReceivedAmount)}</td>}
+                  <td style={{ textAlign: 'right', color: '#ea580c' }}>₹{fmt(totalAmountCommon * FLATS.C / FLATS.Total)}</td>
+                  {isPaybackTrackingActive && <td style={{ textAlign: 'center', fontSize: '0.78rem', color: '#b45309', background: '#fffbeb' }}>Rec: ₹{fmt(cReceivedAmount)}</td>}
+                </>
+              )}
+              <td colSpan={3}></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    );
   };
 
   return (
     <div className="cheque-management" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      
-      {/* Tab Navigation */}
-      <div className="table-card" style={{ padding: '8px', background: 'rgba(255,255,255,0.4)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
-           <button 
-             onClick={() => setSubTab('buildingA')}
-             className={`sub-tab-button ${subTab === 'buildingA' ? 'active' : ''}`}
-             style={{
-               flex: 1, padding: '12px', borderRadius: '10px', border: 'none', cursor: 'pointer',
-               background: subTab === 'buildingA' ? '#1e3a8a' : 'transparent',
-               color: subTab === 'buildingA' ? 'white' : 'var(--muted)',
-               fontWeight: 600, transition: '0.2s'
-             }}
-           >
-             🏢 A Building Related Work
-           </button>
-           <button 
-             onClick={() => setSubTab('common')}
-             className={`sub-tab-button ${subTab === 'common' ? 'active' : ''}`}
-             style={{
-               flex: 1, padding: '12px', borderRadius: '10px', border: 'none', cursor: 'pointer',
-               background: subTab === 'common' ? '#1e3a8a' : 'transparent',
-               color: subTab === 'common' ? 'white' : 'var(--muted)',
-               fontWeight: 600, transition: '0.2s'
-             }}
-           >
-             🤝 Cheque Issue for Common Work
-           </button>
-        </div>
-      </div>
 
       {/* Month Tabs */}
       <div className="table-card" style={{ padding: 0 }}>
@@ -601,9 +800,9 @@ export default function ChequeManagement({ isAdmin = false }) {
         
         <div className="attendance-table-card__header">
           <div>
-            <p className="eyebrow">{subTab === 'common' ? 'Society Shared Expenses' : 'A Building Ledger'}</p>
+            <p className="eyebrow">A Building &amp; Common Work — {formatLongMonth(selectedMonth)}</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <h3 style={{ margin: 0 }}>{subTab === 'common' ? 'Common Work Cheques' : 'Building A Cheques'} — {formatMonthLabel(selectedMonth)}</h3>
+              <h3 style={{ margin: 0 }}>Cheque Register — {formatMonthLabel(selectedMonth)}</h3>
               {isMonthLockedByDefault(selectedMonth) && (
                 <span style={{
                   fontSize: '0.78rem',
@@ -733,8 +932,11 @@ export default function ChequeManagement({ isAdmin = false }) {
               style={{ textAlign: 'left', height: '44px', fontSize: '1rem', background: 'white' }}
             />
           </div>
+          <button className="button-secondary" onClick={handlePrintPdf} style={{ padding: '10px 20px', height: '44px', marginTop: 'auto' }}>
+            ⬇ Export PDF
+          </button>
           <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '10px 20px', height: '44px', marginTop: 'auto' }}>
-            ⬇ Export to Excel
+            📊 Export Excel
           </button>
         </div>
       </div>
@@ -745,27 +947,41 @@ export default function ChequeManagement({ isAdmin = false }) {
           <div className="section-card" style={{ padding: '22px 24px', background: '#f8fafc', border: '1.5px dashed #cbd5e1', borderRadius: '14px', textAlign: 'center' }}>
             <div style={{ maxWidth: '520px', margin: '0 auto' }}>
               <span style={{ fontSize: '1.8rem', display: 'block', marginBottom: '6px' }}>🔒</span>
-              <h4 style={{ margin: '0 0 6px 0', color: '#475569', fontSize: '1rem' }}>
-                Adding Cheques Disabled for {formatLongMonth(selectedMonth)}
-              </h4>
+              <h4 style={{ margin: '0 0 6px 0', color: '#475569', fontSize: '1rem' }}>Adding Cheques Disabled for {formatLongMonth(selectedMonth)}</h4>
               <p style={{ margin: '0 0 14px 0', color: '#64748b', fontSize: '0.88rem', lineHeight: 1.4 }}>
                 Past closed months are automatically locked against unintended changes. Enter the password to unlock edits for this month.
               </p>
-              <button
-                type="button"
-                onClick={() => { setShowUnlockModal(true); setUnlockError(''); setUnlockPassword(''); }}
-                className="button-secondary"
-                style={{ padding: '8px 18px', fontSize: '0.86rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-              >
+              <button type="button" onClick={() => { setShowUnlockModal(true); setUnlockError(''); setUnlockPassword(''); }} className="button-secondary" style={{ padding: '8px 18px', fontSize: '0.86rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                 🔑 Enter Password to Enable Adding Cheques
               </button>
             </div>
           </div>
         ) : (
           <div className="section-card" style={{ padding: '24px' }}>
-            <h4 style={{ margin: '0 0 20px 0', color: 'var(--ink)' }}>
-              ➕ Add {subTab === 'common' ? 'Common' : 'Building A'} Cheque Entry
-            </h4>
+            {/* Section selector toggle */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+              <button type="button"
+                onClick={() => setFormTarget('buildingA')}
+                style={{
+                  padding: '10px 20px', borderRadius: '10px', border: '2px solid', cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', transition: 'all 0.15s',
+                  background: formTarget === 'buildingA' ? '#1e3a8a' : 'white',
+                  color: formTarget === 'buildingA' ? 'white' : '#1e3a8a',
+                  borderColor: '#1e3a8a'
+                }}
+              >🏢 Building A</button>
+              <button type="button"
+                onClick={() => setFormTarget('common')}
+                style={{
+                  padding: '10px 20px', borderRadius: '10px', border: '2px solid', cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', transition: 'all 0.15s',
+                  background: formTarget === 'common' ? '#065f46' : 'white',
+                  color: formTarget === 'common' ? 'white' : '#065f46',
+                  borderColor: '#065f46'
+                }}
+              >🤝 Common Work</button>
+              <span style={{ marginLeft: 8, alignSelf: 'center', fontSize: '0.85rem', color: '#64748b' }}>
+                Adding to: <strong>{formTarget === 'common' ? 'Common Work' : 'A Building'}</strong>
+              </span>
+            </div>
             <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
               <div className="field-group">
                 <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Cheque Date <span style={{ color: '#ef4444' }}>*</span></label>
@@ -791,429 +1007,109 @@ export default function ChequeManagement({ isAdmin = false }) {
                 <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Who Paid <span style={{ color: '#ef4444' }}>*</span></label>
                 <select className="attendance-register-input" style={{ textAlign: 'left' }} value={formData.whoPaid} onChange={e => handleFormChange('whoPaid', e.target.value)} required>
                   <option value="">-- Select Payer --</option>
-                  <option>A Building</option>
-                  <option>B Building</option>
-                  <option>C Building</option>
-                  <option>Petty Cash</option>
+                  <option>A Building</option><option>B Building</option><option>C Building</option><option>Petty Cash</option>
                 </select>
               </div>
-              {isPaybackTrackingActive && (
+              {formTarget === 'common' && isPaybackTrackingActive && (
                 <>
                   <div className="field-group">
                     <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>B Paid Back Date</label>
-                    <input 
-                      className="attendance-register-input" 
-                      style={{ textAlign: 'left' }} 
-                      type="date" 
-                      value={formData.bPaidDate || ''} 
-                      onChange={e => handleFormChange('bPaidDate', e.target.value)} 
-                    />
+                    <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.bPaidDate || ''} onChange={e => handleFormChange('bPaidDate', e.target.value)} />
                   </div>
                   <div className="field-group">
                     <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>C Paid Back Date</label>
-                    <input 
-                      className="attendance-register-input" 
-                      style={{ textAlign: 'left' }} 
-                      type="date" 
-                      value={formData.cPaidDate || ''} 
-                      onChange={e => handleFormChange('cPaidDate', e.target.value)} 
-                    />
+                    <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.cPaidDate || ''} onChange={e => handleFormChange('cPaidDate', e.target.value)} />
                   </div>
                 </>
               )}
-              <div className="field-group" style={{ gridColumn: subTab === 'common' ? 'span 1' : '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>{subTab === 'common' ? 'Purpose / Head of Expense' : 'Remarks / Purpose'}</label>
+              <div className="field-group" style={{ gridColumn: formTarget === 'common' ? 'span 1' : '1 / -1' }}>
+                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>{formTarget === 'common' ? 'Purpose / Head of Expense' : 'Remarks / Purpose'}</label>
                 <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Describe the payment purpose..." value={formData.purpose} onChange={e => handleFormChange('purpose', e.target.value)} />
               </div>
-              {subTab === 'common' && (
-                <div className="field-group" style={{ gridColumn: 'span 1' }}>
+              {formTarget === 'common' && (
+                <div className="field-group">
                   <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Remark / Notes</label>
-                  <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Add note / remark for common work..." value={formData.remark || ''} onChange={e => handleFormChange('remark', e.target.value)} />
+                  <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Add note / remark..." value={formData.remark || ''} onChange={e => handleFormChange('remark', e.target.value)} />
                 </div>
               )}
               <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-                <button type="submit" className="button-primary" style={{ padding: '8px 24px', width: 'auto' }}>Add to Ledger</button>
+                <button type="submit" className="button-primary"
+                  style={{
+                    padding: '8px 24px', width: 'auto',
+                    background: formTarget === 'common' ? '#059669' : '#1e3a8a',
+                    borderColor: formTarget === 'common' ? '#047857' : '#1e40af'
+                  }}
+                >
+                  ➕ Add to {formTarget === 'common' ? 'Common Work' : 'Building A'}
+                </button>
               </div>
             </form>
           </div>
         )
       )}
 
-      {/* Share Calculator (only for Common tab) */}
-      {subTab === 'common' && (totalAmount > 0 || isPaybackTrackingActive) && (
-        <div className="attendance-summary-grid" style={{ background: '#f0f9ff', padding: '20px', borderRadius: '16px', border: '1px solid #bae6fd', display: 'grid', gridTemplateColumns: isPaybackTrackingActive ? 'repeat(auto-fit, minmax(240px, 1fr))' : 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-           <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '4px' }}>
-              <div>
-                <p className="eyebrow" style={{ color: '#0369a1', margin: 0 }}>Cost Sharing Calculation (Total {FLATS.Total} Flats)</p>
-                <p style={{ margin: '2px 0 0 0', fontSize: '0.82rem', color: '#0284c7' }}>
-                  A: {FLATS.A} flats ({((FLATS.A / FLATS.Total) * 100).toFixed(1)}%) | B: {FLATS.B} flats ({((FLATS.B / FLATS.Total) * 100).toFixed(1)}%) | C: {FLATS.C} flats ({((FLATS.C / FLATS.Total) * 100).toFixed(1)}%)
-                </p>
+      {/* ── SECTION 1: BUILDING A ────────────────────────────────── */}
+      <div className="table-card" style={{ borderTop: '4px solid #1e3a8a' }}>
+        <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#eff6ff', borderRadius: '12px 12px 0 0' }}>
+          <div>
+            <p className="eyebrow" style={{ margin: 0, color: '#1e40af' }}>A Building Ledger</p>
+            <h4 style={{ margin: '2px 0 0 0', color: '#1e3a8a', fontSize: '1rem' }}>🏢 Building A Cheques — {chequesA.filter(c => c.chequeNo).length} entries · ₹{fmt(totalAmountA)}</h4>
+          </div>
+          <span style={{ fontSize: '0.78rem', color: '#3b82f6', fontWeight: 600, background: '#dbeafe', padding: '4px 10px', borderRadius: '8px' }}>
+            Scroll →
+          </span>
+        </div>
+        {renderChequeTable(filteredA, false)}
+      </div>
+
+      {/* ── SECTION 2: COMMON WORK ───────────────────────────────── */}
+      <div className="table-card" style={{ borderTop: '4px solid #059669' }}>
+        <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f0fdf4', borderRadius: '12px 12px 0 0', flexWrap: 'wrap', gap: '8px' }}>
+          <div>
+            <p className="eyebrow" style={{ margin: 0, color: '#166534' }}>Society Shared Expenses</p>
+            <h4 style={{ margin: '2px 0 0 0', color: '#065f46', fontSize: '1rem' }}>🤝 Common Work Cheques — {chequesCommon.filter(c => c.chequeNo).length} entries · ₹{fmt(totalAmountCommon)}</h4>
+          </div>
+          {isPaybackTrackingActive && (
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, padding: '4px 10px', borderRadius: '6px', background: '#dbeafe', color: '#1e40af', border: '1px solid #93c5fd' }}>
+              🤝 B &amp; C Payback Tracking Active
+            </span>
+          )}
+        </div>
+        {/* Share Calculator */}
+        {(totalAmountCommon > 0 || isPaybackTrackingActive) && (
+          <div style={{ display: 'grid', gridTemplateColumns: isPaybackTrackingActive ? 'repeat(auto-fit, minmax(220px, 1fr))' : 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', padding: '16px', background: '#f0f9ff', borderBottom: '1px solid #bae6fd' }}>
+            <div style={{ background: 'white', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+              <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#15803d' }}>A Share ({FLATS.A} flats)</p>
+              <h4 style={{ color: '#16a34a', margin: 0 }}>₹{fmt(totalAmountCommon * FLATS.A / FLATS.Total)}</h4>
+            </div>
+            <div style={{ background: 'white', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#1d4ed8' }}>B Share ({FLATS.B} flats)</p>
+                {isPaybackTrackingActive && <span style={{ fontSize: '0.72rem', fontWeight: 600, color: bPendingAmount === 0 ? '#166534' : '#b45309' }}>{bPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
               </div>
-              {isPaybackTrackingActive && (
-                <span style={{ fontSize: '0.78rem', fontWeight: 700, padding: '4px 10px', borderRadius: '6px', background: '#dbeafe', color: '#1e40af', border: '1px solid #93c5fd' }}>
-                  🤝 B & C Payback Tracking Active (From August 2026)
-                </span>
-              )}
-           </div>
-
-           <div className="accounting-summary-card" style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-              <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#15803d' }}>A Building Share (87)</p>
-              <h3 style={{ color: '#16a34a', margin: '0 0 4px 0', fontSize: '1.4rem' }}>₹{fmt(totalAmount * FLATS.A / FLATS.Total)}</h3>
-              <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>A Building Resident Liability</p>
-           </div>
-
-           <div className="accounting-summary-card" style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#1d4ed8' }}>B Building Share (96)</p>
-                {isPaybackTrackingActive && (
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: bPendingAmount === 0 ? '#166534' : '#b45309' }}>
-                    {bPaidCount}/{filteredCheques.filter(c => n(c.amount) > 0).length} Paid
-                  </span>
-                )}
+              <h4 style={{ color: '#2563eb', margin: '0 0 4px 0' }}>₹{fmt(bTotalShare)}</h4>
+              {isPaybackTrackingActive && <div style={{ fontSize: '0.75rem', color: '#15803d' }}>✓ Recv: ₹{fmt(bReceivedAmount)} · <span style={{ color: '#b45309' }}>⏳ ₹{fmt(bPendingAmount)}</span></div>}
+            </div>
+            <div style={{ background: 'white', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#c2410c' }}>C Share ({FLATS.C} flats)</p>
+                {isPaybackTrackingActive && <span style={{ fontSize: '0.72rem', fontWeight: 600, color: cPendingAmount === 0 ? '#166534' : '#b45309' }}>{cPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
               </div>
-              <h3 style={{ color: '#2563eb', margin: '0 0 6px 0', fontSize: '1.4rem' }}>₹{fmt(bTotalShare)}</h3>
-              {isPaybackTrackingActive ? (
-                <div style={{ fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '2px', borderTop: '1px dashed #e2e8f0', paddingTop: '6px' }}>
-                  <span style={{ color: '#15803d', fontWeight: 600 }}>✓ Received: ₹{fmt(bReceivedAmount)}</span>
-                  <span style={{ color: bPendingAmount > 0 ? '#b45309' : '#64748b', fontWeight: bPendingAmount > 0 ? 600 : 400 }}>
-                    ⏳ Pending: ₹{fmt(bPendingAmount)}
-                  </span>
-                </div>
-              ) : (
-                <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>B Building Share Portion</p>
-              )}
-           </div>
-
-           <div className="accounting-summary-card" style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#c2410c' }}>C Building Share (48)</p>
-                {isPaybackTrackingActive && (
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: cPendingAmount === 0 ? '#166534' : '#b45309' }}>
-                    {cPaidCount}/{filteredCheques.filter(c => n(c.amount) > 0).length} Paid
-                  </span>
-                )}
-              </div>
-              <h3 style={{ color: '#ea580c', margin: '0 0 6px 0', fontSize: '1.4rem' }}>₹{fmt(cTotalShare)}</h3>
-              {isPaybackTrackingActive ? (
-                <div style={{ fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '2px', borderTop: '1px dashed #e2e8f0', paddingTop: '6px' }}>
-                  <span style={{ color: '#15803d', fontWeight: 600 }}>✓ Received: ₹{fmt(cReceivedAmount)}</span>
-                  <span style={{ color: cPendingAmount > 0 ? '#b45309' : '#64748b', fontWeight: cPendingAmount > 0 ? 600 : 400 }}>
-                    ⏳ Pending: ₹{fmt(cPendingAmount)}
-                  </span>
-                </div>
-              ) : (
-                <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>C Building Share Portion</p>
-              )}
-           </div>
-
-           {isPaybackTrackingActive && (
-             <div className="accounting-summary-card" style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
+              <h4 style={{ color: '#ea580c', margin: '0 0 4px 0' }}>₹{fmt(cTotalShare)}</h4>
+              {isPaybackTrackingActive && <div style={{ fontSize: '0.75rem', color: '#15803d' }}>✓ Recv: ₹{fmt(cReceivedAmount)} · <span style={{ color: '#b45309' }}>⏳ ₹{fmt(cPendingAmount)}</span></div>}
+            </div>
+            {isPaybackTrackingActive && (
+              <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
                 <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#475569' }}>Inter-Building Recovery</p>
-                <h3 style={{ color: totalOutstanding > 0 ? '#d97706' : '#16a34a', margin: '0 0 6px 0', fontSize: '1.4rem' }}>
-                  ₹{fmt(totalRecovered)} <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 500 }}>/ ₹{fmt(totalRecoveryDue)}</span>
-                </h3>
-                <div style={{ fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '2px', borderTop: '1px dashed #cbd5e1', paddingTop: '6px' }}>
-                  <span style={{ color: totalOutstanding > 0 ? '#b45309' : '#15803d', fontWeight: 600 }}>
-                    {totalOutstanding > 0 ? `⏳ Outstanding: ₹${fmt(totalOutstanding)}` : '✓ All B & C Shares Settled'}
-                  </span>
-                  <span style={{ color: '#64748b' }}>
-                    Recovery Rate: {totalRecoveryDue > 0 ? ((totalRecovered / totalRecoveryDue) * 100).toFixed(1) : 0}%
-                  </span>
+                <h4 style={{ color: totalOutstanding > 0 ? '#d97706' : '#16a34a', margin: '0 0 4px 0' }}>₹{fmt(totalRecovered)} / ₹{fmt(totalRecoveryDue)}</h4>
+                <div style={{ fontSize: '0.75rem', color: totalOutstanding > 0 ? '#b45309' : '#15803d', fontWeight: 600 }}>
+                  {totalOutstanding > 0 ? `⏳ ₹${fmt(totalOutstanding)} outstanding` : '✓ All Settled'}
                 </div>
-             </div>
-           )}
-        </div>
-      )}
-
-      {/* Main Table */}
-      <div className="table-card">
-        <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: subTab === 'common' ? (isPaybackTrackingActive ? 1850 : 1600) : 1200 }}>
-            <thead>
-              <tr style={{ background: '#f8fafc' }}>
-                <th style={{ width: 50 }}>Sr.</th>
-                <th style={{ width: 130 }}>Cheque Date</th>
-                <th style={{ width: 135 }}>Deducted Date</th>
-                <th style={{ width: 110 }}>Cheque No</th>
-                <th style={{ width: 200 }}>Vendor Name</th>
-                <th>{subTab === 'common' ? 'Purpose' : 'Remarks / Purpose'}</th>
-                {subTab === 'common' && (
-                  <th style={{ width: 150 }}>Remark</th>
-                )}
-                <th style={{ width: 130, textAlign: 'right' }}>Total (₹)</th>
-                {subTab === 'common' && (
-                  <>
-                    <th style={{ width: 120, textAlign: 'right', background: '#f0fdf4' }}>A Share (87)</th>
-                    <th style={{ width: isPaybackTrackingActive ? 110 : 120, textAlign: 'right', background: '#f0f9ff' }}>B Share (96)</th>
-                    {isPaybackTrackingActive && (
-                      <th style={{ width: 155, textAlign: 'center', background: '#eff6ff', color: '#1e40af', borderLeft: '1px solid #bfdbfe' }}>
-                        B Paid Back Date
-                      </th>
-                    )}
-                    <th style={{ width: isPaybackTrackingActive ? 110 : 120, textAlign: 'right', background: '#fff7ed' }}>C Share (48)</th>
-                    {isPaybackTrackingActive && (
-                      <th style={{ width: 155, textAlign: 'center', background: '#fffbeb', color: '#b45309', borderLeft: '1px solid #fde68a' }}>
-                        C Paid Back Date
-                      </th>
-                    )}
-                  </>
-                )}
-                <th style={{ width: 120 }}>Who Paid</th>
-                <th style={{ width: 70, textAlign: 'center' }}>Paid?</th>
-                <th style={{ width: 85, textAlign: 'center' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <tr><td colSpan={subTab === 'common' ? (isPaybackTrackingActive ? 16 : 14) : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
-              ) : filteredCheques.length === 0 ? (
-                <tr><td colSpan={subTab === 'common' ? (isPaybackTrackingActive ? 16 : 14) : 10} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
-                  {searchText ? `No cheques found matching "${searchText}"` : 'No cheques recorded.'}
-                </td></tr>
-              ) : (
-                filteredCheques.map((c, i) => {
-                  const actualIdx = activeCheques.findIndex(orig => orig.id === c.id);
-                  const isCancelled = n(c.amount) === 0;
-                  const isPaid = c.isPaid === true;
-                  const rowStyle = isCancelled ? { background: '#f5f5f5', opacity: 0.65 } : isPaid ? { background: '#f0fdf4', opacity: 0.85 } : {};
-                  const strikeStyle = isCancelled || isPaid ? { textDecoration: 'line-through', color: '#9ca3af' } : {};
-                  
-                  return (
-                    <tr key={c.id || i} style={rowStyle}>
-                      <td style={strikeStyle}>{i + 1}</td>
-                      <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value)} readOnly={!canEdit} style={strikeStyle} /></td>
-                      <td>
-                        <input
-                          className="attendance-register-input"
-                          type="date"
-                          value={c.deductedDate || ''}
-                          onChange={e => {
-                            updateRow(actualIdx, 'deductedDate', e.target.value);
-                            if (e.target.value && !c.isPaid) {
-                              updateRow(actualIdx, 'isPaid', true);
-                            }
-                          }}
-                          readOnly={!canEdit}
-                          title="Date amount was deducted/debited from bank"
-                        />
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value)} readOnly={!canEdit} style={strikeStyle} />
-                          {isCancelled && <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', fontWeight: 700, padding: '2px 5px', borderRadius: '4px', whiteSpace: 'nowrap' }}>CANCELLED</span>}
-                        </div>
-                      </td>
-                      <td><input className="attendance-register-input" style={{ fontWeight: 600, ...strikeStyle }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value)} readOnly={!canEdit} /></td>
-                      <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value)} readOnly={!canEdit} style={isCancelled || isPaid ? { color: '#9ca3af' } : {}} /></td>
-                      {subTab === 'common' && (
-                        <td>
-                          <input 
-                            className="attendance-register-input" 
-                            placeholder="Add remark..." 
-                            value={c.remark || ''} 
-                            onChange={e => updateRow(actualIdx, 'remark', e.target.value)} 
-                            readOnly={!canEdit} 
-                            style={strikeStyle} 
-                            title="Remark / Note for common work"
-                          />
-                        </td>
-                      )}
-                      <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700, ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : isPaid ? { textDecoration: 'line-through', color: '#16a34a' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value)} readOnly={!canEdit} /></td>
-                      {subTab === 'common' && (
-                        <>
-                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#16a34a', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
-                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#2563eb', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
-                          {isPaybackTrackingActive && (
-                            <td style={{ textAlign: 'center', background: '#f8faff', borderLeft: '1px solid #dbeafe', verticalAlign: 'middle', padding: '6px 8px' }}>
-                              {isCancelled ? (
-                                <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>—</span>
-                              ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                  <input
-                                    type="date"
-                                    className="attendance-register-input"
-                                    value={c.bPaidDate || c.bReceiveDate || ''}
-                                    onChange={e => updateRow(actualIdx, 'bPaidDate', e.target.value)}
-                                    readOnly={!canEdit}
-                                    title="Date B Building paid back / reimbursed their share"
-                                    style={{ textAlign: 'center', fontSize: '0.82rem', padding: '4px' }}
-                                  />
-                                  {(c.bPaidDate || c.bReceiveDate) ? (
-                                    <div style={{
-                                      fontSize: '0.72rem',
-                                      fontWeight: 600,
-                                      color: '#166534',
-                                      background: '#dcfce7',
-                                      border: '1px solid #86efac',
-                                      borderRadius: '4px',
-                                      padding: '2px 6px',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      gap: '4px'
-                                    }}>
-                                      <span>✓ Paid Back</span>
-                                      {canEdit && (
-                                        <button
-                                          type="button"
-                                          onClick={() => updateRow(actualIdx, 'bPaidDate', '')}
-                                          title="Clear B payback date"
-                                          style={{ background: 'none', border: 'none', color: '#166534', cursor: 'pointer', padding: 0, fontWeight: 700, fontSize: '0.75rem', lineHeight: 1 }}
-                                        >
-                                          ✕
-                                        </button>
-                                      )}
-                                    </div>
-                                  ) : (
-                                    n(c.amount) > 0 && (
-                                      <div style={{
-                                        fontSize: '0.72rem',
-                                        fontWeight: 600,
-                                        color: '#b45309',
-                                        background: '#fffbeb',
-                                        border: '1px solid #fde68a',
-                                        borderRadius: '4px',
-                                        padding: '2px 6px',
-                                        textAlign: 'center'
-                                      }}>
-                                        ⏳ Pending
-                                      </div>
-                                    )
-                                  )}
-                                </div>
-                              )}
-                            </td>
-                          )}
-                          <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#ea580c', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
-                          {isPaybackTrackingActive && (
-                            <td style={{ textAlign: 'center', background: '#fffdfa', borderLeft: '1px solid #fef3c7', verticalAlign: 'middle', padding: '6px 8px' }}>
-                              {isCancelled ? (
-                                <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>—</span>
-                              ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                  <input
-                                    type="date"
-                                    className="attendance-register-input"
-                                    value={c.cPaidDate || c.cReceiveDate || ''}
-                                    onChange={e => updateRow(actualIdx, 'cPaidDate', e.target.value)}
-                                    readOnly={!canEdit}
-                                    title="Date C Building paid back / reimbursed their share"
-                                    style={{ textAlign: 'center', fontSize: '0.82rem', padding: '4px' }}
-                                  />
-                                  {(c.cPaidDate || c.cReceiveDate) ? (
-                                    <div style={{
-                                      fontSize: '0.72rem',
-                                      fontWeight: 600,
-                                      color: '#166534',
-                                      background: '#dcfce7',
-                                      border: '1px solid #86efac',
-                                      borderRadius: '4px',
-                                      padding: '2px 6px',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      gap: '4px'
-                                    }}>
-                                      <span>✓ Paid Back</span>
-                                      {canEdit && (
-                                        <button
-                                          type="button"
-                                          onClick={() => updateRow(actualIdx, 'cPaidDate', '')}
-                                          title="Clear C payback date"
-                                          style={{ background: 'none', border: 'none', color: '#166534', cursor: 'pointer', padding: 0, fontWeight: 700, fontSize: '0.75rem', lineHeight: 1 }}
-                                        >
-                                          ✕
-                                        </button>
-                                      )}
-                                    </div>
-                                  ) : (
-                                    n(c.amount) > 0 && (
-                                      <div style={{
-                                        fontSize: '0.72rem',
-                                        fontWeight: 600,
-                                        color: '#b45309',
-                                        background: '#fffbeb',
-                                        border: '1px solid #fde68a',
-                                        borderRadius: '4px',
-                                        padding: '2px 6px',
-                                        textAlign: 'center'
-                                      }}>
-                                        ⏳ Pending
-                                      </div>
-                                    )
-                                  )}
-                                </div>
-                              )}
-                            </td>
-                          )}
-                        </>
-                      )}
-                      <td>
-                        <select className="attendance-register-input" value={c.whoPaid} onChange={e => updateRow(actualIdx, 'whoPaid', e.target.value)} disabled={!canEdit} style={strikeStyle}>
-                          <option>A Building</option>
-                          <option>B Building</option>
-                          <option>C Building</option>
-                          <option>Petty Cash</option>
-                        </select>
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
-                         <input type="checkbox" checked={c.isPaid || false} onChange={e => updateRow(actualIdx, 'isPaid', e.target.checked)} disabled={!canEdit} style={{ transform: 'scale(1.2)' }} />
-                      </td>
-                      <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                          <button
-                            type="button"
-                            onClick={() => handleOpenEditModal(c, actualIdx)}
-                            className="button-secondary"
-                            style={{ padding: '3px 8px', fontSize: '0.75rem', height: 'auto', borderRadius: '4px', cursor: 'pointer' }}
-                            title="Edit Cheque Details"
-                          >
-                            ✏️ Edit
-                          </button>
-                          {canEdit && (
-                            <button
-                              type="button"
-                              className="button-icon"
-                              onClick={() => removeRow(actualIdx)}
-                              style={{ opacity: 0.3 }}
-                              title="Delete Cheque"
-                            >
-                              ✕
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-            <tfoot>
-              <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
-                <td colSpan={subTab === 'common' ? 7 : 6} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
-                <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmount)}</td>
-                {subTab === 'common' && (
-                  <>
-                    <td style={{ textAlign: 'right', color: '#16a34a' }}>₹{fmt(totalAmount * FLATS.A / FLATS.Total)}</td>
-                    <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmount * FLATS.B / FLATS.Total)}</td>
-                    {isPaybackTrackingActive && (
-                      <td style={{ textAlign: 'center', fontSize: '0.78rem', color: '#1e40af', background: '#eff6ff', borderLeft: '1px solid #bfdbfe' }}>
-                        Rec: ₹{fmt(bReceivedAmount)}
-                      </td>
-                    )}
-                    <td style={{ textAlign: 'right', color: '#ea580c' }}>₹{fmt(totalAmount * FLATS.C / FLATS.Total)}</td>
-                    {isPaybackTrackingActive && (
-                      <td style={{ textAlign: 'center', fontSize: '0.78rem', color: '#b45309', background: '#fffbeb', borderLeft: '1px solid #fde68a' }}>
-                        Rec: ₹{fmt(cReceivedAmount)}
-                      </td>
-                    )}
-                  </>
-                )}
-                <td colSpan={3}></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+              </div>
+            )}
+          </div>
+        )}
+        {renderChequeTable(filteredCommon, true)}
       </div>
 
       {/* Edit Cheque Modal */}

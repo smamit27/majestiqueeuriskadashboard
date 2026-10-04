@@ -8,6 +8,7 @@ const TOTAL_FLATS = FLAT_COUNTS.A + FLAT_COUNTS.B + FLAT_COUNTS.C;
 
 const n = (v) => parseFloat(v) || 0;
 const fmt = (v) => Number(v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
 
 export default function ChequeTracker() {
   const [entries, setEntries] = useState([
@@ -184,6 +185,75 @@ export default function ChequeTracker() {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Cheques');
     XLSX.writeFile(wb, 'Cheque_Tracker.xlsx');
+  };
+
+  const handlePrintPdf = () => {
+    const printedDate = new Intl.DateTimeFormat('en-IN', {
+      day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    }).format(new Date());
+
+    const columns = [
+      { label: 'Sr.', value: (_e, i) => i + 1 },
+      { label: 'Month', value: e => e.month || '' },
+      { label: 'Cheque Date', value: e => e.date || '' },
+      { label: 'Deducted Date', value: e => e.deductedDate || 'Pending' },
+      { label: 'Cheque No', value: e => e.chequeNo || '' },
+      { label: 'Vendor Name', value: e => e.vendor || '' },
+      { label: 'Purpose / Remarks', value: e => e.purpose || '' },
+      { label: 'Total (₹)', value: e => fmt(n(e.totalAmount)), amount: true },
+      { label: 'Who Paid', value: e => e.whoPaid || '' },
+      { label: 'A Share (₹)', value: e => fmt(n(e.aShare)), amount: true },
+      { label: 'B Share (₹)', value: e => fmt(n(e.bShare)), amount: true },
+      { label: 'B Recv Date', value: e => e.bReceiveDate || '' },
+      { label: 'C Share (₹)', value: e => fmt(n(e.cShare)), amount: true },
+      { label: 'C Recv Date', value: e => e.cReceiveDate || '' },
+      { label: 'Remarks', value: e => e.remarks || '' },
+    ];
+
+    const headers = columns.map(col => `<th>${col.label}</th>`).join('');
+    const rows = filteredEntries.map((e, i) =>
+      `<tr>${columns.map(col => `<td${col.amount ? ' class="amount"' : ''}>${escapeHtml(col.value(e, i))}</td>`).join('')}</tr>`
+    ).join('');
+
+    const monthLabel = filterMonth !== 'All' ? ` · ${filterMonth}` : ' · All Months';
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Cheque Tracker${monthLabel}</title>
+        <meta charset="utf-8" />
+        <style>
+          @page { size: A4 landscape; margin: 10mm; }
+          * { box-sizing: border-box; }
+          body { font-family: Arial, sans-serif; color: #0f172a; margin: 0; }
+          h1 { color: #1e3a8a; font-size: 18px; margin: 0 0 4px; }
+          .subtitle { color: #475569; font-size: 10px; margin-bottom: 12px; }
+          table { border-collapse: collapse; width: 100%; font-size: 7.5px; }
+          th, td { border: 1px solid #cbd5e1; padding: 3px 4px; text-align: left; vertical-align: top; }
+          th { background: #eff6ff; color: #1e3a8a; font-weight: 700; }
+          tbody tr:nth-child(even) { background: #f8fafc; }
+          .amount { text-align: right; white-space: nowrap; }
+          .footer { color: #64748b; font-size: 8px; margin-top: 8px; text-align: right; }
+        </style>
+      </head>
+      <body>
+        <h1>Common Work Cheque Tracker${monthLabel}</h1>
+        <div class="subtitle">Majestique Euriska CHS Ltd. · ${filteredEntries.length} records</div>
+        <table>
+          <thead><tr>${headers}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="footer">Printed on: ${printedDate}</div>
+        <script>window.onload = function() { setTimeout(function() { window.print(); }, 250); };</script>
+      </body>
+      </html>
+    `;
+    const printWin = window.open('', '_blank');
+    if (printWin) {
+      printWin.document.write(printDoc);
+      printWin.document.close();
+    }
   };
 
   const handleManualSave = () => {
@@ -375,6 +445,7 @@ export default function ChequeTracker() {
               <button className="button-secondary" onClick={handleRestoreDefault} style={{ fontSize: '0.8rem', padding: '8px 10px', whiteSpace: 'nowrap', flex: '0 0 auto' }}>🔄 Restore</button>
               <button className="button-primary" onClick={addRow} style={{ padding: '8px 10px', whiteSpace: 'nowrap', flex: '0 0 auto' }}>+ Add Row</button>
               <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '8px 10px', whiteSpace: 'nowrap', flex: '0 0 auto' }}>⬇ Excel</button>
+              <button className="button-secondary" onClick={handlePrintPdf} style={{ padding: '8px 10px', whiteSpace: 'nowrap', flex: '0 0 auto' }}>⬇ PDF</button>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ChequeManagement from './ChequeManagement.jsx';
 
@@ -125,7 +125,7 @@ describe('ChequeManagement Component - Automatic Past Month Lock System', () => 
     expect(screen.getByText(/AUDIT UNLOCKED/i)).toBeInTheDocument();
 
     // Add form is now visible
-    expect(screen.getByRole('button', { name: /Add to Ledger/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Add to (Building A|Ledger)/i })).toBeInTheDocument();
 
     // Re-lock Month
     const relockBtn = screen.getByRole('button', { name: /Re-lock Month/i });
@@ -148,20 +148,22 @@ describe('ChequeManagement Component - B and C Payback Tracking for Common Work'
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<ChequeManagement isAdmin={true} />);
 
-    // Switch to Common Work tab
-    const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
-    await user.click(commonTab);
+    const tables = screen.getAllByRole('table');
+    const commonTable = tables[1];
 
-    // Headers should include B Paid Back Date, C Paid Back Date, and Remark
-    expect(screen.getByRole('columnheader', { name: /B Paid Back Date/i })).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: /C Paid Back Date/i })).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: /Remark/i })).toBeInTheDocument();
+    // In single-screen mode, Common Work section is rendered directly
+    expect(within(commonTable).getByRole('columnheader', { name: /B Paid Back Date/i })).toBeInTheDocument();
+    expect(within(commonTable).getByRole('columnheader', { name: /C Paid Back Date/i })).toBeInTheDocument();
+    expect(within(commonTable).getByRole('columnheader', { name: /^Remark$/i })).toBeInTheDocument();
 
     // Summary banner/card should display payback tracking
     expect(screen.getByText(/B & C Payback Tracking Active/i)).toBeInTheDocument();
     expect(screen.getByText(/Inter-Building Recovery/i)).toBeInTheDocument();
 
-    // Form should include fields for B Paid Back Date, C Paid Back Date, and Remark
+    // Switch form to Common Work to see payback input fields
+    const commonFormBtn = screen.getByRole('button', { name: /Common Work/i });
+    await user.click(commonFormBtn);
+
     expect(screen.getByText('B Paid Back Date', { selector: 'label' })).toBeInTheDocument();
     expect(screen.getByText('C Paid Back Date', { selector: 'label' })).toBeInTheDocument();
     expect(screen.getByText('Remark / Notes', { selector: 'label' })).toBeInTheDocument();
@@ -171,28 +173,23 @@ describe('ChequeManagement Component - B and C Payback Tracking for Common Work'
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<ChequeManagement isAdmin={true} />);
 
-    // Switch to Common Work tab
-    const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
-    await user.click(commonTab);
-
     // Switch to August 2026
     const augTab = screen.getByRole('button', { name: /Aug 26/i });
     await user.click(augTab);
 
-    // In August 2026, payback tracking IS active
-    expect(screen.getByRole('columnheader', { name: /B Paid Back Date/i })).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: /C Paid Back Date/i })).toBeInTheDocument();
-    expect(screen.getByRole('columnheader', { name: /Remark/i })).toBeInTheDocument();
+    const tables = screen.getAllByRole('table');
+    const commonTable = tables[1];
+
+    // In August 2026, payback tracking IS active in Common Work section
+    expect(within(commonTable).getByRole('columnheader', { name: /B Paid Back Date/i })).toBeInTheDocument();
+    expect(within(commonTable).getByRole('columnheader', { name: /C Paid Back Date/i })).toBeInTheDocument();
+    expect(within(commonTable).getByRole('columnheader', { name: /^Remark$/i })).toBeInTheDocument();
     expect(screen.getByText(/B & C Payback Tracking Active/i)).toBeInTheDocument();
   });
 
   it('does NOT render B or C Paid Back Date columns for Common Work in past months prior to August 2026', async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<ChequeManagement isAdmin={true} />);
-
-    // Switch to Common Work tab
-    const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
-    await user.click(commonTab);
 
     // Switch to July 2026 (prior to August 2026)
     const julTab = screen.getByRole('button', { name: /Jul 26/i });
@@ -205,30 +202,59 @@ describe('ChequeManagement Component - B and C Payback Tracking for Common Work'
     expect(screen.queryByText(/Inter-Building Recovery/i)).not.toBeInTheDocument();
   });
 
-  it('does NOT render B or C Paid Back Date columns on Building A tab', async () => {
+  it('does NOT render B or C Paid Back Date columns in Building A table', async () => {
     render(<ChequeManagement isAdmin={true} />);
 
-    // Default tab is Building A
-    expect(screen.queryByRole('columnheader', { name: /B Paid Back Date/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('columnheader', { name: /C Paid Back Date/i })).not.toBeInTheDocument();
+    const tables = screen.getAllByRole('table');
+    const buildingATable = tables[0];
+    expect(within(buildingATable).queryByRole('columnheader', { name: /B Paid Back Date/i })).not.toBeInTheDocument();
+    expect(within(buildingATable).queryByRole('columnheader', { name: /C Paid Back Date/i })).not.toBeInTheDocument();
   });
 
-  it('retains cheques 537, 540, and 542 in Building A and removes them from Common Work in September 2026', async () => {
+  it('exports Building A and Common Work cheques together with both dates in the PDF', async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    let writtenDoc = '';
+    const printWindow = {
+      document: {
+        write: vi.fn((html) => { writtenDoc = html; }),
+        close: vi.fn(),
+      },
+    };
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(printWindow);
+
+    render(<ChequeManagement isAdmin={true} />);
+    await user.click(screen.getByRole('button', { name: /Jun 26/i }));
+    await user.click(screen.getByRole('button', { name: /export pdf/i }));
+
+    expect(openSpy).toHaveBeenCalledWith('', '_blank');
+    expect(writtenDoc).toContain('Combined Cheque Register');
+    expect(writtenDoc).toContain('A Building and Common Work');
+    expect(writtenDoc).toContain('A Building');
+    expect(writtenDoc).toContain('Common Work');
+    expect(writtenDoc).toContain('Cheque Date');
+    expect(writtenDoc).toContain('Amount Deducted Date');
+    expect(writtenDoc).toContain('MESDCL');
+    expect(writtenDoc).toContain('2026-06-15');
+    expect(writtenDoc).toContain('Tanaji Hunde');
+    expect(writtenDoc).toContain('2026-06-12');
+    expect(writtenDoc).toContain('window.print()');
+    openSpy.mockRestore();
+  });
+
+  it('retains cheques 537, 540, and 542 in Building A and does not duplicate them in Common Work in September 2026', async () => {
     render(<ChequeManagement isAdmin={true} />);
 
-    // In September 2026 Building A, cheques 537, 540, and 542 ARE present
+    // Wait for async load
     const inputsA = await screen.findAllByDisplayValue(/537|540|542/);
     expect(inputsA.length).toBeGreaterThanOrEqual(3);
 
-    // Switch to Common Work tab
-    const commonTab = screen.getByRole('button', { name: /🤝 Cheque Issue for Common Work/i });
-    await user.click(commonTab);
+    const tables = screen.getAllByRole('table');
+    const commonTable = tables[1];
 
-    // In Common Work, 537, 540, 542 are removed
-    expect(screen.queryByDisplayValue('537')).not.toBeInTheDocument();
-    expect(screen.queryByDisplayValue('540')).not.toBeInTheDocument();
-    expect(screen.queryByDisplayValue('542')).not.toBeInTheDocument();
+    // In Common Work, 537, 540, 542 are not present
+    expect(commonTable.textContent).not.toContain('537');
+    expect(commonTable.textContent).not.toContain('540');
+    expect(commonTable.textContent).not.toContain('542');
   });
 
   it('renders Edit button for existing cheques and opens Edit Cheque Modal', async () => {
