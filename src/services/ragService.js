@@ -65,7 +65,16 @@ function parseMonthYear(query) {
 function analyzeIntent(query) {
   const lowerQuery = query.toLowerCase();
   
-  if (lowerQuery.includes('shop') || lowerQuery.includes('maintenance')) {
+  if (lowerQuery.includes('drilling') || lowerQuery.includes('renovation') || lowerQuery.includes('timing') || lowerQuery.includes('rules')) {
+    return { type: 'rules', query: lowerQuery };
+  }
+  if (lowerQuery.includes('agm') || lowerQuery.includes('meeting') || lowerQuery.includes('sgm') || lowerQuery.includes('resolution')) {
+    return { type: 'agm', query: lowerQuery };
+  }
+  if (lowerQuery.includes('amc') || lowerQuery.includes('contract')) {
+    return { type: 'amc', query: lowerQuery };
+  }
+  if (lowerQuery.includes('shop') || lowerQuery.includes('shop maintenance')) {
     return { type: 'shops', query: lowerQuery };
   }
   if (lowerQuery.includes('housekeeping bill') || lowerQuery.includes('cleaning bill') || lowerQuery.includes('housekeeping calculation')) {
@@ -86,23 +95,60 @@ function analyzeIntent(query) {
   if (lowerQuery.includes('electricity') || lowerQuery.includes('water') || lowerQuery.includes('vendor')) {
     return { type: 'commonExpenses', query: lowerQuery };
   }
-  if (lowerQuery.includes('dues') || lowerQuery.includes('unpaid')) {
+  if (lowerQuery.includes('dues') || lowerQuery.includes('unpaid') || lowerQuery.includes('maintenance')) {
     return { type: 'dues', query: lowerQuery };
   }
   
   return { type: 'unknown', query: lowerQuery };
 }
 
-export async function generateContextForQuery(query) {
+export async function generateContextForQuery(query, userRole = 'ADMIN') {
   const intent = analyzeIntent(query);
   
   if (intent.type === 'unknown') {
     return null; 
   }
 
+  // ── Role-Based AI Guardrails ───────────────────────────────────────────
+  const isFinancialIntent = ['finance', 'chequeTracker'].includes(intent.type);
+  if (isFinancialIntent && userRole === 'RESIDENT') {
+    return `ACCESS RESTRICTED (RBAC POLICY): Society detailed financial records, expenditure ledgers, and cheque entries are confidential committee data. As a Resident, you may query your personal flat maintenance dues, general society rules, AGM notices, and complaints.`;
+  }
+
+  if (intent.type === 'amc' && userRole === 'RESIDENT') {
+    return `ACCESS RESTRICTED (RBAC POLICY): Vendor contract terms and AMC renewal schedules are restricted to the Managing Committee and Facility Manager. General notices are available on the Notice Board.`;
+  }
+
   try {
     await ensureFirebaseSession();
     let contextStr = `Data retrieved from ${intent.type}:\n`;
+
+    if (intent.type === 'rules') {
+      contextStr += `Official Majestique Euriska Society Rules & Guidelines:
+- Drilling and Renovation Timings: Strictly permitted between 10:00 AM – 1:00 PM and 3:00 PM – 6:00 PM, Monday to Saturday only. No drilling or heavy construction work is permitted on Sundays or national holidays.
+- Parking: Designated covered and open parking slots allotted per flat (A-101 to A-1108). Visitors must park in designated visitor bays for maximum 12 hours.
+- Waste Segregation: Wet and dry waste segregation is mandatory. Doorstep collection occurs daily at 9:30 AM outside apartment doors.
+- Pets: Pets must be leashed in common areas and elevators. Clean up after pets is mandatory.\n`;
+      return contextStr;
+    }
+
+    if (intent.type === 'agm') {
+      contextStr += `Official Majestique Euriska General Body Meetings (AGM/SGM Archive):
+- AGM 2026: Conducted on 06.09.2026. 7 official resolutions adopted (Special maintenance billing, accounts ratification, security & housekeeping audit, water tanker management, fire safety NOC).
+- AGM 2025: Conducted on 02.11.2025. 16 official resolutions adopted.
+- SGM 2025: Special General Meeting conducted on 15.06.2025 (Resolved: ₹3,000 Special Maintenance levy, EPDM playground flooring, and Statutory Auditor Balaji Chaudhari appointment).
+- Next meeting: Managing Committee monthly review meeting scheduled for the first Sunday of next month.\n`;
+      return contextStr;
+    }
+
+    if (intent.type === 'amc') {
+      contextStr += `AMC Contracts Status (Managing Committee / Facility Manager View):
+- Johnson Lifts AMC: Active (Annual Maintenance Contract covering 3 passenger elevators in Wing A)
+- Kirloskar DG Set AMC: Active (Quarterly servicing and diesel fuel testing)
+- Water Treatment Plant / STP: Active (Monthly chemical treatment and bacterial culture dosing)
+- Fire Fighting System: Annual inspection and hydrostatic pressure testing certified.\n`;
+      return contextStr;
+    }
 
     if (intent.type === 'shops') {
       let shopsData = initialShopData;

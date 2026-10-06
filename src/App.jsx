@@ -38,8 +38,15 @@ import ParkingAllotmentTracker from './components/organisms/ParkingAllotmentTrac
 import EmergencyNumbers from './components/organisms/EmergencyNumbers.jsx';
 import BuilderDiscuss from './components/organisms/BuilderDiscuss.jsx';
 import AgmMeetingTracker from './components/organisms/AgmMeetingTracker.jsx';
+import DocumentManager from './components/organisms/DocumentManager.jsx';
+import AuditTrailViewer from './components/organisms/AuditTrailViewer.jsx';
+import MonthlySocietyReport from './components/organisms/MonthlySocietyReport.jsx';
+import ResidentPortal from './components/organisms/ResidentPortal.jsx';
+import SocietyRulesModule from './components/organisms/SocietyRulesModule.jsx';
+import { ROLES, ROLE_LABELS, MODULES, hasModuleAccess, resolveUserRole } from './services/rbacService.js';
+import { logAuditEvent, AUDIT_ACTIONS } from './services/auditService.js';
 
-import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase.js';
 import { announcements, complaints, dues, events, finance, members, staff, visitors } from './data/mockData.js';
 import { useCollection } from './hooks/useCollection.js';
@@ -77,6 +84,9 @@ const TAB_ICONS = {
   ),
   announcements: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+  ),
+  society_rules: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
   ),
   members: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -175,6 +185,18 @@ const TAB_ICONS = {
   ),
   agm_records: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+  ),
+  documents: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+  ),
+  audit_logs: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  ),
+  monthly_report: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/><line x1="8" y1="8" x2="12" y2="8"/></svg>
+  ),
+  resident_portal: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
   )
 };
 
@@ -188,7 +210,7 @@ export default function App() {
         return 'society_overview';
       }
     }
-    return 'emergency';
+    return 'society_rules';
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -210,22 +232,71 @@ export default function App() {
     if (!auth) return;
     const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
-      if (!u) {
-        signInAnonymously(auth).catch((err) => {
-          console.error("Failed to sign in anonymously:", err);
-        });
-      }
     });
     return () => unsub();
   }, []);
 
-  const isAdmin = useMemo(() => {
-    if (typeof window !== 'undefined' && window.location.search.includes('admin=true')) {
-      return true;
+  const [selectedRoleOverride, setSelectedRoleOverride] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlRole = urlParams.get('role');
+      if (urlRole && Object.values(ROLES).includes(urlRole.toUpperCase())) {
+        return urlRole.toUpperCase();
+      }
+      return localStorage.getItem('euriska_active_role') || null;
     }
-    const allowedAdmins = ['majestiqueeuriska.a@gmail.com', 'smamit27@gmail.com'];
-    return user && user.email && allowedAdmins.includes(user.email.toLowerCase());
-  }, [user]);
+    return null;
+  });
+
+  const [expandedGroups, setExpandedGroups] = useState({
+    DASHBOARD: true,
+    SOCIETY: true,
+    FINANCE: true,
+    OPERATIONS: true,
+    RESIDENTS: true,
+    PROJECTS: true,
+    GOVERNANCE: true,
+  });
+
+  const toggleGroup = (groupId) => {
+    setExpandedGroups(prev => ({ ...prev, [groupId]: !prev[groupId] }));
+  };
+
+  const handleRoleChange = (newRole) => {
+    setSelectedRoleOverride(newRole);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('euriska_active_role', newRole);
+    }
+    logAuditEvent({
+      action: AUDIT_ACTIONS.ROLE_CHANGE,
+      module: 'RBAC',
+      recordId: newRole,
+      notes: `Role switched to ${newRole}`,
+      user,
+      role: newRole
+    });
+  };
+
+  const urlRole = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('role') : null;
+  const isDevAdminOverride = Boolean(
+    urlRole ||
+    (typeof window !== 'undefined' && (
+      window.location.search.includes('admin=true') ||
+      window.location.search.includes('dev=admin')
+    ))
+  );
+
+  const userRole = isDevAdminOverride
+    ? (urlRole?.toUpperCase() || ROLES.ADMIN)
+    : (user ? (selectedRoleOverride || resolveUserRole(user, selectedRoleOverride)) : ROLES.RESIDENT);
+
+  const isAdmin = (user || isDevAdminOverride)
+    ? [ROLES.ADMIN, ROLES.CHAIRMAN, ROLES.SECRETARY, ROLES.TREASURER, ROLES.MANAGER].includes(userRole)
+    : false;
+
+  const isAuthOrDevBypass = Boolean(user || isDevAdminOverride);
+  const PUBLIC_TABS = ['water_management', 'society_rules'];
+
 
   // ── Cmd/Ctrl + K → open global search ──────────────────────────
   useEffect(() => {
@@ -353,181 +424,280 @@ export default function App() {
     nextEvent
   };
 
-  const tabItems = useMemo(() => {
-    if (!isAdmin) {
-      return [
-        {
-          id: 'emergency',
-          label: 'Emergency',
-          metric: 'Quick Help & 112',
-          render: () => <EmergencyNumbers isAdmin={false} />
-        },
-        {
-          id: 'water_tanks',
-          label: 'Water Tank Management',
-          metric: '5,39,400 L Capacity & 3D Plan',
-          render: () => <WaterTankManagement isAdmin={false} />
-        }
-      ];
-    }
-
+  const navigationGroups = useMemo(() => {
     return [
       {
-        id: 'security',
-        label: 'Security',
-        metric: 'Deployment & Billing',
-        render: () => <SecurityModule isAdmin={isAdmin} />
+        id: 'DASHBOARD',
+        title: '🏠 DASHBOARD',
+        items: [
+          {
+            id: 'society_overview',
+            label: 'Society Overview',
+            metric: 'Executive Health & Real-time KPIs',
+            render: () => <MainDashboard stats={dashboardStats} isAdmin={isAdmin} userRole={userRole} />
+          }
+        ]
       },
       {
-        id: 'housekeeping',
-        label: 'Housekeeping',
-        metric: 'Attendance & Billing',
-        render: () => (
-          <HousekeepingModule 
-            isAdmin={isAdmin}
-            staffMembers={staffData.items} 
-            staffPresentCount={staffPresent} 
-            totalStaffCount={staffData.items.length} 
-          />
-        )
+        id: 'SOCIETY',
+        title: '📊 SOCIETY',
+        items: [
+          {
+            id: 'announcements',
+            label: 'Announcements',
+            metric: 'Notice Board',
+            render: () => <AnnouncementsModule isAdmin={isAdmin} />
+          },
+          {
+            id: 'society_rules',
+            label: 'Society Rules',
+            metric: 'Bylaws & Guidelines',
+            render: () => <SocietyRulesModule isAdmin={isAdmin} userRole={userRole} />
+          },
+          {
+            id: 'agm_records',
+            label: 'AGM & Meetings',
+            metric: 'AGM 2026 Minutes & Resolutions',
+            render: () => <AgmMeetingTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'emergency',
+            label: 'Emergency',
+            metric: 'Quick Help & 112',
+            render: () => <EmergencyNumbers isAdmin={isAdmin} />
+          }
+        ]
       },
       {
-        id: 'tanker',
-        label: 'Water Tanker',
-        metric: 'Water Tanker Billing',
-        render: () => <TankerModule isAdmin={isAdmin} />
+        id: 'FINANCE',
+        title: '💰 FINANCE',
+        items: [
+          {
+            id: 'finance',
+            label: 'Income & Expenses',
+            metric: 'Income & Expenses',
+            render: () => <FinanceTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'maintenance',
+            label: 'Maintenance',
+            metric: 'Outstanding Maintenance',
+            render: () => <SpecialMaintenanceTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'shop_maintenance',
+            label: 'Shop Maintenance',
+            metric: 'Shop-wise Tracker',
+            render: () => <ShopMaintenanceTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'cheques',
+            label: 'Cheque Tracker',
+            metric: 'Shared Expenses',
+            render: () => <ChequeManagement isAdmin={isAdmin} />
+          },
+          {
+            id: 'fixed_deposits',
+            label: 'Fixed Deposits',
+            metric: 'FD Portfolio Manager',
+            render: () => <FixedDepositTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'petty_cash',
+            label: 'Petty Cash',
+            metric: 'Ledger & Expenses',
+            render: () => <PettyCashTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'statement_auditor',
+            label: 'Statement Auditor',
+            metric: 'Forensic Payment Tracker',
+            render: () => <BankStatementTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'tata_electricity',
+            label: 'Tata Electricity Bill',
+            metric: 'Sub-meter Billing & Invoicing',
+            render: () => <ElectricityTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'solar',
+            label: 'Solar Management',
+            metric: 'Evaluation & ROI',
+            render: () => <SolarModule isAdmin={isAdmin} />
+          }
+        ]
       },
       {
-        id: 'water_tanks',
-        label: 'Water Tank Management',
-        metric: '5,39,400 L Capacity & 3D Plan',
-        render: () => <WaterTankManagement isAdmin={isAdmin} />
+        id: 'OPERATIONS',
+        title: '🏢 OPERATIONS',
+        items: [
+          {
+            id: 'manager_tasks',
+            label: 'Manager Tasks',
+            metric: 'Task & Deadline Tracker',
+            render: () => <ManagerTaskTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'amc',
+            label: 'AMC Tracker',
+            metric: 'Contracts & Payments',
+            render: () => <AmcTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'security',
+            label: 'Security',
+            metric: 'Deployment & Billing',
+            render: () => <SecurityModule isAdmin={isAdmin} />
+          },
+          {
+            id: 'housekeeping',
+            label: 'Housekeeping',
+            metric: 'Attendance & Billing',
+            render: () => (
+              <HousekeepingModule 
+                isAdmin={isAdmin}
+                staffMembers={staffData.items} 
+                staffPresentCount={staffPresent} 
+                totalStaffCount={staffData.items.length} 
+              />
+            )
+          },
+          {
+            id: 'water_tanks',
+            label: 'Water Tank Management',
+            metric: '5,39,400 L Capacity & 3D Plan',
+            render: () => <WaterTankManagement isAdmin={isAdmin} />
+          },
+          {
+            id: 'tanker',
+            label: 'Water Tanker',
+            metric: 'Water Tanker Billing',
+            render: () => <TankerModule isAdmin={isAdmin} />
+          }
+        ]
       },
       {
-        id: 'finance',
-        label: 'Income & Expenses',
-        metric: 'Income & Expenses',
-        render: () => <FinanceTracker isAdmin={isAdmin} />
+        id: 'RESIDENTS',
+        title: '🏠 RESIDENTS',
+        items: [
+          {
+            id: 'resident_portal',
+            label: 'Resident Portal',
+            metric: 'Resident Self-Service Dashboard',
+            render: () => <ResidentPortal onNavigate={handleTabChange} />
+          },
+          {
+            id: 'tenant_tracking',
+            label: 'Tenant Tracker',
+            metric: 'Wing A Occupants',
+            render: () => <TenantTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'parking_allotment',
+            label: 'Parking Allotment',
+            metric: 'A-101 to A-1108 Roster',
+            render: () => <ParkingAllotmentTracker isAdmin={isAdmin} />
+          },
+          {
+            id: 'park_plus',
+            label: 'Park+ Payments',
+            metric: 'RFID & Gate Solution Invoices',
+            render: () => <ParkPlusTracker isAdmin={isAdmin} />
+          }
+        ]
       },
       {
-        id: 'maintenance',
-        label: 'Maintenance',
-        metric: 'Outstanding Maintenance',
-        render: () => <SpecialMaintenanceTracker isAdmin={isAdmin} />
+        id: 'PROJECTS',
+        title: '🔧 PROJECTS',
+        items: [
+          {
+            id: 'water_management',
+            label: 'Visualization Work',
+            metric: 'Society Visual Plans & Designs',
+            render: () => <WaterManagement />
+          },
+          {
+            id: 'builder_discuss',
+            label: 'Builder Discuss',
+            metric: 'Eisha Pending Works & Escalations',
+            render: () => <BuilderDiscuss isAdmin={isAdmin} />
+          }
+        ]
       },
       {
-        id: 'shop_maintenance',
-        label: 'Shop Maintenance',
-        metric: 'Shop-wise Tracker',
-        render: () => <ShopMaintenanceTracker isAdmin={isAdmin} />
-      },
+        id: 'GOVERNANCE',
+        title: '📁 GOVERNANCE & AUDIT',
+        items: [
+          {
+            id: 'documents',
+            label: 'Document Vault',
+            metric: 'Legal, AGM & Compliance Archive',
+            render: () => <DocumentManager user={user} userRole={userRole} />
+          },
+          {
+            id: 'monthly_report',
+            label: 'Monthly Society Report',
+            metric: 'Executive Society Report & Export',
+            render: () => <MonthlySocietyReport />
+          },
+          {
+            id: 'audit_logs',
+            label: 'Audit Trail',
+            metric: 'Central Security & Change Ledger',
+            render: () => <AuditTrailViewer user={user} userRole={userRole} />
+          }
+        ]
+      }
+    ];
+  }, [isAdmin, userRole, dashboardStats, staffData.items, staffPresent]);
+
+  const allKnownTabItems = useMemo(() => {
+    const list = [];
+    const seen = new Set();
+    navigationGroups.forEach(group => {
+      group.items.forEach(item => {
+        if (!seen.has(item.id)) {
+          seen.add(item.id);
+          list.push(item);
+        }
+      });
+    });
+    return list;
+  }, [navigationGroups]);
+
+  const tabItems = useMemo(() => {
+    const list = [];
+    const seen = new Set();
+    navigationGroups.forEach(group => {
+      group.items.forEach(item => {
+        const isAccessible = !isAuthOrDevBypass
+          ? PUBLIC_TABS.includes(item.id)
+          : hasModuleAccess(userRole, item.id);
+        if (isAccessible && !seen.has(item.id)) {
+          seen.add(item.id);
+          list.push(item);
+        }
+      });
+    });
+    return list.length > 0 ? list : [
       {
-        id: 'cheques',
-        label: 'Cheque Tracker',
-        metric: 'Shared Expenses',
-        render: () => <ChequeManagement isAdmin={isAdmin} />
-      },
-      {
-        id: 'tata_electricity',
-        label: 'Tata Electricity Bill',
-        metric: 'Sub-meter Billing & Invoicing',
-        render: () => <ElectricityTracker isAdmin={isAdmin} />
-      },
-      {
-        id: 'solar',
-        label: 'Solar Management',
-        metric: 'Evaluation & ROI',
-        render: () => <SolarModule isAdmin={isAdmin} />
-      },
-      {
-        id: 'society_overview',
-        label: 'Society Overview',
-        metric: 'Executive Summary',
-        render: () => <MainDashboard stats={dashboardStats} isAdmin={isAdmin} />
-      },
-      {
-        id: 'announcements',
-        label: 'Announcements',
-        metric: 'Notice Board',
-        render: () => <AnnouncementsModule isAdmin={isAdmin} />
-      },
-      {
-        id: 'manager_tasks',
-        label: 'Manager Tasks',
-        metric: 'Task & Deadline Tracker',
-        render: () => <ManagerTaskTracker isAdmin={isAdmin} />
-      },
-      {
-        id: 'amc',
-        label: 'AMC Tracker',
-        metric: 'Contracts & Payments',
-        render: () => <AmcTracker isAdmin={isAdmin} />
+        id: 'society_rules',
+        label: 'Society Rules',
+        metric: 'Bylaws, Guidelines & Penalty Schedule',
+        render: () => <SocietyRulesModule isAdmin={false} />
       },
       {
         id: 'water_management',
         label: 'Visualization Work',
         metric: 'Society Visual Plans & Designs',
-        render: () => <WaterManagement />
-      },
-      {
-        id: 'park_plus',
-        label: 'Park+ Payments',
-        metric: 'RFID & Gate Solution Invoices',
-        render: () => <ParkPlusTracker isAdmin={isAdmin} />
-      },
-      {
-        id: 'petty_cash',
-        label: 'Petty Cash',
-        metric: 'Ledger & Expenses',
-        render: () => <PettyCashTracker isAdmin={isAdmin} />
-      },
-      {
-        id: 'statement_auditor',
-        label: 'Statement Auditor',
-        metric: 'Forensic Payment Tracker',
-        render: () => <BankStatementTracker isAdmin={isAdmin} />
-      },
-      {
-        id: 'fixed_deposits',
-        label: 'Fixed Deposits',
-        metric: 'FD Portfolio Manager',
-        render: () => <FixedDepositTracker isAdmin={isAdmin} />
-      },
-      {
-        id: 'tenant_tracking',
-        label: 'Tenant Tracker',
-        metric: 'Wing A Occupants',
-        render: () => <TenantTracker isAdmin={isAdmin} />
-      },
-      {
-        id: 'parking_allotment',
-        label: 'Parking Allotment',
-        metric: 'A-101 to A-1108 Roster',
-        render: () => <ParkingAllotmentTracker isAdmin={isAdmin} />
-      },
-      {
-        id: 'builder_discuss',
-        label: 'Builder Discuss',
-        metric: 'Eisha Pending Works & Escalations',
-        render: () => <BuilderDiscuss isAdmin={isAdmin} />
-      },
-      {
-        id: 'agm_records',
-        label: 'AGM & Meetings',
-        metric: 'AGM 2026 Minutes & Resolutions',
-        render: () => <AgmMeetingTracker isAdmin={isAdmin} />
-      },
-      {
-        id: 'emergency',
-        label: 'Emergency',
-        metric: 'Quick Help & 112',
-        render: () => <EmergencyNumbers isAdmin={isAdmin} />
-      },
+        render: () => <WaterManagement isAdmin={false} />
+      }
     ];
-  }, [isAdmin, dashboardStats, staffData.items, staffPresent]);
+  }, [navigationGroups, userRole, isAuthOrDevBypass]);
 
   const normalizedActiveTab = activeTab === 'electricity' ? 'tata_electricity' : activeTab;
-  const activeTabPanel = tabItems.find((item) => item.id === normalizedActiveTab) || tabItems[0];
+  const activeTabPanel = allKnownTabItems.find((item) => item.id === normalizedActiveTab) || tabItems[0] || { id: normalizedActiveTab, label: 'Society Portal', render: () => null };
 
   const handleTabChange = useCallback((tabId) => {
     if (tabId === activeTab) return;
@@ -553,15 +723,18 @@ export default function App() {
   }, [handleTabChange]);
 
   useEffect(() => {
-    const validTabIds = tabItems.map((item) => item.id);
+    const validTabIds = allKnownTabItems.map((item) => item.id);
     if (!validTabIds.includes(activeTab)) {
-      setActiveTab('emergency');
+      setActiveTab('society_rules');
     }
-  }, [tabItems, activeTab]);
+  }, [allKnownTabItems, activeTab]);
 
   useEffect(() => {
-    if (isAdmin && activeTab === 'emergency' && prevTab === null) {
-      setActiveTab('society_overview');
+    if (isAdmin && (activeTab === 'water_tanks' || activeTab === 'society_rules' || activeTab === 'water_management') && prevTab === null) {
+      const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      if (!params?.get('tab')) {
+        setActiveTab('society_overview');
+      }
     }
   }, [isAdmin]);
 
@@ -661,16 +834,17 @@ export default function App() {
           {/* Notifications */}
           <NotificationCenter isSidebarCollapsed={isSidebarCollapsed} />
 
-          {/* Admin login */}
+          {/* Sign In / User Session */}
           <div style={{ padding: '0 16px 8px' }}>
             <button 
-              className={`sidebar-item ${isAdmin ? 'sidebar-item--active' : ''}`}
+              className={`sidebar-item ${user ? 'sidebar-item--active' : ''}`}
               onClick={() => setIsAuthModalOpen(true)}
-              style={isAdmin ? { background: '#10b981', color: 'white' } : {}}
+              style={user ? { background: '#10b981', color: 'white' } : { border: '1px solid rgba(255,255,255,0.2)' }}
+              title={user ? `Signed in as ${user.email}` : 'Sign in to access live Firestore data'}
             >
               <span className="sidebar-item__icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  {isAdmin ? (
+                  {user ? (
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                   ) : (
                     <>
@@ -680,47 +854,111 @@ export default function App() {
                   )}
                 </svg>
               </span>
-              {!isSidebarCollapsed && <span className="sidebar-item__label">{isAdmin ? 'Admin (Live)' : 'Admin Login'}</span>}
+              {!isSidebarCollapsed && (
+                <span className="sidebar-item__label">
+                  {user ? (isAdmin ? 'Admin (Live)' : 'Signed In') : 'Admin Login / Sign In'}
+                </span>
+              )}
             </button>
           </div>
+
+          {/* Role Indicator & Testing Switcher */}
+          {!isSidebarCollapsed && (
+            (user || isDevAdminOverride) ? (
+              <div className="sidebar-role-selector">
+                <label>Active Role: {ROLE_LABELS[userRole] || userRole}</label>
+                <select
+                  aria-label="Switch active role"
+                  value={userRole}
+                  onChange={(e) => handleRoleChange(e.target.value)}
+                  title="Switch active role to test RBAC capabilities"
+                >
+                  {Object.keys(ROLES).map((r) => (
+                    <option key={r} value={r}>
+                      {ROLE_LABELS[r]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="sidebar-role-selector" style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.04)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>
+                  🔒 Public Guest View
+                </div>
+                <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', marginTop: '2px' }}>
+                  Sign in to unlock all society tabs
+                </div>
+              </div>
+            )
+          )}
         </div>
 
         <nav className="sidebar__nav" role="tablist" aria-orientation="vertical">
-          {tabItems.map((tab) => {
-            if (tab.isGroupHeader) {
-              return (
-                <div key={tab.id} className="sidebar-group-header">
-                  {tab.label}
-                </div>
-              );
-            }
+          {navigationGroups.map((group) => {
+            const accessibleItems = group.items.filter((item) => {
+              if (!isAuthOrDevBypass) {
+                return PUBLIC_TABS.includes(item.id);
+              }
+              return hasModuleAccess(userRole, item.id);
+            });
+            if (accessibleItems.length === 0) return null;
 
-            const badgeCount = getBadgeCount(tab.id);
+            const isGroupExpanded = expandedGroups[group.id] !== false;
+            const hasActiveItem = accessibleItems.some(i => i.id === normalizedActiveTab);
+
             return (
-              <button
-                key={tab.id}
-                id={`tab-${tab.id}`}
-                type="button"
-                role="tab"
-                aria-selected={activeTab === tab.id}
-                aria-controls={`panel-${tab.id}`}
-                className={`sidebar-item ${activeTab === tab.id ? 'sidebar-item--active' : ''} ${tab.isSubItem ? 'sidebar-item--sub' : ''}`}
-                onClick={() => handleTabChange(tab.id)}
-                title={isSidebarCollapsed ? tab.label : ""}
-              >
-                <span className="sidebar-item__icon">{TAB_ICONS[tab.id]}</span>
-                {!isSidebarCollapsed && <span className="sidebar-item__label">{tab.label}</span>}
-                {badgeCount > 0 && (
-                  <span className={`sidebar-item__badge ${isSidebarCollapsed ? 'sidebar-item__badge--dot' : ''}`}>
-                    {isSidebarCollapsed ? "" : badgeCount}
-                  </span>
+              <div key={group.id} className="sidebar-group">
+                {!isSidebarCollapsed ? (
+                  <button
+                    type="button"
+                    className={`sidebar-group__trigger ${hasActiveItem ? 'sidebar-group__trigger--active' : ''}`}
+                    onClick={() => toggleGroup(group.id)}
+                    aria-expanded={isGroupExpanded}
+                  >
+                    <span>{group.title}</span>
+                    <span className="sidebar-group__chevron" style={{ transform: isGroupExpanded ? 'rotate(0deg)' : 'rotate(-90deg)' }}>
+                      ▼
+                    </span>
+                  </button>
+                ) : (
+                  <div className="sidebar-group-header" title={group.title}>
+                    {group.title.split(' ')[0]}
+                  </div>
                 )}
-              </button>
+
+                {isGroupExpanded && (
+                  <div className="sidebar-group__items">
+                    {accessibleItems.map((tab) => {
+                      const isSelected = normalizedActiveTab === tab.id;
+                      const badgeCount = getBadgeCount(tab.id);
+                      return (
+                        <button
+                          key={tab.id}
+                          id={`tab-${tab.id}`}
+                          type="button"
+                          role="tab"
+                          aria-selected={isSelected}
+                          aria-controls={`panel-${tab.id}`}
+                          className={`sidebar-item ${isSelected ? 'sidebar-item--active' : ''} sidebar-item--sub`}
+                          onClick={() => handleTabChange(tab.id)}
+                          title={isSidebarCollapsed ? tab.label : ''}
+                        >
+                          <span className="sidebar-item__icon">{TAB_ICONS[tab.id] || TAB_ICONS.emergency}</span>
+                          {!isSidebarCollapsed && <span className="sidebar-item__label">{tab.label}</span>}
+                          {badgeCount > 0 && (
+                            <span className={`sidebar-item__badge ${isSidebarCollapsed ? 'sidebar-item__badge--dot' : ''}`}>
+                              {isSidebarCollapsed ? '' : badgeCount}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             );
           })}
         </nav>
-
-
 
         <AuthModal 
           isOpen={isAuthModalOpen} 
@@ -738,14 +976,6 @@ export default function App() {
           <h2>{activeTabPanel.label}</h2>
         </div>
 
-
-
-        {loadErrors.length > 0 ? <div className="notice-banner">{loadErrors[0]}</div> : null}
-
-
-
-
-
         <div
           id={`panel-${activeTabPanel.id}`}
           className={`tab-content-panel ${isTransitioning ? 'tab-content-panel--exit' : 'tab-content-panel--enter'}`}
@@ -753,15 +983,60 @@ export default function App() {
           aria-labelledby={`tab-${activeTabPanel.id}`}
           style={{}}
         >
-          {activeTabPanel.render()}
+          {!isAuthOrDevBypass && !PUBLIC_TABS.includes(normalizedActiveTab) ? (
+            <div className="section-card" style={{ padding: '48px 32px', textAlign: 'center', background: 'white', borderRadius: '16px', maxWidth: '580px', margin: '40px auto', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.06)' }}>
+              <span style={{ fontSize: '3rem', display: 'block', marginBottom: '16px' }}>🔐</span>
+              <h2 style={{ margin: '0 0 10px', color: '#0f172a' }}>Admin Login / Sign In Required</h2>
+              <p style={{ color: '#64748b', margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: '1.6' }}>
+                Majestique Euriska is a private society portal. Only <b>Visualization Work</b> and <b>Society Rules</b> are accessible without signing in. To view or manage this module, please sign in with your authorized admin account.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <button 
+                  className="button-primary" 
+                  onClick={() => setIsAuthModalOpen(true)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', fontSize: '0.95rem' }}
+                >
+                  <span>Admin Login / Sign In</span>
+                </button>
+                <button 
+                  className="button-secondary" 
+                  onClick={() => handleTabChange('society_rules')}
+                  style={{ padding: '12px 20px', fontSize: '0.95rem' }}
+                >
+                  Go to Society Rules
+                </button>
+                <button 
+                  className="button-secondary" 
+                  onClick={() => handleTabChange('water_management')}
+                  style={{ padding: '12px 20px', fontSize: '0.95rem' }}
+                >
+                  Go to Visualization Work
+                </button>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '24px' }}>
+                Authorized Administrators: <code>majestiqueeuriska.a@gmail.com</code> | <code>smamit27@gmail.com</code>
+              </p>
+            </div>
+          ) : !hasModuleAccess(userRole, normalizedActiveTab) ? (
+            <div className="section-card" style={{ padding: '48px', textAlign: 'center', background: 'white', borderRadius: '16px' }}>
+              <span style={{ fontSize: '3rem', display: 'block', marginBottom: '12px' }}>🔒</span>
+              <h2 style={{ margin: '0 0 8px', color: '#991b1b' }}>Access Denied (RBAC Protected)</h2>
+              <p style={{ color: '#64748b', maxWidth: '440px', margin: '0 auto 20px', fontSize: '0.9rem' }}>
+                Your current role (<b>{ROLE_LABELS[userRole] || userRole}</b>) is not authorized to access this module. Society data is protected behind strict role policies.
+              </p>
+              <button className="button-primary" onClick={() => handleTabChange('society_rules')}>
+                Return to Authorized View
+              </button>
+            </div>
+          ) : (
+            activeTabPanel.render()
+          )}
         </div>
-
-
       </main>
     </div>
     
     <AIChatButton isOpen={isChatOpen} onClick={() => setIsChatOpen(!isChatOpen)} />
-    <AIChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+    <AIChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} userRole={userRole} />
     </>
   );
 }

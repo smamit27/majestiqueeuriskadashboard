@@ -1,26 +1,220 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{path=**}/entries/{docId} { allow read, write: if true; }
-    match /pettyCash/{docId} { allow read, write: if true; }
-    match /commonExpenses/{docId} { allow read, write: if true; }
-    match /parkPlusInvoices/{docId} {
-      allow read: if true;
-      allow write: if request.auth != null &&
-                    (request.auth.token.email.lower() == 'majestiqueeuriska.a@gmail.com' ||
-                     request.auth.token.email.lower() == 'smamit27@gmail.com');
+
+    // ── Authentication & Identity Helpers ─────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
     }
+
+    function isMasterAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email.lower() in [
+          'majestiqueeuriska.a@gmail.com',
+          'smamit27@gmail.com'
+        ]
+      );
+    }
+
+    function getUserDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function hasUserRole(role) {
+      return isAuthenticated() && (
+        isMasterAdmin() ||
+        (request.auth.token.role == role) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && getUserDoc().role == role)
+      );
+    }
+
+    // ── Role Hierarchies ──────────────────────────────────────────────────────
+    function isAdmin() {
+      return isMasterAdmin() || 
+             hasUserRole('ADMIN') || 
+             hasUserRole('CHAIRMAN') || 
+             hasUserRole('SECRETARY');
+    }
+
+    function isTreasurer() {
+      return isAdmin() || hasUserRole('TREASURER');
+    }
+
+    function isManager() {
+      return isAdmin() || hasUserRole('MANAGER');
+    }
+
+    function isSecurity() {
+      return isAdmin() || isManager() || hasUserRole('SECURITY');
+    }
+
+    function isResident() {
+      return isAuthenticated();
+    }
+
+    // ── User Profiles ─────────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // ── Audit Logs: Immutable Append-Only ─────────────────────────────────────
+    match /auditLogs/{logId} {
+      allow create: if isAuthenticated();
+      allow read: if isAdmin();
+      allow update, delete: if false; // Audit records are strictly tamper-proof
+    }
+
+    // ── Financial Records (Strictly Treasurer & Executive Only) ───────────────
+    match /financeMonthly/{docId} {
+      allow read: if isTreasurer();
+      allow write: if isTreasurer() && 
+                    !(docId in ['finance_2026-04', 'finance_2026-05']); // Locked audited months
+    }
+
+    match /fixedDeposits/{docId} {
+      allow read, write: if isTreasurer();
+    }
+
+    match /chequesMonthly/{docId} {
+      allow read, write: if isTreasurer();
+    }
+
+    match /bankStatements/{docId} {
+      allow read, write: if isTreasurer();
+    }
+
+    match /pettyCash/{docId} {
+      allow read, write: if isTreasurer() || isManager();
+    }
+
+    match /commonExpenses/{docId} {
+      allow read, write: if isTreasurer();
+    }
+
+    match /shopMaintenance/{docId} {
+      allow read, write: if isTreasurer() || isAdmin();
+    }
+
+    // ── Operations & Facility Management (Manager / Operations Access) ───────
+    match /managerTasks_common/{taskId} {
+      allow read: if isManager() || isResident();
+      allow write: if isManager();
+    }
+
+    match /managerTasks_a_building/{taskId} {
+      allow read: if isManager() || isResident();
+      allow write: if isManager();
+    }
+
+    match /amcData/{docId} {
+      allow read: if isManager() || isAdmin();
+      allow write: if isManager() || isAdmin();
+    }
+
+    match /amcTracking/{docId} {
+      allow read: if isManager() || isAdmin();
+      allow write: if isManager() || isAdmin();
+    }
+
+    match /tankerEntries/{docId} {
+      allow read: if isManager() || isSecurity() || isResident();
+      allow write: if isManager() || isSecurity();
+    }
+
+    match /waterTanks/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isManager();
+    }
+
+    match /housekeepingAttendance/{docId} {
+      allow read: if isManager();
+      allow write: if isManager();
+    }
+
+    match /securityAttendance/{docId} {
+      allow read: if isSecurity() || isManager();
+      allow write: if isSecurity() || isManager();
+    }
+
+    match /parkPlusInvoices/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() || isManager();
+    }
+
+    // ── Society Documents (Role & Access Level Enforced) ──────────────────────
+    match /societyDocuments/{docId} {
+      allow read: if isAuthenticated() && (
+        resource.data.accessLevel == 'RESIDENT' ||
+        resource.data.accessLevel == 'ALL' ||
+        (resource.data.accessLevel == 'TREASURER' && isTreasurer()) ||
+        isAdmin()
+      );
+      allow write: if isAdmin() || isManager();
+    }
+
+    // ── Resident Privacy, Tenants & Parking Allotment ────────────────────────
+    match /tenantTracker/{tenantId} {
+      allow read: if isManager() || isAdmin();
+      allow write: if isManager() || isAdmin();
+    }
+
+    match /tenantTracking/{tenantId} {
+      allow read: if isManager() || isAdmin();
+      allow write: if isManager() || isAdmin();
+    }
+
+    match /toiTracking/{docId} {
+      allow read: if isTreasurer() || isManager() || isAdmin();
+      allow write: if isTreasurer() || isManager() || isAdmin();
+    }
+
+    match /accounting/{docId} {
+      allow read, write: if isTreasurer() || isAdmin();
+    }
+
+    match /parkingAllotment/{slotId} {
+      allow read: if isAuthenticated();
+      allow write: if isManager() || isAdmin();
+    }
+
+    // ── Public Society Data & Community ───────────────────────────────────────
+    match /announcements/{announcementId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() || isManager();
+    }
+
+    match /agmRecords/{recordId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /events/{eventId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() || isManager();
+    }
+
+    match /emergencyNumbers/{contactId} {
+      allow read: if true; // Emergency contacts must always be reachable
+      allow write: if isAdmin();
+    }
+
+    match /society_metadata/{docId} {
+      allow read: if true; // Society emergency directory & locations accessible
+      allow write: if isAdmin();
+    }
+
+    match /complaints/{complaintId} {
+      allow create: if isResident();
+      allow read: if isAdmin() || isManager() || (isResident() && resource.data.userId == request.auth.uid);
+      allow update: if isManager() || isAdmin() || (isResident() && resource.data.userId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // Default catch-all
     match /{document=**} {
-      // Allow read access to any authenticated user
-      allow read: if request.auth != null;
-      
-      // Allow write access only to the official admin emails, excluding locked finance months
-      allow write: if request.auth != null && 
-                    (request.auth.token.email.lower() == 'majestiqueeuriska.a@gmail.com' || 
-                     request.auth.token.email.lower() == 'smamit27@gmail.com') &&
-                    !(request.path.size() > 4 && request.path[3] == 'financeMonthly' && request.path[4] in ['finance_2026-04', 'finance_2026-05']);
+      allow read: if isAdmin();
+      allow write: if isMasterAdmin();
     }
   }
 }
-
-

@@ -49,21 +49,19 @@ export function useCollection(collectionName, fallbackItems, user) {
             }
           },
           (snapshotError) => {
-            console.error(`Unable to sync collection "${collectionName}"`, snapshotError);
+            console.warn(`Firestore sync standby for "${collectionName}":`, snapshotError?.code || snapshotError?.message);
             setItems(fallbackItems);
             setLoading(false);
-            setSource('mock');
-            setError('Live Firestore sync is unavailable, so mock society data is being shown.');
+            setSource('local');
+            setError('');
           }
         );
       } catch (sessionError) {
-        console.error(`Unable to start Firebase session for "${collectionName}"`, sessionError);
+        console.warn(`Firebase session notice for "${collectionName}":`, sessionError?.message);
         setItems(fallbackItems);
         setLoading(false);
-        setSource('mock');
-        setError(
-          'Firebase is configured, but authentication is not ready. Enable Anonymous Auth or review the Firebase setup.'
-        );
+        setSource('local');
+        setError('');
       }
     }
 

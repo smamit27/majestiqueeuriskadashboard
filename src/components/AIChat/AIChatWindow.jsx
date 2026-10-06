@@ -13,11 +13,11 @@ const CHAT_TABS = [
   { id: 'complaints', label: '🚨 Complaints', title: 'Complaints Tracker' }
 ];
 
-export default function AIChatWindow({ isOpen, onClose }) {
+export default function AIChatWindow({ isOpen, onClose, userRole = 'ADMIN' }) {
   const [activeTab, setActiveTab] = useState('general');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: "I'm ready to help. Try asking about pending maintenance or recent complaints." }
+    { role: 'assistant', content: "I'm ready to help. Try asking about pending maintenance, society rules, or recent complaints." }
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [metrics, setMetrics] = useState([]);
@@ -52,7 +52,7 @@ export default function AIChatWindow({ isOpen, onClose }) {
 
     try {
       // Step 1: Generate RAG Context from Firestore (with potential active tab fallback)
-      let context = await generateContextForQuery(text);
+      let context = await generateContextForQuery(text, userRole);
       
       // If intent parser doesn't find anything, try using activeTab context
       if (!context) {
@@ -63,7 +63,7 @@ export default function AIChatWindow({ isOpen, onClose }) {
         else if (activeTab === 'operations') fallbackQuery = "staff";
         
         if (fallbackQuery) {
-          context = await generateContextForQuery(fallbackQuery);
+          context = await generateContextForQuery(fallbackQuery, userRole);
         }
       }
 

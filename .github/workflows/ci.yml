@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline - Majestique Euriska ERP
 
 on:
   push:
@@ -8,9 +8,9 @@ on:
 
 jobs:
   validate:
-    name: Lint, Test & E2E Validation
+    name: Lint, Unit Test, Build & Playwright E2E
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     env:
       CI: true
@@ -21,39 +21,71 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      # Step 0.1: Setup Node.js runtime
-      - name: ⚙️ Setup Node.js
+      # Step 1: Setup Node.js runtime
+      - name: ⚙️ Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      # Step 1: Dependencies download
+      # Step 2: Dependencies download
       - name: 📦 1. Download Dependencies
         run: npm ci || npm install --legacy-peer-deps
 
-      # Step 2: ESLint Code Quality
-      - name: 🔍 2. Run ESLint
+      # Step 3: ESLint Code Quality
+      - name: 🔍 2. Run ESLint Code Quality
         run: npm run lint
 
-      # Step 3: Vitest Unit Test Cases
-      - name: 🧪 3. Run Unit Tests
+      # Step 4: Vitest Unit & Calculations Tests
+      - name: 🧪 3. Run Vitest Unit Tests
         run: npm run test:unit
 
-      # Step 4: Playwright E2E Tests
-      - name: 🌐 Install Playwright Chromium
+      # Step 5: Vite Production Bundle Build
+      - name: 🏗️ 4. Build Production Bundle
+        run: npm run build
+
+      # Step 6: Install Playwright Browsers & OS Dependencies
+      - name: 🌐 5. Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: 🎭 4. Run Playwright E2E Tests
+      # Step 7: Run Playwright E2E Business Journeys & RBAC Tests
+      - name: 🎭 6. Run Playwright E2E Workflows
         run: npm run test:e2e
         env:
           CI: true
 
-      # Step 5: Upload Playwright Report on Failure/Always
-      - name: 📊 Upload Playwright Report Artifacts
+      # Step 8: Upload Playwright Test Artifacts
+      - name: 📊 Upload Playwright Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 14
+
+  deploy:
+    name: Firebase Deployment Gate
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci || npm install --legacy-peer-deps
+
+      - name: 🏗️ Build Production Bundle
+        run: npm run build
+
+      - name: 🚀 Deploy to Firebase Hosting & Security Rules
+        if: env.FIREBASE_TOKEN != ''
+        run: npx firebase-tools deploy --only hosting,firestore:rules --token "${{ secrets.FIREBASE_TOKEN }}"
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
