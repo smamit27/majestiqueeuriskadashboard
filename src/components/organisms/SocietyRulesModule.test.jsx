@@ -134,4 +134,46 @@ describe('SocietyRulesModule', () => {
     );
     dispatchSpy.mockRestore();
   });
+
+  it('renders all mandatory conditions (Clauses a to n) from Guidelines Dt. 10-08-2026', () => {
+    render(<SocietyRulesModule isAdmin={false} userRole="RESIDENT" />);
+
+    expect(screen.getByText(/Mandatory Conditions from Guidelines Dt\. 10-08-2026/i)).toBeInTheDocument();
+    expect(screen.getByText(/Utilization Fee \(≤ 5 hrs\):/i)).toBeInTheDocument();
+    expect(screen.getByText(/Charges for > 5 hrs \/ Full Day:/i)).toBeInTheDocument();
+    expect(screen.getByText(/First-Come, First-Served:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Committee Coordination:/i)).toBeInTheDocument();
+    expect(screen.getByText(/AS-IS Clean Handover & Damages:/i)).toBeInTheDocument();
+    expect(screen.getByText(/No Society Chairs for Personal Use:/i)).toBeInTheDocument();
+    expect(screen.getByText(/No Eating on Lawn:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Strict Cooking Prohibition:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Music Cut-Off at 10:00 PM:/i)).toBeInTheDocument();
+    expect(screen.getByText(/No Alcohol & Smoking:/i)).toBeInTheDocument();
+    expect(screen.getByText(/No Festival Clashes:/i)).toBeInTheDocument();
+    expect(screen.getByText(/No Stage, DJ, Extra Lights or Generators:/i)).toBeInTheDocument();
+    expect(screen.getByText(/National Holidays \(Aug 15 & Jan 26\):/i)).toBeInTheDocument();
+  });
+
+  it('opens and closes poster lightbox modal in portal with print and download buttons', async () => {
+    render(<SocietyRulesModule isAdmin={false} userRole="RESIDENT" />);
+
+    // Click on the first view poster button
+    const viewPosterBtns = screen.getAllByRole('button', { name: /View Signed Circular Poster/i });
+    expect(viewPosterBtns.length).toBeGreaterThan(0);
+    fireEvent.click(viewPosterBtns[0]);
+
+    // Check lightbox modal content
+    expect(screen.getByRole('button', { name: /Print Poster/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Download/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Open Full Size/i })).toBeInTheDocument();
+
+    // Close modal
+    const closeBtn = screen.getByRole('button', { name: /Close/i });
+    fireEvent.click(closeBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: /Print Poster/i })).not.toBeInTheDocument();
+    });
+  });
 });
+

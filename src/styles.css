@@ -3046,40 +3046,50 @@ select {
   text-align: center;
 }
 
-/* ── Print Styles for Tenant Registry ── */
+/* ── Print Styles for Dashboard Modules & Registry ── */
 @media print {
-  /* Hide overall dashboard layout, menus, header, sidebars */
-  body * {
-    visibility: hidden;
+  /* Hide overall dashboard navigation, header, sidebars, AI chats */
+  .sidebar,
+  .app-sidebar,
+  .top-header,
+  .ai-chat-bubble,
+  .ai-chat-window,
+  .no-print,
+  .search-card,
+  .inline-form-card,
+  .button-primary,
+  .button-secondary,
+  .section-card__header button {
+    display: none !important;
   }
   
-  /* Show only the tenant tracking system section */
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Make active main containers printable */
   #tenant-tracking-system,
-  #tenant-tracking-system * {
-    visibility: visible;
-  }
-  
-  #tenant-tracking-system {
-    position: absolute;
-    left: 0;
-    top: 0;
+  #visuals-management-container,
+  .society-rules-container,
+  .main-content {
+    position: static !important;
     width: 100% !important;
     background: #ffffff !important;
     box-shadow: none !important;
     padding: 0 !important;
     margin: 0 !important;
+    visibility: visible !important;
+    display: block !important;
   }
   
-  /* Hide search, filter, buttons, inline forms, analytics charts, status labels from printing */
-  .search-card,
-  .inline-form-card,
-  .metrics-grid,
-  .exec-grid-2col,
-  .button-primary,
-  .button-secondary,
-  .section-card__header button,
-  .no-print {
-    display: none !important;
+  #tenant-tracking-system *,
+  #visuals-management-container *,
+  .society-rules-container *,
+  .main-content * {
+    visibility: visible !important;
   }
   
   /* Clean table container styling for printing */
@@ -3118,8 +3128,8 @@ select {
   
   /* Set layout margins */
   @page {
-    margin: 1.6cm;
-    size: A4 portrait;
+    margin: 1.2cm;
+    size: auto;
   }
 }
 

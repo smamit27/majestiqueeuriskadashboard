@@ -171,6 +171,67 @@ export default function WaterManagement() {
     window.dispatchEvent(new CustomEvent('changeTab', { detail: 'society_rules' }));
   };
 
+  const handlePrintVisual = (v) => {
+    if (!v) return;
+    const printDoc = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${v.title} - Majestique Euriska</title>
+          <meta charset="utf-8" />
+          <style>
+            @page { size: auto; margin: 10mm; }
+            body { font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; padding: 12px; color: #0f172a; text-align: center; background: #ffffff; }
+            .header { margin-bottom: 12px; border-bottom: 2px solid #0f172a; padding-bottom: 8px; text-align: left; }
+            .header h2 { margin: 0; font-size: 1.3rem; color: #0f172a; }
+            .header p { margin: 4px 0 0; font-size: 0.85rem; color: #475569; }
+            .img-box { margin-top: 10px; max-width: 100%; display: flex; justify-content: center; }
+            img { max-width: 100%; max-height: 84vh; object-fit: contain; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+            .footer { margin-top: 14px; font-size: 0.75rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 6px; display: flex; justify-content: space-between; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2>🏢 Majestique Euriska — ${v.title}</h2>
+            <p>${v.subtitle || ''} • Category: ${v.category}</p>
+          </div>
+          <div class="img-box">
+            <img src="${v.image}" alt="${v.title}" onload="window.print();" />
+          </div>
+          <div class="footer">
+            <span>Official Society Record • Reg. No. PNA/PNA (4)/HSG/(TC)/21207/2019-20</span>
+            <span>Date: ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+          </div>
+          <script>
+            window.addEventListener('load', () => { setTimeout(() => window.print(), 350); });
+          </script>
+        </body>
+      </html>
+    `;
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    } else {
+      window.print();
+    }
+  };
+
+  const handleDownloadVisual = (v) => {
+    if (!v) return;
+    const link = document.createElement('a');
+    link.href = v.image;
+    link.download = `${v.id || 'visual'}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handlePrintCatalog = () => {
+    window.print();
+  };
+
   const categories = [
     { id: 'ALL', label: 'All Visuals', count: visuals.length },
     { id: 'Rules & Notices', label: '📜 Rules & Notices', count: visuals.filter(v => v.category === 'Rules & Notices').length },
@@ -187,7 +248,7 @@ export default function WaterManagement() {
   });
 
   return (
-    <div style={{ fontFamily: 'Inter, system-ui, sans-serif', maxWidth: '100%', overflow: 'hidden' }}>
+    <div id="visuals-management-container" style={{ fontFamily: 'Inter, system-ui, sans-serif', maxWidth: '100%', overflow: 'hidden' }}>
 
       {/* Lightbox Modal */}
       {selectedVisual && createPortal(
@@ -240,7 +301,7 @@ export default function WaterManagement() {
             onClick={(e) => e.stopPropagation()}
             style={{
               maxWidth: '90%',
-              maxHeight: '80vh',
+              maxHeight: '85vh',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -252,48 +313,100 @@ export default function WaterManagement() {
               alt={selectedVisual.title}
               style={{
                 maxWidth: '100%',
-                maxHeight: '75vh',
+                maxHeight: '70vh',
                 borderRadius: '12px',
                 objectFit: 'contain',
                 boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7)',
               }}
             />
 
-            {/* Caption */}
-            <div style={{ color: '#fff', textAlign: 'center', marginTop: '16px' }}>
+            {/* Caption & Actions */}
+            <div style={{ color: '#fff', textAlign: 'center', marginTop: '14px', width: '100%' }}>
               <h3 style={{ margin: '0 0 4px', fontSize: '1.2rem', fontWeight: 700 }}>
                 {selectedVisual.title}
               </h3>
-              <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.8 }}>
+              <p style={{ margin: '0 0 12px', fontSize: '0.9rem', opacity: 0.85 }}>
                 {selectedVisual.subtitle}
               </p>
-              {selectedVisual.isRule && (
+
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
                 <button
+                  type="button"
+                  id="print-visual-btn"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedVisual(null);
-                    handleNavigateToRules();
+                    handlePrintVisual(selectedVisual);
                   }}
                   style={{
-                    marginTop: '14px',
-                    background: '#dc2626',
-                    color: '#fff',
+                    background: '#0284c7',
+                    color: '#ffffff',
                     border: 'none',
                     borderRadius: '8px',
-                    padding: '9px 18px',
-                    fontSize: '0.88rem',
-                    fontWeight: 600,
+                    padding: '8px 16px',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
                     cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(220,38,38,0.4)',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '6px'
+                    gap: '6px',
+                    boxShadow: '0 4px 12px rgba(2,132,199,0.4)',
                   }}
                 >
-                  <span>📜 Read Full Clause in Society Rules Tab</span>
-                  <span>→</span>
+                  <span>🖨️ Print / Save PDF</span>
                 </button>
-              )}
+
+                <button
+                  type="button"
+                  id="download-visual-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDownloadVisual(selectedVisual);
+                  }}
+                  style={{
+                    background: '#334155',
+                    color: '#ffffff',
+                    border: '1px solid #64748b',
+                    borderRadius: '8px',
+                    padding: '8px 16px',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <span>⬇️ Download Image</span>
+                </button>
+
+                {selectedVisual.isRule && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedVisual(null);
+                      handleNavigateToRules();
+                    }}
+                    style={{
+                      background: '#dc2626',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '8px 16px',
+                      fontSize: '0.85rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(220,38,38,0.4)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                    }}
+                  >
+                    <span>📜 View in Society Rules</span>
+                    <span>→</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>,
@@ -384,8 +497,8 @@ export default function WaterManagement() {
           ))}
         </div>
 
-        {/* Search Input */}
-        <div style={{ minWidth: '240px', flex: '1', maxWidth: '340px' }}>
+        {/* Search Input & Print Catalog */}
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flex: '1', maxWidth: '440px', justifyContent: 'flex-end' }}>
           <input
             type="text"
             placeholder="Search plans, rules & visuals..."
@@ -401,6 +514,28 @@ export default function WaterManagement() {
               background: '#ffffff',
             }}
           />
+          <button
+            type="button"
+            id="print-visuals-catalog-btn"
+            onClick={handlePrintCatalog}
+            style={{
+              background: '#f8fafc',
+              color: '#0f172a',
+              border: '1px solid #cbd5e1',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              fontSize: '0.82rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+            title="Print or export current gallery as PDF"
+          >
+            <span>🖨️ Print</span>
+          </button>
         </div>
       </div>
 

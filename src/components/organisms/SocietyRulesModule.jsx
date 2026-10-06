@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { SOCIETY_INFO } from '../../data/societyConfig.js';
 import {
   RULE_CATEGORIES,
@@ -16,6 +17,17 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
   const [copiedSummary, setCopiedSummary] = useState(false);
   const [isViolationModalOpen, setIsViolationModalOpen] = useState(false);
   const [selectedPoster, setSelectedPoster] = useState(null); // Lightbox modal for posters
+
+  // Lock body scroll when any modal is open
+  useEffect(() => {
+    if (selectedPoster || isViolationModalOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [selectedPoster, isViolationModalOpen]);
 
   // Clubhouse Booking Calculator State
   const [bookingHours, setBookingHours] = useState('5'); // '5' | 'full'
@@ -140,6 +152,51 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
       });
     }, 2000);
   };
+
+  // Helper to print a specific poster
+  const handlePrintPoster = useCallback((poster) => {
+    if (!poster) return;
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>${poster.title} - Majestique Euriska</title>
+            <style>
+              @page { size: auto; margin: 15mm; }
+              body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; text-align: center; background: #fff; }
+              .header { margin-bottom: 16px; }
+              .badge { display: inline-block; background: #991b1b; color: white; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; margin-bottom: 6px; }
+              h1 { font-size: 18px; margin: 0 0 6px 0; color: #0f172a; }
+              p { font-size: 13px; color: #475569; margin: 0; }
+              img { max-width: 100%; max-height: 82vh; object-fit: contain; margin-top: 12px; border-radius: 6px; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <span class="badge">${poster.badge || 'OFFICIAL CIRCULAR'}</span>
+              <h1>${poster.title}</h1>
+              <p>${poster.summary || ''}</p>
+            </div>
+            <img src="${poster.image}" alt="${poster.title}" onload="window.print();" />
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+  }, []);
+
+  // Helper to download poster image
+  const handleDownloadPoster = useCallback((poster) => {
+    if (!poster) return;
+    const link = document.createElement('a');
+    link.href = poster.image;
+    link.download = `${poster.id || 'society_poster'}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, []);
 
   return (
     <div className="society-rules-container" style={{ padding: '24px 20px', maxWidth: '1440px', margin: '0 auto', color: '#0f172a' }}>
@@ -579,29 +636,114 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
           </div>
         </div>
 
-        {/* Key Restrictions Grid directly from Circular */}
+        {/* Key Restrictions Grid directly from Circular Dt. 10-08-2026 (All 14 Clauses a to n) */}
         <div style={{
-          background: 'rgba(255,255,255,0.7)',
-          padding: '16px 18px',
-          borderRadius: '12px',
+          background: 'rgba(255,255,255,0.85)',
+          padding: '20px 22px',
+          borderRadius: '14px',
           border: '1px solid #cbd5e1',
-          fontSize: '0.8rem',
+          fontSize: '0.82rem',
           color: '#1e293b'
         }}>
-          <div style={{ fontWeight: 800, color: '#064e3b', marginBottom: '8px' }}>
-            📋 Mandatory Conditions from Guidelines Dt. 10-08-2026:
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '14px', borderBottom: '1px solid #e2e8f0', paddingBottom: '10px' }}>
+            <div>
+              <span style={{ fontWeight: 800, color: '#064e3b', fontSize: '0.95rem' }}>
+                📋 Mandatory Conditions from Guidelines Dt. 10-08-2026 (All Clauses a to n):
+              </span>
+              <div style={{ fontSize: '0.74rem', color: '#64748b', marginTop: '2px' }}>
+                Official Guidelines ratified for Buildings A, B &amp; C • All 14 clauses must be adhered to strictly by residents, owners &amp; tenants
+              </div>
+            </div>
+            <button
+              type="button"
+              id="view-circular-poster-btn"
+              onClick={() => setSelectedPoster(OFFICIAL_POSTERS.find(p => p.id === 'poster-clubhouse-guidelines'))}
+              style={{
+                background: '#ecfdf5',
+                color: '#047857',
+                border: '1px solid #a7f3d0',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+            >
+              📄 View Signed Circular Poster 🔍
+            </button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '8px 16px' }}>
-            <div>❌ <b>No Cooking:</b> Only normal heating / microwave allowed.</div>
-            <div>❌ <b>Lawn Area:</b> Cannot be used for eating during functions.</div>
-            <div>❌ <b>No Society Chairs:</b> Will not be given for personal home use.</div>
-            <div>❌ <b>No DJ / Stage / Lights:</b> No extra lights, DJ or stage setup allowed.</div>
-            <div>❌ <b>No Generators:</b> External generators strictly barred.</div>
-            <div>❌ <b>No Alcohol / Smoking:</b> Strictly prohibited anytime.</div>
-            <div>⏰ <b>Premises Timings:</b> Allowed till <b>11:30 PM</b>.</div>
-            <div>🔇 <b>Music Cutoff:</b> Strictly stopped at <b>10:00 PM</b> per Govt law.</div>
-            <div>🇮🇳 <b>National Holidays:</b> Aug 15 & Jan 26 lawn rules decided by Common Committee.</div>
-            <div>🤝 <b>First Come First Serve:</b> Building committee informs Common Committee.</div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '10px 18px' }}>
+            {/* Clause a */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>a</span>
+              <div><b>Utilization Fee (≤ 5 hrs):</b> ₹1,000/- (non-refundable) + ₹2,000/- (refundable deposit) for celebrations/functions up to 5 hours.</div>
+            </div>
+            {/* Clause b */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>b</span>
+              <div><b>Charges for &gt; 5 hrs / Full Day:</b> Double charges apply: ₹2,000/- (non-refundable) + ₹4,000/- (refundable deposit) up to full 1-day use.</div>
+            </div>
+            {/* Clause c */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>c</span>
+              <div><b>First-Come, First-Served:</b> 100% of above amount must be paid in advance to respective Building Committee member(s).</div>
+            </div>
+            {/* Clause d */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>d</span>
+              <div><b>Committee Coordination:</b> Building committee must inform Common Committee to avoid any booking clashes.</div>
+            </div>
+            {/* Clause e */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>e</span>
+              <div><b>AS-IS Clean Handover &amp; Damages:</b> Premises must be cleaned and given back in AS-IS condition. Damages or unclean area charged extra from deposit or paid by resident.</div>
+            </div>
+            {/* Clause f */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>f</span>
+              <div><b>No Society Chairs for Personal Use:</b> Society chairs will NOT be given for personal home/flat use; must remain available for clubhouse events.</div>
+            </div>
+            {/* Clause g */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>g</span>
+              <div><b>No Eating on Lawn:</b> Lawn area CANNOT be used for eating during any functions or events to preserve turf.</div>
+            </div>
+            {/* Clause h */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>h</span>
+              <div><b>Strict Cooking Prohibition:</b> Cooking is NOT allowed in any portion of clubhouse/lawn. Only normal heating/microwave permitted.</div>
+            </div>
+            {/* Clause i */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#0369a1', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>i</span>
+              <div><b>Premises Timings:</b> Clubhouse and lawn area allowed to be used till <b>11:30 PM</b> maximum.</div>
+            </div>
+            {/* Clause j */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>j</span>
+              <div><b>Music Cut-Off at 10:00 PM:</b> Music MUST be stopped strictly by <b>10:00 PM sharp</b> as per Government noise pollution guidelines.</div>
+            </div>
+            {/* Clause k */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>k</span>
+              <div><b>No Alcohol &amp; Smoking:</b> Consumption of alcoholic beverages and smoking is <b>strictly prohibited</b> during any functions or anytime.</div>
+            </div>
+            {/* Clause l */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#6d28d9', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>l</span>
+              <div><b>No Festival Clashes:</b> Clubhouse/lawn area will NOT be available for private booking during common society festivals/celebrations.</div>
+            </div>
+            {/* Clause m */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>m</span>
+              <div><b>No Stage, DJ, Extra Lights or Generators:</b> No stage setup, DJ, or extra lights. External private generators are strictly prohibited.</div>
+            </div>
+            {/* Clause n */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>n</span>
+              <div><b>National Holidays (Aug 15 &amp; Jan 26):</b> No private booking rules in lawn area on Independence &amp; Republic Day; celebrations decided by Common Committee for all residents.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1076,9 +1218,9 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
       </div>
 
       {/* ──────────────────────────────────────────────────────────────────────
-          7. Poster Lightbox Modal
+          7. Poster Lightbox Modal (Portaled to document.body for instant centering)
       ────────────────────────────────────────────────────────────────────── */}
-      {selectedPoster && (
+      {selectedPoster && typeof document !== 'undefined' && createPortal(
         <div
           onClick={() => setSelectedPoster(null)}
           style={{
@@ -1087,13 +1229,16 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(15, 23, 42, 0.85)',
-            backdropFilter: 'blur(6px)',
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(15, 23, 42, 0.88)',
+            backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 10000,
-            padding: '20px'
+            zIndex: 999999,
+            padding: '20px',
+            boxSizing: 'border-box'
           }}
         >
           <div
@@ -1101,93 +1246,149 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
             style={{
               background: '#ffffff',
               borderRadius: '20px',
-              maxWidth: '860px',
+              maxWidth: '880px',
               width: '100%',
               maxHeight: '92vh',
               overflow: 'hidden',
               display: 'flex',
               flexDirection: 'column',
-              boxShadow: '0 25px 50px -12px rgba(0,0,0,0.4)',
-              position: 'relative'
+              boxShadow: '0 30px 60px -12px rgba(0,0,0,0.5)',
+              position: 'relative',
+              animation: 'fadeIn 0.2s ease-out'
             }}
           >
             <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
               <div>
-                <span style={{ fontSize: '0.7rem', fontWeight: 700, background: '#dc2626', color: '#ffffff', padding: '2px 8px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.7rem', fontWeight: 700, background: '#dc2626', color: '#ffffff', padding: '3px 9px', borderRadius: '4px', textTransform: 'uppercase' }}>
                   {selectedPoster.badge}
                 </span>
-                <h3 style={{ margin: '4px 0 0 0', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
+                <h3 style={{ margin: '4px 0 0 0', fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
                   {selectedPoster.title}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedPoster(null)}
+                aria-label="Close"
                 style={{
                   background: '#e2e8f0',
                   border: 'none',
                   borderRadius: '50%',
-                  width: '32px',
-                  height: '32px',
-                  fontSize: '1rem',
+                  width: '34px',
+                  height: '34px',
+                  fontSize: '1.1rem',
                   color: '#475569',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background 0.15s ease'
                 }}
               >
                 ✕
               </button>
             </div>
 
-            <div style={{ overflowY: 'auto', padding: '16px', textAlign: 'center', background: '#0b1329' }}>
+            <div style={{ overflowY: 'auto', padding: '16px', textAlign: 'center', background: '#0b1329', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <img
                 src={selectedPoster.image}
                 alt={selectedPoster.title}
-                style={{ maxWidth: '100%', maxHeight: '72vh', objectFit: 'contain', borderRadius: '8px' }}
+                style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}
               />
             </div>
 
-            <div style={{ padding: '12px 20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+            <div style={{ padding: '14px 20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+              <div style={{ fontSize: '0.82rem', color: '#64748b', maxWidth: '500px' }}>
                 {selectedPoster.summary}
               </div>
-              <a
-                href={selectedPoster.image}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  background: '#047857',
-                  color: '#ffffff',
-                  textDecoration: 'none',
-                  padding: '6px 14px',
-                  borderRadius: '6px',
-                  fontSize: '0.78rem',
-                  fontWeight: 700
-                }}
-              >
-                Open Original Image ↗
-              </a>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                  type="button"
+                  onClick={() => handlePrintPoster(selectedPoster)}
+                  style={{
+                    background: '#ffffff',
+                    color: '#0f172a',
+                    border: '1px solid #cbd5e1',
+                    padding: '7px 14px',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <span>🖨️</span>
+                  <span>Print Poster</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDownloadPoster(selectedPoster)}
+                  style={{
+                    background: '#ffffff',
+                    color: '#0f172a',
+                    border: '1px solid #cbd5e1',
+                    padding: '7px 14px',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <span>⬇️</span>
+                  <span>Download</span>
+                </button>
+                <a
+                  href={selectedPoster.image}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    background: '#047857',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    padding: '7px 14px',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <span>Open Full Size</span>
+                  <span>↗</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ──────────────────────────────────────────────────────────────────────
-          8. Report Violation Modal
+          8. Report Violation Modal (Portaled to document.body for instant centering)
       ────────────────────────────────────────────────────────────────────── */}
-      {isViolationModalOpen && (
+      {isViolationModalOpen && typeof document !== 'undefined' && createPortal(
         <div style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(15, 23, 42, 0.65)',
-          backdropFilter: 'blur(4px)',
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(15, 23, 42, 0.7)',
+          backdropFilter: 'blur(5px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 9999,
-          padding: '16px'
+          zIndex: 999999,
+          padding: '16px',
+          boxSizing: 'border-box'
         }}>
           <div style={{
             background: '#ffffff',
@@ -1195,7 +1396,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
             maxWidth: '520px',
             width: '100%',
             padding: '26px 28px',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
             position: 'relative'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
@@ -1210,6 +1411,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
               <button
                 type="button"
                 onClick={() => setIsViolationModalOpen(false)}
+                aria-label="Close"
                 style={{
                   background: 'none',
                   border: 'none',
@@ -1359,7 +1561,8 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
               </form>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
