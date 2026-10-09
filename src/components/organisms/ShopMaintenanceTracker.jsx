@@ -1,63 +1,25 @@
 import { useCallback, useMemo, useState, useEffect } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
-import { initialShopData } from '../../data/shopSeedData.js';
+import {
+  initialShopData,
+  normalizeShopData,
+  recalculateLedger,
+  autoPopulateLedgerToCurrentMonth,
+  parseLedgerMonth,
+  toOptionalNumber,
+  MONTH_ORDER
+} from '../../data/shopSeedData.js';
+
 const SHOP_MAINTENANCE_COLLECTION = 'shopMaintenance';
 const SHOP_MAINTENANCE_DOC_ID = 'shop_maintenance_ledger';
-const MONTH_ORDER = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-function parseLedgerMonth(month) {
-  const [rawMonth, rawYear] = String(month || '').split('-');
-  const monthIndex = MONTH_ORDER.indexOf(rawMonth);
-  const year = Number(rawYear);
-
-  if (monthIndex < 0 || !Number.isFinite(year)) {
-    return Number.MAX_SAFE_INTEGER;
-  }
-
-  return (2000 + year) * 12 + monthIndex;
+export function getCurrentMonthStr(d = new Date()) {
+  const monthName = MONTH_ORDER[d.getMonth()];
+  const yearStr = String(d.getFullYear()).slice(-2);
+  return `${monthName}-${yearStr}`;
 }
 
-function toOptionalNumber(value) {
-  if (value === '' || value === null || value === undefined) return '';
-  const numericValue = Number(value);
-  return Number.isFinite(numericValue) ? numericValue : '';
-}
-
-function recalculateLedger(ledger) {
-  let runningBalance = 0;
-
-  return [...ledger]
-    .sort((left, right) => parseLedgerMonth(left.month) - parseLedgerMonth(right.month))
-    .map((entry) => {
-      const regularMain = Number(entry.regularMain) || 0;
-      const receipts = toOptionalNumber(entry.receipts);
-
-      runningBalance += regularMain - (Number(receipts) || 0);
-
-      return {
-        ...entry,
-        regularMain,
-        receipts,
-        netAmount: runningBalance,
-      };
-    });
-}
-
-function normalizeShopData(shops) {
-  if (!Array.isArray(shops) || shops.length === 0) {
-    return initialShopData;
-  }
-
-  return shops.map((shop, index) => ({
-    id: shop.id ?? index + 1,
-    shopNo: shop.shopNo ?? `Shop ${index + 1}`,
-    name: shop.name ?? '',
-    contactNo: shop.contactNo ?? '',
-    maintenance: shop.maintenance ?? '',
-    ledger: recalculateLedger(Array.isArray(shop.ledger) ? shop.ledger : []),
-  }));
-}
 
 function StorefrontIcon({ size = 18 }) {
   return (
@@ -189,7 +151,7 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
   const [isInsertModalOpen, setIsInsertModalOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState(null);
   const [selectedShops, setSelectedShops] = useState([]);
-  const [insertMonth, setInsertMonth] = useState('Aug-26');
+  const [insertMonth, setInsertMonth] = useState(() => getCurrentMonthStr());
   const [insertRegularAmount, setInsertRegularAmount] = useState('1500');
   const [insertAmount, setInsertAmount] = useState('');
   const [expandedYears, setExpandedYears] = useState({});
@@ -213,7 +175,7 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
 
     async function loadLedger() {
       if (!isFirebaseConfigured || !db) {
-        setSaveMessage('Local mode');
+        setSaveMessage('Local mode (Auto-billed to ' + getCurrentMonthStr() + ')');
         return;
       }
 
@@ -228,9 +190,9 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
         if (snap.exists()) {
           const remoteShops = normalizeShopData(snap.data()?.shops);
           setShops(remoteShops);
-          setSaveMessage('Synced from Firebase');
+          setSaveMessage('Synced & auto-billed to ' + getCurrentMonthStr());
         } else {
-          setSaveMessage('Using built-in ledger');
+          setSaveMessage('Auto-billed up to ' + getCurrentMonthStr());
         }
         setSaveStatus('saved');
       } catch (error) {
@@ -284,6 +246,11 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
     setShops(nextShops);
     return saveShopsToFirebase(nextShops, successMessage);
   }, [saveShopsToFirebase]);
+
+  const handleAutoSyncDueMonths = useCallback(async () => {
+    const updatedShops = normalizeShopData(shops);
+    await commitShops(updatedShops, `All shop maintenance auto-billed up to ${getCurrentMonthStr()}`);
+  }, [shops, commitShops]);
 
   const overallPending = useMemo(() => {
     return shops.reduce((acc, shop) => {
@@ -1337,12 +1304,39 @@ Majestique Euriska 'A' Building CHS Ltd.`;
           </div>
 
           {isAdmin ? (
-            <button
-              onClick={() => setIsInsertModalOpen(true)}
-              style={{ padding: '8px 16px', borderRadius: 8, background: '#c49b4f', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 12px rgba(196,155,79,0.3)' }}
-            >
-              + Add Shop Maintenance
-            </button>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={handleAutoSyncDueMonths}
+                disabled={saveStatus === 'saving'}
+                title="Automatically checks & generates regular ₹1,500 monthly maintenance on the 1st of every month"
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: 8,
+                  background: 'rgba(255,255,255,0.18)',
+                  color: '#fff',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  fontWeight: 700,
+                  cursor: saveStatus === 'saving' ? 'wait' : 'pointer',
+                  fontSize: '0.82rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  backdropFilter: 'blur(6px)',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                ⚡ Sync Monthly Dues ({getCurrentMonthStr()})
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsInsertModalOpen(true)}
+                style={{ padding: '8px 16px', borderRadius: 8, background: '#c49b4f', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 12px rgba(196,155,79,0.3)' }}
+              >
+                + Add Shop Maintenance
+              </button>
+            </div>
           ) : (
             <span style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.82)', border: '1px solid rgba(255,255,255,0.2)', fontWeight: 700, fontSize: '0.78rem' }}>
               Read-only view
@@ -1360,9 +1354,14 @@ Majestique Euriska 'A' Building CHS Ltd.`;
         <span style={{ color: 'rgba(61, 63, 52, 0.25)' }}>|</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', color: 'rgb(95, 102, 95)' }}>
           <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '3px', background: 'rgb(147, 197, 253)' }}></span>
-          <b>Jul 2024 – till Now </b>: ₹1,500 / month (25 months)
+          <b>Jul 2024 – Present ({getCurrentMonthStr()})</b>: ₹1,500 / month
+        </span>
+        <span style={{ color: 'rgba(61, 63, 52, 0.25)' }}>|</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: '#065f46', background: '#d1fae5', padding: '3px 9px', borderRadius: '999px', fontWeight: 700, border: '1px solid #a7f3d0' }}>
+          ⚡ Auto-Billed: 1st of every month automatically
         </span>
       </div>
+
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
         {shops.map((shop) => (

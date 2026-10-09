@@ -95,5 +95,18 @@ describe('ShopMaintenanceTracker', () => {
     await user.click(screen.getByRole('button', { name: /^close$/i }));
     expect(screen.queryByText(/commercial shop maintenance notice generator/i)).not.toBeInTheDocument();
   });
+
+  it('renders auto-billing status and allows admin to sync all due months', async () => {
+    const user = userEvent.setup();
+    render(<ShopMaintenanceTracker isAdmin />);
+
+    expect(screen.getByText(/⚡ Auto-Billed: 1st of every month automatically/i)).toBeInTheDocument();
+    const syncButton = screen.getByRole('button', { name: /⚡ sync monthly dues/i });
+    expect(syncButton).toBeInTheDocument();
+
+    await user.click(syncButton);
+    await waitFor(() => expect(setDoc).toHaveBeenCalled());
+  });
 });
+
 

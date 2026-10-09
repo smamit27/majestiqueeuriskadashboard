@@ -1,4 +1,93 @@
-export const initialShopData = [
+export const MONTH_ORDER = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+export function parseLedgerMonth(month) {
+  const [rawMonth, rawYear] = String(month || '').split('-');
+  const monthIndex = MONTH_ORDER.indexOf(rawMonth);
+  const year = Number(rawYear);
+
+  if (monthIndex < 0 || !Number.isFinite(year)) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+
+  return (2000 + year) * 12 + monthIndex;
+}
+
+export function toOptionalNumber(value) {
+  if (value === '' || value === null || value === undefined) return '';
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : '';
+}
+
+export function recalculateLedger(ledger) {
+  let runningBalance = 0;
+
+  return [...ledger]
+    .sort((left, right) => parseLedgerMonth(left.month) - parseLedgerMonth(right.month))
+    .map((entry) => {
+      const regularMain = Number(entry.regularMain) || 0;
+      const receipts = toOptionalNumber(entry.receipts);
+
+      runningBalance += regularMain - (Number(receipts) || 0);
+
+      return {
+        ...entry,
+        regularMain,
+        receipts,
+        netAmount: runningBalance,
+      };
+    });
+}
+
+export function autoPopulateLedgerToCurrentMonth(ledger, targetDate = new Date(), standardRate = 1500) {
+  if (!Array.isArray(ledger) || ledger.length === 0) return ledger || [];
+
+  const sortedLedger = [...ledger].sort((a, b) => parseLedgerMonth(a.month) - parseLedgerMonth(b.month));
+  const latestEntry = sortedLedger[sortedLedger.length - 1];
+
+  const [lastMonthName, lastYearStr] = (latestEntry?.month || '').split('-');
+  const lastMonthIdx = MONTH_ORDER.indexOf(lastMonthName);
+  const lastYear = 2000 + Number(lastYearStr);
+
+  if (lastMonthIdx < 0 || !Number.isFinite(lastYear)) {
+    return recalculateLedger(sortedLedger);
+  }
+
+  const targetYear = targetDate.getFullYear();
+  const targetMonthIdx = targetDate.getMonth();
+
+  const newEntries = [];
+  let curY = lastYear;
+  let curM = lastMonthIdx + 1;
+  if (curM > 11) {
+    curM = 0;
+    curY += 1;
+  }
+
+  while (curY < targetYear || (curY === targetYear && curM <= targetMonthIdx)) {
+    const monthCode = `${MONTH_ORDER[curM]}-${String(curY).slice(-2)}`;
+    if (!sortedLedger.some((e) => e.month === monthCode) && !newEntries.some((e) => e.month === monthCode)) {
+      newEntries.push({
+        month: monthCode,
+        regularMain: standardRate,
+        receipts: '',
+        netAmount: 0,
+      });
+    }
+    curM += 1;
+    if (curM > 11) {
+      curM = 0;
+      curY += 1;
+    }
+  }
+
+  if (newEntries.length > 0) {
+    return recalculateLedger([...sortedLedger, ...newEntries]);
+  }
+
+  return recalculateLedger(sortedLedger);
+}
+
+export const rawInitialShopData = [
   {
     id: 1,
     shopNo: 'Shop 1',
@@ -536,3 +625,21 @@ export const initialShopData = [
     ]
   }
 ];
+
+export function normalizeShopData(shops, targetDate = new Date()) {
+  const sourceShops = Array.isArray(shops) && shops.length > 0 ? shops : rawInitialShopData;
+
+  return sourceShops.map((shop, index) => ({
+    id: shop.id ?? index + 1,
+    shopNo: shop.shopNo ?? `Shop ${index + 1}`,
+    name: shop.name ?? '',
+    contactNo: shop.contactNo ?? '',
+    maintenance: shop.maintenance ?? '',
+    ledger: autoPopulateLedgerToCurrentMonth(
+      recalculateLedger(Array.isArray(shop.ledger) ? shop.ledger : []),
+      targetDate
+    ),
+  }));
+}
+
+export const initialShopData = normalizeShopData(rawInitialShopData);
