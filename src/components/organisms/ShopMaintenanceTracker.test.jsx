@@ -65,10 +65,35 @@ describe('ShopMaintenanceTracker', () => {
     });
   });
 
-  it('renders Print Summary (All Shops) and Print Shop Statement buttons', () => {
+  it('renders Print Summary (All Shops), Print Shop Statement, and Generate Shop Notices buttons', () => {
     render(<ShopMaintenanceTracker isAdmin={false} />);
 
     expect(screen.getByRole('button', { name: /print summary \(all shops\)/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /print shop 1 statement \(pdf\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /generate shop notices/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /create notice for shop 1/i })).toBeInTheDocument();
+  });
+
+  it('opens notice generator modal and allows selecting single or all pending shops', async () => {
+    const user = userEvent.setup();
+    render(<ShopMaintenanceTracker isAdmin={false} />);
+
+    // Click Generate Shop Notices button
+    await user.click(screen.getByRole('button', { name: /generate shop notices/i }));
+
+    expect(screen.getByText(/commercial shop maintenance notice generator/i)).toBeInTheDocument();
+    expect(screen.getByText(/all pending dues/i)).toBeInTheDocument();
+    expect(screen.getByText(/remittance account info/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /print \/ download pdf/i })).toBeInTheDocument();
+
+    // Switch to single shop
+    await user.click(screen.getByRole('button', { name: /^single shop$/i }));
+    expect(screen.getByRole('button', { name: /send whatsapp/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /copy text/i })).toBeInTheDocument();
+
+    // Close modal
+    await user.click(screen.getByRole('button', { name: /^close$/i }));
+    expect(screen.queryByText(/commercial shop maintenance notice generator/i)).not.toBeInTheDocument();
   });
 });
+

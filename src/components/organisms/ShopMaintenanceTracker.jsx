@@ -104,8 +104,6 @@ function TrashIcon({ size = 16 }) {
   );
 }
 
-
-
 function formatValue(value) {
   if (value === '' || value === null || value === undefined) return '--';
   if (typeof value === 'number') {
@@ -167,6 +165,24 @@ function buildYearGroups(ledger) {
   })).reverse();
 }
 
+function getTodayISODate() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function getFutureISODate(days = 7) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function formatDisplayDate(isoDate) {
+  if (!isoDate) return '';
+  const [y, m, d] = isoDate.split('-').map(Number);
+  if (!y || !m || !d) return isoDate;
+  return new Date(y, m - 1, d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 export default function ShopMaintenanceTracker({ isAdmin = false }) {
   const [shops, setShops] = useState(initialShopData);
   const [activeShopId, setActiveShopId] = useState(1);
@@ -179,6 +195,18 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
   const [expandedYears, setExpandedYears] = useState({});
   const [saveStatus, setSaveStatus] = useState(isFirebaseConfigured ? 'idle' : 'local');
   const [saveMessage, setSaveMessage] = useState(isFirebaseConfigured ? 'Ready to sync' : 'Local mode');
+
+  // Notice Generator States
+  const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
+  const [noticeTarget, setNoticeTarget] = useState('single'); // 'single' | 'all_pending' | 'all'
+  const [noticeShopId, setNoticeShopId] = useState(1);
+  const [noticeDate, setNoticeDate] = useState(getTodayISODate);
+  const [noticeDueDate, setNoticeDueDate] = useState(() => getFutureISODate(7));
+  const [noticeRefPrefix, setNoticeRefPrefix] = useState('ME-A/COMM/2026-27/NOT-');
+  const [noticeCustomNote, setNoticeCustomNote] = useState(
+    'As per Society Bye-laws and Resolution passed in AGM dated 06.09.2026, all shop owners are requested to clear their pending maintenance dues. Delayed payments beyond the due date attract interest as per applicable society rules.'
+  );
+  const [noticeToast, setNoticeToast] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -802,6 +830,421 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
     }
   }, [shops]);
 
+  const getShopNoticeData = useCallback((shop) => {
+    const shopBilled = shop.ledger.reduce((sum, e) => sum + (e.regularMain || 0), 0);
+    const shopPaid = shop.ledger.reduce((sum, e) => sum + (Number(e.receipts) || 0), 0);
+    const shopPending = shopBilled - shopPaid;
+    return {
+      id: shop.id,
+      shopNo: shop.shopNo,
+      name: shop.name || 'Owner / Occupant',
+      contactNo: shop.contactNo || '',
+      billed: shopBilled,
+      paid: shopPaid,
+      pending: shopPending,
+      isCleared: shopPending <= 0
+    };
+  }, []);
+
+  const shopsForNotice = useMemo(() => {
+    if (noticeTarget === 'single') {
+      const s = shops.find(item => item.id === noticeShopId) || shops[0];
+      return [s];
+    }
+    if (noticeTarget === 'all_pending') {
+      return shops.filter(s => {
+        const data = getShopNoticeData(s);
+        return data.pending > 0;
+      });
+    }
+    return shops;
+  }, [noticeTarget, noticeShopId, shops, getShopNoticeData]);
+
+  const handlePrintNotices = useCallback(() => {
+    const targetShops = shopsForNotice;
+    if (targetShops.length === 0) {
+      window.alert('No shops selected for notice generation.');
+      return;
+    }
+
+    const formattedNoticeDate = formatDisplayDate(noticeDate);
+    const formattedDueDate = formatDisplayDate(noticeDueDate);
+
+    const pagesHtml = targetShops.map((s, idx) => {
+      const data = getShopNoticeData(s);
+      const refNo = `${noticeRefPrefix}${String(s.id).padStart(2, '0')}`;
+
+      return `
+        <div class="notice-page">
+          <div class="header">
+            <div class="society-title">MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</div>
+            <div class="society-reg">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
+            <div class="doc-badge">COMMERCIAL WING • FORMAL DEMAND NOTICE</div>
+          </div>
+
+          <div class="ref-row">
+            <div><strong>Ref No:</strong> ${refNo}</div>
+            <div><strong>Notice Date:</strong> ${formattedNoticeDate}</div>
+          </div>
+
+          <div class="recipient-box">
+            <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 2px;">To,</div>
+            <div style="font-size: 14px; font-weight: 800; color: #0f172a;">${data.name}</div>
+            <div style="font-size: 13px; font-weight: 700; color: #0b2b26;">Unit / Shop: ${data.shopNo}</div>
+            <div style="font-size: 12px; color: #475569;">Majestique Euriska Commercial Complex, Mohammed Wadi, Pune - 411060</div>
+            <div style="font-size: 12px; color: #475569;">Contact No: <strong>${data.contactNo || 'N/A'}</strong></div>
+          </div>
+
+          <div class="subject-line">
+            <strong>SUBJECT:</strong> FORMAL NOTICE FOR PAYMENT OF OUTSTANDING COMMERCIAL MAINTENANCE DUES
+          </div>
+
+          <div class="body-text">
+            <p>Dear Sir / Madam,</p>
+            <p>
+              This is to formally bring to your attention the outstanding monthly maintenance charges due towards your commercial unit <strong>${data.shopNo}</strong> in Majestique Euriska 'A' Building Co-operative Housing Society Ltd.
+            </p>
+            <p>
+              As per the society's official accounting records and rate schedule (Oct 2021 – Jun 2024 @ ₹1,100/mo and Jul 2024 – Current @ ₹1,500/mo), the summary of maintenance charges billed and payments received against your unit is as follows:
+            </p>
+          </div>
+
+          <table class="dues-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th style="text-align: right; width: 140px;">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Total Maintenance Demand Billed (Oct 2021 to Current)</td>
+                <td style="text-align: right; font-weight: 600;">₹${formatValue(data.billed)}</td>
+              </tr>
+              <tr>
+                <td>Total Receipts / Payments Credited</td>
+                <td style="text-align: right; color: #166534; font-weight: 600;">(-) ₹${formatValue(data.paid)}</td>
+              </tr>
+              <tr class="highlight-row">
+                <td style="font-size: 13px;"><strong>NET OUTSTANDING MAINTENANCE DUES PAYABLE</strong></td>
+                <td style="text-align: right; font-size: 15px; font-weight: 800; color: ${data.pending > 0 ? '#991b1b' : '#166534'};">
+                  ₹${formatValue(data.pending)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="due-banner">
+            <div>
+              <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: #92400e;">Mandatory Payment Timeline:</span>
+              <div style="font-size: 14px; font-weight: 800; color: #78350f;">Please clear the dues on or before: ${formattedDueDate}</div>
+            </div>
+            <div style="text-align: right; font-size: 12px; font-weight: 700; color: #92400e;">
+              ${data.pending > 0 ? '⚠️ Immediate Action Required' : '✓ Nil Dues / Cleared'}
+            </div>
+          </div>
+
+          <div class="bank-box">
+            <div style="font-weight: 700; color: #0b2b26; margin-bottom: 6px; font-size: 12px;">🏦 SOCIETY BANK ACCOUNT DETAILS FOR REMITTANCE:</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11.5px;">
+              <div><strong>Account Name:</strong> MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR</div>
+              <div><strong>Bank Name:</strong> HDFC Bank</div>
+              <div><strong>Account Number:</strong> 50200065450992</div>
+              <div><strong>Account Type:</strong> Current Account</div>
+              <div><strong>IFSC Code:</strong> HDFC0000000</div>
+              <div><strong>Branch:</strong> Mohammadwadi / NIBM Road, Pune</div>
+            </div>
+            <div style="margin-top: 6px; font-size: 10.5px; color: #64748b;">* Note: Kindly mention your <strong>${data.shopNo}</strong> in the transaction narration and share the UTR / transfer screenshot with the society office for prompt receipt issuance.</div>
+          </div>
+
+          <div class="legal-note">
+            <strong>Important Society Resolution & Legal Terms:</strong><br/>
+            ${noticeCustomNote}
+          </div>
+
+          <div class="signatures">
+            <div class="sig-col">
+              <div class="sig-line">Commercial Wing Coordinator</div>
+            </div>
+            <div class="sig-col">
+              <div class="sig-line">Hon. Secretary</div>
+            </div>
+            <div class="sig-col">
+              <div class="sig-line">Hon. Treasurer / Chairman</div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <div>Majestique Euriska 'A' Building Co-Operative Housing Society Ltd. • Official Notice</div>
+            <div>Page ${idx + 1} of ${targetShops.length}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const printDoc = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Shop Maintenance Demand Notice - Majestique Euriska</title>
+        <style>
+          * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+          body { margin: 0; padding: 0; color: #0f172a; background: #fff; }
+          
+          .notice-page {
+            padding: 32px 36px;
+            max-width: 820px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+
+          .header {
+            text-align: center;
+            border-bottom: 2px solid #0b2b26;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+          }
+          .society-title { font-size: 17px; font-weight: 900; color: #0b2b26; letter-spacing: 0.02em; }
+          .society-reg { font-size: 11px; color: #475569; margin-top: 4px; line-height: 1.4; }
+          .doc-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 3px 12px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            color: #0b2b26;
+            border: 1px solid #cbd5e1;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+          }
+
+          .ref-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #334155;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #cbd5e1;
+          }
+
+          .recipient-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+          }
+
+          .subject-line {
+            font-size: 12.5px;
+            color: #0f172a;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border-left: 4px solid #0b2b26;
+            margin-bottom: 14px;
+          }
+
+          .body-text {
+            font-size: 12px;
+            line-height: 1.55;
+            color: #1e293b;
+            margin-bottom: 12px;
+          }
+          .body-text p { margin: 0 0 6px 0; }
+
+          .dues-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-bottom: 14px;
+          }
+          .dues-table th {
+            background: #0b2b26;
+            color: #fff;
+            font-weight: 700;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 11px;
+          }
+          .dues-table td {
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+          }
+          .highlight-row {
+            background: #fffbeb;
+            font-weight: 700;
+          }
+
+          .due-banner {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+          }
+
+          .bank-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+          }
+
+          .legal-note {
+            background: #fafafa;
+            border-left: 3px solid #94a3b8;
+            padding: 8px 12px;
+            font-size: 10.5px;
+            color: #475569;
+            line-height: 1.45;
+            margin-bottom: 24px;
+          }
+
+          .signatures {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: auto;
+            padding-top: 18px;
+            border-top: 1px solid #cbd5e1;
+          }
+          .sig-col { text-align: center; }
+          .sig-line {
+            margin-top: 40px;
+            border-top: 1px solid #94a3b8;
+            padding-top: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+          }
+
+          .footer {
+            margin-top: 16px;
+            padding-top: 8px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 10px;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+          }
+
+          @media print {
+            body { padding: 0; background: #fff; }
+            @page { margin: 0.8cm; size: A4 portrait; }
+            .notice-page {
+              page-break-after: always;
+              min-height: 98vh;
+              padding: 15px 20px;
+            }
+            .notice-page:last-child {
+              page-break-after: auto;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        ${pagesHtml}
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printDoc);
+      printWindow.document.close();
+    }
+  }, [shopsForNotice, noticeDate, noticeDueDate, noticeRefPrefix, noticeCustomNote, getShopNoticeData]);
+
+  const generateWhatsAppMessage = useCallback((shop) => {
+    const data = getShopNoticeData(shop);
+    const formattedDueDate = formatDisplayDate(noticeDueDate);
+
+    return `*MAJESTIQUE EURISKA 'A' BLDG CO-OP HSG SOC LTD*
+*COMMERCIAL SHOP MAINTENANCE NOTICE*
+━━━━━━━━━━━━━━━━━━━━━━
+Ref: ${noticeRefPrefix}${String(data.id).padStart(2, '0')}
+Date: ${formatDisplayDate(noticeDate)}
+
+To: *${data.name}*
+Unit: *${data.shopNo}*
+
+Subject: *Outstanding Maintenance Dues Reminder*
+
+Dear Member,
+This is a gentle reminder regarding the maintenance charges for your commercial unit *${data.shopNo}*:
+
+• Total Billed: ₹${formatValue(data.billed)}
+• Payments Received: ₹${formatValue(data.paid)}
+• *NET OUTSTANDING DUE: ₹${formatValue(data.pending)}*
+• *Payment Due Date: ${formattedDueDate}*
+
+*Bank Details for NEFT/IMPS/UPI:*
+• Bank: HDFC Bank
+• A/C Name: MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR
+• A/C No: 50200065450992
+• IFSC: HDFC0000000
+• Branch: Mohammadwadi, Pune
+
+Kindly transfer the pending amount before the due date and reply with the payment screenshot / transaction reference for receipt generation.
+
+Thank you for your cooperation!
+
+Regards,
+*Managing Committee*
+Majestique Euriska 'A' Building CHS Ltd.`;
+  }, [getShopNoticeData, noticeDueDate, noticeDate, noticeRefPrefix]);
+
+  const handleShareWhatsApp = useCallback((shop) => {
+    const data = getShopNoticeData(shop);
+    const msg = generateWhatsAppMessage(shop);
+    const cleanPhone = (data.contactNo || '').replace(/\D/g, '');
+    const phoneParam = cleanPhone ? `91${cleanPhone.slice(-10)}` : '';
+    const url = phoneParam
+      ? `https://wa.me/${phoneParam}?text=${encodeURIComponent(msg)}`
+      : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
+    window.open(url, '_blank');
+  }, [getShopNoticeData, generateWhatsAppMessage]);
+
+  const handleCopyNoticeText = useCallback((shop) => {
+    const msg = generateWhatsAppMessage(shop);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(msg).then(() => {
+        setNoticeToast(`✓ Notice text copied for ${shop.shopNo}!`);
+        setTimeout(() => setNoticeToast(''), 3000);
+      }).catch(() => {
+        setNoticeToast('Failed to copy');
+        setTimeout(() => setNoticeToast(''), 3000);
+      });
+    }
+  }, [generateWhatsAppMessage]);
+
+  const activeNoticeShop = useMemo(() => {
+    return shops.find(s => s.id === noticeShopId) || shops[0];
+  }, [shops, noticeShopId]);
+
+  const activeNoticeData = useMemo(() => {
+    return getShopNoticeData(activeNoticeShop);
+  }, [getShopNoticeData, activeNoticeShop]);
+
   const toggleShopSelection = (shopId) => {
     setSelectedShops(prev => 
       prev.includes(shopId) ? prev.filter(id => id !== shopId) : [...prev, shopId]
@@ -848,6 +1291,31 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
               <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>Overall Pending (Shop 1-8)</div>
               <div style={{ fontSize: '1.3rem', fontWeight: 800, marginTop: 2, color: overallPending > 0 ? '#fec84b' : '#34d399' }}>{formatValue(overallPending)}</div>
             </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setNoticeTarget('all_pending');
+                setIsNoticeModalOpen(true);
+              }}
+              style={{
+                padding: '9px 16px',
+                borderRadius: 8,
+                background: 'linear-gradient(135deg, #c49b4f 0%, #b38634 100%)',
+                color: '#fff',
+                border: 'none',
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                boxShadow: '0 4px 14px rgba(196,155,79,0.35)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              📜 Generate Shop Notices
+            </button>
 
             <button
               onClick={handlePrintAllShopsPDF}
@@ -930,25 +1398,51 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
             <h3 style={{ margin: '4px 0 0', fontSize: '1.15rem', fontWeight: 800 }}>{activeShop.shopNo}</h3>
             <p style={{ margin: '4px 0 0', color: '#667085', fontSize: '0.9rem' }}>{activeShop.name}</p>
           </div>
-          <button
-            onClick={handlePrintShopPDF}
-            style={{
-              padding: '8px 16px',
-              borderRadius: 8,
-              background: '#0b2b26',
-              color: '#fff',
-              border: 'none',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              fontSize: '0.85rem',
-              boxShadow: '0 4px 12px rgba(11,43,38,0.18)'
-            }}
-          >
-            🖨️ Print {activeShop.shopNo} Statement (PDF)
-          </button>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => {
+                setNoticeTarget('single');
+                setNoticeShopId(activeShop.id);
+                setIsNoticeModalOpen(true);
+              }}
+              style={{
+                padding: '8px 16px',
+                borderRadius: 8,
+                background: 'linear-gradient(135deg, #c49b4f 0%, #a87d2b 100%)',
+                color: '#fff',
+                border: 'none',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: '0.85rem',
+                boxShadow: '0 4px 12px rgba(196,155,79,0.3)'
+              }}
+            >
+              📜 Create Notice for {activeShop.shopNo}
+            </button>
+            <button
+              onClick={handlePrintShopPDF}
+              style={{
+                padding: '8px 16px',
+                borderRadius: 8,
+                background: '#0b2b26',
+                color: '#fff',
+                border: 'none',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                fontSize: '0.85rem',
+                boxShadow: '0 4px 12px rgba(11,43,38,0.18)'
+              }}
+            >
+              🖨️ Print {activeShop.shopNo} Statement (PDF)
+            </button>
+          </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 16 }}>
@@ -1066,6 +1560,348 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
           })}
         </div>
       </div>
+
+      {/* Notice Generator Modal */}
+      {isNoticeModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 960, maxHeight: '92vh', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', overflow: 'hidden' }}>
+            
+            {/* Modal Header */}
+            <div style={{ padding: '18px 24px', background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+              <div>
+                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#c49b4f', fontWeight: 800 }}>Society Commercial Wing</span>
+                <h3 style={{ margin: '4px 0 0', fontSize: '1.25rem', fontWeight: 800 }}>📜 Commercial Shop Maintenance Notice Generator</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsNoticeModalOpen(false)}
+                style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body: Split view (Configuration on left, Live Preview on right) */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', overflow: 'hidden', flex: 1 }}>
+              
+              {/* Left Column: Form & Selection */}
+              <div style={{ padding: '20px', overflowY: 'auto', background: '#f8fafc', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 16 }}>
+                
+                {/* Target Scope Selection */}
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    1. Select Target Shops
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 10 }}>
+                    <button
+                      type="button"
+                      onClick={() => setNoticeTarget('single')}
+                      style={{
+                        padding: '8px 10px',
+                        borderRadius: 8,
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        border: noticeTarget === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
+                        background: noticeTarget === 'single' ? '#0b2b26' : '#fff',
+                        color: noticeTarget === 'single' ? '#fff' : '#334155',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Single Shop
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNoticeTarget('all_pending')}
+                      style={{
+                        padding: '8px 10px',
+                        borderRadius: 8,
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        border: noticeTarget === 'all_pending' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
+                        background: noticeTarget === 'all_pending' ? '#0b2b26' : '#fff',
+                        color: noticeTarget === 'all_pending' ? '#fff' : '#334155',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      All Pending Dues ({shops.filter(s => getShopNoticeData(s).pending > 0).length})
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setNoticeTarget('all')}
+                    style={{
+                      width: '100%',
+                      padding: '6px 10px',
+                      borderRadius: 8,
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      border: noticeTarget === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
+                      background: noticeTarget === 'all' ? '#0b2b26' : '#fff',
+                      color: noticeTarget === 'all' ? '#fff' : '#475569',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    All 8 Commercial Shops (Batch)
+                  </button>
+                </div>
+
+                {/* Single Shop Selector Pills */}
+                {noticeTarget === 'single' && (
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#64748b', marginBottom: 6 }}>
+                      Choose Specific Shop:
+                    </label>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {shops.map(s => {
+                        const sData = getShopNoticeData(s);
+                        const isSelected = noticeShopId === s.id;
+                        return (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => setNoticeShopId(s.id)}
+                            style={{
+                              padding: '5px 10px',
+                              borderRadius: 6,
+                              fontSize: '0.78rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              border: isSelected ? '1.5px solid #0b2b26' : '1px solid #cbd5e1',
+                              background: isSelected ? '#0b2b26' : '#fff',
+                              color: isSelected ? '#fff' : '#1e293b',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4
+                            }}
+                          >
+                            <span>{s.shopNo}</span>
+                            <span style={{ fontSize: '0.68rem', opacity: isSelected ? 0.85 : 0.6 }}>
+                              (₹{formatValue(sData.pending)})
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Dates & Reference Configuration */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                      Notice Date
+                    </label>
+                    <input
+                      type="date"
+                      value={noticeDate}
+                      onChange={(e) => setNoticeDate(e.target.value)}
+                      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#b45309', marginBottom: 4 }}>
+                      Payment Due Date
+                    </label>
+                    <input
+                      type="date"
+                      value={noticeDueDate}
+                      onChange={(e) => setNoticeDueDate(e.target.value)}
+                      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #fde68a', background: '#fffbeb', fontSize: '0.82rem', fontWeight: 700, color: '#92400e' }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                    Reference Number Prefix
+                  </label>
+                  <input
+                    type="text"
+                    value={noticeRefPrefix}
+                    onChange={(e) => setNoticeRefPrefix(e.target.value)}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                  />
+                </div>
+
+                {/* Custom Resolution / Note */}
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                    Legal / Resolution Clause (Editable)
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={noticeCustomNote}
+                    onChange={(e) => setNoticeCustomNote(e.target.value)}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.78rem', lineHeight: 1.4, resize: 'vertical' }}
+                  />
+                </div>
+
+                {/* Society Bank Details Quick Preview */}
+                <div style={{ padding: '10px 12px', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, fontSize: '0.76rem', color: '#065f46' }}>
+                  <div style={{ fontWeight: 800, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span>🏦 Remittance Account Info</span>
+                  </div>
+                  <div><strong>Bank:</strong> HDFC Bank • Current A/C</div>
+                  <div><strong>A/C:</strong> 50200065450992</div>
+                  <div><strong>IFSC:</strong> HDFC0000000 (Mohammadwadi)</div>
+                </div>
+              </div>
+
+              {/* Right Column: Live Letterhead Preview */}
+              <div style={{ padding: '24px', overflowY: 'auto', background: '#eaedf0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                
+                {/* Simulated Paper Document */}
+                <div style={{
+                  background: '#ffffff',
+                  width: '100%',
+                  maxWidth: 580,
+                  borderRadius: 4,
+                  padding: '28px 32px',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
+                  border: '1px solid #cbd5e1',
+                  color: '#0f172a',
+                  fontSize: '0.82rem',
+                  lineHeight: 1.5,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12
+                }}>
+                  {/* Letterhead */}
+                  <div style={{ textAlign: 'center', borderBottom: '2px solid #0b2b26', paddingBottom: 10 }}>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 900, color: '#0b2b26' }}>
+                      MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.
+                    </div>
+                    <div style={{ fontSize: '0.68rem', color: '#475569', marginTop: 2 }}>
+                      Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • Mohammed Wadi, Pune - 411060
+                    </div>
+                    <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 8px', borderRadius: 999, background: '#f1f5f9', color: '#0b2b26', fontSize: '0.65rem', fontWeight: 800, border: '1px solid #cbd5e1' }}>
+                      COMMERCIAL MAINTENANCE DEMAND NOTICE
+                    </span>
+                  </div>
+
+                  {/* Ref & Date */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', color: '#334155', borderBottom: '1px dashed #e2e8f0', paddingBottom: 6 }}>
+                    <div><strong>Ref:</strong> {noticeRefPrefix}{String(activeNoticeData.id).padStart(2, '0')}</div>
+                    <div><strong>Date:</strong> {formatDisplayDate(noticeDate)}</div>
+                  </div>
+
+                  {/* Recipient */}
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px 12px', fontSize: '0.78rem' }}>
+                    <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700 }}>TO:</div>
+                    <div style={{ fontWeight: 800, fontSize: '0.88rem' }}>{activeNoticeData.name}</div>
+                    <div style={{ color: '#0b2b26', fontWeight: 700 }}>Unit: {activeNoticeData.shopNo} • Contact: {activeNoticeData.contactNo || 'N/A'}</div>
+                  </div>
+
+                  {/* Subject */}
+                  <div style={{ background: '#f1f5f9', padding: '6px 10px', borderLeft: '3px solid #0b2b26', fontSize: '0.78rem', fontWeight: 700 }}>
+                    Subject: Demand Notice for Outstanding Commercial Maintenance Dues
+                  </div>
+
+                  {/* Financial Table */}
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', margin: '4px 0' }}>
+                    <tbody>
+                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                        <td style={{ padding: '6px 8px' }}>Total Maintenance Demand Billed</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 600 }}>₹{formatValue(activeNoticeData.billed)}</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                        <td style={{ padding: '6px 8px' }}>Total Receipts Credited</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#15803d', fontWeight: 600 }}>(-) ₹{formatValue(activeNoticeData.paid)}</td>
+                      </tr>
+                      <tr style={{ background: '#fffbeb', borderTop: '2px solid #fde68a', fontWeight: 800 }}>
+                        <td style={{ padding: '8px', color: '#92400e' }}>NET OUTSTANDING DUES PAYABLE</td>
+                        <td style={{ padding: '8px', textAlign: 'right', fontSize: '0.95rem', color: activeNoticeData.pending > 0 ? '#991b1b' : '#15803d' }}>
+                          ₹{formatValue(activeNoticeData.pending)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  {/* Due banner */}
+                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.76rem' }}>
+                    <div>
+                      <span style={{ color: '#92400e', fontWeight: 700 }}>Payment Due Date: </span>
+                      <strong style={{ color: '#78350f' }}>{formatDisplayDate(noticeDueDate)}</strong>
+                    </div>
+                    <span style={{ color: '#92400e', fontWeight: 700 }}>HDFC A/C: 50200065450992</span>
+                  </div>
+
+                  {/* Signatures */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginTop: 16, paddingTop: 10, borderTop: '1px solid #e2e8f0', textAlign: 'center', fontSize: '0.68rem', color: '#64748b' }}>
+                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 24 }}>Coordinator</div></div>
+                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 24 }}>Secretary</div></div>
+                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 24 }}>Treasurer / Chairman</div></div>
+                  </div>
+                </div>
+
+                {noticeToast && (
+                  <div style={{ marginTop: 12, padding: '8px 16px', borderRadius: 8, background: '#0b2b26', color: '#fff', fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+                    {noticeToast}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer Toolbar */}
+            <div style={{ padding: '14px 24px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+              <div style={{ fontSize: '0.82rem', color: '#475569' }}>
+                Selected Target: <strong>{noticeTarget === 'single' ? activeNoticeShop.shopNo : noticeTarget === 'all_pending' ? `All ${shopsForNotice.length} Pending Shops` : 'All 8 Shops'}</strong>
+              </div>
+
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+                {noticeTarget === 'single' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyNoticeText(activeNoticeShop)}
+                      style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#334155', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                    >
+                      📋 Copy Text
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleShareWhatsApp(activeNoticeShop)}
+                      style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: '#25D366', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(37,211,102,0.3)' }}
+                    >
+                      📱 Send WhatsApp
+                    </button>
+                  </>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handlePrintNotices}
+                  style={{
+                    padding: '8px 18px',
+                    borderRadius: 8,
+                    border: 'none',
+                    background: '#0b2b26',
+                    color: '#fff',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    boxShadow: '0 4px 14px rgba(11,43,38,0.25)'
+                  }}
+                >
+                  🖨️ Print / Download PDF ({shopsForNotice.length} Notice{shopsForNotice.length > 1 ? 's' : ''})
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsNoticeModalOpen(false)}
+                  style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#64748b', fontWeight: 600, cursor: 'pointer', fontSize: '0.82rem' }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {isAdmin && isInsertModalOpen && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '10vh' }}>
