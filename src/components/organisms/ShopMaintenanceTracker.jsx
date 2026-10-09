@@ -949,10 +949,10 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11.5px;">
               <div><strong>Account Name:</strong> MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR</div>
               <div><strong>Bank Name:</strong> HDFC Bank</div>
-              <div><strong>Account Number:</strong> 50200065450992</div>
-              <div><strong>Account Type:</strong> Current Account</div>
-              <div><strong>IFSC Code:</strong> HDFC0000000</div>
-              <div><strong>Branch:</strong> Mohammadwadi / NIBM Road, Pune</div>
+              <div><strong>Account Number:</strong> 50200075533530</div>
+              <div><strong>Account Type:</strong> CA-INSTITUTION (Current Account)</div>
+              <div><strong>IFSC Code:</strong> HDFC0002454</div>
+              <div><strong>Branch:</strong> Budhrani Boulevard, Undri NIBM Rd, Pune - 411060</div>
             </div>
             <div style="margin-top: 6px; font-size: 10.5px; color: #64748b;">* Note: Kindly mention your <strong>${data.shopNo}</strong> in the transaction narration and share the UTR / transfer screenshot with the society office for prompt receipt issuance.</div>
           </div>
@@ -1199,9 +1199,9 @@ This is a gentle reminder regarding the maintenance charges for your commercial 
 *Bank Details for NEFT/IMPS/UPI:*
 • Bank: HDFC Bank
 • A/C Name: MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR
-• A/C No: 50200065450992
-• IFSC: HDFC0000000
-• Branch: Mohammadwadi, Pune
+• A/C No: 50200075533530
+• IFSC: HDFC0002454
+• Branch: Budhrani Boulevard, Undri NIBM Rd, Pune - 411060
 
 Kindly transfer the pending amount before the due date and reply with the payment screenshot / transaction reference for receipt generation.
 
@@ -1741,9 +1741,9 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   <div style={{ fontWeight: 800, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span>🏦 Remittance Account Info</span>
                   </div>
-                  <div><strong>Bank:</strong> HDFC Bank • Current A/C</div>
-                  <div><strong>A/C:</strong> 50200065450992</div>
-                  <div><strong>IFSC:</strong> HDFC0000000 (Mohammadwadi)</div>
+                  <div><strong>Bank:</strong> HDFC Bank • CA-INSTITUTION</div>
+                  <div><strong>A/C:</strong> 50200075533530</div>
+                  <div><strong>IFSC:</strong> HDFC0002454 (Undri / NIBM Road)</div>
                 </div>
               </div>
 
@@ -1823,7 +1823,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       <span style={{ color: '#92400e', fontWeight: 700 }}>Payment Due Date: </span>
                       <strong style={{ color: '#78350f' }}>{formatDisplayDate(noticeDueDate)}</strong>
                     </div>
-                    <span style={{ color: '#92400e', fontWeight: 700 }}>HDFC A/C: 50200065450992</span>
+                    <span style={{ color: '#92400e', fontWeight: 700 }}>HDFC A/C: 50200075533530</span>
                   </div>
 
                   {/* Signatures */}
