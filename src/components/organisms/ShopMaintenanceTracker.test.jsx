@@ -38,7 +38,7 @@ describe('ShopMaintenanceTracker', () => {
     const user = userEvent.setup();
     render(<ShopMaintenanceTracker isAdmin />);
 
-    await user.click(screen.getByRole('button', { name: /\+ add shop maintenance/i }));
+    await user.click(screen.getByRole('button', { name: /\+ add maintenance/i }));
     await user.click(screen.getAllByRole('button', { name: /shop 1/i }).at(-1));
 
     const receiptInputs = screen.getAllByPlaceholderText(/e\.g\. 1500/i);
@@ -65,10 +65,10 @@ describe('ShopMaintenanceTracker', () => {
     });
   });
 
-  it('renders Print Summary (All Shops), Print Shop Statement, and Generate Shop Notices buttons', () => {
+  it('renders Print Summary, Print Shop Statement, and Generate Shop Notices buttons', () => {
     render(<ShopMaintenanceTracker isAdmin={false} />);
 
-    expect(screen.getByRole('button', { name: /print summary \(all shops\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /print summary \(all\)/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /print shop 1 statement \(pdf\)/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /generate shop notices/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /create notice for shop 1/i })).toBeInTheDocument();
@@ -100,8 +100,8 @@ describe('ShopMaintenanceTracker', () => {
     const user = userEvent.setup();
     render(<ShopMaintenanceTracker isAdmin />);
 
-    expect(screen.getByText(/⚡ Auto-Billed: 1st of every month automatically/i)).toBeInTheDocument();
-    const syncButton = screen.getByRole('button', { name: /⚡ sync monthly dues/i });
+    expect(screen.getByText(/⚡ Auto-Billed on 1st of every month/i)).toBeInTheDocument();
+    const syncButton = screen.getByRole('button', { name: /⚡ sync dues/i });
     expect(syncButton).toBeInTheDocument();
 
     await user.click(syncButton);
