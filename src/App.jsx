@@ -19,7 +19,7 @@ import IntroAnimation from './components/organisms/IntroAnimation.jsx';
 import EventsCalendarView from './components/organisms/EventsCalendarView.jsx';
 import ManagerTaskTracker from './components/organisms/ManagerTaskTracker.jsx';
 import AmcTracker from './components/organisms/AmcTracker.jsx';
-import SpecialMaintenanceTracker from './components/organisms/SpecialMaintenanceTracker.jsx';
+import CommonInvoiceHub from './components/organisms/CommonInvoiceHub.jsx';
 import WaterManagement from './components/organisms/WaterManagement.jsx';
 import WaterTankManagement from './components/organisms/WaterTankManagement.jsx';
 import PettyCashTracker from './components/organisms/PettyCashTracker.jsx';
@@ -43,6 +43,7 @@ import AuditTrailViewer from './components/organisms/AuditTrailViewer.jsx';
 import MonthlySocietyReport from './components/organisms/MonthlySocietyReport.jsx';
 import ResidentPortal from './components/organisms/ResidentPortal.jsx';
 import SocietyRulesModule from './components/organisms/SocietyRulesModule.jsx';
+import TimesOfIndiaTracker from './components/organisms/TimesOfIndiaTracker.jsx';
 import { ROLES, ROLE_LABELS, MODULES, hasModuleAccess, resolveUserRole } from './services/rbacService.js';
 import { logAuditEvent, AUDIT_ACTIONS } from './services/auditService.js';
 
@@ -123,6 +124,12 @@ const TAB_ICONS = {
   ),
   tata_electricity: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+  ),
+  times_of_india: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+  ),
+  common_invoices: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
   ),
   tanker: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
@@ -479,10 +486,16 @@ export default function App() {
             render: () => <FinanceTracker isAdmin={isAdmin} />
           },
           {
-            id: 'maintenance',
-            label: 'Maintenance',
-            metric: 'Outstanding Maintenance',
-            render: () => <SpecialMaintenanceTracker isAdmin={isAdmin} />
+            id: 'common_invoices',
+            label: 'Common Invoices',
+            metric: 'Invoice & Notice Hub',
+            render: () => <CommonInvoiceHub isAdmin={isAdmin} />
+          },
+          {
+            id: 'times_of_india',
+            label: 'Times of India (TOI)',
+            metric: 'Flats 302, 904, 1002 Invoices',
+            render: () => <TimesOfIndiaTracker isAdmin={isAdmin} />
           },
           {
             id: 'shop_maintenance',

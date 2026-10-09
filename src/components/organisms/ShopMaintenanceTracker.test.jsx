@@ -65,13 +65,14 @@ describe('ShopMaintenanceTracker', () => {
     });
   });
 
-  it('renders Print Summary, Print Shop Statement, and Generate Shop Notices buttons', () => {
+  it('renders Print Summary, Print Shop Statement, and Generate Shop Invoices/Notices buttons', () => {
     render(<ShopMaintenanceTracker isAdmin={false} />);
 
     expect(screen.getByRole('button', { name: /print summary \(all\)/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /print shop 1 statement \(pdf\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /generate shop invoices/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /generate shop notices/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /create notice for shop 1/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /generate invoice \(shop 1\)/i })).toBeInTheDocument();
   });
 
   it('opens notice generator modal and allows selecting single or all pending shops', async () => {
@@ -81,7 +82,7 @@ describe('ShopMaintenanceTracker', () => {
     // Click Generate Shop Notices button
     await user.click(screen.getByRole('button', { name: /generate shop notices/i }));
 
-    expect(screen.getByText(/commercial shop maintenance notice generator/i)).toBeInTheDocument();
+    expect(screen.getByText(/commercial shop maintenance/i)).toBeInTheDocument();
     expect(screen.getByText(/all pending dues/i)).toBeInTheDocument();
     expect(screen.getByText(/remittance account info/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /print \/ download pdf/i })).toBeInTheDocument();
@@ -93,7 +94,7 @@ describe('ShopMaintenanceTracker', () => {
 
     // Close modal
     await user.click(screen.getByRole('button', { name: /^close$/i }));
-    expect(screen.queryByText(/commercial shop maintenance notice generator/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/all pending dues/i)).not.toBeInTheDocument();
   });
 
   it('renders auto-billing status and allows admin to sync all due months', async () => {

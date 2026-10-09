@@ -158,15 +158,16 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
   const [saveStatus, setSaveStatus] = useState(isFirebaseConfigured ? 'idle' : 'local');
   const [saveMessage, setSaveMessage] = useState(isFirebaseConfigured ? 'Ready to sync' : 'Local mode');
 
-  // Notice Generator States
+  // Notice & Invoice Generator States
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
+  const [noticeDocType, setNoticeDocType] = useState('invoice'); // 'invoice' | 'notice'
   const [noticeTarget, setNoticeTarget] = useState('single'); // 'single' | 'all_pending' | 'all'
   const [noticeShopId, setNoticeShopId] = useState(1);
   const [noticeDate, setNoticeDate] = useState(getTodayISODate);
   const [noticeDueDate, setNoticeDueDate] = useState(() => getFutureISODate(7));
-  const [noticeRefPrefix, setNoticeRefPrefix] = useState('ME-A/COMM/2026-27/NOT-');
+  const [noticeRefPrefix, setNoticeRefPrefix] = useState('INV-ME/COMM/2026-27/');
   const [noticeCustomNote, setNoticeCustomNote] = useState(
-    'As per Society Bye-laws and Resolution passed in AGM dated 06.09.2026, all shop owners are requested to clear their pending maintenance dues. Delayed payments beyond the due date attract interest as per applicable society rules.'
+    'As per Society Bye-laws and Resolution passed in AGM dated 06.09.2026, all shop owners are requested to clear their monthly maintenance dues. Payments beyond the due date attract interest as per applicable society rules.'
   );
   const [noticeToast, setNoticeToast] = useState('');
 
@@ -190,9 +191,32 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
         if (snap.exists()) {
           const remoteShops = normalizeShopData(snap.data()?.shops);
           setShops(remoteShops);
-          setSaveMessage('Synced & auto-billed to ' + getCurrentMonthStr());
+          
+          const rawCount = snap.data()?.shops?.[0]?.ledger?.length || 0;
+          const updatedCount = remoteShops[0]?.ledger?.length || 0;
+          if (isAdmin && updatedCount > rawCount) {
+            await setDoc(
+              doc(db, SHOP_MAINTENANCE_COLLECTION, SHOP_MAINTENANCE_DOC_ID),
+              { shops: remoteShops, updatedAt: serverTimestamp() },
+              { merge: true }
+            );
+            setSaveMessage(`Auto-billed & saved to server up to ${getCurrentMonthStr()}`);
+          } else {
+            setSaveMessage(`Synced & auto-billed to ${getCurrentMonthStr()}`);
+          }
         } else {
-          setSaveMessage('Auto-billed up to ' + getCurrentMonthStr());
+          const freshShops = normalizeShopData(initialShopData);
+          setShops(freshShops);
+          if (isAdmin) {
+            await setDoc(
+              doc(db, SHOP_MAINTENANCE_COLLECTION, SHOP_MAINTENANCE_DOC_ID),
+              { shops: freshShops, updatedAt: serverTimestamp() },
+              { merge: true }
+            );
+            setSaveMessage(`Initialized & saved on server (${getCurrentMonthStr()})`);
+          } else {
+            setSaveMessage(`Auto-billed up to ${getCurrentMonthStr()}`);
+          }
         }
         setSaveStatus('saved');
       } catch (error) {
@@ -830,32 +854,39 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
   const handlePrintNotices = useCallback(() => {
     const targetShops = shopsForNotice;
     if (targetShops.length === 0) {
-      window.alert('No shops selected for notice generation.');
+      window.alert('No shops selected for document generation.');
       return;
     }
 
+    const isInvoice = noticeDocType === 'invoice';
     const formattedNoticeDate = formatDisplayDate(noticeDate);
     const formattedDueDate = formatDisplayDate(noticeDueDate);
 
     const pagesHtml = targetShops.map((s, idx) => {
       const data = getShopNoticeData(s);
       const refNo = `${noticeRefPrefix}${String(s.id).padStart(2, '0')}`;
+      const docBadgeTitle = isInvoice
+        ? 'COMMERCIAL WING • MAINTENANCE BILL / TAX INVOICE'
+        : 'COMMERCIAL WING • FORMAL DEMAND NOTICE';
+      const subjectText = isInvoice
+        ? 'COMMERCIAL SHOP MAINTENANCE BILL & CHARGES STATEMENT'
+        : 'FORMAL NOTICE FOR PAYMENT OF OUTSTANDING COMMERCIAL MAINTENANCE DUES';
 
       return `
         <div class="notice-page">
           <div class="header">
             <div class="society-title">MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</div>
             <div class="society-reg">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
-            <div class="doc-badge">COMMERCIAL WING • FORMAL DEMAND NOTICE</div>
+            <div class="doc-badge">${docBadgeTitle}</div>
           </div>
 
           <div class="ref-row">
-            <div><strong>Ref No:</strong> ${refNo}</div>
-            <div><strong>Notice Date:</strong> ${formattedNoticeDate}</div>
+            <div><strong>${isInvoice ? 'Invoice / Bill No' : 'Ref No'}:</strong> ${refNo}</div>
+            <div><strong>${isInvoice ? 'Invoice Date' : 'Notice Date'}:</strong> ${formattedNoticeDate}</div>
           </div>
 
           <div class="recipient-box">
-            <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 2px;">To,</div>
+            <div style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 2px;">${isInvoice ? 'Billed To (Unit Owner / Occupant):' : 'To,'}</div>
             <div style="font-size: 14px; font-weight: 800; color: #0f172a;">${data.name}</div>
             <div style="font-size: 13px; font-weight: 700; color: #0b2b26;">Unit / Shop: ${data.shopNo}</div>
             <div style="font-size: 12px; color: #475569;">Majestique Euriska Commercial Complex, Mohammed Wadi, Pune - 411060</div>
@@ -863,13 +894,15 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
           </div>
 
           <div class="subject-line">
-            <strong>SUBJECT:</strong> FORMAL NOTICE FOR PAYMENT OF OUTSTANDING COMMERCIAL MAINTENANCE DUES
+            <strong>SUBJECT:</strong> ${subjectText}
           </div>
 
           <div class="body-text">
-            <p>Dear Sir / Madam,</p>
+            <p>Dear ${data.name || 'Member'},</p>
             <p>
-              This is to formally bring to your attention the outstanding monthly maintenance charges due towards your commercial unit <strong>${data.shopNo}</strong> in Majestique Euriska 'A' Building Co-operative Housing Society Ltd.
+              ${isInvoice
+                ? `Please find below the official maintenance invoice for commercial unit <strong>${data.shopNo}</strong> in Majestique Euriska 'A' Building Co-operative Housing Society Ltd.`
+                : `This is to formally bring to your attention the outstanding monthly maintenance charges due towards your commercial unit <strong>${data.shopNo}</strong> in Majestique Euriska 'A' Building Co-operative Housing Society Ltd.`}
             </p>
             <p>
               As per the society's official accounting records and rate schedule (Oct 2021 – Jun 2024 @ ₹1,100/mo and Jul 2024 – Current @ ₹1,500/mo), the summary of maintenance charges billed and payments received against your unit is as follows:
@@ -879,7 +912,7 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
           <table class="dues-table">
             <thead>
               <tr>
-                <th>Description</th>
+                <th>Description / Particulars</th>
                 <th style="text-align: right; width: 140px;">Amount (₹)</th>
               </tr>
             </thead>
@@ -893,7 +926,7 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
                 <td style="text-align: right; color: #166534; font-weight: 600;">(-) ₹${formatValue(data.paid)}</td>
               </tr>
               <tr class="highlight-row">
-                <td style="font-size: 13px;"><strong>NET OUTSTANDING MAINTENANCE DUES PAYABLE</strong></td>
+                <td style="font-size: 13px;"><strong>${isInvoice ? 'TOTAL NET INVOICE AMOUNT PAYABLE' : 'NET OUTSTANDING MAINTENANCE DUES PAYABLE'}</strong></td>
                 <td style="text-align: right; font-size: 15px; font-weight: 800; color: ${data.pending > 0 ? '#991b1b' : '#166534'};">
                   ₹${formatValue(data.pending)}
                 </td>
@@ -903,11 +936,11 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
 
           <div class="due-banner">
             <div>
-              <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: #92400e;">Mandatory Payment Timeline:</span>
-              <div style="font-size: 14px; font-weight: 800; color: #78350f;">Please clear the dues on or before: ${formattedDueDate}</div>
+              <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: #92400e;">Payment Due Date:</span>
+              <div style="font-size: 14px; font-weight: 800; color: #78350f;">Please clear on or before: ${formattedDueDate}</div>
             </div>
             <div style="text-align: right; font-size: 12px; font-weight: 700; color: #92400e;">
-              ${data.pending > 0 ? '⚠️ Immediate Action Required' : '✓ Nil Dues / Cleared'}
+              ${data.pending > 0 ? '⚠️ Payment Awaited' : '✓ Nil Dues / Fully Cleared'}
             </div>
           </div>
 
@@ -921,11 +954,11 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
               <div><strong>IFSC Code:</strong> HDFC0002454</div>
               <div><strong>Branch:</strong> Budhrani Boulevard, Undri NIBM Rd, Pune - 411060</div>
             </div>
-            <div style="margin-top: 6px; font-size: 10.5px; color: #64748b;">* Note: Kindly mention your <strong>${data.shopNo}</strong> in the transaction narration and share the UTR / transfer screenshot with the society office for prompt receipt issuance.</div>
+            <div style="margin-top: 6px; font-size: 10.5px; color: #64748b;">* Note: Kindly mention <strong>${data.shopNo}</strong> in the transaction narration and share the UTR / transfer screenshot with the society office for prompt receipt issuance.</div>
           </div>
 
           <div class="legal-note">
-            <strong>Important Society Resolution & Legal Terms:</strong><br/>
+            <strong>Important Society Terms:</strong><br/>
             ${noticeCustomNote}
           </div>
 
@@ -942,7 +975,7 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
           </div>
 
           <div class="footer">
-            <div>Majestique Euriska 'A' Building Co-Operative Housing Society Ltd. • Official Notice</div>
+            <div>Majestique Euriska 'A' Building Co-Operative Housing Society Ltd. • Official Document</div>
             <div>Page ${idx + 1} of ${targetShops.length}</div>
           </div>
         </div>
@@ -1138,11 +1171,48 @@ export default function ShopMaintenanceTracker({ isAdmin = false }) {
       printWindow.document.write(printDoc);
       printWindow.document.close();
     }
-  }, [shopsForNotice, noticeDate, noticeDueDate, noticeRefPrefix, noticeCustomNote, getShopNoticeData]);
+  }, [shopsForNotice, noticeDocType, noticeDate, noticeDueDate, noticeRefPrefix, noticeCustomNote, getShopNoticeData]);
 
   const generateWhatsAppMessage = useCallback((shop) => {
     const data = getShopNoticeData(shop);
     const formattedDueDate = formatDisplayDate(noticeDueDate);
+    const isInvoice = noticeDocType === 'invoice';
+
+    if (isInvoice) {
+      return `*MAJESTIQUE EURISKA 'A' BLDG CO-OP HSG SOC LTD*
+*COMMERCIAL SHOP MAINTENANCE INVOICE / BILL*
+━━━━━━━━━━━━━━━━━━━━━━
+Invoice No: ${noticeRefPrefix}${String(data.id).padStart(2, '0')}
+Date: ${formatDisplayDate(noticeDate)}
+
+Billed To: *${data.name}*
+Unit: *${data.shopNo}*
+
+Subject: *Maintenance Bill & Dues Statement*
+
+Dear Member,
+Please find below the official maintenance bill details for your commercial unit *${data.shopNo}*:
+
+• Total Billed: ₹${formatValue(data.billed)}
+• Total Paid: ₹${formatValue(data.paid)}
+• *TOTAL AMOUNT PAYABLE: ₹${formatValue(data.pending)}*
+• *Payment Due Date: ${formattedDueDate}*
+
+*Remittance Bank Account Details:*
+• Bank: HDFC Bank
+• A/C Name: MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR
+• A/C No: 50200075533530
+• IFSC: HDFC0002454
+• Branch: Budhrani Boulevard, Undri NIBM Rd, Pune - 411060
+
+Kindly complete the payment on or before the due date and share the transaction reference / UTR for receipt issuance.
+
+Thank you for your cooperation!
+
+Regards,
+*Managing Committee*
+Majestique Euriska 'A' Building CHS Ltd.`;
+    }
 
     return `*MAJESTIQUE EURISKA 'A' BLDG CO-OP HSG SOC LTD*
 *COMMERCIAL SHOP MAINTENANCE NOTICE*
@@ -1177,7 +1247,7 @@ Thank you for your cooperation!
 Regards,
 *Managing Committee*
 Majestique Euriska 'A' Building CHS Ltd.`;
-  }, [getShopNoticeData, noticeDueDate, noticeDate, noticeRefPrefix]);
+  }, [getShopNoticeData, noticeDocType, noticeDueDate, noticeDate, noticeRefPrefix]);
 
   const handleShareWhatsApp = useCallback((shop) => {
     const data = getShopNoticeData(shop);
@@ -1235,48 +1305,148 @@ Majestique Euriska 'A' Building CHS Ltd.`;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18, fontFamily: 'Inter, system-ui, sans-serif' }}>
       <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
+        background: 'linear-gradient(135deg, #0b2b26 0%, #134e44 60%, #196c6c 100%)',
         borderRadius: 20,
-        padding: '20px 24px',
+        padding: '24px 28px',
         color: '#fff',
-        boxShadow: '0 6px 28px rgba(11,43,38,0.22)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16
+        boxShadow: '0 8px 32px rgba(11,43,38,0.25)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 20,
       }}>
-        <div>
-          <p style={{ margin: 0, fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#c49b4f' }}>🏬 Shop Maintenance</p>
-          <h2 style={{ margin: '6px 0 8px', fontSize: '1.35rem', fontWeight: 800 }}>🏪 Shop Maintenance Ledger</h2>
-          <p style={{ margin: 0, color: 'rgba(255,255,255,0.72)', fontSize: '0.9rem' }}>Monthly maintenance details, receipts, and balance movement for each shop.</p>
-        </div>
-        
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12 }}>
-          <div style={{ padding: '6px 10px', borderRadius: 999, background: saveTone, color: saveTextTone, fontSize: '0.74rem', fontWeight: 800, border: '1px solid rgba(255,255,255,0.24)' }}>
-            {saveMessage}
+        {/* Top Row: Title on Left, Summary KPI & Sync status on Right */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
+          <div style={{ minWidth: 280, flex: '1 1 auto' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 999, background: 'rgba(196,155,79,0.18)', border: '1px solid rgba(196,155,79,0.35)', marginBottom: 8 }}>
+              <span style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#fef08a' }}>🏬 Commercial Wing • 8 Shops</span>
+            </div>
+            <h2 style={{ margin: '2px 0 6px', fontSize: '1.45rem', fontWeight: 800, letterSpacing: '-0.01em' }}>
+              🏪 Shop Maintenance Ledger
+            </h2>
+            <p style={{ margin: 0, color: 'rgba(255,255,255,0.78)', fontSize: '0.88rem', lineHeight: 1.4 }}>
+              Monthly maintenance billing, payment receipts, and balance movement for all shops.
+            </p>
           </div>
 
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-            <div style={{ background: 'rgba(255,255,255,0.1)', padding: '10px 16px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.2)', textAlign: 'right' }}>
-              <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>Overall Pending (Shop 1-8)</div>
-              <div style={{ fontSize: '1.3rem', fontWeight: 800, marginTop: 2, color: overallPending > 0 ? '#fec84b' : '#34d399' }}>{formatValue(overallPending)}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            {/* KPI Card */}
+            <div style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.18)',
+              borderRadius: 14,
+              padding: '10px 18px',
+              minWidth: 210,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              backdropFilter: 'blur(10px)',
+              boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.1)'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>Overall Pending (1-8)</span>
+                <span style={{ fontSize: '0.85rem' }}>💰</span>
+              </div>
+              <div style={{ fontSize: '1.45rem', fontWeight: 900, color: overallPending > 0 ? '#fde047' : '#34d399', letterSpacing: '-0.02em', lineHeight: 1.15 }}>
+                ₹{formatValue(overallPending)}
+              </div>
             </div>
 
+            {/* Cloud Sync Status Pill */}
+            <div style={{
+              padding: '8px 14px',
+              borderRadius: 12,
+              background: saveTone,
+              color: saveTextTone,
+              fontSize: '0.74rem',
+              fontWeight: 800,
+              border: '1px solid rgba(255,255,255,0.22)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              maxWidth: 240,
+              lineHeight: 1.3
+            }}>
+              <span>{saveStatus === 'saving' || saveStatus === 'loading' ? '⏳' : saveStatus === 'error' ? '⚠️' : '☁️'}</span>
+              <span>{saveMessage}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Row: Auto-billing Tag on Left, Action Toolbar on Right */}
+        <div style={{
+          borderTop: '1px solid rgba(255,255,255,0.14)',
+          paddingTop: 16,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              color: '#d1fae5',
+              background: 'rgba(16, 185, 129, 0.2)',
+              border: '1px solid rgba(52, 211, 153, 0.4)',
+              padding: '5px 12px',
+              borderRadius: 999
+            }}>
+              ⚡ Auto-Billed on 1st of every month (₹1,500/mo) • Up to {getCurrentMonthStr()}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <button
               type="button"
               onClick={() => {
+                setNoticeDocType('invoice');
+                setNoticeRefPrefix('INV-ME/COMM/2026-27/');
                 setNoticeTarget('all_pending');
                 setIsNoticeModalOpen(true);
               }}
               style={{
                 padding: '9px 16px',
-                borderRadius: 8,
+                borderRadius: 999,
+                background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
+                color: '#C49B4F',
+                border: '1px solid #C49B4F',
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontSize: '0.82rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 7,
+                boxShadow: '0 4px 14px rgba(11,43,38,0.35)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              🧾 Generate Shop Invoices
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setNoticeDocType('notice');
+                setNoticeRefPrefix('ME-A/COMM/2026-27/NOT-');
+                setNoticeTarget('all_pending');
+                setIsNoticeModalOpen(true);
+              }}
+              style={{
+                padding: '9px 16px',
+                borderRadius: 999,
                 background: 'linear-gradient(135deg, #c49b4f 0%, #b38634 100%)',
                 color: '#fff',
                 border: 'none',
                 fontWeight: 800,
                 cursor: 'pointer',
-                fontSize: '0.85rem',
+                fontSize: '0.82rem',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: 8,
+                gap: 7,
                 boxShadow: '0 4px 14px rgba(196,155,79,0.35)',
                 transition: 'all 0.2s ease'
               }}
@@ -1285,82 +1455,118 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             </button>
 
             <button
+              type="button"
               onClick={handlePrintAllShopsPDF}
               style={{
                 padding: '9px 16px',
-                borderRadius: 8,
-                background: 'rgba(255,255,255,0.15)',
+                borderRadius: 999,
+                background: 'rgba(255,255,255,0.14)',
                 color: '#fff',
-                border: '1px solid rgba(255,255,255,0.3)',
+                border: '1px solid rgba(255,255,255,0.25)',
                 fontWeight: 700,
                 cursor: 'pointer',
-                fontSize: '0.85rem',
-                backdropFilter: 'blur(6px)',
+                fontSize: '0.82rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 7,
+                backdropFilter: 'blur(8px)',
                 transition: 'all 0.2s ease'
               }}
             >
-              🖨️ Print Summary (All Shops)
+              🖨️ Print Summary (All)
             </button>
+
+            {isAdmin ? (
+              <>
+                <button
+                  type="button"
+                  onClick={handleAutoSyncDueMonths}
+                  disabled={saveStatus === 'saving'}
+                  title="Checks and saves all new month maintenance to Firebase server"
+                  style={{
+                    padding: '9px 15px',
+                    borderRadius: 999,
+                    background: 'rgba(255,255,255,0.14)',
+                    color: '#fff',
+                    border: '1px solid rgba(255,255,255,0.25)',
+                    fontWeight: 700,
+                    cursor: saveStatus === 'saving' ? 'wait' : 'pointer',
+                    fontSize: '0.82rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    backdropFilter: 'blur(8px)',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  ⚡ Sync Dues ({getCurrentMonthStr()})
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsInsertModalOpen(true)}
+                  style={{
+                    padding: '9px 16px',
+                    borderRadius: 999,
+                    background: '#047857',
+                    color: '#fff',
+                    border: '1px solid #10b981',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    fontSize: '0.82rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    boxShadow: '0 4px 12px rgba(4,120,87,0.3)',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  + Add Maintenance / Receipt
+                </button>
+              </>
+            ) : (
+              <span style={{
+                padding: '7px 12px',
+                borderRadius: 999,
+                background: 'rgba(255,255,255,0.1)',
+                color: 'rgba(255,255,255,0.75)',
+                border: '1px solid rgba(255,255,255,0.18)',
+                fontWeight: 700,
+                fontSize: '0.76rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5
+              }}>
+                🔒 Read-only view
+              </span>
+            )}
           </div>
-
-          {isAdmin ? (
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                onClick={handleAutoSyncDueMonths}
-                disabled={saveStatus === 'saving'}
-                title="Automatically checks & generates regular ₹1,500 monthly maintenance on the 1st of every month"
-                style={{
-                  padding: '8px 14px',
-                  borderRadius: 8,
-                  background: 'rgba(255,255,255,0.18)',
-                  color: '#fff',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  fontWeight: 700,
-                  cursor: saveStatus === 'saving' ? 'wait' : 'pointer',
-                  fontSize: '0.82rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  backdropFilter: 'blur(6px)',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                ⚡ Sync Monthly Dues ({getCurrentMonthStr()})
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsInsertModalOpen(true)}
-                style={{ padding: '8px 16px', borderRadius: 8, background: '#c49b4f', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 12px rgba(196,155,79,0.3)' }}
-              >
-                + Add Shop Maintenance
-              </button>
-            </div>
-          ) : (
-            <span style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.82)', border: '1px solid rgba(255,255,255,0.2)', fontWeight: 700, fontSize: '0.78rem' }}>
-              Read-only view
-            </span>
-          )}
         </div>
       </div>
 
-      <div style={{ padding: '12px 18px', borderRadius: '12px', background: 'rgba(196, 155, 79, 0.07)', border: '1px solid rgba(196, 155, 79, 0.2)', display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
-        <span style={{ fontSize: '0.76rem', fontWeight: 800, color: 'rgb(120, 64, 14)' }}>📋 Rate Slabs:</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', color: 'rgb(95, 102, 95)' }}>
+      {/* Rate Slabs Strip */}
+      <div style={{
+        padding: '12px 20px',
+        borderRadius: '14px',
+        background: 'rgba(196, 155, 79, 0.08)',
+        border: '1px solid rgba(196, 155, 79, 0.22)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '12px',
+        alignItems: 'center'
+      }}>
+        <span style={{ fontSize: '0.76rem', fontWeight: 800, color: 'rgb(120, 64, 14)' }}>📋 Approved Rate Slabs:</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', color: '#475569' }}>
           <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '3px', background: 'rgb(196, 155, 79)' }}></span>
           <b>Oct 2021 – Jun 2024</b>: ₹1,100 / month (33 months)
         </span>
-        <span style={{ color: 'rgba(61, 63, 52, 0.25)' }}>|</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', color: 'rgb(95, 102, 95)' }}>
-          <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '3px', background: 'rgb(147, 197, 253)' }}></span>
-          <b>Jul 2024 – Present ({getCurrentMonthStr()})</b>: ₹1,500 / month
-        </span>
-        <span style={{ color: 'rgba(61, 63, 52, 0.25)' }}>|</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: '#065f46', background: '#d1fae5', padding: '3px 9px', borderRadius: '999px', fontWeight: 700, border: '1px solid #a7f3d0' }}>
-          ⚡ Auto-Billed: 1st of every month automatically
+        <span style={{ color: 'rgba(61, 63, 52, 0.25)' }}>•</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', color: '#475569' }}>
+          <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '3px', background: '#38bdf8' }}></span>
+          <b>Jul 2024 – Present ({getCurrentMonthStr()})</b>: ₹1,500 / month (Billed on 1st)
         </span>
       </div>
+
 
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
@@ -1401,6 +1607,34 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             <button
               type="button"
               onClick={() => {
+                setNoticeDocType('invoice');
+                setNoticeRefPrefix('INV-ME/COMM/2026-27/');
+                setNoticeTarget('single');
+                setNoticeShopId(activeShop.id);
+                setIsNoticeModalOpen(true);
+              }}
+              style={{
+                padding: '8px 16px',
+                borderRadius: 8,
+                background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
+                color: '#C49B4F',
+                border: '1px solid #C49B4F',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: '0.85rem',
+                boxShadow: '0 4px 12px rgba(11,43,38,0.25)'
+              }}
+            >
+              🧾 Generate Invoice ({activeShop.shopNo})
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setNoticeDocType('notice');
+                setNoticeRefPrefix('ME-A/COMM/2026-27/NOT-');
                 setNoticeTarget('single');
                 setNoticeShopId(activeShop.id);
                 setIsNoticeModalOpen(true);
@@ -1420,7 +1654,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 boxShadow: '0 4px 12px rgba(196,155,79,0.3)'
               }}
             >
-              📜 Create Notice for {activeShop.shopNo}
+              📜 Notice ({activeShop.shopNo})
             </button>
             <button
               onClick={handlePrintShopPDF}
@@ -1569,7 +1803,9 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             <div style={{ padding: '18px 24px', background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
               <div>
                 <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#c49b4f', fontWeight: 800 }}>Society Commercial Wing</span>
-                <h3 style={{ margin: '4px 0 0', fontSize: '1.25rem', fontWeight: 800 }}>📜 Commercial Shop Maintenance Notice Generator</h3>
+                <h3 style={{ margin: '4px 0 0', fontSize: '1.25rem', fontWeight: 800 }}>
+                  {noticeDocType === 'invoice' ? '🧾 Commercial Shop Maintenance Invoice Generator' : '📜 Commercial Shop Maintenance Demand Notice Generator'}
+                </h3>
               </div>
               <button
                 type="button"
@@ -1586,10 +1822,61 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               {/* Left Column: Form & Selection */}
               <div style={{ padding: '20px', overflowY: 'auto', background: '#f8fafc', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 16 }}>
                 
+                {/* Document Type Switcher */}
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    1. Document Type
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNoticeDocType('invoice');
+                        if (noticeRefPrefix.includes('NOT-')) {
+                          setNoticeRefPrefix('INV-ME/COMM/2026-27/');
+                        }
+                      }}
+                      style={{
+                        padding: '8px 10px',
+                        borderRadius: 8,
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        border: noticeDocType === 'invoice' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
+                        background: noticeDocType === 'invoice' ? '#0b2b26' : '#fff',
+                        color: noticeDocType === 'invoice' ? '#C49B4F' : '#334155',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      🧾 Maintenance Invoice
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNoticeDocType('notice');
+                        if (noticeRefPrefix.includes('INV-')) {
+                          setNoticeRefPrefix('ME-A/COMM/2026-27/NOT-');
+                        }
+                      }}
+                      style={{
+                        padding: '8px 10px',
+                        borderRadius: 8,
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        border: noticeDocType === 'notice' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
+                        background: noticeDocType === 'notice' ? '#0b2b26' : '#fff',
+                        color: noticeDocType === 'notice' ? '#C49B4F' : '#334155',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      📜 Demand Notice
+                    </button>
+                  </div>
+                </div>
+
                 {/* Target Scope Selection */}
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                    1. Select Target Shops
+                    2. Select Target Shops
                   </label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 10 }}>
                     <button
@@ -1688,7 +1975,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
-                      Notice Date
+                      {noticeDocType === 'invoice' ? 'Invoice Date' : 'Notice Date'}
                     </label>
                     <input
                       type="date"
@@ -1712,7 +1999,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
                 <div>
                   <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
-                    Reference Number Prefix
+                    {noticeDocType === 'invoice' ? 'Invoice Number Prefix' : 'Reference Number Prefix'}
                   </label>
                   <input
                     type="text"
@@ -1725,7 +2012,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 {/* Custom Resolution / Note */}
                 <div>
                   <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
-                    Legal / Resolution Clause (Editable)
+                    Important Note / Terms (Editable)
                   </label>
                   <textarea
                     rows={4}
@@ -1774,26 +2061,26 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • Mohammed Wadi, Pune - 411060
                     </div>
                     <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 8px', borderRadius: 999, background: '#f1f5f9', color: '#0b2b26', fontSize: '0.65rem', fontWeight: 800, border: '1px solid #cbd5e1' }}>
-                      COMMERCIAL MAINTENANCE DEMAND NOTICE
+                      {noticeDocType === 'invoice' ? 'COMMERCIAL WING • MAINTENANCE BILL / TAX INVOICE' : 'COMMERCIAL WING • FORMAL DEMAND NOTICE'}
                     </span>
                   </div>
 
                   {/* Ref & Date */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', color: '#334155', borderBottom: '1px dashed #e2e8f0', paddingBottom: 6 }}>
-                    <div><strong>Ref:</strong> {noticeRefPrefix}{String(activeNoticeData.id).padStart(2, '0')}</div>
-                    <div><strong>Date:</strong> {formatDisplayDate(noticeDate)}</div>
+                    <div><strong>{noticeDocType === 'invoice' ? 'Invoice / Bill No:' : 'Ref No:'}</strong> {noticeRefPrefix}{String(activeNoticeData.id).padStart(2, '0')}</div>
+                    <div><strong>{noticeDocType === 'invoice' ? 'Invoice Date:' : 'Notice Date:'}</strong> {formatDisplayDate(noticeDate)}</div>
                   </div>
 
                   {/* Recipient */}
                   <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px 12px', fontSize: '0.78rem' }}>
-                    <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700 }}>TO:</div>
+                    <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700 }}>{noticeDocType === 'invoice' ? 'BILLED TO:' : 'TO:'}</div>
                     <div style={{ fontWeight: 800, fontSize: '0.88rem' }}>{activeNoticeData.name}</div>
                     <div style={{ color: '#0b2b26', fontWeight: 700 }}>Unit: {activeNoticeData.shopNo} • Contact: {activeNoticeData.contactNo || 'N/A'}</div>
                   </div>
 
                   {/* Subject */}
                   <div style={{ background: '#f1f5f9', padding: '6px 10px', borderLeft: '3px solid #0b2b26', fontSize: '0.78rem', fontWeight: 700 }}>
-                    Subject: Demand Notice for Outstanding Commercial Maintenance Dues
+                    {noticeDocType === 'invoice' ? 'Subject: Commercial Shop Maintenance Charges Bill' : 'Subject: Demand Notice for Outstanding Commercial Maintenance Dues'}
                   </div>
 
                   {/* Financial Table */}
@@ -1808,7 +2095,9 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         <td style={{ padding: '6px 8px', textAlign: 'right', color: '#15803d', fontWeight: 600 }}>(-) ₹{formatValue(activeNoticeData.paid)}</td>
                       </tr>
                       <tr style={{ background: '#fffbeb', borderTop: '2px solid #fde68a', fontWeight: 800 }}>
-                        <td style={{ padding: '8px', color: '#92400e' }}>NET OUTSTANDING DUES PAYABLE</td>
+                        <td style={{ padding: '8px', color: '#92400e' }}>
+                          {noticeDocType === 'invoice' ? 'TOTAL NET INVOICE AMOUNT DUE' : 'NET OUTSTANDING DUES PAYABLE'}
+                        </td>
                         <td style={{ padding: '8px', textAlign: 'right', fontSize: '0.95rem', color: activeNoticeData.pending > 0 ? '#991b1b' : '#15803d' }}>
                           ₹{formatValue(activeNoticeData.pending)}
                         </td>

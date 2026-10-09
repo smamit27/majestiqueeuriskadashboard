@@ -133,11 +133,11 @@ describe('ElectricityTracker – Tata Electricity Bill view and calculations', (
       });
     });
 
-    it('renders Export to Excel and Export PDF Summary buttons', async () => {
+    it('renders Export to Excel and Statement PDF buttons', async () => {
       render(<ElectricityTracker isAdmin={true} />);
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /export to excel/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /export pdf summary/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /statement pdf/i })).toBeInTheDocument();
       });
     });
 
@@ -163,7 +163,7 @@ describe('ElectricityTracker – Tata Electricity Bill view and calculations', (
       render(<ElectricityTracker isAdmin={true} />);
       await waitFor(() => screen.getByText(/tata electricity bills/i));
 
-      const printBtns = screen.getAllByTitle(/print \/ export bill invoice/i);
+      const printBtns = screen.getAllByTitle(/quick print a4 pdf/i);
       expect(printBtns.length).toBeGreaterThan(0);
 
       await user.click(printBtns[0]);
@@ -178,7 +178,7 @@ describe('ElectricityTracker – Tata Electricity Bill view and calculations', (
       openSpy.mockRestore();
     });
 
-    it('triggers window.open and writes summary report when Export PDF Summary is clicked', async () => {
+    it('triggers window.open and writes summary report when Statement PDF is clicked', async () => {
       const user = userEvent.setup();
       let writtenHtml = '';
       const mockPrintWindow = {
@@ -190,9 +190,9 @@ describe('ElectricityTracker – Tata Electricity Bill view and calculations', (
       const openSpy = vi.spyOn(window, 'open').mockReturnValue(mockPrintWindow);
 
       render(<ElectricityTracker isAdmin={true} />);
-      await waitFor(() => screen.getByRole('button', { name: /export pdf summary/i }));
+      await waitFor(() => screen.getByRole('button', { name: /statement pdf/i }));
 
-      await user.click(screen.getByRole('button', { name: /export pdf summary/i }));
+      await user.click(screen.getByRole('button', { name: /statement pdf/i }));
 
       expect(openSpy).toHaveBeenCalledWith('', '_blank');
       expect(mockPrintWindow.document.write).toHaveBeenCalled();

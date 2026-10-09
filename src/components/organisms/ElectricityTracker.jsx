@@ -236,6 +236,22 @@ export default function ElectricityTracker({ isAdmin = false }) {
   const [saveStatus, setSaveStatus] = useState('idle');
   const [saveMsg, setSaveMsg] = useState('');
 
+  // Tata Electricity Invoice Modal States
+  const [isTataInvoiceModalOpen, setIsTataInvoiceModalOpen] = useState(false);
+  const [selectedTataBillId, setSelectedTataBillId] = useState(null);
+  const [tataInvoiceTarget, setTataInvoiceTarget] = useState('single'); // 'single' | 'all'
+  const [tataInvoiceDate, setTataInvoiceDate] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  });
+  const [tataInvoiceDueDate, setTataInvoiceDueDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  });
+  const [tataInvoiceRefPrefix, setTataInvoiceRefPrefix] = useState('INV-ME/TATA/2026-27/');
+  const [tataInvoiceToast, setTataInvoiceToast] = useState('');
+
   const isLoadedRef = useRef(false);
   const autoSaveTimer = useRef(null);
 
@@ -1168,6 +1184,457 @@ export default function ElectricityTracker({ isAdmin = false }) {
     }
   };
 
+  const activeTataBill = useMemo(() => {
+    if (selectedTataBillId) {
+      const found = tataBills.find(b => b.id === selectedTataBillId);
+      if (found) return found;
+    }
+    return tataBills[0] || DEFAULT_TATA_SEED[0];
+  }, [tataBills, selectedTataBillId]);
+
+  const tataBillsForInvoice = useMemo(() => {
+    if (tataInvoiceTarget === 'single') {
+      return [activeTataBill];
+    }
+    return [...tataBills].sort((a, b) => {
+      const dateA = a.startMonth ? new Date(a.startMonth) : new Date(0);
+      const dateB = b.startMonth ? new Date(b.startMonth) : new Date(0);
+      return dateB - dateA;
+    });
+  }, [tataInvoiceTarget, activeTataBill, tataBills]);
+
+  const generateTataWhatsAppMessage = useCallback((bill) => {
+    const consumption = n(bill.consumption) || (n(bill.currReading) - n(bill.prevReading));
+    const rate = n(bill.ratePerUnit) || 13;
+    const grandTotal = n(bill.grandTotal) || (consumption * rate);
+    const formattedInvDate = formatDateLabel(tataInvoiceDate);
+    const formattedDueDate = formatDateLabel(tataInvoiceDueDate);
+    const invNo = `${tataInvoiceRefPrefix}${bill.id || '2001'}`;
+
+    return `*MAJESTIQUE EURISKA 'A' BLDG CO-OP HSG SOC LTD*
+*TATA ELECTRICITY SUB-METER TAX INVOICE*
+━━━━━━━━━━━━━━━━━━━━━━
+Invoice No: ${invNo}
+Invoice Date: ${formattedInvDate}
+Payment Due Date: ${formattedDueDate}
+
+*Client / Consumer Details:*
+• Consumer: Tata Play Limited (Tata Sky Broadband Hub)
+• Sub-Meter Tag: TATA-EUR-SB-01 (4-Digit Dedicated Meter)
+• Location: Club House Terrace Hub, Majestique Euriska
+
+*Billing & Consumption Breakdown:*
+• Billing Period: ${bill.periodLabel || 'Commercial Billing Cycle'}
+• Duration: ${bill.duration || computeBillingDuration(bill.startMonth, bill.endMonth) || '—'}
+• Previous Reading (A): ${bill.prevReading}
+• Current Reading (B): ${bill.currReading}
+${bill.isRollover ? `• Meter Note: 🔄 Sub-meter 10k reset rollover (${bill.calculationNote || `(10000 - ${bill.prevReading}) + ${bill.currReading}`})\n` : ''}• Units Consumed: ${fmt(consumption)} Units
+• Tariff Rate: ₹${rate.toFixed(2)} / Unit
+• *TOTAL INVOICE AMOUNT PAYABLE: ₹${fmt(grandTotal)}*
+
+*Remittance Society Bank Details:*
+• Bank: HDFC Bank
+• A/C Name: MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR
+• A/C No: 50200075533530
+• IFSC: HDFC0002454
+• Branch: Budhrani Boulevard, Undri NIBM Rd, Pune - 411060
+
+Kindly process the payment on or before ${formattedDueDate} and share the transaction reference / UTR for receipt issuance.
+
+Thank you!
+*Managing Committee*
+Majestique Euriska 'A' Building CHS Ltd.`;
+  }, [tataInvoiceDate, tataInvoiceDueDate, tataInvoiceRefPrefix]);
+
+  const handleShareTataWhatsApp = useCallback((bill) => {
+    const msg = generateTataWhatsAppMessage(bill);
+    const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }, [generateTataWhatsAppMessage]);
+
+  const handleCopyTataInvoiceText = useCallback((bill) => {
+    const msg = generateTataWhatsAppMessage(bill);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(msg).then(() => {
+        setTataInvoiceToast(`✓ Invoice text copied for ${bill.periodLabel || 'Tata Bill'}!`);
+        setTimeout(() => setTataInvoiceToast(''), 3000);
+      }).catch(() => {
+        setTataInvoiceToast('Failed to copy');
+        setTimeout(() => setTataInvoiceToast(''), 3000);
+      });
+    }
+  }, [generateTataWhatsAppMessage]);
+
+  const handlePrintTataInvoiceModalDoc = useCallback(() => {
+    const billsToPrint = tataBillsForInvoice;
+    if (billsToPrint.length === 0) {
+      window.alert('No Tata bills selected for invoice generation.');
+      return;
+    }
+
+    const formattedInvDate = formatDateLabel(tataInvoiceDate);
+    const formattedDueDate = formatDateLabel(tataInvoiceDueDate);
+
+    const pagesHtml = billsToPrint.map((b, idx) => {
+      const consumption = n(b.consumption) || (n(b.currReading) - n(b.prevReading));
+      const rate = n(b.ratePerUnit) || 13;
+      const grandTotal = n(b.grandTotal) || (consumption * rate);
+      const invNo = `${tataInvoiceRefPrefix}${b.id || '2001'}`;
+
+      return `
+        <div class="invoice-page">
+          <div class="header">
+            <div class="title">MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.</div>
+            <div class="subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019 • S. No. 2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, Pune - 411060</div>
+            <div class="invoice-tag">COMMERCIAL TAX INVOICE • TATA ELECTRICITY SUB-METER</div>
+          </div>
+
+          <div class="meta-grid">
+            <div class="meta-box">
+              <h4>Consumer &amp; Location Details</h4>
+              <div class="meta-item"><strong>Consumer / Client:</strong> Tata Play Limited (Tata Sky Broadband Hub)</div>
+              <div class="meta-item"><strong>Connection Type:</strong> Dedicated Commercial Sub-Meter (4-Digit)</div>
+              <div class="meta-item"><strong>Meter No / Tag:</strong> TATA-EUR-SB-01</div>
+              <div class="meta-item"><strong>Location:</strong> Club House Terrace Hub, Majestique Euriska</div>
+            </div>
+            <div class="meta-box">
+              <h4>Invoice &amp; Billing Reference</h4>
+              <div class="meta-item"><strong>Invoice No:</strong> <strong>${invNo}</strong></div>
+              <div class="meta-item"><strong>Invoice Date:</strong> ${formattedInvDate}</div>
+              <div class="meta-item"><strong>Payment Due Date:</strong> <span style="color: #b45309; font-weight: 700;">${formattedDueDate}</span></div>
+              <div class="meta-item"><strong>Billing Period:</strong> <strong>${b.periodLabel || (formatDateLabel(b.startMonth) + ' to ' + formatDateLabel(b.endMonth))}</strong></div>
+              <div class="meta-item"><strong>Duration:</strong> <span style="background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">${b.duration || computeBillingDuration(b.startMonth, b.endMonth) || '—'}</span></div>
+            </div>
+          </div>
+
+          ${b.isRollover ? `
+            <div class="reset-notice">
+              <span>🔄</span>
+              <div>
+                <strong>4-Digit Sub-Meter 10,000 Reset Rollover Applied:</strong> Current reading (${b.currReading}) is less than previous reading (${b.prevReading}) due to sub-meter reset after 10,000 units.
+                <strong>Calculation: (10,000 - ${b.prevReading}) + ${b.currReading} = ${fmt(consumption)} Units</strong>.
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="reading-card">
+            <div class="reading-col">
+              <div class="val">${b.prevReading}</div>
+              <div class="lbl">Previous Reading (A)</div>
+            </div>
+            <div class="reading-col">
+              <div class="val">${b.currReading}</div>
+              <div class="lbl">Current Reading (B)</div>
+            </div>
+            <div class="reading-col">
+              <div class="val" style="color: #ea580c;">${fmt(consumption)} Units</div>
+              <div class="lbl">Total Units Consumed ${b.isRollover ? '• Rollover' : ''}</div>
+            </div>
+            <div class="reading-col">
+              <div class="val" style="color: #2563eb;">₹${Number(rate).toFixed(2)}</div>
+              <div class="lbl">Tariff Rate / Unit</div>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">#</th>
+                <th>Billing &amp; Tariff Particulars</th>
+                <th style="width: 140px; text-align: center;">Duration</th>
+                <th style="width: 120px; text-align: center;">Rate / Unit</th>
+                <th style="width: 150px; text-align: right;">Total Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="text-align: center; color: #64748b;">1</td>
+                <td>
+                  <strong>Sub-Meter Electricity Consumption — ${b.periodLabel}</strong>
+                  <div style="font-size: 10px; color: #64748b; margin-top: 2px;">
+                    ${b.calculationNote || `${fmt(consumption)} units × ₹${Number(rate).toFixed(2)}/unit`}
+                  </div>
+                </td>
+                <td style="text-align: center; color: #0369a1; font-weight: 600;">${b.duration || computeBillingDuration(b.startMonth, b.endMonth) || '—'}</td>
+                <td style="text-align: center; font-weight: 700; color: #2563eb;">₹${Number(rate).toFixed(2)}</td>
+                <td class="amount-col" style="color: #0f172a;">₹${fmt(grandTotal)}</td>
+              </tr>
+              <tr class="grand-total-row">
+                <td colspan="4" style="text-align: right; letter-spacing: 0.5px;">TOTAL NET INVOICE AMOUNT PAYABLE:</td>
+                <td class="amount-col" style="color: #4ade80 !important; font-size: 14px;">₹${fmt(grandTotal)}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="bank-details">
+            <h4>🏦 Society Remittance Bank Account Details (NEFT / RTGS / IMPS)</h4>
+            <div><strong>Account Name:</strong> MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR</div>
+            <div><strong>Bank Name:</strong> HDFC Bank • <strong>Account Type:</strong> CA-INSTITUTION (Current Account)</div>
+            <div><strong>Account Number:</strong> 50200075533530 • <strong>IFSC Code:</strong> HDFC0002454</div>
+            <div><strong>Branch:</strong> Budhrani Boulevard, Undri NIBM Rd, Mohammedwadi, Pune - 411060</div>
+            <div style="margin-top: 4px; font-size: 9.5px; color: #854d0e;">* Kindly mention <strong>Tata Play Sub-meter ${b.periodLabel}</strong> in the payment narration and share the transfer UTR reference.</div>
+          </div>
+
+          <div class="signatures">
+            <div class="sig-box">
+              <div class="stamp-box">Official Stamp</div>
+              <div class="sig-line">Prepared By (Estate Manager)</div>
+            </div>
+            <div class="sig-box">
+              <div class="stamp-box">Verified</div>
+              <div class="sig-line">Hon. Secretary</div>
+            </div>
+            <div class="sig-box">
+              <div class="stamp-box">Approved</div>
+              <div class="sig-line">Hon. Treasurer / Chairman</div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <div>Majestique Euriska 'A' Building Co-Op Housing Society Ltd. • Official Sub-Meter Invoice</div>
+            <div>Page ${idx + 1} of ${billsToPrint.length}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const docHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Tata Electricity Sub-Meter Tax Invoice — Majestique Euriska</title>
+        <meta charset="utf-8" />
+        <style>
+          @page {
+            size: A4 portrait;
+            margin: 12mm;
+          }
+          * { box-sizing: border-box; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            font-size: 11px;
+            line-height: 1.45;
+          }
+          .invoice-page {
+            padding: 24px 28px;
+            max-width: 820px;
+            margin: 0 auto;
+            background: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2px solid #0f172a;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+          }
+          .title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 3px 0;
+            text-transform: uppercase;
+          }
+          .subtitle {
+            font-size: 10px;
+            color: #475569;
+            margin-bottom: 6px;
+          }
+          .invoice-tag {
+            display: inline-block;
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 14px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+          }
+          .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px 14px;
+          }
+          .meta-box h4 {
+            margin: 0 0 5px 0;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.5px;
+          }
+          .meta-item {
+            margin-bottom: 3px;
+            font-size: 10px;
+          }
+          .meta-item strong {
+            display: inline-block;
+            width: 130px;
+            color: #334155;
+          }
+          .reading-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr 1fr;
+            gap: 10px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 14px;
+            text-align: center;
+          }
+          .reading-col .val {
+            font-size: 15px;
+            font-weight: 800;
+            color: #0369a1;
+          }
+          .reading-col .lbl {
+            font-size: 8.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #64748b;
+            margin-top: 2px;
+          }
+          .reset-notice {
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 14px;
+            font-size: 10px;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+            font-size: 10.5px;
+          }
+          th {
+            background: #0f172a;
+            color: #ffffff;
+            font-weight: 700;
+            padding: 7px 10px;
+            text-align: left;
+            border: 1px solid #0f172a;
+          }
+          td {
+            padding: 7px 10px;
+            border: 1px solid #cbd5e1;
+            vertical-align: middle;
+          }
+          tr:nth-child(even) td {
+            background: #f8fafc;
+          }
+          .amount-col {
+            text-align: right;
+            font-family: monospace;
+            font-weight: 700;
+            font-size: 11px;
+          }
+          .grand-total-row td {
+            background: #0f172a !important;
+            color: #ffffff !important;
+            font-weight: 800;
+            font-size: 12px;
+          }
+          .bank-details {
+            background: #fefce8;
+            border: 1px solid #fef08a;
+            border-radius: 6px;
+            padding: 9px 12px;
+            margin-bottom: 16px;
+            font-size: 9.5px;
+            line-height: 1.45;
+          }
+          .bank-details h4 {
+            margin: 0 0 3px 0;
+            font-size: 10px;
+            color: #854d0e;
+            text-transform: uppercase;
+          }
+          .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            page-break-inside: avoid;
+          }
+          .sig-box {
+            text-align: center;
+            width: 28%;
+          }
+          .sig-line {
+            border-top: 1px solid #0f172a;
+            padding-top: 5px;
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #0f172a;
+          }
+          .stamp-box {
+            border: 1px dashed #94a3b8;
+            border-radius: 4px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 8px;
+            margin-bottom: 5px;
+          }
+          .footer {
+            margin-top: 14px;
+            padding-top: 6px;
+            border-top: 1px dashed #cbd5e1;
+            font-size: 8px;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+          }
+          @media print {
+            .invoice-page {
+              padding: 20px 24px;
+              page-break-after: always;
+              min-height: 98vh;
+            }
+            .invoice-page:last-child {
+              page-break-after: auto;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        ${pagesHtml}
+        <script>
+          window.onload = function() {
+            setTimeout(function() { window.print(); }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const win = window.open('', '_blank');
+    if (win) {
+      win.document.write(docHtml);
+      win.document.close();
+    }
+  }, [tataBillsForInvoice, tataInvoiceDate, tataInvoiceDueDate, tataInvoiceRefPrefix]);
+
   const activeBills = subTab === 'mahavitaran' ? mahavitaranBills : (subTab === 'buildingA' ? buildingABills : tataBills);
 
   const filteredBills = activeBills
@@ -1376,14 +1843,41 @@ export default function ElectricityTracker({ isAdmin = false }) {
             ⬇ Export to Excel
           </button>
           {subTab === 'tata' && (
-            <button
-              className="button-primary"
-              onClick={handlePrintAllTataBills}
-              style={{ padding: '6px 14px', height: '34px', fontSize: '0.78rem', marginTop: 'auto', background: '#0284c7', borderColor: '#0284c7', display: 'flex', alignItems: 'center', gap: '6px' }}
-              title="Print or export complete statement of Tata electricity bills"
-            >
-              <span>🖨️</span> Export PDF Summary
-            </button>
+            <>
+              <button
+                className="button-primary"
+                onClick={() => {
+                  setSelectedTataBillId(tataBills[0]?.id || 2001);
+                  setTataInvoiceTarget('single');
+                  setIsTataInvoiceModalOpen(true);
+                }}
+                style={{
+                  padding: '6px 14px',
+                  height: '34px',
+                  fontSize: '0.78rem',
+                  marginTop: 'auto',
+                  background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
+                  color: '#C49B4F',
+                  border: '1px solid #C49B4F',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  cursor: 'pointer'
+                }}
+                title="Open interactive invoice generator for Tata electricity sub-meter bills"
+              >
+                <span>🧾</span> Generate Tata Invoice
+              </button>
+              <button
+                className="button-secondary"
+                onClick={handlePrintAllTataBills}
+                style={{ padding: '6px 14px', height: '34px', fontSize: '0.78rem', marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}
+                title="Print or export complete statement of Tata electricity bills"
+              >
+                <span>🖨️</span> Statement PDF
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -1795,7 +2289,19 @@ export default function ElectricityTracker({ isAdmin = false }) {
                           <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'center' }}>
                             <button
                               className="button-icon"
-                              title="Print / Export Bill Invoice"
+                              title="Generate / Preview Tax Invoice"
+                              onClick={() => {
+                                setSelectedTataBillId(c.id);
+                                setTataInvoiceTarget('single');
+                                setIsTataInvoiceModalOpen(true);
+                              }}
+                              style={{ color: '#0b2b26', fontSize: '0.95rem', cursor: 'pointer', padding: '2px' }}
+                            >
+                              🧾
+                            </button>
+                            <button
+                              className="button-icon"
+                              title="Quick Print A4 PDF"
                               onClick={() => handlePrintTataBill(c)}
                               style={{ color: '#0284c7', fontSize: '0.95rem', cursor: 'pointer', padding: '2px' }}
                             >
@@ -1960,6 +2466,352 @@ export default function ElectricityTracker({ isAdmin = false }) {
           </table>
         </div>
       </div>
+
+      {/* TATA ELECTRICITY INVOICE GENERATOR MODAL */}
+      {isTataInvoiceModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 980, maxHeight: '92vh', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', overflow: 'hidden' }}>
+            
+            {/* Modal Header */}
+            <div style={{ padding: '18px 24px', background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+              <div>
+                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#c49b4f', fontWeight: 800 }}>Commercial Sub-Meter Billing</span>
+                <h3 style={{ margin: '4px 0 0', fontSize: '1.25rem', fontWeight: 800 }}>🧾 Tata Electricity Sub-Meter Tax Invoice Generator</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsTataInvoiceModalOpen(false)}
+                style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body: Split view */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', overflow: 'hidden', flex: 1 }}>
+              
+              {/* Left Column: Configuration */}
+              <div style={{ padding: '20px', overflowY: 'auto', background: '#f8fafc', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 16 }}>
+                
+                {/* Target Scope Selection */}
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    1. Select Billing Scope
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                    <button
+                      type="button"
+                      onClick={() => setTataInvoiceTarget('single')}
+                      style={{
+                        padding: '8px 10px',
+                        borderRadius: 8,
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        border: tataInvoiceTarget === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
+                        background: tataInvoiceTarget === 'single' ? '#0b2b26' : '#fff',
+                        color: tataInvoiceTarget === 'single' ? '#C49B4F' : '#334155',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Single Period
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTataInvoiceTarget('all')}
+                      style={{
+                        padding: '8px 10px',
+                        borderRadius: 8,
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        border: tataInvoiceTarget === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
+                        background: tataInvoiceTarget === 'all' ? '#0b2b26' : '#fff',
+                        color: tataInvoiceTarget === 'all' ? '#C49B4F' : '#334155',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      All {tataBills.length} Billing Cycles
+                    </button>
+                  </div>
+                </div>
+
+                {/* Single Bill Period Selector */}
+                {tataInvoiceTarget === 'single' && (
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#64748b', marginBottom: 6 }}>
+                      Choose Specific Period:
+                    </label>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {tataBills.map(b => {
+                        const isSelected = activeTataBill.id === b.id;
+                        return (
+                          <button
+                            key={b.id}
+                            type="button"
+                            onClick={() => setSelectedTataBillId(b.id)}
+                            style={{
+                              padding: '7px 10px',
+                              borderRadius: 6,
+                              fontSize: '0.78rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              border: isSelected ? '1.5px solid #0b2b26' : '1px solid #cbd5e1',
+                              background: isSelected ? '#0b2b26' : '#fff',
+                              color: isSelected ? '#fff' : '#1e293b',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
+                            }}
+                          >
+                            <span>{b.periodLabel || 'Billing Period'}</span>
+                            <span style={{ color: isSelected ? '#C49B4F' : '#0369a1', fontVariantNumeric: 'tabular-nums' }}>
+                              ₹{fmt(b.grandTotal)}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Dates & Reference Configuration */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                      Invoice Date
+                    </label>
+                    <input
+                      type="date"
+                      value={tataInvoiceDate}
+                      onChange={(e) => setTataInvoiceDate(e.target.value)}
+                      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#b45309', marginBottom: 4 }}>
+                      Payment Due Date
+                    </label>
+                    <input
+                      type="date"
+                      value={tataInvoiceDueDate}
+                      onChange={(e) => setTataInvoiceDueDate(e.target.value)}
+                      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #fde68a', background: '#fffbeb', fontSize: '0.82rem', fontWeight: 700, color: '#92400e' }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                    Invoice Number Prefix
+                  </label>
+                  <input
+                    type="text"
+                    value={tataInvoiceRefPrefix}
+                    onChange={(e) => setTataInvoiceRefPrefix(e.target.value)}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                  />
+                </div>
+
+                {/* Consumer Reference Info */}
+                <div style={{ padding: '10px 12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: '0.76rem', color: '#334155' }}>
+                  <div style={{ fontWeight: 800, marginBottom: 4, color: '#0f172a' }}>📡 Consumer &amp; Sub-Meter Details</div>
+                  <div><strong>Client:</strong> Tata Play Limited (Broadband Hub)</div>
+                  <div><strong>Sub-Meter:</strong> TATA-EUR-SB-01 (Club House Terrace)</div>
+                  <div><strong>Current Tariff:</strong> ₹13.00 / kWh Unit</div>
+                </div>
+
+                {/* Society Bank Details Quick Preview */}
+                <div style={{ padding: '10px 12px', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, fontSize: '0.76rem', color: '#065f46' }}>
+                  <div style={{ fontWeight: 800, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span>🏦 Society Bank Remittance Info</span>
+                  </div>
+                  <div><strong>Bank:</strong> HDFC Bank • CA-INSTITUTION</div>
+                  <div><strong>A/C:</strong> 50200075533530</div>
+                  <div><strong>IFSC:</strong> HDFC0002454 (Undri / NIBM Road)</div>
+                </div>
+              </div>
+
+              {/* Right Column: Live Letterhead Preview */}
+              <div style={{ padding: '24px', overflowY: 'auto', background: '#eaedf0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                
+                {/* Simulated Paper Document */}
+                <div style={{
+                  background: '#ffffff',
+                  width: '100%',
+                  maxWidth: 580,
+                  borderRadius: 4,
+                  padding: '24px 28px',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
+                  border: '1px solid #cbd5e1',
+                  color: '#0f172a',
+                  fontSize: '0.82rem',
+                  lineHeight: 1.45,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10
+                }}>
+                  {/* Letterhead */}
+                  <div style={{ textAlign: 'center', borderBottom: '2px solid #0b2b26', paddingBottom: 10 }}>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 900, color: '#0b2b26' }}>
+                      MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.
+                    </div>
+                    <div style={{ fontSize: '0.68rem', color: '#475569', marginTop: 2 }}>
+                      Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • Mohammed Wadi, Pune - 411060
+                    </div>
+                    <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 8px', borderRadius: 999, background: '#0b2b26', color: '#fff', fontSize: '0.65rem', fontWeight: 800 }}>
+                      COMMERCIAL TAX INVOICE • TATA ELECTRICITY SUB-METER
+                    </span>
+                  </div>
+
+                  {/* Ref & Date */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', color: '#334155', borderBottom: '1px dashed #e2e8f0', paddingBottom: 6 }}>
+                    <div><strong>Invoice No:</strong> {tataInvoiceRefPrefix}{activeTataBill.id || '2001'}</div>
+                    <div><strong>Invoice Date:</strong> {formatDateLabel(tataInvoiceDate)}</div>
+                  </div>
+
+                  {/* Recipient */}
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px 12px', fontSize: '0.78rem' }}>
+                    <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700 }}>BILLED TO:</div>
+                    <div style={{ fontWeight: 800, fontSize: '0.88rem' }}>Tata Play Limited (Tata Sky Broadband Hub)</div>
+                    <div style={{ color: '#0b2b26', fontWeight: 700 }}>Sub-Meter Tag: TATA-EUR-SB-01 • Club House Terrace Hub</div>
+                  </div>
+
+                  {/* Subject */}
+                  <div style={{ background: '#f1f5f9', padding: '6px 10px', borderLeft: '3px solid #0b2b26', fontSize: '0.78rem', fontWeight: 700 }}>
+                    Subject: Commercial Sub-Meter Electricity Consumption Invoice ({activeTataBill.periodLabel})
+                  </div>
+
+                  {/* Meter Reading Card */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 6, padding: '8px', textAlign: 'center' }}>
+                    <div>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0369a1' }}>{activeTataBill.prevReading}</div>
+                      <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 700 }}>Prev (A)</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0369a1' }}>{activeTataBill.currReading}</div>
+                      <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 700 }}>Curr (B)</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ea580c' }}>{fmt(activeTataBill.consumption)}</div>
+                      <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 700 }}>Units {activeTataBill.isRollover ? '(Rollover)' : ''}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#2563eb' }}>₹{Number(activeTataBill.ratePerUnit || 13).toFixed(2)}</div>
+                      <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 700 }}>Rate/Unit</div>
+                    </div>
+                  </div>
+
+                  {/* Rollover notice if applicable */}
+                  {activeTataBill.isRollover && (
+                    <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 6, padding: '6px 10px', fontSize: '0.72rem', color: '#92400e' }}>
+                      🔄 <strong>10,000 Reset Rollover:</strong> {activeTataBill.calculationNote}
+                    </div>
+                  )}
+
+                  {/* Financial Table */}
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', margin: '4px 0' }}>
+                    <tbody>
+                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                        <td style={{ padding: '6px 8px' }}>Billing Duration</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 600 }}>{activeTataBill.duration}</td>
+                      </tr>
+                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                        <td style={{ padding: '6px 8px' }}>Total Energy Consumption</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#ea580c', fontWeight: 700 }}>{fmt(activeTataBill.consumption)} Units</td>
+                      </tr>
+                      <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 800 }}>
+                        <td style={{ padding: '8px' }}>TOTAL NET INVOICE AMOUNT PAYABLE</td>
+                        <td style={{ padding: '8px', textAlign: 'right', fontSize: '0.95rem', color: '#4ade80' }}>
+                          ₹{fmt(activeTataBill.grandTotal)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  {/* Due banner */}
+                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '6px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.74rem' }}>
+                    <div>
+                      <span style={{ color: '#92400e', fontWeight: 700 }}>Payment Due Date: </span>
+                      <strong style={{ color: '#78350f' }}>{formatDateLabel(tataInvoiceDueDate)}</strong>
+                    </div>
+                    <span style={{ color: '#92400e', fontWeight: 700 }}>HDFC A/C: 50200075533530</span>
+                  </div>
+
+                  {/* Signatures */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginTop: 12, paddingTop: 8, borderTop: '1px solid #e2e8f0', textAlign: 'center', fontSize: '0.68rem', color: '#64748b' }}>
+                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 20 }}>Estate Manager</div></div>
+                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 20 }}>Hon. Secretary</div></div>
+                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 20 }}>Hon. Treasurer</div></div>
+                  </div>
+                </div>
+
+                {tataInvoiceToast && (
+                  <div style={{ marginTop: 12, padding: '8px 16px', borderRadius: 8, background: '#0b2b26', color: '#fff', fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+                    {tataInvoiceToast}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer Toolbar */}
+            <div style={{ padding: '14px 24px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+              <div style={{ fontSize: '0.82rem', color: '#475569' }}>
+                Selected Scope: <strong>{tataInvoiceTarget === 'single' ? activeTataBill.periodLabel : `All ${tataBills.length} Billing Cycles`}</strong>
+              </div>
+
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+                {tataInvoiceTarget === 'single' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyTataInvoiceText(activeTataBill)}
+                      style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#334155', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                    >
+                      📋 Copy Text
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleShareTataWhatsApp(activeTataBill)}
+                      style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: '#25D366', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(37,211,102,0.3)' }}
+                    >
+                      📱 Send WhatsApp
+                    </button>
+                  </>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handlePrintTataInvoiceModalDoc}
+                  style={{
+                    padding: '8px 18px',
+                    borderRadius: 8,
+                    border: 'none',
+                    background: '#0b2b26',
+                    color: '#C49B4F',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    boxShadow: '0 4px 14px rgba(11,43,38,0.25)'
+                  }}
+                >
+                  🖨️ Print / Download PDF ({tataBillsForInvoice.length} Invoice{tataBillsForInvoice.length > 1 ? 's' : ''})
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsTataInvoiceModalOpen(false)}
+                  style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#64748b', fontWeight: 600, cursor: 'pointer', fontSize: '0.82rem' }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
