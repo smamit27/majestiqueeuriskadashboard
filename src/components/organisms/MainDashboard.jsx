@@ -135,9 +135,13 @@ export default function MainDashboard({ stats, isAdmin }) {
         ).catch(() => null);
 
         // 6. Shop data from Firestore (if available)
-        const shopPromise = getDoc(doc(db, 'shopMaintenance', 'shops')).then(snap =>
-          snap.exists() ? snap.data().shops || null : null
-        ).catch(() => null);
+        const shopPromise = getDoc(doc(db, 'shopMaintenance', 'shop_maintenance_ledger'))
+          .then(snap => {
+            if (snap.exists() && snap.data()?.shops) return snap.data().shops;
+            return getDoc(doc(db, 'shopMaintenance', 'shops')).then(s => (s.exists() ? s.data().shops || null : null));
+          })
+          .catch(() => null);
+
 
         // 7. Water Tanker usage for active month
         const currentYearMonth = new Date().toISOString().slice(0, 7);
