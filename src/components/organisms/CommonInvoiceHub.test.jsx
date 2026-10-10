@@ -14,19 +14,21 @@ describe('CommonInvoiceHub Component', () => {
     expect(html).toContain('Common Invoice &amp; Demand Notice Hub');
     expect(html).toContain('Commercial Shops');
     expect(html).toContain('Tata Electricity');
-    expect(html).toContain('Times of India');
+    expect(html).not.toContain('Times of India');
     expect(html).toContain('Maintenance');
     expect(html).toContain('Sinking Fund');
   });
 
-  it('renders all category switcher buttons and cards', () => {
+  it('renders all category switcher buttons and cards without TOI', () => {
     render(<CommonInvoiceHub isAdmin={false} />);
 
     expect(screen.getByText(/Common Invoice & Demand Notice Hub/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /all invoice systems/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /commercial shops/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /tata electricity bill/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /times of india/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /times of india/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/include times of india/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /month-range \(maintenance \+ sinking\)/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /custom invoice builder/i })).toBeInTheDocument();
   });
 
@@ -102,6 +104,50 @@ describe('CommonInvoiceHub Component', () => {
     expect(screen.getByText(/Earlier Pending Arrears \(Oct 2024 – Mar 2025\): ₹13,200/i)).toBeInTheDocument();
     expect(screen.getAllByText(/₹12,600/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/₹600/i).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('renders official Times of India (Times Horizon) invoice template for A-302, A-904, and A-1002 with batch printing', async () => {
+    const user = userEvent.setup();
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => ({
+      document: { write: vi.fn(), close: vi.fn() }
+    }));
+
+    render(<CommonInvoiceHub isAdmin={false} />);
+
+    // Switch to Combined 3-Flats / TOI Bill
+    await user.click(screen.getByRole('button', { name: /combined 3-flats bill/i }));
+
+    // Verify sub-tabs exist
+    expect(screen.getAllByRole('button', { name: /flat a-302/i }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('button', { name: /flat a-904/i }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('button', { name: /flat a-1002/i }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole('button', { name: /batch print all 3 invoices \(a4\)/i })).toBeInTheDocument();
+
+    // Verify Flat A-302 official template layout
+    expect(screen.getAllByText(/Majestique Euriska A Building Sahakari Gruhrachna Sanstha Maryadit/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/ME\/A\/18\/Oct26/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Times Horizon Private Limited/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/A WING- 302/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Eighteen Thousand Only\./i).length).toBeGreaterThanOrEqual(1);
+
+    // Switch to Flat A-1002 via sub-tab
+    await user.click(screen.getByRole('button', { name: /Flat A-1002 \(ME\/A\/17\/Oct-26\)/i }));
+    expect(screen.getAllByText(/ME\/A\/17\/Oct-26/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/A WING- 1002/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Thirty One Thousand Two Hundred Only\./i).length).toBeGreaterThanOrEqual(1);
+
+    // Verify circular stamp is removed from template
+    expect(screen.queryByText(/Dt\. 9\/8\/19/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Include TOI Subscription/i)).not.toBeInTheDocument();
+
+    // Verify Bill Period is rendered without border on top
+    expect(screen.getAllByText(/Bill Period\s*:\s*01-10-2026 to 30-03-2027/i).length).toBeGreaterThanOrEqual(1);
+
+    // Click Batch Print All 3 Invoices
+    await user.click(screen.getByRole('button', { name: /batch print all 3 invoices \(a4\)/i }));
+    expect(openSpy).toHaveBeenCalled();
+
+    openSpy.mockRestore();
   });
 });
 

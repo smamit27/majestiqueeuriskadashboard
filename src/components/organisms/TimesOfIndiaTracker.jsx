@@ -1008,7 +1008,6 @@ export default function TimesOfIndiaTracker({ isAdmin = false }) {
   const [rangeEndMonth, setRangeEndMonth] = useState('2025-03');
   const [maintenanceRate, setMaintenanceRate] = useState(2850);
   const [sinkingFundRate, setSinkingFundRate] = useState(150);
-  const [includeToiSubscription, setIncludeToiSubscription] = useState(true);
   const [invoiceFlatId, setInvoiceFlatId] = useState('A-302');
   const [invoiceScope, setInvoiceScope] = useState('single'); // 'single' | 'all_pending' | 'all'
   const [invoiceDate, setInvoiceDate] = useState(() => {
@@ -1022,7 +1021,7 @@ export default function TimesOfIndiaTracker({ isAdmin = false }) {
   });
   const [invoiceRefPrefix, setInvoiceRefPrefix] = useState('INV-ME/TOI/2026-27/');
   const [invoiceCustomNote, setInvoiceCustomNote] = useState(
-    'Times of India newspaper subscription charges for flats A-302, A-904, and A-1002 as per society resolution. Subscriptions are billed at ₹2,200/yr (Oct 21 to Jun 25) and ₹3,000/yr (Jul 25 to Sept 26).'
+    'Society Maintenance and Sinking Fund charges for flats A-302, A-904, and A-1002 (Times Horizon Private Limited) as per society resolution.'
   );
   const [invoiceToast, setInvoiceToast] = useState('');
 
@@ -1130,9 +1129,7 @@ export default function TimesOfIndiaTracker({ isAdmin = false }) {
   const rangeMaintenanceTotal = useMemo(() => rangeMonthsCount * Number(maintenanceRate || 0), [rangeMonthsCount, maintenanceRate]);
   const rangeSinkingFundTotal = useMemo(() => rangeMonthsCount * Number(sinkingFundRate || 0), [rangeMonthsCount, sinkingFundRate]);
   const rangeBaseTotal = useMemo(() => rangeMaintenanceTotal + rangeSinkingFundTotal, [rangeMaintenanceTotal, rangeSinkingFundTotal]);
-  const rangeToiDetails = useMemo(() => calculateToiForRange(rangeStartMonth, rangeEndMonth), [rangeStartMonth, rangeEndMonth]);
-  const rangeToiTotal = useMemo(() => includeToiSubscription ? rangeToiDetails.total : 0, [includeToiSubscription, rangeToiDetails]);
-  const rangeGrandTotal = useMemo(() => rangeBaseTotal + rangeToiTotal, [rangeBaseTotal, rangeToiTotal]);
+  const rangeGrandTotal = rangeBaseTotal;
 
   const generateToiWhatsAppMessage = useCallback((flat) => {
     const formattedInvDate = formatDisplayDate(invoiceDate);
@@ -1156,14 +1153,7 @@ export default function TimesOfIndiaTracker({ isAdmin = false }) {
         `*BILL BREAKDOWN:*`,
         `1. Flat Maintenance (${rangeMonthsCount} mos @ ₹${formatValue(maintenanceRate)}/mo): *₹${formatValue(rangeMaintenanceTotal)}*`,
         `2. Sinking Fund (${rangeMonthsCount} mos @ ₹${formatValue(sinkingFundRate)}/mo): *₹${formatValue(rangeSinkingFundTotal)}*`,
-        `   ↳ *Society Base Subtotal:* *₹${formatValue(rangeBaseTotal)}* (₹${formatValue(Number(maintenanceRate) + Number(sinkingFundRate))}/mo)`,
-      ];
-
-      if (includeToiSubscription) {
-        lines.push(`3. Times of India (TOI) Subscription (${rangeMonthsCount} mos): *₹${formatValue(rangeToiTotal)}*`);
-      }
-
-      lines.push(
+        `   ↳ *Total Net Payable:* *₹${formatValue(rangeBaseTotal)}* (₹${formatValue(Number(maintenanceRate) + Number(sinkingFundRate))}/mo)`,
         ``,
         `💰 *GRAND TOTAL PAYABLE:* *₹${formatValue(rangeGrandTotal)}*`,
         `───────────────────────────`,
@@ -1176,7 +1166,7 @@ export default function TimesOfIndiaTracker({ isAdmin = false }) {
         `• *Branch:* Budhrani Boulevard, Undri NIBM Rd, Pune - 411060`,
         ``,
         `💬 *Note:* Kindly process on or before *${formattedDueDate}* and share UTR reference for receipt credit.`
-      );
+      ];
       return lines.join('\n');
     }
 
@@ -1208,7 +1198,7 @@ Kindly process the pending amount on or before *${formattedDueDate}* and share t
 Thank you!
 *Managing Committee*
 Majestique Euriska 'A' Building CHS Ltd.`;
-  }, [modalMode, rangeStartMonth, rangeEndMonth, rangeMonthsCount, maintenanceRate, rangeMaintenanceTotal, sinkingFundRate, rangeSinkingFundTotal, rangeBaseTotal, includeToiSubscription, rangeToiTotal, rangeGrandTotal, getFlatInvoiceData, invoiceDate, invoiceDueDate, invoiceRefPrefix]);
+  }, [modalMode, rangeStartMonth, rangeEndMonth, rangeMonthsCount, maintenanceRate, rangeMaintenanceTotal, sinkingFundRate, rangeSinkingFundTotal, rangeBaseTotal, rangeGrandTotal, getFlatInvoiceData, invoiceDate, invoiceDueDate, invoiceRefPrefix]);
 
   const handleShareToiWhatsApp = useCallback((flat) => {
     const msg = generateToiWhatsAppMessage(flat);
@@ -1304,16 +1294,6 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   <td style="text-align: center; color: #196c6c;">₹${formatValue(Number(maintenanceRate) + Number(sinkingFundRate))}</td>
                   <td style="text-align: right; font-family: monospace; color: #196c6c;">₹${formatValue(rangeBaseTotal)}</td>
                 </tr>
-                ${includeToiSubscription ? `
-                  <tr>
-                    <td style="text-align: center; color: #64748b;">3</td>
-                    <td style="font-weight: 700; color: #0f172a;">Times of India (TOI) Newspaper Subscription</td>
-                    <td style="text-align: center; color: #475569;">${startLbl} – ${endLbl}</td>
-                    <td style="text-align: center; font-weight: 700;">${rangeMonthsCount} mos</td>
-                    <td style="text-align: center; font-weight: 600;">As per Slabs</td>
-                    <td style="text-align: right; font-weight: 700; font-family: monospace;">₹${formatValue(rangeToiTotal)}</td>
-                  </tr>
-                ` : ''}
                 <tr class="highlight-row">
                   <td colspan="5" style="text-align: right; font-size: 13px; color: #0b2b26;">TOTAL NET INVOICE AMOUNT PAYABLE:</td>
                   <td style="text-align: right; font-size: 14px; font-weight: 900; color: #0b2b26; font-family: monospace;">
@@ -2016,7 +1996,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       }}>
         <div>
           <p style={{ margin: '0 0 2px', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#C49B4F' }}>
-            Newspaper Subscription
+            Corporate Member Flats (Times Horizon Private Limited)
           </p>
           <h2 style={{ margin: '0 0 2px', fontSize: '1.35rem', fontWeight: 800, color: '#fff' }}>
             📰 Times of India Tracker
@@ -2671,19 +2651,6 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       </div>
                     </div>
 
-                    {/* TOI Toggle */}
-                    <div style={{ background: includeToiSubscription ? '#fffbeb' : '#f8fafc', border: `1px solid ${includeToiSubscription ? '#fde68a' : '#e2e8f0'}`, borderRadius: 8, padding: '8px 10px' }}>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontWeight: 700, fontSize: '0.78rem', color: '#92400e' }}>
-                        <input
-                          type="checkbox"
-                          checked={includeToiSubscription}
-                          onChange={(e) => setIncludeToiSubscription(e.target.checked)}
-                          style={{ accentColor: '#0b2b26' }}
-                        />
-                        <span>Include TOI Subscription ({rangeMonthsCount} mos: ₹{formatValue(rangeToiTotal)})</span>
-                      </label>
-                    </div>
-
                     {/* Grand Total Bar */}
                     <div style={{ background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', borderRadius: 8, padding: '10px 12px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ fontSize: '0.7rem', color: '#C49B4F', fontWeight: 700, textTransform: 'uppercase' }}>
@@ -2840,15 +2807,6 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                           <td style={{ padding: '4px 6px', textAlign: 'center', color: '#196c6c' }}>₹{formatValue(Number(maintenanceRate) + Number(sinkingFundRate))}</td>
                           <td style={{ padding: '4px 6px', textAlign: 'right', color: '#196c6c', fontFamily: 'monospace' }}>₹{formatValue(rangeBaseTotal)}</td>
                         </tr>
-                        {includeToiSubscription && (
-                          <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                            <td style={{ padding: '4px 6px', textAlign: 'center' }}>3</td>
-                            <td style={{ padding: '4px 6px', fontWeight: 700 }}>Times of India Subscription</td>
-                            <td style={{ padding: '4px 6px', textAlign: 'center' }}>{rangeMonthsCount}m</td>
-                            <td style={{ padding: '4px 6px', textAlign: 'center' }}>As per Slabs</td>
-                            <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹{formatValue(rangeToiTotal)}</td>
-                          </tr>
-                        )}
                         <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 800 }}>
                           <td colSpan={4} style={{ padding: '6px 8px', textAlign: 'right' }}>NET AMOUNT PAYABLE:</td>
                           <td style={{ padding: '6px 8px', textAlign: 'right', color: '#4ade80', fontSize: '0.92rem', fontFamily: 'monospace' }}>

@@ -213,5 +213,66 @@ describe('ElectricityTracker – Tata Electricity Bill view and calculations', (
       const fileName = XLSX.writeFile.mock.calls[0][1];
       expect(fileName).toBe('Tata_Electricity_Bills.xlsx');
     });
+
+    it('opens Tata invoice generator modal with editable fields and live preview', async () => {
+      const user = userEvent.setup();
+      render(<ElectricityTracker isAdmin={true} />);
+      await waitFor(() => screen.getByText(/tata electricity bills/i));
+
+      // Open modal via table row action button
+      const invoiceBtns = screen.getAllByTitle(/generate \/ preview tax invoice/i);
+      expect(invoiceBtns.length).toBeGreaterThan(0);
+      await user.click(invoiceBtns[0]);
+
+      // Check modal heading and fields requested by user
+      expect(screen.getByText(/tata electricity sub-meter tax invoice generator/i)).toBeInTheDocument();
+      expect(screen.getByText(/electricity charges for the month:/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/society name →/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText(/previous reading\(a\):/i)).toBeInTheDocument();
+      expect(screen.getByText(/current reading\(b\):/i)).toBeInTheDocument();
+      expect(screen.getByText(/total consumption\(b-a\):/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/per unit charges →/i).length).toBeGreaterThanOrEqual(1);
+
+      // Check live preview replica
+      expect(screen.getByText(/live preview: official scanned invoice replica/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/majestique euriska a building cooperative housing society ltd/i).length).toBeGreaterThan(0);
+      expect(screen.queryByText(/stamp and signature/i)).not.toBeInTheDocument();
+    });
+
+    it('modifies input fields in Tata invoice modal and prints official replica document', async () => {
+      const user = userEvent.setup();
+      let writtenHtml = '';
+      const mockPrintWindow = {
+        document: {
+          write: vi.fn((html) => { writtenHtml = html; }),
+          close: vi.fn(),
+        },
+      };
+      const openSpy = vi.spyOn(window, 'open').mockReturnValue(mockPrintWindow);
+
+      render(<ElectricityTracker isAdmin={true} />);
+      await waitFor(() => screen.getByText(/tata electricity bills/i));
+
+      const invoiceBtns = screen.getAllByTitle(/generate \/ preview tax invoice/i);
+      await user.click(invoiceBtns[0]);
+
+      // Modify Month Range input
+      const monthInput = screen.getByPlaceholderText(/e\.g\. sep 25 to may 26/i);
+      await user.clear(monthInput);
+      await user.type(monthInput, 'Sep 25 to May 26 Custom');
+
+      // Click Print / Download PDF
+      const printBtn = screen.getByRole('button', { name: /print \/ download pdf/i });
+      await user.click(printBtn);
+
+      expect(openSpy).toHaveBeenCalledWith('', '_blank');
+      expect(mockPrintWindow.document.write).toHaveBeenCalled();
+      expect(writtenHtml).toContain('Sep 25 to May 26 Custom');
+      expect(writtenHtml).toContain('MAJESTIQUE EURISKA A BUILDING COOPERATIVE HOUSING SOCIETY LTD');
+      expect(writtenHtml).not.toContain('Stamp and Signature');
+      expect(writtenHtml).toContain('window.print()');
+
+      openSpy.mockRestore();
+    });
   });
 });
