@@ -134,6 +134,47 @@ img {
     -webkit-backdrop-filter: blur(4px) !important;
   }
 
+  /* ── Glass Sidebar & Glass Navbar Mobile Overrides ── */
+  .glass-navbar__menu-btn {
+    display: flex !important;
+  }
+  .glass-navbar__collapse-btn {
+    display: none !important;
+  }
+  .glass-navbar__search-text {
+    display: none !important;
+  }
+  .glass-navbar__breadcrumbs {
+    display: none !important;
+  }
+  .glass-navbar {
+    padding: 10px 14px !important;
+  }
+  .glass-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -320px !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    width: 285px !important;
+    z-index: 1000 !important;
+    border-radius: 0 20px 20px 0 !important;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 20px 16px !important;
+  }
+  .glass-sidebar--open {
+    left: 0 !important;
+  }
+  .glass-sidebar-overlay {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(15, 23, 42, 0.45) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    z-index: 999 !important;
+  }
+
   .mobile-header {
     display: flex !important;
     align-items: center !important;

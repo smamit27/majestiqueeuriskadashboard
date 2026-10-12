@@ -269,6 +269,89 @@ export function generateHTML() {
     .tag-orange { background: #ffedd5; color: #9a3412; }
     .tag-green { background: #dcfce7; color: #166534; }
     .tag-gray { background: #f1f5f9; color: #475569; }
+
+    /* Scenario Comparison Grid */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin-bottom: 7px;
+    }
+    .scenario-card {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 5px 6px;
+      background: #ffffff;
+    }
+    .scenario-card.target {
+      border-color: #059669;
+      background: #f0fdf4;
+    }
+    .scenario-card.floor {
+      border-color: #0284c7;
+      background: #f0f9ff;
+    }
+    .scenario-card.anchor {
+      border-color: #ea580c;
+      background: #fff7ed;
+    }
+    .scenario-card.litigation {
+      border-color: #dc2626;
+      background: #fef2f2;
+    }
+    .scenario-title {
+      font-size: 6.2pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #334155;
+    }
+    .scenario-val {
+      font-size: 9.5pt;
+      font-weight: 800;
+      color: #0b2b26;
+      margin: 1px 0;
+    }
+    .scenario-desc {
+      font-size: 5.8pt;
+      color: #475569;
+      line-height: 1.25;
+    }
+
+    /* Conditions & Playbook Grid */
+    .condition-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+      margin-bottom: 7px;
+    }
+    .condition-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 5px 7px;
+      background: #ffffff;
+      font-size: 6.7pt;
+      line-height: 1.3;
+    }
+    .condition-head {
+      font-weight: 800;
+      font-size: 7.2pt;
+      color: #0b2b26;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+      padding-bottom: 2px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .condition-stance {
+      color: #991b1b;
+      font-size: 6.4pt;
+      margin-bottom: 2px;
+    }
+    .condition-action {
+      color: #1e293b;
+      font-size: 6.5pt;
+    }
   </style>
 </head>
 <body>
@@ -289,6 +372,7 @@ export function generateHTML() {
       <div><strong>Audit Ref:</strong> CA Hardik Mehta</div>
       <div><strong>UDIN:</strong> 26162502TFCJWK8860</div>
       <div><strong>Bank Escrow A/c:</strong> BOM 60305942224</div>
+      <div><strong>Page:</strong> 1 of 5</div>
       <div><strong>Date:</strong> ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
       <div><strong>Classification:</strong> Confidential Management Dossier</div>
     </div>
@@ -370,6 +454,11 @@ export function generateHTML() {
   </div>
 
   <!-- Detailed Component Table -->
+  <div class="section-head">
+    <span>2. Settlement Component Breakdown &amp; Forensic Valuation</span>
+    <span style="font-size: 7pt; color: #475569;">Passbook &amp; CA Audit Reconciled</span>
+  </div>
+
   <table style="margin-bottom: 8px;">
     <thead>
       <tr>
@@ -448,15 +537,16 @@ export function generateHTML() {
   </table>
 
   <!-- 3-Phase Negotiation Plan -->
+  <!-- 3-Phase Negotiation Plan & Key Forensic Findings -->
   <div class="section-head">
-    <span>2. The 3-Phase Strategic Negotiation Battle Plan</span>
+    <span>3. The 3-Phase Strategic Negotiation Battle Plan &amp; Key Forensic Findings</span>
     <span style="font-size: 7pt; color: #475569;">Committee Action Protocol</span>
   </div>
 
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px;">
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
     <div class="callout callout-amber" style="margin: 0;">
       <div style="font-weight: 800; font-size: 7.5pt; margin-bottom: 2px;">Phase 1: Opening Anchor (₹30.5L)</div>
-      Present the formal demand notice citing ₹30,49,153. Confront builder with ₹15.31L Wing B cross-subsidy, ₹5.09L unspent bank shortfall, and ₹2.70L unapproved supervision self-debit. Put developer immediately on defensive.
+      Present formal demand notice citing ₹30,49,153. Confront builder with ₹15.31L Wing B cross-subsidy, ₹5.09L unspent bank shortfall, and ₹2.70L unapproved supervision self-debit. Put developer immediately on defensive.
     </div>
     <div class="callout callout-green" style="margin: 0;">
       <div style="font-weight: 800; font-size: 7.5pt; margin-bottom: 2px;">Phase 2: Target Settlement (₹18L–₹20L)</div>
@@ -466,11 +556,6 @@ export function generateHTML() {
       <div style="font-weight: 800; font-size: 7.5pt; margin-bottom: 2px;">Phase 3: Red Line Floor (₹12.07L)</div>
       Non-negotiable statutory floor certified by CA Hardik Mehta with UDIN. Under NO circumstances sign an F&amp;F below ₹12.07L. If builder refuses, terminate talks and file MahaRERA complaint for ₹45.76 Lakhs.
     </div>
-  </div>
-
-  <!-- Key Forensic Findings -->
-  <div class="section-head">
-    <span>3. Key Forensic Cross-Audit Findings (BOM Ledger vs CA Invoices)</span>
   </div>
 
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
@@ -489,7 +574,294 @@ export function generateHTML() {
   </div>
 
   <!-- ========================================================================= -->
-  <!-- PAGE 2: VENDOR FORENSIC MATRIX & CA ANNEXURE 4 MISSING INVOICES           -->
+  <!-- PAGE 2: COMPLETE SCENARIO-BASED SETTLEMENT MATRIX & CONDITIONS PLAYBOOK   -->
+  <!-- ========================================================================= -->
+  <div class="page-break"></div>
+
+  <div class="doc-header">
+    <div>
+      <div class="society-title">Comprehensive Scenario-Based Recovery Models &amp; Conditions Playbook</div>
+      <div class="doc-subtitle">Dynamic Settlement Calculator, Concession Boundaries &amp; Objection Handling Protocol</div>
+    </div>
+    <div class="meta-box">
+      <div><strong>UDIN:</strong> 26162502TFCJWK8860</div>
+      <div><strong>Page:</strong> 2 of 5</div>
+      <div><strong>Decision Matrix:</strong> Executive Playbook</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: ALL 5 SCENARIO MODELS -->
+  <div class="section-head">
+    <span>4. Scenario-Based Settlement Models: Mathematical Breakdown &amp; Probability Analysis</span>
+    <span style="font-size: 7pt; color: #b45309;">From Non-Negotiable Statutory Floor to MahaRERA Maximum Claim</span>
+  </div>
+
+  <div class="scenario-grid">
+    <div class="scenario-card floor">
+      <div class="scenario-title" style="color: #0284c7;">Scenario A • Statutory Floor</div>
+      <div class="scenario-val" style="color: #0369a1;">₹12,07,058</div>
+      <div style="font-weight: 700; color: #0284c7; font-size: 6pt;">100% Certified Minimum</div>
+      <div class="scenario-desc">
+        ₹9,00,790 Principal + ₹3,06,268 statutory interest @ 8% p.a. (51 months) formally certified by CA with UDIN. <strong>Zero-concession walk-away threshold.</strong>
+      </div>
+    </div>
+
+    <div class="scenario-card" style="border-color: #64748b; background: #f8fafc;">
+      <div class="scenario-title" style="color: #334155;">Scenario B • Compromise Floor</div>
+      <div class="scenario-val" style="color: #1e293b;">₹15,50,000</div>
+      <div style="font-weight: 700; color: #475569; font-size: 6pt;">Contingency Fallback</div>
+      <div class="scenario-desc">
+        Base ₹12.07L + Schindler Lift ₹1.24L + GST ITC ₹1.39L + 50% missing bills (₹1.43L) with 50% interest concession in exchange for full single-cheque closure.
+      </div>
+    </div>
+
+    <div class="scenario-card target">
+      <div class="scenario-title" style="color: #047857;">Scenario C • Realistic Target</div>
+      <div class="scenario-val" style="color: #047857;">₹19,41,755</div>
+      <div style="font-weight: 700; color: #059669; font-size: 6pt;">Recommended F&amp;F (85% Prob)</div>
+      <div class="scenario-desc">
+        Base ₹12.07L + 23 Missing Bills (₹4.09L) + GST ITC (₹1.39L) + 8% Interest (₹4.93L). Concedes bank cash shortfall and Wing B leakage for prompt resolution.
+      </div>
+    </div>
+
+    <div class="scenario-card anchor">
+      <div class="scenario-title" style="color: #c2410c;">Scenario D • Opening Anchor</div>
+      <div class="scenario-val" style="color: #c2410c;">₹30,49,153</div>
+      <div style="font-weight: 700; color: #ea580c; font-size: 6pt;">Opening Notice Stance</div>
+      <div class="scenario-desc">
+        Target ₹19.42L + BOM passbook cash shortfall (₹5.09L) + unapproved supervision self-debit (₹2.70L) + bearer cash withdrawals (₹0.47L) + 8% interest.
+      </div>
+    </div>
+
+    <div class="scenario-card litigation">
+      <div class="scenario-title" style="color: #b91c1c;">Scenario E • MahaRERA Scope</div>
+      <div class="scenario-val" style="color: #991b1b;">₹45,75,525</div>
+      <div style="font-weight: 700; color: #dc2626; font-size: 6pt;">Litigation Enforcement</div>
+      <div class="scenario-desc">
+        Anchor ₹30.49L + Wing B cross-subsidy drain (47.5% share = ₹7.27L) + MahaRERA Rule interest @ 10.75% p.a. (₹13.72L) + legal compensation.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario Analytical Comparison Table -->
+  <table style="margin-bottom: 7px;">
+    <thead>
+      <tr>
+        <th style="width: 18%;">Negotiation Scenario</th>
+        <th style="width: 11%;" class="num">Principal (₹)</th>
+        <th style="width: 11%;" class="num">Interest (₹)</th>
+        <th style="width: 12%;" class="num">Total Settle (₹)</th>
+        <th style="width: 14%;">Society Concession</th>
+        <th style="width: 16%;">Builder Obligation</th>
+        <th style="width: 18%;">Strategy &amp; Feasibility</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Scenario A: Statutory Hard Floor</strong></td>
+        <td class="num">9,00,790.00</td>
+        <td class="num">3,06,268.00 (8%)</td>
+        <td class="num"><strong>12,07,058.00</strong></td>
+        <td>Waive missing bills, GST ITC &amp; bank shortfall</td>
+        <td>100% CA certified dues by RTGS in 7 days</td>
+        <td><span class="tag tag-green">100% Legal Certainty</span> Non-negotiable walk-away limit under MCS Act.</td>
+      </tr>
+      <tr>
+        <td><strong>Scenario B: Compromise Floor</strong></td>
+        <td class="num">13,06,942.00</td>
+        <td class="num">2,43,058.00 (4%)</td>
+        <td class="num"><strong>15,50,000.00</strong></td>
+        <td>50% interest waiver + 50% missing bills concession</td>
+        <td>Full RTGS payment within 15 days, 0 installments</td>
+        <td><span class="tag tag-gray">Contingency Backup</span> Only if builder agrees to no litigation &amp; quick payment.</td>
+      </tr>
+      <tr class="row-success">
+        <td><strong>Scenario C: Realistic F&amp;F Target</strong></td>
+        <td class="num">14,49,071.00</td>
+        <td class="num">4,92,683.54 (8%)</td>
+        <td class="num"><strong>19,41,754.54</strong></td>
+        <td>Waive bank shortfall dispute &amp; Wing B leakage</td>
+        <td>Single cheque / RTGS within 14 days or 2 PDCs</td>
+        <td><span class="tag tag-green">Recommended Target</span> Highest probability (85%) of win-win negotiated settlement.</td>
+      </tr>
+      <tr>
+        <td><strong>Scenario D: Opening Anchor Stance</strong></td>
+        <td class="num">22,75,487.17</td>
+        <td class="num">7,73,665.04 (8%)</td>
+        <td class="num"><strong>30,49,152.21</strong></td>
+        <td>Zero opening concessions at negotiation table</td>
+        <td>Account for supervision, cash vouchers &amp; shortfall</td>
+        <td><span class="tag tag-orange">Strategic Stance</span> Puts builder on defensive; creates room to settle at ₹19.4L.</td>
+      </tr>
+      <tr class="row-highlight">
+        <td><strong>Scenario E: MahaRERA Enforcement</strong></td>
+        <td class="num">30,02,736.17</td>
+        <td class="num">13,72,788.83 (10.75%)</td>
+        <td class="num" style="color: #991b1b;"><strong>45,75,525.00</strong></td>
+        <td>Zero concessions; full statutory adjudication</td>
+        <td>Enforcement via Collector under Section 40 RERA</td>
+        <td><span class="tag tag-red">Hostile Escalation</span> Triggered if builder offers &lt; ₹12.07L or rejects mediation.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 5: STRATEGIC CONDITIONS & OBJECTION HANDLING PLAYBOOK -->
+  <div class="section-head">
+    <span>5. Strategic Conditions &amp; Builder Objection Handling Playbook</span>
+    <span style="font-size: 7pt; color: #475569;">Field Protocol for Negotiation Committee (6 Critical Situations)</span>
+  </div>
+
+  <div class="condition-grid">
+    <!-- Condition 1 -->
+    <div class="condition-box">
+      <div class="condition-head">
+        <span>Condition 1 • Demand for 100% Interest Waiver</span>
+        <span class="tag tag-orange">High Probability</span>
+      </div>
+      <div class="condition-stance"><strong>Builder Argument:</strong> "We will pay principal, but ₹3.06L–₹4.93L interest must be waived due to Covid/handover delays."</div>
+      <div class="condition-action">
+        <strong>Committee Handling Protocol:</strong>
+        <br>• <strong>Strict Rule:</strong> Reject blanket waiver. Society was deprived of member funds for 51 months; 8% p.a. is statutory compensation under law.
+        <br>• <strong>Conditional Concession:</strong> Offer max 50% interest concession (saving builder ~₹2.46L) <em>ONLY IF</em> builder settles ₹15.0L+ in a <strong>single RTGS within 7 working days</strong>. If builder requests installments, interest remains 100% chargeable.
+      </div>
+    </div>
+
+    <!-- Condition 2 -->
+    <div class="condition-box">
+      <div class="condition-head">
+        <span>Condition 2 • Defense of Supervision Self-Debit (₹2.70L)</span>
+        <span class="tag tag-red">Critical Issue</span>
+      </div>
+      <div class="condition-stance"><strong>Builder Argument:</strong> "₹2,70,000 supervision was our developer management overhead for managing security &amp; vendors."</div>
+      <div class="condition-action">
+        <strong>Committee Handling Protocol:</strong>
+        <br>• <strong>Confront with Law:</strong> Under MOFA &amp; RERA Sec 11(4)(g), developer cannot unilaterally debit management fees without written contract or flat owner approval. CA Observation 15 &amp; 16 disallowed it with zero contract.
+        <br>• <strong>Tactical Leverage:</strong> Concede supervision <em>ONLY IF</em> builder accepts 100% disallowance of all 23 missing invoices (₹4.09L) without reduction.
+      </div>
+    </div>
+
+    <!-- Condition 3 -->
+    <div class="condition-box">
+      <div class="condition-head">
+        <span>Condition 3 • Schindler Lift AMC Dispute (₹1.24L)</span>
+        <span class="tag tag-red">Non-Negotiable</span>
+      </div>
+      <div class="condition-stance"><strong>Builder Argument:</strong> "Schindler Lift AMC (Inv #90520697) was common society infrastructure and must be shared by Wing A."</div>
+      <div class="condition-action">
+        <strong>Committee Handling Protocol:</strong>
+        <br>• <strong>Forensic Disallowance:</strong> The invoice is issued 100% to Building B. BOM common passbook has <strong>ZERO debit</strong> for this invoice during the active escrow period.
+        <br>• <strong>Absolute Stand:</strong> Society A cannot absorb Wing B's billed invoices without certified Wing B ledger debit proof and Wing B CHSL co-signature. 100% disallowance (₹1.24L + ₹42k interest) is non-negotiable.
+      </div>
+    </div>
+
+    <!-- Condition 4 -->
+    <div class="condition-box">
+      <div class="condition-head">
+        <span>Condition 4 • Defense of Missing Estimates (₹2.85L)</span>
+        <span class="tag tag-orange">Conditional Proof</span>
+      </div>
+      <div class="condition-stance"><strong>Builder Argument:</strong> "Swimming pool chemicals, landscaping, and DG diesel were genuine expenses even if tax bills were lost."</div>
+      <div class="condition-action">
+        <strong>Committee Handling Protocol:</strong>
+        <br>• <strong>5-Day Evidentiary Proof Window:</strong> Under Indian Accounting Standards, unvouched estimates cannot be debited to an audited statutory account.
+        <br>• <strong>Action:</strong> Give builder exactly 5 business days to furnish vendor GST tax invoices, delivery challans, and bank payment slips. Any expense lacking proof by Day 5 is permanently disallowed.
+      </div>
+    </div>
+
+    <!-- Condition 5 -->
+    <div class="condition-box">
+      <div class="condition-head">
+        <span>Condition 5 • Request for Staggered / Installment Terms</span>
+        <span class="tag tag-green">Acceptable with Locks</span>
+      </div>
+      <div class="condition-stance"><strong>Builder Argument:</strong> "We agree to settle at ₹18L–₹20L, but need 4 to 6 monthly installments due to liquidity."</div>
+      <div class="condition-action">
+        <strong>Triple-Lock Legal Security Protocol:</strong>
+        <br>1. <strong>Upfront Cash:</strong> Minimum 50% (₹9.0L–₹10.0L) paid immediately via RTGS on signing Consent Terms.
+        <br>2. <strong>Secured PDCs:</strong> Balance payable in maximum 3 monthly installments via signed Post-Dated Cheques (PDCs) + Director's personal indemnity bond.
+        <br>3. <strong>Default Clause:</strong> Any bounce automatically cancels all concessions and triggers immediate MahaRERA filing for full ₹45.76L.
+      </div>
+    </div>
+
+    <!-- Condition 6 -->
+    <div class="condition-box">
+      <div class="condition-head">
+        <span>Condition 6 • Deadlock / Derogatory Offer (&lt; ₹12.07L)</span>
+        <span class="tag tag-red">Walk-Away Trigger</span>
+      </div>
+      <div class="condition-stance"><strong>Builder Argument:</strong> "Take ₹5L–₹8L as full and final settlement or go to court; litigation will take years."</div>
+      <div class="condition-action">
+        <strong>Immediate Statutory Escalation Protocol:</strong>
+        <br>• <strong>Walk Away:</strong> Under MCS Act 1960 and CA certification with UDIN, Managing Committee has NO legal power to compromise below statutory dues of ₹12,07,058.
+        <br>• <strong>Next Steps:</strong> Issue 15-day statutory legal notice for ₹45,75,525; file online complaint before MahaRERA Bench under Sec 11(4)(g) &amp; Sec 14(3); petition District Deputy Registrar (DDR).
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: TACTICAL CONCESSION & TRADE-OFF MATRIX -->
+  <div class="section-head">
+    <span>6. Tactical Concession &amp; Trade-Off Matrix (Negotiator's Quick-Reference)</span>
+    <span style="font-size: 7pt; color: #475569;">Bargaining Boundaries &amp; Red Lines</span>
+  </div>
+
+  <table style="margin-bottom: 0;">
+    <thead>
+      <tr>
+        <th style="width: 22%;">Settlement Component</th>
+        <th style="width: 13%;" class="num">Claim Value (₹)</th>
+        <th style="width: 20%;">Builder Expected Stance</th>
+        <th style="width: 22%;">Society Maximum Concession</th>
+        <th style="width: 23%;">Mandatory Builder Counter-Concession</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Statutory Net Principal Surplus</strong></td>
+        <td class="num"><strong>9,00,790.00</strong></td>
+        <td>May contest collections or handover</td>
+        <td><strong style="color: #991b1b;">ZERO CONCESSION</strong> (Statutory certified floor)</td>
+        <td>Immediate admission &amp; payment in full</td>
+      </tr>
+      <tr>
+        <td><strong>Statutory Interest @ 8% p.a.</strong></td>
+        <td class="num"><strong>3,06,268.00</strong></td>
+        <td>Demand 100% waiver claiming delay not theirs</td>
+        <td>Max 50% waiver (₹1.53L) ONLY if 100% RTGS in 7 days</td>
+        <td>Single payment, zero installments, no post-dated delays</td>
+      </tr>
+      <tr>
+        <td><strong>Schindler Lift AMC (Inv 90520697)</strong></td>
+        <td class="num"><strong>1,65,806.24</strong></td>
+        <td>Claim it benefits entire project</td>
+        <td><strong style="color: #991b1b;">ZERO CONCESSION</strong> (Billed 100% to Wing B)</td>
+        <td>Full disallowance from developer expenses</td>
+      </tr>
+      <tr>
+        <td><strong>22 Other Missing Invoices</strong></td>
+        <td class="num"><strong>3,82,536.50</strong></td>
+        <td>Argue works were physically executed</td>
+        <td>Allow max 50% (₹1.43L) upon proof of vendor bills in 5 days</td>
+        <td>Withdraw unsubstantiated diesel &amp; pool recurring estimates</td>
+      </tr>
+      <tr>
+        <td><strong>Builder GST ITC Availed</strong></td>
+        <td class="num"><strong>1,86,353.80</strong></td>
+        <td>Claim ITC was adjusted in corporate tax</td>
+        <td><strong style="color: #991b1b;">ZERO CONCESSION</strong> (Direct financial leakage)</td>
+        <td>Credit society with refund or statutory GST set-off</td>
+      </tr>
+      <tr>
+        <td><strong>BOM Bank Cash Shortfall &amp; Wing B Drain</strong></td>
+        <td class="num"><strong>12,36,520.17</strong></td>
+        <td>Vehemently deny liability for Wing B expenses</td>
+        <td><strong>100% WAIVER</strong> as ultimate closing carrot in Phase 2</td>
+        <td>Builder signs full F&amp;F settlement at ₹18.0L–₹20.0L without delay</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 3: VENDOR FORENSIC MATRIX & CA ANNEXURE 4 MISSING INVOICES           -->
   <!-- ========================================================================= -->
   <div class="page-break"></div>
 
@@ -500,12 +872,12 @@ export function generateHTML() {
     </div>
     <div class="meta-box">
       <div><strong>UDIN:</strong> 26162502TFCJWK8860</div>
-      <div><strong>Page:</strong> 2 of 4</div>
+      <div><strong>Page:</strong> 3 of 5</div>
     </div>
   </div>
 
   <div class="section-head">
-    <span>4. Key Payee &amp; Vendor Forensic Cross-Match Matrix (12 Major Vendors)</span>
+    <span>7. Key Payee &amp; Vendor Forensic Cross-Match Matrix (12 Major Vendors)</span>
     <span style="font-size: 7pt; color: #475569;">BOM Ledger Outflow vs CA Audited Status</span>
   </div>
 
@@ -537,7 +909,7 @@ export function generateHTML() {
   </table>
 
   <div class="section-head">
-    <span>5. CA Hardik Mehta Annexure 4: Complete 23 Missing Invoices List</span>
+    <span>8. CA Hardik Mehta Annexure 4: Complete 23 Missing Invoices List</span>
     <span style="font-size: 7pt; color: #dc2626;">Total Disallowed: ₹4,09,211.00 (Part A: ₹1,73,458 | Part B: ₹2,35,753)</span>
   </div>
 
@@ -576,7 +948,7 @@ export function generateHTML() {
   </table>
 
   <!-- ========================================================================= -->
-  <!-- PAGE 3 & 4: COMPLETE 135 BOM PASSBOOK LEDGER TRANSACTIONS                 -->
+  <!-- PAGE 4 & 5: COMPLETE 135 BOM PASSBOOK LEDGER TRANSACTIONS                 -->
   <!-- ========================================================================= -->
   <div class="page-break"></div>
 
@@ -587,12 +959,12 @@ export function generateHTML() {
     </div>
     <div class="meta-box">
       <div><strong>Period:</strong> 01-Jul-2021 to 31-Mar-2023</div>
-      <div><strong>Page:</strong> 3 of 4</div>
+      <div><strong>Page:</strong> 4 of 5</div>
     </div>
   </div>
 
   <div class="section-head">
-    <span>6. Verified Passbook Transactions Register (Items 1 to 70)</span>
+    <span>9. Verified Passbook Transactions Register (Items 1 to 70)</span>
     <span style="font-size: 7pt; color: #475569;">Debits: Inflow (₹) | Credits: Outflow (₹)</span>
   </div>
 
@@ -629,7 +1001,7 @@ export function generateHTML() {
     </tbody>
   </table>
 
-  <!-- PAGE 4 -->
+  <!-- PAGE 5 -->
   <div class="page-break"></div>
 
   <div class="doc-header">
@@ -639,12 +1011,12 @@ export function generateHTML() {
     </div>
     <div class="meta-box">
       <div><strong>Period:</strong> 01-Jul-2021 to 31-Mar-2023</div>
-      <div><strong>Page:</strong> 4 of 4</div>
+      <div><strong>Page:</strong> 5 of 5</div>
     </div>
   </div>
 
   <div class="section-head">
-    <span>7. Verified Passbook Transactions Register (Items 71 to 135)</span>
+    <span>10. Verified Passbook Transactions Register (Items 71 to 135)</span>
     <span style="font-size: 7pt; color: #475569;">Closing Handover, Self-Debits &amp; Bank Summary</span>
   </div>
 
@@ -700,7 +1072,7 @@ export function generateHTML() {
   <!-- Signatures Block -->
   <div class="avoid-break" style="margin-top: 10px;">
     <div class="section-head">
-      <span>8. Formal Certification &amp; Dossier Sign-Off</span>
+      <span>11. Formal Certification &amp; Dossier Sign-Off</span>
       <span style="font-size: 7pt; color: #475569;">Majestique Euriska A Bldg Co-op Hsg Society Ltd.</span>
     </div>
 
@@ -773,7 +1145,7 @@ async function main() {
   await browser.close();
 
   const stats = fs.statSync(pdfPath1);
-  console.log(`\nSUCCESS: Generated 4-page Complete PDF Dossier (${(stats.size / 1024).toFixed(1)} KB)`);
+  console.log(`\nSUCCESS: Generated 5-page Complete PDF Dossier (${(stats.size / 1024).toFixed(1)} KB)`);
   console.log(`Saved at: ${pdfPath1}`);
   console.log(`Saved at: ${pdfPath2}`);
 }

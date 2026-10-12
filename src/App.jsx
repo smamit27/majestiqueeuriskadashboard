@@ -26,6 +26,8 @@ import PettyCashTracker from './components/organisms/PettyCashTracker.jsx';
 import ShopMaintenanceTracker from './components/organisms/ShopMaintenanceTracker.jsx';
 import AIChatButton from './components/AIChat/AIChatButton.jsx';
 import AIChatWindow from './components/AIChat/AIChatWindow.jsx';
+import GlassSidebar from './components/glass/GlassSidebar.jsx';
+import GlassNavbar from './components/glass/GlassNavbar.jsx';
 // ── New Features ───────────────────────────────────────────────────
 import AnnouncementsModule from './components/organisms/AnnouncementsModule.jsx';
 import NotificationCenter from './components/organisms/NotificationCenter.jsx';
@@ -785,209 +787,50 @@ export default function App() {
       <div className="backdrop backdrop--top" />
       <div className="backdrop backdrop--bottom" />
 
-      {/* Mobile overlay */}
-      {isSidebarOpen && (
-        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />
-      )}
+      {/* ── Vertical Glass Sidebar ── */}
+      <GlassSidebar
+        isOpen={isSidebarOpen}
+        isCollapsed={isSidebarCollapsed}
+        onClose={() => setIsSidebarOpen(false)}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        navigationGroups={navigationGroups}
+        activeTab={normalizedActiveTab}
+        onTabChange={handleTabChange}
+        tabIcons={TAB_ICONS}
+        user={user}
+        userRole={userRole}
+        isAdmin={isAdmin}
+        isAuthOrDevBypass={isAuthOrDevBypass}
+        PUBLIC_TABS={PUBLIC_TABS}
+        hasModuleAccess={hasModuleAccess}
+        expandedGroups={expandedGroups}
+        onToggleGroup={toggleGroup}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onRoleChange={handleRoleChange}
+      />
 
-      {/* ── Vertical Sidebar ── */}
-      <aside className={`sidebar ${isSidebarOpen ? 'sidebar--open' : ''} ${isSidebarCollapsed ? 'sidebar--collapsed' : ''}`}>
-        <div className="sidebar__brand">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, overflow: 'hidden' }}>
-            {!isSidebarCollapsed && (
-              <img
-                src="/logo.png"
-                alt="Majestique Euriska Logo"
-                className="sidebar__logo"
-              />
-            )}
-            {!isSidebarCollapsed && (
-              <div className="sidebar__brand-text">
-                <p className="sidebar__kicker">Residential Society</p>
-                <h2 className="sidebar__title">Majestique Euriska</h2>
-              </div>
-            )}
-          </div>
-          
-          <button 
-            className="sidebar-collapse-toggle" 
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-        </div>
-
-        <div className="sidebar__admin-zone" style={{ padding: '0 0 8px' }}>
-          {/* Search trigger */}
-          {!isSidebarCollapsed ? (
-            <button className="gsearch-trigger-btn" onClick={() => setIsSearchOpen(true)}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
-              Search...
-              <span className="gsearch-trigger-kbd">⌘K</span>
-            </button>
-          ) : (
-            <button
-              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', padding: '10px', display: 'flex', justifyContent: 'center', width: '100%' }}
-              onClick={() => setIsSearchOpen(true)}
-              title="Search (⌘K)"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
-            </button>
-          )}
-
-          {/* Notifications */}
-          <NotificationCenter isSidebarCollapsed={isSidebarCollapsed} />
-
-          {/* Sign In / User Session */}
-          <div style={{ padding: '0 16px 8px' }}>
-            <button 
-              className={`sidebar-item ${user ? 'sidebar-item--active' : ''}`}
-              onClick={() => setIsAuthModalOpen(true)}
-              style={user ? { background: '#10b981', color: 'white' } : { border: '1px solid rgba(255,255,255,0.2)' }}
-              title={user ? `Signed in as ${user.email}` : 'Sign in to access live Firestore data'}
-            >
-              <span className="sidebar-item__icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  {user ? (
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  ) : (
-                    <>
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </>
-                  )}
-                </svg>
-              </span>
-              {!isSidebarCollapsed && (
-                <span className="sidebar-item__label">
-                  {user ? (isAdmin ? 'Admin (Live)' : 'Signed In') : 'Admin Login / Sign In'}
-                </span>
-              )}
-            </button>
-          </div>
-
-          {/* Role Indicator & Testing Switcher */}
-          {!isSidebarCollapsed && (
-            (user || isDevAdminOverride) ? (
-              <div className="sidebar-role-selector">
-                <label>Active Role: {ROLE_LABELS[userRole] || userRole}</label>
-                <select
-                  aria-label="Switch active role"
-                  value={userRole}
-                  onChange={(e) => handleRoleChange(e.target.value)}
-                  title="Switch active role to test RBAC capabilities"
-                >
-                  {Object.keys(ROLES).map((r) => (
-                    <option key={r} value={r}>
-                      {ROLE_LABELS[r]}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ) : (
-              <div className="sidebar-role-selector" style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.04)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>
-                  🔒 Public Guest View
-                </div>
-                <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', marginTop: '2px' }}>
-                  Sign in to unlock all society tabs
-                </div>
-              </div>
-            )
-          )}
-        </div>
-
-        <nav className="sidebar__nav" role="tablist" aria-orientation="vertical">
-          {navigationGroups.map((group) => {
-            const accessibleItems = group.items.filter((item) => {
-              if (!isAuthOrDevBypass) {
-                return PUBLIC_TABS.includes(item.id);
-              }
-              return hasModuleAccess(userRole, item.id);
-            });
-            if (accessibleItems.length === 0) return null;
-
-            const isGroupExpanded = expandedGroups[group.id] !== false;
-            const hasActiveItem = accessibleItems.some(i => i.id === normalizedActiveTab);
-
-            return (
-              <div key={group.id} className="sidebar-group">
-                {!isSidebarCollapsed ? (
-                  <button
-                    type="button"
-                    className={`sidebar-group__trigger ${hasActiveItem ? 'sidebar-group__trigger--active' : ''}`}
-                    onClick={() => toggleGroup(group.id)}
-                    aria-expanded={isGroupExpanded}
-                  >
-                    <span>{group.title}</span>
-                    <span className="sidebar-group__chevron" style={{ transform: isGroupExpanded ? 'rotate(0deg)' : 'rotate(-90deg)' }}>
-                      ▼
-                    </span>
-                  </button>
-                ) : (
-                  <div className="sidebar-group-header" title={group.title}>
-                    {group.title.split(' ')[0]}
-                  </div>
-                )}
-
-                {isGroupExpanded && (
-                  <div className="sidebar-group__items">
-                    {accessibleItems.map((tab) => {
-                      const isSelected = normalizedActiveTab === tab.id;
-                      const badgeCount = getBadgeCount(tab.id);
-                      return (
-                        <button
-                          key={tab.id}
-                          id={`tab-${tab.id}`}
-                          type="button"
-                          role="tab"
-                          aria-selected={isSelected}
-                          aria-controls={`panel-${tab.id}`}
-                          className={`sidebar-item ${isSelected ? 'sidebar-item--active' : ''} sidebar-item--sub`}
-                          onClick={() => handleTabChange(tab.id)}
-                          title={isSidebarCollapsed ? tab.label : ''}
-                        >
-                          <span className="sidebar-item__icon">{TAB_ICONS[tab.id] || TAB_ICONS.emergency}</span>
-                          {!isSidebarCollapsed && <span className="sidebar-item__label">{tab.label}</span>}
-                          {badgeCount > 0 && (
-                            <span className={`sidebar-item__badge ${isSidebarCollapsed ? 'sidebar-item__badge--dot' : ''}`}>
-                              {isSidebarCollapsed ? '' : badgeCount}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </nav>
-
-        <AuthModal 
-          isOpen={isAuthModalOpen} 
-          onClose={() => setIsAuthModalOpen(false)} 
-          user={user}
-        />
-      </aside>
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        user={user}
+      />
 
       <main className="main-panel">
-        {/* Mobile Header Toggle */}
-        <div className="mobile-header">
-          <button className="mobile-menu-toggle" onClick={() => setIsSidebarOpen(true)}>
-            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          </button>
-          <h2>{activeTabPanel.label}</h2>
-        </div>
+        {/* ── Glass Top Navigation ── */}
+        <GlassNavbar
+          activeTabLabel={activeTabPanel.label}
+          activeGroupName={navigationGroups.find(g => g.items.some(item => item.id === normalizedActiveTab))?.title || 'DASHBOARD'}
+          user={user}
+          userRole={userRole}
+          isAdmin={isAdmin}
+          onOpenSidebar={() => setIsSidebarOpen(true)}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenAuth={() => setIsAuthModalOpen(true)}
+          onRoleChange={handleRoleChange}
+          isSidebarCollapsed={isSidebarCollapsed}
+          onToggleSidebarCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
 
         <div
           id={`panel-${activeTabPanel.id}`}

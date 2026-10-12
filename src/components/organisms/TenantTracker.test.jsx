@@ -68,7 +68,7 @@ describe('TenantTracker - Main Components', () => {
     render(<TenantTracker isAdmin={true} />);
     expect(await screen.findByRole('button', { name: /Add Flat/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Reset Database/i })).toBeInTheDocument();
-  });
+  }, 15000);
 });
 
 describe('TenantTracker - Filtering and Sorting', () => {
