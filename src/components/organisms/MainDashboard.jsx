@@ -15,10 +15,12 @@ import StatCard from '../glass/StatCard.jsx';
 const fmt = (v) => Number(v || 0).toLocaleString('en-IN');
 const fmtCr = (v) => {
   const n = Number(v || 0);
-  if (n >= 10000000) return `₹${(n / 10000000).toFixed(2)}Cr`;
-  if (n >= 100000) return `₹${(n / 100000).toFixed(1)}L`;
-  if (n >= 1000) return `₹${(n / 1000).toFixed(0)}K`;
-  return `₹${n}`;
+  const sign = n < 0 ? '-' : '';
+  const abs = Math.abs(n);
+  if (abs >= 10000000) return `${sign}₹${(abs / 10000000).toFixed(2)}Cr`;
+  if (abs >= 100000) return `${sign}₹${(abs / 100000).toFixed(1)}L`;
+  if (abs >= 1000) return `${sign}₹${(abs / 1000).toFixed(0)}K`;
+  return `${sign}₹${abs}`;
 };
 
 function fmtDate(v) {
@@ -863,7 +865,7 @@ export default function MainDashboard({ stats, isAdmin }) {
           {/* ══════════════════════════════════════════════════════════════════════
               Row 2: Finance Chart + Task Pie + Occupancy Pie
           ══════════════════════════════════════════════════════════════════════ */}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 20 }}>
+          <div className="exec-charts-grid">
             {/* Finance Income vs Expense Trend */}
             <div className="exec-card glass-card">
               <h3 className="exec-card-title">
@@ -878,7 +880,7 @@ export default function MainDashboard({ stats, isAdmin }) {
               </h3>
               {financeData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={240}>
-                  <AreaChart data={financeData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+                  <AreaChart data={financeData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                     <defs>
                       <linearGradient id="gIncome" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#059669" stopOpacity={0.25}/>
@@ -891,7 +893,7 @@ export default function MainDashboard({ stats, isAdmin }) {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                     <XAxis dataKey="label" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tickFormatter={fmtCr} tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} width={60} />
+                    <YAxis tickFormatter={fmtCr} tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} width={52} />
                     <RechartsTip
                       contentStyle={{ borderRadius: '12px', border: '1px solid rgba(255,255,255,0.85)', background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(10px)', boxShadow: '0 8px 30px rgba(0,0,0,0.08)', fontSize: '0.82rem' }}
                       formatter={(val) => [`₹${fmt(val)}`, '']}
@@ -949,22 +951,24 @@ export default function MainDashboard({ stats, isAdmin }) {
               {/* Occupancy Split */}
               <div className="exec-card glass-card" style={{ cursor: 'pointer' }} onClick={() => navigate('tenants')}>
                 <h3 className="exec-card-title">🏠 Occupancy Split (Building A)</h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <ResponsiveContainer width="50%" height={100}>
-                    <PieChart>
-                      <Pie data={occupancyPie} cx="50%" cy="50%" innerRadius={28} outerRadius={42} paddingAngle={4} dataKey="value">
-                        <Cell fill="#C62828" />
-                        <Cell fill="#F59E0B" />
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div style={{ fontSize: '0.82rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                      <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#C62828', display: 'inline-block' }} />
+                <div className="exec-occupancy-wrap">
+                  <div style={{ width: 110, height: 100, flexShrink: 0 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={occupancyPie} cx="50%" cy="50%" innerRadius={28} outerRadius={42} paddingAngle={4} dataKey="value">
+                          <Cell fill="#C62828" />
+                          <Cell fill="#F59E0B" />
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="exec-occupancy-legend">
+                    <div className="exec-occupancy-row">
+                      <span className="exec-occupancy-dot" style={{ background: '#C62828' }} />
                       <span style={{ color: '#171717' }}>Owners: <strong>{tenantStats.owners}</strong></span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#F59E0B', display: 'inline-block' }} />
+                    <div className="exec-occupancy-row">
+                      <span className="exec-occupancy-dot" style={{ background: '#F59E0B' }} />
                       <span style={{ color: '#171717' }}>Tenants: <strong>{tenantStats.tenants}</strong></span>
                     </div>
                   </div>
@@ -1113,10 +1117,10 @@ export default function MainDashboard({ stats, isAdmin }) {
                 </button>
               </h3>
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={financeData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+                <BarChart data={financeData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                   <XAxis dataKey="label" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tickFormatter={fmtCr} tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} width={60} />
+                  <YAxis tickFormatter={fmtCr} tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} width={52} />
                   <RechartsTip
                     contentStyle={{ borderRadius: '12px', border: '1px solid rgba(255,255,255,0.85)', background: 'rgba(255,255,255,0.92)', boxShadow: '0 8px 30px rgba(0,0,0,0.08)', fontSize: '0.82rem' }}
                     formatter={(val) => [`₹${fmt(val)}`, 'Surplus']}

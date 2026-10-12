@@ -2563,6 +2563,39 @@ select {
   transition: width 1s ease;
 }
 
+.exec-charts-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 20px;
+}
+@media (max-width: 900px) {
+  .exec-charts-grid { grid-template-columns: 1fr; }
+}
+
+.exec-occupancy-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.exec-occupancy-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+}
+.exec-occupancy-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.exec-occupancy-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
 .exec-grid-2col {
   display: grid;
   grid-template-columns: minmax(0,1.4fr) minmax(0,1fr);

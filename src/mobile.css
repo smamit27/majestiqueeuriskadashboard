@@ -520,6 +520,368 @@ img {
     text-align: center !important;
     font-size: 0.76rem !important;
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     iPHONE & MOBILE DASHBOARD POLISH (iPhone 15 - iPhone 18)
+     ══════════════════════════════════════════════════════════════════ */
+
+  /* 1. Executive Glass Hero Banner */
+  .exec-hero {
+    padding: 16px 14px !important;
+    border-radius: 18px !important;
+    gap: 12px !important;
+  }
+
+  .exec-hero h1 {
+    font-size: clamp(1.4rem, 6vw, 1.8rem) !important;
+    line-height: 1.15 !important;
+  }
+
+  .exec-hero p {
+    font-size: 0.8rem !important;
+    margin-top: 2px !important;
+    color: #9CA3AF !important;
+  }
+
+  /* Quick Actions: Sleek iOS edge-to-edge swipeable pill bar without awkward wrapping */
+  .exec-hero__actions {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 8px !important;
+    padding: 2px 0 6px 0 !important;
+    scrollbar-width: none !important;
+    margin-top: 8px !important;
+    width: 100% !important;
+  }
+
+  .exec-hero__actions::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .glass-action-pill {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    padding: 7px 13px !important;
+    font-size: 0.8rem !important;
+    border-radius: 999px !important;
+  }
+
+  /* 2. AGM 2026 Governance Banner */
+  .glass-agm-banner {
+    padding: 14px !important;
+    border-radius: 16px !important;
+    margin: 10px 0 !important;
+    gap: 10px !important;
+    flex-direction: column !important;
+  }
+
+  .glass-agm-banner__left {
+    gap: 10px !important;
+    align-items: flex-start !important;
+  }
+
+  .glass-agm-banner__icon {
+    font-size: 1.6rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .glass-agm-banner__title {
+    font-size: 0.92rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .glass-agm-banner__tags {
+    gap: 6px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .glass-agm-banner__desc {
+    font-size: 0.76rem !important;
+    line-height: 1.35 !important;
+    margin-top: 4px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .glass-agm-banner__right {
+    width: 100% !important;
+  }
+
+  .glass-agm-btn {
+    width: 100% !important;
+    padding: 9px 14px !important;
+    font-size: 0.8rem !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  /* 3. Residential Wings Infrastructure — Horizontal Swipeable iOS Card Strip */
+  .society-flats-card {
+    padding: 14px !important;
+    border-radius: 18px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .society-flats-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .society-flats-kicker {
+    font-size: 0.65rem !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  .society-flats-title {
+    font-size: 1.05rem !important;
+    margin: 2px 0 0 !important;
+  }
+
+  .society-flats-sub {
+    display: none !important;
+  }
+
+  .society-flats-total-badge {
+    padding: 6px 12px !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .society-flats-total-num {
+    font-size: 1.4rem !important;
+    line-height: 1 !important;
+  }
+
+  .society-flats-total-label {
+    font-size: 0.62rem !important;
+    margin-top: 2px !important;
+    white-space: nowrap !important;
+  }
+
+  .society-wings-grid {
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 12px !important;
+    padding: 4px 2px 10px 2px !important;
+    scrollbar-width: none !important;
+    margin: 0 -4px !important;
+  }
+
+  .society-wings-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .society-wing-card {
+    flex: 0 0 86% !important;
+    max-width: 300px !important;
+    min-width: 260px !important;
+    scroll-snap-align: center !important;
+    padding: 14px 16px !important;
+    border-radius: 16px !important;
+    gap: 8px !important;
+  }
+
+  .society-wing-number {
+    font-size: 1.8rem !important;
+  }
+
+  .society-wing-card__stats {
+    font-size: 0.74rem !important;
+    gap: 8px !important;
+  }
+
+  /* 4. Executive Society Health Indicators (KPI Cards) — Compact Native iOS Grid */
+  .exec-section-heading {
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .exec-section-heading h2 {
+    font-size: 1.02rem !important;
+  }
+
+  .exec-section-sub {
+    font-size: 0.74rem !important;
+  }
+
+  .exec-kpi-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .exec-kpi-card {
+    padding: 10px 12px !important;
+    border-radius: 14px !important;
+    min-height: 80px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  .exec-kpi-label {
+    font-size: 0.68rem !important;
+    letter-spacing: 0.03em !important;
+    margin: 0 0 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    color: #6B7280 !important;
+  }
+
+  .exec-kpi-value {
+    font-size: 1.35rem !important;
+    line-height: 1.1 !important;
+    margin: 0 0 2px !important;
+  }
+
+  .exec-kpi-sub {
+    font-size: 0.68rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    color: #9CA3AF !important;
+  }
+
+  .exec-kpi-progress {
+    margin-top: 6px !important;
+    height: 4px !important;
+  }
+
+  /* 5. 🚨 Requires Attention Action Items */
+  .exec-attention-section {
+    margin-top: 14px !important;
+  }
+
+  .exec-attention-header {
+    margin-bottom: 8px !important;
+  }
+
+  .exec-attention-title {
+    font-size: 0.95rem !important;
+  }
+
+  .exec-attention-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .exec-attention-card {
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .exec-attention-btn {
+    width: 100% !important;
+    padding: 8px 12px !important;
+    font-size: 0.78rem !important;
+    min-height: 36px !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  /* 6. Charts & Analytics Grid — Full 100% Width on Mobile */
+  .exec-charts-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  .exec-card {
+    padding: 16px 14px !important;
+    border-radius: 16px !important;
+  }
+
+  .exec-card-title {
+    font-size: 0.92rem !important;
+    margin-bottom: 12px !important;
+  }
+
+  .exec-occupancy-wrap {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+    gap: 12px !important;
+  }
+
+  .exec-occupancy-legend {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .exec-occupancy-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .exec-occupancy-dot {
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 50% !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 7. Row 3: Priority Tasks & Alerts */
+  .exec-grid-2col {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  .exec-task-row {
+    padding: 8px 0 !important;
+    gap: 8px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .exec-task-name {
+    font-size: 0.78rem !important;
+  }
+
+  .exec-alert-item {
+    padding: 8px 0 !important;
+    gap: 10px !important;
+  }
+
+  .exec-alert-text {
+    font-size: 0.78rem !important;
+  }
+
+  /* 8. Quick Navigation Grid */
+  .exec-quick-nav {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .exec-quick-btn {
+    padding: 10px 6px !important;
+    font-size: 0.72rem !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+  }
+
+  .exec-quick-btn-icon {
+    font-size: 1.25rem !important;
+  }
 }
 
 /* ── 2. Small phones (≤ 480px) ──────────────────────── */
