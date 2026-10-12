@@ -3474,6 +3474,23 @@ select {
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
+.glass-navbar .notif-bell-btn {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  color: #4B5563;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.glass-navbar .notif-bell-btn:hover {
+  background: #FFFFFF;
+  color: #171717;
+  border-color: rgba(198, 40, 40, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
 .glass-navbar__role-pill {
   display: flex;
   align-items: center;

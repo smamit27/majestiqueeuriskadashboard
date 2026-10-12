@@ -21,10 +21,26 @@ img {
 /* ── 1. Mobile base (≤ 768px) ───────────────────────── */
 @media (max-width: 768px) {
 
-  /* Shell */
+  /* Shell with iPhone Safe Area Insets */
   .dashboard-shell {
-    padding: 10px !important;
+    padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)) !important;
     overflow-x: hidden !important;
+  }
+
+  /* Prevent iOS Safari auto-zoom on input focus */
+  input[type="text"],
+  input[type="number"],
+  input[type="search"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Remove tap highlight gray flicker on iOS WebKit */
+  button, a, input, select {
+    -webkit-tap-highlight-color: transparent !important;
   }
 
   .main-panel {
@@ -134,37 +150,103 @@ img {
     -webkit-backdrop-filter: blur(4px) !important;
   }
 
-  /* ── Glass Sidebar & Glass Navbar Mobile Overrides ── */
+  /* ── Glass Sidebar & Glass Navbar Mobile Overrides (iPhone Optimized) ── */
+  .glass-navbar {
+    padding: 8px 12px !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    min-height: 52px !important;
+    border-radius: 16px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .glass-navbar__left {
+    gap: 10px !important;
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+  }
+
   .glass-navbar__menu-btn {
     display: flex !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    border-radius: 10px !important;
+    flex-shrink: 0 !important;
   }
+
   .glass-navbar__collapse-btn {
     display: none !important;
   }
-  .glass-navbar__search-text {
-    display: none !important;
-  }
+
   .glass-navbar__breadcrumbs {
     display: none !important;
   }
-  .glass-navbar {
-    padding: 10px 14px !important;
+
+  .glass-navbar__page-title {
+    font-size: 1.05rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 140px !important;
+    letter-spacing: -0.01em !important;
   }
+
+  .glass-navbar__right {
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    flex-shrink: 0 !important;
+    align-items: center !important;
+  }
+
+  /* On iPhones & tablets, role switch is accessible in the slide-in drawer */
+  .glass-navbar__role-pill {
+    display: none !important;
+  }
+
+  .glass-navbar__search-trigger {
+    padding: 8px 10px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    border-radius: 10px !important;
+    justify-content: center !important;
+  }
+
+  .glass-navbar__search-text {
+    display: none !important;
+  }
+
+  .glass-navbar__kbd {
+    display: none !important;
+  }
+
+  .glass-navbar__auth-btn {
+    padding: 8px 12px !important;
+    font-size: 0.78rem !important;
+    border-radius: 10px !important;
+    min-height: 38px !important;
+    white-space: nowrap !important;
+  }
+
   .glass-sidebar {
     position: fixed !important;
     top: 0 !important;
-    left: -320px !important;
+    left: -330px !important;
     bottom: 0 !important;
     height: 100vh !important;
-    width: 285px !important;
+    height: 100dvh !important;
+    width: min(300px, 86vw) !important;
     z-index: 1000 !important;
-    border-radius: 0 20px 20px 0 !important;
+    border-radius: 0 24px 24px 0 !important;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    padding: 20px 16px !important;
+    padding: max(20px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom)) 16px !important;
+    -webkit-overflow-scrolling: touch !important;
   }
+
   .glass-sidebar--open {
     left: 0 !important;
   }
+
   .glass-sidebar-overlay {
     display: block !important;
     position: fixed !important;

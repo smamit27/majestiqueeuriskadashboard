@@ -89,7 +89,7 @@ export default function GlassNavbar({
 
         {/* Notification Center */}
         <div className="glass-navbar__item">
-          <NotificationCenter isSidebarCollapsed={false} />
+          <NotificationCenter isSidebarCollapsed={true} />
         </div>
 
         {/* Role Selector / Indicator */}
