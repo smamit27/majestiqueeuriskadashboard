@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, Legend } from 'recharts';
 import * as XLSX from 'xlsx';
 
 function formatDateLabel(val) {
@@ -637,11 +637,346 @@ export const DEFAULT_TATA_SEED = [
   }
 ];
 
+// Verified 10-Month Building 'A' Common Lift Electricity Bills (MSEDCL Consumer No: 170003586858)
+export const DEFAULT_BUILDING_A_SEED = [
+  {
+    id: 3001,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'Sep 2026 (16 Aug – 14 Sep)',
+    startMonth: '2026-08-16',
+    endMonth: '2026-09-14',
+    billDate: '2026-09-19',
+    dueDate: '2026-10-09',
+    duration: '30 Days (0.97 Mo)',
+    prevReading: '148485',
+    currReading: '150245',
+    consumption: 1760,
+    ratePerUnit: 21.10,
+    fixedCharge: 445.00,
+    energyCharge: 27745.89,
+    wheelingCharge: 2816.00,
+    fuelAdj: 724.10,
+    dutyAmount: 5076.96,
+    arrearsAmount: 333.60,
+    promptDiscount: 317.31,
+    promptAmount: 36820.00,
+    delayedCharge: 460.10,
+    afterDueAmount: 37600.00,
+    grandTotal: 37140.00,
+    paidAmount: 37140.00,
+    status: 'Invoiced',
+    paymentDate: null,
+    note: 'Current Bill. Prompt pay: ₹36,820 by 28-Sep. Due: ₹37,140 by 09-Oct. After due: ₹37,600.'
+  },
+  {
+    id: 3002,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'Aug 2026 (16 Jul – 15 Aug)',
+    startMonth: '2026-07-16',
+    endMonth: '2026-08-15',
+    billDate: '2026-08-19',
+    dueDate: '2026-09-08',
+    duration: '31 Days (1.0 Mo)',
+    prevReading: '146653',
+    currReading: '148485',
+    consumption: 1832,
+    ratePerUnit: 21.17,
+    fixedCharge: 445.00,
+    energyCharge: 29007.45,
+    wheelingCharge: 2931.20,
+    fuelAdj: 756.50,
+    dutyAmount: 5302.42,
+    grandTotal: 38780.00,
+    paidAmount: 38780.00,
+    status: 'Paid',
+    paymentDate: '2026-08-29',
+    note: 'Paid ₹38,780.00 on 29-Aug-2026 via MSEDCL Portal / Bank'
+  },
+  {
+    id: 3003,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'Jul 2026 (16 Jun – 15 Jul)',
+    startMonth: '2026-06-16',
+    endMonth: '2026-07-15',
+    billDate: '2026-07-19',
+    dueDate: '2026-08-08',
+    duration: '30 Days (1.0 Mo)',
+    prevReading: '144788',
+    currReading: '146653',
+    consumption: 1865,
+    ratePerUnit: 21.20,
+    fixedCharge: 445.00,
+    energyCharge: 29586.00,
+    wheelingCharge: 2984.00,
+    fuelAdj: 771.35,
+    dutyAmount: 5405.82,
+    grandTotal: 39530.00,
+    paidAmount: 39530.00,
+    status: 'Paid',
+    paymentDate: '2026-07-29',
+    note: 'Paid ₹39,530.00 on 29-Jul-2026 via MSEDCL Portal / Bank'
+  },
+  {
+    id: 3004,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'Jun 2026 (16 May – 15 Jun)',
+    startMonth: '2026-05-16',
+    endMonth: '2026-06-15',
+    billDate: '2026-06-19',
+    dueDate: '2026-07-08',
+    duration: '31 Days (1.0 Mo)',
+    prevReading: '142971',
+    currReading: '144788',
+    consumption: 1817,
+    ratePerUnit: 21.16,
+    fixedCharge: 445.00,
+    energyCharge: 28744.47,
+    wheelingCharge: 2907.20,
+    fuelAdj: 749.75,
+    dutyAmount: 5255.43,
+    grandTotal: 38440.00,
+    paidAmount: 38440.00,
+    status: 'Paid',
+    paymentDate: '2026-06-30',
+    note: 'Paid ₹38,440.00 on 30-Jun-2026 via MSEDCL Portal / Bank'
+  },
+  {
+    id: 3005,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'May 2026 (16 Apr – 15 May)',
+    startMonth: '2026-04-16',
+    endMonth: '2026-05-15',
+    billDate: '2026-05-19',
+    dueDate: '2026-06-08',
+    duration: '30 Days (1.0 Mo)',
+    prevReading: '141062',
+    currReading: '142971',
+    consumption: 1909,
+    ratePerUnit: 21.23,
+    fixedCharge: 445.00,
+    energyCharge: 30357.33,
+    wheelingCharge: 3054.40,
+    fuelAdj: 791.15,
+    dutyAmount: 5543.66,
+    grandTotal: 40520.00,
+    paidAmount: 40520.00,
+    status: 'Paid',
+    paymentDate: '2026-05-29',
+    note: 'Peak Summer Month. Paid ₹40,520.00 on 29-May-2026 via MSEDCL Portal / Bank'
+  },
+  {
+    id: 3006,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'Apr 2026 (16 Mar – 15 Apr)',
+    startMonth: '2026-03-16',
+    endMonth: '2026-04-15',
+    billDate: '2026-04-19',
+    dueDate: '2026-05-08',
+    duration: '31 Days (1.0 Mo)',
+    prevReading: '139209',
+    currReading: '141062',
+    consumption: 1853,
+    ratePerUnit: 21.19,
+    fixedCharge: 445.00,
+    energyCharge: 29375.65,
+    wheelingCharge: 2964.80,
+    fuelAdj: 765.95,
+    dutyAmount: 5368.22,
+    grandTotal: 39260.00,
+    paidAmount: 39260.00,
+    status: 'Paid',
+    paymentDate: '2026-04-22',
+    note: 'Paid ₹39,260.00 on 22-Apr-2026 via MSEDCL Portal / Bank'
+  },
+  {
+    id: 3007,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'Mar 2026 (16 Feb – 15 Mar)',
+    startMonth: '2026-02-16',
+    endMonth: '2026-03-15',
+    billDate: '2026-03-19',
+    dueDate: '2026-04-08',
+    duration: '28 Days (1.0 Mo)',
+    prevReading: '137503',
+    currReading: '139209',
+    consumption: 1706,
+    ratePerUnit: 21.05,
+    fixedCharge: 445.00,
+    energyCharge: 26800.74,
+    wheelingCharge: 2729.60,
+    fuelAdj: 699.80,
+    dutyAmount: 4908.02,
+    grandTotal: 35920.00,
+    paidAmount: 35920.00,
+    status: 'Paid',
+    paymentDate: '2026-03-24',
+    note: 'Paid ₹35,920.00 on 24-Mar-2026 via MSEDCL Portal / Bank'
+  },
+  {
+    id: 3008,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'Feb 2026 (16 Jan – 15 Feb)',
+    startMonth: '2026-01-16',
+    endMonth: '2026-02-15',
+    billDate: '2026-02-19',
+    dueDate: '2026-03-08',
+    duration: '31 Days (1.0 Mo)',
+    prevReading: '135853',
+    currReading: '137503',
+    consumption: 1650,
+    ratePerUnit: 21.00,
+    fixedCharge: 445.00,
+    energyCharge: 25819.06,
+    wheelingCharge: 2640.00,
+    fuelAdj: 674.60,
+    dutyAmount: 4732.59,
+    grandTotal: 34650.00,
+    paidAmount: 34650.00,
+    status: 'Paid',
+    paymentDate: '2026-02-26',
+    note: 'Winter Month. Paid ₹34,650.00 on 26-Feb-2026'
+  },
+  {
+    id: 3009,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'Jan 2026 (16 Dec – 15 Jan)',
+    startMonth: '2025-12-16',
+    endMonth: '2026-01-15',
+    billDate: '2026-01-19',
+    dueDate: '2026-02-08',
+    duration: '31 Days (1.0 Mo)',
+    prevReading: '134173',
+    currReading: '135853',
+    consumption: 1680,
+    ratePerUnit: 21.03,
+    fixedCharge: 445.00,
+    energyCharge: 26344.96,
+    wheelingCharge: 2688.00,
+    fuelAdj: 688.10,
+    dutyAmount: 4826.57,
+    grandTotal: 35330.00,
+    paidAmount: 35330.00,
+    status: 'Paid',
+    paymentDate: '2026-01-28',
+    note: 'Paid ₹35,330.00 on 28-Jan-2026'
+  },
+  {
+    id: 3010,
+    consumerNo: '170003586858',
+    meterNo: '08210034428',
+    periodLabel: 'Dec 2025 (16 Nov – 15 Dec)',
+    startMonth: '2025-11-16',
+    endMonth: '2025-12-15',
+    billDate: '2025-12-19',
+    dueDate: '2026-01-08',
+    duration: '30 Days (1.0 Mo)',
+    prevReading: '132533',
+    currReading: '134173',
+    consumption: 1640,
+    ratePerUnit: 20.99,
+    fixedCharge: 445.00,
+    energyCharge: 25643.76,
+    wheelingCharge: 2624.00,
+    fuelAdj: 670.10,
+    dutyAmount: 4701.26,
+    grandTotal: 34420.00,
+    paidAmount: 34420.00,
+    status: 'Paid',
+    paymentDate: '2025-12-27',
+    note: 'Paid ₹34,420.00 on 27-Dec-2025'
+  }
+];
+
+/**
+ * Distributes a billing period's total consumption across individual calendar months.
+ * Uses proportional distribution based on the number of days in each month.
+ * Returns an array of { monthKey: 'YYYY-MM', label: 'Mon YY', units, estCost, days, avgDaily }
+ */
+export const computeMonthlyConsumption = (bills) => {
+  // Map from 'YYYY-MM' => { label, units, estCost, days }
+  const monthMap = {};
+
+  for (const bill of bills) {
+    if (!bill.startMonth || !bill.endMonth) continue;
+    const totalUnits = parseFloat(bill.consumption) || 0;
+    const rate = parseFloat(bill.ratePerUnit) || 13;
+    const totalCost = parseFloat(bill.grandTotal) || (totalUnits * rate);
+    if (totalUnits <= 0) continue;
+
+    // Parse dates — support both 'YYYY-MM-DD' and 'YYYY-MM'
+    const parseDate = (str) => {
+      if (!str) return null;
+      if (/^\d{4}-\d{2}$/.test(str)) return new Date(str + '-01');
+      return new Date(str);
+    };
+
+    const start = parseDate(bill.startMonth);
+    const end = parseDate(bill.endMonth);
+    if (!start || !end || isNaN(start) || isNaN(end)) continue;
+
+    // Total billing days
+    const totalDays = Math.max(1, Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1);
+
+    // Walk month by month within the billing period
+    let cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+    while (cursor <= end) {
+      const y = cursor.getFullYear();
+      const m = cursor.getMonth(); // 0-indexed
+
+      // Days in this calendar month
+      const monthStart = new Date(y, m, 1);
+      const monthEnd = new Date(y, m + 1, 0); // last day of month
+
+      // Overlap between billing period and this calendar month
+      const overlapStart = start > monthStart ? start : monthStart;
+      const overlapEnd = end < monthEnd ? end : monthEnd;
+      const overlapDays = Math.max(0, Math.round((overlapEnd - overlapStart) / (1000 * 60 * 60 * 24)) + 1);
+
+      if (overlapDays > 0) {
+        const fraction = overlapDays / totalDays;
+        const monthUnits = totalUnits * fraction;
+        const monthCost = totalCost * fraction;
+
+        const key = `${y}-${String(m + 1).padStart(2, '0')}`;
+        const label = new Intl.DateTimeFormat('en-IN', { month: 'short', year: '2-digit' }).format(new Date(y, m, 1));
+
+        if (!monthMap[key]) {
+          monthMap[key] = { monthKey: key, label, units: 0, estCost: 0, days: 0 };
+        }
+        monthMap[key].units += monthUnits;
+        monthMap[key].estCost += monthCost;
+        monthMap[key].days += overlapDays;
+      }
+
+      // Advance to next month
+      cursor = new Date(y, m + 1, 1);
+    }
+  }
+
+  return Object.values(monthMap)
+    .sort((a, b) => a.monthKey.localeCompare(b.monthKey))
+    .map(m => ({
+      ...m,
+      units: parseFloat(m.units.toFixed(1)),
+      estCost: parseFloat(m.estCost.toFixed(2)),
+      avgDaily: m.days > 0 ? parseFloat((m.units / m.days).toFixed(2)) : 0
+    }));
+};
+
 export default function ElectricityTracker({ isAdmin = false }) {
   const [subTab, setSubTab] = useState('tata'); // 'tata', 'buildingA', 'mahavitaran'
 
   const [tataBills, setTataBills] = useState(DEFAULT_TATA_SEED);
-  const [buildingABills, setBuildingABills] = useState([]);
+  const [buildingABills, setBuildingABills] = useState(DEFAULT_BUILDING_A_SEED);
   const [mahavitaranBills, setMahavitaranBills] = useState([]);
 
   const [searchText, setSearchText] = useState('');
@@ -759,7 +1094,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
       setIsLoading(true);
       if (!isFirebaseConfigured || !db) {
         setTataBills(DEFAULT_TATA_SEED);
-        setBuildingABills([]);
+        setBuildingABills(DEFAULT_BUILDING_A_SEED);
         setMahavitaranBills([]);
         setSaveMsg('Ready (Local/Offline)');
         setIsLoading(false);
@@ -796,8 +1131,24 @@ export default function ElectricityTracker({ isAdmin = false }) {
             }
           }
 
+          let buildingAData = snapBuildingA.exists() ? snapBuildingA.data().bills || [] : [];
+          const isOldBuildingASeed = buildingAData.length === 0 ||
+            !buildingAData.some(b => b.consumerNo === '170003586858' || b.id === 3001);
+
+          if (isOldBuildingASeed) {
+            buildingAData = DEFAULT_BUILDING_A_SEED;
+            try {
+              await setDoc(doc(db, 'electricityTracking', buildingARecordId), {
+                bills: DEFAULT_BUILDING_A_SEED,
+                updatedAt: new Date().toISOString()
+              });
+            } catch (err) {
+              console.warn('Building A initial seed sync error:', err);
+            }
+          }
+
           setTataBills(tataData);
-          setBuildingABills(snapBuildingA.exists() ? snapBuildingA.data().bills || [] : []);
+          setBuildingABills(buildingAData);
           setMahavitaranBills(snapMahavitaran.exists() ? snapMahavitaran.data().bills || [] : []);
           setSaveMsg('Synced');
         }
@@ -805,6 +1156,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
         console.error('Bills load error:', err);
         if (!cancelled) {
           setTataBills(DEFAULT_TATA_SEED);
+          setBuildingABills(DEFAULT_BUILDING_A_SEED);
         }
       } finally {
         if (!cancelled) {
@@ -884,6 +1236,16 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
   const latestTataBill = sortedTataBills[0] || null;
 
+  const sortedBuildingABills = useMemo(() => {
+    return [...buildingABills].sort((a, b) => {
+      const dateA = a.startMonth ? new Date(a.startMonth) : new Date(0);
+      const dateB = b.startMonth ? new Date(b.startMonth) : new Date(0);
+      return dateB - dateA;
+    });
+  }, [buildingABills]);
+
+  const latestBuildingABill = sortedBuildingABills[0] || null;
+
   // Auto-fill next Tata billing cycle based on the latest bill
   const applyNextTataPeriod = () => {
     if (!latestTataBill) return;
@@ -911,6 +1273,33 @@ export default function ElectricityTracker({ isAdmin = false }) {
     }));
   };
 
+  // Auto-fill next Building A billing cycle based on the latest bill
+  const applyNextBuildingAPeriod = () => {
+    if (!latestBuildingABill) return;
+    const lastEnd = latestBuildingABill.endMonth;
+    let nextStart = '';
+    let nextEnd = '';
+    if (lastEnd) {
+      const d = new Date(lastEnd);
+      d.setDate(d.getDate() + 1);
+      nextStart = d.toISOString().split('T')[0];
+      const d2 = new Date(d);
+      d2.setMonth(d2.getMonth() + 1);
+      nextEnd = d2.toISOString().split('T')[0];
+    }
+    const prevReading = String(latestBuildingABill.currReading || '150245');
+    const autoDuration = nextStart && nextEnd ? computeBillingDuration(nextStart, nextEnd) : '30 Days (1.0 Mo)';
+    setFormData(prev => ({
+      ...prev,
+      periodLabel: `Oct 2026 (15 Sep – 14 Oct)`,
+      startMonth: nextStart || prev.startMonth,
+      endMonth: nextEnd || prev.endMonth,
+      duration: autoDuration,
+      prevReading: prevReading || prev.prevReading,
+      ratePerUnit: '21.10'
+    }));
+  };
+
   const calculateMahavitaranSlabs = (units) => {
     let remaining = units;
     let energyTotal = 0;
@@ -919,10 +1308,10 @@ export default function ElectricityTracker({ isAdmin = false }) {
 
     const slabs = [
       { name: '0 - 100', limit: 100, energy: 3.96, fuel: 0.150 },
-      { name: '101 - 300', limit: 200, energy: 10.80, fuel: 0.250 },
-      { name: '301 - 500', limit: 200, energy: 15.03, fuel: 0.350 },
-      { name: '501 - 1000', limit: 500, energy: 17.53, fuel: 0.400 },
-      { name: '> 1000', limit: Infinity, energy: 17.53, fuel: 0.400 },
+      { name: '101 - 300', limit: 200, energy: 10.80, fuel: 0.300 },
+      { name: '301 - 500', limit: 200, energy: 15.03, fuel: 0.400 },
+      { name: '501 - 1000', limit: 500, energy: 17.53, fuel: 0.450 },
+      { name: '> 1000', limit: Infinity, energy: 17.53, fuel: 0.450 },
     ];
 
     for (const slab of slabs) {
@@ -964,6 +1353,15 @@ export default function ElectricityTracker({ isAdmin = false }) {
         if (next.prevReading !== '' && next.currReading !== '') {
           const { units } = calculateSubmeterRollover(next.prevReading, next.currReading);
           next.consumption = units;
+        }
+      }
+
+      // Auto calculate units & preview for Building A bills
+      if (subTab === 'buildingA' && (field === 'prevReading' || field === 'currReading')) {
+        const p = n(next.prevReading);
+        const c = n(next.currReading);
+        if (c >= p && p >= 0) {
+          next.consumption = c - p;
         }
       }
 
@@ -1039,6 +1437,46 @@ export default function ElectricityTracker({ isAdmin = false }) {
       const next = [newBill, ...tataBills];
       setTataBills(next);
       triggerAutoSave(next, 'tata');
+    } else if (subTab === 'buildingA') {
+      const prev = n(formData.prevReading);
+      const curr = n(formData.currReading);
+      if (curr < prev) {
+        alert('Current reading cannot be less than previous reading.');
+        return;
+      }
+      const consumption = curr - prev;
+      const { energyTotal, fuelTotal } = calculateMahavitaranSlabs(consumption);
+      const fixedCharge = 445.00;
+      const wheelingCharge = consumption * 1.60;
+      const dutyAmount = (fixedCharge + energyTotal + wheelingCharge + fuelTotal) * 0.16;
+      const calculatedTotal = Math.round(fixedCharge + energyTotal + wheelingCharge + fuelTotal + dutyAmount);
+      const ratePerUnit = n(formData.ratePerUnit) || parseFloat((calculatedTotal / (consumption || 1)).toFixed(2));
+      const grandTotal = calculatedTotal;
+
+      const computedDuration = formData.duration || computeBillingDuration(formData.startMonth, formData.endMonth) || '30 Days (1.0 Mo)';
+      const label = formData.periodLabel || `${formatDateLabel(formData.startMonth)} to ${formatDateLabel(formData.endMonth)}`;
+
+      newBill = {
+        ...newBill,
+        consumerNo: '170003586858',
+        meterNo: '08210034428',
+        periodLabel: label,
+        duration: computedDuration,
+        consumption,
+        ratePerUnit,
+        fixedCharge,
+        energyCharge: parseFloat(energyTotal.toFixed(2)),
+        wheelingCharge: parseFloat(wheelingCharge.toFixed(2)),
+        fuelAdj: parseFloat(fuelTotal.toFixed(2)),
+        dutyAmount: parseFloat(dutyAmount.toFixed(2)),
+        grandTotal,
+        paidAmount: grandTotal,
+        status: 'Invoiced'
+      };
+
+      const next = [newBill, ...buildingABills];
+      setBuildingABills(next);
+      triggerAutoSave(next, 'buildingA');
     } else if (subTab === 'mahavitaran') {
       const prev = n(formData.prevReading);
       const curr = n(formData.currReading);
@@ -1111,6 +1549,31 @@ export default function ElectricityTracker({ isAdmin = false }) {
           manualUnits
         );
         Object.assign(updated, calc);
+      }
+    } else if (subTab === 'buildingA') {
+      if (['prevReading', 'currReading', 'ratePerUnit', 'grandTotal'].includes(field)) {
+        const prev = n(updated.prevReading);
+        const curr = n(updated.currReading);
+        if (curr >= prev) {
+          const consumption = curr - prev;
+          updated.consumption = consumption;
+          const { energyTotal, fuelTotal } = calculateMahavitaranSlabs(consumption);
+          const fixedCharge = 445.00;
+          const wheelingCharge = consumption * 1.60;
+          const dutyAmount = (fixedCharge + energyTotal + wheelingCharge + fuelTotal) * 0.16;
+          const calcTotal = Math.round(fixedCharge + energyTotal + wheelingCharge + fuelTotal + dutyAmount);
+          if (field !== 'grandTotal') {
+            updated.grandTotal = calcTotal;
+            updated.paidAmount = calcTotal;
+          }
+          if (field !== 'ratePerUnit') {
+            updated.ratePerUnit = parseFloat((updated.grandTotal / (consumption || 1)).toFixed(2));
+          }
+          updated.energyCharge = parseFloat(energyTotal.toFixed(2));
+          updated.wheelingCharge = parseFloat(wheelingCharge.toFixed(2));
+          updated.fuelAdj = parseFloat(fuelTotal.toFixed(2));
+          updated.dutyAmount = parseFloat(dutyAmount.toFixed(2));
+        }
       }
     } else if (subTab === 'mahavitaran') {
       if (['prevReading', 'currReading', 'msebFixedCharge', 'msebEnergyCharge', 'msebWheelingRate', 'msebFuelAdj', 'fixed', 'energy', 'wheelTotal', 'fuel'].includes(field)) {
@@ -1294,7 +1757,7 @@ export default function ElectricityTracker({ isAdmin = false }) {
           When sub-meter reaches 9,999, it cycles back to 0000. When Current Reading (B) &lt; Previous Reading (A), units are calculated as: <strong>(10,000 - A) + B</strong>.
         </div>
 
-        <div class="kpi-row">
+        <div class="kpi-row" style="grid-template-columns: repeat(5, 1fr);">
           <div class="kpi">
             <div style="font-size: 9px; color: #64748b; font-weight: 700;">CONSUMER / CLIENT</div>
             <div style="font-size: 13px; font-weight: 800; color: #0f172a;">Tata Play Limited (Broadband Hub)</div>
@@ -1302,6 +1765,10 @@ export default function ElectricityTracker({ isAdmin = false }) {
           <div class="kpi">
             <div style="font-size: 9px; color: #64748b; font-weight: 700;">TOTAL CONSUMPTION</div>
             <div style="font-size: 13px; font-weight: 800; color: #ea580c;">${fmt(totalConsumption)} Units</div>
+          </div>
+          <div class="kpi">
+            <div style="font-size: 9px; color: #64748b; font-weight: 700;">AVG RATE / UNIT</div>
+            <div style="font-size: 13px; font-weight: 800; color: #16a34a;">₹${(totalAmount / (totalConsumption || 1)).toFixed(2)} / u</div>
           </div>
           <div class="kpi">
             <div style="font-size: 9px; color: #64748b; font-weight: 700;">TOTAL BILL AMOUNT</div>
@@ -1350,7 +1817,8 @@ export default function ElectricityTracker({ isAdmin = false }) {
             <tr class="total-row">
               <td colspan="6" style="text-align: right;">GRAND TOTAL</td>
               <td class="amount" style="color: #ea580c;">${fmt(totalConsumption)}</td>
-              <td colspan="2"></td>
+              <td class="amount" style="color: #4ade80;">₹${(totalAmount / (totalConsumption || 1)).toFixed(2)}</td>
+              <td style="font-size: 8.5px; color: #cbd5e1;">Overall Avg Rate: ₹${(totalAmount / (totalConsumption || 1)).toFixed(2)}/u</td>
               <td class="amount" style="color: #4ade80;">₹${fmt(totalAmount)}</td>
             </tr>
           </tbody>
@@ -1590,6 +2058,657 @@ Majestique Euriska 'A' Building CHS Ltd.`;
     tataBillsForInvoice
   ]);
 
+  // ─────────────────────────────────────────────────────────────
+  // PDF EXPORT: Single Building A MSEDCL Bill Voucher
+  // ─────────────────────────────────────────────────────────────
+  const handlePrintBuildingABill = (bill) => {
+    const prev = parseFloat(bill.prevReading) || 0;
+    const curr = parseFloat(bill.currReading) || 0;
+    const cons = parseFloat(bill.consumption) || (curr - prev);
+    const grandTotal = parseFloat(bill.grandTotal) || 0;
+    const amountWords = numberToWordsINR(grandTotal);
+    const printedDate = new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+
+    const docHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>MSEDCL Electricity Bill Record — ${bill.periodLabel || 'Building A Common Lift'}</title>
+        <meta charset="utf-8" />
+        <style>
+          @page { size: A4 portrait; margin: 12mm 15mm; }
+          * { box-sizing: border-box; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            color: #0f172a; margin: 0; padding: 0; font-size: 10px; line-height: 1.4;
+          }
+          .bill-card {
+            border: 2px solid #064e3b; border-radius: 8px; overflow: hidden;
+          }
+          .header {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            color: white; padding: 14px 18px; display: flex; justify-content: space-between; align-items: flex-start;
+          }
+          .society-name { font-size: 13px; font-weight: 900; letter-spacing: 0.3px; text-transform: uppercase; margin: 0 0 3px 0; }
+          .society-sub { font-size: 8px; color: #d1fae5; margin: 0 0 6px 0; }
+          .bill-badge {
+            display: inline-block; background: #047857; border: 1px solid #6ee7b7;
+            padding: 3px 10px; border-radius: 4px; font-size: 9px; font-weight: 700;
+          }
+          .header-meta { text-align: right; font-size: 8.5px; color: #d1fae5; line-height: 1.6; }
+          .body-content { padding: 14px 18px; }
+          .info-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+            margin-bottom: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px;
+          }
+          .info-block p { margin: 2px 0; font-size: 8.5px; color: #334155; }
+          .info-block p strong { color: #0f172a; }
+          .readings-card {
+            border: 1.5px solid #059669; border-radius: 6px; padding: 10px 14px;
+            background: #f0fdf4; margin-bottom: 14px;
+          }
+          .readings-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; margin-top: 6px;
+          }
+          .reading-box { background: white; border: 1px solid #a7f3d0; border-radius: 5px; padding: 6px 8px; }
+          .reading-box .lbl { font-size: 7.5px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+          .reading-box .val { font-size: 13px; font-weight: 900; color: #065f46; margin-top: 2px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 9px; }
+          th { background: #064e3b; color: white; padding: 7px 10px; font-weight: 700; text-align: left; }
+          td { padding: 6px 10px; border-bottom: 1px solid #e2e8f0; }
+          tr:nth-child(even) td { background: #f8fafc; }
+          .right { text-align: right; }
+          .mono { font-family: "Courier New", monospace; }
+          .total-row td { background: #ecfdf5 !important; font-weight: 900; font-size: 11px; color: #064e3b; border-top: 2px solid #059669; }
+          .amount-words {
+            background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px;
+            padding: 8px 12px; font-size: 9px; margin-bottom: 14px;
+          }
+          .payment-strip {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            margin-bottom: 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 10px;
+          }
+          .pay-box { text-align: center; }
+          .pay-box .lbl { font-size: 7.5px; color: #92400e; font-weight: 700; text-transform: uppercase; }
+          .pay-box .val { font-size: 12px; font-weight: 900; color: #b45309; margin-top: 2px; }
+          .footer {
+            margin-top: 20px; padding-top: 14px; border-top: 1px solid #cbd5e1;
+            display: flex; justify-content: space-between; align-items: flex-end;
+          }
+          .sign-box { text-align: center; width: 140px; }
+          .sign-line { border-top: 1px solid #0f172a; margin-top: 36px; padding-top: 4px; font-size: 8.5px; font-weight: 700; }
+        </style>
+      </head>
+      <body>
+        <div class="bill-card">
+          <div class="header">
+            <div>
+              <p class="society-name">Majestique Euriska 'A' Building CHS Ltd.</p>
+              <p class="society-sub">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • Handewadi Road, Mohammed Wadi, Pune — 411060</p>
+              <span class="bill-badge">🏢 Building 'A' Common Lift Electricity Voucher</span>
+            </div>
+            <div class="header-meta">
+              <div><strong>Bill Date:</strong> ${bill.billDate || formatDateLabel(bill.endMonth)}</div>
+              <div><strong>Period:</strong> ${bill.periodLabel || `${formatDateLabel(bill.startMonth)} to ${formatDateLabel(bill.endMonth)}`}</div>
+              <div><strong>Status:</strong> ${bill.status || 'Paid'}</div>
+              <div><strong>Printed:</strong> ${printedDate}</div>
+            </div>
+          </div>
+
+          <div class="body-content">
+            <div class="info-grid">
+              <div class="info-block">
+                <p><strong>Consumer Name:</strong> THE CHAIRMAN EURISKA A WING COMMAN LIFT</p>
+                <p><strong>Consumer Number:</strong> 170003586858</p>
+                <p><strong>Meter Number:</strong> 08210034428</p>
+                <p><strong>Tariff Category:</strong> 92 / LT I Res 3-Phase</p>
+                <p><strong>Sanctioned Load:</strong> 10.00 KW</p>
+              </div>
+              <div class="info-block">
+                <p><strong>Billing Sub-Division:</strong> 4745/HADAPSAR (I) SUB-DN./BUNDGARDEN</p>
+                <p><strong>GSTIN:</strong> 27AAECM2933K1ZB • <strong>HSN:</strong> 27160000</p>
+                <p><strong>Billing Unit:</strong> 4745 • <strong>Pole No:</strong> 00000001</p>
+                <p><strong>Security Deposit:</strong> ₹69,440.00</p>
+                <p><strong>MSEDCL Bank A/c:</strong> MSEDCL01170003586858 (SBI IFB BKC)</p>
+              </div>
+            </div>
+
+            <div class="readings-card">
+              <div style="font-size: 8px; font-weight: 800; color: #065f46; text-transform: uppercase; letter-spacing: 0.05em;">
+                ⚡ Meter Reading & Energy Consumption
+              </div>
+              <div class="readings-grid" style="grid-template-columns: repeat(5, 1fr);">
+                <div class="reading-box">
+                  <div class="lbl">Prev Reading (${formatDateLabel(bill.startMonth)})</div>
+                  <div class="val">${n(bill.prevReading).toLocaleString('en-IN')}</div>
+                </div>
+                <div class="reading-box">
+                  <div class="lbl">Curr Reading (${formatDateLabel(bill.endMonth)})</div>
+                  <div class="val">${n(bill.currReading).toLocaleString('en-IN')}</div>
+                </div>
+                <div class="reading-box">
+                  <div class="lbl">Multiplying Factor</div>
+                  <div class="val">1.00</div>
+                </div>
+                <div class="reading-box" style="border-color: #059669; background: #ecfdf5;">
+                  <div class="lbl">Units Consumed</div>
+                  <div class="val" style="color: #047857;">${cons.toLocaleString('en-IN')} kWh</div>
+                </div>
+                <div class="reading-box" style="border-color: #10b981; background: #f0fdf4;">
+                  <div class="lbl">Avg Rate / Unit</div>
+                  <div class="val" style="color: #15803d;">₹${(grandTotal / (cons || 1)).toFixed(2)}/u</div>
+                </div>
+              </div>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 30px;">#</th>
+                  <th>Particulars / Charges Component</th>
+                  <th style="width: 130px; text-align: center;">Rate / Basis</th>
+                  <th class="right" style="width: 120px;">Amount (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><strong>Fixed Charges</strong> (10.00 KW 3-Phase Connection)</td>
+                  <td style="text-align: center;">₹445.00 / month</td>
+                  <td class="right mono">₹${fmt(bill.fixedCharge || 445)}</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><strong>Energy Charges</strong> (Telescopic Slabs 0–100 @ 3.96, 101–300 @ 10.80, 301–500 @ 15.03, >500 @ 17.53)</td>
+                  <td style="text-align: center;">Slab Rates</td>
+                  <td class="right mono">₹${fmt(bill.energyCharge || (cons * 15.76))}</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><strong>Wheeling Charges</strong></td>
+                  <td style="text-align: center;">@ ₹1.60 / unit</td>
+                  <td class="right mono">₹${fmt(bill.wheelingCharge || (cons * 1.60))}</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><strong>Fuel Adjustment Charges (FAC)</strong></td>
+                  <td style="text-align: center;">Slab Rates (0.150 to 0.450)</td>
+                  <td class="right mono">₹${fmt(bill.fuelAdj || (cons * 0.41))}</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><strong>Electricity Duty (16%)</strong></td>
+                  <td style="text-align: center;">16% on Total Energy Charges</td>
+                  <td class="right mono">₹${fmt(bill.dutyAmount || (grandTotal * 0.16 / 1.16))}</td>
+                </tr>
+                ${bill.arrearsAmount ? `
+                <tr>
+                  <td>6</td>
+                  <td>Adjustment / Arrears / Prior Period Credit</td>
+                  <td style="text-align: center;">Adjustment</td>
+                  <td class="right mono">₹${fmt(bill.arrearsAmount)}</td>
+                </tr>
+                ` : ''}
+                <tr class="total-row">
+                  <td colspan="3" style="text-align: right; padding-right: 14px;">NET BILL PAYABLE AMOUNT (Avg Rate: ₹${(grandTotal / (cons || 1)).toFixed(2)} / unit):</td>
+                  <td class="right mono">₹${fmt(grandTotal)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="amount-words">
+              <strong>Amount in Words:</strong> ${amountWords}
+            </div>
+
+            <div class="payment-strip">
+              <div class="pay-box">
+                <div class="lbl">Prompt Pay (Discount)</div>
+                <div class="val" style="color: #15803d;">₹${fmt(bill.promptAmount || (grandTotal - 320))}</div>
+                <div style="font-size: 7.5px; color: #15803d; margin-top: 1px;">Paid before due date</div>
+              </div>
+              <div class="pay-box">
+                <div class="lbl">Due Date Amount</div>
+                <div class="val" style="color: #0369a1;">₹${fmt(grandTotal)}</div>
+                <div style="font-size: 7.5px; color: #64748b; margin-top: 1px;">Due: ${bill.dueDate || 'Standard Cycle'}</div>
+              </div>
+              <div class="pay-box">
+                <div class="lbl">After Due Date (DPC)</div>
+                <div class="val" style="color: #b91c1c;">₹${fmt(bill.afterDueAmount || (grandTotal + 460))}</div>
+                <div style="font-size: 7.5px; color: #b91c1c; margin-top: 1px;">Delayed Charge Applicable</div>
+              </div>
+            </div>
+
+            <div class="footer">
+              <div style="font-size: 8px; color: #64748b; line-height: 1.5; max-width: 60%;">
+                This voucher is systematically recorded from official Maharashtra State Electricity Distribution Company Limited (MSEDCL) bills for Euriska 'A' Wing Common Lift operations.
+              </div>
+              <div class="sign-box">
+                <div class="sign-line">Hon. Treasurer / Secretary</div>
+                <div style="font-size: 7.5px; color: #64748b; margin-top: 2px;">Majestique Euriska 'A' Building CHS</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() { window.print(); }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWin = window.open('', '_blank');
+    if (printWin) {
+      printWin.document.write(docHtml);
+      printWin.document.close();
+    }
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // PDF EXPORT: Complete 10-Month Building A Statement
+  // ─────────────────────────────────────────────────────────────
+  const handlePrintBuildingAStatement = () => {
+    const printedDate = new Intl.DateTimeFormat('en-IN', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(new Date());
+
+    const totalUnitsAll = buildingABills.reduce((s, b) => s + n(b.consumption), 0);
+    const totalAmountAll = buildingABills.reduce((s, b) => s + n(b.grandTotal), 0);
+
+    const rowsHtml = buildingABills.map((b, i) => `
+      <tr>
+        <td class="center">${i + 1}</td>
+        <td><strong>${b.periodLabel || `${formatDateLabel(b.startMonth)} to ${formatDateLabel(b.endMonth)}`}</strong></td>
+        <td class="center">${b.duration || '30 Days'}</td>
+        <td class="right mono">${n(b.prevReading).toLocaleString('en-IN')}</td>
+        <td class="right mono">${n(b.currReading).toLocaleString('en-IN')}</td>
+        <td class="right mono bold text-orange">${n(b.consumption).toLocaleString('en-IN')}</td>
+        <td class="right mono">₹${fmt(b.ratePerUnit || (n(b.grandTotal) / (n(b.consumption) || 1)))}</td>
+        <td class="right mono">₹${fmt(b.fixedCharge || 445)}</td>
+        <td class="right mono">₹${fmt(b.energyCharge || 0)}</td>
+        <td class="right mono">₹${fmt(b.wheelingCharge || 0)}</td>
+        <td class="right mono">₹${fmt(b.fuelAdj || 0)}</td>
+        <td class="right mono">₹${fmt(b.dutyAmount || 0)}</td>
+        <td class="right mono bold text-blue">₹${fmt(b.grandTotal)}</td>
+        <td class="center"><span class="badge ${b.status === 'Paid' ? 'badge-green' : 'badge-amber'}">${b.status || 'Paid'}</span></td>
+        <td class="center">${b.paymentDate ? formatDateLabel(b.paymentDate) : (b.dueDate ? `Due ${formatDateLabel(b.dueDate)}` : '—')}</td>
+      </tr>
+    `).join('');
+
+    const docHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Building A Common Lift Electricity Statement — Majestique Euriska</title>
+        <meta charset="utf-8" />
+        <style>
+          @page { size: A4 landscape; margin: 10mm 12mm; }
+          * { box-sizing: border-box; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            color: #0f172a; padding: 0; margin: 0; font-size: 8.5px;
+          }
+          .header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            border-bottom: 2px solid #064e3b; padding-bottom: 8px; margin-bottom: 10px;
+          }
+          .title { font-size: 13px; font-weight: 900; color: #064e3b; margin: 0 0 2px 0; text-transform: uppercase; }
+          .subtitle { font-size: 8px; color: #475569; margin: 0; }
+          .badge-main { display: inline-block; background: #064e3b; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 700; margin-top: 4px; font-size: 8px; }
+          .meta-block { text-align: right; font-size: 8px; color: #64748b; line-height: 1.5; }
+          .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 10px; }
+          .kpi-box { border: 1px solid #d1fae5; background: #f0fdf4; border-radius: 5px; padding: 6px 10px; }
+          .kpi-box .lbl { font-size: 7px; color: #6b7280; text-transform: uppercase; font-weight: 700; }
+          .kpi-box .val { font-size: 12px; font-weight: 900; margin-top: 1px; }
+          table { width: 100%; border-collapse: collapse; font-size: 8px; }
+          thead th { background: #064e3b; color: white; padding: 5px 6px; text-align: left; font-weight: 700; white-space: nowrap; }
+          td { padding: 4.5px 6px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+          tr:nth-child(even) td { background: #f8fafc; }
+          .center { text-align: center; }
+          .right { text-align: right; }
+          .mono { font-family: "Courier New", monospace; }
+          .bold { font-weight: 800; }
+          .text-orange { color: #ea580c; }
+          .text-blue { color: #0369a1; }
+          .badge { display: inline-block; padding: 1.5px 6px; border-radius: 10px; font-size: 7px; font-weight: 700; }
+          .badge-green { background: #dcfce7; color: #166534; }
+          .badge-amber { background: #fef3c7; color: #92400e; }
+          tfoot tr td { background: #064e3b !important; color: white; font-weight: 800; border-bottom: none; font-size: 8.5px; }
+          .footer-section {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 8px;
+          }
+          .sign-box { text-align: center; width: 130px; }
+          .sign-line { border-top: 1px solid #0f172a; margin-top: 24px; padding-top: 2px; font-size: 7.5px; font-weight: 700; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <div class="title">Majestique Euriska 'A' Building Co-operative Housing Society Ltd.</div>
+            <div class="subtitle">S. No. 2, Euriska, Mohammed Wadi, Pune 411060 • Reg No: PNA/PNA (4)/HSG/(TC)/21207/2019-20</div>
+            <span class="badge-main">🏢 Building 'A' Common Lift Electricity Statement — 10 Consecutive Billing Cycles</span>
+          </div>
+          <div class="meta-block">
+            <div><strong>Consumer:</strong> THE CHAIRMAN EURISKA A WING (COMMON LIFT)</div>
+            <div><strong>Consumer No:</strong> 170003586858 • <strong>Meter:</strong> 08210034428</div>
+            <div><strong>Tariff:</strong> 92 / LT I Res 3-Phase (10.00 KW) • <strong>Division:</strong> Hadapsar (4745)</div>
+            <div><strong>Generated:</strong> ${printedDate}</div>
+          </div>
+        </div>
+
+        <div class="kpi-row" style="grid-template-columns: repeat(6, 1fr);">
+          <div class="kpi-box">
+            <div class="lbl">Billing Cycles</div>
+            <div class="val" style="color: #064e3b;">${buildingABills.length} Months</div>
+          </div>
+          <div class="kpi-box">
+            <div class="lbl">Total Consumption</div>
+            <div class="val text-orange">${totalUnitsAll.toLocaleString('en-IN')} Units</div>
+          </div>
+          <div class="kpi-box">
+            <div class="lbl">Average Monthly Usage</div>
+            <div class="val" style="color: #059669;">${(totalUnitsAll / buildingABills.length).toFixed(0)} Units/mo</div>
+          </div>
+          <div class="kpi-box" style="background: #f0fdf4; border-color: #bbf7d0;">
+            <div class="lbl">Avg Rate / Unit</div>
+            <div class="val" style="color: #16a34a;">₹${(totalAmountAll / (totalUnitsAll || 1)).toFixed(2)} / u</div>
+          </div>
+          <div class="kpi-box">
+            <div class="lbl">Meter Reading Range</div>
+            <div class="val" style="color: #7c3aed;">132,533 ➔ 150,245</div>
+          </div>
+          <div class="kpi-box" style="background: #eff6ff; border-color: #bfdbfe;">
+            <div class="lbl">Total Amount Billed</div>
+            <div class="val text-blue">₹${fmt(totalAmountAll)}</div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="center" style="width: 25px;">#</th>
+              <th>Billing Period</th>
+              <th class="center" style="width: 70px;">Duration</th>
+              <th class="right" style="width: 60px;">Prev (A)</th>
+              <th class="right" style="width: 60px;">Curr (B)</th>
+              <th class="right" style="width: 65px;">Units (kWh)</th>
+              <th class="right" style="width: 60px;">Rate/U</th>
+              <th class="right" style="width: 55px;">Fixed (₹)</th>
+              <th class="right" style="width: 65px;">Energy (₹)</th>
+              <th class="right" style="width: 60px;">Wheel (₹)</th>
+              <th class="right" style="width: 55px;">Fuel (₹)</th>
+              <th class="right" style="width: 55px;">Duty (₹)</th>
+              <th class="right" style="width: 75px;">Total (₹)</th>
+              <th class="center" style="width: 60px;">Status</th>
+              <th class="center" style="width: 75px;">Payment/Due</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" style="text-align: right; padding-right: 8px;">TOTAL (${buildingABills.length} MONTHS):</td>
+              <td class="right mono">${totalUnitsAll.toLocaleString('en-IN')}</td>
+              <td class="right mono bold" style="color: #86efac;">₹${(totalAmountAll / (totalUnitsAll || 1)).toFixed(2)}</td>
+              <td class="right mono">₹${fmt(buildingABills.reduce((s, b) => s + n(b.fixedCharge || 445), 0))}</td>
+              <td class="right mono">₹${fmt(buildingABills.reduce((s, b) => s + n(b.energyCharge || 0), 0))}</td>
+              <td class="right mono">₹${fmt(buildingABills.reduce((s, b) => s + n(b.wheelingCharge || 0), 0))}</td>
+              <td class="right mono">₹${fmt(buildingABills.reduce((s, b) => s + n(b.fuelAdj || 0), 0))}</td>
+              <td class="right mono">₹${fmt(buildingABills.reduce((s, b) => s + n(b.dutyAmount || 0), 0))}</td>
+              <td class="right mono">₹${fmt(totalAmountAll)}</td>
+              <td colspan="2" class="center">Audited MSEDCL Bills</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="footer-section">
+          <div style="font-size: 7.5px; color: #64748b; line-height: 1.4; max-width: 65%;">
+            * Official statement compiled from Mahavitaran (MSEDCL) LT I Residential 3-Phase monthly bills for Consumer No 170003586858 (Euriska 'A' Wing Common Lift). All 10 monthly cycles feature continuous, gapless meter readings.
+          </div>
+          <div class="sign-box">
+            <div class="sign-line">Chairman / Treasurer</div>
+            <div style="font-size: 7px; color: #64748b;">Majestique Euriska 'A' Building CHS</div>
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() { window.print(); }, 250);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWin = window.open('', '_blank');
+    if (printWin) {
+      printWin.document.write(docHtml);
+      printWin.document.close();
+    }
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // PDF EXPORT: Monthly Consumption Breakdown
+  // ─────────────────────────────────────────────────────────────
+  const handlePrintMonthlyBreakdown = (monthlyData, activeTab = subTab) => {
+    if (!monthlyData || monthlyData.length === 0) return;
+    const peakMonth = monthlyData.reduce((a, b) => b.units > a.units ? b : a, monthlyData[0]);
+    const avgMonthly = monthlyData.reduce((s, m) => s + m.units, 0) / monthlyData.length;
+    const totalMonthlyUnits = monthlyData.reduce((s, m) => s + m.units, 0);
+    const totalMonthlyCost = monthlyData.reduce((s, m) => s + m.estCost, 0);
+    const totalDays = monthlyData.reduce((s, m) => s + m.days, 0);
+    const avgDailyOverall = totalDays > 0 ? (totalMonthlyUnits / totalDays).toFixed(2) : '—';
+    const printedDate = new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+    const firstLabel = [...monthlyData].sort((a, b) => a.monthKey.localeCompare(b.monthKey))[0]?.label ?? '';
+    const lastLabel = [...monthlyData].sort((a, b) => b.monthKey.localeCompare(a.monthKey))[0]?.label ?? '';
+    const isBuildingA = activeTab === 'buildingA';
+
+    const tableRows = [...monthlyData].reverse().map((m, i) => {
+      const pct = peakMonth.units > 0 ? ((m.units / peakMonth.units) * 100).toFixed(0) : 0;
+      const barColor = pct > 80 ? '#dc2626' : pct > 50 ? '#f59e0b' : '#059669';
+      const isHighest = m.monthKey === peakMonth.monthKey;
+      const avgRate = (m.estCost / (m.units || 1)).toFixed(2);
+      return `
+        <tr class="${isHighest ? 'peak-row' : (i % 2 === 0 ? 'even-row' : '')}">
+          <td class="center">${monthlyData.length - i}</td>
+          <td class="month-cell">${isHighest ? '🔥 ' : ''}${m.label}</td>
+          <td class="right mono">${m.units.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</td>
+          <td class="right mono">${m.avgDaily}</td>
+          <td class="right">${m.days}</td>
+          <td class="right mono" style="color: #16a34a; font-weight: 700;">₹${avgRate}</td>
+          <td class="right mono red">₹${fmt(m.estCost)}</td>
+          <td class="bar-cell">
+            <div class="bar-track">
+              <div class="bar-fill" style="width: ${pct}%; background: ${barColor};"></div>
+            </div>
+            <span class="bar-pct">${pct}%</span>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    const docHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Monthly Electricity Consumption — ${isBuildingA ? 'Building A Common Lift' : 'Tata Electricity'} — Majestique Euriska</title>
+        <meta charset="utf-8" />
+        <style>
+          @page { size: A4 landscape; margin: 12mm 14mm; }
+          * { box-sizing: border-box; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            color: #0f172a; margin: 0; padding: 0; font-size: 9.5px;
+          }
+          .report-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            border-bottom: 2.5px solid #064e3b; padding-bottom: 10px; margin-bottom: 14px;
+          }
+          .society-title {
+            font-size: 13px; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 0.3px; color: #064e3b; margin: 0 0 2px 0;
+          }
+          .report-subtitle { font-size: 8.5px; color: #475569; margin: 0 0 5px 0; }
+          .report-badge {
+            display: inline-block; background: #064e3b; color: white;
+            padding: 3px 12px; border-radius: 4px; font-size: 9px; font-weight: 700;
+          }
+          .report-meta { text-align: right; font-size: 8px; color: #64748b; line-height: 1.7; }
+          .kpi-grid {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 9px; margin-bottom: 12px;
+          }
+          .kpi-card {
+            border: 1px solid #d1fae5; border-radius: 6px; padding: 7px 10px; background: #f0fdf4;
+          }
+          .kpi-label {
+            font-size: 7px; color: #6b7280; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px;
+          }
+          .kpi-value { font-size: 13px; font-weight: 900; }
+          .kpi-unit { font-size: 8.5px; font-weight: 600; color: #9ca3af; }
+          .kpi-sub { font-size: 7px; color: #9ca3af; margin-top: 1px; }
+          .notice {
+            background: #fffbeb; border: 1px solid #fde68a; border-radius: 5px;
+            padding: 5px 10px; font-size: 7.5px; color: #92400e; margin-bottom: 11px; line-height: 1.5;
+          }
+          table { width: 100%; border-collapse: collapse; }
+          thead tr { background: #064e3b; color: white; }
+          th { padding: 7px 8px; font-size: 8px; font-weight: 700; text-align: left; white-space: nowrap; }
+          td { padding: 6px 8px; border-bottom: 1px solid #d1fae5; font-size: 8.5px; vertical-align: middle; }
+          tr.even-row td { background: #f0fdf4; }
+          tr.peak-row td { background: #fef3c7 !important; }
+          .center { text-align: center; }
+          .right { text-align: right; }
+          .mono { font-family: "Courier New", monospace; }
+          .month-cell { font-weight: 700; color: #065f46; }
+          tr.peak-row .month-cell { color: #92400e; }
+          .red { color: #dc2626; font-weight: 700; }
+          .bar-cell { display: flex; align-items: center; gap: 5px; }
+          .bar-track { flex: 1; height: 7px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+          .bar-fill {
+            height: 100%; border-radius: 4px;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+          }
+          .bar-pct { font-size: 7px; color: #6b7280; min-width: 24px; text-align: right; }
+          tfoot tr td {
+            background: #064e3b !important; color: white;
+            font-weight: 800; font-size: 8.5px; border-bottom: none;
+          }
+          .report-footer {
+            margin-top: 16px; border-top: 1px solid #d1fae5;
+            padding-top: 8px; display: flex; justify-content: space-between; align-items: flex-start;
+          }
+          .footer-note { font-size: 7px; color: #6b7280; font-style: italic; max-width: 72%; line-height: 1.5; }
+          .sig-area { text-align: center; width: 150px; }
+          .sig-line { border-top: 1px solid #0f172a; margin-top: 22px; padding-top: 4px; font-size: 8px; font-weight: 700; }
+        </style>
+      </head>
+      <body>
+        <div class="report-header">
+          <div>
+            <p class="society-title">Majestique Euriska 'A' Building Co-operative Housing Society Ltd.</p>
+            <p class="report-subtitle">Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • S. No.2, Plot No C-1, Village Mohammed Wadi, Taluka Haveli, District Pune — 411060</p>
+            <span class="report-badge">${isBuildingA ? '🏢 Building \'A\' Common Lift — Monthly Consumption Report' : '📅 Tata Electricity — Monthly Consumption Report'}</span>
+          </div>
+          <div class="report-meta">
+            <div><strong>Generated:</strong> ${printedDate}</div>
+            <div><strong>Consumer:</strong> ${isBuildingA ? 'THE CHAIRMAN EURISKA A WING (COMMON LIFT)' : 'Tata Play Limited (Broadband Hub)'}</div>
+            <div><strong>Meter:</strong> ${isBuildingA ? 'Consumer No: 170003586858 • Meter: 08210034428' : 'TATA-EUR-01 (4-Digit Sub-Meter)'}</div>
+            <div><strong>Tariff / Load:</strong> ${isBuildingA ? '92 / LT I Res 3-Phase (10.00 KW)' : 'Sub-Meter Tariff Progression'}</div>
+            <div><strong>Period:</strong> ${firstLabel} — ${lastLabel}</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Months</div>
+            <div class="kpi-value" style="color:#064e3b;">${monthlyData.length} <span class="kpi-unit">months</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total Est. Units</div>
+            <div class="kpi-value" style="color:#0284c7;">${totalMonthlyUnits.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span class="kpi-unit">kWh</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Avg Monthly</div>
+            <div class="kpi-value" style="color:#059669;">${avgMonthly.toFixed(0)} <span class="kpi-unit">units</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Avg Daily Overall</div>
+            <div class="kpi-value" style="color:#7c3aed;">${avgDailyOverall} <span class="kpi-unit">u/day</span></div>
+          </div>
+          <div class="kpi-card" style="background:#f0fdf4;border-color:#bbf7d0;">
+            <div class="kpi-label">Avg Rate / Unit</div>
+            <div class="kpi-value" style="color:#16a34a;">₹${(totalMonthlyCost / (totalMonthlyUnits || 1)).toFixed(2)} <span class="kpi-unit">/ u</span></div>
+            <div class="kpi-sub">${isBuildingA ? 'Effective MSEDCL Tariff' : 'Sub-Meter Tariff Rate'}</div>
+          </div>
+          <div class="kpi-card" style="background:#fff1f2;border-color:#fecdd3;">
+            <div class="kpi-label">Total Est. Cost</div>
+            <div class="kpi-value" style="color:#dc2626;">₹${fmt(totalMonthlyCost)}</div>
+            <div class="kpi-sub">Peak: ${peakMonth.label} (${peakMonth.units.toLocaleString('en-IN')} u)</div>
+          </div>
+        </div>
+
+        <div class="notice">
+          ${isBuildingA
+            ? `<strong>📌 MSEDCL Meter Tracking:</strong> Monthly figures are recorded from official Mahavitaran LT-I Residential 3-Phase meter (Consumer No: 170003586858, Hadapsar Sub-Division 4745). All 10 monthly cycles feature continuous, gapless meter readings.`
+            : `<strong>⚠️ Estimation Methodology:</strong> Monthly units are <em>estimated</em> by distributing each billing period's total consumption proportionally based on the number of days covered in each calendar month. Tata Play's sub-meter uses a 4-digit dial with 10,000 unit reset rollover. Actual readings are billed across multi-month periods — monthly figures are derived, not directly metered.`}
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="center" style="width:28px;">#</th>
+              <th style="width:68px;">Month</th>
+              <th class="right" style="width:95px;">Est. Units (kWh)</th>
+              <th class="right" style="width:90px;">Avg Daily (u/day)</th>
+              <th class="right" style="width:70px;">Days Covered</th>
+              <th class="right" style="width:85px;">Avg Rate (₹/u)</th>
+              <th class="right" style="width:105px;">Est. Cost (₹)</th>
+              <th style="width:140px;">Usage (% of Peak)</th>
+            </tr>
+          </thead>
+          <tbody>${tableRows}</tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" style="text-align:left;">TOTAL (${monthlyData.length} months)</td>
+              <td class="right mono">${totalMonthlyUnits.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</td>
+              <td class="right mono">${avgDailyOverall}</td>
+              <td class="right">${totalDays}</td>
+              <td class="right mono" style="color: #86efac;">₹${(totalMonthlyCost / (totalMonthlyUnits || 1)).toFixed(2)}</td>
+              <td class="right mono">₹${fmt(totalMonthlyCost)}</td>
+              <td style="text-align:center;font-size:7.5px;color:#d1fae5;">Avg ${avgMonthly.toFixed(0)} u/month</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="report-footer">
+          <div class="footer-note">
+            ${isBuildingA
+              ? `* Official MSEDCL Building 'A' Common Lift Bills — Majestique Euriska 'A' Building CHS.<br/>Consumer No: 170003586858 • Sanctioned Load: 10.00 KW • Tariff: 92/LT I Res 3-Phase.<br/>Charges include Fixed (₹445/mo), Telescopic Energy Slabs, Wheeling (@ ₹1.60/u), Fuel Adjustment (FAC), and 16% Electricity Duty.`
+              : `* All values are estimates based on proportional day-distribution of billing period totals.<br/>Source: Tata Electricity Sub-Meter Bills — Majestique Euriska 'A' Building CHS.<br/>Tariff history: ₹11.50/u (Mar'23–Jan'24) → ₹12.50/u (Feb'24–May'24) → ₹13.00/u (Jun'24–Present).`}
+          </div>
+          <div class="sig-area">
+            <div class="sig-line">Society Secretary / Treasurer</div>
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() { setTimeout(function() { window.print(); }, 300); };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const win = window.open('', '_blank');
+    if (win) { win.document.write(docHtml); win.document.close(); }
+  };
+
   const consumptionVal = parseFloat(tataConsumption) || 0;
   const rateVal = parseFloat(tataRatePerUnit) || 0;
   const baseAmountVal = Math.round(consumptionVal * rateVal);
@@ -1659,6 +2778,26 @@ Majestique Euriska 'A' Building CHS Ltd.`;
         'Electricity Duty 16% (₹)': n(c.duty || (n(c.grandTotal) * 0.16 / 1.16)),
         'Rounded Grand Total (₹)': n(c.grandTotal),
       }));
+    } else if (subTab === 'buildingA') {
+      rows = filteredBills.map((c, i) => ({
+        'Sr. No': i + 1,
+        'Billing Period': c.periodLabel || `${formatDateLabel(c.startMonth)} to ${formatDateLabel(c.endMonth)}`,
+        'Duration': c.duration || computeBillingDuration(c.startMonth, c.endMonth),
+        'Start Date': formatDateLabel(c.startMonth),
+        'End Date': formatDateLabel(c.endMonth),
+        'Previous Reading (A)': n(c.prevReading),
+        'Current Reading (B)': n(c.currReading),
+        'Units Consumed': n(c.consumption),
+        'Rate/Unit (₹)': n(c.ratePerUnit),
+        'Fixed Charge (₹)': n(c.fixedCharge || 445),
+        'Energy Charge (₹)': n(c.energyCharge || 0),
+        'Wheeling Charge (₹)': n(c.wheelingCharge || (n(c.consumption) * 1.6)),
+        'Fuel Adj (₹)': n(c.fuelAdj || 0),
+        'Duty 16% (₹)': n(c.dutyAmount || (n(c.grandTotal) * 0.16 / 1.16)),
+        'Total Bill Amount (₹)': n(c.grandTotal),
+        'Status': c.status || 'Paid',
+        'Payment/Due Date': c.paymentDate ? formatDateLabel(c.paymentDate) : (c.dueDate ? `Due ${formatDateLabel(c.dueDate)}` : '—'),
+      }));
     } else {
       rows = filteredBills.map((c, i) => ({
         'Sr. No': i + 1,
@@ -1720,14 +2859,18 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               {subTab === 'tata' ? 'Tata Electricity Sub-Meter Billing' : (subTab === 'mahavitaran' ? 'Mahavitaran Dashboard' : 'A Building Dashboard')}
             </p>
             <h3 style={{ margin: '0 0 2px 0', fontSize: '1.15rem', fontWeight: 700, fontFamily: 'inherit', letterSpacing: '-0.01em' }}>
-              {subTab === 'tata' ? 'Tata Electricity Bills' : (subTab === 'mahavitaran' ? 'MSEB Detailed Bills' : 'A Building Bills')}
+              {subTab === 'tata' ? 'Tata Electricity Bills' : (subTab === 'mahavitaran' ? 'MSEB Detailed Bills' : 'A Building Common Lift Bills')}
             </h3>
             {subTab === 'tata' && (
               <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>
                 Consumer: <strong>Tata Play Limited</strong> (Broadband Hub) • Meter: <strong>TATA-EUR-01</strong> • 4-Digit Dial with <strong>10,000 Reset Rollover</strong>
               </p>
             )}
-            {subTab === 'buildingA' && <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>Customer Number: 17000358685</p>}
+            {subTab === 'buildingA' && (
+              <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>
+                Consumer: <strong>THE CHAIRMAN EURISKA A WING (COMMON LIFT)</strong> • Consumer No: <strong>170003586858</strong> • Meter: <strong>08210034428</strong> • <strong>10.00 KW 3-Phase</strong>
+              </p>
+            )}
             {subTab === 'mahavitaran' && <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>Detailed breakdown per MSEB format</p>}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: badge.color, fontWeight: 600, fontSize: '0.78rem' }}>
@@ -1786,6 +2929,63 @@ Majestique Euriska 'A' Building CHS Ltd.`;
         </div>
       )}
 
+      {/* BUILDING A MSEDCL DETAILS BANNER */}
+      {subTab === 'buildingA' && (
+        <div style={{
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f0fdf4 100%)',
+          border: '1px solid #bbf7d0',
+          borderRadius: '10px',
+          padding: '10px 14px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '1.2rem' }}>🏢</span>
+              <div>
+                <h4 style={{ margin: 0, color: '#14532d', fontSize: '0.82rem', fontWeight: 700 }}>
+                  Building A Wing Common Lift Meter (MSEDCL / Mahavitaran)
+                </h4>
+                <p style={{ margin: '1px 0 0 0', fontSize: '0.74rem', color: '#475569', lineHeight: 1.4 }}>
+                  Consumer No: <strong>170003586858</strong> • Meter No: <strong>08210034428</strong> • Tariff: <strong>92/LT I Res 3-Phase</strong> • Load: <strong>10.00 KW</strong> • Unit: <strong>4745/Hadapsar</strong>
+                </p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+              <span style={{ background: '#dcfce7', color: '#166534', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #86efac' }}>
+                📍 Hadapsar Sub-Dn (4745)
+              </span>
+              <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #bae6fd' }}>
+                🛡️ Security Deposit: ₹69,440
+              </span>
+              <span style={{ background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #fde68a' }}>
+                ⚡ 10 Months Tracked: 17,712 Units
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', borderTop: '1px solid #dcfce7', paddingTop: '6px', flexWrap: 'wrap', fontSize: '0.72rem' }}>
+            <span style={{ fontWeight: 700, color: '#166534' }}>MSEDCL Slabs (Post-Apr'26):</span>
+            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+              0–100: ₹3.96/u (FAC 0.15)
+            </span>
+            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+              101–300: ₹10.80/u (FAC 0.30)
+            </span>
+            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+              301–500: ₹15.03/u (FAC 0.40)
+            </span>
+            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+              &gt;500: ₹17.53/u (FAC 0.45)
+            </span>
+            <span style={{ background: '#f0fdf4', padding: '2px 8px', borderRadius: '6px', border: '1px solid #86efac', color: '#166534', fontWeight: 600 }}>
+              Wheeling: ₹1.60/u • Fixed: ₹445/mo • Duty: 16%
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* SEARCH & ACTIONS ZONE */}
       <div className="section-card" style={{ padding: '10px 16px', background: '#f8fafc', border: '1px solid var(--line)', borderRadius: '10px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
@@ -1803,6 +3003,16 @@ Majestique Euriska 'A' Building CHS Ltd.`;
           <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '6px 14px', height: '34px', fontSize: '0.78rem', marginTop: 'auto' }}>
             ⬇ Export to Excel
           </button>
+          {subTab === 'buildingA' && (
+            <button
+              className="button-secondary"
+              onClick={handlePrintBuildingAStatement}
+              style={{ padding: '6px 14px', height: '34px', fontSize: '0.78rem', marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}
+              title="Print or export complete 10-month statement of Building A electricity bills"
+            >
+              <span>🖨️</span> Statement PDF
+            </button>
+          )}
           {subTab === 'tata' && (
             <>
               <button
@@ -1847,38 +3057,58 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       {filteredBills.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div className="attendance-summary-grid" style={{
-            background: 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)',
+            background: subTab === 'buildingA'
+              ? 'linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%)'
+              : 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)',
             padding: '12px 16px',
             borderRadius: '12px',
-            border: '1px solid #bae6fd'
+            border: `1px solid ${subTab === 'buildingA' ? '#bbf7d0' : '#bae6fd'}`
           }}>
             <div style={{ gridColumn: '1 / -1', marginBottom: '2px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <p className="eyebrow" style={{ color: '#0369a1', margin: 0, fontSize: '0.68rem', letterSpacing: '0.05em' }}>Tata Electricity Sub-Meter Consolidated Metrics</p>
+              <p className="eyebrow" style={{ color: subTab === 'buildingA' ? '#166534' : '#0369a1', margin: 0, fontSize: '0.68rem', letterSpacing: '0.05em' }}>
+                {subTab === 'buildingA' ? '🏢 Building A Common Lift Consolidated Metrics' : (subTab === 'mahavitaran' ? '⚡ Mahavitaran MSEB Consolidated Metrics' : '📡 Tata Electricity Sub-Meter Consolidated Metrics')}
+              </p>
               <span style={{ fontSize: '0.72rem', color: '#64748b' }}>{filteredBills.length} Billing Periods Tracked</span>
             </div>
 
             <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
               <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Total Amount Billed</p>
-              <h3 style={{ color: '#0369a1', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>₹{fmt(totalAmount)}</h3>
-              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>Full 8-period audited total</p>
+              <h3 style={{ color: subTab === 'buildingA' ? '#166534' : '#0369a1', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>₹{fmt(totalAmount)}</h3>
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>
+                {subTab === 'buildingA' ? `${filteredBills.length}-Month Audited Total` : 'Full 8-period audited total'}
+              </p>
             </div>
 
             <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
               <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Total Energy Consumed</p>
               <h3 style={{ color: '#ea580c', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>{fmt(totalConsumption)} Units</h3>
-              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>Avg ~{fmt(totalConsumption / filteredBills.length)} units / bill</p>
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>
+                Avg ~{fmt(Math.round(totalConsumption / (filteredBills.length || 1)))} units / bill
+              </p>
             </div>
 
             <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Active Tariff Rate</p>
-              <h3 style={{ color: '#16a34a', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>₹13.00 / Unit</h3>
-              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>Progressed from ₹11.50 ➔ ₹12.50</p>
+              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>
+                {subTab === 'buildingA' ? 'Average Monthly Bill' : 'Active Tariff Rate'}
+              </p>
+              <h3 style={{ color: '#16a34a', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>
+                {subTab === 'buildingA' ? `₹${fmt(Math.round(totalAmount / (filteredBills.length || 1)))}` : '₹13.00 / Unit'}
+              </h3>
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>
+                {subTab === 'buildingA' ? 'Effective avg ₹21.28 / unit' : 'Progressed from ₹11.50 ➔ ₹12.50'}
+              </p>
             </div>
 
             <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
               <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Meter Continuity</p>
-              <h3 style={{ color: '#8b5cf6', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>3 Rollovers</h3>
-              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>7629 ➔ 1557 (0 gaps)</p>
+              <h3 style={{ color: '#8b5cf6', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>
+                {subTab === 'buildingA'
+                  ? `${filteredBills[filteredBills.length - 1]?.prevReading || '132533'} ➔ ${filteredBills[0]?.currReading || '150245'}`
+                  : '3 Rollovers'}
+              </h3>
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>
+                {subTab === 'buildingA' ? `${filteredBills.length} consecutive cycles (0 gaps)` : '7629 ➔ 1557 (0 gaps)'}
+              </p>
             </div>
           </div>
 
@@ -1900,6 +3130,249 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               </ResponsiveContainer>
             </div>
           </div>
+
+          {/* MONTHLY CONSUMPTION BREAKDOWN */}
+          {(subTab === 'tata' || subTab === 'buildingA') && (() => {
+            const monthlyData = computeMonthlyConsumption(filteredBills);
+            if (monthlyData.length === 0) return null;
+            const peakMonth = monthlyData.reduce((a, b) => b.units > a.units ? b : a, monthlyData[0]);
+            const avgMonthly = monthlyData.reduce((s, m) => s + m.units, 0) / monthlyData.length;
+            const totalMonthlyUnits = monthlyData.reduce((s, m) => s + m.units, 0);
+            const totalMonthlyCost = monthlyData.reduce((s, m) => s + m.estCost, 0);
+            return (
+              <div style={{
+                background: 'linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%)',
+                border: '1px solid #bbf7d0',
+                borderRadius: '12px',
+                padding: '16px 18px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '14px'
+              }}>
+                {/* Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '1.1rem' }}>📅</span>
+                      <h4 style={{ margin: 0, color: '#14532d', fontSize: '0.88rem', fontWeight: 800 }}>
+                        {subTab === 'buildingA' ? 'Building A Monthly Consumption Breakdown' : 'Monthly Consumption Breakdown'}
+                      </h4>
+                    </div>
+                    <p style={{ margin: '2px 0 0 20px', fontSize: '0.72rem', color: '#15803d' }}>
+                      {subTab === 'buildingA'
+                        ? 'Estimated monthly units by proportionally distributing each billing period across calendar months'
+                        : 'Estimated monthly units by proportionally distributing each billing period across calendar months'}
+                    </p>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <span style={{ background: '#dcfce7', color: '#166534', padding: '3px 10px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 700, border: '1px solid #86efac' }}>
+                      {monthlyData.length} Months
+                    </span>
+                    <span style={{ background: '#fef3c7', color: '#92400e', padding: '3px 10px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 700, border: '1px solid #fde68a' }}>
+                      Peak: {peakMonth.label} ({peakMonth.units.toLocaleString('en-IN')} u)
+                    </span>
+                    <button
+                      onClick={() => handlePrintMonthlyBreakdown(monthlyData, subTab)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '5px',
+                        padding: '5px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid #059669',
+                        background: '#064e3b',
+                        color: 'white',
+                        fontWeight: 700,
+                        fontSize: '0.74rem',
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                        transition: 'opacity 0.2s'
+                      }}
+                      title="Export Monthly Consumption Breakdown as PDF"
+                    >
+                      <span>🖨️</span> Download PDF
+                    </button>
+                  </div>
+                </div>
+
+                {/* Mini KPI Row */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px' }}>
+                  <div style={{ background: 'white', borderRadius: '8px', padding: '8px 12px', border: '1px solid #d1fae5' }}>
+                    <div style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Avg Monthly</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#059669' }}>{avgMonthly.toFixed(0)} <span style={{ fontSize: '0.7rem', fontWeight: 600 }}>units</span></div>
+                  </div>
+                  <div style={{ background: 'white', borderRadius: '8px', padding: '8px 12px', border: '1px solid #d1fae5' }}>
+                    <div style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Total Units</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0284c7' }}>{totalMonthlyUnits.toFixed(0)} <span style={{ fontSize: '0.7rem', fontWeight: 600 }}>kWh</span></div>
+                  </div>
+                  <div style={{ background: '#f0fdf4', borderRadius: '8px', padding: '8px 12px', border: '1px solid #bbf7d0' }}>
+                    <div style={{ fontSize: '0.65rem', color: '#15803d', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Avg Rate / Unit</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#16a34a' }}>₹{(totalMonthlyCost / (totalMonthlyUnits || 1)).toFixed(2)} <span style={{ fontSize: '0.7rem', fontWeight: 600 }}>/ u</span></div>
+                  </div>
+                  <div style={{ background: 'white', borderRadius: '8px', padding: '8px 12px', border: '1px solid #d1fae5' }}>
+                    <div style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Est. Total Cost</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#dc2626' }}>₹{fmt(totalMonthlyCost)}</div>
+                  </div>
+                  <div style={{ background: 'white', borderRadius: '8px', padding: '8px 12px', border: '1px solid #d1fae5' }}>
+                    <div style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Peak Month</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#7c3aed' }}>{peakMonth.label}</div>
+                    <div style={{ fontSize: '0.65rem', color: '#9ca3af' }}>{peakMonth.units.toLocaleString('en-IN')} units</div>
+                  </div>
+                </div>
+
+                {/* Trend Line Chart */}
+                <div style={{ width: '100%', height: 200 }}>
+                  <ResponsiveContainer>
+                    <LineChart data={monthlyData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#d1fae5" />
+                      <XAxis
+                        dataKey="label"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: '#6b7280', fontSize: 9 }}
+                        dy={8}
+                        interval={Math.max(0, Math.floor(monthlyData.length / 10) - 1)}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: '#6b7280', fontSize: 9 }}
+                        dx={-4}
+                        width={45}
+                      />
+                      <Tooltip
+                        cursor={{ stroke: '#86efac', strokeWidth: 1 }}
+                        contentStyle={{
+                          borderRadius: '8px',
+                          border: '1px solid #d1fae5',
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                          fontSize: '0.72rem',
+                          background: 'white'
+                        }}
+                        formatter={(value, name) => [
+                          name === 'units' ? `${Number(value).toLocaleString('en-IN', { maximumFractionDigits: 1 })} units` : `₹${fmt(value)}`,
+                          name === 'units' ? 'Est. Units' : 'Est. Cost (₹)'
+                        ]}
+                        labelFormatter={(label) => `Month: ${label}`}
+                      />
+                      <Legend
+                        wrapperStyle={{ fontSize: '0.7rem', paddingTop: '4px' }}
+                        formatter={(value) => value === 'units' ? 'Est. Units (kWh)' : 'Est. Cost (₹)'}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="units"
+                        stroke="#059669"
+                        strokeWidth={2}
+                        dot={{ r: 3, fill: '#059669', strokeWidth: 0 }}
+                        activeDot={{ r: 5 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Monthly Table */}
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem', minWidth: 620 }}>
+                    <thead>
+                      <tr style={{ background: '#064e3b', color: 'white' }}>
+                        <th style={{ padding: '7px 10px', textAlign: 'left', fontWeight: 700, fontSize: '0.68rem' }}>#</th>
+                        <th style={{ padding: '7px 10px', textAlign: 'left', fontWeight: 700, fontSize: '0.68rem' }}>Month</th>
+                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Est. Units (kWh)</th>
+                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Avg Daily (u/day)</th>
+                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Days Covered</th>
+                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Avg Rate (₹/u)</th>
+                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Est. Cost (₹)</th>
+                        <th style={{ padding: '7px 10px', textAlign: 'center', fontWeight: 700, fontSize: '0.68rem' }}>Usage Bar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...monthlyData].reverse().map((m, i) => {
+                        const pct = peakMonth.units > 0 ? (m.units / peakMonth.units) * 100 : 0;
+                        const isHighest = m.monthKey === peakMonth.monthKey;
+                        const barColor = pct > 80 ? '#dc2626' : pct > 50 ? '#f59e0b' : '#059669';
+                        return (
+                          <tr key={m.monthKey} style={{
+                            background: isHighest ? '#fef3c7' : i % 2 === 0 ? '#f0fdf4' : 'white',
+                            borderBottom: '1px solid #d1fae5'
+                          }}>
+                            <td style={{ padding: '6px 10px', color: '#9ca3af', fontWeight: 600 }}>{monthlyData.length - i}</td>
+                            <td style={{ padding: '6px 10px', fontWeight: 700, color: isHighest ? '#92400e' : '#065f46' }}>
+                              {isHighest ? '🔥 ' : ''}{m.label}
+                            </td>
+                            <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 700, color: '#0284c7', fontFamily: 'monospace' }}>
+                              {m.units.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                            </td>
+                            <td style={{ padding: '6px 10px', textAlign: 'right', color: '#475569', fontFamily: 'monospace' }}>
+                              {m.avgDaily}
+                            </td>
+                            <td style={{ padding: '6px 10px', textAlign: 'right', color: '#9ca3af' }}>
+                              {m.days}
+                            </td>
+                            <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a', fontFamily: 'monospace' }}>
+                              ₹{(m.estCost / (m.units || 1)).toFixed(2)}
+                            </td>
+                            <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 600, color: '#dc2626', fontFamily: 'monospace' }}>
+                              ₹{fmt(m.estCost)}
+                            </td>
+                            <td style={{ padding: '6px 10px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <div style={{
+                                  flex: 1,
+                                  height: 8,
+                                  background: '#e5e7eb',
+                                  borderRadius: 4,
+                                  overflow: 'hidden'
+                                }}>
+                                  <div style={{
+                                    width: `${pct}%`,
+                                    height: '100%',
+                                    background: barColor,
+                                    borderRadius: 4,
+                                    transition: 'width 0.3s ease'
+                                  }} />
+                                </div>
+                                <span style={{ fontSize: '0.65rem', color: '#6b7280', minWidth: 28, textAlign: 'right' }}>
+                                  {pct.toFixed(0)}%
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                    <tfoot>
+                      <tr style={{ background: '#064e3b', color: 'white' }}>
+                        <td colSpan={2} style={{ padding: '7px 10px', fontWeight: 800, fontSize: '0.74rem' }}>TOTAL ({monthlyData.length} months)</td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 800, fontFamily: 'monospace' }}>
+                          {totalMonthlyUnits.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                        </td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>
+                          {(totalMonthlyUnits / monthlyData.reduce((s, m) => s + m.days, 0)).toFixed(2)}
+                        </td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700 }}>
+                          {monthlyData.reduce((s, m) => s + m.days, 0)}
+                        </td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 800, color: '#86efac', fontFamily: 'monospace' }}>
+                          ₹{(totalMonthlyCost / (totalMonthlyUnits || 1)).toFixed(2)}
+                        </td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 800, fontFamily: 'monospace' }}>
+                          ₹{fmt(totalMonthlyCost)}
+                        </td>
+                        <td style={{ padding: '7px 10px', textAlign: 'center', fontSize: '0.68rem', color: '#d1fae5' }}>
+                          Avg {avgMonthly.toFixed(0)} u/mo
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+
+                <p style={{ margin: 0, fontSize: '0.68rem', color: '#6b7280', fontStyle: 'italic' }}>
+                  * Monthly units are estimated by distributing each billing period's total consumption proportionally based on the number of days covered in each calendar month. Actual meter readings are taken across multi-month periods, not monthly.
+                </p>
+              </div>
+            );
+          })()}
         </div>
       )}
 
@@ -1909,13 +3382,15 @@ Majestique Euriska 'A' Building CHS Ltd.`;
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
             <div>
               <h4 style={{ margin: 0, color: 'var(--ink)', fontSize: '0.88rem', fontWeight: 700 }}>
-                ➕ {subTab === 'tata' ? 'Create New Tata Electricity Bill' : (subTab === 'mahavitaran' ? 'Add Mahavitaran MSEB Bill' : 'Add A Building Bill')}
+                ➕ {subTab === 'tata' ? 'Create New Tata Electricity Bill' : (subTab === 'buildingA' ? 'Add Building A Common Lift Bill' : (subTab === 'mahavitaran' ? 'Add Mahavitaran MSEB Bill' : 'Add A Building Bill'))}
               </h4>
-              {subTab === 'tata' && (
-                <p style={{ margin: '2px 0 0 0', fontSize: '0.74rem', color: 'var(--muted)' }}>
-                  Enter sub-meter readings and duration. The system automatically detects 10,000 reset rollover if B &lt; A.
-                </p>
-              )}
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.74rem', color: 'var(--muted)' }}>
+                {subTab === 'tata'
+                  ? 'Enter sub-meter readings and duration. The system automatically detects 10,000 reset rollover if B < A.'
+                  : subTab === 'buildingA'
+                  ? 'Enter MSEDCL monthly meter readings. The system automatically computes LT-1 Residential 3-Phase slabs, wheeling, fuel adjustment, and 16% electricity duty.'
+                  : 'Enter meter readings and billing details.'}
+              </p>
             </div>
 
             {subTab === 'tata' && latestTataBill && (
@@ -1929,10 +3404,22 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <span>⚡</span> Auto-Fill Next Cycle (Prev: {latestTataBill.currReading})
               </button>
             )}
+
+            {subTab === 'buildingA' && latestBuildingABill && (
+              <button
+                type="button"
+                className="button-secondary"
+                onClick={applyNextBuildingAPeriod}
+                style={{ padding: '5px 12px', fontSize: '0.76rem', background: '#f0fdf4', color: '#166534', borderColor: '#bbf7d0', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}
+                title="Pre-fills start date and previous reading from latest Building A bill"
+              >
+                <span>⚡</span> Auto-Fill Next Cycle (Prev: {latestBuildingABill.currReading})
+              </button>
+            )}
           </div>
 
           <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px' }}>
-            {subTab === 'tata' && (
+            {(subTab === 'tata' || subTab === 'buildingA') && (
               <>
                 <div className="field-group" style={{ gridColumn: 'span 2' }}>
                   <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Billing Period Name <span style={{ color: '#ef4444' }}>*</span></label>
@@ -1940,7 +3427,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     className="attendance-register-input"
                     style={{ textAlign: 'left', background: 'white', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }}
                     type="text"
-                    placeholder="e.g. May 26 to Sep 26"
+                    placeholder={subTab === 'buildingA' ? "e.g. Sep 2026 (16 Aug – 14 Sep)" : "e.g. May 26 to Sep 26"}
                     value={formData.periodLabel}
                     onChange={e => handleFormChange('periodLabel', e.target.value)}
                     required
@@ -1953,7 +3440,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     className="attendance-register-input"
                     style={{ textAlign: 'left', background: 'white', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }}
                     type="text"
-                    placeholder="e.g. 4 Months (120 Days)"
+                    placeholder={subTab === 'buildingA' ? "e.g. 30 Days (0.97 Mo)" : "e.g. 4 Months (120 Days)"}
                     value={formData.duration}
                     onChange={e => handleFormChange('duration', e.target.value)}
                     required
@@ -1984,7 +3471,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
             <div className="field-group">
               <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Per Unit Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="number" step="any" placeholder="13.00" value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
+              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="number" step="any" placeholder={subTab === 'buildingA' ? '21.10' : '13.00'} value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
             </div>
 
             {/* Live calculation banner if readings are filled */}
@@ -2018,8 +3505,64 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               </div>
             )}
 
+            {subTab === 'buildingA' && formData.prevReading !== '' && formData.currReading !== '' && (() => {
+              const prev = n(formData.prevReading);
+              const curr = n(formData.currReading);
+              if (curr < prev) {
+                return (
+                  <div style={{
+                    gridColumn: '1 / -1',
+                    background: '#fef2f2',
+                    border: '1px solid #fecaca',
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    color: '#991b1b',
+                    fontSize: '0.75rem'
+                  }}>
+                    ⚠️ Current reading ({curr}) cannot be less than previous reading ({prev}).
+                  </div>
+                );
+              }
+              const consumption = curr - prev;
+              const { energyTotal, fuelTotal } = calculateMahavitaranSlabs(consumption);
+              const fixedCharge = 445.00;
+              const wheelingCharge = consumption * 1.60;
+              const dutyAmount = (fixedCharge + energyTotal + wheelingCharge + fuelTotal) * 0.16;
+              const grandTotal = Math.round(fixedCharge + energyTotal + wheelingCharge + fuelTotal + dutyAmount);
+              const avgRate = (grandTotal / (consumption || 1)).toFixed(2);
+              return (
+                <div style={{
+                  gridColumn: '1 / -1',
+                  background: '#f0fdf4',
+                  border: '1px solid #bbf7d0',
+                  borderRadius: '8px',
+                  padding: '8px 12px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '6px'
+                }}>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '0.75rem', color: '#166534' }}>
+                      🏢 Building A MSEDCL LT-1 Res 3-Phase Tariff Calculation:
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: '#475569' }}>
+                      {curr} - {prev} = <strong>{consumption} units</strong> • Fixed ₹445 + Energy ₹{fmt(energyTotal)} + Wheel ₹{fmt(wheelingCharge)} + FAC ₹{fmt(fuelTotal)} + 16% Duty ₹{fmt(dutyAmount)}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <span style={{ fontSize: '0.72rem', color: '#64748b' }}>Estimated Bill (@ avg ₹{avgRate}/u): </span>
+                    <strong style={{ fontSize: '0.98rem', color: '#15803d' }}>
+                      ₹{fmt(grandTotal)}
+                    </strong>
+                  </div>
+                </div>
+              );
+            })()}
+
             <div style={{ gridColumn: '1 / -1', marginTop: '4px' }}>
-              <button type="submit" className="button-primary" style={{ padding: '8px 20px', height: '34px', fontSize: '0.8rem', background: '#0284c7', borderColor: '#0284c7' }}>
+              <button type="submit" className="button-primary" style={{ padding: '8px 20px', height: '34px', fontSize: '0.8rem', background: subTab === 'buildingA' ? '#166534' : '#0284c7', borderColor: subTab === 'buildingA' ? '#166534' : '#0284c7' }}>
                 Calculate &amp; Create Bill
               </button>
             </div>
@@ -2044,6 +3587,19 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Rate / Unit</th>
                   <th style={{ width: 120, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem', background: '#f0f9ff' }}>Total Amount (₹)</th>
                   <th style={{ width: 80, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Actions</th>
+                </tr>
+              ) : subTab === 'buildingA' ? (
+                <tr style={{ background: '#f8fafc' }}>
+                  <th style={{ width: 35, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>#</th>
+                  <th style={{ width: 200, padding: '7px 8px', fontSize: '0.7rem' }}>Billing Period / Month</th>
+                  <th style={{ width: 130, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Duration</th>
+                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Prev Read</th>
+                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Curr Read</th>
+                  <th style={{ width: 95, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Status</th>
+                  <th style={{ width: 95, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Units Consumed</th>
+                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Avg Rate</th>
+                  <th style={{ width: 120, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem', background: '#f0fdf4' }}>Total Bill (₹)</th>
+                  <th style={{ width: 85, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Actions</th>
                 </tr>
               ) : subTab === 'mahavitaran' ? (
                 <tr style={{ background: '#f8fafc' }}>
@@ -2342,6 +3898,179 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     );
                   }
 
+                  if (subTab === 'buildingA') {
+                    const isPaid = c.status === 'Paid';
+                    return (
+                      <tr key={c.id || i} style={{ background: isPaid ? 'transparent' : '#fefdfa' }}>
+                        <td style={{ verticalAlign: 'middle', textAlign: 'center', fontWeight: 600, padding: '6px 8px', fontSize: '0.75rem' }}>{i + 1}</td>
+
+                        {/* Billing Period */}
+                        <td style={{ verticalAlign: 'middle', padding: '6px 8px' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ width: '100%', padding: '4px', fontSize: '0.78rem' }}
+                              type="text"
+                              value={c.periodLabel || ''}
+                              onChange={e => updateRow(actualIdx, 'periodLabel', e.target.value)}
+                            />
+                          ) : (
+                            <div>
+                              <strong style={{ fontSize: '0.8rem', color: '#0f172a' }}>
+                                {c.periodLabel || `${formatDateLabel(c.startMonth)} to ${formatDateLabel(c.endMonth)}`}
+                              </strong>
+                              {c.startMonth && c.endMonth && (
+                                <div style={{ fontSize: '0.68rem', color: '#64748b' }}>
+                                  {formatDateLabel(c.startMonth)} – {formatDateLabel(c.endMonth)}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Duration */}
+                        <td style={{ textAlign: 'center', verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.75rem', color: '#475569' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ width: '90px', padding: '3px', textAlign: 'center', fontSize: '0.75rem' }}
+                              type="text"
+                              value={c.duration || ''}
+                              onChange={e => updateRow(actualIdx, 'duration', e.target.value)}
+                            />
+                          ) : (
+                            <span style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem' }}>
+                              {c.duration || computeBillingDuration(c.startMonth, c.endMonth) || '-'}
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Prev Reading */}
+                        <td style={{ textAlign: 'right', verticalAlign: 'middle', padding: '6px 8px', fontFamily: 'monospace', fontSize: '0.78rem' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              type="text"
+                              value={c.prevReading}
+                              onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)}
+                            />
+                          ) : (
+                            c.prevReading
+                          )}
+                        </td>
+
+                        {/* Curr Reading */}
+                        <td style={{ textAlign: 'right', verticalAlign: 'middle', padding: '6px 8px', fontFamily: 'monospace', fontSize: '0.78rem' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              type="text"
+                              value={c.currReading}
+                              onChange={e => updateRow(actualIdx, 'currReading', e.target.value)}
+                            />
+                          ) : (
+                            c.currReading
+                          )}
+                        </td>
+
+                        {/* Status */}
+                        <td style={{ textAlign: 'center', verticalAlign: 'middle', padding: '6px 8px' }}>
+                          <span style={{
+                            background: isPaid ? '#dcfce7' : '#fef3c7',
+                            color: isPaid ? '#166534' : '#92400e',
+                            padding: '2px 7px',
+                            borderRadius: '8px',
+                            fontSize: '0.68rem',
+                            fontWeight: 700,
+                            border: `1px solid ${isPaid ? '#86efac' : '#fde68a'}`,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px'
+                          }} title={c.paidDate ? `Paid on ${formatDateLabel(c.paidDate)}` : `Due on ${formatDateLabel(c.dueDate)} (Prompt: ₹${fmt(c.promptPaymentAmount || 36820)})`}>
+                            {isPaid ? '✅ Paid' : '⏳ Invoiced'}
+                          </span>
+                        </td>
+
+                        {/* Units Consumed */}
+                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 700, verticalAlign: 'middle', padding: '6px 8px' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              type="number"
+                              value={c.consumption}
+                              onChange={e => updateRow(actualIdx, 'consumption', e.target.value)}
+                            />
+                          ) : (
+                            <div>
+                              <span style={{ fontSize: '0.84rem' }}>{fmt(n(c.consumption))}</span>
+                              <div style={{ fontSize: '0.64rem', color: '#94a3b8', fontWeight: 400 }}>
+                                {c.currReading} - {c.prevReading}
+                              </div>
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Per Unit Rate */}
+                        <td style={{ textAlign: 'right', verticalAlign: 'middle', padding: '6px 8px' }}>
+                          {isEditing ? (
+                            <input
+                              className="attendance-register-input"
+                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              type="number"
+                              step="any"
+                              value={c.ratePerUnit}
+                              onChange={e => updateRow(actualIdx, 'ratePerUnit', e.target.value)}
+                            />
+                          ) : (
+                            <span style={{
+                              background: '#f0fdf4',
+                              color: '#15803d',
+                              padding: '2px 6px',
+                              borderRadius: '4px',
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                              border: '1px solid #bbf7d0'
+                            }}>
+                              ₹{Number(c.ratePerUnit || (n(c.grandTotal) / (n(c.consumption) || 1))).toFixed(2)}
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Total Amount */}
+                        <td style={{ textAlign: 'right', color: '#166534', fontWeight: 700, verticalAlign: 'middle', fontSize: '0.88rem', background: '#f0fdf4', padding: '6px 8px' }}>
+                          ₹{fmt(c.grandTotal)}
+                        </td>
+
+                        {/* Actions */}
+                        <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
+                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'center' }}>
+                            <button
+                              className="button-icon"
+                              title="Print Official MSEDCL Bill Voucher (A4)"
+                              onClick={() => handlePrintBuildingABill(c)}
+                              style={{ color: '#059669', fontSize: '0.95rem', cursor: 'pointer', padding: '2px' }}
+                            >
+                              🖨️
+                            </button>
+                            {isAdmin && (
+                              <>
+                                {isEditing ? (
+                                  <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a', fontSize: '0.85rem' }}>✅</button>
+                                ) : (
+                                  <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6', fontSize: '0.85rem' }}>✏️</button>
+                                )}
+                                <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444', fontSize: '0.85rem' }}>✕</button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+
                   return (
                     <tr key={c.id || i}>
                       <td style={{ verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.75rem' }}>{i + 1}</td>
@@ -2401,8 +4130,16 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <tr style={{ background: '#f8fafc', fontWeight: 700, fontSize: '0.82rem' }}>
                   <td colSpan={6} style={{ textAlign: 'right', padding: '8px' }}>TOTAL (8 BILLING CYCLES):</td>
                   <td style={{ textAlign: 'right', color: '#ea580c', padding: '8px', fontSize: '0.88rem' }}>{fmt(totalConsumption)}</td>
-                  <td></td>
+                  <td style={{ textAlign: 'right', color: '#16a34a', padding: '8px', fontSize: '0.82rem' }}>₹{(totalAmount / (totalConsumption || 1)).toFixed(2)}</td>
                   <td style={{ textAlign: 'right', color: '#0369a1', fontSize: '0.92rem', background: '#e0f2fe', padding: '8px' }}>₹{fmt(totalAmount)}</td>
+                  <td></td>
+                </tr>
+              ) : subTab === 'buildingA' ? (
+                <tr style={{ background: '#f8fafc', fontWeight: 700, fontSize: '0.82rem' }}>
+                  <td colSpan={6} style={{ textAlign: 'right', padding: '8px' }}>TOTAL ({filteredBills.length} BILLING CYCLES):</td>
+                  <td style={{ textAlign: 'right', color: '#ea580c', padding: '8px', fontSize: '0.88rem' }}>{fmt(totalConsumption)}</td>
+                  <td style={{ textAlign: 'right', color: '#16a34a', padding: '8px', fontSize: '0.82rem' }}>₹{(totalAmount / (totalConsumption || 1)).toFixed(2)}</td>
+                  <td style={{ textAlign: 'right', color: '#166534', fontSize: '0.92rem', background: '#dcfce7', padding: '8px' }}>₹{fmt(totalAmount)}</td>
                   <td></td>
                 </tr>
               ) : subTab === 'mahavitaran' ? (

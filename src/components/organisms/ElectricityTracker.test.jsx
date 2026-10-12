@@ -5,7 +5,9 @@ import ElectricityTracker, {
   calculateSubmeterRollover,
   calculateTataSubmeterBill,
   computeBillingDuration,
-  DEFAULT_TATA_SEED
+  computeMonthlyConsumption,
+  DEFAULT_TATA_SEED,
+  DEFAULT_BUILDING_A_SEED
 } from './ElectricityTracker';
 
 // ── Mock Firebase ────────────────────────────────────────────────
@@ -19,11 +21,14 @@ vi.mock('../../firebase.js', () => ({
 vi.mock('recharts', () => ({
   ResponsiveContainer: ({ children }) => <div>{children}</div>,
   BarChart: ({ children }) => <div>{children}</div>,
+  LineChart: ({ children }) => <div>{children}</div>,
   Bar: () => <div />,
+  Line: () => <div />,
   XAxis: () => <div />,
   YAxis: () => <div />,
   CartesianGrid: () => <div />,
   Tooltip: () => <div />,
+  Legend: () => <div />,
 }));
 
 // ── Mock XLSX ────────────────────────────────────────────────────
@@ -197,6 +202,8 @@ describe('ElectricityTracker – Tata Electricity Bill view and calculations', (
       expect(openSpy).toHaveBeenCalledWith('', '_blank');
       expect(mockPrintWindow.document.write).toHaveBeenCalled();
       expect(writtenHtml).toContain('Tata Electricity Sub-Meter Consolidated Account Statement');
+      expect(writtenHtml).toContain('AVG RATE / UNIT');
+      expect(writtenHtml).toContain('Overall Avg Rate');
       expect(writtenHtml).toContain('window.print()');
 
       openSpy.mockRestore();
@@ -270,6 +277,147 @@ describe('ElectricityTracker – Tata Electricity Bill view and calculations', (
       expect(writtenHtml).toContain('Sep 25 to May 26 Custom');
       expect(writtenHtml).toContain('MAJESTIQUE EURISKA A BUILDING COOPERATIVE HOUSING SOCIETY LTD');
       expect(writtenHtml).not.toContain('Stamp and Signature');
+      expect(writtenHtml).toContain('window.print()');
+
+      openSpy.mockRestore();
+    });
+  });
+
+  describe('Building A – 10-Month Electricity Bill Calculations & Audit', () => {
+    it('contains exact 10 billing cycles in DEFAULT_BUILDING_A_SEED with continuous meter readings', () => {
+      expect(DEFAULT_BUILDING_A_SEED).toHaveLength(10);
+
+      // Verify uninterrupted continuity: each cycle's currReading === next cycle's prevReading
+      for (let i = 0; i < DEFAULT_BUILDING_A_SEED.length - 1; i++) {
+        const newerBill = DEFAULT_BUILDING_A_SEED[i];
+        const olderBill = DEFAULT_BUILDING_A_SEED[i + 1];
+        expect(Number(newerBill.prevReading)).toBe(Number(olderBill.currReading));
+      }
+
+      // Check first reading and latest reading
+      expect(Number(DEFAULT_BUILDING_A_SEED[9].prevReading)).toBe(132533);
+      expect(Number(DEFAULT_BUILDING_A_SEED[0].currReading)).toBe(150245);
+
+      // Total consumption = 150245 - 132533 = 17712 units
+      const totalUnits = DEFAULT_BUILDING_A_SEED.reduce((sum, b) => sum + b.consumption, 0);
+      expect(totalUnits).toBe(17712);
+
+      // Total amount = 373990
+      const totalAmount = DEFAULT_BUILDING_A_SEED.reduce((sum, b) => sum + b.grandTotal, 0);
+      expect(totalAmount).toBe(373990);
+    });
+
+    it('matches the OCR physical bill details for September 2026', () => {
+      const sepBill = DEFAULT_BUILDING_A_SEED[0];
+      expect(sepBill.periodLabel).toBe('Sep 2026 (16 Aug – 14 Sep)');
+      expect(sepBill.consumption).toBe(1760);
+      expect(sepBill.grandTotal).toBe(37140);
+      expect(sepBill.consumerNo).toBe('170003586858');
+      expect(sepBill.meterNo).toBe('08210034428');
+      expect(sepBill.fixedCharge).toBe(445);
+      expect(sepBill.wheelingCharge).toBe(2816);
+      expect(sepBill.energyCharge).toBe(27745.89);
+      expect(sepBill.fuelAdj).toBe(724.10);
+      expect(sepBill.dutyAmount).toBe(5076.96);
+      expect(sepBill.promptAmount).toBe(36820);
+      expect(sepBill.afterDueAmount).toBe(37600);
+    });
+
+    it('accurately computes monthly consumption across calendar months for Building A', () => {
+      const monthlyData = computeMonthlyConsumption(DEFAULT_BUILDING_A_SEED);
+      expect(monthlyData.length).toBeGreaterThanOrEqual(10);
+
+      const totalEstimatedUnits = monthlyData.reduce((sum, m) => sum + m.units, 0);
+      // Sum of distributed units matches 17,712 within floating point precision
+      expect(Math.round(totalEstimatedUnits)).toBe(17712);
+
+      const totalEstimatedCost = monthlyData.reduce((sum, m) => sum + m.estCost, 0);
+      expect(Math.round(totalEstimatedCost)).toBe(373990);
+    });
+
+    it('switches to Building A tab, renders consumer header, KPI cards, and breakdown', async () => {
+      const user = userEvent.setup();
+      render(<ElectricityTracker isAdmin={true} />);
+
+      await waitFor(() => screen.getByRole('button', { name: /a building electricity/i }));
+      const buildingATab = screen.getByRole('button', { name: /a building electricity/i });
+      await user.click(buildingATab);
+
+      // Verify Building A consumer header
+      await waitFor(() => {
+        expect(screen.getByText(/the chairman euriska a wing \(common lift\)/i)).toBeInTheDocument();
+        expect(screen.getAllByText(/170003586858/i).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/08210034428/i).length).toBeGreaterThan(0);
+      });
+
+      // Verify KPI values: 3,73,990 and 17,712 units
+      expect(screen.getAllByText(/3,73,990/i).length).toBeGreaterThan(0);
+      expect(screen.getByText(/17,712 Units/i)).toBeInTheDocument();
+
+      // Verify Monthly Breakdown card for Building A
+      expect(screen.getByText(/building a monthly consumption breakdown/i)).toBeInTheDocument();
+
+      // Verify table rows for Sep 2026
+      expect(screen.getByText(/Sep 2026 \(16 Aug – 14 Sep\)/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/150245/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/148485/i).length).toBeGreaterThan(0);
+    });
+
+    it('triggers Building A Statement PDF print when Statement PDF button is clicked in Building A tab', async () => {
+      const user = userEvent.setup();
+      let writtenHtml = '';
+      const mockPrintWindow = {
+        document: {
+          write: vi.fn((html) => { writtenHtml = html; }),
+          close: vi.fn(),
+        },
+      };
+      const openSpy = vi.spyOn(window, 'open').mockReturnValue(mockPrintWindow);
+
+      render(<ElectricityTracker isAdmin={true} />);
+      const buildingATab = screen.getByRole('button', { name: /a building electricity/i });
+      await user.click(buildingATab);
+
+      await waitFor(() => screen.getByRole('button', { name: /statement pdf/i }));
+      await user.click(screen.getByRole('button', { name: /statement pdf/i }));
+
+      expect(openSpy).toHaveBeenCalledWith('', '_blank');
+      expect(mockPrintWindow.document.write).toHaveBeenCalled();
+      expect(writtenHtml).toContain('Building A Common Lift Electricity Statement');
+      expect(writtenHtml).toContain('170003586858');
+      expect(writtenHtml).toContain('THE CHAIRMAN EURISKA A WING');
+      expect(writtenHtml).toContain('Avg Rate / Unit');
+      expect(writtenHtml).toContain('₹21.12 / u');
+      expect(writtenHtml).toContain('Rate/U');
+      expect(writtenHtml).toContain('window.print()');
+
+      openSpy.mockRestore();
+    });
+
+    it('triggers Monthly Breakdown PDF print with Avg Rate / Unit calculation', async () => {
+      const user = userEvent.setup();
+      let writtenHtml = '';
+      const mockPrintWindow = {
+        document: {
+          write: vi.fn((html) => { writtenHtml = html; }),
+          close: vi.fn(),
+        },
+      };
+      const openSpy = vi.spyOn(window, 'open').mockReturnValue(mockPrintWindow);
+
+      render(<ElectricityTracker isAdmin={true} />);
+      const buildingATab = screen.getByRole('button', { name: /a building electricity/i });
+      await user.click(buildingATab);
+
+      await waitFor(() => screen.getByRole('button', { name: /download pdf/i }));
+      await user.click(screen.getByRole('button', { name: /download pdf/i }));
+
+      expect(openSpy).toHaveBeenCalledWith('', '_blank');
+      expect(mockPrintWindow.document.write).toHaveBeenCalled();
+      expect(writtenHtml).toContain('Monthly Electricity Consumption');
+      expect(writtenHtml).toContain('Avg Rate / Unit');
+      expect(writtenHtml).toContain('Avg Rate (₹/u)');
+      expect(writtenHtml).toContain('₹21.12');
       expect(writtenHtml).toContain('window.print()');
 
       openSpy.mockRestore();
