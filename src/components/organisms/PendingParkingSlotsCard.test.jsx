@@ -74,4 +74,65 @@ describe('PendingParkingSlotsCard', () => {
     expect(screen.queryByText('A-102')).not.toBeInTheDocument();
     expect(screen.queryByText('A-103')).not.toBeInTheDocument();
   });
+
+  it('allows selecting a flat from the dropdown and switches to the separate notice view', () => {
+    render(<PendingParkingSlotsCard flatsList={['A-101', 'A-201', 'A-301']} />);
+
+    // Locate the select dropdown in the toolbar
+    const select = screen.getByLabelText(/Select flat for notice/i);
+    expect(select).toBeInTheDocument();
+
+    // Change dropdown to A-201
+    fireEvent.change(select, { target: { value: 'A-201' } });
+
+    // Should switch to the Individual Flat Notice view
+    expect(screen.getByText(/URGENT SUBMISSION & VERIFICATION/i)).toBeInTheDocument();
+    expect(screen.getByText(/Flat No\. A-201/i)).toBeInTheDocument();
+    expect(screen.getByText(/All Flats Register/i)).toBeInTheDocument();
+  });
+
+  it('switches to notice view when clicking the "Make Notice" button', () => {
+    render(<PendingParkingSlotsCard flatsList={['A-101', 'A-201']} />);
+
+    const makeNoticeBtn = screen.getByRole('button', { name: /Make Notice/i });
+    fireEvent.click(makeNoticeBtn);
+
+    // Verify notice view is shown
+    expect(screen.getByText(/URGENT SUBMISSION & VERIFICATION/i)).toBeInTheDocument();
+    expect(screen.getByText(/Flat No\. A-101/i)).toBeInTheDocument();
+
+    // Verify required checklist items: Agreement and Slot ID are present
+    expect(screen.getByText(/Copy of Agreement \/ Builder Allotment Letter/i)).toBeInTheDocument();
+    expect(screen.getByText(/Exact Slot Identification Number/i)).toBeInTheDocument();
+
+    // Verify removed items are NOT present
+    expect(screen.queryByText(/Copy of Vehicle Registration Certificate/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/society security directory/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/wheel-clamping/i)).not.toBeInTheDocument();
+  });
+
+  it('navigates back to the 3-column register when clicking "All Flats Register"', () => {
+    render(<PendingParkingSlotsCard flatsList={['A-101', 'A-201']} initialView="notice" initialSelectedFlat="A-101" />);
+
+    // Currently on notice view
+    expect(screen.getByText(/URGENT SUBMISSION & VERIFICATION/i)).toBeInTheDocument();
+
+    const backBtn = screen.getByRole('button', { name: /All Flats Register/i });
+    fireEvent.click(backBtn);
+
+    // Now back on register view
+    expect(screen.getByText('Flats with Pending Parking Slot Details')).toBeInTheDocument();
+  });
+
+  it('clicking the row quick notice button navigates directly to that flat notice', () => {
+    render(<PendingParkingSlotsCard flatsList={['A-101', 'A-201', 'A-301']} />);
+
+    // Filter to the row button for A-201
+    const rowNoticeBtn = screen.getByTitle('Make individual notice for Flat A-201');
+    fireEvent.click(rowNoticeBtn);
+
+    // Notice view for A-201 should be rendered
+    expect(screen.getByText(/Flat No\. A-201/i)).toBeInTheDocument();
+    expect(screen.getByText(/URGENT SUBMISSION & VERIFICATION/i)).toBeInTheDocument();
+  });
 });

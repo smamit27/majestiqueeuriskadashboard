@@ -57,7 +57,7 @@ describe('App Component - Non-admin accessibility', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { level: 1, name: /Society Rules, Bylaws & Community Guidelines/i })).toBeInTheDocument();
-    });
+    }, { timeout: 4000 });
 
     expect(screen.getByText(/Applicable to A, B & C Buildings/i)).toBeInTheDocument();
   });
@@ -70,7 +70,7 @@ describe('App Component - Non-admin accessibility', () => {
 
     await waitFor(() => {
       expect(screen.getByPlaceholderText(/Search plans, rules & visuals/i)).toBeInTheDocument();
-    }, { timeout: 1000 });
+    }, { timeout: 4000 });
 
     expect(screen.getByText(/Water Flow Diagram/i)).toBeInTheDocument();
   });
@@ -81,7 +81,7 @@ describe('App Component - Non-admin accessibility', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { level: 2, name: /Admin Login \/ Sign In Required/i })).toBeInTheDocument();
-    });
+    }, { timeout: 4000 });
     expect(screen.getByText(/Only/i)).toHaveTextContent(/Visualization Work/i);
     expect(screen.getByText(/Only/i)).toHaveTextContent(/Society Rules/i);
   });
@@ -92,6 +92,6 @@ describe('App Component - Non-admin accessibility', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { level: 1, name: /Water Tank Management/i })).toBeInTheDocument();
-    });
+    }, { timeout: 4000 });
   });
 });

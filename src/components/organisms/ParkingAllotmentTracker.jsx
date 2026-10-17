@@ -1058,6 +1058,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
       {viewMode === 'pending-card' && (
         <PendingParkingSlotsCard
           flatsList={pendingFlatsForCard}
+          parkingRecords={parkingRecords}
           onSelectFlat={flat => {
             const found = parkingRecords.find(p => p.flat === flat);
             if (found) {

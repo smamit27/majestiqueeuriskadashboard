@@ -1,51 +1,51 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 // ── Atoms ──────────────────────────────────────────────────────
 import MetricCard from './components/molecules/MetricCard.jsx';
 import ProgressBar from './components/atoms/ProgressBar.jsx';
 import StatusPill from './components/atoms/StatusPill.jsx';
+import ModuleLoadingFallback from './components/atoms/ModuleLoadingFallback.jsx';
 // ── Molecules ──────────────────────────────────────────────────
 import SectionCard from './components/molecules/SectionCard.jsx';
-// ── Organisms ─────────────────────────────────────────────────
-import HousekeepingModule from './components/organisms/HousekeepingModule.jsx';
-import SecurityModule from './components/organisms/SecurityModule.jsx';
-import SolarModule from './components/organisms/SolarModule.jsx';
-import ChequeManagement from './components/organisms/ChequeManagement.jsx';
-import ElectricityTracker from './components/organisms/ElectricityTracker.jsx';
-import FinanceTracker from './components/organisms/FinanceTracker.jsx';
-import TankerModule from './components/organisms/TankerModule.jsx';
-import MainDashboard from './components/organisms/MainDashboard.jsx';
-import AuthModal from './components/organisms/AuthModal.jsx';
-import IntroAnimation from './components/organisms/IntroAnimation.jsx';
-import EventsCalendarView from './components/organisms/EventsCalendarView.jsx';
-import ManagerTaskTracker from './components/organisms/ManagerTaskTracker.jsx';
-import AmcTracker from './components/organisms/AmcTracker.jsx';
-import CommonInvoiceHub from './components/organisms/CommonInvoiceHub.jsx';
-import WaterManagement from './components/organisms/WaterManagement.jsx';
-import WaterTankManagement from './components/organisms/WaterTankManagement.jsx';
-import PettyCashTracker from './components/organisms/PettyCashTracker.jsx';
-import ShopMaintenanceTracker from './components/organisms/ShopMaintenanceTracker.jsx';
-import AIChatButton from './components/AIChat/AIChatButton.jsx';
-import AIChatWindow from './components/AIChat/AIChatWindow.jsx';
+// ── Shell Elements (Eagerly Loaded) ───────────────────────────
 import GlassSidebar from './components/glass/GlassSidebar.jsx';
 import GlassNavbar from './components/glass/GlassNavbar.jsx';
-// ── New Features ───────────────────────────────────────────────────
-import AnnouncementsModule from './components/organisms/AnnouncementsModule.jsx';
-import NotificationCenter from './components/organisms/NotificationCenter.jsx';
-import GlobalSearch from './components/organisms/GlobalSearch.jsx';
-import ParkPlusTracker from './components/organisms/ParkPlusTracker.jsx';
-import BankStatementTracker from './components/organisms/BankStatementTracker.jsx';
-import FixedDepositTracker from './components/organisms/FixedDepositTracker.jsx';
-import TenantTracker from './components/organisms/TenantTracker.jsx';
-import ParkingAllotmentTracker from './components/organisms/ParkingAllotmentTracker.jsx';
-import EmergencyNumbers from './components/organisms/EmergencyNumbers.jsx';
-import BuilderDiscuss from './components/organisms/BuilderDiscuss.jsx';
-import AgmMeetingTracker from './components/organisms/AgmMeetingTracker.jsx';
-import DocumentManager from './components/organisms/DocumentManager.jsx';
-import AuditTrailViewer from './components/organisms/AuditTrailViewer.jsx';
-import MonthlySocietyReport from './components/organisms/MonthlySocietyReport.jsx';
-import ResidentPortal from './components/organisms/ResidentPortal.jsx';
-import SocietyRulesModule from './components/organisms/SocietyRulesModule.jsx';
-import TimesOfIndiaTracker from './components/organisms/TimesOfIndiaTracker.jsx';
+import AIChatButton from './components/AIChat/AIChatButton.jsx';
+
+// ── Lazy-Loaded Organisms (Loaded On-Demand for Maximum Speed) ──
+const HousekeepingModule = lazy(() => import('./components/organisms/HousekeepingModule.jsx'));
+const SecurityModule = lazy(() => import('./components/organisms/SecurityModule.jsx'));
+const SolarModule = lazy(() => import('./components/organisms/SolarModule.jsx'));
+const ChequeManagement = lazy(() => import('./components/organisms/ChequeManagement.jsx'));
+const ElectricityTracker = lazy(() => import('./components/organisms/ElectricityTracker.jsx'));
+const FinanceTracker = lazy(() => import('./components/organisms/FinanceTracker.jsx'));
+const TankerModule = lazy(() => import('./components/organisms/TankerModule.jsx'));
+const MainDashboard = lazy(() => import('./components/organisms/MainDashboard.jsx'));
+const AuthModal = lazy(() => import('./components/organisms/AuthModal.jsx'));
+const IntroAnimation = lazy(() => import('./components/organisms/IntroAnimation.jsx'));
+const ManagerTaskTracker = lazy(() => import('./components/organisms/ManagerTaskTracker.jsx'));
+const AmcTracker = lazy(() => import('./components/organisms/AmcTracker.jsx'));
+const CommonInvoiceHub = lazy(() => import('./components/organisms/CommonInvoiceHub.jsx'));
+const WaterManagement = lazy(() => import('./components/organisms/WaterManagement.jsx'));
+const WaterTankManagement = lazy(() => import('./components/organisms/WaterTankManagement.jsx'));
+const PettyCashTracker = lazy(() => import('./components/organisms/PettyCashTracker.jsx'));
+const ShopMaintenanceTracker = lazy(() => import('./components/organisms/ShopMaintenanceTracker.jsx'));
+const AIChatWindow = lazy(() => import('./components/AIChat/AIChatWindow.jsx'));
+const AnnouncementsModule = lazy(() => import('./components/organisms/AnnouncementsModule.jsx'));
+const GlobalSearch = lazy(() => import('./components/organisms/GlobalSearch.jsx'));
+const ParkPlusTracker = lazy(() => import('./components/organisms/ParkPlusTracker.jsx'));
+const BankStatementTracker = lazy(() => import('./components/organisms/BankStatementTracker.jsx'));
+const FixedDepositTracker = lazy(() => import('./components/organisms/FixedDepositTracker.jsx'));
+const TenantTracker = lazy(() => import('./components/organisms/TenantTracker.jsx'));
+const ParkingAllotmentTracker = lazy(() => import('./components/organisms/ParkingAllotmentTracker.jsx'));
+const EmergencyNumbers = lazy(() => import('./components/organisms/EmergencyNumbers.jsx'));
+const BuilderDiscuss = lazy(() => import('./components/organisms/BuilderDiscuss.jsx'));
+const AgmMeetingTracker = lazy(() => import('./components/organisms/AgmMeetingTracker.jsx'));
+const DocumentManager = lazy(() => import('./components/organisms/DocumentManager.jsx'));
+const AuditTrailViewer = lazy(() => import('./components/organisms/AuditTrailViewer.jsx'));
+const MonthlySocietyReport = lazy(() => import('./components/organisms/MonthlySocietyReport.jsx'));
+const ResidentPortal = lazy(() => import('./components/organisms/ResidentPortal.jsx'));
+const SocietyRulesModule = lazy(() => import('./components/organisms/SocietyRulesModule.jsx'));
+const TimesOfIndiaTracker = lazy(() => import('./components/organisms/TimesOfIndiaTracker.jsx'));
 import { ROLES, ROLE_LABELS, MODULES, hasModuleAccess, resolveUserRole } from './services/rbacService.js';
 import { logAuditEvent, AUDIT_ACTIONS } from './services/auditService.js';
 
@@ -760,7 +760,11 @@ export default function App() {
 
   return (
     <>
-      {showIntro && <IntroAnimation onFinish={handleIntroFinish} />}
+      {showIntro && (
+        <Suspense fallback={null}>
+          <IntroAnimation onFinish={handleIntroFinish} />
+        </Suspense>
+      )}
 
       {/* ── PWA Install Banner ── */}
       {showPwaBanner && (
@@ -776,12 +780,14 @@ export default function App() {
       )}
 
       {/* ── Global Search ── */}
-      <GlobalSearch
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onNavigate={handleTabChange}
-        isAdmin={isAdmin}
-      />
+      <Suspense fallback={null}>
+        <GlobalSearch
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          onNavigate={handleTabChange}
+          isAdmin={isAdmin}
+        />
+      </Suspense>
 
       <div className={`dashboard-shell dashboard-shell--sidebar ${isSidebarCollapsed ? 'dashboard-shell--collapsed' : ''}`}>
       <div className="backdrop backdrop--top" />
@@ -810,11 +816,13 @@ export default function App() {
         onRoleChange={handleRoleChange}
       />
 
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
-        user={user}
-      />
+      <Suspense fallback={null}>
+        <AuthModal 
+          isOpen={isAuthModalOpen} 
+          onClose={() => setIsAuthModalOpen(false)} 
+          user={user}
+        />
+      </Suspense>
 
       <main className="main-panel">
         {/* ── Glass Top Navigation ── */}
@@ -885,14 +893,18 @@ export default function App() {
               </button>
             </div>
           ) : (
-            activeTabPanel.render()
+            <Suspense fallback={<ModuleLoadingFallback label={activeTabPanel.label} />}>
+              {activeTabPanel.render()}
+            </Suspense>
           )}
         </div>
       </main>
     </div>
     
     <AIChatButton isOpen={isChatOpen} onClick={() => setIsChatOpen(!isChatOpen)} />
-    <AIChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} userRole={userRole} />
+    <Suspense fallback={null}>
+      <AIChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} userRole={userRole} />
+    </Suspense>
     </>
   );
 }

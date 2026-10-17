@@ -67,14 +67,27 @@ export default defineConfig({
     port: 5173
   },
   build: {
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/firebase')) {
             return 'firebase';
           }
-          if (id.includes('node_modules/react')) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-is')) {
             return 'react-vendor';
+          }
+          if (id.includes('node_modules/recharts')) {
+            return 'recharts-vendor';
+          }
+          if (id.includes('node_modules/xlsx')) {
+            return 'xlsx-vendor';
+          }
+          if (id.includes('node_modules/lucide-react')) {
+            return 'icons-vendor';
+          }
+          if (id.includes('node_modules/gsap') || id.includes('node_modules/canvas-confetti')) {
+            return 'animation-vendor';
           }
         }
       }

@@ -1,19 +1,24 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { OFFICIAL_PENDING_PARKING_FLATS, isParkingSlotPending } from '../../data/parkingAllotmentData.js';
+import IndividualFlatNoticeCard from './IndividualFlatNoticeCard.jsx';
 
 /**
  * PendingParkingSlotsCard Component
  * Displays the dynamic 3-column "Flats with Pending Parking Slot Details" card UI
  * driven live by covered parking allotment data, with instant 2x high-resolution PNG image download.
+ * Also provides an interactive Flat Notice Generator to select any flat from a dropdown and generate a formal individual notice.
  */
 export default function PendingParkingSlotsCard({
   flatsList = null,
   parkingRecords = null,
   onSelectFlat = null,
-  showControls = true
+  showControls = true,
+  initialView = 'register',
+  initialSelectedFlat = null
 }) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [activeView, setActiveView] = useState(initialView); // 'register' | 'notice'
 
   // Dynamically derive pending flats from flatsList or parkingRecords
   const items = useMemo(() => {
@@ -25,6 +30,18 @@ export default function PendingParkingSlotsCard({
     }
     return OFFICIAL_PENDING_PARKING_FLATS;
   }, [flatsList, parkingRecords]);
+
+  // Selected flat for individual notice
+  const [selectedNoticeFlat, setSelectedNoticeFlat] = useState(() => {
+    return initialSelectedFlat || (items && items[0]) || 'A-101';
+  });
+
+  // Keep selectedNoticeFlat valid when items change
+  useEffect(() => {
+    if (items && items.length > 0 && !items.includes(selectedNoticeFlat)) {
+      setSelectedNoticeFlat(items[0]);
+    }
+  }, [items, selectedNoticeFlat]);
 
   // Split into 3 columns dynamically
   const columns = useMemo(() => {
@@ -397,7 +414,7 @@ export default function PendingParkingSlotsCard({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* ── Toolbar Actions ── */}
+      {/* ── Toolbar Actions & Mode Switcher ── */}
       {showControls && (
         <div style={{
           display: 'flex',
@@ -406,114 +423,247 @@ export default function PendingParkingSlotsCard({
           flexWrap: 'wrap',
           gap: 12,
           padding: '12px 18px',
-          background: 'rgba(255, 255, 255, 0.9)',
+          background: 'rgba(255, 255, 255, 0.95)',
           borderRadius: 16,
           border: '1px solid rgba(226, 232, 240, 0.9)',
           boxShadow: '0 4px 14px rgba(15, 23, 42, 0.04)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: '1.25rem' }}>🚗</span>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f2952' }}>
-                Pending Parking Slot Details Register
+          {/* Left: Title & Mode Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: '1.25rem' }}>🚗</span>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f2952' }}>
+                  Pending Parking Slot Details Register
+                </div>
+                <div style={{ fontSize: '0.74rem', color: '#64748b' }}>
+                  Dynamically tracking <strong>{items.length} Covered Parking Flats</strong> requiring slot confirmation
+                </div>
               </div>
-              <div style={{ fontSize: '0.74rem', color: '#64748b' }}>
-                Dynamically tracking <strong>{items.length} Covered Parking Flats</strong> requiring slot confirmation
-              </div>
+            </div>
+
+            {/* View Mode Toggle */}
+            <div style={{
+              display: 'inline-flex',
+              background: '#f1f5f9',
+              padding: 3,
+              borderRadius: 10,
+              border: '1px solid #cbd5e1'
+            }}>
+              <button
+                type="button"
+                onClick={() => setActiveView('register')}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: 7,
+                  border: 'none',
+                  background: activeView === 'register' ? '#ffffff' : 'transparent',
+                  color: activeView === 'register' ? '#0f2952' : '#64748b',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: activeView === 'register' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 5
+                }}
+              >
+                <span>📋</span>
+                <span>3-Column Register</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveView('notice')}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: 7,
+                  border: 'none',
+                  background: activeView === 'notice' ? '#ffffff' : 'transparent',
+                  color: activeView === 'notice' ? '#0f2952' : '#64748b',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: activeView === 'notice' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 5
+                }}
+              >
+                <span>📜</span>
+                <span>Flat Notice</span>
+              </button>
             </div>
           </div>
 
+          {/* Right: Flat Dropdown & Actions */}
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              onClick={handleCopy}
-              disabled={items.length === 0}
-              style={{
-                padding: '7px 14px',
-                borderRadius: 10,
-                border: '1px solid #cbd5e1',
-                background: '#ffffff',
-                color: '#334155',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: items.length === 0 ? 'not-allowed' : 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                fontFamily: 'inherit',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              {copied ? '✓ Copied!' : '📋 Copy Flats'}
-            </button>
+            {/* Flat Selector Dropdown for Notice Generation */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              background: '#f8fafc',
+              padding: '4px 8px',
+              borderRadius: 10,
+              border: '1px solid #cbd5e1'
+            }}>
+              <label htmlFor="flat-notice-select-dropdown" style={{ fontSize: '0.78rem', fontWeight: 800, color: '#0f2952' }}>
+                Flat:
+              </label>
+              <select
+                id="flat-notice-select-dropdown"
+                aria-label="Select flat for notice"
+                value={selectedNoticeFlat}
+                onChange={(e) => {
+                  setSelectedNoticeFlat(e.target.value);
+                  setActiveView('notice');
+                }}
+                style={{
+                  padding: '5px 10px',
+                  borderRadius: 8,
+                  border: '1.5px solid #0284c7',
+                  background: '#ffffff',
+                  color: '#0f2952',
+                  fontSize: '0.80rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                {items.map(f => (
+                  <option key={f} value={f}>
+                    Flat {f}
+                  </option>
+                ))}
+              </select>
 
-            <a
-              href="/pending_parking_slots_card.svg"
-              download={`Flats_with_Pending_Parking_Slot_Details_${items.length}_Flats.svg`}
-              title="Download vector SVG (infinite zoom without pixelation)"
-              style={{
-                padding: '8px 14px',
-                borderRadius: 10,
-                border: '1px solid #cbd5e1',
-                background: '#ffffff',
-                color: '#1e3a8a',
-                fontSize: '0.80rem',
-                fontWeight: 700,
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                boxShadow: '0 2px 6px rgba(15, 23, 42, 0.04)',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <span>📐</span>
-              <span>Download Vector SVG</span>
-            </a>
+              <button
+                type="button"
+                onClick={() => setActiveView('notice')}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: 8,
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%)',
+                  color: '#ffffff',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  boxShadow: '0 2px 6px rgba(2, 132, 199, 0.25)'
+                }}
+              >
+                <span>📄</span>
+                <span>Make Notice</span>
+              </button>
+            </div>
 
-            <button
-              type="button"
-              onClick={handleDownloadPNG}
-              disabled={downloading || items.length === 0}
-              style={{
-                padding: '8px 18px',
-                borderRadius: 10,
-                border: 'none',
-                background: 'linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%)',
-                color: '#ffffff',
-                fontSize: '0.82rem',
-                fontWeight: 800,
-                cursor: downloading ? 'wait' : items.length === 0 ? 'not-allowed' : 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                fontFamily: 'inherit',
-                boxShadow: '0 4px 12px rgba(2, 132, 199, 0.35)',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              <span>📸</span>
-              <span>{downloading ? 'Rendering Ultra-HD Image...' : 'Download as PNG Image (Ultra-HD)'}</span>
-            </button>
+            {activeView === 'register' && (
+              <>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  disabled={items.length === 0}
+                  style={{
+                    padding: '7px 14px',
+                    borderRadius: 10,
+                    border: '1px solid #cbd5e1',
+                    background: '#ffffff',
+                    color: '#334155',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: items.length === 0 ? 'not-allowed' : 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    fontFamily: 'inherit',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  {copied ? '✓ Copied!' : '📋 Copy Flats'}
+                </button>
+
+                <a
+                  href="/pending_parking_slots_card.svg"
+                  download={`Flats_with_Pending_Parking_Slot_Details_${items.length}_Flats.svg`}
+                  title="Download vector SVG (infinite zoom without pixelation)"
+                  style={{
+                    padding: '8px 14px',
+                    borderRadius: 10,
+                    border: '1px solid #cbd5e1',
+                    background: '#ffffff',
+                    color: '#1e3a8a',
+                    fontSize: '0.80rem',
+                    fontWeight: 700,
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    boxShadow: '0 2px 6px rgba(15, 23, 42, 0.04)',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <span>📐</span>
+                  <span>Download Vector SVG</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadPNG}
+                  disabled={downloading || items.length === 0}
+                  style={{
+                    padding: '8px 18px',
+                    borderRadius: 10,
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%)',
+                    color: '#ffffff',
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    cursor: downloading ? 'wait' : items.length === 0 ? 'not-allowed' : 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    fontFamily: 'inherit',
+                    boxShadow: '0 4px 12px rgba(2, 132, 199, 0.35)',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  <span>📸</span>
+                  <span>{downloading ? 'Rendering Ultra-HD Image...' : 'Download as PNG Image (Ultra-HD)'}</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
 
-      {/* ── The Exact UI Card Matching Mockup ── */}
-      <div
-        id="pending-parking-slots-ui-card"
-        style={{
-          position: 'relative',
-          borderRadius: 24,
-          overflow: 'hidden',
-          background: 'linear-gradient(145deg, rgba(235, 244, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%)',
-          border: '2px solid rgba(255, 255, 255, 0.85)',
-          boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(203, 213, 225, 0.4)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-        }}
-      >
+      {/* ── Conditional View: Individual Flat Notice OR 3-Column Register Card ── */}
+      {activeView === 'notice' ? (
+        <IndividualFlatNoticeCard
+          flat={selectedNoticeFlat}
+          flatsList={items}
+          parkingRecords={parkingRecords}
+          onSelectFlat={(f) => setSelectedNoticeFlat(f)}
+          onBackToRegister={() => setActiveView('register')}
+        />
+      ) : (
+        /* ── The Exact UI Card Matching Mockup ── */
+        <div
+          id="pending-parking-slots-ui-card"
+          style={{
+            position: 'relative',
+            borderRadius: 24,
+            overflow: 'hidden',
+            background: 'linear-gradient(145deg, rgba(235, 244, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%)',
+            border: '2px solid rgba(255, 255, 255, 0.85)',
+            boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(203, 213, 225, 0.4)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+          }}
+        >
         {/* Deep Blue Symmetrical Executive Header Banner */}
         <div style={{
           background: 'linear-gradient(135deg, #091a32 0%, #0f2952 45%, #1e3a8a 100%)',
@@ -785,16 +935,48 @@ export default function PendingParkingSlotsCard({
                           {srNo}
                         </div>
 
-                        {/* Flat Number */}
+                        {/* Flat Number + Notice Action */}
                         <div style={{
-                          padding: '8px 10px',
-                          textAlign: 'center',
-                          fontSize: '1.02rem',
-                          fontWeight: 800,
-                          color: '#0f2952',
-                          letterSpacing: '0.02em'
+                          padding: '7px 10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 8
                         }}>
-                          {flat}
+                          <span style={{
+                            fontSize: '1.02rem',
+                            fontWeight: 800,
+                            color: '#0f2952',
+                            letterSpacing: '0.02em'
+                          }}>
+                            {flat}
+                          </span>
+                          <button
+                            type="button"
+                            title={`Make individual notice for Flat ${flat}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedNoticeFlat(flat);
+                              setActiveView('notice');
+                            }}
+                            style={{
+                              padding: '2px 7px',
+                              borderRadius: 6,
+                              border: '1px solid #bfdbfe',
+                              background: '#eff6ff',
+                              color: '#1e40af',
+                              fontSize: '0.70rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 2,
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            <span>📄</span>
+                            <span>Notice</span>
+                          </button>
                         </div>
                       </div>
                     );
@@ -820,6 +1002,7 @@ export default function PendingParkingSlotsCard({
           <span>Dynamic Covered Parking Register • {items.length} Pending Units</span>
         </div>
       </div>
+      )}
     </div>
   );
 }
