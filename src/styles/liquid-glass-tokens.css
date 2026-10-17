@@ -1,0 +1,92 @@
+/**
+ * Liquid Glass Design Tokens
+ * Apple-inspired translucent surfaces, specular highlights, and category accents
+ * Majestique Euriska Society Dashboard
+ */
+
+:root {
+  /* Surface translucency & blur */
+  --lg-blur: 20px;
+  --lg-saturate: 180%;
+  --lg-radius-sm: 14px;
+  --lg-radius-md: 18px;
+  --lg-radius-lg: 24px;
+  --lg-radius-xl: 28px;
+
+  /* Base liquid glass gradients */
+  --lg-bg-base: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.74) 0%,
+    rgba(255, 255, 255, 0.42) 60%,
+    rgba(255, 255, 255, 0.28) 100%
+  );
+  --lg-bg-hover: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(255, 255, 255, 0.52) 100%
+  );
+  --lg-bg-active: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.65) 0%,
+    rgba(255, 255, 255, 0.32) 100%
+  );
+
+  /* Fallback for browsers lacking backdrop-filter */
+  --lg-bg-opaque: rgba(255, 255, 255, 0.95);
+
+  /* Glass borders & edge highlights */
+  --lg-border: 1px solid rgba(255, 255, 255, 0.75);
+  --lg-border-subtle: 1px solid rgba(255, 255, 255, 0.50);
+  --lg-border-accent: 1px solid rgba(255, 255, 255, 0.95);
+
+  /* Ambient & specular reflections */
+  --lg-shadow-ambient: 0 18px 42px rgba(26, 45, 80, 0.08), 0 3px 10px rgba(26, 45, 80, 0.04);
+  --lg-shadow-hover: 0 24px 50px rgba(26, 45, 80, 0.12), 0 6px 16px rgba(26, 45, 80, 0.06);
+  --lg-shadow-inner: inset 0 1px 0 rgba(255, 255, 255, 0.90), inset 1px 0 0 rgba(255, 255, 255, 0.60);
+  --lg-shadow-combined: var(--lg-shadow-ambient), var(--lg-shadow-inner);
+  --lg-shadow-hover-combined: var(--lg-shadow-hover), var(--lg-shadow-inner);
+
+  /* Typography Colors */
+  --lg-text-primary: #0f172a;
+  --lg-text-secondary: #475569;
+  --lg-text-muted: #64748b;
+  --lg-text-dim: #94a3b8;
+
+  /* Category Specific Accents (Curated HSL) */
+  /* 1. Society: Apple Blue */
+  --lg-accent-society: #0284c7;
+  --lg-accent-society-bg: rgba(2, 132, 199, 0.08);
+  --lg-accent-society-border: rgba(2, 132, 199, 0.22);
+  --lg-accent-society-glow: rgba(2, 132, 199, 0.16);
+
+  /* 2. Finance: Emerald / Teal */
+  --lg-accent-finance: #059669;
+  --lg-accent-finance-bg: rgba(5, 150, 105, 0.08);
+  --lg-accent-finance-border: rgba(5, 150, 105, 0.22);
+  --lg-accent-finance-glow: rgba(5, 150, 105, 0.16);
+
+  /* 3. Maintenance: Indigo / Violet */
+  --lg-accent-maintenance: #6366f1;
+  --lg-accent-maintenance-bg: rgba(99, 102, 241, 0.08);
+  --lg-accent-maintenance-border: rgba(99, 102, 241, 0.22);
+  --lg-accent-maintenance-glow: rgba(99, 102, 241, 0.16);
+
+  /* 4. Operations: Cyan / Steel Blue */
+  --lg-accent-operations: #0891b2;
+  --lg-accent-operations-bg: rgba(8, 145, 178, 0.08);
+  --lg-accent-operations-border: rgba(8, 145, 178, 0.22);
+  --lg-accent-operations-glow: rgba(8, 145, 178, 0.16);
+
+  /* Alerts */
+  --lg-accent-warning: #d97706;
+  --lg-accent-warning-bg: rgba(217, 119, 6, 0.08);
+  --lg-accent-warning-border: rgba(217, 119, 6, 0.22);
+
+  --lg-accent-danger: #dc2626;
+  --lg-accent-danger-bg: rgba(220, 38, 38, 0.08);
+  --lg-accent-danger-border: rgba(220, 38, 38, 0.22);
+
+  /* Motion transitions */
+  --lg-transition-quick: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --lg-transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}

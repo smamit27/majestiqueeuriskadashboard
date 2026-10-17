@@ -38,7 +38,7 @@ export default function GlassSidebar({
       )}
 
       <aside
-        className={`glass-sidebar ${isOpen ? 'glass-sidebar--open' : ''} ${isCollapsed ? 'glass-sidebar--collapsed' : ''}`}
+        className={`glass-sidebar sidebar ${isOpen ? 'glass-sidebar--open sidebar--open' : ''} ${isCollapsed ? 'glass-sidebar--collapsed sidebar--collapsed' : ''}`}
         aria-label="Sidebar Navigation"
       >
         {/* Brand Header */}
@@ -61,7 +61,7 @@ export default function GlassSidebar({
 
           <button
             type="button"
-            className="glass-sidebar__collapse-btn"
+            className="glass-sidebar__collapse-btn sidebar-collapse-toggle"
             onClick={onToggleCollapse}
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}

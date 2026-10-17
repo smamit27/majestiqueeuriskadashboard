@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
-import { initialParkingData, OPEN_PARKING_SLOTS } from '../../data/parkingAllotmentData.js';
+import { initialParkingData, OPEN_PARKING_SLOTS, isParkingSlotPending } from '../../data/parkingAllotmentData.js';
 import ParkingBlueprintMap from './ParkingBlueprintMap.jsx';
 import Parking3DView from './Parking3DView.jsx';
+import PendingParkingSlotsCard from './PendingParkingSlotsCard.jsx';
 
 const PARKING_DOC_ID = 'a_wing_parking_v3';
 const PARKING_COLLECTION = 'parkingAllotments';
@@ -118,17 +119,38 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
     const occupiedOpSlots = Object.keys(occupiedSlotMap).length;
     const vacantOpSlots = Math.max(0, totalOpSlots - occupiedOpSlots);
 
+    const pendingCount = parkingRecords.filter(isParkingSlotPending).length;
+
     return {
       totalFlats,
       allottedCount,
       coveredCount,
       refugeCount,
+      pendingCount,
       totalOpSlots,
       occupiedOpSlots,
       vacantOpSlots,
       occupiedSlotMap
     };
   }, [parkingRecords]);
+
+  // ── Dynamic Pending Flats for Card View (Derived from Covered Parking Data) ──
+  const pendingFlatsForCard = useMemo(() => {
+    return parkingRecords
+      .filter(item => {
+        if (floorFilter !== 'All' && String(item.floor) !== String(floorFilter)) {
+          return false;
+        }
+        if (searchQuery.trim()) {
+          const q = searchQuery.trim().toLowerCase();
+          const match = (item.flat && item.flat.toLowerCase().includes(q)) ||
+                        (item.residentName && item.residentName.toLowerCase().includes(q));
+          if (!match) return false;
+        }
+        return isParkingSlotPending(item);
+      })
+      .map(item => item.flat);
+  }, [floorFilter, searchQuery, parkingRecords]);
 
   // ── Filtered Records ─────────────────────────────────────────────────────
   const filteredRecords = useMemo(() => {
@@ -138,9 +160,15 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
         return false;
       }
       if (statusFilter !== 'All') {
-        if (statusFilter === 'Allotted' && item.status !== 'Allotted') return false;
-        if (statusFilter === 'Covered' && item.status !== 'Covered') return false;
-        if (statusFilter === 'Refuge' && item.status !== 'Refuge') return false;
+        if (statusFilter === 'Pending') {
+          if (!isParkingSlotPending(item)) return false;
+        } else if (statusFilter === 'Allotted' && item.status !== 'Allotted') {
+          return false;
+        } else if (statusFilter === 'Covered' && item.status !== 'Covered') {
+          return false;
+        } else if (statusFilter === 'Refuge' && item.status !== 'Refuge') {
+          return false;
+        }
       }
       if (!q) return true;
 
@@ -384,19 +412,28 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', zIndex: 1 }}>
           {[
             { label: 'Total Flats', value: stats.totalFlats, sub: 'Flats A-101 to A-1108', bg: 'rgba(255,255,255,0.12)', color: '#fff' },
+            { label: 'Pending Details', value: stats.pendingCount, sub: `${stats.pendingCount} Covered Flats Pending`, bg: 'rgba(225,29,72,0.25)', color: '#fca5a5', action: () => { setStatusFilter('Pending'); setViewMode('pending-card'); } },
             { label: 'Open Parking', value: stats.allottedCount, sub: '37 Official Bays', bg: 'rgba(110,231,183,0.22)', color: '#6ee7b7' },
             { label: 'Covered Parking', value: stats.coveredCount, sub: '50 Flats', bg: 'rgba(147,197,253,0.22)', color: '#93c5fd' },
             { label: 'Open Bays (OP)', value: `${stats.occupiedOpSlots} / ${stats.totalOpSlots}`, sub: `${stats.vacantOpSlots} Available`, bg: 'rgba(56,189,248,0.2)', color: '#7dd3fc' },
           ].map(stat => (
-            <div key={stat.label} style={{
-              background: stat.bg,
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.18)',
-              borderRadius: 14,
-              padding: '12px 18px',
-              minWidth: 105,
-              textAlign: 'center'
-            }}>
+            <div
+              key={stat.label}
+              onClick={stat.action || undefined}
+              style={{
+                background: stat.bg,
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.18)',
+                borderRadius: 14,
+                padding: '12px 18px',
+                minWidth: 105,
+                textAlign: 'center',
+                cursor: stat.action ? 'pointer' : 'default',
+                transition: 'transform 0.15s ease'
+              }}
+              onMouseEnter={e => { if (stat.action) e.currentTarget.style.transform = 'translateY(-2px)'; }}
+              onMouseLeave={e => { if (stat.action) e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
               <div style={{ fontSize: '1.35rem', fontWeight: 800, color: stat.color, lineHeight: 1 }}>
                 {stat.value}
               </div>
@@ -477,11 +514,12 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
           </select>
         </div>
 
-        {/* Status filter chips */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        {/* Status / Slot filter chips */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
           {[
             { id: 'All', label: 'All Flats' },
-            { id: 'Allotted', label: '🚗 Open Parking (37)' },
+            { id: 'Pending', label: `🚗 Pending Slot Details (${stats.pendingCount})`, isSpecial: true },
+            { id: 'Allotted', label: '🅿️ Open Parking (37)' },
             { id: 'Covered', label: '🏠 Covered Parking (50)' },
             { id: 'Refuge', label: '🛡️ Refuge' },
           ].map(s => {
@@ -493,14 +531,21 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                 style={{
                   padding: '6px 12px',
                   borderRadius: 20,
-                  border: '1.5px solid',
+                  border: s.isSpecial ? '2px solid' : '1.5px solid',
                   fontSize: '0.75rem',
                   fontWeight: 700,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
-                  background: active ? '#0b2b26' : 'transparent',
-                  color: active ? '#C49B4F' : '#5f665f',
-                  borderColor: active ? '#0b2b26' : 'rgba(61,63,52,0.16)',
+                  background: active 
+                    ? (s.isSpecial ? '#e11d48' : '#0b2b26') 
+                    : (s.isSpecial ? 'rgba(225, 29, 72, 0.08)' : 'transparent'),
+                  color: active 
+                    ? '#ffffff' 
+                    : (s.isSpecial ? '#be123c' : '#5f665f'),
+                  borderColor: active 
+                    ? (s.isSpecial ? '#e11d48' : '#0b2b26') 
+                    : (s.isSpecial ? 'rgba(225, 29, 72, 0.4)' : 'rgba(61,63,52,0.16)'),
+                  boxShadow: s.isSpecial && active ? '0 2px 8px rgba(225, 29, 72, 0.35)' : 'none',
                   transition: 'all 0.15s ease'
                 }}
               >
@@ -521,6 +566,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
         }}>
           {[
             { mode: 'table', icon: '📋', label: 'Table' },
+            { mode: 'pending-card', icon: '🖼️', label: 'Pending Slots Card' },
             { mode: '2d', icon: '🗺️', label: '2D Layout' },
             { mode: '3d', icon: '🏙️', label: '3D Model' },
             { mode: 'grid', icon: '🅿️', label: 'OP Grid' },
@@ -586,11 +632,41 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                 padding: 6,
                 boxShadow: '0 12px 30px rgba(0,0,0,0.45)',
                 zIndex: 70,
-                minWidth: '240px',
+                minWidth: '250px',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 4
               }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setViewMode('pending-card');
+                    setIsGlobalDownloadOpen(false);
+                  }}
+                  style={{
+                    padding: '8px 10px',
+                    borderRadius: 8,
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#f8fafc',
+                    fontSize: '0.76rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textAlign: 'left'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <span style={{ fontSize: '1.1rem' }}>🚗</span>
+                  <div>
+                    <div>Pending Slots Card (PNG Image)</div>
+                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>3-Column High-Res Graphic</div>
+                  </div>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => {
@@ -747,6 +823,52 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
           boxShadow: '0 4px 24px rgba(11,43,38,0.06)',
           overflow: 'hidden'
         }}>
+          {statusFilter === 'Pending' && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 12,
+              padding: '14px 22px',
+              background: 'linear-gradient(135deg, rgba(225, 29, 72, 0.08) 0%, rgba(30, 58, 138, 0.08) 100%)',
+              borderBottom: '1.5px solid rgba(225, 29, 72, 0.2)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: '1.25rem' }}>🚗</span>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#0f2952' }}>
+                    Flats with Pending Parking Slot Details ({filteredRecords.length} Flats)
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: '#64748b' }}>
+                    Flats awaiting covered/open parking allocation records
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setViewMode('pending-card')}
+                style={{
+                  padding: '7px 16px',
+                  borderRadius: 10,
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%)',
+                  color: '#ffffff',
+                  fontWeight: 800,
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontFamily: 'inherit',
+                  boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)'
+                }}
+              >
+                <span>🖼️ Switch to 3-Column Card View & Download Image</span>
+              </button>
+            </div>
+          )}
+
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 650 }}>
               <thead>
@@ -930,6 +1052,20 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── Pending Slots 3-Column Card View (Matching Mockup) ── */}
+      {viewMode === 'pending-card' && (
+        <PendingParkingSlotsCard
+          flatsList={pendingFlatsForCard}
+          onSelectFlat={flat => {
+            const found = parkingRecords.find(p => p.flat === flat);
+            if (found) {
+              setEditingFlat(found);
+            }
+          }}
+          showControls={true}
+        />
       )}
 
       {/* ── 2D Architectural Site Layout (OPEN PARKING LAYOUT — 61 SPACES) ── */}

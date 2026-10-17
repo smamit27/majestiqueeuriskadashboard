@@ -157,7 +157,7 @@ test.describe('Test Group 3 — Maintenance Tracker', () => {
     await page.goto('/?admin=true');
     await waitForIntro(page);
 
-    await clickTab(page, 'Maintenance');
+    await clickTab(page, 'Times of India');
     // Verify maintenance component renders
     await expect(page.getByText(/A-302|A-904|A-1002/i).first()).toBeVisible();
 

@@ -1,0 +1,424 @@
+/**
+ * Liquid Glass UI Components
+ * Majestique Euriska Society Dashboard
+ */
+
+@import './liquid-glass-tokens.css';
+
+/* ── Base Liquid Glass Card ────────────────────────────────────── */
+.liquid-glass-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--lg-bg-base);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate));
+  border: var(--lg-border);
+  border-radius: var(--lg-radius-lg);
+  box-shadow: var(--lg-shadow-combined);
+  transition: transform var(--lg-transition-smooth), box-shadow var(--lg-transition-smooth), border-color var(--lg-transition-smooth);
+  color: var(--lg-text-primary);
+}
+
+/* Fallback for browsers not supporting backdrop-filter */
+@supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
+  .liquid-glass-card {
+    background: var(--lg-bg-opaque);
+  }
+}
+
+/* Specular top-edge gradient and dynamic pointer flare */
+.liquid-glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.20) 40%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Pointer reflection overlay */
+.liquid-glass-card__specular {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    400px circle at var(--mouse-x, 50%) var(--mouse-y, 0%),
+    rgba(255, 255, 255, 0.35),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.liquid-glass-card:hover .liquid-glass-card__specular {
+  opacity: 1;
+}
+
+/* Clickable card variant */
+.liquid-glass-card--interactive {
+  cursor: pointer;
+  user-select: none;
+}
+
+.liquid-glass-card--interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--lg-shadow-hover-combined);
+  border-color: rgba(255, 255, 255, 0.95);
+}
+
+.liquid-glass-card--interactive:active {
+  transform: translateY(-1px);
+  background: var(--lg-bg-active);
+}
+
+.liquid-glass-card--interactive:focus-visible {
+  outline: 2px solid var(--lg-accent-society);
+  outline-offset: 3px;
+}
+
+/* ── KPI Grid Layout ───────────────────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 1400px) {
+  .kpi-grid--cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .kpi-grid--cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+/* ── Liquid Glass KPI Card ─────────────────────────────────────── */
+.liquid-glass-kpi {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 148px;
+}
+
+/* Category Accent Glows & Subtle Tints */
+.liquid-glass-kpi--society {
+  --lg-card-accent: var(--lg-accent-society);
+  --lg-card-accent-bg: var(--lg-accent-society-bg);
+  --lg-card-accent-border: var(--lg-accent-society-border);
+}
+.liquid-glass-kpi--society:hover {
+  box-shadow: var(--lg-shadow-hover), 0 0 24px var(--lg-accent-society-glow), var(--lg-shadow-inner);
+}
+
+.liquid-glass-kpi--finance {
+  --lg-card-accent: var(--lg-accent-finance);
+  --lg-card-accent-bg: var(--lg-accent-finance-bg);
+  --lg-card-accent-border: var(--lg-accent-finance-border);
+}
+.liquid-glass-kpi--finance:hover {
+  box-shadow: var(--lg-shadow-hover), 0 0 24px var(--lg-accent-finance-glow), var(--lg-shadow-inner);
+}
+
+.liquid-glass-kpi--maintenance {
+  --lg-card-accent: var(--lg-accent-maintenance);
+  --lg-card-accent-bg: var(--lg-accent-maintenance-bg);
+  --lg-card-accent-border: var(--lg-accent-maintenance-border);
+}
+.liquid-glass-kpi--maintenance:hover {
+  box-shadow: var(--lg-shadow-hover), 0 0 24px var(--lg-accent-maintenance-glow), var(--lg-shadow-inner);
+}
+
+.liquid-glass-kpi--operations {
+  --lg-card-accent: var(--lg-accent-operations);
+  --lg-card-accent-bg: var(--lg-accent-operations-bg);
+  --lg-card-accent-border: var(--lg-accent-operations-border);
+}
+.liquid-glass-kpi--operations:hover {
+  box-shadow: var(--lg-shadow-hover), 0 0 24px var(--lg-accent-operations-glow), var(--lg-shadow-inner);
+}
+
+.liquid-glass-kpi--warning {
+  --lg-card-accent: var(--lg-accent-warning);
+  --lg-card-accent-bg: var(--lg-accent-warning-bg);
+  --lg-card-accent-border: var(--lg-accent-warning-border);
+}
+
+.liquid-glass-kpi--danger {
+  --lg-card-accent: var(--lg-accent-danger);
+  --lg-card-accent-bg: var(--lg-accent-danger-bg);
+  --lg-card-accent-border: var(--lg-accent-danger-border);
+}
+
+/* KPI Card Header (Title + Icon) */
+.liquid-glass-kpi__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.liquid-glass-kpi__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.liquid-glass-kpi__title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--lg-text-secondary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.liquid-glass-kpi__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--lg-card-accent-bg, rgba(255, 255, 255, 0.6));
+  border: 1px solid var(--lg-card-accent-border, rgba(255, 255, 255, 0.8));
+  color: var(--lg-card-accent, var(--lg-text-primary));
+  flex-shrink: 0;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.liquid-glass-card--interactive:hover .liquid-glass-kpi__icon {
+  transform: scale(1.06);
+}
+
+/* KPI Value & Trend */
+.liquid-glass-kpi__body {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.liquid-glass-kpi__value {
+  font-size: clamp(1.6rem, 2.8vw, 1.95rem);
+  font-weight: 800;
+  color: var(--lg-text-primary);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.liquid-glass-kpi__trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.liquid-glass-kpi__trend--up {
+  color: #065f46;
+  background: rgba(16, 185, 129, 0.14);
+}
+
+.liquid-glass-kpi__trend--down {
+  color: #991b1b;
+  background: rgba(239, 68, 68, 0.14);
+}
+
+.liquid-glass-kpi__trend--neutral {
+  color: #475569;
+  background: rgba(100, 116, 139, 0.12);
+}
+
+/* KPI Footer / Subtext / Breakdown */
+.liquid-glass-kpi__footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.liquid-glass-kpi__desc {
+  font-size: 0.76rem;
+  color: var(--lg-text-muted);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.liquid-glass-kpi__breakdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-top: 6px;
+  border-top: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+.liquid-glass-kpi__tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  color: var(--lg-text-secondary);
+}
+
+/* Progress bar inside KPI */
+.liquid-glass-kpi__progress {
+  width: 100%;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.liquid-glass-kpi__progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--lg-card-accent, var(--lg-accent-society));
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Tooltip Indicator ─────────────────────────────────────────── */
+.liquid-glass-kpi__tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--lg-text-dim);
+  cursor: help;
+  transition: color 0.15s ease;
+}
+
+.liquid-glass-kpi__tooltip-trigger:hover {
+  color: var(--lg-text-primary);
+}
+
+/* ── Skeleton Loading State ────────────────────────────────────── */
+.kpi-skeleton {
+  padding: 20px 22px;
+  min-height: 148px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.kpi-skeleton__line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.4) 100%
+  );
+  background-size: 200% 100%;
+  animation: lg-shimmer 1.6s infinite ease-in-out;
+}
+
+.kpi-skeleton__title { width: 45%; }
+.kpi-skeleton__value { width: 70%; height: 32px; border-radius: 8px; margin: 12px 0 8px; }
+.kpi-skeleton__sub { width: 85%; height: 12px; }
+
+@keyframes lg-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Empty & Error States ──────────────────────────────────────── */
+.kpi-state-card {
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.kpi-state-card__icon {
+  font-size: 1.6rem;
+  color: var(--lg-text-muted);
+}
+
+.kpi-state-card__title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--lg-text-primary);
+  margin: 0;
+}
+
+.kpi-state-card__desc {
+  font-size: 0.76rem;
+  color: var(--lg-text-muted);
+  margin: 0;
+  max-width: 280px;
+}
+
+/* ── Universal Liquid Glass Enhancements for Application Cards ── */
+.summary-card,
+.exec-kpi-card,
+.glass-stat-card {
+  position: relative;
+  isolation: isolate;
+  background: var(--lg-bg-base) !important;
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate)) !important;
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate)) !important;
+  border: var(--lg-border) !important;
+  border-radius: var(--lg-radius-md) !important;
+  box-shadow: var(--lg-shadow-combined) !important;
+  transition: transform var(--lg-transition-smooth), box-shadow var(--lg-transition-smooth) !important;
+}
+
+.summary-card:hover,
+.exec-kpi-card:hover,
+.glass-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--lg-shadow-hover-combined) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* ── Accessibility & Motion Constraints ────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass-card,
+  .liquid-glass-card--interactive,
+  .liquid-glass-card__specular,
+  .liquid-glass-kpi__progress-fill,
+  .kpi-skeleton__line,
+  .summary-card,
+  .exec-kpi-card,
+  .glass-stat-card {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+

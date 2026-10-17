@@ -133,4 +133,27 @@ describe('ParkingAllotmentTracker', () => {
     expect(screen.getByText(/Edit Flat/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Save Allotment/i })).toBeInTheDocument();
   });
+
+  it('filters roster by Pending Slot Details and switches to Pending Slots Card view', async () => {
+    render(<ParkingAllotmentTracker isAdmin={false} />);
+
+    // Click Pending Slot Details filter chip
+    const pendingChip = screen.getByRole('button', { name: /Pending Slot Details/i });
+    fireEvent.click(pendingChip);
+
+    // Should show pending banner in table view
+    expect(screen.getByText(/Flats with Pending Parking Slot Details/i)).toBeInTheDocument();
+    expect(screen.getByText('A-101')).toBeInTheDocument();
+    expect(screen.getByText('A-103')).toBeInTheDocument();
+
+    // Switch to Pending Slots Card view
+    const pendingCardBtn = screen.getByRole('button', { name: /Pending Slots Card/i });
+    fireEvent.click(pendingCardBtn);
+
+    // Card matching mockup should be displayed
+    expect(screen.getByText('Flats with Pending Parking Slot Details')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Download as PNG Image/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Copy Flats/i })).toBeInTheDocument();
+    expect(screen.getAllByText('Flat Number').length).toBe(3);
+  });
 });

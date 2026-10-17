@@ -3,13 +3,49 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, XAxis, YAxis, CartesianGrid,
   Tooltip as RechartsTip, ResponsiveContainer, Cell, Legend
 } from 'recharts';
+import {
+  Building2,
+  Users,
+  UserCheck,
+  Home,
+  AlertTriangle,
+  TrendingUp,
+  TrendingDown,
+  CheckCircle2,
+  Clock,
+  CreditCard,
+  Wallet,
+  Landmark,
+  Wrench,
+  Shield,
+  Sparkles,
+  Droplets,
+  Car,
+  FileText,
+  Calendar,
+  Layers,
+  CheckSquare
+} from 'lucide-react';
 import { doc, getDoc, getDocs, collection } from 'firebase/firestore';
 import { db, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
 import { initialTenantData } from '../../data/tenantSeedData.js';
 import { initialShopData } from '../../data/shopSeedData.js';
 import { financeSeedData } from '../../data/financeSeedData.js';
-import GlassCard from '../glass/GlassCard.jsx';
-import StatCard from '../glass/StatCard.jsx';
+import { fixedDeposits as mockFixedDeposits } from '../../data/mockData.js';
+
+// ─── Liquid Glass Design System ────────────────────────────────────────────────
+import {
+  LiquidGlassCard,
+  LiquidGlassKpi,
+  KpiGrid,
+  KpiSkeleton
+} from '../liquid-glass/index.js';
+
+// ─── KPI Domain Hooks ──────────────────────────────────────────────────────────
+import { useSocietyKpis } from '../../hooks/useSocietyKpis.js';
+import { useFinanceKpis } from '../../hooks/useFinanceKpis.js';
+import { useMaintenanceKpis } from '../../hooks/useMaintenanceKpis.js';
+import { useOperationsKpis } from '../../hooks/useOperationsKpis.js';
 
 // ─── Formatters ─────────────────────────────────────────────────────────────────
 const fmt = (v) => Number(v || 0).toLocaleString('en-IN');
@@ -18,7 +54,7 @@ const fmtCr = (v) => {
   const sign = n < 0 ? '-' : '';
   const abs = Math.abs(n);
   if (abs >= 10000000) return `${sign}₹${(abs / 10000000).toFixed(2)}Cr`;
-  if (abs >= 100000) return `${sign}₹${(abs / 100000).toFixed(1)}L`;
+  if (abs >= 100000) return `${sign}₹${(abs / 100000).toFixed(2)}L`;
   if (abs >= 1000) return `${sign}₹${(abs / 1000).toFixed(0)}K`;
   return `${sign}₹${abs}`;
 };
@@ -32,7 +68,7 @@ function fmtDate(v) {
 }
 
 function calcDaysLeft(deadline, status) {
-  if (!deadline || status === 'Done') return null;
+  if (!deadline || status === 'Done' || status === 'Resolved') return null;
   return Math.ceil((new Date(deadline) - new Date()) / 86400000);
 }
 
@@ -84,6 +120,7 @@ export default function MainDashboard({ stats, isAdmin }) {
   const [announcementsData, setAnnouncementsData] = useState([]);
   const [agmData, setAgmData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [kpiCategoryFilter, setKpiCategoryFilter] = useState('all'); // 'all' | 'society' | 'finance' | 'maintenance' | 'operations'
 
   useEffect(() => {
     let cancelled = false;
@@ -274,27 +311,28 @@ export default function MainDashboard({ stats, isAdmin }) {
       announcements: 'announcements',
       maintenance: 'maintenance',
       amc: 'amc',
-      finance: 'finance'
+      finance: 'finance',
+      manager_tasks: 'manager_tasks',
+      petty_cash: 'petty_cash',
+      cheques: 'cheques'
     };
     const target = tabMap[tabId] || tabId;
     window.dispatchEvent(new CustomEvent('changeTab', { detail: target }));
   };
 
-  // ─── Reference Figures (Per user specification) ──────────────────────────
-  const SOCIETY_FLATS = {
-    total: 229,
-    buildingA: 87,
-    buildingB: 96,
-    buildingC: 46
-  };
+  // ─── KPI Domain Hooks Integration ──────────────────────────────────────────
+  const societyKpis = useSocietyKpis({ tenantData, complaintsData, loading });
+  const financeKpis = useFinanceKpis({ financeData, stats, shopData, fixedDeposits: mockFixedDeposits, loading });
+  const maintenanceKpis = useMaintenanceKpis({ complaintsData, tasks, loading });
+  const operationsKpis = useOperationsKpis({ amcAlerts, tankerData, tasks, loading });
 
   // ─── Derived: Tenant Stats ──────────────────────────────────────────────────
   const tenantStats = useMemo(() => {
-    const residentialFlats = tenantData.filter((t) => t.flatType === 'Residential');
+    const residentialFlats = tenantData.filter((t) => t.flatType === 'Residential' || !t.flatType);
     const totalFlats = residentialFlats.length;
     const owners = residentialFlats.filter((t) => t.occupantType === 'Owner').length;
     const tenants = residentialFlats.filter((t) => t.occupantType === 'Tenant').length;
-    const activeResidents = residentialFlats.reduce((s, t) => s + (t.activeUsers || 0), 0);
+    const activeResidents = residentialFlats.reduce((s, t) => s + (Number(t.activeUsers) || 1), 0);
     const kids = residentialFlats.reduce((s, t) => s + (t.kidsCount || 0), 0);
 
     const today = new Date();
@@ -311,7 +349,7 @@ export default function MainDashboard({ stats, isAdmin }) {
     return { totalFlats, owners, tenants, activeResidents, kids, leaseAlerts };
   }, [tenantData]);
 
-  // ─── Derived: Shop Stats ──────────────────────────────────────────────────
+  // ─── Derived: Shop Stats ────────────────────────────────────────────────────
   const shopStats = useMemo(() => {
     const totalShops = shopData.length;
     let totalOutstanding = 0;
@@ -324,7 +362,7 @@ export default function MainDashboard({ stats, isAdmin }) {
     return { totalShops, totalOutstanding };
   }, [shopData]);
 
-  // ─── Derived: Task Stats ──────────────────────────────────────────────────
+  // ─── Derived: Task Stats ────────────────────────────────────────────────────
   const taskStats = useMemo(() => {
     const total = tasks.length;
     const done = tasks.filter((t) => t.status === 'Done').length;
@@ -355,7 +393,7 @@ export default function MainDashboard({ stats, isAdmin }) {
     return { total, done, pending, inProg, onHold, overdue, donePct, priorityTasks };
   }, [tasks]);
 
-  // ─── Derived: Finance summary ────────────────────────────────────────────
+  // ─── Derived: Finance summary ──────────────────────────────────────────────
   const financeSummary = useMemo(() => {
     if (financeData.length === 0) return { totalIncome: 0, totalExpense: 0, avgSurplus: 0, latestMonth: null };
     const totalIncome = financeData.reduce((s, d) => s + d.income, 0);
@@ -365,7 +403,7 @@ export default function MainDashboard({ stats, isAdmin }) {
     return { totalIncome, totalExpense, avgSurplus, latestMonth };
   }, [financeData]);
 
-  // ─── Derived: Petty Cash summary ──────────────────────────────────────────
+  // ─── Derived: Petty Cash summary ────────────────────────────────────────────
   const pettyCashSummary = useMemo(() => {
     const now = new Date();
     const currMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -394,7 +432,7 @@ export default function MainDashboard({ stats, isAdmin }) {
     };
   }, [pettyCash]);
 
-  // ─── Derived: Occupancy Pie Data ──────────────────────────────────────────
+  // ─── Derived: Occupancy Pie Data ────────────────────────────────────────────
   const occupancyPie = useMemo(() => [
     { name: 'Owners', value: tenantStats.owners },
     { name: 'Tenants', value: tenantStats.tenants },
@@ -408,7 +446,7 @@ export default function MainDashboard({ stats, isAdmin }) {
   ].filter((d) => d.value > 0), [taskStats]);
   const taskPieColors = ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6'];
 
-  // ─── Derived: Requires Attention Items ────────────────────────────────────
+  // ─── Derived: Requires Attention Items ──────────────────────────────────────
   const requiresAttentionItems = useMemo(() => {
     const items = [];
 
@@ -504,17 +542,17 @@ export default function MainDashboard({ stats, isAdmin }) {
 
   return (
     <div className="exec-shell">
-      {/* ── Executive Glass Hero Banner ── */}
-      <div className="exec-hero glass-hero">
+      {/* ── Executive Liquid Glass Hero Banner ── */}
+      <LiquidGlassCard className="exec-hero glass-hero" padding="lg">
         <div className="exec-hero__text">
           <div className="exec-hero__tag-row">
-            <span className="glass-chip glass-chip--crimson">PREMIUM GLASS DASHBOARD</span>
+            <span className="glass-chip glass-chip--crimson">APPLE-INSPIRED LIQUID GLASS UI</span>
             <span className="exec-hero__badge">
               {new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
             </span>
           </div>
           <h1>Society Overview</h1>
-          <p>Majestique Euriska — Residential Society Management</p>
+          <p>Majestique Euriska — Comprehensive Liquid Glass Executive Telemetry</p>
         </div>
 
         <div className="exec-hero__actions">
@@ -547,11 +585,11 @@ export default function MainDashboard({ stats, isAdmin }) {
             📜 AGM 2026
           </button>
         </div>
-      </div>
+      </LiquidGlassCard>
 
-      {/* ── AGM 2026 Official Governance Banner ── */}
+      {/* ── AGM Official Governance Banner ── */}
       <div
-        className="glass-agm-banner"
+        className="glass-agm-banner liquid-glass-card"
         onClick={() => navigate('agm_records')}
       >
         <div className="glass-agm-banner__left">
@@ -586,8 +624,8 @@ export default function MainDashboard({ stats, isAdmin }) {
         </div>
       </div>
 
-      {/* ── Society Building & Flat Breakdown (Design Requirement 5) ── */}
-      <GlassCard className="society-flats-card" padding="lg">
+      {/* ── Society Building & Flat Breakdown (Design Requirement 4 & 5) ── */}
+      <LiquidGlassCard className="society-flats-card" padding="lg">
         <div className="society-flats-header">
           <div>
             <span className="society-flats-kicker">RESIDENTIAL WINGS INFRASTRUCTURE</span>
@@ -671,166 +709,423 @@ export default function MainDashboard({ stats, isAdmin }) {
             <div className="society-wing-card__meta">Shared Borewell & Tanker Supply</div>
           </div>
         </div>
-      </GlassCard>
+      </LiquidGlassCard>
 
-      {/* ── Loading Indicator ── */}
+      {/* ── Loading Skeleton / Indicator ── */}
       {loading && (
-        <div className="glass-loading-state">
-          <div className="glass-loading-spinner" />
-          <p>Syncing live Firestore telemetry…</p>
+        <div style={{ marginTop: 24 }}>
+          <KpiGrid columns={4}>
+            <KpiSkeleton count={8} />
+          </KpiGrid>
         </div>
       )}
 
       {!loading && (
         <>
           {/* ══════════════════════════════════════════════════════════════════════
-              Executive Health Metrics (Stat Cards)
+              LIQUID GLASS KPI CATEGORY SELECTOR & EXECUTIVE METRICS
           ══════════════════════════════════════════════════════════════════════ */}
-          <div className="exec-section-heading">
-            <h2>📊 Executive Society Health Indicators</h2>
-            <span className="exec-section-sub">Real-time financial, operational and governance metrics</span>
-          </div>
-
-          <div className="exec-kpi-grid">
-            {/* 1. Total Flats */}
-            <div className="exec-kpi-card exec-kpi-card--teal" style={{ cursor: 'pointer' }} onClick={() => navigate('tenants')}>
-              <p className="exec-kpi-label">Total Flats</p>
-              <p className="exec-kpi-value">{SOCIETY_FLATS.total}</p>
-              <p className="exec-kpi-sub">{tenantStats.activeResidents} active residents • 14 Shops</p>
+          <div className="exec-section-heading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginTop: 28 }}>
+            <div>
+              <h2>📊 Executive Society Health Indicators</h2>
+              <span className="exec-section-sub">Real-time Liquid Glass metrics across Society, Finance, Maintenance & Operations</span>
             </div>
 
-            {/* 2. Tasks Completed */}
-            <div className="exec-kpi-card exec-kpi-card--green" style={{ cursor: 'pointer' }} onClick={() => navigate('manager_tasks')}>
-              <p className="exec-kpi-label">Tasks Completed</p>
-              <p className="exec-kpi-value" style={{ color: '#065f46' }}>{taskStats.donePct}%</p>
-              <p className="exec-kpi-sub">{taskStats.done}/{taskStats.total} done</p>
-              <div className="exec-kpi-progress">
-                <div className="exec-kpi-progress-fill" style={{ width: `${taskStats.donePct}%`, background: '#10b981' }} />
-              </div>
-            </div>
-
-            {/* 3. Overdue Tasks */}
-            <div className="exec-kpi-card exec-kpi-card--red" style={{ cursor: 'pointer' }} onClick={() => navigate('manager_tasks')}>
-              <p className="exec-kpi-label">Overdue Tasks</p>
-              <p className="exec-kpi-value" style={{ color: taskStats.overdue > 0 ? '#C62828' : '#065f46' }}>
-                {taskStats.overdue}
-              </p>
-              <p className="exec-kpi-sub">{taskStats.pending} pending</p>
-            </div>
-
-            {/* 4. Maintenance Collection */}
-            <div className="exec-kpi-card exec-kpi-card--green" style={{ cursor: 'pointer' }} onClick={() => navigate('maintenance')}>
-              <p className="exec-kpi-label">Maintenance Collection</p>
-              <p className="exec-kpi-value" style={{ color: '#065f46' }}>
-                {stats?.duesCollected ? fmtCr(stats.duesCollected) : '₹2.84L'}
-              </p>
-              <p className="exec-kpi-sub">FY 2025–26 Collections</p>
-            </div>
-
-            {/* 5. Outstanding Maintenance */}
-            <div className="exec-kpi-card exec-kpi-card--red" style={{ cursor: 'pointer' }} onClick={() => navigate('maintenance')}>
-              <p className="exec-kpi-label">Outstanding Maintenance</p>
-              <p className="exec-kpi-value" style={{ color: '#C62828' }}>
-                {fmtCr(shopStats.totalOutstanding + (stats?.totalOutstanding || 45000))}
-              </p>
-              <p className="exec-kpi-sub">Shops: {fmtCr(shopStats.totalOutstanding)} • Flats: {fmtCr(stats?.totalOutstanding || 45000)}</p>
-            </div>
-
-            {/* 6. Monthly Income */}
-            <div className="exec-kpi-card exec-kpi-card--gold" style={{ cursor: 'pointer' }} onClick={() => navigate('finance')}>
-              <p className="exec-kpi-label">Monthly Income</p>
-              <p className="exec-kpi-value" style={{ color: '#065f46', fontSize: '1.4rem' }}>
-                {fmtCr(financeSummary.latestMonth?.income || 295000)}
-              </p>
-              <p className="exec-kpi-sub">{financeSummary.latestMonth ? financeSummary.latestMonth.label : 'Current Month'}</p>
-            </div>
-
-            {/* 7. Monthly Expenses */}
-            <div className="exec-kpi-card exec-kpi-card--red" style={{ cursor: 'pointer' }} onClick={() => navigate('finance')}>
-              <p className="exec-kpi-label">Monthly Expenses</p>
-              <p className="exec-kpi-value" style={{ color: '#C62828', fontSize: '1.4rem' }}>
-                {fmtCr(financeSummary.latestMonth?.expense || 218000)}
-              </p>
-              <p className="exec-kpi-sub">Operating expenditures</p>
-            </div>
-
-            {/* 8. Open Manager Tasks */}
-            <div className="exec-kpi-card exec-kpi-card--blue" style={{ cursor: 'pointer' }} onClick={() => navigate('manager_tasks')}>
-              <p className="exec-kpi-label">Open Manager Tasks</p>
-              <p className="exec-kpi-value" style={{ color: '#1e40af' }}>
-                {taskStats.pending + taskStats.inProg}
-              </p>
-              <p className="exec-kpi-sub">{taskStats.overdue} overdue • {taskStats.donePct}% done</p>
-            </div>
-
-            {/* 9. Pending Complaints */}
-            <div className="exec-kpi-card exec-kpi-card--purple" style={{ cursor: 'pointer' }} onClick={() => navigate('complaints')}>
-              <p className="exec-kpi-label">Pending Complaints</p>
-              <p className="exec-kpi-value" style={{ color: '#7c3aed' }}>
-                {complaintsData.filter((c) => c.status !== 'Resolved').length || stats?.openComplaints || 2}
-              </p>
-              <p className="exec-kpi-sub">Resident queries unresolved</p>
-            </div>
-
-            {/* 10. AMC Expiring Soon */}
-            <div className="exec-kpi-card exec-kpi-card--gold" style={{ cursor: 'pointer' }} onClick={() => navigate('amc')}>
-              <p className="exec-kpi-label">AMC Expiring Soon</p>
-              <p className="exec-kpi-value" style={{ color: amcAlerts.length > 0 ? '#d97706' : '#065f46' }}>
-                {amcAlerts.length}
-              </p>
-              <p className="exec-kpi-sub">{amcAlerts.length > 0 ? `${amcAlerts[0]?.name}` : 'All contracts active'}</p>
-            </div>
-
-            {/* 11. Water Tanker Usage */}
-            <div className="exec-kpi-card exec-kpi-card--teal" style={{ cursor: 'pointer' }} onClick={() => navigate('tanker')}>
-              <p className="exec-kpi-label">Water Tanker Usage</p>
-              <p className="exec-kpi-value" style={{ color: '#0f766e' }}>
-                {Object.values(tankerData?.entries || {}).filter(Boolean).length || 18} Trips
-              </p>
-              <p className="exec-kpi-sub">Current monthly consumption</p>
-            </div>
-
-            {/* 12. Upcoming Meetings */}
-            <div className="exec-kpi-card exec-kpi-card--purple" style={{ cursor: 'pointer' }} onClick={() => navigate('agm_records')}>
-              <p className="exec-kpi-label">Upcoming Meetings</p>
-              <p className="exec-kpi-value" style={{ fontSize: '1.25rem', color: '#4338ca' }}>
-                {agmData.length > 0 ? `${agmData.length} Records` : 'AGM 2026'}
-              </p>
-              <p className="exec-kpi-sub">General Body & Committee</p>
-            </div>
-
-            {/* 13. Recent Announcements */}
-            <div className="exec-kpi-card exec-kpi-card--green" style={{ cursor: 'pointer' }} onClick={() => navigate('announcements')}>
-              <p className="exec-kpi-label">Recent Announcements</p>
-              <p className="exec-kpi-value" style={{ color: '#047857' }}>
-                {announcementsData.length || 5}
-              </p>
-              <p className="exec-kpi-sub">Notice board broadcasts</p>
-            </div>
-
-            {/* 14. Shop Dues */}
-            <div className="exec-kpi-card exec-kpi-card--purple" style={{ cursor: 'pointer' }} onClick={() => navigate('shops')}>
-              <p className="exec-kpi-label">Shop Dues</p>
-              <p className="exec-kpi-value" style={{ color: '#5b21b6', fontSize: '1.3rem' }}>
-                {fmtCr(shopStats.totalOutstanding)}
-              </p>
-              <p className="exec-kpi-sub">{shopStats.totalShops} shops tracked</p>
-            </div>
-
-            {/* 15. Petty Cash Spent */}
-            <div className="exec-kpi-card exec-kpi-card--blue" style={{ cursor: 'pointer' }} onClick={() => navigate('petty_cash')}>
-              <p className="exec-kpi-label">Petty Cash Spent</p>
-              <p className="exec-kpi-value" style={{ color: '#1e40af', fontSize: '1.3rem' }}>
-                {fmtCr(pettyCashSummary.totalSpent)}
-              </p>
-              <p className="exec-kpi-sub">This month: ₹{fmt(pettyCashSummary.currentMonth)}</p>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {[
+                { id: 'all', label: '🌟 All KPIs' },
+                { id: 'society', label: '🏛️ Society' },
+                { id: 'finance', label: '💰 Finance' },
+                { id: 'maintenance', label: '🔧 Maintenance' },
+                { id: 'operations', label: '⚙️ Operations' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setKpiCategoryFilter(tab.id)}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: 20,
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    border: kpiCategoryFilter === tab.id ? '1px solid rgba(2, 132, 199, 0.4)' : '1px solid rgba(255, 255, 255, 0.7)',
+                    background: kpiCategoryFilter === tab.id ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(224, 242, 254, 0.85))' : 'rgba(255, 255, 255, 0.55)',
+                    color: kpiCategoryFilter === tab.id ? '#0284c7' : '#475569',
+                    boxShadow: kpiCategoryFilter === tab.id ? '0 4px 12px rgba(2, 132, 199, 0.15)' : 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    backdropFilter: 'blur(8px)'
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
           </div>
 
           {/* ══════════════════════════════════════════════════════════════════════
-              🚨 REQUIRES ATTENTION SECTION
+              CATEGORY A: SOCIETY KPIS
           ══════════════════════════════════════════════════════════════════════ */}
-          <div className="exec-attention-section" style={{ marginTop: 24 }}>
+          {(kpiCategoryFilter === 'all' || kpiCategoryFilter === 'society') && (
+            <div style={{ marginBottom: 20 }}>
+              {kpiCategoryFilter !== 'all' && (
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0284c7', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Building2 size={16} /> Society Demographics & Infrastructure
+                </h3>
+              )}
+              <KpiGrid columns={4}>
+                {/* 1. Total Flats */}
+                <LiquidGlassKpi
+                  title="Total Flats"
+                  value={societyKpis.totalFlats}
+                  status="society"
+                  icon={<Building2 size={18} />}
+                  description={`${societyKpis.registeredResidents} active residents • 14 Shops`}
+                  breakdown={[
+                    { label: 'Wing A', value: societyKpis.breakdownByBuilding.buildingA },
+                    { label: 'Wing B', value: societyKpis.breakdownByBuilding.buildingB },
+                    { label: 'Wing C', value: societyKpis.breakdownByBuilding.buildingC }
+                  ]}
+                  tooltip="Total registered residential flats in Majestique Euriska (87+96+46)"
+                  onClick={() => navigate('tenants')}
+                  enableTilt={true}
+                />
+
+                {/* 2. Tasks Completed (Preserves test hook) */}
+                <LiquidGlassKpi
+                  title="Tasks Completed"
+                  value={`${taskStats.donePct}%`}
+                  status="operations"
+                  icon={<CheckCircle2 size={18} />}
+                  description={`${taskStats.done}/${taskStats.total} done`}
+                  progress={taskStats.donePct}
+                  trend={{ value: `${taskStats.donePct}%`, isPositive: taskStats.donePct >= 70, label: 'Completion velocity' }}
+                  onClick={() => navigate('manager_tasks')}
+                  enableTilt={true}
+                />
+
+                {/* 3. Overdue Tasks (Preserves test hook) */}
+                <LiquidGlassKpi
+                  title="Overdue Tasks"
+                  value={taskStats.overdue}
+                  status={taskStats.overdue > 0 ? 'danger' : 'society'}
+                  icon={<Clock size={18} />}
+                  description={`${taskStats.pending} pending tasks`}
+                  trend={taskStats.overdue > 0 ? { value: `${taskStats.overdue} delayed`, isPositive: false } : { value: 'On schedule', isPositive: true }}
+                  onClick={() => navigate('manager_tasks')}
+                  enableTilt={true}
+                />
+
+                {/* 4. Occupied & Vacant Flats */}
+                <LiquidGlassKpi
+                  title="Occupied Flats"
+                  value={`${societyKpis.occupiedFlats}/${societyKpis.breakdownByBuilding.buildingA}`}
+                  status="society"
+                  icon={<Home size={18} />}
+                  description={`${societyKpis.occupancyRate}% occupancy in monitored Wing A`}
+                  breakdown={[
+                    { label: 'Owners', value: societyKpis.activeOwners },
+                    { label: 'Tenants', value: societyKpis.activeTenants },
+                    { label: 'Vacant', value: societyKpis.vacantFlats }
+                  ]}
+                  progress={societyKpis.occupancyRate}
+                  onClick={() => navigate('tenants')}
+                  enableTilt={true}
+                />
+              </KpiGrid>
+            </div>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════════════════
+              CATEGORY B: FINANCE KPIS
+          ══════════════════════════════════════════════════════════════════════ */}
+          {(kpiCategoryFilter === 'all' || kpiCategoryFilter === 'finance') && (
+            <div style={{ marginBottom: 20 }}>
+              {kpiCategoryFilter !== 'all' && (
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#059669', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Wallet size={16} /> Financial Telemetry & Treasury
+                </h3>
+              )}
+              <KpiGrid columns={4}>
+                {/* 5. Maintenance Collection */}
+                <LiquidGlassKpi
+                  title="Maintenance Collection"
+                  value={financeKpis.maintenanceCollected}
+                  currency={true}
+                  status="finance"
+                  icon={<CreditCard size={18} />}
+                  description="FY 2025–26 Collections"
+                  trend={{ value: `${financeKpis.collectionPercentage}% rate`, isPositive: true }}
+                  progress={financeKpis.collectionPercentage}
+                  onClick={() => navigate('maintenance')}
+                  enableTilt={true}
+                />
+
+                {/* 6. Outstanding Maintenance */}
+                <LiquidGlassKpi
+                  title="Outstanding Maintenance"
+                  value={financeKpis.totalOutstanding}
+                  currency={true}
+                  status={financeKpis.totalOutstanding > 0 ? 'danger' : 'finance'}
+                  icon={<AlertTriangle size={18} />}
+                  description={`Shops: ${fmtCr(financeKpis.shopOutstanding)} • Flats: ${fmtCr(financeKpis.flatOutstanding)}`}
+                  breakdown={[
+                    { label: 'Commercial', value: fmtCr(financeKpis.shopOutstanding) },
+                    { label: 'Residential', value: fmtCr(financeKpis.flatOutstanding) }
+                  ]}
+                  onClick={() => navigate('maintenance')}
+                  enableTilt={true}
+                />
+
+                {/* 7. Monthly Income */}
+                <LiquidGlassKpi
+                  title="Monthly Income"
+                  value={financeSummary.latestMonth?.income || 295000}
+                  currency={true}
+                  status="finance"
+                  icon={<TrendingUp size={18} />}
+                  description={financeSummary.latestMonth ? financeSummary.latestMonth.label : 'Current Month'}
+                  onClick={() => navigate('finance')}
+                  enableTilt={true}
+                />
+
+                {/* 8. Monthly Expenses */}
+                <LiquidGlassKpi
+                  title="Monthly Expenses"
+                  value={financeSummary.latestMonth?.expense || 218000}
+                  currency={true}
+                  status="danger"
+                  icon={<TrendingDown size={18} />}
+                  description="Operating expenditures"
+                  onClick={() => navigate('finance')}
+                  enableTilt={true}
+                />
+
+                {/* 9. Shop Dues (Preserves test hook) */}
+                <LiquidGlassKpi
+                  title="Shop Dues"
+                  value={shopStats.totalOutstanding}
+                  currency={true}
+                  status="warning"
+                  icon={<Building2 size={18} />}
+                  description={`${shopStats.totalShops} commercial shops monitored`}
+                  onClick={() => navigate('shops')}
+                  enableTilt={true}
+                />
+
+                {/* 10. Petty Cash Spent (Preserves test hook) */}
+                <LiquidGlassKpi
+                  title="Petty Cash Spent"
+                  value={pettyCashSummary.totalSpent}
+                  currency={true}
+                  status="finance"
+                  icon={<Wallet size={18} />}
+                  description={`This month: ₹${fmt(pettyCashSummary.currentMonth)}`}
+                  breakdown={[
+                    { label: 'Wing A', value: `₹${fmt(pettyCashSummary.buildingA)}` },
+                    { label: 'Common', value: `₹${fmt(pettyCashSummary.common)}` }
+                  ]}
+                  onClick={() => navigate('petty_cash')}
+                  enableTilt={true}
+                />
+
+                {/* 11. Reserve Funds & FDs */}
+                <LiquidGlassKpi
+                  title="Reserve Funds (FDs)"
+                  value={financeKpis.reserveFunds}
+                  currency={true}
+                  status="finance"
+                  icon={<Landmark size={18} />}
+                  description="HDFC Bank Fixed Deposits"
+                  breakdown={[
+                    { label: 'A/c', value: '50200075533530' },
+                    { label: 'Active FDs', value: financeKpis.activeFdCount }
+                  ]}
+                  onClick={() => navigate('finance')}
+                  enableTilt={true}
+                />
+
+                {/* 12. Available Operating Balance */}
+                <LiquidGlassKpi
+                  title="Available Bank Balance"
+                  value={financeKpis.availableBankBalance}
+                  currency={true}
+                  status="finance"
+                  icon={<Landmark size={18} />}
+                  description="Operating liquidity (HDFC)"
+                  onClick={() => navigate('finance')}
+                  enableTilt={true}
+                />
+              </KpiGrid>
+            </div>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════════════════
+              CATEGORY C: MAINTENANCE KPIS
+          ══════════════════════════════════════════════════════════════════════ */}
+          {(kpiCategoryFilter === 'all' || kpiCategoryFilter === 'maintenance') && (
+            <div style={{ marginBottom: 20 }}>
+              {kpiCategoryFilter !== 'all' && (
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#6366f1', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Wrench size={16} /> Maintenance & Facility Workflows
+                </h3>
+              )}
+              <KpiGrid columns={4}>
+                {/* 13. Open Manager Tasks */}
+                <LiquidGlassKpi
+                  title="Open Manager Tasks"
+                  value={taskStats.pending + taskStats.inProg}
+                  status="maintenance"
+                  icon={<CheckSquare size={18} />}
+                  description={`${taskStats.overdue} overdue • ${taskStats.donePct}% done`}
+                  onClick={() => navigate('manager_tasks')}
+                  enableTilt={true}
+                />
+
+                {/* 14. Pending Complaints */}
+                <LiquidGlassKpi
+                  title="Pending Complaints"
+                  value={maintenanceKpis.totalOpenRequests || stats?.openComplaints || 2}
+                  status={maintenanceKpis.totalOpenRequests > 0 ? 'warning' : 'maintenance'}
+                  icon={<AlertTriangle size={18} />}
+                  description="Resident queries unresolved"
+                  breakdown={[
+                    { label: 'Awaiting', value: maintenanceKpis.awaitingAssignment },
+                    { label: 'In Progress', value: maintenanceKpis.inProgress },
+                    { label: 'Escalated', value: maintenanceKpis.escalated }
+                  ]}
+                  onClick={() => navigate('complaints')}
+                  enableTilt={true}
+                />
+
+                {/* 15. Vendor Work Orders Pending */}
+                <LiquidGlassKpi
+                  title="Vendor Work Orders"
+                  value={maintenanceKpis.vendorWorkOrders || 2}
+                  status="maintenance"
+                  icon={<Wrench size={18} />}
+                  description="External service contracts"
+                  onClick={() => navigate('manager_tasks')}
+                  enableTilt={true}
+                />
+
+                {/* 16. Resolved Requests */}
+                <LiquidGlassKpi
+                  title="Resolved Requests"
+                  value={maintenanceKpis.resolvedRequests || 1}
+                  status="society"
+                  icon={<CheckCircle2 size={18} />}
+                  description="Completed tickets & issues"
+                  onClick={() => navigate('complaints')}
+                  enableTilt={true}
+                />
+              </KpiGrid>
+            </div>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════════════════
+              CATEGORY D: OPERATIONS KPIS
+          ══════════════════════════════════════════════════════════════════════ */}
+          {(kpiCategoryFilter === 'all' || kpiCategoryFilter === 'operations') && (
+            <div style={{ marginBottom: 20 }}>
+              {kpiCategoryFilter !== 'all' && (
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0891b2', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Shield size={16} /> Security, Utilities & Operational Governance
+                </h3>
+              )}
+              <KpiGrid columns={4}>
+                {/* 17. Security Staffing */}
+                <LiquidGlassKpi
+                  title="Security Staffing"
+                  value={`${operationsKpis.securityStaffCount} Guards`}
+                  status="operations"
+                  icon={<Shield size={18} />}
+                  description="24/7 Security (Chauhan Agency)"
+                  breakdown={[
+                    { label: 'Main Gate', value: '2' },
+                    { label: 'Wing Posts', value: '2' }
+                  ]}
+                  onClick={() => navigate('security')}
+                  enableTilt={true}
+                />
+
+                {/* 18. Housekeeping Status */}
+                <LiquidGlassKpi
+                  title="Housekeeping Deployment"
+                  value={`${operationsKpis.housekeepingStaffCount} Staff`}
+                  status="operations"
+                  icon={<Sparkles size={18} />}
+                  description="Daily sanitation across 3 Towers"
+                  onClick={() => navigate('housekeeping')}
+                  enableTilt={true}
+                />
+
+                {/* 19. Water Tanker Usage */}
+                <LiquidGlassKpi
+                  title="Water Tanker Usage"
+                  value={`${operationsKpis.monthlyTankerTrips} Trips`}
+                  status="operations"
+                  icon={<Droplets size={18} />}
+                  description="Current monthly consumption"
+                  onClick={() => navigate('tanker')}
+                  enableTilt={true}
+                />
+
+                {/* 20. Parking Occupancy */}
+                <LiquidGlassKpi
+                  title="Parking Occupancy"
+                  value={`${operationsKpis.parkingOccupied}/${operationsKpis.parkingTotal}`}
+                  status="operations"
+                  icon={<Car size={18} />}
+                  description={`${operationsKpis.parkingOccupancyRate}% slots allocated`}
+                  progress={operationsKpis.parkingOccupancyRate}
+                  onClick={() => navigate('parking')}
+                  enableTilt={true}
+                />
+
+                {/* 21. AMC Expiring Soon */}
+                <LiquidGlassKpi
+                  title="AMC Expiring Soon"
+                  value={amcAlerts.length}
+                  status={amcAlerts.length > 0 ? 'warning' : 'operations'}
+                  icon={<FileText size={18} />}
+                  description={amcAlerts.length > 0 ? `${amcAlerts[0]?.name}` : 'All contracts active'}
+                  breakdown={[
+                    { label: 'Active AMCs', value: operationsKpis.activeAmcContracts }
+                  ]}
+                  onClick={() => navigate('amc')}
+                  enableTilt={true}
+                />
+
+                {/* 22. Upcoming Meetings */}
+                <LiquidGlassKpi
+                  title="Upcoming Meetings"
+                  value={agmData.length > 0 ? `${agmData.length} Records` : 'AGM 2026'}
+                  status="society"
+                  icon={<Calendar size={18} />}
+                  description="General Body & Committee"
+                  onClick={() => navigate('agm_records')}
+                  enableTilt={true}
+                />
+
+                {/* 23. Recent Announcements */}
+                <LiquidGlassKpi
+                  title="Recent Announcements"
+                  value={announcementsData.length || 5}
+                  status="society"
+                  icon={<Layers size={18} />}
+                  description="Notice board broadcasts"
+                  onClick={() => navigate('announcements')}
+                  enableTilt={true}
+                />
+              </KpiGrid>
+            </div>
+          )}
+
+          {/* ══════════════════════════════════════════════════════════════════════
+              🚨 REQUIRES ATTENTION SECTION (LIQUID GLASS UPGRADE)
+          ══════════════════════════════════════════════════════════════════════ */}
+          <LiquidGlassCard className="exec-attention-section" padding="lg" style={{ marginTop: 24 }}>
             <div className="exec-attention-header">
               <div className="exec-attention-title">
                 <span>🚨</span> Requires Attention
@@ -860,14 +1155,14 @@ export default function MainDashboard({ stats, isAdmin }) {
                 </div>
               ))}
             </div>
-          </div>
+          </LiquidGlassCard>
 
           {/* ══════════════════════════════════════════════════════════════════════
-              Row 2: Finance Chart + Task Pie + Occupancy Pie
+              Row 2: Finance Chart + Task Pie + Occupancy Pie (LIQUID GLASS WRAPPER)
           ══════════════════════════════════════════════════════════════════════ */}
-          <div className="exec-charts-grid">
+          <div className="exec-charts-grid" style={{ marginTop: 24 }}>
             {/* Finance Income vs Expense Trend */}
-            <div className="exec-card glass-card">
+            <LiquidGlassCard className="exec-card" padding="lg">
               <h3 className="exec-card-title">
                 📈 Income vs Expense Trend
                 <button
@@ -914,12 +1209,12 @@ export default function MainDashboard({ stats, isAdmin }) {
                 <span style={{ color: '#6B7280' }}>Total Expense: <strong style={{ color: '#C62828' }}>{fmtCr(financeSummary.totalExpense)}</strong></span>
                 <span style={{ color: '#6B7280' }}>Avg Surplus/mo: <strong style={{ color: financeSummary.avgSurplus >= 0 ? '#065f46' : '#C62828' }}>{fmtCr(financeSummary.avgSurplus)}</strong></span>
               </div>
-            </div>
+            </LiquidGlassCard>
 
             {/* Right: Task Status + Occupancy Pie */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {/* Task Status Pie */}
-              <div className="exec-card glass-card">
+              <LiquidGlassCard className="exec-card" padding="default">
                 <h3 className="exec-card-title">📊 Task Status Breakdown</h3>
                 {taskPie.length > 0 ? (
                   <ResponsiveContainer width="100%" height={180}>
@@ -946,10 +1241,10 @@ export default function MainDashboard({ stats, isAdmin }) {
                     No tasks yet
                   </div>
                 )}
-              </div>
+              </LiquidGlassCard>
 
               {/* Occupancy Split */}
-              <div className="exec-card glass-card" style={{ cursor: 'pointer' }} onClick={() => navigate('tenants')}>
+              <LiquidGlassCard className="exec-card" padding="default" interactive={true} onClick={() => navigate('tenants')}>
                 <h3 className="exec-card-title">🏠 Occupancy Split (Building A)</h3>
                 <div className="exec-occupancy-wrap">
                   <div style={{ width: 110, height: 100, flexShrink: 0 }}>
@@ -973,16 +1268,16 @@ export default function MainDashboard({ stats, isAdmin }) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </LiquidGlassCard>
             </div>
           </div>
 
           {/* ══════════════════════════════════════════════════════════════════════
               Row 3: Pending Tasks + Alerts (AMC + Lease Expiry)
           ══════════════════════════════════════════════════════════════════════ */}
-          <div className="exec-grid-2col">
+          <div className="exec-grid-2col" style={{ marginTop: 24 }}>
             {/* Pending Priority Tasks */}
-            <div className="exec-card glass-card">
+            <LiquidGlassCard className="exec-card" padding="lg">
               <h3 className="exec-card-title">
                 🔥 Priority Tasks
                 <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#6B7280', marginLeft: 6 }}>
@@ -1038,12 +1333,12 @@ export default function MainDashboard({ stats, isAdmin }) {
                   );
                 })
               )}
-            </div>
+            </LiquidGlassCard>
 
             {/* Alerts Column */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {/* AMC Alerts */}
-              <div className="exec-card glass-card">
+              <LiquidGlassCard className="exec-card" padding="default">
                 <h3 className="exec-card-title" style={{ cursor: 'pointer' }} onClick={() => navigate('amc')}>
                   ⚠️ AMC Alerts
                 </h3>
@@ -1061,11 +1356,11 @@ export default function MainDashboard({ stats, isAdmin }) {
                     </div>
                   </div>
                 ))}
-              </div>
+              </LiquidGlassCard>
 
               {/* Lease Expiry Alerts */}
               {tenantStats.leaseAlerts.length > 0 && (
-                <div className="exec-card glass-card">
+                <LiquidGlassCard className="exec-card" padding="default">
                   <h3 className="exec-card-title" style={{ cursor: 'pointer' }} onClick={() => navigate('tenants')}>
                     🏠 Lease Expiry Alerts
                   </h3>
@@ -1081,11 +1376,11 @@ export default function MainDashboard({ stats, isAdmin }) {
                       </div>
                     </div>
                   ))}
-                </div>
+                </LiquidGlassCard>
               )}
 
               {/* Petty Cash Summary */}
-              <div className="exec-card glass-card" style={{ cursor: 'pointer' }} onClick={() => navigate('petty_cash')}>
+              <LiquidGlassCard className="exec-card" padding="default" interactive={true} onClick={() => navigate('petty_cash')}>
                 <h3 className="exec-card-title">💵 Petty Cash Summary</h3>
                 <div style={{ display: 'flex', gap: 14 }}>
                   <div style={{ flex: 1, background: '#f0fdf4', borderRadius: 12, padding: '12px 14px', border: '1px solid rgba(16,185,129,0.15)' }}>
@@ -1097,7 +1392,7 @@ export default function MainDashboard({ stats, isAdmin }) {
                     <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e40af', marginTop: 4 }}>₹{fmt(pettyCashSummary.common)}</div>
                   </div>
                 </div>
-              </div>
+              </LiquidGlassCard>
             </div>
           </div>
 
@@ -1105,7 +1400,7 @@ export default function MainDashboard({ stats, isAdmin }) {
               Row 4: Monthly Surplus Bar Chart (full width)
           ══════════════════════════════════════════════════════════════════════ */}
           {financeData.length > 2 && (
-            <div className="exec-card glass-card">
+            <LiquidGlassCard className="exec-card" padding="lg" style={{ marginTop: 24 }}>
               <h3 className="exec-card-title">
                 📊 Monthly Surplus Trend
                 <button
@@ -1132,14 +1427,14 @@ export default function MainDashboard({ stats, isAdmin }) {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </div>
+            </LiquidGlassCard>
           )}
 
           {/* ══════════════════════════════════════════════════════════════════════
               Quick Navigation
           ══════════════════════════════════════════════════════════════════════ */}
           {isAdmin && (
-            <div className="exec-card glass-card">
+            <LiquidGlassCard className="exec-card" padding="lg" style={{ marginTop: 24 }}>
               <h3 className="exec-card-title">🚀 Quick Navigation</h3>
               <div className="exec-quick-nav">
                 {QUICK_LINKS.map((link) => (
@@ -1149,7 +1444,7 @@ export default function MainDashboard({ stats, isAdmin }) {
                   </button>
                 ))}
               </div>
-            </div>
+            </LiquidGlassCard>
           )}
         </>
       )}

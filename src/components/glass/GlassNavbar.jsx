@@ -27,7 +27,7 @@ export default function GlassNavbar({
         {/* Mobile menu trigger */}
         <button
           type="button"
-          className="glass-navbar__menu-btn"
+          className="glass-navbar__menu-btn mobile-menu-toggle"
           onClick={onOpenSidebar}
           aria-label="Open navigation menu"
         >
@@ -68,7 +68,7 @@ export default function GlassNavbar({
             <span className="glass-breadcrumb-sep">/</span>
             <span className="glass-breadcrumb-item glass-breadcrumb-item--active">{activeTabLabel}</span>
           </nav>
-          <h2 className="glass-navbar__page-title">{activeTabLabel}</h2>
+          <div className="glass-navbar__page-title" role="presentation">{activeTabLabel}</div>
         </div>
       </div>
 
@@ -118,6 +118,7 @@ export default function GlassNavbar({
           className={`glass-navbar__auth-btn ${user ? 'glass-navbar__auth-btn--user' : ''}`}
           onClick={onOpenAuth}
           title={user ? `Signed in as ${user.email}` : 'Sign in to access live Firestore data'}
+          aria-label={user ? (isAdmin ? 'Admin account' : 'Resident account') : 'Sign In'}
         >
           <span className="glass-navbar__auth-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

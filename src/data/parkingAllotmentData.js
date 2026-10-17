@@ -1264,3 +1264,24 @@ export const OPEN_PARKING_SLOTS = Array.from({ length: 61 }, (_, i) => {
   const slotNum = String(i + 1).padStart(2, '0');
   return `OP-${slotNum}`;
 });
+
+// Flats with Pending Parking Slot Details (Official verified list of 30 flats)
+export const OFFICIAL_PENDING_PARKING_FLATS = [
+  "A-101", "A-103", "A-105", "A-106", "A-205", "A-207", "A-303", "A-308", "A-405", "A-407",
+  "A-507", "A-601", "A-603", "A-606", "A-702", "A-704", "A-708", "A-801", "A-802", "A-808",
+  "A-901", "A-905", "A-906", "A-907", "A-1001", "A-1003", "A-1004", "A-1103", "A-1104", "A-1106"
+];
+
+/**
+ * Dynamically determines if a flat record has pending/unconfirmed parking slot details.
+ * Evaluates live against the flat's current allocation data.
+ */
+export const isParkingSlotPending = (record) => {
+  if (!record) return false;
+  if (record.status === 'Refuge') return false;
+  if (record.status === 'Pending') return true;
+  if (!record.parkingNo) return true;
+  const trimmed = String(record.parkingNo).trim().toUpperCase();
+  return trimmed === '' || trimmed === 'PENDING' || trimmed === 'TBD' || trimmed === 'NA' || trimmed === '-' || trimmed === '—' || trimmed === 'NONE';
+};
+

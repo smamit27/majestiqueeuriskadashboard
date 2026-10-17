@@ -1,3 +1,5 @@
+@import './styles/liquid-glass-components.css';
+
 :root {
   color-scheme: light;
   --bg: #F6F7F9;
@@ -3389,6 +3391,18 @@ select {
   border-radius: 18px;
   box-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   margin-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.glass-navbar .notif-sidebar-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  gap: 0;
 }
 
 .glass-navbar__left {
@@ -3702,7 +3716,8 @@ select {
 }
 
 .glass-sidebar--collapsed .glass-sidebar__collapse-btn {
-  display: none;
+  display: flex;
+  margin: 0 auto;
 }
 
 /* Sidebar action items */
@@ -3857,7 +3872,13 @@ select {
 }
 
 .glass-sidebar__group {
-  margin-bottom: 2px;
+  margin-bottom: 8px;
+}
+
+.glass-sidebar__group:not(:first-child) {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .glass-sidebar__group-header {
@@ -3866,46 +3887,91 @@ select {
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: transparent;
-  border: none;
-  color: #6B7280;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
+  background: rgba(241, 245, 249, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.85);
   border-radius: 8px;
-  transition: all 0.15s ease;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  user-select: none;
 }
 
 .glass-sidebar__group-header:hover {
-  color: #171717;
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(226, 232, 240, 0.95);
+  border-color: rgba(203, 213, 225, 0.9);
 }
 
 .glass-sidebar__group-header--active {
-  color: #C62828;
+  background: rgba(198, 40, 40, 0.07);
+  border-color: rgba(198, 40, 40, 0.22);
+  border-left: 3px solid #C62828;
+}
+
+.glass-sidebar__group-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #374151;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.glass-sidebar__group-header:hover .glass-sidebar__group-title {
+  color: #111827;
+}
+
+.glass-sidebar__group-header--active .glass-sidebar__group-title {
+  color: #991B1B;
+  font-weight: 800;
 }
 
 .glass-sidebar__group-chevron {
-  font-size: 0.7rem;
-  transition: transform 0.2s;
-  opacity: 0.6;
+  font-size: 0.68rem;
+  color: #64748B;
+  opacity: 0.75;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.glass-sidebar__group-header--active .glass-sidebar__group-chevron {
+  color: #C62828;
+  opacity: 1;
+  background: rgba(198, 40, 40, 0.12);
 }
 
 .glass-sidebar__group-mini-label {
   text-align: center;
   font-size: 0.6rem;
   font-weight: 800;
-  color: #9CA3AF;
+  color: #64748B;
   padding: 8px 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .glass-sidebar__group-items {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-top: 2px;
+  margin-top: 4px;
+  margin-left: 6px;
+  padding-left: 6px;
+  border-left: 1.5px solid rgba(226, 232, 240, 0.85);
+}
+
+.glass-sidebar--collapsed .glass-sidebar__group-items {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: none;
+  align-items: center;
 }
 
 .glass-sidebar__tab-btn {

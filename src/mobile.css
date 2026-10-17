@@ -155,28 +155,46 @@ img {
     padding: 8px 12px !important;
     gap: 8px !important;
     flex-wrap: nowrap !important;
-    min-height: 52px !important;
+    min-height: 50px !important;
     border-radius: 16px !important;
     margin-bottom: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
   .glass-navbar__left {
-    gap: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
     min-width: 0 !important;
-    flex-shrink: 1 !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
   }
 
   .glass-navbar__menu-btn {
     display: flex !important;
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
     border-radius: 10px !important;
     flex-shrink: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .glass-navbar__collapse-btn {
     display: none !important;
+  }
+
+  .glass-navbar__headings {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
   }
 
   .glass-navbar__breadcrumbs {
@@ -184,15 +202,18 @@ img {
   }
 
   .glass-navbar__page-title {
-    font-size: 1.05rem !important;
+    font-size: 0.95rem !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    max-width: 140px !important;
+    max-width: 100% !important;
     letter-spacing: -0.01em !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
   }
 
   .glass-navbar__right {
+    display: flex !important;
     gap: 6px !important;
     flex-wrap: nowrap !important;
     flex-shrink: 0 !important;
@@ -204,12 +225,45 @@ img {
     display: none !important;
   }
 
+  .glass-navbar .notif-sidebar-row {
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .glass-navbar__item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .glass-navbar .notif-bell-btn {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    border-radius: 10px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
   .glass-navbar__search-trigger {
-    padding: 8px 10px !important;
+    padding: 0 !important;
+    width: 38px !important;
+    height: 38px !important;
     min-width: 38px !important;
     min-height: 38px !important;
     border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
     justify-content: center !important;
+    flex-shrink: 0 !important;
   }
 
   .glass-navbar__search-text {
@@ -221,11 +275,16 @@ img {
   }
 
   .glass-navbar__auth-btn {
-    padding: 8px 12px !important;
+    padding: 0 10px !important;
+    height: 38px !important;
+    min-height: 38px !important;
     font-size: 0.78rem !important;
     border-radius: 10px !important;
-    min-height: 38px !important;
     white-space: nowrap !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
   }
 
   .glass-sidebar {
@@ -886,6 +945,66 @@ img {
 
 /* ── 2. Small phones (≤ 480px) ──────────────────────── */
 @media (max-width: 480px) {
+  /* iPhone 16 & Compact Mobile Navbar */
+  .glass-navbar {
+    padding: 6px 8px !important;
+    gap: 6px !important;
+    min-height: 46px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .glass-navbar__left {
+    gap: 6px !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  .glass-navbar__menu-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    border-radius: 9px !important;
+  }
+
+  .glass-navbar__page-title {
+    font-size: 0.9rem !important;
+  }
+
+  .glass-navbar__right {
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .glass-navbar__search-trigger {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    border-radius: 9px !important;
+  }
+
+  .glass-navbar .notif-bell-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    border-radius: 9px !important;
+  }
+
+  .glass-navbar__auth-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    padding: 0 !important;
+    border-radius: 9px !important;
+    justify-content: center !important;
+  }
+
+  .glass-navbar__auth-text {
+    display: none !important;
+  }
+
   .metrics-grid {
     grid-template-columns: 1fr 1fr !important;
   }
