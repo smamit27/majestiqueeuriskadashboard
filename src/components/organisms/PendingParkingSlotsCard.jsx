@@ -142,9 +142,9 @@ export default function PendingParkingSlotsCard({
 
       const centerY = cardY + (headerH / 2);
 
-      // Draw Circular Majestique Euriska Official Logo (Crisp & Prominent)
-      const logoRadius = 42;
-      const logoCenterX = cardX + 115;
+      // ── Left Zone: Official Society Logo & Brand Identity ───────────────
+      const logoRadius = 38;
+      const logoCenterX = cardX + 55;
 
       if (logoImg) {
         ctx.save();
@@ -152,7 +152,7 @@ export default function PendingParkingSlotsCard({
         ctx.arc(logoCenterX, centerY, logoRadius, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
         ctx.fill();
-        ctx.lineWidth = 3.5;
+        ctx.lineWidth = 3;
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
         ctx.stroke();
         ctx.clip();
@@ -166,21 +166,66 @@ export default function PendingParkingSlotsCard({
         ctx.restore();
       }
 
-      // Draw Car Icon
-      const iconX = logoImg ? (logoCenterX + logoRadius + 44) : (cardX + 180);
-      const iconY = centerY;
+      // Society Name & Reg subtitle beside logo
+      ctx.save();
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.font = '800 17px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('MAJESTIQUE EURISKA', logoCenterX + logoRadius + 14, centerY - 10);
+      ctx.font = '600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#93c5fd';
+      ctx.fillText("'A' Building CHS Ltd.", logoCenterX + logoRadius + 14, centerY + 12);
+      ctx.restore();
+
+      // ── Right Zone: Live Status KPI Pill ─────────────────────────────────
+      const badgeW = 205;
+      const badgeH = 52;
+      const badgeX = cardX + cardW - badgeW - 25;
+      const badgeY = centerY - (badgeH / 2);
 
       ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 14);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '800 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.translate(iconX, iconY - 20);
+      ctx.fillText(`⚠️ ${items.length} Flats Pending`, badgeX + (badgeW / 2), badgeY + 18);
+      ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#93c5fd';
+      ctx.fillText('Covered Parking Scope', badgeX + (badgeW / 2), badgeY + 36);
+      ctx.restore();
+
+      // ── Center Zone: Car Icon + Exact Mockup Title + Red Underline ───────
+      const titleText = "Flats with Pending Parking Slot Details";
+      ctx.save();
+      ctx.font = '800 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      const titleW = ctx.measureText(titleText).width;
+      const carW = 44;
+      const centerGap = 14;
+      const centerTotalW = carW + centerGap + titleW;
+      const startCenterX = cardX + (cardW / 2) - (centerTotalW / 2);
+      const iconX = startCenterX + (carW / 2);
+      const titleX = startCenterX + carW + centerGap;
+
+      // Draw Car Icon
+      ctx.fillStyle = '#ffffff';
+      ctx.translate(iconX, centerY - 20);
 
       // Car silhouette
       ctx.beginPath();
-      ctx.roundRect(-24, 6, 48, 22, 6); // car body
+      ctx.roundRect(-24, 6, 48, 22, 6);
       ctx.fill();
 
       ctx.beginPath();
-      ctx.roundRect(-16, -6, 32, 14, 4); // cabin roof
+      ctx.roundRect(-16, -6, 32, 14, 4);
       ctx.fill();
 
       // Windows
@@ -204,21 +249,20 @@ export default function PendingParkingSlotsCard({
       ctx.fillStyle = '#fef08a';
       ctx.fillRect(-22, 12, 4, 6);
       ctx.fillRect(18, 12, 4, 6);
-
       ctx.restore();
 
-      // Header Title: "Flats with Pending Parking Slot Details"
-      const titleText = "Flats with Pending Parking Slot Details";
-      ctx.font = '800 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      // Header Title text
+      ctx.save();
+      ctx.font = '800 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      const titleX = iconX + 45;
-      const titleY = centerY - 2;
-      ctx.fillText(titleText, titleX, titleY);
+      ctx.fillText(titleText, titleX, centerY - 3);
 
-      // Red Underline under "Flats with"
+      // Signature Red Underline Accent under "Flats with"
       ctx.fillStyle = '#e11d48';
-      ctx.fillRect(titleX, titleY + 22, 175, 4);
+      ctx.fillRect(titleX, centerY + 18, 145, 4);
+      ctx.restore();
 
       // 4. Draw the 3 Column Tables
       const tableAreaY = cardY + headerH + 25;
@@ -470,36 +514,34 @@ export default function PendingParkingSlotsCard({
           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
         }}
       >
-        {/* Deep Blue Gradient Header */}
+        {/* Deep Blue Symmetrical Executive Header Banner */}
         <div style={{
-          background: 'linear-gradient(135deg, #0f2952 0%, #173767 40%, #1e3a8a 100%)',
-          padding: '18px 24px',
+          background: 'linear-gradient(135deg, #091a32 0%, #0f2952 45%, #1e3a8a 100%)',
+          padding: '20px 28px',
           color: '#ffffff',
           display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          justifyContent: 'center',
+          flexWrap: 'wrap',
+          gap: 18,
           position: 'relative',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
-          gap: 16,
-          flexWrap: 'wrap'
+          borderBottom: '1px solid rgba(255, 255, 255, 0.15)'
         }}>
-          {/* Logo + Car Icon + Title + Red Underline */}
+          {/* ── Left Zone: Society Brand Identity ── */}
           <div style={{
-            display: 'inline-flex',
+            display: 'flex',
             alignItems: 'center',
-            gap: 16,
-            position: 'relative',
-            flexWrap: 'wrap',
-            justifyContent: 'center'
+            gap: 14,
+            minWidth: 220
           }}>
-            {/* Majestique Euriska Circular Official Logo */}
+            {/* Crisp Circular Society Logo Badge */}
             <div style={{
-              width: 64,
-              height: 64,
+              width: 58,
+              height: 58,
               borderRadius: '50%',
               backgroundColor: '#ffffff',
               padding: 2,
-              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.28)',
+              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.35)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -522,35 +564,69 @@ export default function PendingParkingSlotsCard({
                 }}
               />
             </div>
-
-            {/* Crisp Car Silhouette Icon */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 44,
-              height: 44,
-              flexShrink: 0
-            }}>
-              <svg width="42" height="42" viewBox="0 0 64 64" fill="none">
-                <rect x="4" y="24" width="56" height="24" rx="8" fill="#FFFFFF" />
-                <path d="M12 24L18 10C19 8 21 6 24 6H40C43 6 45 8 46 10L52 24H12Z" fill="#FFFFFF" />
-                <rect x="18" y="11" width="12" height="10" rx="2" fill="#0F2952" />
-                <rect x="34" y="11" width="12" height="10" rx="2" fill="#0F2952" />
-                <circle cx="16" cy="48" r="8" fill="#1E293B" />
-                <circle cx="48" cy="48" r="8" fill="#1E293B" />
-                <circle cx="16" cy="48" r="3.5" fill="#94A3B8" />
-                <circle cx="48" cy="48" r="3.5" fill="#94A3B8" />
-                <circle cx="9" cy="32" r="3" fill="#FEF08A" />
-                <circle cx="55" cy="32" r="3" fill="#FEF08A" />
-              </svg>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{
+                fontSize: '0.90rem',
+                fontWeight: 800,
+                letterSpacing: '0.05em',
+                color: '#ffffff',
+                lineHeight: 1.2
+              }}>
+                MAJESTIQUE EURISKA
+              </span>
+              <span style={{
+                fontSize: '0.73rem',
+                color: '#93c5fd',
+                fontWeight: 600,
+                marginTop: 2
+              }}>
+                'A' Building CHS Ltd.
+              </span>
             </div>
+          </div>
 
-            {/* Title & Underline */}
-            <div style={{ position: 'relative' }}>
+          {/* ── Center Zone: Car Silhouette + Exact Title + Red Underline ── */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            flex: '1 1 auto'
+          }}>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 12,
+              justifyContent: 'center'
+            }}>
+              {/* Crisp Car Silhouette Icon */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 38,
+                height: 38,
+                flexShrink: 0
+              }}>
+                <svg width="38" height="38" viewBox="0 0 64 64" fill="none">
+                  <rect x="4" y="24" width="56" height="24" rx="8" fill="#FFFFFF" />
+                  <path d="M12 24L18 10C19 8 21 6 24 6H40C43 6 45 8 46 10L52 24H12Z" fill="#FFFFFF" />
+                  <rect x="18" y="11" width="12" height="10" rx="2" fill="#0F2952" />
+                  <rect x="34" y="11" width="12" height="10" rx="2" fill="#0F2952" />
+                  <circle cx="16" cy="48" r="8" fill="#1E293B" />
+                  <circle cx="48" cy="48" r="8" fill="#1E293B" />
+                  <circle cx="16" cy="48" r="3.5" fill="#94A3B8" />
+                  <circle cx="48" cy="48" r="3.5" fill="#94A3B8" />
+                  <circle cx="9" cy="32" r="3" fill="#FEF08A" />
+                  <circle cx="55" cy="32" r="3" fill="#FEF08A" />
+                </svg>
+              </div>
+
+              {/* Exact Mockup Title */}
               <h3 style={{
                 margin: 0,
-                fontSize: 'clamp(1.2rem, 2.5vw, 1.7rem)',
+                fontSize: 'clamp(1.15rem, 2.2vw, 1.6rem)',
                 fontWeight: 800,
                 color: '#ffffff',
                 letterSpacing: '-0.01em',
@@ -558,15 +634,52 @@ export default function PendingParkingSlotsCard({
               }}>
                 Flats with Pending Parking Slot Details
               </h3>
-              {/* Red Underline Accent under "Flats with" */}
-              <div style={{
-                width: 140,
-                height: 3.5,
-                background: '#e11d48',
-                borderRadius: 2,
-                marginTop: 6
-              }} />
             </div>
+
+            {/* Signature Red Underline Accent under "Flats with" */}
+            <div style={{
+              width: 140,
+              height: 3.5,
+              background: '#e11d48',
+              borderRadius: 2,
+              marginTop: 6
+            }} />
+          </div>
+
+          {/* ── Right Zone: Live Status KPI Pill ── */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            gap: 3,
+            minWidth: 170
+          }}>
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.12)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              padding: '6px 14px',
+              borderRadius: 20,
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              fontSize: '0.80rem',
+              fontWeight: 800,
+              color: '#ffffff',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+            }}>
+              <span style={{ color: '#fcd34d' }}>⚠️</span>
+              <span>{items.length} Flats Pending</span>
+            </div>
+            <span style={{
+              fontSize: '0.70rem',
+              color: '#93c5fd',
+              fontWeight: 600,
+              marginRight: 4
+            }}>
+              Covered Parking Scope
+            </span>
           </div>
         </div>
 
