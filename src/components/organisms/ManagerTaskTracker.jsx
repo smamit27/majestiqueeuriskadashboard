@@ -694,6 +694,53 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
         </div>
       </div>
 
+      {/* ── Workflow Engine Promotion Banner ── */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(13,148,136,0.08) 0%, rgba(5,150,105,0.08) 100%)',
+        border: '1px solid rgba(13,148,136,0.25)',
+        borderRadius: 14,
+        padding: '12px 18px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 12
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: '1.3rem' }}>⚡</span>
+          <div>
+            <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#0f766e' }}>
+              Full Society Project &amp; Approval Workflow Engine Active
+            </div>
+            <div style={{ fontSize: '0.78rem', color: '#475569' }}>
+              Includes 10-state lifecycle (Draft → In Review → Approved), Kanban board, milestones, blocker risks &amp; committee approval gates.
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              const url = new URL(window.location.href);
+              url.searchParams.set('tab', 'project_workflow');
+              window.location.href = url.toString();
+            }
+          }}
+          style={{
+            background: 'linear-gradient(135deg, #0d9488, #059669)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 8,
+            padding: '7px 16px',
+            fontSize: '0.82rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(13,148,136,0.2)'
+          }}
+        >
+          Open Workflow Engine →
+        </button>
+      </div>
+
       {/* ── Tabs ── */}
       <div style={{ display: 'flex', gap: 8 }}>
         {TABS.map(tab => (

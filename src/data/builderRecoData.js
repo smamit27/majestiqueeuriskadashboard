@@ -10,7 +10,8 @@ export const BUILDER_RECO_DATA = {
     developer: "Eisha Asset Developers",
     wings: {
       A: { name: "A Wing", handoverDate: "Sep 2019", flats: 87 },
-      B: { name: "B Wing", handoverDate: "Jan 2019", flats: 96 }
+      B: { name: "B Wing", handoverDate: "Jan 2019", flats: 96 },
+      C: { name: "C Wing", handoverDate: "Mar 2020", flats: 48 }
     },
     documentUrl: "/visuals/builder_reco_doc.jpeg",
     documentTitle: "Signed Phase II Audit & Ledger Sheet"

@@ -23,3 +23,14 @@ export const SOCIETY_INFO = {
     branch: "Mohammed Wadi, Pune 411060"
   }
 };
+
+export const SOCIETY_FLATS_DISTRIBUTION = {
+  totalFlats: 231,
+  wings: {
+    A: { name: 'Wing A', building: 'Building A', flats: 87, floors: 11, shareRatio: '87/231', sharePct: '37.66%' },
+    B: { name: 'Wing B', building: 'Building B', flats: 96, floors: 12, shareRatio: '96/231', sharePct: '41.56%' },
+    C: { name: 'Wing C', building: 'Building C', flats: 48, floors: 11, shareRatio: '48/231', sharePct: '20.78%' }
+  },
+  commercialShops: 14
+};
+

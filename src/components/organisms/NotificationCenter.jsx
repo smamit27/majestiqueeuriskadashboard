@@ -93,6 +93,44 @@ async function fetchAlerts() {
     }
   } catch { /* ignore */ }
 
+  try {
+    // ── Workflow Engine Tasks (Blockers, In Review, Overdue) ─────
+    const cachedTasksStr = typeof window !== 'undefined' ? localStorage.getItem('majestique_workflow_tasks_v1') : null;
+    if (cachedTasksStr) {
+      const workflowTasks = JSON.parse(cachedTasksStr);
+      workflowTasks.forEach(t => {
+        if (t.status === 'Blocked') {
+          alerts.push({
+            id: `wf-blocked-${t.id}`,
+            type: 'workflow', severity: 'red',
+            title: 'Workflow Task Blocked',
+            message: `"${t.title || t.taskCategory}" is blocked: ${t.blockerReason || 'Action needed'}`,
+            tabTarget: 'project_workflow',
+          });
+        } else if (t.status === 'In Review') {
+          alerts.push({
+            id: `wf-review-${t.id}`,
+            type: 'workflow', severity: 'amber',
+            title: 'Awaiting Committee Approval',
+            message: `"${t.title || t.taskCategory}" submitted for review signoff`,
+            tabTarget: 'project_workflow',
+          });
+        } else if (t.deadline && t.status !== 'Completed' && t.status !== 'Cancelled') {
+          const days = Math.ceil((new Date(t.deadline) - new Date()) / 86400000);
+          if (days < 0) {
+            alerts.push({
+              id: `wf-overdue-${t.id}`,
+              type: 'workflow', severity: days < -7 ? 'red' : 'amber',
+              title: 'Workflow Overdue',
+              message: `"${t.title || t.taskCategory}" overdue by ${Math.abs(days)} day${Math.abs(days) !== 1 ? 's' : ''}`,
+              tabTarget: 'project_workflow',
+            });
+          }
+        }
+      });
+    }
+  } catch { /* ignore */ }
+
   return alerts;
 }
 

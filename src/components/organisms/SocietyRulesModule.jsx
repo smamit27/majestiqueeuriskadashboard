@@ -358,6 +358,30 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
               >
                 <span>📐 Visualization Work →</span>
               </button>
+
+              <button
+                type="button"
+                id="view-work-distribution-btn"
+                onClick={() => window.dispatchEvent(new CustomEvent('changeTab', { detail: 'work_distribution' }))}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  background: 'rgba(255,255,255,0.25)',
+                  color: '#ffffff',
+                  border: '1px solid rgba(255,255,255,0.4)',
+                  padding: '9px 14px',
+                  borderRadius: '10px',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'background 0.15s'
+                }}
+                title="View Managing Committee Work Distribution & Portfolios"
+              >
+                <span>👥 Work Distribution →</span>
+              </button>
             </div>
           </div>
         </div>

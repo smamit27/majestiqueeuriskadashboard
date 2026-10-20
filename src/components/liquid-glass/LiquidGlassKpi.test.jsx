@@ -77,11 +77,11 @@ describe('Liquid Glass Component Suite', () => {
     render(
       <LiquidGlassKpi
         title="Total Capacity"
-        value="229 Flats"
+        value="231 Flats"
         breakdown={[
           { label: 'Wing A', value: '87' },
           { label: 'Wing B', value: '96' },
-          { label: 'Wing C', value: '46' }
+          { label: 'Wing C', value: '48' }
         ]}
       />
     );

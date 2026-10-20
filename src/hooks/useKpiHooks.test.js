@@ -6,13 +6,13 @@ import { useMaintenanceKpis } from './useMaintenanceKpis.js';
 import { useOperationsKpis } from './useOperationsKpis.js';
 
 describe('Liquid Glass KPI Hooks Suite', () => {
-  it('useSocietyKpis verifies 229 total flats and wing breakdown', () => {
+  it('useSocietyKpis verifies 231 total flats and wing breakdown', () => {
     const { result } = renderHook(() => useSocietyKpis());
 
-    expect(result.current.totalFlats).toBe(229);
+    expect(result.current.totalFlats).toBe(231);
     expect(result.current.breakdownByBuilding.buildingA).toBe(87);
     expect(result.current.breakdownByBuilding.buildingB).toBe(96);
-    expect(result.current.breakdownByBuilding.buildingC).toBe(46);
+    expect(result.current.breakdownByBuilding.buildingC).toBe(48);
     expect(result.current.totalShops).toBe(14);
     expect(result.current.occupiedFlats).toBeGreaterThan(0);
     expect(result.current.registeredResidents).toBeGreaterThan(0);

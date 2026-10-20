@@ -12,3 +12,5 @@ firebase-debug.log
 playwright-report/
 test-results/
 
+# Scratch
+scratch/

@@ -1119,7 +1119,7 @@ export const initialParkingData = [
     flat: "A-1007",
     floor: 10,
     flatType: "Residential",
-    residentName: "Mr. Porus Kersi Hansotia & Mrs. Sugandhpriya Sharma",
+    residentName: "Mr. Amit Singh",
     occupantType: "Owner",
     parkingNo: "OP-33",
     parkingType: "Open Parking",

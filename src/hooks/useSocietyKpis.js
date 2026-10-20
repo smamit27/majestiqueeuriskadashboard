@@ -3,10 +3,10 @@ import { initialTenantData } from '../data/tenantSeedData.js';
 import { complaints as mockComplaints } from '../data/mockData.js';
 
 export const SOCIETY_FLATS_CONFIG = {
-  total: 229,
+  total: 231,
   buildingA: 87,
   buildingB: 96,
-  buildingC: 46,
+  buildingC: 48,
   shops: 14
 };
 

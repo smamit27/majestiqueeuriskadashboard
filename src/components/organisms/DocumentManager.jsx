@@ -3,6 +3,7 @@ import { collection, getDocs, addDoc, serverTimestamp, query, orderBy } from 'fi
 import { db, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
 import { logAuditEvent, AUDIT_ACTIONS } from '../../services/auditService.js';
 import { ROLES, canEditModule, MODULES } from '../../services/rbacService.js';
+import { DocumentViewerModal } from './InPortalDocumentViewer.jsx';
 
 export const DOCUMENT_CATEGORIES = [
   'All Categories',
@@ -26,6 +27,20 @@ export const ACCESS_LEVELS = {
 };
 
 const SEED_DOCUMENTS = [
+  {
+    id: 'doc-000',
+    name: 'Executive Workflow & Project Lifecycle Presentation',
+    category: 'Society Rules',
+    uploadDate: '2026-10-20',
+    uploadedBy: 'Architecture Team',
+    version: '3.0',
+    expiryDate: '',
+    accessLevel: 'PUBLIC_RESIDENTS',
+    fileSize: '1.2 MB',
+    fileType: 'PPT',
+    downloadUrl: '/workflow_presentation.html',
+    notes: 'Interactive 16:9 Presentation Deck covering the 10-state workflow transition engine, committee approval gates & case studies.'
+  },
   {
     id: 'doc-001',
     name: 'AGM 2026 Minutes & Legal Resolutions',
@@ -121,6 +136,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState('');
+  const [inPortalViewDoc, setInPortalViewDoc] = useState(null);
 
   // Upload Form state
   const [docName, setDocName] = useState('');
@@ -407,7 +423,35 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                         <span style={{ color: '#94a3b8' }}>Perpetual</span>
                       )}
                     </td>
-                    <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                    <td style={{ padding: '14px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                      <button
+                        onClick={() => {
+                          const targetUrl = (doc.downloadUrl && doc.downloadUrl !== '#')
+                            ? doc.downloadUrl
+                            : '/Majestique_Euriska_Builder_Forensic_Audit_Full_Dossier.pdf';
+                          setInPortalViewDoc({
+                            url: targetUrl,
+                            title: doc.name,
+                            type: doc.fileType || 'PDF'
+                          });
+                        }}
+                        style={{
+                          background: '#0d9488',
+                          color: '#ffffff',
+                          border: 'none',
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          fontSize: '0.78rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          marginRight: '8px'
+                        }}
+                      >
+                        👁️ View In-Portal
+                      </button>
                       <a
                         href={doc.downloadUrl || '#'}
                         download={doc.name}
@@ -556,6 +600,16 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
             </form>
           </div>
         </div>
+      )}
+
+      {/* ── In-Portal Document & Presentation Viewer Modal ── */}
+      {inPortalViewDoc && (
+        <DocumentViewerModal
+          documentUrl={inPortalViewDoc.url}
+          documentTitle={inPortalViewDoc.title}
+          documentType={inPortalViewDoc.type}
+          onClose={() => setInPortalViewDoc(null)}
+        />
       )}
     </div>
   );

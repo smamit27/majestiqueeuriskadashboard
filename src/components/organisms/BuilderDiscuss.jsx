@@ -1001,9 +1001,10 @@ const handleExportRecoCSV = () => {
                 border: '1px solid rgba(61, 63, 52, 0.08)'
               }}>
                 {[
-                  { id: 'all', label: 'All Wings (Consolidated A & B)' },
-                  { id: 'A', label: 'Wing A (Sep 2019)' },
-                  { id: 'B', label: 'Wing B (Jan 2019)' }
+                  { id: 'all', label: 'All Wings (A, B & C • 231 Flats)' },
+                  { id: 'A', label: 'Wing A (87 Flats • Sep 2019)' },
+                  { id: 'B', label: 'Wing B (96 Flats • Jan 2019)' },
+                  { id: 'C', label: 'Wing C (48 Flats • Mar 2020)' }
                 ].map(w => {
                   const active = wingFilter === w.id;
                   return (

@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 const NAV_ITEMS = [
   { id: 'emergency',        label: 'Emergency Numbers',      icon: '🚨', group: 'Navigation' },
   { id: 'society_rules',    label: 'Society Rules & Bylaws', icon: '📜', group: 'Navigation' },
+  { id: 'work_distribution',label: 'Work Distribution List (Committee Portfolios & 10 Flats)', icon: '👥', group: 'Navigation' },
   { id: 'society_overview', label: 'Society Overview',       icon: '🏠', group: 'Navigation (Admin)' },
   { id: 'announcements',    label: 'Announcements',          icon: '📢', group: 'Navigation (Admin)' },
   { id: 'manager_tasks',    label: 'Manager Tasks',          icon: '✅', group: 'Navigation (Admin)' },

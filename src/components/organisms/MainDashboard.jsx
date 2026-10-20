@@ -631,11 +631,11 @@ export default function MainDashboard({ stats, isAdmin }) {
             <span className="society-flats-kicker">RESIDENTIAL WINGS INFRASTRUCTURE</span>
             <h2 className="society-flats-title">Society Housing Capacity & Wings</h2>
             <p className="society-flats-sub">
-              Majestique Euriska comprises 3 distinct residential towers with 229 total apartments plus commercial frontage.
+              Majestique Euriska comprises 3 distinct residential towers with 231 total apartments plus commercial frontage.
             </p>
           </div>
           <div className="society-flats-total-badge">
-            <span className="society-flats-total-num">229</span>
+            <span className="society-flats-total-num">231</span>
             <span className="society-flats-total-label">Total Society Flats</span>
           </div>
         </div>
@@ -692,10 +692,10 @@ export default function MainDashboard({ stats, isAdmin }) {
           <div className="society-wing-card">
             <div className="society-wing-card__header">
               <div className="society-wing-tag">Wing C</div>
-              <span className="society-wing-badge">46 Flats</span>
+              <span className="society-wing-badge">48 Flats</span>
             </div>
             <div className="society-wing-card__count">
-              <span className="society-wing-number">46</span>
+              <span className="society-wing-number">48</span>
               <span className="society-wing-unit">Flats (Building C)</span>
             </div>
             <div className="society-wing-card__stats">
@@ -786,7 +786,7 @@ export default function MainDashboard({ stats, isAdmin }) {
                     { label: 'Wing B', value: societyKpis.breakdownByBuilding.buildingB },
                     { label: 'Wing C', value: societyKpis.breakdownByBuilding.buildingC }
                   ]}
-                  tooltip="Total registered residential flats in Majestique Euriska (87+96+46)"
+                  tooltip="Total registered residential flats in Majestique Euriska (87+96+48 = 231 Flats)"
                   onClick={() => navigate('tenants')}
                   enableTilt={true}
                 />

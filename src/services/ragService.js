@@ -68,6 +68,9 @@ function analyzeIntent(query) {
   if (lowerQuery.includes('drilling') || lowerQuery.includes('renovation') || lowerQuery.includes('timing') || lowerQuery.includes('rules')) {
     return { type: 'rules', query: lowerQuery };
   }
+  if (lowerQuery.includes('flat') || lowerQuery.includes('wing') || lowerQuery.includes('building') || lowerQuery.includes('tower') || lowerQuery.includes('capacity')) {
+    return { type: 'wingsAndFlats', query: lowerQuery };
+  }
   if (lowerQuery.includes('agm') || lowerQuery.includes('meeting') || lowerQuery.includes('sgm') || lowerQuery.includes('resolution')) {
     return { type: 'agm', query: lowerQuery };
   }
@@ -129,6 +132,17 @@ export async function generateContextForQuery(query, userRole = 'ADMIN') {
 - Parking: Designated covered and open parking slots allotted per flat (A-101 to A-1108). Visitors must park in designated visitor bays for maximum 12 hours.
 - Waste Segregation: Wet and dry waste segregation is mandatory. Doorstep collection occurs daily at 9:30 AM outside apartment doors.
 - Pets: Pets must be leashed in common areas and elevators. Clean up after pets is mandatory.\n`;
+      return contextStr;
+    }
+
+    if (intent.type === 'wingsAndFlats') {
+      contextStr += `Official Majestique Euriska Residential Wings & Flats Infrastructure:
+- Total Residential Flats: 231 flats across 3 residential towers plus 14 commercial frontage shops.
+- Building / Wing A: 87 flats (11 floors, Flats A-101 to A-1108). Common expense share: 87/231 (37.66%).
+- Building / Wing B: 96 flats (12 floors). Common expense share: 96/231 (41.56%).
+- Building / Wing C: 48 flats (11 floors). Common expense share: 48/231 (20.78%).
+- Commercial Shops: 14 shops (Shop 1 to 14) on the front road-facing arcade.
+- Common Shared Expense Denominator: 231 total society flats (A: 87 + B: 96 + C: 48 = 231).\n`;
       return contextStr;
     }
 

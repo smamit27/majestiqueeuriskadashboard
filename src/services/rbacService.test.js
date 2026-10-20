@@ -2,6 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { ROLES, MODULES, hasModuleAccess, canEditModule, resolveUserRole } from './rbacService';
 
 describe('RBAC Service', () => {
+  it('Admin has edit rights to workflow module', () => {
+    expect(canEditModule(ROLES.ADMIN, MODULES.PROJECT_WORKFLOW)).toBe(true);
+    expect(canEditModule(ROLES.MANAGER, MODULES.PROJECT_WORKFLOW)).toBe(true);
+    expect(canEditModule(ROLES.RESIDENT, MODULES.PROJECT_WORKFLOW)).toBe(false);
+  });
+
   it('Admin has access to all modules', () => {
     Object.values(MODULES).forEach((mod) => {
       expect(hasModuleAccess(ROLES.ADMIN, mod)).toBe(true);

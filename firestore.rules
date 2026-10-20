@@ -97,6 +97,16 @@ service cloud.firestore {
     }
 
     // ── Operations & Facility Management (Manager / Operations Access) ───────
+    match /workflowProjects/{projectId} {
+      allow read: if isAuthenticated();
+      allow write: if isManager() || isAdmin();
+    }
+
+    match /workflowTasks/{taskId} {
+      allow read: if isAuthenticated();
+      allow write: if isManager() || isAdmin();
+    }
+
     match /managerTasks_common/{taskId} {
       allow read: if isManager() || isResident();
       allow write: if isManager();
