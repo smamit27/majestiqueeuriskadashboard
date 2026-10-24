@@ -267,14 +267,35 @@ export default function InPortalDocumentViewer({ initialDocId = 'workflow_ppt' }
   const handlePrint = () => {
     if (activeDoc.isSpreadsheet) {
       window.print();
-    } else {
-      const iframe = document.getElementById('viewer-iframe');
-      if (iframe?.contentWindow) {
+      return;
+    }
+
+    const isPdf = activeDoc.type === 'PDF' || activeDoc.url?.toLowerCase().includes('.pdf');
+    if (isPdf && activeDoc.url) {
+      // Direct high-res PDF print via native browser viewer in a dedicated clean window
+      const printWin = window.open(activeDoc.url, '_blank');
+      if (printWin) {
+        printWin.focus();
+        try {
+          printWin.onload = () => {
+            try { printWin.print(); } catch {}
+          };
+        } catch {}
+      }
+      return;
+    }
+
+    const iframe = document.getElementById('viewer-iframe');
+    if (iframe?.contentWindow) {
+      try {
+        iframe.contentWindow.focus();
         iframe.contentWindow.print();
-      } else {
-        window.print();
+        return;
+      } catch (err) {
+        console.warn('Iframe print error, falling back:', err);
       }
     }
+    window.print();
   };
 
   // Compute current sheet data and filtered rows
@@ -1226,8 +1247,37 @@ export default function InPortalDocumentViewer({ initialDocId = 'workflow_ppt' }
 export function DocumentViewerModal({ documentUrl, documentTitle, documentType = 'PDF', onClose }) {
   if (!documentUrl) return null;
 
+  const handlePrintModal = () => {
+    const isPdf = documentType === 'PDF' || documentUrl?.toLowerCase().includes('.pdf');
+    if (isPdf && documentUrl) {
+      const printWin = window.open(documentUrl, '_blank');
+      if (printWin) {
+        printWin.focus();
+        try {
+          printWin.onload = () => {
+            try { printWin.print(); } catch {}
+          };
+        } catch {}
+      }
+      return;
+    }
+
+    const iframe = document.getElementById('modal-viewer-iframe');
+    if (iframe?.contentWindow) {
+      try {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        return;
+      } catch (err) {
+        console.warn('Modal print fallback:', err);
+      }
+    }
+    window.print();
+  };
+
   return (
     <div
+      className="document-viewer-modal-backdrop"
       style={{
         position: 'fixed',
         inset: 0,
@@ -1242,6 +1292,7 @@ export function DocumentViewerModal({ documentUrl, documentTitle, documentType =
       onClick={onClose}
     >
       <div
+        className="document-viewer-modal-content"
         style={{
           width: '100%',
           maxWidth: '1100px',
@@ -1255,7 +1306,7 @@ export function DocumentViewerModal({ documentUrl, documentTitle, documentType =
         }}
         onClick={e => e.stopPropagation()}
       >
-        <div style={{
+        <div className="no-print" style={{
           padding: '14px 20px',
           background: '#0f172a',
           color: '#ffffff',
@@ -1278,6 +1329,25 @@ export function DocumentViewerModal({ documentUrl, documentTitle, documentType =
             </span>
           </div>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <button
+              onClick={handlePrintModal}
+              title="Print Document"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                background: '#1e293b',
+                color: '#e2e8f0',
+                border: '1px solid #334155',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                fontSize: '0.76rem',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+            >
+              <Printer size={13} /> Print
+            </button>
             <a
               href={documentUrl}
               download
@@ -1306,6 +1376,7 @@ export function DocumentViewerModal({ documentUrl, documentTitle, documentType =
         </div>
 
         <iframe
+          id="modal-viewer-iframe"
           src={documentUrl}
           title={documentTitle}
           style={{ width: '100%', height: '100%', border: 'none' }}

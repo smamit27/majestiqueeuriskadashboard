@@ -429,6 +429,39 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                           const targetUrl = (doc.downloadUrl && doc.downloadUrl !== '#')
                             ? doc.downloadUrl
                             : '/Majestique_Euriska_Builder_Forensic_Audit_Full_Dossier.pdf';
+                          const printWin = window.open(targetUrl, '_blank');
+                          if (printWin) {
+                            printWin.focus();
+                            try {
+                              printWin.onload = () => {
+                                try { printWin.print(); } catch {}
+                              };
+                            } catch {}
+                          }
+                        }}
+                        title="Print Document (Native Clean Print)"
+                        style={{
+                          background: '#1e293b',
+                          color: '#e2e8f0',
+                          border: '1px solid #334155',
+                          padding: '6px 12px',
+                          borderRadius: '8px',
+                          fontSize: '0.78rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          marginRight: '8px'
+                        }}
+                      >
+                        🖨️ Print
+                      </button>
+                      <button
+                        onClick={() => {
+                          const targetUrl = (doc.downloadUrl && doc.downloadUrl !== '#')
+                            ? doc.downloadUrl
+                            : '/Majestique_Euriska_Builder_Forensic_Audit_Full_Dossier.pdf';
                           setInPortalViewDoc({
                             url: targetUrl,
                             title: doc.name,

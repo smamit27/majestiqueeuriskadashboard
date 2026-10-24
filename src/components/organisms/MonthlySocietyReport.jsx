@@ -180,7 +180,7 @@ export default function MonthlySocietyReport() {
   return (
     <div className="section-card" style={{ padding: '28px', borderRadius: '16px', background: 'white' }}>
       {/* Top Controls */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+      <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
         <div>
           <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0b2b26' }}>Monthly Society Report</h2>
           <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#5f665f' }}>
