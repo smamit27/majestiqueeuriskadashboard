@@ -968,3 +968,79 @@
   cursor: pointer;
 }
 
+
+/* Extracted Conditional Styles */
+.parking-allotment-tracker-cond-1-true {
+  cursor: pointer;
+}
+
+.parking-allotment-tracker-cond-2-false {
+  cursor: default;
+}
+
+.parking-allotment-tracker-cond-3-true {
+  border: 2px solid;
+}
+
+.parking-allotment-tracker-cond-4-false {
+  border: 1.5px solid;
+}
+
+.parking-allotment-tracker-cond-5-true {
+  background: #ffffff;
+  color: #0b2b26;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.parking-allotment-tracker-cond-6-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.parking-allotment-tracker-cond-7-true {
+  color: #065f46;
+}
+
+.parking-allotment-tracker-cond-8-false {
+  color: #991b1b;
+}
+
+.parking-allotment-tracker-cond-9-true {
+  text-align: center;
+}
+
+.parking-allotment-tracker-cond-10-false {
+  text-align: left;
+}
+
+.parking-allotment-tracker-cond-11-true {
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, rgba(11, 43, 38, 0.95) 0%, rgba(22, 78, 99, 0.95) 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(11, 43, 38, 0.22);
+}
+
+.parking-allotment-tracker-cond-12-false {
+  border: 1.5px dashed rgba(203, 213, 225, 0.9);
+  background: rgba(255, 255, 255, 0.65);
+  color: #64748b;
+  box-shadow: none;
+}
+
+.parking-allotment-tracker-cond-13-true {
+  color: #fef08a;
+}
+
+.parking-allotment-tracker-cond-14-false {
+  color: #475569;
+}
+
+.parking-allotment-tracker-cond-15-true {
+  color: #9ca3af;
+}
+
+.parking-allotment-tracker-cond-16-false {
+  color: #1e40af;
+}
+

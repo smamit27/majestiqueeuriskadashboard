@@ -395,3 +395,57 @@
   padding: 9px 24px;
 }
 
+
+/* Extracted Conditional Styles */
+.cheque-tracker-cond-1-true {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.cheque-tracker-cond-2-false {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.cheque-tracker-cond-3-true {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.cheque-tracker-cond-4-false {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.cheque-tracker-cond-5-true {
+  font-weight: 400;
+}
+
+.cheque-tracker-cond-6-false {
+  font-weight: 700;
+}
+
+.cheque-tracker-cond-7-true {
+  font-weight: 400;
+}
+
+.cheque-tracker-cond-8-false {
+  font-weight: 700;
+}
+
+.cheque-tracker-cond-9-true {
+  color: #dc2626;
+}
+
+.cheque-tracker-cond-10-false {
+  color: #166534;
+}
+
+.cheque-tracker-cond-11-true {
+  color: #dc2626;
+}
+
+.cheque-tracker-cond-12-false {
+  color: #166534;
+}
+

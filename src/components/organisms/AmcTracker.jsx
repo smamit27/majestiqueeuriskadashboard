@@ -711,19 +711,19 @@ export default function AmcTracker({ isAdmin = false }) {
           <div className="amc-tracker-s8">
             <button
               onClick={() => setActiveTab('equipment')}
-              className="amc-tracker-s9" style={{ fontWeight: activeTab === 'equipment' ? 700 : 500, background: activeTab === 'equipment' ? '#ffffff' : 'transparent', color: activeTab === 'equipment' ? '#0369a1' : '#64748b', boxShadow: activeTab === 'equipment' ? '0 2px 6px rgba(0,0,0,0.08)' : 'none' }}
+              className={`amc-tracker-s9 ${(activeTab === 'equipment' ? 'amc-tracker-cond-1-true' : 'amc-tracker-cond-2-false')}`}
             >
               <Wrench size={14} /> Equipment &amp; Service Register ({totalEquipmentCount})
             </button>
             <button
               onClick={() => setActiveTab('contracts')}
-              className="amc-tracker-s9" style={{ fontWeight: activeTab === 'contracts' ? 700 : 500, background: activeTab === 'contracts' ? '#ffffff' : 'transparent', color: activeTab === 'contracts' ? '#0369a1' : '#64748b', boxShadow: activeTab === 'contracts' ? '0 2px 6px rgba(0,0,0,0.08)' : 'none' }}
+              className={`amc-tracker-s9 ${(activeTab === 'contracts' ? 'amc-tracker-cond-3-true' : 'amc-tracker-cond-4-false')}`}
             >
               <Calendar size={14} /> Financial Contracts &amp; Schedules ({contracts.length})
             </button>
           </div>
 
-          <span className="amc-tracker-s10" style={{ color: saveStatus === 'error' ? '#ef4444' : '#0369a1' }}>
+          <span className={`amc-tracker-s10 ${(saveStatus === 'error' ? 'amc-tracker-cond-5-true' : 'amc-tracker-cond-6-false')}`}>
             {isLoading ? 'Syncing...' : saveMsg || 'Live Synced'}
           </span>
         </div>
@@ -860,7 +860,7 @@ export default function AmcTracker({ isAdmin = false }) {
               <button
                 key={cat}
                 onClick={() => setCategoryFilter(cat)}
-                className="amc-tracker-s34" style={{ fontWeight: categoryFilter === cat ? 700 : 500, border: categoryFilter === cat ? '1px solid #0284c7' : '1px solid #e2e8f0', background: categoryFilter === cat ? '#f0f9ff' : '#ffffff', color: categoryFilter === cat ? '#0369a1' : '#64748b' }}
+                className={`amc-tracker-s34 ${(categoryFilter === cat ? 'amc-tracker-cond-7-true' : 'amc-tracker-cond-8-false')}`}
               >
                 {cat}
               </button>
@@ -899,7 +899,7 @@ export default function AmcTracker({ isAdmin = false }) {
                     return (
                       <tr
                         key={item.id}
-                        className="amc-tracker-s46" style={{ background: idx % 2 === 0 ? '#ffffff' : '#fafafa' }}
+                        className={`amc-tracker-s46 ${(idx % 2 === 0 ? 'amc-tracker-cond-9-true' : 'amc-tracker-cond-10-false')}`}
                       >
                         <td className="amc-tracker-s47">
                           {item.srNo}
@@ -941,13 +941,13 @@ export default function AmcTracker({ isAdmin = false }) {
                           )}
                         </td>
                         <td className="amc-tracker-s48">
-                          <span className="amc-tracker-s58" style={{ background: item.invoiceAvailable === 'Yes' ? '#f0fdf4' : item.invoiceAvailable === 'In Progress' ? '#fef3c7' : '#f8fafc', color: item.invoiceAvailable === 'Yes' ? '#166534' : item.invoiceAvailable === 'In Progress' ? '#b45309' : '#475569', border: item.invoiceAvailable === 'Yes' ? '1px solid #bbf7d0' : '1px solid #e2e8f0' }}>
+                          <span className={`amc-tracker-s58 ${(item.invoiceAvailable === 'Yes' ? 'amc-tracker-cond-11-true' : 'amc-tracker-cond-12-false')}`} style={{ background: item.invoiceAvailable === 'Yes' ? '#f0fdf4' : item.invoiceAvailable === 'In Progress' ? '#fef3c7' : '#f8fafc', color: item.invoiceAvailable === 'Yes' ? '#166534' : item.invoiceAvailable === 'In Progress' ? '#b45309' : '#475569' }}>
                             {item.invoiceAvailable === 'Yes' ? '✓ Available' : item.invoiceAvailable}
                           </span>
                         </td>
                         <td className="amc-tracker-s48">
                           {item.remarks ? (
-                            <div className="amc-tracker-s59" style={{ color: hasRohanNote ? '#92400e' : '#475569', background: hasRohanNote ? '#fef3c7' : 'transparent', padding: hasRohanNote ? '4px 8px' : '0', borderRadius: hasRohanNote ? '6px' : '0', fontWeight: hasRohanNote ? 700 : 400 }}>
+                            <div className={`amc-tracker-s59 ${(hasRohanNote ? 'amc-tracker-cond-13-true' : 'amc-tracker-cond-14-false')}`}>
                               {hasRohanNote && '⚠️ '}
                               {item.remarks}
                             </div>
@@ -998,7 +998,7 @@ export default function AmcTracker({ isAdmin = false }) {
 
       {/* ── TAB 2: FINANCIAL AMC CONTRACTS & PAYMENT SCHEDULES ── */}
       {activeTab === 'contracts' && (
-        <div className="amc-tracker-s67" style={{ gridTemplateColumns: activeContractId ? '1.2fr 1fr' : '1fr' }}>
+        <div className={`amc-tracker-s67 ${(activeContractId ? 'amc-tracker-cond-15-true' : 'amc-tracker-cond-16-false')}`}>
           {/* Contracts Table */}
           <div className="amc-tracker-s68">
             <div className="amc-tracker-s69">
@@ -1078,7 +1078,7 @@ export default function AmcTracker({ isAdmin = false }) {
                       <tr
                         key={contract.id}
                         onClick={() => setActiveContractId(isSelected ? null : contract.id)}
-                        className="amc-tracker-s85" style={{ background: isSelected ? '#f0f9ff' : 'transparent' }}
+                        className={`amc-tracker-s85 ${(isSelected ? 'amc-tracker-cond-17-true' : 'amc-tracker-cond-18-false')}`}
                       >
                         <td className="amc-tracker-s86">
                           <span className="amc-tracker-s87">{contract.name}</span>
@@ -1147,9 +1147,9 @@ export default function AmcTracker({ isAdmin = false }) {
                     return (
                       <div
                         key={p.id}
-                        className="amc-tracker-s101" style={{ background: p.status === 'Paid' ? '#f0fdf4' : '#ffffff' }}
+                        className={`amc-tracker-s101 ${(p.status === 'Paid' ? 'amc-tracker-cond-19-true' : 'amc-tracker-cond-20-false')}`}
                       >
-                        <div className="amc-tracker-s102" style={{ marginBottom: isEditing ? '10px' : '0' }}>
+                        <div className={`amc-tracker-s102 ${(isEditing ? 'amc-tracker-cond-21-true' : 'amc-tracker-cond-22-false')}`}>
                           <div>
                             <span className="amc-tracker-s103">INSTALLMENT #{p.id}</span>
                             <div className="amc-tracker-s104">{fmt(p.amount)}</div>
@@ -1162,7 +1162,7 @@ export default function AmcTracker({ isAdmin = false }) {
                           </div>
 
                           <div className="amc-tracker-s107">
-                            <span className="amc-tracker-s108" style={{ background: p.status === 'Paid' ? '#dcfce7' : '#fef3c7', color: p.status === 'Paid' ? '#15803d' : '#b45309' }}>
+                            <span className={`amc-tracker-s108 ${(p.status === 'Paid' ? 'amc-tracker-cond-23-true' : 'amc-tracker-cond-24-false')}`}>
                               {p.status}
                             </span>
                             {isAdmin && !isEditing && (

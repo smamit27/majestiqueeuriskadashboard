@@ -851,7 +851,7 @@ export default function BankStatementTracker({ isAdmin }) {
                 <button
                   key={f.key}
                   onClick={() => setSourceFilter(f.key)}
-                  className="bank-statement-tracker-s13" style={{ border: `1px solid ${active ? f.dot : f.dot + '55'}`, background: active ? `${f.dot}22` : 'transparent', fontWeight: active ? '700' : '500', color: active ? f.dot : 'var(--muted)' }}
+                  className={`bank-statement-tracker-s13 ${(active ? 'bank-statement-tracker-cond-1-true' : 'bank-statement-tracker-cond-2-false')}`} style={{ border: `1px solid ${active ? f.dot : f.dot + '55'}`, background: active ? `${f.dot}22` : 'transparent', color: active ? f.dot : 'var(--muted)' }}
                 >
                   <span className="bank-statement-tracker-s14" style={{ background: f.dot }} />
                   {f.label}
@@ -900,8 +900,8 @@ export default function BankStatementTracker({ isAdmin }) {
                       </span>
                       {txStyle.buildingTag && (
                         <span
-                          className="inter-building-badge bank-statement-tracker-s27"
-                          style={{ background: txStyle.buildingTag === 'B Building' ? 'rgba(13, 148, 136, 0.15)' : 'rgba(2, 132, 199, 0.15)', color: txStyle.buildingTag === 'B Building' ? '#0d9488' : '#0284c7', border: `1px solid ${txStyle.buildingTag === 'B Building' ? 'rgba(13, 148, 136, 0.35)' : 'rgba(2, 132, 199, 0.35)'}` }}
+                          className={`inter-building-badge bank-statement-tracker-s27 ${(txStyle.buildingTag === 'B Building' ? 'bank-statement-tracker-cond-3-true' : 'bank-statement-tracker-cond-4-false')}`}
+                          style={{ border: `1px solid ${txStyle.buildingTag === 'B Building' ? 'rgba(13, 148, 136, 0.35)' : 'rgba(2, 132, 199, 0.35)'}` }}
                         >
                           🏢 {txStyle.buildingTag} FT
                         </span>
@@ -929,14 +929,14 @@ export default function BankStatementTracker({ isAdmin }) {
                     TOTAL — {txCount} transaction{txCount !== 1 ? 's' : ''}
                   </span>
                 </td>
-                <td className="bank-statement-tracker-s36" style={{ color: totalDR > 0 ? 'var(--coral)' : 'var(--muted)' }}>
+                <td className={`bank-statement-tracker-s36 ${(totalDR > 0 ? 'bank-statement-tracker-cond-5-true' : 'bank-statement-tracker-cond-6-false')}`}>
                   {totalDR > 0 ? fmtAmt(totalDR) : '—'}
                 </td>
-                <td className="bank-statement-tracker-s36" style={{ color: totalCR > 0 ? 'var(--pine)' : 'var(--muted)' }}>
+                <td className={`bank-statement-tracker-s36 ${(totalCR > 0 ? 'bank-statement-tracker-cond-7-true' : 'bank-statement-tracker-cond-8-false')}`}>
                   {totalCR > 0 ? fmtAmt(totalCR) : '—'}
                 </td>
                 <td className="bank-statement-tracker-s37">
-                  Net: <span className="bank-statement-tracker-s38" style={{ color: (totalCR - totalDR) >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
+                  Net: <span className={`bank-statement-tracker-s38 ${((totalCR - totalDR) >= 0 ? 'bank-statement-tracker-cond-9-true' : 'bank-statement-tracker-cond-10-false')}`}>
                     {fmtAmt(totalCR - totalDR)}
                   </span>
                 </td>
@@ -1112,7 +1112,7 @@ export default function BankStatementTracker({ isAdmin }) {
               return (
                 <div key={idx} className="bank-statement-tracker-s54" style={{ border: `1px solid ${isPos ? 'var(--line)' : '#c2644a44'}` }}>
                   <span className="bank-statement-tracker-s55">{m.date}</span>
-                  <strong className="bank-statement-tracker-s56" style={{ color: isPos ? 'var(--pine)' : 'var(--coral)' }}>
+                  <strong className={`bank-statement-tracker-s56 ${(isPos ? 'bank-statement-tracker-cond-11-true' : 'bank-statement-tracker-cond-12-false')}`}>
                     {isPos ? '+ ' : '- '}₹ {Math.abs(net).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                   </strong>
                   <span className="bank-statement-tracker-s57">
@@ -1125,10 +1125,10 @@ export default function BankStatementTracker({ isAdmin }) {
               );
             })}
             <div className="bank-statement-tracker-s54" style={{ border: `2px solid ${NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)'}` }}>
-              <span className="bank-statement-tracker-s59" style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
+              <span className={`bank-statement-tracker-s59 ${(NET_CASH_FLOW >= 0 ? 'bank-statement-tracker-cond-13-true' : 'bank-statement-tracker-cond-14-false')}`}>
                 {NET_CASH_FLOW >= 0 ? '🌟 Overall Profit' : '⚠️ Overall Deficit'}
               </span>
-              <strong className="bank-statement-tracker-s56" style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
+              <strong className={`bank-statement-tracker-s56 ${(NET_CASH_FLOW >= 0 ? 'bank-statement-tracker-cond-15-true' : 'bank-statement-tracker-cond-16-false')}`}>
                 {NET_CASH_FLOW >= 0 ? '+ ' : '- '}₹ {Math.abs(NET_CASH_FLOW).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
               </strong>
               <span className="bank-statement-tracker-s57">
@@ -1139,7 +1139,7 @@ export default function BankStatementTracker({ isAdmin }) {
               </span>
               {fdPrincipalFlow !== 0 && (
                 <span className="bank-statement-tracker-s60">
-                  Ops Net: <strong style={{ color: (NET_CASH_FLOW - fdPrincipalFlow) >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
+                  Ops Net: <strong className={`${((NET_CASH_FLOW - fdPrincipalFlow) >= 0 ? 'bank-statement-tracker-cond-17-true' : 'bank-statement-tracker-cond-18-false')}`}>
                     {fmtAmt(NET_CASH_FLOW - fdPrincipalFlow)}
                   </strong> (Excl. FD)
                 </span>
@@ -1276,7 +1276,7 @@ export default function BankStatementTracker({ isAdmin }) {
         </div>
         <div className="metric-card metric-card--sand">
           <p className="bank-statement-tracker-s43">Overall Profit / Net Flow</p>
-          <h3 style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
+          <h3 className={`${(NET_CASH_FLOW >= 0 ? 'bank-statement-tracker-cond-19-true' : 'bank-statement-tracker-cond-20-false')}`}>
             {fmtAmt(NET_CASH_FLOW)}
           </h3>
           <p className="bank-statement-tracker-s73">
@@ -1284,7 +1284,7 @@ export default function BankStatementTracker({ isAdmin }) {
           </p>
           {fdPrincipalFlow !== 0 && (
             <p className="bank-statement-tracker-s76">
-              Operational Net: <strong style={{ color: (NET_CASH_FLOW - fdPrincipalFlow) >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
+              Operational Net: <strong className={`${((NET_CASH_FLOW - fdPrincipalFlow) >= 0 ? 'bank-statement-tracker-cond-21-true' : 'bank-statement-tracker-cond-22-false')}`}>
                 {fmtAmt(NET_CASH_FLOW - fdPrincipalFlow)}
               </strong>
               <span className="bank-statement-tracker-s77">(Excl. FD Principal movements)</span>
@@ -1614,7 +1614,7 @@ export default function BankStatementTracker({ isAdmin }) {
                   </div>
                   <div className="bank-statement-tracker-s120">
                     <span>Net Balance with C:</span>
-                    <strong style={{ color: (interBuildingStats && (interBuildingStats.cIn - interBuildingStats.cOut) >= 0) ? 'var(--pine)' : 'var(--coral)' }}>
+                    <strong className={`${(interBuildingStats && (interBuildingStats.cIn - interBuildingStats.cOut) >= 0 ? 'bank-statement-tracker-cond-23-true' : 'bank-statement-tracker-cond-24-false')}`}>
                       {interBuildingStats ? fmtAmt(interBuildingStats.cIn - interBuildingStats.cOut) : '₹0.00'}
                     </strong>
                   </div>
@@ -1641,7 +1641,7 @@ export default function BankStatementTracker({ isAdmin }) {
                   </div>
                   <div className="bank-statement-tracker-s120">
                     <span>Net Inter-Building Surplus:</span>
-                    <strong style={{ color: (interBuildingStats && (interBuildingStats.totalIn - interBuildingStats.totalOut) >= 0) ? 'var(--pine)' : 'var(--coral)' }}>
+                    <strong className={`${(interBuildingStats && (interBuildingStats.totalIn - interBuildingStats.totalOut) >= 0 ? 'bank-statement-tracker-cond-25-true' : 'bank-statement-tracker-cond-26-false')}`}>
                       {interBuildingStats ? fmtAmt(interBuildingStats.totalIn - interBuildingStats.totalOut) : '₹0.00'}
                     </strong>
                   </div>
@@ -1674,7 +1674,7 @@ export default function BankStatementTracker({ isAdmin }) {
                 </div>
                 <div className="bank-statement-tracker-s128">
                   <span>Period Cash Flow:</span>
-                  <strong style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>{fmtAmt(NET_CASH_FLOW)}</strong>
+                  <strong className={`${(NET_CASH_FLOW >= 0 ? 'bank-statement-tracker-cond-27-true' : 'bank-statement-tracker-cond-28-false')}`}>{fmtAmt(NET_CASH_FLOW)}</strong>
                 </div>
                 <div className="bank-statement-tracker-s128">
                   <span>Closing Reserve Balance:</span>
@@ -1682,7 +1682,7 @@ export default function BankStatementTracker({ isAdmin }) {
                 </div>
                 <div className="bank-statement-tracker-s129">
                   <span>Financial Health Score:</span>
-                  <span className="bank-statement-tracker-s38" style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--amber)' }}>
+                  <span className={`bank-statement-tracker-s38 ${(NET_CASH_FLOW >= 0 ? 'bank-statement-tracker-cond-29-true' : 'bank-statement-tracker-cond-30-false')}`}>
                     {NET_CASH_FLOW >= 0 ? '92 / 100 (Exceptional)' : '76 / 100 (Average)'}
                   </span>
                 </div>

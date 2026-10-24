@@ -1224,3 +1224,195 @@
   font-weight: 600;
 }
 
+
+/* Extracted Conditional Styles */
+.shop-maintenance-tracker-cond-1-true {
+  background: rgba(180, 35, 24, 0.1);
+  color: #b42318;
+}
+
+.shop-maintenance-tracker-cond-2-false {
+  background: rgba(196, 155, 79, 0.14);
+  color: #8a6b2e;
+}
+
+.shop-maintenance-tracker-cond-3-true {
+  color: #fde047;
+}
+
+.shop-maintenance-tracker-cond-4-false {
+  color: #34d399;
+}
+
+.shop-maintenance-tracker-cond-5-true {
+  cursor: wait;
+}
+
+.shop-maintenance-tracker-cond-6-false {
+  cursor: pointer;
+}
+
+.shop-maintenance-tracker-cond-7-true {
+  border: 1px solid #0b2b26;
+  background: #0b2b26;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(11,43,38,0.16);
+}
+
+.shop-maintenance-tracker-cond-8-false {
+  border: 1px solid #d0d5dd;
+  background: #f8fafc;
+  color: #344054;
+  box-shadow: none;
+}
+
+.shop-maintenance-tracker-cond-9-true {
+  border-bottom: 1px solid rgba(61,63,52,0.08);
+}
+
+.shop-maintenance-tracker-cond-10-false {
+  border-bottom: none;
+}
+
+.shop-maintenance-tracker-cond-11-true {
+  transform: rotate(180deg);
+}
+
+.shop-maintenance-tracker-cond-12-false {
+  transform: rotate(0deg);
+}
+
+.shop-maintenance-tracker-cond-13-true {
+  padding: 4px 8px;
+  background: #ecfdf3;
+  color: #027a48;
+  font-weight: 600;
+}
+
+.shop-maintenance-tracker-cond-14-false {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: normal;
+}
+
+.shop-maintenance-tracker-cond-15-true {
+  border: 2px solid #0b2b26;
+  background: #0b2b26;
+  color: #C49B4F;
+}
+
+.shop-maintenance-tracker-cond-16-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.shop-maintenance-tracker-cond-17-true {
+  border: 2px solid #0b2b26;
+  background: #0b2b26;
+  color: #C49B4F;
+}
+
+.shop-maintenance-tracker-cond-18-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.shop-maintenance-tracker-cond-19-true {
+  border: 2px solid #0b2b26;
+  background: #0b2b26;
+  color: #fff;
+}
+
+.shop-maintenance-tracker-cond-20-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.shop-maintenance-tracker-cond-21-true {
+  border: 2px solid #0b2b26;
+  background: #0b2b26;
+  color: #fff;
+}
+
+.shop-maintenance-tracker-cond-22-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.shop-maintenance-tracker-cond-23-true {
+  border: 2px solid #0b2b26;
+  background: #0b2b26;
+  color: #fff;
+}
+
+.shop-maintenance-tracker-cond-24-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #475569;
+}
+
+.shop-maintenance-tracker-cond-25-true {
+  border: 1.5px solid #0b2b26;
+  background: #0b2b26;
+  color: #fff;
+}
+
+.shop-maintenance-tracker-cond-26-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #1e293b;
+}
+
+.shop-maintenance-tracker-cond-27-true {
+  opacity: 0.85;
+}
+
+.shop-maintenance-tracker-cond-28-false {
+  opacity: 0.6;
+}
+
+.shop-maintenance-tracker-cond-29-true {
+  color: #991b1b;
+}
+
+.shop-maintenance-tracker-cond-30-false {
+  color: #15803d;
+}
+
+.shop-maintenance-tracker-cond-31-true {
+  border: 1px solid #0b2b26;
+  background: #0b2b26;
+  color: #fff;
+}
+
+.shop-maintenance-tracker-cond-32-false {
+  border: 1px solid #d0d5dd;
+  background: #fff;
+  color: #344054;
+}
+
+.shop-maintenance-tracker-cond-33-true {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.shop-maintenance-tracker-cond-34-false {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.shop-maintenance-tracker-cond-35-true {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.shop-maintenance-tracker-cond-36-false {
+  cursor: pointer;
+  opacity: 1;
+}
+

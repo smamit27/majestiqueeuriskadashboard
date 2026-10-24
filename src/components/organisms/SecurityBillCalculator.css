@@ -227,3 +227,21 @@
   margin: 0 auto;
 }
 
+
+/* Extracted Conditional Styles */
+.security-bill-calculator-cond-1-true {
+  color: #0B2B26;
+}
+
+.security-bill-calculator-cond-2-false {
+  color: inherit;
+}
+
+.security-bill-calculator-cond-3-true {
+  color: #C49B4F;
+}
+
+.security-bill-calculator-cond-4-false {
+  color: inherit;
+}
+

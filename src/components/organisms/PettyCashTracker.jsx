@@ -934,14 +934,14 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
             <button
               type="button"
               onClick={() => setScope('all')}
-              className="petty-cash-tracker-s8" style={{ background: scope === 'all' ? '#0B2B26' : '#E5E7EB', color: scope === 'all' ? '#fff' : '#374151' }}
+              className={`petty-cash-tracker-s8 ${(scope === 'all' ? 'petty-cash-tracker-cond-1-true' : 'petty-cash-tracker-cond-2-false')}`}
             >
               🌟 All History (2023–2026)
             </button>
             <button
               type="button"
               onClick={() => setScope('fy2627')}
-              className="petty-cash-tracker-s8" style={{ background: scope === 'fy2627' ? '#0B2B26' : '#E5E7EB', color: scope === 'fy2627' ? '#fff' : '#374151' }}
+              className={`petty-cash-tracker-s8 ${(scope === 'fy2627' ? 'petty-cash-tracker-cond-3-true' : 'petty-cash-tracker-cond-4-false')}`}
             >
               📅 FY 2026–27 Only
             </button>
@@ -974,7 +974,7 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
                 key={qv.label}
                 type="button"
                 onClick={() => setSearchFilter(qv.query)}
-                className="petty-cash-tracker-s12" style={{ border: isSelected ? '1px solid #C49B4F' : '1px solid #E5E7EB', background: isSelected ? '#C49B4F' : '#fff', color: isSelected ? '#0B2B26' : '#475467', fontWeight: isSelected ? 800 : 600 }}
+                className={`petty-cash-tracker-s12 ${(isSelected ? 'petty-cash-tracker-cond-5-true' : 'petty-cash-tracker-cond-6-false')}`}
               >
                 {qv.label}
               </button>
@@ -1084,7 +1084,7 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
               </tr>
             ) : (
               filteredEntries.map((entry, idx) => (
-                <tr key={entry.id || idx} style={{ background: idx % 2 === 1 ? '#fcfdfd' : '#ffffff' }}>
+                <tr key={entry.id || idx} className={`${(idx % 2 === 1 ? 'petty-cash-tracker-cond-7-true' : 'petty-cash-tracker-cond-8-false')}`}>
                   <td className="petty-cash-tracker-s38" style={{ ...bodyCellStyle }}>{idx + 1}</td>
                   <td className="petty-cash-tracker-s39" style={{ ...bodyCellStyle }}>{formatShortDate(entry.date)}</td>
                   <td className="petty-cash-tracker-s40" style={{ ...bodyCellStyle }}>{entry.vendor || '—'}</td>
@@ -1131,8 +1131,8 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
             </thead>
             <tbody>
               {leaderboard.slice(0, 15).map((item, index) => (
-                <tr key={item.vendor} style={{ background: index % 2 === 1 ? '#fcfdfd' : '#ffffff' }}>
-                  <td className="petty-cash-tracker-s58" style={{ ...bodyCellStyle, color: index < 3 ? '#C49B4F' : '#667085' }}>
+                <tr key={item.vendor} className={`${(index % 2 === 1 ? 'petty-cash-tracker-cond-9-true' : 'petty-cash-tracker-cond-10-false')}`}>
+                  <td className={`petty-cash-tracker-s58 ${(index < 3 ? 'petty-cash-tracker-cond-11-true' : 'petty-cash-tracker-cond-12-false')}`} style={{ ...bodyCellStyle }}>
                     #{index + 1}
                   </td>
                   <td className="petty-cash-tracker-s59" style={{ ...bodyCellStyle }}>{item.vendor}</td>
@@ -2323,7 +2323,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                   key={tab.id}
                   type="button"
                   onClick={() => handleSelectSubTab(tab.id)}
-                  className="petty-cash-tracker-s111" style={{ background: isActive ? '#0B2B26' : '#F3F4F6', color: isActive ? '#fff' : '#344054' }}
+                  className={`petty-cash-tracker-s111 ${(isActive ? 'petty-cash-tracker-cond-13-true' : 'petty-cash-tracker-cond-14-false')}`}
                 >
                   {tab.label}
                 </button>
@@ -2348,7 +2348,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                         [subTab]: month.id
                       }))
                     }
-                    className="petty-cash-tracker-s113" style={{ background: isActive ? '#C49B4F' : '#F8FAFC', color: isActive ? '#0B2B26' : '#475467' }}
+                    className={`petty-cash-tracker-s113 ${(isActive ? 'petty-cash-tracker-cond-15-true' : 'petty-cash-tracker-cond-16-false')}`}
                   >
                     {month.label}
                   </button>
@@ -2372,7 +2372,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
               <div className="petty-cash-tracker-s13">
                 <div className="petty-cash-tracker-s115">
                   <div className="petty-cash-tracker-s19">Opening Balance</div>
-                  <div className="petty-cash-tracker-s116" style={{ color: activeMonthSummary.openingBalance >= 0 ? '#101828' : '#B42318' }}>
+                  <div className={`petty-cash-tracker-s116 ${(activeMonthSummary.openingBalance >= 0 ? 'petty-cash-tracker-cond-17-true' : 'petty-cash-tracker-cond-18-false')}`}>
                     {formatCurrency(activeMonthSummary.openingBalance)}
                   </div>
                 </div>
@@ -2388,9 +2388,9 @@ export default function PettyCashTracker({ isAdmin = false }) {
                     -{formatCurrency(activeMonthSummary.payments)}
                   </div>
                 </div>
-                <div className="petty-cash-tracker-s122" style={{ background: activeMonthSummary.closingBalance >= 0 ? '#F0FDF4' : '#FFF4F4', border: `1px solid ${activeMonthSummary.closingBalance >= 0 ? 'rgba(11, 110, 79, 0.25)' : 'rgba(180, 35, 24, 0.25)'}` }}>
-                  <div className="petty-cash-tracker-s123" style={{ color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318' }}>Closing Balance ({activeMonthSummary.label})</div>
-                  <div className="petty-cash-tracker-s116" style={{ color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318' }}>
+                <div className={`petty-cash-tracker-s122 ${(activeMonthSummary.closingBalance >= 0 ? 'petty-cash-tracker-cond-19-true' : 'petty-cash-tracker-cond-20-false')}`} style={{ border: `1px solid ${activeMonthSummary.closingBalance >= 0 ? 'rgba(11, 110, 79, 0.25)' : 'rgba(180, 35, 24, 0.25)'}` }}>
+                  <div className={`petty-cash-tracker-s123 ${(activeMonthSummary.closingBalance >= 0 ? 'petty-cash-tracker-cond-21-true' : 'petty-cash-tracker-cond-22-false')}`}>Closing Balance ({activeMonthSummary.label})</div>
+                  <div className={`petty-cash-tracker-s116 ${(activeMonthSummary.closingBalance >= 0 ? 'petty-cash-tracker-cond-23-true' : 'petty-cash-tracker-cond-24-false')}`}>
                     {formatCurrency(activeMonthSummary.closingBalance)}
                   </div>
                 </div>
@@ -2570,7 +2570,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                         .map((entry, index) => (
                         <tr
                           key={entry.id || `${activeMonthSummary.id}-${index}`}
-                          className="petty-cash-tracker-s146" style={{ background: index % 2 === 1 ? '#fcfdfd' : '#ffffff' }}
+                          className={`petty-cash-tracker-s146 ${(index % 2 === 1 ? 'petty-cash-tracker-cond-25-true' : 'petty-cash-tracker-cond-26-false')}`}
                         >
                           <td className="petty-cash-tracker-s39" style={{ ...bodyCellStyle }}>
                             {isAdmin && editingEntryId === entry.id ? (
@@ -2634,7 +2634,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                               <span className="petty-cash-tracker-s149">—</span>
                             )}
                           </td>
-                          <td className="petty-cash-tracker-s151" style={{ ...bodyCellStyle, color: entry.balance >= 0 ? '#0B6E4F' : '#B42318' }}>
+                          <td className={`petty-cash-tracker-s151 ${(entry.balance >= 0 ? 'petty-cash-tracker-cond-27-true' : 'petty-cash-tracker-cond-28-false')}`} style={{ ...bodyCellStyle }}>
                             {formatCurrency(entry.balance)}
                           </td>
                           <td className="petty-cash-tracker-s44" style={{ ...bodyCellStyle }}>
@@ -2706,7 +2706,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                       <td className="petty-cash-tracker-s43" style={{ ...bodyCellStyle }}>
                         {formatCurrency(activeMonthSummary.payments)}
                       </td>
-                      <td className="petty-cash-tracker-s151" style={{ ...bodyCellStyle, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318' }}>
+                      <td className={`petty-cash-tracker-s151 ${(activeMonthSummary.closingBalance >= 0 ? 'petty-cash-tracker-cond-29-true' : 'petty-cash-tracker-cond-30-false')}`} style={{ ...bodyCellStyle }}>
                         {formatCurrency(activeMonthSummary.closingBalance)}
                       </td>
                       <td style={bodyCellStyle} />

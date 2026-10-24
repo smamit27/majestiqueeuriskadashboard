@@ -404,7 +404,7 @@ export default function WaterTankCleaningAnalysis() {
                     <td className="water-tank-cleaning-analysis-s34">{row.capacityL.toLocaleString('en-IN')} L</td>
                     <td className="water-tank-cleaning-analysis-s35">₹{row.cleaningBill.toLocaleString('en-IN')}</td>
                     <td className="water-tank-cleaning-analysis-s36">{row.tanksCount}</td>
-                    <td className="water-tank-cleaning-analysis-s37" style={{ color: row.billPer1kL < 60 ? '#15803d' : '#0f172a' }}>
+                    <td className={`water-tank-cleaning-analysis-s37 ${(row.billPer1kL < 60 ? 'water-tank-cleaning-analysis-cond-1-true' : 'water-tank-cleaning-analysis-cond-2-false')}`}>
                       ₹{row.billPer1kL.toFixed(2)}
                     </td>
                     <td className="water-tank-cleaning-analysis-s38">
@@ -463,25 +463,25 @@ export default function WaterTankCleaningAnalysis() {
           <div className="water-tank-cleaning-analysis-s55">
             <button
               onClick={() => setSelectedWingTab('all')}
-              className="water-tank-cleaning-analysis-s56" style={{ background: selectedWingTab === 'all' ? '#0284c7' : 'transparent', color: selectedWingTab === 'all' ? '#ffffff' : '#64748b' }}
+              className={`water-tank-cleaning-analysis-s56 ${(selectedWingTab === 'all' ? 'water-tank-cleaning-analysis-cond-3-true' : 'water-tank-cleaning-analysis-cond-4-false')}`}
             >
               All Wings
             </button>
             <button
               onClick={() => setSelectedWingTab('a_building')}
-              className="water-tank-cleaning-analysis-s56" style={{ background: selectedWingTab === 'a_building' ? '#2563eb' : 'transparent', color: selectedWingTab === 'a_building' ? '#ffffff' : '#64748b' }}
+              className={`water-tank-cleaning-analysis-s56 ${(selectedWingTab === 'a_building' ? 'water-tank-cleaning-analysis-cond-5-true' : 'water-tank-cleaning-analysis-cond-6-false')}`}
             >
               A Building (₹5,100)
             </button>
             <button
               onClick={() => setSelectedWingTab('b_building')}
-              className="water-tank-cleaning-analysis-s56" style={{ background: selectedWingTab === 'b_building' ? '#0284c7' : 'transparent', color: selectedWingTab === 'b_building' ? '#ffffff' : '#64748b' }}
+              className={`water-tank-cleaning-analysis-s56 ${(selectedWingTab === 'b_building' ? 'water-tank-cleaning-analysis-cond-7-true' : 'water-tank-cleaning-analysis-cond-8-false')}`}
             >
               B Building (₹5,200)
             </button>
             <button
               onClick={() => setSelectedWingTab('c_building')}
-              className="water-tank-cleaning-analysis-s56" style={{ background: selectedWingTab === 'c_building' ? '#059669' : 'transparent', color: selectedWingTab === 'c_building' ? '#ffffff' : '#64748b' }}
+              className={`water-tank-cleaning-analysis-s56 ${(selectedWingTab === 'c_building' ? 'water-tank-cleaning-analysis-cond-9-true' : 'water-tank-cleaning-analysis-cond-10-false')}`}
             >
               C Building (₹3,200)
             </button>
@@ -527,11 +527,11 @@ export default function WaterTankCleaningAnalysis() {
                         <td className="water-tank-cleaning-analysis-s72">{item.id}</td>
                         <td className="water-tank-cleaning-analysis-s73">{item.capacityL.toLocaleString('en-IN')}</td>
                         <td className="water-tank-cleaning-analysis-s74">{item.qty}</td>
-                        <td className="water-tank-cleaning-analysis-s75" style={{ color: item.note === '2 in 1' ? '#2563eb' : '#64748b', fontWeight: item.note === '2 in 1' ? 700 : 400 }}>
+                        <td className={`water-tank-cleaning-analysis-s75 ${(item.note === '2 in 1' ? 'water-tank-cleaning-analysis-cond-11-true' : 'water-tank-cleaning-analysis-cond-12-false')}`}>
                           {item.note}
                         </td>
                         <td className="water-tank-cleaning-analysis-s73">₹{item.quotedCleaning.toLocaleString('en-IN')}</td>
-                        <td className="water-tank-cleaning-analysis-s73" style={{ color: item.effectivePer1kL > 100 ? '#dc2626' : '#059669' }}>
+                        <td className={`water-tank-cleaning-analysis-s73 ${(item.effectivePer1kL > 100 ? 'water-tank-cleaning-analysis-cond-13-true' : 'water-tank-cleaning-analysis-cond-14-false')}`}>
                           ₹{item.effectivePer1kL.toFixed(2)}
                         </td>
                         <td className="water-tank-cleaning-analysis-s76">
@@ -590,11 +590,11 @@ export default function WaterTankCleaningAnalysis() {
                         <td className="water-tank-cleaning-analysis-s72">{item.id}</td>
                         <td className="water-tank-cleaning-analysis-s73">{item.capacityL.toLocaleString('en-IN')}</td>
                         <td className="water-tank-cleaning-analysis-s74">{item.qty}</td>
-                        <td className="water-tank-cleaning-analysis-s75" style={{ color: item.note === '2 in 1' ? '#0284c7' : '#64748b', fontWeight: item.note === '2 in 1' ? 700 : 400 }}>
+                        <td className={`water-tank-cleaning-analysis-s75 ${(item.note === '2 in 1' ? 'water-tank-cleaning-analysis-cond-15-true' : 'water-tank-cleaning-analysis-cond-16-false')}`}>
                           {item.note}
                         </td>
                         <td className="water-tank-cleaning-analysis-s73">₹{item.quotedCleaning.toLocaleString('en-IN')}</td>
-                        <td className="water-tank-cleaning-analysis-s73" style={{ color: item.effectivePer1kL > 100 ? '#dc2626' : '#059669' }}>
+                        <td className={`water-tank-cleaning-analysis-s73 ${(item.effectivePer1kL > 100 ? 'water-tank-cleaning-analysis-cond-17-true' : 'water-tank-cleaning-analysis-cond-18-false')}`}>
                           ₹{item.effectivePer1kL.toFixed(2)}
                         </td>
                         <td className="water-tank-cleaning-analysis-s76">
@@ -655,7 +655,7 @@ export default function WaterTankCleaningAnalysis() {
                         <td className="water-tank-cleaning-analysis-s74">{item.qty}</td>
                         <td className="water-tank-cleaning-analysis-s97">{item.note}</td>
                         <td className="water-tank-cleaning-analysis-s73">₹{item.quotedCleaning.toLocaleString('en-IN')}</td>
-                        <td className="water-tank-cleaning-analysis-s73" style={{ color: item.effectivePer1kL > 100 ? '#dc2626' : '#059669' }}>
+                        <td className={`water-tank-cleaning-analysis-s73 ${(item.effectivePer1kL > 100 ? 'water-tank-cleaning-analysis-cond-19-true' : 'water-tank-cleaning-analysis-cond-20-false')}`}>
                           ₹{item.effectivePer1kL.toFixed(2)}
                         </td>
                         <td className="water-tank-cleaning-analysis-s76">
@@ -718,12 +718,12 @@ export default function WaterTankCleaningAnalysis() {
                 <tr key={i} className="water-tank-cleaning-analysis-s29">
                   <td className="water-tank-cleaning-analysis-s109">{item.capacityL.toLocaleString('en-IN')} L</td>
                   <td className="water-tank-cleaning-analysis-s110">{item.aCharge !== '—' ? `₹${item.aCharge}` : '—'}</td>
-                  <td className="water-tank-cleaning-analysis-s110" style={{ color: item.status === 'Discrepancy' ? '#dc2626' : '#0f172a' }}>
+                  <td className={`water-tank-cleaning-analysis-s110 ${(item.status === 'Discrepancy' ? 'water-tank-cleaning-analysis-cond-21-true' : 'water-tank-cleaning-analysis-cond-22-false')}`}>
                     {item.bCharge !== '—' ? `₹${item.bCharge}` : '—'}
                   </td>
                   <td className="water-tank-cleaning-analysis-s110">{item.cCharge !== '—' ? `₹${item.cCharge}` : '—'}</td>
                   <td className="water-tank-cleaning-analysis-s111">₹{item.lowestSeen}</td>
-                  <td className="water-tank-cleaning-analysis-s112" style={{ color: item.status === 'Discrepancy' ? '#dc2626' : '#15803d' }}>
+                  <td className={`water-tank-cleaning-analysis-s112 ${(item.status === 'Discrepancy' ? 'water-tank-cleaning-analysis-cond-23-true' : 'water-tank-cleaning-analysis-cond-24-false')}`}>
                     {item.differenceVsLowest}
                   </td>
                   <td className="water-tank-cleaning-analysis-s113">
@@ -814,7 +814,7 @@ export default function WaterTankCleaningAnalysis() {
                 <button
                   key={r}
                   onClick={() => setSimulatedRatePer1kL(r)}
-                  className="water-tank-cleaning-analysis-s131" style={{ border: simulatedRatePer1kL === r ? '2px solid #0284c7' : '1px solid #cbd5e1', background: simulatedRatePer1kL === r ? '#f0f9ff' : '#ffffff', color: simulatedRatePer1kL === r ? '#0284c7' : '#475569' }}
+                  className={`water-tank-cleaning-analysis-s131 ${(simulatedRatePer1kL === r ? 'water-tank-cleaning-analysis-cond-25-true' : 'water-tank-cleaning-analysis-cond-26-false')}`}
                 >
                   ₹{r}
                 </button>
@@ -823,12 +823,12 @@ export default function WaterTankCleaningAnalysis() {
           </div>
 
           {/* Outcome Card */}
-          <div className="water-tank-cleaning-analysis-s132" style={{ background: costDifference <= 0 ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' : 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)', border: costDifference <= 0 ? '1px solid #86efac' : '1px solid #fca5a5' }}>
-            <div className="water-tank-cleaning-analysis-s133" style={{ color: costDifference <= 0 ? '#15803d' : '#b91c1c' }}>
+          <div className={`water-tank-cleaning-analysis-s132 ${(costDifference <= 0 ? 'water-tank-cleaning-analysis-cond-27-true' : 'water-tank-cleaning-analysis-cond-28-false')}`}>
+            <div className={`water-tank-cleaning-analysis-s133 ${(costDifference <= 0 ? 'water-tank-cleaning-analysis-cond-29-true' : 'water-tank-cleaning-analysis-cond-30-false')}`}>
               {costDifference <= 0 ? 'Projected Society Savings' : 'Projected Cost Increase'}
             </div>
             
-            <div className="water-tank-cleaning-analysis-s134" style={{ color: costDifference <= 0 ? '#15803d' : '#b91c1c' }}>
+            <div className={`water-tank-cleaning-analysis-s134 ${(costDifference <= 0 ? 'water-tank-cleaning-analysis-cond-31-true' : 'water-tank-cleaning-analysis-cond-32-false')}`}>
               {costDifference <= 0 ? `Savings: ₹${Math.abs(costDifference).toLocaleString('en-IN')}` : `Extra: ₹${costDifference.toLocaleString('en-IN')}`}
             </div>
 

@@ -762,3 +762,131 @@
   border: 1px solid #ffffff;
 }
 
+
+/* Extracted Conditional Styles */
+.water-tank3-d-diagram-cond-1-true {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.water-tank3-d-diagram-cond-2-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.water-tank3-d-diagram-cond-3-true {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.water-tank3-d-diagram-cond-4-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.water-tank3-d-diagram-cond-5-true {
+  background: #ffffff;
+}
+
+.water-tank3-d-diagram-cond-6-false {
+  background: transparent;
+}
+
+.water-tank3-d-diagram-cond-7-true {
+  background: #ffffff;
+}
+
+.water-tank3-d-diagram-cond-8-false {
+  background: transparent;
+}
+
+.water-tank3-d-diagram-cond-9-true {
+  background: #ffffff;
+}
+
+.water-tank3-d-diagram-cond-10-false {
+  background: transparent;
+}
+
+.water-tank3-d-diagram-cond-11-true {
+  background: #2563eb;
+}
+
+.water-tank3-d-diagram-cond-12-false {
+  background: transparent;
+}
+
+.water-tank3-d-diagram-cond-13-true {
+  background: #0284c7;
+}
+
+.water-tank3-d-diagram-cond-14-false {
+  background: transparent;
+}
+
+.water-tank3-d-diagram-cond-15-true {
+  background: #0ea5e9;
+}
+
+.water-tank3-d-diagram-cond-16-false {
+  background: transparent;
+}
+
+.water-tank3-d-diagram-cond-17-true {
+  background: #059669;
+}
+
+.water-tank3-d-diagram-cond-18-false {
+  background: transparent;
+}
+
+.water-tank3-d-diagram-cond-19-true {
+  cursor: grabbing;
+}
+
+.water-tank3-d-diagram-cond-20-false {
+  cursor: grab;
+}
+
+.water-tank3-d-diagram-cond-21-true {
+  transition: none;
+}
+
+.water-tank3-d-diagram-cond-22-false {
+  transition: transform 0.15s ease-out;
+}
+
+.water-tank3-d-diagram-cond-23-true {
+  border: 2px solid #2563eb;
+}
+
+.water-tank3-d-diagram-cond-24-false {
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.water-tank3-d-diagram-cond-25-true {
+  border: 3px solid #38bdf8;
+  box-shadow: 0 0 35px #0284c7, inset 0 0 20px #0284c7;
+}
+
+.water-tank3-d-diagram-cond-26-false {
+  border: 2px dashed #0284c7;
+  box-shadow: inset 0 0 15px rgba(2,132,199,0.3);
+}
+
+.water-tank3-d-diagram-cond-27-true {
+  border: 2px solid #0284c7;
+}
+
+.water-tank3-d-diagram-cond-28-false {
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.water-tank3-d-diagram-cond-29-true {
+  border: 2px solid #059669;
+}
+
+.water-tank3-d-diagram-cond-30-false {
+  border: 1px solid rgba(255,255,255,0.2);
+}
+

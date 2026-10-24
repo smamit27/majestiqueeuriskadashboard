@@ -318,11 +318,11 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
           <button
             key={tab.id}
             onClick={() => setActiveSection(tab.id)}
-            className="c-a-hardik-mehta-report-view-s35" style={{ background: activeSection === tab.id ? '#0b2b26' : 'transparent', color: activeSection === tab.id ? '#C49B4F' : '#5f665f', boxShadow: activeSection === tab.id ? '0 2px 6px rgba(11, 43, 38, 0.15)' : 'none' }}
+            className={`c-a-hardik-mehta-report-view-s35 ${(activeSection === tab.id ? 'c-a-hardik-mehta-report-view-cond-1-true' : 'c-a-hardik-mehta-report-view-cond-2-false')}`}
           >
             <span>{tab.icon}</span>
             <span>{tab.label}</span>
-            <span className="c-a-hardik-mehta-report-view-s36" style={{ background: activeSection === tab.id ? 'rgba(196, 155, 79, 0.25)' : 'rgba(61, 63, 52, 0.06)', color: activeSection === tab.id ? '#fef3c7' : '#5f665f' }}>
+            <span className={`c-a-hardik-mehta-report-view-s36 ${(activeSection === tab.id ? 'c-a-hardik-mehta-report-view-cond-3-true' : 'c-a-hardik-mehta-report-view-cond-4-false')}`}>
               {tab.badge}
             </span>
           </button>
@@ -482,9 +482,9 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
                   {yearWiseExpenses.map((exp, idx) => (
                     <tr
                       key={exp.id}
-                      className="c-a-hardik-mehta-report-view-s71" style={{ background: exp.isMajor ? '#fefce8' : idx % 2 === 0 ? '#ffffff' : '#f8fafc', fontWeight: exp.isMajor ? 700 : 500 }}
+                      className={`c-a-hardik-mehta-report-view-s71 ${(exp.isMajor ? 'c-a-hardik-mehta-report-view-cond-5-true' : 'c-a-hardik-mehta-report-view-cond-6-false')}`} style={{ background: exp.isMajor ? '#fefce8' : idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}
                     >
-                      <td className="c-a-hardik-mehta-report-view-s72" style={{ color: exp.isMajor ? '#854d0e' : '#1e293b' }}>
+                      <td className={`c-a-hardik-mehta-report-view-s72 ${(exp.isMajor ? 'c-a-hardik-mehta-report-view-cond-7-true' : 'c-a-hardik-mehta-report-view-cond-8-false')}`}>
                         {exp.isMajor && <span className="c-a-hardik-mehta-report-view-s73">⭐</span>}
                         {exp.category}
                       </td>
@@ -563,7 +563,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
                     </thead>
                     <tbody>
                       {group.items.map((item, idx) => (
-                        <tr key={idx} className="c-a-hardik-mehta-report-view-s92" style={{ background: idx % 2 === 0 ? '#ffffff' : '#fcfcfc' }}>
+                        <tr key={idx} className={`c-a-hardik-mehta-report-view-s92 ${(idx % 2 === 0 ? 'c-a-hardik-mehta-report-view-cond-9-true' : 'c-a-hardik-mehta-report-view-cond-10-false')}`}>
                           <td className="c-a-hardik-mehta-report-view-s93">{item.name}</td>
                           <td className="c-a-hardik-mehta-report-view-s94">{item.oct19Dec19 ? fmtINR(item.oct19Dec19) : '—'}</td>
                           <td className="c-a-hardik-mehta-report-view-s94">{item.jan20Dec20 ? fmtINR(item.jan20Dec20) : '—'}</td>
@@ -613,7 +613,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
               </thead>
               <tbody>
                 {vendors.map((v, idx) => (
-                  <tr key={idx} className="c-a-hardik-mehta-report-view-s92" style={{ background: idx % 2 === 0 ? '#ffffff' : '#fcfcfc' }}>
+                  <tr key={idx} className={`c-a-hardik-mehta-report-view-s92 ${(idx % 2 === 0 ? 'c-a-hardik-mehta-report-view-cond-11-true' : 'c-a-hardik-mehta-report-view-cond-12-false')}`}>
                     <td className="c-a-hardik-mehta-report-view-s99">{v.name}</td>
                     <td className="c-a-hardik-mehta-report-view-s100">{v.nature}</td>
                     <td className="c-a-hardik-mehta-report-view-s101">{v.oct19Dec19 ? fmtINR(v.oct19Dec19) : '—'}</td>
@@ -662,7 +662,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
                 <div className="c-a-hardik-mehta-report-view-s113">
                   {fmtINR(scenarioCalculatedTotal)}
                 </div>
-                <div className="c-a-hardik-mehta-report-view-s114" style={{ color: scenarioCalculatedTotal >= meta.keyFigures.amountReceivable ? '#86efac' : '#fca5a5' }}>
+                <div className={`c-a-hardik-mehta-report-view-s114 ${(scenarioCalculatedTotal >= meta.keyFigures.amountReceivable ? 'c-a-hardik-mehta-report-view-cond-13-true' : 'c-a-hardik-mehta-report-view-cond-14-false')}`}>
                   {scenarioCalculatedTotal >= meta.keyFigures.amountReceivable ? `+${fmtINR(scenarioCalculatedTotal - meta.keyFigures.amountReceivable)} vs Baseline` : `${fmtINR(scenarioCalculatedTotal - meta.keyFigures.amountReceivable)} vs Baseline`}
                 </div>
               </div>
@@ -670,7 +670,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
 
             <div className="c-a-hardik-mehta-report-view-s115">
               {/* Toggle 1: Disallow Missing Invoices */}
-              <label className="c-a-hardik-mehta-report-view-s116" style={{ border: scenarioDisallowMissing ? '1px solid #4ade80' : '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <label className={`c-a-hardik-mehta-report-view-s116 ${(scenarioDisallowMissing ? 'c-a-hardik-mehta-report-view-cond-15-true' : 'c-a-hardik-mehta-report-view-cond-16-false')}`}>
                 <input
                   type="checkbox"
                   checked={scenarioDisallowMissing}
@@ -684,7 +684,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
               </label>
 
               {/* Toggle 2: Claim GST ITC */}
-              <label className="c-a-hardik-mehta-report-view-s116" style={{ border: scenarioClaimGST ? '1px solid #4ade80' : '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <label className={`c-a-hardik-mehta-report-view-s116 ${(scenarioClaimGST ? 'c-a-hardik-mehta-report-view-cond-17-true' : 'c-a-hardik-mehta-report-view-cond-18-false')}`}>
                 <input
                   type="checkbox"
                   checked={scenarioClaimGST}
@@ -698,7 +698,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
               </label>
 
               {/* Toggle 3: Supervision Charges Contest */}
-              <label className="c-a-hardik-mehta-report-view-s116" style={{ border: scenarioConcedeSupervision ? '1px solid #f87171' : '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <label className={`c-a-hardik-mehta-report-view-s116 ${(scenarioConcedeSupervision ? 'c-a-hardik-mehta-report-view-cond-19-true' : 'c-a-hardik-mehta-report-view-cond-20-false')}`}>
                 <input
                   type="checkbox"
                   checked={scenarioConcedeSupervision}
@@ -712,7 +712,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
               </label>
 
               {/* Toggle 4: Interest Dispute */}
-              <label className="c-a-hardik-mehta-report-view-s116" style={{ border: scenarioConcedeInterest ? '1px solid #f87171' : '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <label className={`c-a-hardik-mehta-report-view-s116 ${(scenarioConcedeInterest ? 'c-a-hardik-mehta-report-view-cond-21-true' : 'c-a-hardik-mehta-report-view-cond-22-false')}`}>
                 <input
                   type="checkbox"
                   checked={scenarioConcedeInterest}
@@ -726,7 +726,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
               </label>
 
               {/* Toggle 5: Uncollected Maintenance Dispute */}
-              <label className="c-a-hardik-mehta-report-view-s116" style={{ border: scenarioConcedeUncollectedMaint ? '1px solid #f87171' : '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <label className={`c-a-hardik-mehta-report-view-s116 ${(scenarioConcedeUncollectedMaint ? 'c-a-hardik-mehta-report-view-cond-23-true' : 'c-a-hardik-mehta-report-view-cond-24-false')}`}>
                 <input
                   type="checkbox"
                   checked={scenarioConcedeUncollectedMaint}
@@ -740,7 +740,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
               </label>
 
               {/* Toggle 6: Commercial Shop GST */}
-              <label className="c-a-hardik-mehta-report-view-s116" style={{ border: scenarioConcedeShopGST ? '1px solid #f87171' : '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <label className={`c-a-hardik-mehta-report-view-s116 ${(scenarioConcedeShopGST ? 'c-a-hardik-mehta-report-view-cond-25-true' : 'c-a-hardik-mehta-report-view-cond-26-false')}`}>
                 <input
                   type="checkbox"
                   checked={scenarioConcedeShopGST}
@@ -895,7 +895,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
                 {filteredLineItems.map((item, idx) => (
                   <tr
                     key={item.id}
-                    className="c-a-hardik-mehta-report-view-s92" style={{ background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}
+                    className={`c-a-hardik-mehta-report-view-s92 ${(idx % 2 === 0 ? 'c-a-hardik-mehta-report-view-cond-27-true' : 'c-a-hardik-mehta-report-view-cond-28-false')}`}
                   >
                     <td className="c-a-hardik-mehta-report-view-s150">{item.id}</td>
                     <td className="c-a-hardik-mehta-report-view-s151">
@@ -911,7 +911,7 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
                     <td className="c-a-hardik-mehta-report-view-s158">
                       {item.docAmt !== null ? fmtINR(item.docAmt) : '—'}
                     </td>
-                    <td className="c-a-hardik-mehta-report-view-s159" style={{ color: item.relevantAmt > 0 ? '#0f172a' : '#94a3b8' }}>
+                    <td className={`c-a-hardik-mehta-report-view-s159 ${(item.relevantAmt > 0 ? 'c-a-hardik-mehta-report-view-cond-29-true' : 'c-a-hardik-mehta-report-view-cond-30-false')}`}>
                       {fmtINR(item.relevantAmt)}
                     </td>
                     <td className="c-a-hardik-mehta-report-view-s160">{item.year}</td>
@@ -978,19 +978,19 @@ export default function CAHardikMehtaReportView({ _isAdmin = false, onOpenBOMAna
             <div className="c-a-hardik-mehta-report-view-s170">
               <button
                 onClick={() => setMissingCategory('All')}
-                className="c-a-hardik-mehta-report-view-s171" style={{ background: missingCategory === 'All' ? '#991b1b' : '#ffffff', color: missingCategory === 'All' ? '#ffffff' : '#475569' }}
+                className={`c-a-hardik-mehta-report-view-s171 ${(missingCategory === 'All' ? 'c-a-hardik-mehta-report-view-cond-31-true' : 'c-a-hardik-mehta-report-view-cond-32-false')}`}
               >
                 All (₹4.09L)
               </button>
               <button
                 onClick={() => setMissingCategory('bldgB')}
-                className="c-a-hardik-mehta-report-view-s171" style={{ background: missingCategory === 'bldgB' ? '#991b1b' : '#ffffff', color: missingCategory === 'bldgB' ? '#ffffff' : '#475569' }}
+                className={`c-a-hardik-mehta-report-view-s171 ${(missingCategory === 'bldgB' ? 'c-a-hardik-mehta-report-view-cond-33-true' : 'c-a-hardik-mehta-report-view-cond-34-false')}`}
               >
                 Bldg B Records Only (₹1.73L)
               </button>
               <button
                 onClick={() => setMissingCategory('recurring')}
-                className="c-a-hardik-mehta-report-view-s171" style={{ background: missingCategory === 'recurring' ? '#991b1b' : '#ffffff', color: missingCategory === 'recurring' ? '#ffffff' : '#475569' }}
+                className={`c-a-hardik-mehta-report-view-s171 ${(missingCategory === 'recurring' ? 'c-a-hardik-mehta-report-view-cond-35-true' : 'c-a-hardik-mehta-report-view-cond-36-false')}`}
               >
                 Recurring Estimates (₹2.36L)
               </button>

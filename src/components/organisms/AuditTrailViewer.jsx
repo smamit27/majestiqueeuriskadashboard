@@ -160,7 +160,7 @@ export default function AuditTrailViewer({ user, userRole = ROLES.ADMIN }) {
 
                 return (
                   <React.Fragment key={log.id}>
-                    <tr className="audit-trail-viewer-s21" style={{ background: isExpanded ? '#f8fafc' : 'transparent' }}>
+                    <tr className={`audit-trail-viewer-s21 ${(isExpanded ? 'audit-trail-viewer-cond-1-true' : 'audit-trail-viewer-cond-2-false')}`}>
                       <td className="audit-trail-viewer-s22">{dateStr}</td>
                       <td className="audit-trail-viewer-s23">
                         <div className="audit-trail-viewer-s24">{log.userEmail || 'System'}</div>

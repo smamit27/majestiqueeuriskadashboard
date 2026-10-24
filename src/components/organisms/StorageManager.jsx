@@ -933,7 +933,7 @@ export default function StorageManager({ user, userRole, isAdmin }) {
               </div>
 
               {imageSaveMessage.text && (
-                <div className="storage-manager-s28" style={{ background: imageSaveMessage.type === 'success' ? '#ecfdf5' : '#fee2e2', color: imageSaveMessage.type === 'success' ? '#065f46' : '#b91c1c', border: `1px solid ${imageSaveMessage.type === 'success' ? '#a7f3d0' : '#fecaca'}` }}>
+                <div className={`storage-manager-s28 ${(imageSaveMessage.type === 'success' ? 'storage-manager-cond-1-true' : 'storage-manager-cond-2-false')}`} style={{ border: `1px solid ${imageSaveMessage.type === 'success' ? '#a7f3d0' : '#fecaca'}` }}>
                   {imageSaveMessage.text}
                 </div>
               )}
@@ -961,7 +961,7 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                     key={cat}
                     type="button"
                     onClick={() => setGalleryCategoryFilter(cat)}
-                    className="storage-manager-s32" style={{ background: galleryCategoryFilter === cat ? '#0f172a' : '#fff', color: galleryCategoryFilter === cat ? '#fff' : '#475569' }}
+                    className={`storage-manager-s32 ${(galleryCategoryFilter === cat ? 'storage-manager-cond-3-true' : 'storage-manager-cond-4-false')}`}
                   >
                     {cat}
                   </button>

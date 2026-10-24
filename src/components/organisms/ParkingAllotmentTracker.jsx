@@ -399,7 +399,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
             <div
               key={stat.label}
               onClick={stat.action || undefined}
-              className="parking-allotment-tracker-s8" style={{ background: stat.bg, cursor: stat.action ? 'pointer' : 'default' }}
+              className={`parking-allotment-tracker-s8 ${(stat.action ? 'parking-allotment-tracker-cond-1-true' : 'parking-allotment-tracker-cond-2-false')}`} style={{ background: stat.bg }}
               onMouseEnter={e => {
                 if (stat.action) {
                   e.currentTarget.style.transform = 'translateY(-3px)';
@@ -475,7 +475,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
               <button
                 key={s.id}
                 onClick={() => setStatusFilter(s.id)}
-                className="parking-allotment-tracker-s20" style={{ border: s.isSpecial ? '2px solid' : '1.5px solid', background: active 
+                className={`parking-allotment-tracker-s20 ${(s.isSpecial ? 'parking-allotment-tracker-cond-3-true' : 'parking-allotment-tracker-cond-4-false')}`} style={{ background: active 
                     ? (s.isSpecial ? 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)' : 'linear-gradient(135deg, #0b2b26 0%, #164e63 100%)') 
                     : (s.isSpecial ? 'rgba(225, 29, 72, 0.08)' : 'rgba(255, 255, 255, 0.6)'), color: active 
                     ? '#ffffff' 
@@ -504,7 +504,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
             <button
               key={v.mode}
               onClick={() => setViewMode(v.mode)}
-              className="parking-allotment-tracker-s22" style={{ background: viewMode === v.mode ? '#ffffff' : 'transparent', color: viewMode === v.mode ? '#0b2b26' : '#64748b', boxShadow: viewMode === v.mode ? '0 2px 8px rgba(0, 0, 0, 0.1)' : 'none' }}
+              className={`parking-allotment-tracker-s22 ${(viewMode === v.mode ? 'parking-allotment-tracker-cond-5-true' : 'parking-allotment-tracker-cond-6-false')}`}
             >
               {v.icon} {v.label}
             </button>
@@ -614,7 +614,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
             📄 Print PDF
           </button>
           {saveStatus && (
-            <span className="parking-allotment-tracker-s32" style={{ color: saveStatus.includes('✓') ? '#065f46' : '#991b1b' }}>
+            <span className={`parking-allotment-tracker-s32 ${(saveStatus.includes('✓') ? 'parking-allotment-tracker-cond-7-true' : 'parking-allotment-tracker-cond-8-false')}`}>
               {saveStatus}
             </span>
           )}
@@ -665,7 +665,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                     { label: 'Remarks / Record Reference', w: 280 },
                     ...(isAdmin ? [{ label: 'Actions', w: 80 }] : []),
                   ].map(col => (
-                    <th key={col.label} className="parking-allotment-tracker-s43" style={{ textAlign: col.label === '#' || col.label === 'Floor' || col.label === 'Parking Slot' ? 'center' : 'left', minWidth: col.w }}>
+                    <th key={col.label} className={`parking-allotment-tracker-s43 ${(col.label === '#' || col.label === 'Floor' || col.label === 'Parking Slot' ? 'parking-allotment-tracker-cond-9-true' : 'parking-allotment-tracker-cond-10-false')}`} style={{ minWidth: col.w }}>
                       {col.label}
                     </th>
                   ))}
@@ -869,9 +869,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                 <div
                   key={slotId}
                   onClick={() => setSelectedSlotForDetail({ slotId, flatItem })}
-                  className="parking-allotment-tracker-s72" style={{ border: isOccupied ? '1.5px solid rgba(16, 185, 129, 0.4)' : '1.5px dashed rgba(203, 213, 225, 0.9)', background: isOccupied
-                      ? 'linear-gradient(135deg, rgba(11, 43, 38, 0.95) 0%, rgba(22, 78, 99, 0.95) 100%)'
-                      : 'rgba(255, 255, 255, 0.65)', color: isOccupied ? '#ffffff' : '#64748b', boxShadow: isOccupied ? '0 6px 18px rgba(11, 43, 38, 0.22)' : 'none' }}
+                  className={`parking-allotment-tracker-s72 ${(isOccupied ? 'parking-allotment-tracker-cond-11-true' : 'parking-allotment-tracker-cond-12-false')}`}
                   onMouseEnter={e => {
                     e.currentTarget.style.transform = 'translateY(-3px)';
                     if (isOccupied) e.currentTarget.style.boxShadow = '0 10px 24px rgba(11, 43, 38, 0.35)';
@@ -882,7 +880,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                   }}
                 >
                   <div className="parking-allotment-tracker-s73">
-                    <span className="parking-allotment-tracker-s74" style={{ color: isOccupied ? '#fef08a' : '#475569' }}>
+                    <span className={`parking-allotment-tracker-s74 ${(isOccupied ? 'parking-allotment-tracker-cond-13-true' : 'parking-allotment-tracker-cond-14-false')}`}>
                       {slotId}
                     </span>
                     <span className="parking-allotment-tracker-s75">
@@ -957,7 +955,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                               {item.parkingNo}
                             </span>
                           ) : (
-                            <span className="parking-allotment-tracker-s92" style={{ color: isRefuge ? '#9ca3af' : '#1e40af' }}>
+                            <span className={`parking-allotment-tracker-s92 ${(isRefuge ? 'parking-allotment-tracker-cond-15-true' : 'parking-allotment-tracker-cond-16-false')}`}>
                               {isRefuge ? 'Refuge' : 'Covered'}
                             </span>
                           )}

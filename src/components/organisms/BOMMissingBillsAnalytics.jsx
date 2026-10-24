@@ -325,7 +325,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
           <div className="b-o-m-missing-bills-analytics-s12">
             <button
               onClick={() => setActiveViewMode('recovery')}
-              className="b-o-m-missing-bills-analytics-s13" style={{ background: activeViewMode === 'recovery' ? '#ffffff' : '#c49b4f' }}
+              className={`b-o-m-missing-bills-analytics-s13 ${(activeViewMode === 'recovery' ? 'b-o-m-missing-bills-analytics-cond-1-true' : 'b-o-m-missing-bills-analytics-cond-2-false')}`}
             >
               🎯 Expected Recovery Calculator
             </button>
@@ -472,10 +472,10 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
               <button
                 key={tab.id}
                 onClick={() => setActiveViewMode(tab.id)}
-                className="b-o-m-missing-bills-analytics-s44" style={{ border: active ? '1.5px solid #0e3d34' : '1.5px solid transparent', background: active ? '#ffffff' : 'transparent', color: active ? '#062b24' : '#64748b', fontWeight: active ? 700 : 500, boxShadow: active ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
+                className={`b-o-m-missing-bills-analytics-s44 ${(active ? 'b-o-m-missing-bills-analytics-cond-3-true' : 'b-o-m-missing-bills-analytics-cond-4-false')}`}
               >
                 <span>{tab.label}</span>
-                <span className="b-o-m-missing-bills-analytics-s45" style={{ background: active ? '#ecfdf5' : '#f1f5f9', color: active ? '#065f46' : '#64748b' }}>
+                <span className={`b-o-m-missing-bills-analytics-s45 ${(active ? 'b-o-m-missing-bills-analytics-cond-5-true' : 'b-o-m-missing-bills-analytics-cond-6-false')}`}>
                   {tab.badge}
                 </span>
               </button>
@@ -739,7 +739,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                   <button
                     key={im.id}
                     onClick={() => setInterestMode(im.id)}
-                    className="b-o-m-missing-bills-analytics-s94" style={{ background: interestMode === im.id ? '#0e3d34' : 'transparent', color: interestMode === im.id ? '#ffffff' : '#475569', fontWeight: interestMode === im.id ? 700 : 500 }}
+                    className={`b-o-m-missing-bills-analytics-s94 ${(interestMode === im.id ? 'b-o-m-missing-bills-analytics-cond-7-true' : 'b-o-m-missing-bills-analytics-cond-8-false')}`}
                   >
                     {im.label}
                   </button>
@@ -764,7 +764,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                 </label>
 
                 {/* 2. Schindler */}
-                <label className="b-o-m-missing-bills-analytics-s101" style={{ background: calcItems.schindlerLift ? '#f0fdf4' : '#ffffff', border: calcItems.schindlerLift ? '1px solid #bbf7d0' : '1px solid #e2e8f0' }}>
+                <label className={`b-o-m-missing-bills-analytics-s101 ${(calcItems.schindlerLift ? 'b-o-m-missing-bills-analytics-cond-9-true' : 'b-o-m-missing-bills-analytics-cond-10-false')}`}>
                   <input
                     type="checkbox"
                     checked={calcItems.schindlerLift}
@@ -782,7 +782,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                 </label>
 
                 {/* 3. Other Missing Bills */}
-                <label className="b-o-m-missing-bills-analytics-s101" style={{ background: calcItems.otherMissingBills ? '#f0fdf4' : '#ffffff', border: calcItems.otherMissingBills ? '1px solid #bbf7d0' : '1px solid #e2e8f0' }}>
+                <label className={`b-o-m-missing-bills-analytics-s101 ${(calcItems.otherMissingBills ? 'b-o-m-missing-bills-analytics-cond-11-true' : 'b-o-m-missing-bills-analytics-cond-12-false')}`}>
                   <input
                     type="checkbox"
                     checked={calcItems.otherMissingBills}
@@ -800,7 +800,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                 </label>
 
                 {/* 4. GST ITC */}
-                <label className="b-o-m-missing-bills-analytics-s101" style={{ background: calcItems.itcRefund ? '#f0fdf4' : '#ffffff', border: calcItems.itcRefund ? '1px solid #bbf7d0' : '1px solid #e2e8f0' }}>
+                <label className={`b-o-m-missing-bills-analytics-s101 ${(calcItems.itcRefund ? 'b-o-m-missing-bills-analytics-cond-13-true' : 'b-o-m-missing-bills-analytics-cond-14-false')}`}>
                   <input
                     type="checkbox"
                     checked={calcItems.itcRefund}
@@ -818,7 +818,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                 </label>
 
                 {/* 5. BOM Cash Shortfall */}
-                <label className="b-o-m-missing-bills-analytics-s101" style={{ background: calcItems.bankShortfall ? '#f0fdf4' : '#ffffff', border: calcItems.bankShortfall ? '1px solid #bbf7d0' : '1px solid #e2e8f0' }}>
+                <label className={`b-o-m-missing-bills-analytics-s101 ${(calcItems.bankShortfall ? 'b-o-m-missing-bills-analytics-cond-15-true' : 'b-o-m-missing-bills-analytics-cond-16-false')}`}>
                   <input
                     type="checkbox"
                     checked={calcItems.bankShortfall}
@@ -836,7 +836,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                 </label>
 
                 {/* 6. Supervision Debit */}
-                <label className="b-o-m-missing-bills-analytics-s101" style={{ background: calcItems.supervisionDebit ? '#f0fdf4' : '#ffffff', border: calcItems.supervisionDebit ? '1px solid #bbf7d0' : '1px solid #e2e8f0' }}>
+                <label className={`b-o-m-missing-bills-analytics-s101 ${(calcItems.supervisionDebit ? 'b-o-m-missing-bills-analytics-cond-17-true' : 'b-o-m-missing-bills-analytics-cond-18-false')}`}>
                   <input
                     type="checkbox"
                     checked={calcItems.supervisionDebit}
@@ -854,7 +854,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                 </label>
 
                 {/* 7. Wing B Cross-Subsidy */}
-                <label className="b-o-m-missing-bills-analytics-s101" style={{ background: calcItems.wingBSubsidy ? '#f0fdf4' : '#ffffff', border: calcItems.wingBSubsidy ? '1px solid #bbf7d0' : '1px solid #e2e8f0' }}>
+                <label className={`b-o-m-missing-bills-analytics-s101 ${(calcItems.wingBSubsidy ? 'b-o-m-missing-bills-analytics-cond-19-true' : 'b-o-m-missing-bills-analytics-cond-20-false')}`}>
                   <input
                     type="checkbox"
                     checked={calcItems.wingBSubsidy}
@@ -1096,16 +1096,16 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                     <tr key={m.monthKey} className="b-o-m-missing-bills-analytics-s158">
                       <td className="b-o-m-missing-bills-analytics-s159">{m.monthName}</td>
                       <td className="b-o-m-missing-bills-analytics-s160">{m.wingA > 0 ? fmtINR(m.wingA) : '—'}</td>
-                      <td className="b-o-m-missing-bills-analytics-s161" style={{ fontWeight: m.wingB > 50000 ? 700 : 500 }}>
+                      <td className={`b-o-m-missing-bills-analytics-s161 ${(m.wingB > 50000 ? 'b-o-m-missing-bills-analytics-cond-21-true' : 'b-o-m-missing-bills-analytics-cond-22-false')}`}>
                         {m.wingB > 0 ? fmtINR(m.wingB) : '—'}
                       </td>
-                      <td className="b-o-m-missing-bills-analytics-s162" style={{ fontWeight: m.supervision > 0 ? 800 : 500 }}>
+                      <td className={`b-o-m-missing-bills-analytics-s162 ${(m.supervision > 0 ? 'b-o-m-missing-bills-analytics-cond-23-true' : 'b-o-m-missing-bills-analytics-cond-24-false')}`}>
                         {m.supervision > 0 ? fmtINR(m.supervision) : '—'}
                       </td>
                       <td className="b-o-m-missing-bills-analytics-s163">
                         {m.cash > 0 ? fmtINR(m.cash) : '—'}
                       </td>
-                      <td className="b-o-m-missing-bills-analytics-s164" style={{ fontWeight: m.societyTransfer > 0 ? 800 : 500 }}>
+                      <td className={`b-o-m-missing-bills-analytics-s164 ${(m.societyTransfer > 0 ? 'b-o-m-missing-bills-analytics-cond-25-true' : 'b-o-m-missing-bills-analytics-cond-26-false')}`}>
                         {m.societyTransfer > 0 ? fmtINR(m.societyTransfer) : '—'}
                       </td>
                       <td className="b-o-m-missing-bills-analytics-s165">
@@ -1143,7 +1143,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                   <div
                     key={idx}
                     onClick={() => setSelectedVendor(isSelected ? null : vm.vendor)}
-                    className="b-o-m-missing-bills-analytics-s172" style={{ border: isSelected ? '1.5px solid #0e3d34' : '1px solid #e2e8f0', background: isSelected ? '#f8fafc' : '#ffffff', boxShadow: isSelected ? '0 4px 12px rgba(14, 61, 52, 0.08)' : '0 2px 4px rgba(0,0,0,0.02)' }}
+                    className={`b-o-m-missing-bills-analytics-s172 ${(isSelected ? 'b-o-m-missing-bills-analytics-cond-27-true' : 'b-o-m-missing-bills-analytics-cond-28-false')}`}
                   >
                     <div className="b-o-m-missing-bills-analytics-s173">
                       <div>
@@ -1154,7 +1154,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                           <span className="b-o-m-missing-bills-analytics-s176">
                             {vm.category}
                           </span>
-                          <span className="b-o-m-missing-bills-analytics-s177" style={{ background: vm.caMissingCategory.includes('Part A') ? '#fee2e2' : '#fef3c7', color: vm.caMissingCategory.includes('Part A') ? '#991b1b' : '#92400e' }}>
+                          <span className={`b-o-m-missing-bills-analytics-s177 ${(vm.caMissingCategory.includes('Part A') ? 'b-o-m-missing-bills-analytics-cond-29-true' : 'b-o-m-missing-bills-analytics-cond-30-false')}`}>
                             {vm.caMissingCategory}
                           </span>
                         </div>
@@ -1243,10 +1243,10 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                     const q = searchQuery.toLowerCase();
                     return [item.vendor, item.nature, item.type, item.bomMatchStatus, item.forensicNote].join(' ').toLowerCase().includes(q);
                   }).map(item => (
-                    <tr key={item.id} className="b-o-m-missing-bills-analytics-s158" style={{ background: item.type.includes('Part A') ? '#fffafa' : '#ffffff' }}>
+                    <tr key={item.id} className={`b-o-m-missing-bills-analytics-s158 ${(item.type.includes('Part A') ? 'b-o-m-missing-bills-analytics-cond-31-true' : 'b-o-m-missing-bills-analytics-cond-32-false')}`}>
                       <td className="b-o-m-missing-bills-analytics-s197">
                         <div className="b-o-m-missing-bills-analytics-s198">{item.id}</div>
-                        <span className="b-o-m-missing-bills-analytics-s199" style={{ background: item.type.includes('Part A') ? '#fee2e2' : '#fef3c7', color: item.type.includes('Part A') ? '#991b1b' : '#92400e' }}>
+                        <span className={`b-o-m-missing-bills-analytics-s199 ${(item.type.includes('Part A') ? 'b-o-m-missing-bills-analytics-cond-33-true' : 'b-o-m-missing-bills-analytics-cond-34-false')}`}>
                           {item.type.includes('Part A') ? 'Part A: Wing B Only' : 'Part B: Estimate'}
                         </span>
                       </td>
@@ -1265,7 +1265,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                       </td>
 
                       <td className="b-o-m-missing-bills-analytics-s155">
-                        <span className="b-o-m-missing-bills-analytics-s203" style={{ background: item.bomMatchStatus.includes('MATCHED') ? '#ecfdf5' : '#f1f5f9', color: item.bomMatchStatus.includes('MATCHED') ? '#065f46' : '#64748b' }}>
+                        <span className={`b-o-m-missing-bills-analytics-s203 ${(item.bomMatchStatus.includes('MATCHED') ? 'b-o-m-missing-bills-analytics-cond-35-true' : 'b-o-m-missing-bills-analytics-cond-36-false')}`}>
                           {item.bomMatchStatus}
                         </span>
                         <div className="b-o-m-missing-bills-analytics-s204">
@@ -1303,7 +1303,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                 <button
                   key={f.id}
                   onClick={() => setActiveFilter(f.id)}
-                  className="b-o-m-missing-bills-analytics-s208" style={{ fontWeight: active ? 700 : 500, border: active ? '1.5px solid #0e3d34' : '1px solid #cbd5e1', background: active ? '#0e3d34' : '#ffffff', color: active ? '#ffffff' : '#334155' }}
+                  className={`b-o-m-missing-bills-analytics-s208 ${(active ? 'b-o-m-missing-bills-analytics-cond-37-true' : 'b-o-m-missing-bills-analytics-cond-38-false')}`}
                 >
                   {f.label}
                 </button>
@@ -1340,7 +1340,7 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                 </thead>
                 <tbody>
                   {filteredTransactions.map(tx => (
-                    <tr key={tx.id} className="b-o-m-missing-bills-analytics-s158" style={{ background: tx.forensicCat.includes('missing') || tx.forensicCat === 'supervision_unvouched' ? '#fffbfc' : '#ffffff' }}>
+                    <tr key={tx.id} className={`b-o-m-missing-bills-analytics-s158 ${(tx.forensicCat.includes('missing') || tx.forensicCat === 'supervision_unvouched' ? 'b-o-m-missing-bills-analytics-cond-39-true' : 'b-o-m-missing-bills-analytics-cond-40-false')}`}>
                       <td className="b-o-m-missing-bills-analytics-s212">
                         {tx.date}
                       </td>
@@ -1362,11 +1362,11 @@ export default function BOMMissingBillsAnalytics({ _isAdmin = false, onNavigateT
                         </span>
                       </td>
 
-                      <td className="b-o-m-missing-bills-analytics-s216" style={{ fontWeight: tx.debit > 0 ? 700 : 400 }}>
+                      <td className={`b-o-m-missing-bills-analytics-s216 ${(tx.debit > 0 ? 'b-o-m-missing-bills-analytics-cond-41-true' : 'b-o-m-missing-bills-analytics-cond-42-false')}`}>
                         {tx.debit > 0 ? fmtINR(tx.debit) : '—'}
                       </td>
 
-                      <td className="b-o-m-missing-bills-analytics-s156" style={{ color: tx.credit >= 100000 ? '#b91c1c' : '#0f172a', fontWeight: tx.credit >= 100000 ? 800 : 600 }}>
+                      <td className={`b-o-m-missing-bills-analytics-s156 ${(tx.credit >= 100000 ? 'b-o-m-missing-bills-analytics-cond-43-true' : 'b-o-m-missing-bills-analytics-cond-44-false')}`}>
                         {tx.credit > 0 ? fmtINR(tx.credit) : '—'}
                       </td>
 

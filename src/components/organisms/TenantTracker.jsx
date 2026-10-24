@@ -695,7 +695,7 @@ export default function TenantTracker({ isAdmin = false }) {
           <p className="eyebrow tenant-tracker-s2">
             <span>🏢 WING A DIRECTORY</span>
             <span
-              className="tenant-tracker-s3" style={{ background: saveStatus === 'saved' || saveStatus === 'idle' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)', color: saveStatus === 'saved' || saveStatus === 'idle' ? '#10b981' : '#f59e0b' }}
+              className={`tenant-tracker-s3 ${(saveStatus === 'saved' || saveStatus === 'idle' ? 'tenant-tracker-cond-1-true' : 'tenant-tracker-cond-2-false')}`}
             >
               ● {saveMessage}
             </span>
@@ -776,7 +776,7 @@ export default function TenantTracker({ isAdmin = false }) {
                     placeholder="e.g. A 1006"
                     value={formFlatNo}
                     onChange={(e) => setFormFlatNo(e.target.value)}
-                    className="tenant-tracker-s12" style={{ background: editingFlat ? 'rgba(0,0,0,0.03)' : '#fff' }}
+                    className={`tenant-tracker-s12 ${(editingFlat ? 'tenant-tracker-cond-3-true' : 'tenant-tracker-cond-4-false')}`}
                     required
                   />
                 </div>
@@ -935,10 +935,10 @@ export default function TenantTracker({ isAdmin = false }) {
                   key={tab.id}
                   type="button"
                   onClick={() => setOccupantFilter(tab.id)}
-                  className="tenant-tracker-s22" style={{ fontWeight: isSelected ? 700 : 500, border: isSelected ? '1px solid #196c6c' : '1px solid rgba(0,0,0,0.1)', background: isSelected ? '#196c6c' : '#ffffff', color: isSelected ? '#ffffff' : '#475569' }}
+                  className={`tenant-tracker-s22 ${(isSelected ? 'tenant-tracker-cond-5-true' : 'tenant-tracker-cond-6-false')}`}
                 >
                   <span>{tab.label}</span>
-                  <span className="tenant-tracker-s23" style={{ background: isSelected ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.06)', color: isSelected ? '#ffffff' : '#64748b' }}>
+                  <span className={`tenant-tracker-s23 ${(isSelected ? 'tenant-tracker-cond-7-true' : 'tenant-tracker-cond-8-false')}`}>
                     {tab.count}
                   </span>
                 </button>
@@ -964,7 +964,7 @@ export default function TenantTracker({ isAdmin = false }) {
               aria-label="Expiry Filter"
               value={expiryFilter}
               onChange={(e) => setExpiryFilter(e.target.value)}
-              className="tenant-tracker-s25" style={{ fontWeight: expiryFilter !== 'All' ? 600 : 400 }}
+              className={`tenant-tracker-s25 ${(expiryFilter !== 'All' ? 'tenant-tracker-cond-9-true' : 'tenant-tracker-cond-10-false')}`}
             >
               <option value="All">All Expiries</option>
               <option value="ExpiringSoon">⚠️ Expiring Soon (≤60d)</option>
@@ -1037,7 +1037,7 @@ export default function TenantTracker({ isAdmin = false }) {
                       </td>
 
                       {/* Tenant / Resident Name */}
-                      <td className="tenant-tracker-s37" style={{ fontWeight: flat.tenantName ? 600 : 400, color: flat.tenantName ? '#0f172a' : '#94a3b8' }}>
+                      <td className={`tenant-tracker-s37 ${(flat.tenantName ? 'tenant-tracker-cond-11-true' : 'tenant-tracker-cond-12-false')}`}>
                         {flat.tenantName || (flat.occupantType === 'Owner' ? 'Owner Occupied' : '—')}
                       </td>
 

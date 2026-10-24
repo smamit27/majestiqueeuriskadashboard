@@ -627,9 +627,9 @@ export default function ChequeManagement({ isAdmin = false }) {
     const colSpanBase = isCommon ? (isPaybackTrackingActive ? 16 : 14) : 10;
     return (
       <div className="attendance-table-scroll">
-        <table className="attendance-table" style={{ minWidth: isCommon ? (isPaybackTrackingActive ? 1850 : 1600) : 1200 }}>
+        <table className={`attendance-table ${isCommon ? (isPaybackTrackingActive ? 'cheque-table-min-payback' : 'cheque-table-min-common') : 'cheque-table-min-wing'}`}>
           <thead>
-            <tr style={{ background: isCommon ? '#f0fdf4' : '#eff6ff' }}>
+            <tr className={isCommon ? 'cheque-header-row-common' : 'cheque-header-row-wing'}>
               <th className="cheque-management-s1">Sr.</th>
               <th className="cheque-management-s2">Cheque Date</th>
               <th className="cheque-management-s3">Deducted Date</th>
@@ -641,9 +641,9 @@ export default function ChequeManagement({ isAdmin = false }) {
               {isCommon && (
                 <>
                   <th className="cheque-management-s8">A Share (87)</th>
-                  <th className="cheque-management-s9" style={{ width: isPaybackTrackingActive ? 110 : 120 }}>B Share (96)</th>
+                  <th className={`cheque-management-s9 ${isPaybackTrackingActive ? 'cheque-col-w110' : 'cheque-col-w120'}`}>B Share (96)</th>
                   {isPaybackTrackingActive && <th className="cheque-management-s10">B Paid Back Date</th>}
-                  <th className="cheque-management-s11" style={{ width: isPaybackTrackingActive ? 110 : 120 }}>C Share (48)</th>
+                  <th className={`cheque-management-s11 ${isPaybackTrackingActive ? 'cheque-col-w110' : 'cheque-col-w120'}`}>C Share (48)</th>
                   {isPaybackTrackingActive && <th className="cheque-management-s12">C Paid Back Date</th>}
                 </>
               )}
@@ -665,12 +665,12 @@ export default function ChequeManagement({ isAdmin = false }) {
                 const actualIdx = sourceList.findIndex(orig => orig.id === c.id);
                 const isCancelled = n(c.amount) === 0;
                 const isPaid = c.isPaid === true;
-                const rowStyle = isCancelled ? { background: '#f5f5f5', opacity: 0.65 } : isPaid ? { background: '#f0fdf4', opacity: 0.85 } : {};
-                const strikeStyle = isCancelled || isPaid ? { textDecoration: 'line-through', color: '#9ca3af' } : {};
+                const rowClass = isCancelled ? 'cheque-row-cancelled' : isPaid ? 'cheque-row-paid' : '';
+                const strikeClass = isCancelled || isPaid ? 'cheque-text-struck' : '';
                 return (
-                  <tr key={c.id || i} style={rowStyle}>
-                    <td style={strikeStyle}>{i + 1}</td>
-                    <td><input className="attendance-register-input" type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value, isCommon)} readOnly={!canEdit} style={strikeStyle} /></td>
+                  <tr key={c.id || i} className={rowClass}>
+                    <td className={strikeClass}>{i + 1}</td>
+                    <td><input className={`attendance-register-input ${strikeClass}`} type="date" value={c.date} onChange={e => updateRow(actualIdx, 'date', e.target.value, isCommon)} readOnly={!canEdit} /></td>
                     <td>
                       <input className="attendance-register-input" type="date" value={c.deductedDate || ''}
                         onChange={e => {
@@ -682,47 +682,47 @@ export default function ChequeManagement({ isAdmin = false }) {
                     </td>
                     <td>
                       <div className="cheque-management-s17">
-                        <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value, isCommon)} readOnly={!canEdit} style={strikeStyle} />
+                        <input className={`attendance-register-input ${strikeClass}`} value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value, isCommon)} readOnly={!canEdit} />
                         {isCancelled && <span className="cheque-management-s18">CANCELLED</span>}
                       </div>
                     </td>
-                    <td><input className="attendance-register-input cheque-management-s19" style={{ ...strikeStyle }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value, isCommon)} readOnly={!canEdit} /></td>
-                    <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value, isCommon)} readOnly={!canEdit} style={isCancelled || isPaid ? { color: '#9ca3af' } : {}} /></td>
+                    <td><input className={`attendance-register-input cheque-management-s19 ${strikeClass}`} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value, isCommon)} readOnly={!canEdit} /></td>
+                    <td><input className={`attendance-register-input ${(isCancelled || isPaid) ? 'cheque-text-muted' : ''}`} value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value, isCommon)} readOnly={!canEdit} /></td>
                     {isCommon && (
-                      <td><input className="attendance-register-input" placeholder="Add remark..." value={c.remark || ''} onChange={e => updateRow(actualIdx, 'remark', e.target.value, isCommon)} readOnly={!canEdit} style={strikeStyle} title="Remark / Note for common work" /></td>
+                      <td><input className={`attendance-register-input ${strikeClass}`} placeholder="Add remark..." value={c.remark || ''} onChange={e => updateRow(actualIdx, 'remark', e.target.value, isCommon)} readOnly={!canEdit} title="Remark / Note for common work" /></td>
                     )}
-                    <td><input className="attendance-register-input cheque-management-s20" style={{ ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : isPaid ? { textDecoration: 'line-through', color: '#16a34a' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value, isCommon)} readOnly={!canEdit} /></td>
+                    <td><input className={`attendance-register-input cheque-management-s20 ${isCancelled ? 'cheque-amount-cancelled' : isPaid ? 'cheque-amount-paid' : ''}`} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value, isCommon)} readOnly={!canEdit} /></td>
                     {isCommon && (
                       <>
-                        <td className="cheque-management-s21" style={{ color: isCancelled ? '#9ca3af' : '#16a34a', ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
-                        <td className="cheque-management-s21" style={{ color: isCancelled ? '#9ca3af' : '#2563eb', ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
+                        <td className={`cheque-management-s21 ${isCancelled ? 'cheque-text-muted' : 'cheque-color-wing-a'} ${isPaid ? 'cheque-text-struck' : ''}`}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
+                        <td className={`cheque-management-s21 ${isCancelled ? 'cheque-text-muted' : 'cheque-color-wing-b'} ${isPaid ? 'cheque-text-struck' : ''}`}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
                         {isPaybackTrackingActive && (
                           <td className="cheque-management-s22">
                             {isCancelled ? <span className="cheque-management-s23">—</span> : (
                               <div className="cheque-management-s24">
                                 <input type="date" className="attendance-register-input cheque-management-s25" value={c.bPaidDate || c.bReceiveDate || ''} onChange={e => updateRow(actualIdx, 'bPaidDate', e.target.value, isCommon)} readOnly={!canEdit} title="B Building paid back date" />
                                 {(c.bPaidDate || c.bReceiveDate) ? (
-                                  <div className="cheque-management-s26">
-                                    <span>✓ Paid Back</span>
-                                    {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'bPaidDate', '', isCommon)} className="cheque-management-s27">✕</button>}
-                                  </div>
-                                ) : n(c.amount) > 0 && <div className="cheque-management-s28">⏳ Pending</div>}
+                                   <div className="cheque-management-s26">
+                                     <span>✓ Paid Back</span>
+                                     {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'bPaidDate', '', isCommon)} className="cheque-management-s27">✕</button>}
+                                   </div>
+                                 ) : n(c.amount) > 0 && <div className="cheque-management-s28">⏳ Pending</div>}
                               </div>
                             )}
                           </td>
                         )}
-                        <td className="cheque-management-s21" style={{ color: isCancelled ? '#9ca3af' : '#ea580c', ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
+                        <td className={`cheque-management-s21 ${isCancelled ? 'cheque-text-muted' : 'cheque-color-wing-c'} ${isPaid ? 'cheque-text-struck' : ''}`}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
                         {isPaybackTrackingActive && (
                           <td className="cheque-management-s29">
                             {isCancelled ? <span className="cheque-management-s23">—</span> : (
                               <div className="cheque-management-s24">
                                 <input type="date" className="attendance-register-input cheque-management-s25" value={c.cPaidDate || c.cReceiveDate || ''} onChange={e => updateRow(actualIdx, 'cPaidDate', e.target.value, isCommon)} readOnly={!canEdit} title="C Building paid back date" />
                                 {(c.cPaidDate || c.cReceiveDate) ? (
-                                  <div className="cheque-management-s26">
-                                    <span>✓ Paid Back</span>
-                                    {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'cPaidDate', '', isCommon)} className="cheque-management-s27">✕</button>}
-                                  </div>
-                                ) : n(c.amount) > 0 && <div className="cheque-management-s28">⏳ Pending</div>}
+                                   <div className="cheque-management-s26">
+                                     <span>✓ Paid Back</span>
+                                     {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'cPaidDate', '', isCommon)} className="cheque-management-s27">✕</button>}
+                                   </div>
+                                 ) : n(c.amount) > 0 && <div className="cheque-management-s28">⏳ Pending</div>}
                               </div>
                             )}
                           </td>
@@ -730,7 +730,7 @@ export default function ChequeManagement({ isAdmin = false }) {
                       </>
                     )}
                     <td>
-                      <select className="attendance-register-input" value={c.whoPaid} onChange={e => updateRow(actualIdx, 'whoPaid', e.target.value, isCommon)} disabled={!canEdit} style={strikeStyle}>
+                      <select className={`attendance-register-input ${strikeClass}`} value={c.whoPaid} onChange={e => updateRow(actualIdx, 'whoPaid', e.target.value, isCommon)} disabled={!canEdit}>
                         <option>A Building</option><option>B Building</option><option>C Building</option><option>Petty Cash</option>
                       </select>
                     </td>
@@ -788,7 +788,7 @@ export default function ChequeManagement({ isAdmin = false }) {
                 <span>{formatMonthLabel(mv)}</span>
                 {isLocked && (
                   <span 
-                    className="cheque-management-s46" style={{ opacity: isUnlocked ? 0.7 : 1 }} 
+                    className={`cheque-management-s46 ${isUnlocked ? 'cheque-opacity-unlocked' : ''}`} 
                     aria-label={isUnlocked ? 'Period Unlocked' : 'Period Locked'}
                   >
                     {isUnlocked ? '🔓' : '🔒'}
@@ -805,13 +805,13 @@ export default function ChequeManagement({ isAdmin = false }) {
             <div className="cheque-management-s47">
               <h3 className="cheque-management-s48">Cheque Register — {formatMonthLabel(selectedMonth)}</h3>
               {isMonthLockedByDefault(selectedMonth) && (
-                <span className="cheque-management-s49" style={{ background: unlockedMonths[selectedMonth] ? '#dcfce7' : '#fef3c7', color: unlockedMonths[selectedMonth] ? '#166534' : '#92400e', border: unlockedMonths[selectedMonth] ? '1px solid #86efac' : '1px solid #fde68a' }}>
+                <span className={`cheque-management-s49 ${unlockedMonths[selectedMonth] ? 'cheque-month-unlocked' : 'cheque-month-locked'}`}>
                   {unlockedMonths[selectedMonth] ? '🔓 AUDIT UNLOCKED' : '🔒 CLOSED MONTH LOCKED'}
                 </span>
               )}
             </div>
           </div>
-          <div className="cheque-management-s50" style={{ color: badge.color }}>
+          <div className={`cheque-management-s50 cheque-badge-${saveStatus || 'idle'}`}>
              <span>{badge.icon}</span>
              <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
           </div>
@@ -923,11 +923,11 @@ export default function ChequeManagement({ isAdmin = false }) {
             <div className="cheque-management-s80">
               <button type="button"
                 onClick={() => setFormTarget('buildingA')}
-                className="cheque-management-s81" style={{ background: formTarget === 'buildingA' ? '#1e3a8a' : 'white', color: formTarget === 'buildingA' ? 'white' : '#1e3a8a' }}
+                className={`cheque-management-s81 ${formTarget === 'buildingA' ? 'cheque-tab-btn-active-a' : 'cheque-tab-btn-inactive-a'}`}
               >🏢 Building A</button>
               <button type="button"
                 onClick={() => setFormTarget('common')}
-                className="cheque-management-s82" style={{ background: formTarget === 'common' ? '#065f46' : 'white', color: formTarget === 'common' ? 'white' : '#065f46' }}
+                className={`cheque-management-s82 ${formTarget === 'common' ? 'cheque-tab-btn-active-common' : 'cheque-tab-btn-inactive-common'}`}
               >🤝 Common Work</button>
               <span className="cheque-management-s83">
                 Adding to: <strong>{formTarget === 'common' ? 'Common Work' : 'A Building'}</strong>
@@ -973,7 +973,7 @@ export default function ChequeManagement({ isAdmin = false }) {
                   </div>
                 </>
               )}
-              <div className="field-group" style={{ gridColumn: formTarget === 'common' ? 'span 1' : '1 / -1' }}>
+              <div className={`field-group ${formTarget === 'common' ? 'cheque-col-span-1' : 'cheque-col-span-full'}`}>
                 <label className="eyebrow cheque-management-s70">{formTarget === 'common' ? 'Purpose / Head of Expense' : 'Remarks / Purpose'}</label>
                 <input className="attendance-register-input cheque-management-s86" placeholder="Describe the payment purpose..." value={formData.purpose} onChange={e => handleFormChange('purpose', e.target.value)} />
               </div>
@@ -984,9 +984,7 @@ export default function ChequeManagement({ isAdmin = false }) {
                 </div>
               )}
               <div className="cheque-management-s87">
-                <button type="submit" className="button-primary cheque-management-s88"
-                  style={{ background: formTarget === 'common' ? '#059669' : '#1e3a8a', borderColor: formTarget === 'common' ? '#047857' : '#1e40af' }}
-                >
+                <button type="submit" className={`button-primary cheque-management-s88 ${formTarget === 'common' ? 'cheque-submit-common' : 'cheque-submit-wing-a'}`}>
                   ➕ Add to {formTarget === 'common' ? 'Common Work' : 'Building A'}
                 </button>
               </div>
@@ -1024,7 +1022,7 @@ export default function ChequeManagement({ isAdmin = false }) {
         </div>
         {/* Share Calculator */}
         {(totalAmountCommon > 0 || isPaybackTrackingActive) && (
-          <div className="cheque-management-s99" style={{ gridTemplateColumns: isPaybackTrackingActive ? 'repeat(auto-fit, minmax(220px, 1fr))' : 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+          <div className={`cheque-management-s99 ${isPaybackTrackingActive ? 'cheque-grid-payback' : 'cheque-grid-standard'}`}>
             <div className="cheque-management-s100">
               <p className="eyebrow cheque-management-s101">A Share ({FLATS.A} flats)</p>
               <h4 className="cheque-management-s102">₹{fmt(totalAmountCommon * FLATS.A / FLATS.Total)}</h4>
@@ -1032,7 +1030,7 @@ export default function ChequeManagement({ isAdmin = false }) {
             <div className="cheque-management-s100">
               <div className="cheque-management-s103">
                 <p className="eyebrow cheque-management-s104">B Share ({FLATS.B} flats)</p>
-                {isPaybackTrackingActive && <span className="cheque-management-s105" style={{ color: bPendingAmount === 0 ? '#166534' : '#b45309' }}>{bPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
+                {isPaybackTrackingActive && <span className={`cheque-management-s105 ${bPendingAmount === 0 ? 'cheque-status-success' : 'cheque-status-warning'}`}>{bPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
               </div>
               <h4 className="cheque-management-s106">₹{fmt(bTotalShare)}</h4>
               {isPaybackTrackingActive && <div className="cheque-management-s107">✓ Recv: ₹{fmt(bReceivedAmount)} · <span className="cheque-management-s108">⏳ ₹{fmt(bPendingAmount)}</span></div>}
@@ -1040,7 +1038,7 @@ export default function ChequeManagement({ isAdmin = false }) {
             <div className="cheque-management-s100">
               <div className="cheque-management-s103">
                 <p className="eyebrow cheque-management-s109">C Share ({FLATS.C} flats)</p>
-                {isPaybackTrackingActive && <span className="cheque-management-s105" style={{ color: cPendingAmount === 0 ? '#166534' : '#b45309' }}>{cPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
+                {isPaybackTrackingActive && <span className={`cheque-management-s105 ${cPendingAmount === 0 ? 'cheque-status-success' : 'cheque-status-warning'}`}>{cPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
               </div>
               <h4 className="cheque-management-s110">₹{fmt(cTotalShare)}</h4>
               {isPaybackTrackingActive && <div className="cheque-management-s107">✓ Recv: ₹{fmt(cReceivedAmount)} · <span className="cheque-management-s108">⏳ ₹{fmt(cPendingAmount)}</span></div>}
@@ -1048,8 +1046,8 @@ export default function ChequeManagement({ isAdmin = false }) {
             {isPaybackTrackingActive && (
               <div className="cheque-management-s111">
                 <p className="eyebrow cheque-management-s112">Inter-Building Recovery</p>
-                <h4 className="cheque-management-s113" style={{ color: totalOutstanding > 0 ? '#d97706' : '#16a34a' }}>₹{fmt(totalRecovered)} / ₹{fmt(totalRecoveryDue)}</h4>
-                <div className="cheque-management-s114" style={{ color: totalOutstanding > 0 ? '#b45309' : '#15803d' }}>
+                <h4 className={`cheque-management-s113 ${totalOutstanding > 0 ? 'cheque-outstanding-warning' : 'cheque-outstanding-success'}`}>₹{fmt(totalRecovered)} / ₹{fmt(totalRecoveryDue)}</h4>
+                <div className={`cheque-management-s114 ${totalOutstanding > 0 ? 'cheque-status-warning' : 'cheque-status-success'}`}>
                   {totalOutstanding > 0 ? `⏳ ₹${fmt(totalOutstanding)} outstanding` : '✓ All Settled'}
                 </div>
               </div>

@@ -2207,3 +2207,123 @@
   font-size: 0.82rem;
 }
 
+
+/* Extracted Conditional Styles */
+.electricity-tracker-cond-1-true {
+  background: #1e3a8a;
+  color: white;
+}
+
+.electricity-tracker-cond-2-false {
+  background: transparent;
+  color: var(--muted);
+}
+
+.electricity-tracker-cond-3-true {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+}
+
+.electricity-tracker-cond-4-false {
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+}
+
+.electricity-tracker-cond-5-true {
+  color: #166534;
+}
+
+.electricity-tracker-cond-6-false {
+  color: #0369a1;
+}
+
+.electricity-tracker-cond-7-true {
+  color: #166534;
+}
+
+.electricity-tracker-cond-8-false {
+  color: #0369a1;
+}
+
+.electricity-tracker-cond-9-true {
+  color: #92400e;
+}
+
+.electricity-tracker-cond-10-false {
+  color: #065f46;
+}
+
+.electricity-tracker-cond-11-true {
+  background: #fef3c7;
+}
+
+.electricity-tracker-cond-12-false {
+  background: #eff6ff;
+}
+
+.electricity-tracker-cond-13-true {
+  color: #92400e;
+}
+
+.electricity-tracker-cond-14-false {
+  color: #1e40af;
+}
+
+.electricity-tracker-cond-15-true {
+  background: #166534;
+  border-color: #166534;
+}
+
+.electricity-tracker-cond-16-false {
+  background: #0284c7;
+  border-color: #0284c7;
+}
+
+.electricity-tracker-cond-17-true {
+  background: #fffdfa;
+}
+
+.electricity-tracker-cond-18-false {
+  background: transparent;
+}
+
+.electricity-tracker-cond-19-true {
+  background: transparent;
+}
+
+.electricity-tracker-cond-20-false {
+  background: #fefdfa;
+}
+
+.electricity-tracker-cond-21-true {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.electricity-tracker-cond-22-false {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.electricity-tracker-cond-23-true {
+  border: 2px solid #0b2b26;
+  background: #0b2b26;
+  color: #C49B4F;
+}
+
+.electricity-tracker-cond-24-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.electricity-tracker-cond-25-true {
+  border: 2px solid #0b2b26;
+  background: #0b2b26;
+  color: #C49B4F;
+}
+
+.electricity-tracker-cond-26-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+

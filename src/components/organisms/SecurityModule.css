@@ -28,3 +28,25 @@
   font-size: 0.9rem;
 }
 
+
+/* Extracted Conditional Styles */
+.security-module-cond-1-true {
+  background: #1e3a8a;
+  color: white;
+}
+
+.security-module-cond-2-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.security-module-cond-3-true {
+  background: #1e3a8a;
+  color: white;
+}
+
+.security-module-cond-4-false {
+  background: transparent;
+  color: #64748b;
+}
+

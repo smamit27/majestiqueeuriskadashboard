@@ -644,7 +644,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                     </td>
                     <td className="atomic-td">
                       {doc.expiryDate ? (
-                        <span style={{ color: isExpiring ? '#dc2626' : '#475569', fontWeight: isExpiring ? 700 : 500 }}>
+                        <span className={`${(isExpiring ? 'document-manager-cond-1-true' : 'document-manager-cond-2-false')}`}>
                           {doc.expiryDate} {isExpiring && '⚠️'}
                         </span>
                       ) : (

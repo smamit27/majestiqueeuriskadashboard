@@ -378,9 +378,7 @@ export default function ParkingBlueprintMap({
   return (
     <div className="parking-blueprint-map-s1" style={{ background: colors.bg, border: `1px solid ${colors.roadBorder}`, color: colors.textPrimary }}>
       {/* ── Top Header Toolbar ── */}
-      <div className="parking-blueprint-map-s2" style={{ background: themeMode === 'architectural' 
-          ? 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' 
-          : 'linear-gradient(180deg, #0d2636 0%, #081a24 100%)', borderBottom: `1px solid ${colors.roadBorder}` }}>
+      <div className={`parking-blueprint-map-s2 ${(themeMode === 'architectural' ? 'parking-blueprint-map-cond-1-true' : 'parking-blueprint-map-cond-2-false')}`} style={{ borderBottom: `1px solid ${colors.roadBorder}` }}>
         <div className="parking-blueprint-map-s3">
           <div className="parking-blueprint-map-s4">
             <Building size={20} color="#ffffff" />
@@ -413,7 +411,7 @@ export default function ParkingBlueprintMap({
                 key={t.id}
                 type="button"
                 onClick={() => setThemeMode(t.id)}
-                className="parking-blueprint-map-s11" style={{ background: themeMode === t.id ? '#0284c7' : 'transparent', color: themeMode === t.id ? '#ffffff' : colors.textSecondary }}
+                className={`parking-blueprint-map-s11 ${(themeMode === t.id ? 'parking-blueprint-map-cond-3-true' : 'parking-blueprint-map-cond-4-false')}`} style={{ color: themeMode === t.id ? '#ffffff' : colors.textSecondary }}
               >
                 {t.label}
               </button>
@@ -509,7 +507,7 @@ export default function ParkingBlueprintMap({
       </div>
 
       {/* ── Quick Zone Focus Bar ── */}
-      <div className="parking-blueprint-map-s20" style={{ background: themeMode === 'architectural' ? '#e2e8f0' : '#06131c', borderBottom: `1px solid ${colors.roadBorder}` }}>
+      <div className={`parking-blueprint-map-s20 ${(themeMode === 'architectural' ? 'parking-blueprint-map-cond-5-true' : 'parking-blueprint-map-cond-6-false')}`} style={{ borderBottom: `1px solid ${colors.roadBorder}` }}>
         <span className="parking-blueprint-map-s21" style={{ color: colors.textSecondary }}>
           Navigate Zone:
         </span>
@@ -527,7 +525,7 @@ export default function ParkingBlueprintMap({
               key={z.key}
               type="button"
               onClick={() => focusZone(z.key)}
-              className="parking-blueprint-map-s22" style={{ border: isActive ? `1.5px solid ${z.color || '#0284c7'}` : `1px solid ${colors.roadBorder}`, background: isActive ? '#0284c7' : 'transparent', color: isActive ? '#ffffff' : colors.textSecondary }}
+              className={`parking-blueprint-map-s22 ${(isActive ? 'parking-blueprint-map-cond-7-true' : 'parking-blueprint-map-cond-8-false')}`} style={{ border: isActive ? `1.5px solid ${z.color || '#0284c7'}` : `1px solid ${colors.roadBorder}`, color: isActive ? '#ffffff' : colors.textSecondary }}
             >
               {z.label}
             </button>
@@ -542,12 +540,12 @@ export default function ParkingBlueprintMap({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        className="parking-blueprint-map-s23" style={{ background: colors.paperBg, cursor: isDragging ? 'grabbing' : 'grab' }}
+        className={`parking-blueprint-map-s23 ${(isDragging ? 'parking-blueprint-map-cond-9-true' : 'parking-blueprint-map-cond-10-false')}`} style={{ background: colors.paperBg }}
       >
         <svg
           ref={svgRef}
           viewBox="0 0 750 1100"
-          className="parking-blueprint-map-s24" style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`, transition: isDragging ? 'none' : 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)' }}
+          className={`parking-blueprint-map-s24 ${(isDragging ? 'parking-blueprint-map-cond-11-true' : 'parking-blueprint-map-cond-12-false')}`} style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})` }}
         >
           <defs>
             {/* Fine CAD Grid */}
@@ -1063,7 +1061,7 @@ export default function ParkingBlueprintMap({
       </div>
 
       {/* ── Footer Legend Bar ── */}
-      <div className="parking-blueprint-map-s46" style={{ background: themeMode === 'architectural' ? '#ffffff' : '#071620', borderTop: `1px solid ${colors.roadBorder}` }}>
+      <div className={`parking-blueprint-map-s46 ${(themeMode === 'architectural' ? 'parking-blueprint-map-cond-13-true' : 'parking-blueprint-map-cond-14-false')}`} style={{ borderTop: `1px solid ${colors.roadBorder}` }}>
         <div className="parking-blueprint-map-s47">
           <span className="parking-blueprint-map-s48" style={{ color: colors.textSecondary }}>LEGEND:</span>
           <div className="parking-blueprint-map-s28">

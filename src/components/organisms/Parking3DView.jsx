@@ -730,21 +730,21 @@ export default function Parking3DView({
             <button
               type="button"
               onClick={() => setLightingMode('dusk')}
-              className="parking3-d-view-s11" style={{ background: lightingMode === 'dusk' ? '#0284c7' : 'transparent', color: lightingMode === 'dusk' ? '#ffffff' : '#94a3b8' }}
+              className={`parking3-d-view-s11 ${(lightingMode === 'dusk' ? 'parking3-d-view-cond-1-true' : 'parking3-d-view-cond-2-false')}`}
             >
               🌙 Dusk
             </button>
             <button
               type="button"
               onClick={() => setLightingMode('daylight')}
-              className="parking3-d-view-s11" style={{ background: lightingMode === 'daylight' ? '#0284c7' : 'transparent', color: lightingMode === 'daylight' ? '#ffffff' : '#94a3b8' }}
+              className={`parking3-d-view-s11 ${(lightingMode === 'daylight' ? 'parking3-d-view-cond-3-true' : 'parking3-d-view-cond-4-false')}`}
             >
               ☀️ Daylight
             </button>
             <button
               type="button"
               onClick={() => setLightingMode('cyberpunk')}
-              className="parking3-d-view-s11" style={{ background: lightingMode === 'cyberpunk' ? '#ec4899' : 'transparent', color: lightingMode === 'cyberpunk' ? '#ffffff' : '#94a3b8' }}
+              className={`parking3-d-view-s11 ${(lightingMode === 'cyberpunk' ? 'parking3-d-view-cond-5-true' : 'parking3-d-view-cond-6-false')}`}
             >
               ⚡ Cyber
             </button>
@@ -881,11 +881,11 @@ export default function Parking3DView({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        className="parking3-d-view-s22" style={{ background: themes.sceneBg, cursor: isDragging ? 'grabbing' : 'grab' }}
+        className={`parking3-d-view-s22 ${(isDragging ? 'parking3-d-view-cond-7-true' : 'parking3-d-view-cond-8-false')}`} style={{ background: themes.sceneBg }}
       >
         {/* 3D World Transform Wrapper */}
         <div
-          className="parking3-d-view-s23" style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel}) rotateX(${cameraPitch}deg) rotateZ(${cameraYaw}deg)`, transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)' }}
+          className={`parking3-d-view-s23 ${(isDragging ? 'parking3-d-view-cond-9-true' : 'parking3-d-view-cond-10-false')}`} style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel}) rotateX(${cameraPitch}deg) rotateZ(${cameraYaw}deg)` }}
         >
           {/* Ground Base Plate */}
           <div className="parking3-d-view-s24" style={{ background: themes.groundPlate, border: `2.5px solid ${themes.groundBorder}` }}>
@@ -1006,7 +1006,7 @@ export default function Parking3DView({
               return (
                 <div
                   key={slotKey}
-                  className="slot-3d-card parking3-d-view-s54"
+                  className={`slot-3d-card parking3-d-view-s54 ${(isHighlighted ? 'parking3-d-view-cond-11-true' : 'parking3-d-view-cond-12-false')}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedSlotKey(slotKey);
@@ -1014,16 +1014,16 @@ export default function Parking3DView({
                       onSelectSlot(flatItem || { parkingNo: slotKey, parkingType: 'Open Parking' });
                     }
                   }}
-                  style={{ left: slot.x, top: slot.y, width: slot.w, height: slot.h, background: isAllotted ? 'rgba(5, 150, 105, 0.4)' : themes.slotVacant, border: `1.5px solid ${isSelected ? '#38bdf8' : isHighlighted ? '#fbbf24' : isAllotted ? '#10b981' : '#334155'}`, boxShadow: isHighlighted ? '0 0 16px #fbbf24' : '0 4px 8px rgba(0,0,0,0.4)' }}
+                  style={{ left: slot.x, top: slot.y, width: slot.w, height: slot.h, background: isAllotted ? 'rgba(5, 150, 105, 0.4)' : themes.slotVacant, border: `1.5px solid ${isSelected ? '#38bdf8' : isHighlighted ? '#fbbf24' : isAllotted ? '#10b981' : '#334155'}` }}
                 >
                   {/* Slot Number Label */}
-                  <span className="parking3-d-view-s55" style={{ color: isAllotted ? '#a7f3d0' : '#94a3b8' }}>
+                  <span className={`parking3-d-view-s55 ${(isAllotted ? 'parking3-d-view-cond-13-true' : 'parking3-d-view-cond-14-false')}`}>
                     {slot.num}
                   </span>
 
                   {/* 3D Realistic Extruded Car Model if Allotted */}
                   {isAllotted ? (
-                    <div className="parking3-d-view-s56" style={{ inset: slot.orient === 'V' ? '4px 3px' : '3px 4px' }}>
+                    <div className={`parking3-d-view-s56 ${(slot.orient === 'V' ? 'parking3-d-view-cond-15-true' : 'parking3-d-view-cond-16-false')}`}>
                       {/* 3D Car Chassis Body */}
                       <div className="parking3-d-view-s57">
                         {/* 4 Wheels (Black 3D Tires) */}
@@ -1041,7 +1041,7 @@ export default function Parking3DView({
                         <div className="parking3-d-view-s65" />
 
                         {/* 3D Extruded Car Cabin & Roof */}
-                        <div className="parking3-d-view-s66" style={{ inset: slot.orient === 'V' ? '6px 2px' : '2px 6px', fontSize: slot.orient === 'V' ? '0.58rem' : '0.64rem' }}>
+                        <div className={`parking3-d-view-s66 ${(slot.orient === 'V' ? 'parking3-d-view-cond-17-true' : 'parking3-d-view-cond-18-false')}`}>
                           <span>{flatItem.flat}</span>
                         </div>
                       </div>

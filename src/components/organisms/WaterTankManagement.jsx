@@ -420,42 +420,42 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
       >
         <button
           onClick={() => setActiveTab('3d')}
-          className="water-tank-management-s20" style={{ background: activeTab === '3d' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === '3d' ? '#ffffff' : '#64748b', boxShadow: activeTab === '3d' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
+          className={`water-tank-management-s20 ${(activeTab === '3d' ? 'water-tank-management-cond-1-true' : 'water-tank-management-cond-2-false')}`}
         >
           <Box size={16} /> 3D Diagram & Spatial Model
         </button>
 
         <button
           onClick={() => setActiveTab('2d')}
-          className="water-tank-management-s20" style={{ background: activeTab === '2d' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === '2d' ? '#ffffff' : '#64748b', boxShadow: activeTab === '2d' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
+          className={`water-tank-management-s20 ${(activeTab === '2d' ? 'water-tank-management-cond-3-true' : 'water-tank-management-cond-4-false')}`}
         >
           <Layers size={16} /> 2D Blueprint & Pipeline Flow
         </button>
 
         <button
           onClick={() => setActiveTab('monitor')}
-          className="water-tank-management-s20" style={{ background: activeTab === 'monitor' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === 'monitor' ? '#ffffff' : '#64748b', boxShadow: activeTab === 'monitor' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
+          className={`water-tank-management-s20 ${(activeTab === 'monitor' ? 'water-tank-management-cond-5-true' : 'water-tank-management-cond-6-false')}`}
         >
           <Activity size={16} /> Live Tank Gauges & Monitoring
         </button>
 
         <button
           onClick={() => setActiveTab('schedule')}
-          className="water-tank-management-s20" style={{ background: activeTab === 'schedule' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === 'schedule' ? '#ffffff' : '#64748b', boxShadow: activeTab === 'schedule' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
+          className={`water-tank-management-s20 ${(activeTab === 'schedule' ? 'water-tank-management-cond-7-true' : 'water-tank-management-cond-8-false')}`}
         >
           <Clock size={16} /> Supply & Booster Pump Schedule
         </button>
 
         <button
           onClick={() => setActiveTab('hygiene')}
-          className="water-tank-management-s20" style={{ background: activeTab === 'hygiene' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === 'hygiene' ? '#ffffff' : '#64748b', boxShadow: activeTab === 'hygiene' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
+          className={`water-tank-management-s20 ${(activeTab === 'hygiene' ? 'water-tank-management-cond-9-true' : 'water-tank-management-cond-10-false')}`}
         >
           <ShieldCheck size={16} /> Hygiene, Cleaning & Water Quality
         </button>
 
         <button
           onClick={() => setActiveTab('cleaning_audit')}
-          className="water-tank-management-s20" style={{ background: activeTab === 'cleaning_audit' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === 'cleaning_audit' ? '#ffffff' : '#64748b', boxShadow: activeTab === 'cleaning_audit' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
+          className={`water-tank-management-s20 ${(activeTab === 'cleaning_audit' ? 'water-tank-management-cond-11-true' : 'water-tank-management-cond-12-false')}`}
         >
           <DollarSign size={16} /> Cleaning Bills & Rate Analysis
         </button>
@@ -515,10 +515,10 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
 
             <div className="water-tank-management-s31">
               {WATER_TANKS_DATA.common_underground.pumps.map((p, idx) => (
-                <div key={idx} className="water-tank-management-s32" style={{ background: p.status === 'Running' ? 'rgba(240, 253, 244, 0.8)' : 'rgba(248, 250, 252, 0.8)', border: p.status === 'Running' ? '1px solid #86efac' : '1px solid rgba(226, 232, 240, 0.8)' }}>
+                <div key={idx} className={`water-tank-management-s32 ${(p.status === 'Running' ? 'water-tank-management-cond-13-true' : 'water-tank-management-cond-14-false')}`}>
                   <div className="water-tank-management-s33">
                     <strong className="water-tank-management-s34">{p.name}</strong>
-                    <span className="water-tank-management-s35" style={{ background: p.status === 'Running' ? '#16a34a' : '#64748b', boxShadow: p.status === 'Running' ? '0 2px 6px rgba(22, 163, 74, 0.3)' : 'none' }}>
+                    <span className={`water-tank-management-s35 ${(p.status === 'Running' ? 'water-tank-management-cond-15-true' : 'water-tank-management-cond-16-false')}`}>
                       ● {p.status}
                     </span>
                   </div>

@@ -256,3 +256,27 @@
   margin-top: 4px;
 }
 
+
+/* Extracted Conditional Styles */
+.main-dashboard-cond-1-true {
+  border: 1px solid rgba(2, 132, 199, 0.4);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(224, 242, 254, 0.85));
+  color: #0284c7;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+}
+
+.main-dashboard-cond-2-false {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.55);
+  color: #475569;
+  box-shadow: none;
+}
+
+.main-dashboard-cond-3-true {
+  color: #065f46;
+}
+
+.main-dashboard-cond-4-false {
+  color: #C62828;
+}
+

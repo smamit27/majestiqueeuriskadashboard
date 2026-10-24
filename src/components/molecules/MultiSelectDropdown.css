@@ -313,3 +313,63 @@
   font-size: 0.78rem;
 }
 
+
+/* Extracted Conditional Styles */
+.multi-select-dropdown-cond-1-true {
+  border: 1.5px solid #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+}
+
+.multi-select-dropdown-cond-2-false {
+  border: 1px solid #cbd5e1;
+  box-shadow: none;
+}
+
+.multi-select-dropdown-cond-3-true {
+  transform: rotate(180deg);
+}
+
+.multi-select-dropdown-cond-4-false {
+  transform: rotate(0deg);
+}
+
+.multi-select-dropdown-cond-5-true {
+  border: 1px solid #059669;
+  background: #059669;
+  color: #ffffff;
+}
+
+.multi-select-dropdown-cond-6-false {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+}
+
+.multi-select-dropdown-cond-7-true {
+  background: rgba(5, 150, 105, 0.05);
+}
+
+.multi-select-dropdown-cond-8-false {
+  background: transparent;
+}
+
+.multi-select-dropdown-cond-9-true {
+  border: 2px solid #059669;
+  background: #059669;
+}
+
+.multi-select-dropdown-cond-10-false {
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+}
+
+.multi-select-dropdown-cond-11-true {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.multi-select-dropdown-cond-12-false {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+

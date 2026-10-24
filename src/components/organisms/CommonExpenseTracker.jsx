@@ -488,14 +488,7 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
             return (
               <div
                 key={month.id}
-                className="table-card common-expense-tracker-s21"
-                style={{ border:
-                    month.id === activeMonthId
-                      ? '2px solid rgba(25, 108, 108, 0.25)'
-                      : '1px solid rgba(61, 63, 52, 0.08)', boxShadow:
-                    month.id === activeMonthId
-                      ? '0 16px 38px rgba(25, 108, 108, 0.12)'
-                      : '0 12px 28px rgba(16, 24, 40, 0.06)' }}
+                className={`table-card common-expense-tracker-s21 ${(month.id === activeMonthId ? 'common-expense-tracker-cond-1-true' : 'common-expense-tracker-cond-2-false')}`}
               >
                 <div
                   className="common-expense-tracker-s22"
@@ -506,7 +499,7 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
                       <button
                         type="button"
                         onClick={() => setActiveMonthId(month.id)}
-                        className="common-expense-tracker-s25" style={{ background: month.id === activeMonthId ? '#0B2B26' : '#F2F4F7', color: month.id === activeMonthId ? '#fff' : '#344054' }}
+                        className={`common-expense-tracker-s25 ${(month.id === activeMonthId ? 'common-expense-tracker-cond-3-true' : 'common-expense-tracker-cond-4-false')}`}
                       >
                         {month.id === activeMonthId ? 'Focused' : 'Focus'}
                       </button>
@@ -765,11 +758,9 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
                       {formatCurrency(month.totalExpense)}
                     </span>
                     <div
-                      className="common-expense-tracker-s63" style={{ height: `${Math.max(height, 28)}px`, background: isActive
-                          ? 'linear-gradient(180deg, #196C6C 0%, #0B2B26 100%)'
-                          : 'linear-gradient(180deg, #CFE3E0 0%, #7AA8A1 100%)', boxShadow: isActive ? '0 18px 26px rgba(11, 43, 38, 0.18)' : 'none' }}
+                      className={`common-expense-tracker-s63 ${(isActive ? 'common-expense-tracker-cond-5-true' : 'common-expense-tracker-cond-6-false')}`} style={{ height: `${Math.max(height, 28)}px` }}
                     />
-                    <span className="common-expense-tracker-s64" style={{ color: isActive ? '#0B2B26' : '#667085' }}>
+                    <span className={`common-expense-tracker-s64 ${(isActive ? 'common-expense-tracker-cond-7-true' : 'common-expense-tracker-cond-8-false')}`}>
                       {month.label.split(' ')[0]}
                     </span>
                   </button>

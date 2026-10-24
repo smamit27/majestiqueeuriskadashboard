@@ -513,3 +513,43 @@
   color: #101828;
 }
 
+
+/* Extracted Conditional Styles */
+.common-expense-tracker-cond-1-true {
+  border: 2px solid rgba(25, 108, 108, 0.25);
+  box-shadow: 0 16px 38px rgba(25, 108, 108, 0.12);
+}
+
+.common-expense-tracker-cond-2-false {
+  border: 1px solid rgba(61, 63, 52, 0.08);
+  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.06);
+}
+
+.common-expense-tracker-cond-3-true {
+  background: #0B2B26;
+  color: #fff;
+}
+
+.common-expense-tracker-cond-4-false {
+  background: #F2F4F7;
+  color: #344054;
+}
+
+.common-expense-tracker-cond-5-true {
+  background: linear-gradient(180deg, #196C6C 0%, #0B2B26 100%);
+  box-shadow: 0 18px 26px rgba(11, 43, 38, 0.18);
+}
+
+.common-expense-tracker-cond-6-false {
+  background: linear-gradient(180deg, #CFE3E0 0%, #7AA8A1 100%);
+  box-shadow: none;
+}
+
+.common-expense-tracker-cond-7-true {
+  color: #0B2B26;
+}
+
+.common-expense-tracker-cond-8-false {
+  color: #667085;
+}
+

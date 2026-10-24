@@ -13,15 +13,13 @@ export default function SecurityModule({ isAdmin = false }) {
       <div className="tab-navigation security-module-s1">
         <button 
           onClick={() => setSubTab('tracking')}
-          className={`sub-tab-button ${subTab === 'tracking' ? 'active' : ''} security-module-s2`}
-          style={{ background: subTab === 'tracking' ? '#1e3a8a' : 'transparent', color: subTab === 'tracking' ? 'white' : '#64748b' }}
+          className={`sub-tab-button ${subTab === 'tracking' ? 'active' : ''} security-module-s2 ${(subTab === 'tracking' ? 'security-module-cond-1-true' : 'security-module-cond-2-false')}`}
         >
           🛡️ Guard Deployment
         </button>
         <button 
           onClick={() => setSubTab('billing')}
-          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''} security-module-s2`}
-          style={{ background: subTab === 'billing' ? '#1e3a8a' : 'transparent', color: subTab === 'billing' ? 'white' : '#64748b' }}
+          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''} security-module-s2 ${(subTab === 'billing' ? 'security-module-cond-3-true' : 'security-module-cond-4-false')}`}
         >
           💰 Bill Calculator
         </button>

@@ -226,3 +226,13 @@
   font-weight: 600;
 }
 
+
+/* Extracted Conditional Styles */
+.tanker-bill-calculator-cond-1-true {
+  font-size: 1.6rem;
+}
+
+.tanker-bill-calculator-cond-2-false {
+  font-size: 1.3rem;
+}
+

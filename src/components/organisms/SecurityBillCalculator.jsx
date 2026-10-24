@@ -820,8 +820,8 @@ export default function SecurityBillCalculator() {
                             </td>
                           )}
                           <td className="security-bill-calculator-s26">{fmt(data.mainGate)}</td>
-                          <td className="security-bill-calculator-s26" style={{ color: data.chauhan > 0 ? '#0B2B26' : 'inherit' }}>{fmt(data.chauhan)}</td>
-                          <td className="security-bill-calculator-s26" style={{ color: data.vendor > 0 ? '#C49B4F' : 'inherit' }}>{fmt(data.vendor)}</td>
+                          <td className={`security-bill-calculator-s26 ${(data.chauhan > 0 ? 'security-bill-calculator-cond-1-true' : 'security-bill-calculator-cond-2-false')}`}>{fmt(data.chauhan)}</td>
+                          <td className={`security-bill-calculator-s26 ${(data.vendor > 0 ? 'security-bill-calculator-cond-3-true' : 'security-bill-calculator-cond-4-false')}`}>{fmt(data.vendor)}</td>
                           <td className="security-bill-calculator-s35">{fmt(data.total)}</td>
                         </tr>
                       );

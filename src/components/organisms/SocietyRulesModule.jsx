@@ -442,14 +442,14 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
             <button
               type="button"
               onClick={() => setBookingHours('5')}
-              className="society-rules-module-s47" style={{ background: bookingHours === '5' ? '#047857' : '#ffffff', color: bookingHours === '5' ? '#ffffff' : '#047857' }}
+              className={`society-rules-module-s47 ${(bookingHours === '5' ? 'society-rules-module-cond-1-true' : 'society-rules-module-cond-2-false')}`}
             >
               Up to 5 Hours
             </button>
             <button
               type="button"
               onClick={() => setBookingHours('full')}
-              className="society-rules-module-s47" style={{ background: bookingHours === 'full' ? '#047857' : '#ffffff', color: bookingHours === 'full' ? '#ffffff' : '#047857' }}
+              className={`society-rules-module-s47 ${(bookingHours === 'full' ? 'society-rules-module-cond-3-true' : 'society-rules-module-cond-4-false')}`}
             >
               Full Day (5+ Hours)
             </button>
@@ -629,7 +629,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 key={chip.id}
                 type="button"
                 onClick={() => setSeverityFilter(chip.id)}
-                className="society-rules-module-s74" style={{ background: severityFilter === chip.id ? '#991b1b' : '#f1f5f9', color: severityFilter === chip.id ? '#ffffff' : '#475569' }}
+                className={`society-rules-module-s74 ${(severityFilter === chip.id ? 'society-rules-module-cond-5-true' : 'society-rules-module-cond-6-false')}`}
               >
                 {chip.label}
               </button>
@@ -652,11 +652,11 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategory(cat.id)}
-                className="society-rules-module-s76" style={{ background: isSelected ? '#0f172a' : '#f8fafc', color: isSelected ? '#ffffff' : '#334155', border: isSelected ? '1px solid #0f172a' : '1px solid #e2e8f0' }}
+                className={`society-rules-module-s76 ${(isSelected ? 'society-rules-module-cond-7-true' : 'society-rules-module-cond-8-false')}`}
               >
                 <span>{cat.icon}</span>
                 <span>{cat.label}</span>
-                <span className="society-rules-module-s77" style={{ background: isSelected ? 'rgba(255,255,255,0.25)' : '#e2e8f0', color: isSelected ? '#ffffff' : '#475569' }}>
+                <span className={`society-rules-module-s77 ${(isSelected ? 'society-rules-module-cond-9-true' : 'society-rules-module-cond-10-false')}`}>
                   {count}
                 </span>
               </button>
@@ -786,7 +786,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                   <button
                     type="button"
                     onClick={() => handleCopyRule(rule)}
-                    className="society-rules-module-s106" style={{ background: isCopied ? '#059669' : '#f1f5f9', color: isCopied ? '#ffffff' : '#334155' }}
+                    className={`society-rules-module-s106 ${(isCopied ? 'society-rules-module-cond-11-true' : 'society-rules-module-cond-12-false')}`}
                     title="Copy rule to clipboard"
                   >
                     {isCopied ? '✓ Copied' : '📋 Copy'}

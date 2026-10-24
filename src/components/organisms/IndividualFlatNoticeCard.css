@@ -561,3 +561,37 @@
   font-style: italic;
 }
 
+
+/* Extracted Conditional Styles */
+.individual-flat-notice-card-cond-1-true {
+  background: #ffffff;
+  color: #1e293b;
+  cursor: pointer;
+}
+
+.individual-flat-notice-card-cond-2-false {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.individual-flat-notice-card-cond-3-true {
+  background: #ffffff;
+  color: #1e293b;
+  cursor: pointer;
+}
+
+.individual-flat-notice-card-cond-4-false {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.individual-flat-notice-card-cond-5-true {
+  cursor: wait;
+}
+
+.individual-flat-notice-card-cond-6-false {
+  cursor: pointer;
+}
+

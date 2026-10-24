@@ -728,7 +728,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 }
               }, 60);
             }}
-            className="ai-mom-generator-s10" style={{ background: activeView === 'vault' ? '#1d4ed8' : '#eff6ff', color: activeView === 'vault' ? '#ffffff' : '#1d4ed8', border: activeView === 'vault' ? '1.5px solid #1d4ed8' : '1.5px solid #bfdbfe' }}
+            className={`ai-mom-generator-s10 ${(activeView === 'vault' ? 'ai-mom-generator-cond-1-true' : 'ai-mom-generator-cond-2-false')}`}
           >
             <FolderArchive size={16} />
             📁 Monthly MOM Vault & Upload (PDF / Image)
@@ -746,8 +746,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 }
               }, 60);
             }}
-            className="button-secondary ai-mom-generator-s11"
-            style={{ background: activeView === 'history' ? '#0f172a' : '#f8fafc', color: activeView === 'history' ? '#ffffff' : '#1e293b', border: activeView === 'history' ? '1.5px solid #0f172a' : '1.5px solid #cbd5e1' }}
+            className={`button-secondary ai-mom-generator-s11 ${(activeView === 'history' ? 'ai-mom-generator-cond-3-true' : 'ai-mom-generator-cond-4-false')}`}
           >
             <History size={15} />
             Meeting History & Templates ({savedMoms.length + OFFICIAL_MOM_TEMPLATES.length})
@@ -765,9 +764,9 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           {/* Wing A Option */}
           <div
             onClick={() => handleScopeChange('A_BUILDING')}
-            className="ai-mom-generator-s15" style={{ border: scope === 'A_BUILDING' ? '2px solid #059669' : '1.5px solid #e5e7eb', background: scope === 'A_BUILDING' ? 'rgba(5, 150, 105, 0.05)' : '#ffffff', boxShadow: scope === 'A_BUILDING' ? '0 4px 14px rgba(5, 150, 105, 0.12)' : 'none' }}
+            className={`ai-mom-generator-s15 ${(scope === 'A_BUILDING' ? 'ai-mom-generator-cond-5-true' : 'ai-mom-generator-cond-6-false')}`}
           >
-            <div className="ai-mom-generator-s16" style={{ background: scope === 'A_BUILDING' ? '#059669' : '#f3f4f6', color: scope === 'A_BUILDING' ? '#ffffff' : '#6b7280' }}>
+            <div className={`ai-mom-generator-s16 ${(scope === 'A_BUILDING' ? 'ai-mom-generator-cond-7-true' : 'ai-mom-generator-cond-8-false')}`}>
               <Building2 size={22} />
             </div>
             <div>
@@ -786,9 +785,9 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           {/* Common Infrastructure Option */}
           <div
             onClick={() => handleScopeChange('COMMON')}
-            className="ai-mom-generator-s15" style={{ border: scope === 'COMMON' ? '2px solid #2563eb' : '1.5px solid #e5e7eb', background: scope === 'COMMON' ? 'rgba(37, 99, 235, 0.05)' : '#ffffff', boxShadow: scope === 'COMMON' ? '0 4px 14px rgba(37, 99, 235, 0.12)' : 'none' }}
+            className={`ai-mom-generator-s15 ${(scope === 'COMMON' ? 'ai-mom-generator-cond-9-true' : 'ai-mom-generator-cond-10-false')}`}
           >
-            <div className="ai-mom-generator-s16" style={{ background: scope === 'COMMON' ? '#2563eb' : '#f3f4f6', color: scope === 'COMMON' ? '#ffffff' : '#6b7280' }}>
+            <div className={`ai-mom-generator-s16 ${(scope === 'COMMON' ? 'ai-mom-generator-cond-11-true' : 'ai-mom-generator-cond-12-false')}`}>
               <Globe2 size={22} />
             </div>
             <div>
@@ -874,7 +873,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
         <div className="ai-mom-generator-s27">
           <div
             data-testid="quorum-status-pill"
-            className="ai-mom-generator-s28" style={{ background: quorumInfo.isQuorumMet ? 'rgba(5, 150, 105, 0.1)' : 'rgba(217, 119, 6, 0.1)', color: quorumInfo.badgeColor, border: `1px solid ${quorumInfo.isQuorumMet ? '#a7f3d0' : '#fde68a'}` }}
+            className={`ai-mom-generator-s28 ${(quorumInfo.isQuorumMet ? 'ai-mom-generator-cond-13-true' : 'ai-mom-generator-cond-14-false')}`} style={{ color: quorumInfo.badgeColor, border: `1px solid ${quorumInfo.isQuorumMet ? '#a7f3d0' : '#fde68a'}` }}
           >
             <Bot size={13} />
             {quorumInfo.statusText}
@@ -981,7 +980,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               type="button"
               data-testid="agent-voice-dictate-btn"
               onClick={toggleVoiceDictation}
-              className="ai-mom-generator-s38" style={{ border: isListening ? '1.5px solid #ef4444' : '1px solid #cbd5e1', background: isListening ? '#fef2f2' : '#ffffff', color: isListening ? '#dc2626' : '#334155' }}
+              className={`ai-mom-generator-s38 ${(isListening ? 'ai-mom-generator-cond-15-true' : 'ai-mom-generator-cond-16-false')}`}
               title="Dictate meeting points with speech-to-text"
             >
               {isListening ? <MicOff size={13} color="#dc2626" /> : <Mic size={13} color="#059669" />}
@@ -1029,7 +1028,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
             data-testid="generate-mom-btn"
             onClick={handleGenerate}
             disabled={isGenerating || !rawNotes.trim()}
-            className="ai-mom-generator-s43" style={{ background: scope === 'A_BUILDING' ? 'linear-gradient(135deg, #059669 0%, #047857 100%)' : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', cursor: isGenerating || !rawNotes.trim() ? 'not-allowed' : 'pointer', opacity: isGenerating || !rawNotes.trim() ? 0.6 : 1 }}
+            className={`ai-mom-generator-s43 ${(scope === 'A_BUILDING' ? 'ai-mom-generator-cond-17-true' : 'ai-mom-generator-cond-18-false')} ${(isGenerating || !rawNotes.trim() ? 'ai-mom-generator-cond-19-true' : 'ai-mom-generator-cond-20-false')}`}
           >
             <Sparkles size={18} />
             {isGenerating ? 'AI Analyzing & Drafting MOM...' : `Generate AI MOM for ${scope === 'A_BUILDING' ? "Building 'A'" : 'Common Infrastructure'}`}
@@ -1056,21 +1055,21 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                   <button
                     type="button"
                     onClick={() => setActiveView('preview')}
-                    className="ai-mom-generator-s47" style={{ background: activeView === 'preview' ? '#ffffff' : 'transparent', color: activeView === 'preview' ? '#0f172a' : '#64748b', boxShadow: activeView === 'preview' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
+                    className={`ai-mom-generator-s47 ${(activeView === 'preview' ? 'ai-mom-generator-cond-21-true' : 'ai-mom-generator-cond-22-false')}`}
                   >
                     📄 Official Letterhead
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveView('edit')}
-                    className="ai-mom-generator-s47" style={{ background: activeView === 'edit' ? '#ffffff' : 'transparent', color: activeView === 'edit' ? '#0f172a' : '#64748b', boxShadow: activeView === 'edit' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
+                    className={`ai-mom-generator-s47 ${(activeView === 'edit' ? 'ai-mom-generator-cond-23-true' : 'ai-mom-generator-cond-24-false')}`}
                   >
                     ✏️ Edit & Customize
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveView('actions')}
-                    className="ai-mom-generator-s47" style={{ background: activeView === 'actions' ? '#ffffff' : 'transparent', color: activeView === 'actions' ? '#0f172a' : '#64748b', boxShadow: activeView === 'actions' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
+                    className={`ai-mom-generator-s47 ${(activeView === 'actions' ? 'ai-mom-generator-cond-25-true' : 'ai-mom-generator-cond-26-false')}`}
                   >
                     📋 Action Register ({activeDoc.actionItems?.length || 0})
                   </button>
@@ -1078,7 +1077,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                     type="button"
                     data-testid="view-poster-tab-btn"
                     onClick={() => setActiveView('poster')}
-                    className="ai-mom-generator-s48" style={{ background: activeView === 'poster' ? '#ffffff' : 'transparent', color: activeView === 'poster' ? '#d90429' : '#64748b', boxShadow: activeView === 'poster' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
+                    className={`ai-mom-generator-s48 ${(activeView === 'poster' ? 'ai-mom-generator-cond-27-true' : 'ai-mom-generator-cond-28-false')}`}
                   >
                     <Sparkles size={14} color="#d90429" />
                     🎨 Graphic Flyer
@@ -1089,7 +1088,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 type="button"
                 data-testid="tab-monthly-mom-vault-btn"
                 onClick={() => setActiveView('vault')}
-                className="ai-mom-generator-s48" style={{ background: activeView === 'vault' ? '#ffffff' : 'transparent', color: activeView === 'vault' ? '#1d4ed8' : '#64748b', boxShadow: activeView === 'vault' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
+                className={`ai-mom-generator-s48 ${(activeView === 'vault' ? 'ai-mom-generator-cond-29-true' : 'ai-mom-generator-cond-30-false')}`}
               >
                 <FolderArchive size={14} color="#2563eb" />
                 📁 Monthly MOM Vault
@@ -1098,7 +1097,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 type="button"
                 data-testid="tab-history-templates-btn"
                 onClick={() => setActiveView('history')}
-                className="ai-mom-generator-s47" style={{ background: activeView === 'history' ? '#ffffff' : 'transparent', color: activeView === 'history' ? '#0f172a' : '#64748b', boxShadow: activeView === 'history' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
+                className={`ai-mom-generator-s47 ${(activeView === 'history' ? 'ai-mom-generator-cond-31-true' : 'ai-mom-generator-cond-32-false')}`}
               >
                 🕒 History & Templates ({savedMoms.length + OFFICIAL_MOM_TEMPLATES.length})
               </button>
@@ -1215,7 +1214,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                   {activeDoc.headerInfo.fullLegalHeader}
                 </p>
                 <div className="ai-mom-generator-s59">
-                  <span className="ai-mom-generator-s60" style={{ background: activeDoc.scope === 'A_BUILDING' ? '#0b2b26' : '#1e3a8a' }}>
+                  <span className={`ai-mom-generator-s60 ${(activeDoc.scope === 'A_BUILDING' ? 'ai-mom-generator-cond-33-true' : 'ai-mom-generator-cond-34-false')}`}>
                     {activeDoc.headerInfo.scopeBadge}
                   </span>
                 </div>
@@ -1322,7 +1321,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                     </thead>
                     <tbody>
                       {activeDoc.actionItems.map((act, idx) => (
-                        <tr key={idx} className="ai-mom-generator-s88" style={{ background: idx % 2 === 0 ? '#ffffff' : '#f9fafb' }}>
+                        <tr key={idx} className={`ai-mom-generator-s88 ${(idx % 2 === 0 ? 'ai-mom-generator-cond-35-true' : 'ai-mom-generator-cond-36-false')}`}>
                           <td className="ai-mom-generator-s89">{act.id || idx + 1}</td>
                           <td className="ai-mom-generator-s87">{act.task}</td>
                           <td className="ai-mom-generator-s90">{act.assignedTo}</td>
@@ -1483,7 +1482,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                       <span className="ai-mom-generator-s118">
                         {act.id || `ACT-${idx + 1}`}
                       </span>
-                      <span className="ai-mom-generator-s119" style={{ background: act.priority === 'HIGH' ? '#fee2e2' : '#fef3c7', color: act.priority === 'HIGH' ? '#dc2626' : '#d97706' }}>
+                      <span className={`ai-mom-generator-s119 ${(act.priority === 'HIGH' ? 'ai-mom-generator-cond-37-true' : 'ai-mom-generator-cond-38-false')}`}>
                         {act.priority} PRIORITY
                       </span>
                     </div>
@@ -1549,35 +1548,35 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('all')}
-                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'all' ? '#0f172a' : '#cbd5e1', background: historyFilter === 'all' ? '#0f172a' : '#ffffff', color: historyFilter === 'all' ? '#ffffff' : '#475569' }}
+                  className={`ai-mom-generator-s129 ${(historyFilter === 'all' ? 'ai-mom-generator-cond-39-true' : 'ai-mom-generator-cond-40-false')}`}
                 >
                   All ({OFFICIAL_MOM_TEMPLATES.length + savedMoms.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('official')}
-                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'official' ? '#2563eb' : '#cbd5e1', background: historyFilter === 'official' ? '#eff6ff' : '#ffffff', color: historyFilter === 'official' ? '#1d4ed8' : '#475569' }}
+                  className={`ai-mom-generator-s129 ${(historyFilter === 'official' ? 'ai-mom-generator-cond-41-true' : 'ai-mom-generator-cond-42-false')}`}
                 >
                   🏛️ Standard Society Templates ({OFFICIAL_MOM_TEMPLATES.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('wingA')}
-                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'wingA' ? '#059669' : '#cbd5e1', background: historyFilter === 'wingA' ? '#ecfdf5' : '#ffffff', color: historyFilter === 'wingA' ? '#047857' : '#475569' }}
+                  className={`ai-mom-generator-s129 ${(historyFilter === 'wingA' ? 'ai-mom-generator-cond-43-true' : 'ai-mom-generator-cond-44-false')}`}
                 >
                   🏢 Wing 'A' Templates
                 </button>
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('common')}
-                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'common' ? '#2563eb' : '#cbd5e1', background: historyFilter === 'common' ? '#eff6ff' : '#ffffff', color: historyFilter === 'common' ? '#1d4ed8' : '#475569' }}
+                  className={`ai-mom-generator-s129 ${(historyFilter === 'common' ? 'ai-mom-generator-cond-45-true' : 'ai-mom-generator-cond-46-false')}`}
                 >
                   🌐 Common Infrastructure
                 </button>
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('saved')}
-                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'saved' ? '#d97706' : '#cbd5e1', background: historyFilter === 'saved' ? '#fffbeb' : '#ffffff', color: historyFilter === 'saved' ? '#b45309' : '#475569' }}
+                  className={`ai-mom-generator-s129 ${(historyFilter === 'saved' ? 'ai-mom-generator-cond-47-true' : 'ai-mom-generator-cond-48-false')}`}
                 >
                   💾 Saved History ({savedMoms.length})
                 </button>
@@ -1600,11 +1599,11 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                       <div
                         key={tmpl.id}
                         data-testid={`template-card-${tmpl.id}`}
-                        className="ai-mom-generator-s135" style={{ border: tmpl.scope === 'A_BUILDING' ? '1.5px solid #a7f3d0' : '1.5px solid #bfdbfe', background: tmpl.scope === 'A_BUILDING' ? '#f0fdf4' : '#eff6ff' }}
+                        className={`ai-mom-generator-s135 ${(tmpl.scope === 'A_BUILDING' ? 'ai-mom-generator-cond-49-true' : 'ai-mom-generator-cond-50-false')}`}
                       >
                         <div>
                           <div className="ai-mom-generator-s136">
-                            <span className="ai-mom-generator-s137" style={{ background: tmpl.scope === 'A_BUILDING' ? '#059669' : '#2563eb' }}>
+                            <span className={`ai-mom-generator-s137 ${(tmpl.scope === 'A_BUILDING' ? 'ai-mom-generator-cond-51-true' : 'ai-mom-generator-cond-52-false')}`}>
                               {tmpl.badgeText}
                             </span>
                             <span className="ai-mom-generator-s138">
@@ -1636,7 +1635,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                           <button
                             type="button"
                             onClick={() => handleRestoreFromHistory(tmpl)}
-                            className="ai-mom-generator-s144" style={{ background: tmpl.scope === 'A_BUILDING' ? '#059669' : '#2563eb' }}
+                            className={`ai-mom-generator-s144 ${(tmpl.scope === 'A_BUILDING' ? 'ai-mom-generator-cond-53-true' : 'ai-mom-generator-cond-54-false')}`}
                           >
                             <ExternalLink size={13} />
                             Load Template ↗
@@ -1680,7 +1679,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                         >
                           <div>
                             <div className="ai-mom-generator-s151">
-                              <span className="ai-mom-generator-s152" style={{ background: m.scope === 'A_BUILDING' ? '#059669' : '#2563eb' }}>
+                              <span className={`ai-mom-generator-s152 ${(m.scope === 'A_BUILDING' ? 'ai-mom-generator-cond-55-true' : 'ai-mom-generator-cond-56-false')}`}>
                                 {m.scope === 'A_BUILDING' ? "BUILDING 'A'" : 'COMMON INFRA'}
                               </span>
                               <strong className="ai-mom-generator-s153">{m.title}</strong>

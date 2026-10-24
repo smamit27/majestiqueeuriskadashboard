@@ -397,3 +397,29 @@
   font-weight: 700;
 }
 
+
+/* Extracted Conditional Styles */
+.water-tank-level-monitor-cond-1-true {
+  border: 2px solid #0284c7;
+  background: #f0f9ff;
+  color: #0284c7;
+}
+
+.water-tank-level-monitor-cond-2-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #475569;
+}
+
+.water-tank-level-monitor-cond-3-true {
+  border: 2px solid #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.water-tank-level-monitor-cond-4-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #475569;
+}
+

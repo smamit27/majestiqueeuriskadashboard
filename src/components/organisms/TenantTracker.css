@@ -343,3 +343,65 @@
   background: rgba(220,38,38,0.02);
 }
 
+
+/* Extracted Conditional Styles */
+.tenant-tracker-cond-1-true {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+
+.tenant-tracker-cond-2-false {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.tenant-tracker-cond-3-true {
+  background: rgba(0,0,0,0.03);
+}
+
+.tenant-tracker-cond-4-false {
+  background: #fff;
+}
+
+.tenant-tracker-cond-5-true {
+  font-weight: 700;
+  border: 1px solid #196c6c;
+  background: #196c6c;
+  color: #ffffff;
+}
+
+.tenant-tracker-cond-6-false {
+  font-weight: 500;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: #ffffff;
+  color: #475569;
+}
+
+.tenant-tracker-cond-7-true {
+  background: rgba(255,255,255,0.25);
+  color: #ffffff;
+}
+
+.tenant-tracker-cond-8-false {
+  background: rgba(0,0,0,0.06);
+  color: #64748b;
+}
+
+.tenant-tracker-cond-9-true {
+  font-weight: 600;
+}
+
+.tenant-tracker-cond-10-false {
+  font-weight: 400;
+}
+
+.tenant-tracker-cond-11-true {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.tenant-tracker-cond-12-false {
+  font-weight: 400;
+  color: #94a3b8;
+}
+

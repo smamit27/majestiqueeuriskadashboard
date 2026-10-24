@@ -28,3 +28,35 @@
   font-size: 0.9rem;
 }
 
+
+/* Extracted Conditional Styles */
+.solar-module-cond-1-true {
+  background: #1e3a8a;
+  color: white;
+}
+
+.solar-module-cond-2-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.solar-module-cond-3-true {
+  background: #1e3a8a;
+  color: white;
+}
+
+.solar-module-cond-4-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.solar-module-cond-5-true {
+  background: #1e3a8a;
+  color: white;
+}
+
+.solar-module-cond-6-false {
+  background: transparent;
+  color: #64748b;
+}
+

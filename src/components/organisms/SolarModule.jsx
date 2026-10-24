@@ -13,22 +13,19 @@ export default function SolarModule({ isAdmin = false }) {
       <div className="tab-navigation solar-module-s1">
         <button 
           onClick={() => setSubTab('overview')}
-          className={`sub-tab-button ${subTab === 'overview' ? 'active' : ''} solar-module-s2`}
-          style={{ background: subTab === 'overview' ? '#1e3a8a' : 'transparent', color: subTab === 'overview' ? 'white' : '#64748b' }}
+          className={`sub-tab-button ${subTab === 'overview' ? 'active' : ''} solar-module-s2 ${(subTab === 'overview' ? 'solar-module-cond-1-true' : 'solar-module-cond-2-false')}`}
         >
           📊 Overview
         </button>
         <button 
           onClick={() => setSubTab('tracker')}
-          className={`sub-tab-button ${subTab === 'tracker' ? 'active' : ''} solar-module-s2`}
-          style={{ background: subTab === 'tracker' ? '#1e3a8a' : 'transparent', color: subTab === 'tracker' ? 'white' : '#64748b' }}
+          className={`sub-tab-button ${subTab === 'tracker' ? 'active' : ''} solar-module-s2 ${(subTab === 'tracker' ? 'solar-module-cond-3-true' : 'solar-module-cond-4-false')}`}
         >
           📝 Evaluation Checklist
         </button>
         <button 
           onClick={() => setSubTab('compare')}
-          className={`sub-tab-button ${subTab === 'compare' ? 'active' : ''} solar-module-s2`}
-          style={{ background: subTab === 'compare' ? '#1e3a8a' : 'transparent', color: subTab === 'compare' ? 'white' : '#64748b' }}
+          className={`sub-tab-button ${subTab === 'compare' ? 'active' : ''} solar-module-s2 ${(subTab === 'compare' ? 'solar-module-cond-5-true' : 'solar-module-cond-6-false')}`}
         >
           ⚖️ Comparison Matrix
         </button>

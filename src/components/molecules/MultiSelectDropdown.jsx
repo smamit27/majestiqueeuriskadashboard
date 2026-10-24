@@ -178,7 +178,7 @@ export default function MultiSelectDropdown({
       <div
         data-testid="multiselect-trigger"
         onClick={() => setIsOpen(!isOpen)}
-        className="multi-select-dropdown-s5" style={{ border: isOpen ? '1.5px solid #059669' : '1px solid #cbd5e1', boxShadow: isOpen ? '0 0 0 3px rgba(5, 150, 105, 0.12)' : 'none' }}
+        className={`multi-select-dropdown-s5 ${(isOpen ? 'multi-select-dropdown-cond-1-true' : 'multi-select-dropdown-cond-2-false')}`}
       >
         <div className="multi-select-dropdown-s6">
           {selectedValues.length === 0 ? (
@@ -224,7 +224,7 @@ export default function MultiSelectDropdown({
           )}
           <ChevronDown
             size={16}
-            className="multi-select-dropdown-s12" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            className={`multi-select-dropdown-s12 ${(isOpen ? 'multi-select-dropdown-cond-3-true' : 'multi-select-dropdown-cond-4-false')}`}
           />
         </div>
       </div>
@@ -271,7 +271,7 @@ export default function MultiSelectDropdown({
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveWingTab(tab.id)}
-                    className="multi-select-dropdown-s20" style={{ border: isActive ? '1px solid #059669' : '1px solid #e2e8f0', background: isActive ? '#059669' : '#ffffff', color: isActive ? '#ffffff' : '#475569' }}
+                    className={`multi-select-dropdown-s20 ${(isActive ? 'multi-select-dropdown-cond-5-true' : 'multi-select-dropdown-cond-6-false')}`}
                   >
                     {tab.label}
                   </button>
@@ -317,7 +317,7 @@ export default function MultiSelectDropdown({
                   <div
                     key={opt.id}
                     onClick={() => handleToggle(opt.id)}
-                    className="multi-select-dropdown-s28" style={{ background: isChecked ? 'rgba(5, 150, 105, 0.05)' : 'transparent' }}
+                    className={`multi-select-dropdown-s28 ${(isChecked ? 'multi-select-dropdown-cond-7-true' : 'multi-select-dropdown-cond-8-false')}`}
                     onMouseEnter={e => {
                       if (!isChecked) e.currentTarget.style.background = '#f8fafc';
                     }}
@@ -328,7 +328,7 @@ export default function MultiSelectDropdown({
                     <div className="multi-select-dropdown-s29">
                       {/* Checkbox Box */}
                       <div
-                        className="multi-select-dropdown-s30" style={{ border: isChecked ? '2px solid #059669' : '1.5px solid #cbd5e1', background: isChecked ? '#059669' : '#ffffff' }}
+                        className={`multi-select-dropdown-s30 ${(isChecked ? 'multi-select-dropdown-cond-9-true' : 'multi-select-dropdown-cond-10-false')}`}
                       >
                         {isChecked && <Check size={12} color="#ffffff" strokeWidth={3} />}
                       </div>
@@ -372,7 +372,7 @@ export default function MultiSelectDropdown({
               <button
                 type="submit"
                 disabled={!customInput.trim()}
-                className="multi-select-dropdown-s36" style={{ cursor: customInput.trim() ? 'pointer' : 'not-allowed', opacity: customInput.trim() ? 1 : 0.6 }}
+                className={`multi-select-dropdown-s36 ${(customInput.trim() ? 'multi-select-dropdown-cond-11-true' : 'multi-select-dropdown-cond-12-false')}`}
               >
                 <Plus size={13} />
                 Add

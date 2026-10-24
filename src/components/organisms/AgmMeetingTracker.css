@@ -977,3 +977,63 @@
   margin: 0;
 }
 
+
+/* Extracted Conditional Styles */
+.agm-meeting-tracker-cond-1-true {
+  background: #10b981;
+}
+
+.agm-meeting-tracker-cond-2-false {
+  background: rgba(255,255,255,0.18);
+}
+
+.agm-meeting-tracker-cond-3-true {
+  color: #196c6c;
+  border-bottom: 3px solid #196c6c;
+}
+
+.agm-meeting-tracker-cond-4-false {
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+}
+
+.agm-meeting-tracker-cond-5-true {
+  color: #196c6c;
+  border-bottom: 3px solid #196c6c;
+}
+
+.agm-meeting-tracker-cond-6-false {
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+}
+
+.agm-meeting-tracker-cond-7-true {
+  color: #196c6c;
+  border-bottom: 3px solid #196c6c;
+}
+
+.agm-meeting-tracker-cond-8-false {
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+}
+
+.agm-meeting-tracker-cond-9-true {
+  color: #196c6c;
+  border-bottom: 3px solid #196c6c;
+}
+
+.agm-meeting-tracker-cond-10-false {
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+}
+
+.agm-meeting-tracker-cond-11-true {
+  background: #196c6c;
+  color: #ffffff;
+}
+
+.agm-meeting-tracker-cond-12-false {
+  background: #ffffff;
+  color: #334155;
+}
+

@@ -84,12 +84,12 @@ export default function SolarVendorCompare() {
           </thead>
           <tbody>
             {COMPARISON_DATA.map((row, idx) => (
-              <tr key={idx} className="solar-vendor-compare-s14" style={{ background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
+              <tr key={idx} className={`solar-vendor-compare-s14 ${(idx % 2 === 0 ? 'solar-vendor-compare-cond-1-true' : 'solar-vendor-compare-cond-2-false')}`}>
                 <td className="solar-vendor-compare-s15">
                   <span className="solar-vendor-compare-s16">{row.icon}</span>
                   {row.criteria}
                 </td>
-                <td className="solar-vendor-compare-s17" style={{ fontWeight: row.v1.includes('Excellent') || row.v1.includes('Optimized') || row.v1.includes('Very High') ? 700 : 500 }}>
+                <td className={`solar-vendor-compare-s17 ${(row.v1.includes('Excellent') || row.v1.includes('Optimized') || row.v1.includes('Very High') ? 'solar-vendor-compare-cond-3-true' : 'solar-vendor-compare-cond-4-false')}`}>
                   {row.v1}
                 </td>
                 <td className="solar-vendor-compare-s18">

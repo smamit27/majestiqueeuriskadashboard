@@ -13,15 +13,13 @@ export default function TankerModule({ isAdmin = false }) {
       <div className="tab-navigation tanker-module-s1">
         <button
           onClick={() => setSubTab('entry')}
-          className={`sub-tab-button ${subTab === 'entry' ? 'active' : ''} tanker-module-s2`}
-          style={{ background: subTab === 'entry' ? '#1e3a8a' : 'transparent', color: subTab === 'entry' ? 'white' : '#64748b' }}
+          className={`sub-tab-button ${subTab === 'entry' ? 'active' : ''} tanker-module-s2 ${(subTab === 'entry' ? 'tanker-module-cond-1-true' : 'tanker-module-cond-2-false')}`}
         >
           💧 Water Tanker Entry
         </button>
         <button
           onClick={() => setSubTab('billing')}
-          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''} tanker-module-s2`}
-          style={{ background: subTab === 'billing' ? '#1e3a8a' : 'transparent', color: subTab === 'billing' ? 'white' : '#64748b' }}
+          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''} tanker-module-s2 ${(subTab === 'billing' ? 'tanker-module-cond-3-true' : 'tanker-module-cond-4-false')}`}
         >
           💰 Bill Calculation
         </button>

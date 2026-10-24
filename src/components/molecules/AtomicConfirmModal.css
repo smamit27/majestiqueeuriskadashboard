@@ -24,3 +24,15 @@
   margin-top: 2px;
 }
 
+
+/* Extracted Conditional Styles */
+.atomic-confirm-modal-cond-1-true {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.atomic-confirm-modal-cond-2-false {
+  background: #fef3c7;
+  color: #d97706;
+}
+

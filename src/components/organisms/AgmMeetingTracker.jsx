@@ -156,7 +156,7 @@ export default function AgmMeetingTracker({ isAdmin = false }) {
 
               <button
                 onClick={() => setActiveView('pdf')}
-                className="agm-meeting-tracker-s17" style={{ background: activeView === 'pdf' ? '#10b981' : 'rgba(255,255,255,0.18)' }}
+                className={`agm-meeting-tracker-s17 ${(activeView === 'pdf' ? 'agm-meeting-tracker-cond-1-true' : 'agm-meeting-tracker-cond-2-false')}`}
               >
                 <span>📄</span>
                 <span>View Full PDF</span>
@@ -229,28 +229,28 @@ export default function AgmMeetingTracker({ isAdmin = false }) {
       <div className="agm-meeting-tracker-s43">
         <button
           onClick={() => setActiveView('resolutions')}
-          className="agm-meeting-tracker-s44" style={{ color: activeView === 'resolutions' ? '#196c6c' : '#64748b', borderBottom: activeView === 'resolutions' ? '3px solid #196c6c' : '3px solid transparent' }}
+          className={`agm-meeting-tracker-s44 ${(activeView === 'resolutions' ? 'agm-meeting-tracker-cond-3-true' : 'agm-meeting-tracker-cond-4-false')}`}
         >
           📋 Agenda & Resolutions ({stats.total})
         </button>
 
         <button
           onClick={() => setActiveView('summary')}
-          className="agm-meeting-tracker-s44" style={{ color: activeView === 'summary' ? '#196c6c' : '#64748b', borderBottom: activeView === 'summary' ? '3px solid #196c6c' : '3px solid transparent' }}
+          className={`agm-meeting-tracker-s44 ${(activeView === 'summary' ? 'agm-meeting-tracker-cond-5-true' : 'agm-meeting-tracker-cond-6-false')}`}
         >
           ⚡ Executive Action Summary & Mandate
         </button>
 
         <button
           onClick={() => setActiveView('pdf')}
-          className="agm-meeting-tracker-s44" style={{ color: activeView === 'pdf' ? '#196c6c' : '#64748b', borderBottom: activeView === 'pdf' ? '3px solid #196c6c' : '3px solid transparent' }}
+          className={`agm-meeting-tracker-s44 ${(activeView === 'pdf' ? 'agm-meeting-tracker-cond-7-true' : 'agm-meeting-tracker-cond-8-false')}`}
         >
           📄 Original Signed Document (3 Pages)
         </button>
 
         <button
           onClick={() => setActiveView('society')}
-          className="agm-meeting-tracker-s44" style={{ color: activeView === 'society' ? '#196c6c' : '#64748b', borderBottom: activeView === 'society' ? '3px solid #196c6c' : '3px solid transparent' }}
+          className={`agm-meeting-tracker-s44 ${(activeView === 'society' ? 'agm-meeting-tracker-cond-9-true' : 'agm-meeting-tracker-cond-10-false')}`}
         >
           🏛️ Signatories & Seal Verification
         </button>
@@ -377,7 +377,7 @@ export default function AgmMeetingTracker({ isAdmin = false }) {
                           <button
                             key={st}
                             onClick={() => handleUpdateStatus(res.itemNo, st)}
-                            className="agm-meeting-tracker-s68" style={{ background: res.status === st ? '#196c6c' : '#ffffff', color: res.status === st ? '#ffffff' : '#334155' }}
+                            className={`agm-meeting-tracker-s68 ${(res.status === st ? 'agm-meeting-tracker-cond-11-true' : 'agm-meeting-tracker-cond-12-false')}`}
                           >
                             {st}
                           </button>

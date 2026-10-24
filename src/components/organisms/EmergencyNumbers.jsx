@@ -317,9 +317,8 @@ export default function EmergencyNumbers({ isAdmin = false }) {
 
               <a
                 href={contact.phone ? `tel:${contact.phone.replace(/\s+/g, '')}` : '#'}
-                className="button-primary emergency-numbers-s51"
+                className={`button-primary emergency-numbers-s51 ${(contact.phone ? 'emergency-numbers-cond-1-true' : 'emergency-numbers-cond-2-false')}`}
                 aria-label={`Call ${contact.category} at ${contact.phone}`}
-                style={{ background: contact.phone ? '#196c6c' : '#94a3b8', borderColor: contact.phone ? '#135252' : '#cbd5e1', cursor: contact.phone ? 'pointer' : 'not-allowed' }}
               >
                 📞 Call {contact.category.split(' ')[0]}
               </a>

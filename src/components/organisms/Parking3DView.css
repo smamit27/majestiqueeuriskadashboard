@@ -880,3 +880,85 @@
   gap: 16px;
 }
 
+
+/* Extracted Conditional Styles */
+.parking3-d-view-cond-1-true {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.parking3-d-view-cond-2-false {
+  background: transparent;
+  color: #94a3b8;
+}
+
+.parking3-d-view-cond-3-true {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.parking3-d-view-cond-4-false {
+  background: transparent;
+  color: #94a3b8;
+}
+
+.parking3-d-view-cond-5-true {
+  background: #ec4899;
+  color: #ffffff;
+}
+
+.parking3-d-view-cond-6-false {
+  background: transparent;
+  color: #94a3b8;
+}
+
+.parking3-d-view-cond-7-true {
+  cursor: grabbing;
+}
+
+.parking3-d-view-cond-8-false {
+  cursor: grab;
+}
+
+.parking3-d-view-cond-9-true {
+  transition: none;
+}
+
+.parking3-d-view-cond-10-false {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.parking3-d-view-cond-11-true {
+  box-shadow: 0 0 16px #fbbf24;
+}
+
+.parking3-d-view-cond-12-false {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+.parking3-d-view-cond-13-true {
+  color: #a7f3d0;
+}
+
+.parking3-d-view-cond-14-false {
+  color: #94a3b8;
+}
+
+.parking3-d-view-cond-15-true {
+  inset: 4px 3px;
+}
+
+.parking3-d-view-cond-16-false {
+  inset: 3px 4px;
+}
+
+.parking3-d-view-cond-17-true {
+  inset: 6px 2px;
+  font-size: 0.58rem;
+}
+
+.parking3-d-view-cond-18-false {
+  inset: 2px 6px;
+  font-size: 0.64rem;
+}
+

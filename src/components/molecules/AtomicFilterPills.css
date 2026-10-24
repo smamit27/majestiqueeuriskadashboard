@@ -11,3 +11,15 @@
   font-weight: 700;
 }
 
+
+/* Extracted Conditional Styles */
+.atomic-filter-pills-cond-1-true {
+  background: rgba(13,148,136,0.18);
+  color: #0f766e;
+}
+
+.atomic-filter-pills-cond-2-false {
+  background: #e2e8f0;
+  color: #64748b;
+}
+

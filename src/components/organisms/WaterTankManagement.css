@@ -414,3 +414,97 @@
   color: #2563eb;
 }
 
+
+/* Extracted Conditional Styles */
+.water-tank-management-cond-1-true {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.water-tank-management-cond-2-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.water-tank-management-cond-3-true {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.water-tank-management-cond-4-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.water-tank-management-cond-5-true {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.water-tank-management-cond-6-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.water-tank-management-cond-7-true {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.water-tank-management-cond-8-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.water-tank-management-cond-9-true {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.water-tank-management-cond-10-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.water-tank-management-cond-11-true {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.water-tank-management-cond-12-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.water-tank-management-cond-13-true {
+  background: rgba(240, 253, 244, 0.8);
+  border: 1px solid #86efac;
+}
+
+.water-tank-management-cond-14-false {
+  background: rgba(248, 250, 252, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.water-tank-management-cond-15-true {
+  background: #16a34a;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+}
+
+.water-tank-management-cond-16-false {
+  background: #64748b;
+  box-shadow: none;
+}
+

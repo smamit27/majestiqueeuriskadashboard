@@ -609,3 +609,29 @@
   font-style: italic;
 }
 
+
+/* Extracted Conditional Styles */
+.general-parking-notice-document-cond-1-true {
+  cursor: wait;
+}
+
+.general-parking-notice-document-cond-2-false {
+  cursor: pointer;
+}
+
+.general-parking-notice-document-cond-3-true {
+  background: #f8fafc;
+}
+
+.general-parking-notice-document-cond-4-false {
+  background: #ffffff;
+}
+
+.general-parking-notice-document-cond-5-true {
+  cursor: pointer;
+}
+
+.general-parking-notice-document-cond-6-false {
+  cursor: default;
+}
+

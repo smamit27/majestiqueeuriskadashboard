@@ -440,3 +440,73 @@
   color: #64748b;
 }
 
+
+/* Extracted Conditional Styles */
+.pending-parking-slots-card-cond-1-true {
+  background: #ffffff;
+  color: #0f2952;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.pending-parking-slots-card-cond-2-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.pending-parking-slots-card-cond-3-true {
+  background: #ffffff;
+  color: #0f2952;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.pending-parking-slots-card-cond-4-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.pending-parking-slots-card-cond-5-true {
+  background: #ffffff;
+  color: #0f2952;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.pending-parking-slots-card-cond-6-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.pending-parking-slots-card-cond-7-true {
+  cursor: not-allowed;
+}
+
+.pending-parking-slots-card-cond-8-false {
+  cursor: pointer;
+}
+
+.pending-parking-slots-card-cond-9-true {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.pending-parking-slots-card-cond-10-false {
+  border-bottom: none;
+}
+
+.pending-parking-slots-card-cond-11-true {
+  background: #f8fafc;
+}
+
+.pending-parking-slots-card-cond-12-false {
+  background: #ffffff;
+}
+
+.pending-parking-slots-card-cond-13-true {
+  cursor: pointer;
+}
+
+.pending-parking-slots-card-cond-14-false {
+  cursor: default;
+}
+

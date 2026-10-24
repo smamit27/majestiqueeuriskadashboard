@@ -887,7 +887,6 @@ export default function App() {
           className={`tab-content-panel ${isTransitioning ? 'tab-content-panel--exit' : 'tab-content-panel--enter'}`}
           role="tabpanel"
           aria-labelledby={`tab-${activeTabPanel.id}`}
-          style={{}}
         >
           {!isAuthOrDevBypass && !PUBLIC_TABS.includes(normalizedActiveTab) ? (
             <div className="section-card app-s2">

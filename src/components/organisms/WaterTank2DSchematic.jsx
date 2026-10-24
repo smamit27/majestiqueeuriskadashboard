@@ -48,25 +48,25 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
         <div className="water-tank2-d-schematic-s6">
           <button
             onClick={() => setActiveLayer('all')}
-            className="water-tank2-d-schematic-s7" style={{ border: activeLayer === 'all' ? '1px solid #2563eb' : '1px solid #e2e8f0', background: activeLayer === 'all' ? '#eff6ff' : '#ffffff', color: activeLayer === 'all' ? '#1d4ed8' : '#64748b' }}
+            className={`water-tank2-d-schematic-s7 ${(activeLayer === 'all' ? 'water-tank2-d-schematic-cond-1-true' : 'water-tank2-d-schematic-cond-2-false')}`}
           >
             All Systems
           </button>
           <button
             onClick={() => setActiveLayer('domestic')}
-            className="water-tank2-d-schematic-s7" style={{ border: activeLayer === 'domestic' ? '1px solid #0284c7' : '1px solid #e2e8f0', background: activeLayer === 'domestic' ? '#f0f9ff' : '#ffffff', color: activeLayer === 'domestic' ? '#0284c7' : '#64748b' }}
+            className={`water-tank2-d-schematic-s7 ${(activeLayer === 'domestic' ? 'water-tank2-d-schematic-cond-3-true' : 'water-tank2-d-schematic-cond-4-false')}`}
           >
             <Droplets size={14} color="#0284c7" /> Domestic Water
           </button>
           <button
             onClick={() => setActiveLayer('recycled')}
-            className="water-tank2-d-schematic-s7" style={{ border: activeLayer === 'recycled' ? '1px solid #16a34a' : '1px solid #e2e8f0', background: activeLayer === 'recycled' ? '#f0fdf4' : '#ffffff', color: activeLayer === 'recycled' ? '#16a34a' : '#64748b' }}
+            className={`water-tank2-d-schematic-s7 ${(activeLayer === 'recycled' ? 'water-tank2-d-schematic-cond-5-true' : 'water-tank2-d-schematic-cond-6-false')}`}
           >
             <Leaf size={14} color="#16a34a" /> STP Flushing
           </button>
           <button
             onClick={() => setActiveLayer('fire')}
-            className="water-tank2-d-schematic-s7" style={{ border: activeLayer === 'fire' ? '1px solid #dc2626' : '1px solid #e2e8f0', background: activeLayer === 'fire' ? '#fef2f2' : '#ffffff', color: activeLayer === 'fire' ? '#dc2626' : '#64748b' }}
+            className={`water-tank2-d-schematic-s7 ${(activeLayer === 'fire' ? 'water-tank2-d-schematic-cond-7-true' : 'water-tank2-d-schematic-cond-8-false')}`}
           >
             <Flame size={14} color="#dc2626" /> Fire Reserve
           </button>
@@ -74,7 +74,7 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
           {/* Flow Simulation Toggle */}
           <button
             onClick={() => setIsSimulatingFlow(!isSimulatingFlow)}
-            className="water-tank2-d-schematic-s7" style={{ border: isSimulatingFlow ? '1px solid #8b5cf6' : '1px solid #e2e8f0', background: isSimulatingFlow ? '#f5f3ff' : '#ffffff', color: isSimulatingFlow ? '#7c3aed' : '#64748b' }}
+            className={`water-tank2-d-schematic-s7 ${(isSimulatingFlow ? 'water-tank2-d-schematic-cond-9-true' : 'water-tank2-d-schematic-cond-10-false')}`}
           >
             <Activity size={14} /> {isSimulatingFlow ? 'Flow: Active' : 'Flow: Paused'}
           </button>

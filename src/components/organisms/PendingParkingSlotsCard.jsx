@@ -439,7 +439,7 @@ export default function PendingParkingSlotsCard({
               <button
                 type="button"
                 onClick={() => setActiveView('general')}
-                className="pending-parking-slots-card-s9" style={{ background: activeView === 'general' ? '#ffffff' : 'transparent', color: activeView === 'general' ? '#0f2952' : '#64748b', boxShadow: activeView === 'general' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' }}
+                className={`pending-parking-slots-card-s9 ${(activeView === 'general' ? 'pending-parking-slots-card-cond-1-true' : 'pending-parking-slots-card-cond-2-false')}`}
               >
                 <span>📜</span>
                 <span>General Notice</span>
@@ -447,7 +447,7 @@ export default function PendingParkingSlotsCard({
               <button
                 type="button"
                 onClick={() => setActiveView('notice')}
-                className="pending-parking-slots-card-s9" style={{ background: activeView === 'notice' ? '#ffffff' : 'transparent', color: activeView === 'notice' ? '#0f2952' : '#64748b', boxShadow: activeView === 'notice' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' }}
+                className={`pending-parking-slots-card-s9 ${(activeView === 'notice' ? 'pending-parking-slots-card-cond-3-true' : 'pending-parking-slots-card-cond-4-false')}`}
               >
                 <span>✉️</span>
                 <span>Flat Notice</span>
@@ -455,7 +455,7 @@ export default function PendingParkingSlotsCard({
               <button
                 type="button"
                 onClick={() => setActiveView('register')}
-                className="pending-parking-slots-card-s9" style={{ background: activeView === 'register' ? '#ffffff' : 'transparent', color: activeView === 'register' ? '#0f2952' : '#64748b', boxShadow: activeView === 'register' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' }}
+                className={`pending-parking-slots-card-s9 ${(activeView === 'register' ? 'pending-parking-slots-card-cond-5-true' : 'pending-parking-slots-card-cond-6-false')}`}
               >
                 <span>📋</span>
                 <span>3-Column Register</span>
@@ -503,7 +503,7 @@ export default function PendingParkingSlotsCard({
                   type="button"
                   onClick={handleCopy}
                   disabled={items.length === 0}
-                  className="pending-parking-slots-card-s15" style={{ cursor: items.length === 0 ? 'not-allowed' : 'pointer' }}
+                  className={`pending-parking-slots-card-s15 ${(items.length === 0 ? 'pending-parking-slots-card-cond-7-true' : 'pending-parking-slots-card-cond-8-false')}`}
                 >
                   {copied ? '✓ Copied!' : '📋 Copy Flats'}
                 </button>
@@ -665,7 +665,7 @@ export default function PendingParkingSlotsCard({
                       <div
                         key={flat}
                         onClick={() => onSelectFlat && onSelectFlat(flat)}
-                        className="pending-parking-slots-card-s44" style={{ borderBottom: rowIndex < col.items.length - 1 ? '1px solid #e2e8f0' : 'none', background: isEven ? '#f8fafc' : '#ffffff', cursor: onSelectFlat ? 'pointer' : 'default' }}
+                        className={`pending-parking-slots-card-s44 ${(rowIndex < col.items.length - 1 ? 'pending-parking-slots-card-cond-9-true' : 'pending-parking-slots-card-cond-10-false')} ${(isEven ? 'pending-parking-slots-card-cond-11-true' : 'pending-parking-slots-card-cond-12-false')} ${(onSelectFlat ? 'pending-parking-slots-card-cond-13-true' : 'pending-parking-slots-card-cond-14-false')}`}
                         onMouseEnter={e => {
                           e.currentTarget.style.background = '#eff6ff';
                         }}

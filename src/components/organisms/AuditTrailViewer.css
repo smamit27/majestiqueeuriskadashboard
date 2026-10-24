@@ -241,3 +241,13 @@
   color: #14532d;
 }
 
+
+/* Extracted Conditional Styles */
+.audit-trail-viewer-cond-1-true {
+  background: #f8fafc;
+}
+
+.audit-trail-viewer-cond-2-false {
+  background: transparent;
+}
+

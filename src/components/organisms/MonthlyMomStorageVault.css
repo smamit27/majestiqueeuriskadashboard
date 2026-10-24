@@ -954,3 +954,105 @@
   box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
 }
 
+
+/* Extracted Conditional Styles */
+.monthly-mom-storage-vault-cond-1-true {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.monthly-mom-storage-vault-cond-2-false {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.monthly-mom-storage-vault-cond-3-true {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.monthly-mom-storage-vault-cond-4-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.monthly-mom-storage-vault-cond-5-true {
+  background: #059669;
+  color: #ffffff;
+}
+
+.monthly-mom-storage-vault-cond-6-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.monthly-mom-storage-vault-cond-7-true {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.monthly-mom-storage-vault-cond-8-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.monthly-mom-storage-vault-cond-9-true {
+  background: #059669;
+}
+
+.monthly-mom-storage-vault-cond-10-false {
+  background: #2563eb;
+}
+
+.monthly-mom-storage-vault-cond-11-true {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.monthly-mom-storage-vault-cond-12-false {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.monthly-mom-storage-vault-cond-13-true {
+  border: 2px solid #059669;
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.monthly-mom-storage-vault-cond-14-false {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+}
+
+.monthly-mom-storage-vault-cond-15-true {
+  border: 2px solid #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.monthly-mom-storage-vault-cond-16-false {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+}
+
+.monthly-mom-storage-vault-cond-17-true {
+  cursor: not-allowed;
+}
+
+.monthly-mom-storage-vault-cond-18-false {
+  cursor: pointer;
+}
+
+.monthly-mom-storage-vault-cond-19-true {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.monthly-mom-storage-vault-cond-20-false {
+  background: #dc2626;
+  cursor: pointer;
+}
+

@@ -184,7 +184,7 @@ export default function AiMomSkeletonLoader({ scope = 'A_BUILDING' }) {
             {[1, 2].map((res) => (
               <div
                 key={res}
-                className="ai-mom-skeleton-loader-s50" style={{ border: `1.5px solid ${themeColor}`, background: isWingA ? 'rgba(5, 150, 105, 0.02)' : 'rgba(37, 99, 235, 0.02)' }}
+                className={`ai-mom-skeleton-loader-s50 ${(isWingA ? 'ai-mom-skeleton-loader-cond-1-true' : 'ai-mom-skeleton-loader-cond-2-false')}`} style={{ border: `1.5px solid ${themeColor}` }}
               >
                 <div className="ai-mom-skeleton-loader-s51">
                   <div className="mom-shimmer-chip ai-mom-skeleton-loader-s52" />

@@ -28,3 +28,25 @@
   font-size: 0.9rem;
 }
 
+
+/* Extracted Conditional Styles */
+.tanker-module-cond-1-true {
+  background: #1e3a8a;
+  color: white;
+}
+
+.tanker-module-cond-2-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.tanker-module-cond-3-true {
+  background: #1e3a8a;
+  color: white;
+}
+
+.tanker-module-cond-4-false {
+  background: transparent;
+  color: #64748b;
+}
+

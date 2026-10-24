@@ -540,7 +540,7 @@ Hon. Secretary | Hon. Chairman`;
             type="button"
             onClick={handleDownloadPNG}
             disabled={downloading}
-            className="general-parking-notice-document-s12" style={{ cursor: downloading ? 'wait' : 'pointer' }}
+            className={`general-parking-notice-document-s12 ${(downloading ? 'general-parking-notice-document-cond-1-true' : 'general-parking-notice-document-cond-2-false')}`}
           >
             <span>📸</span>
             <span>{downloading ? 'Rendering Image...' : 'Download Notice (PNG)'}</span>
@@ -665,7 +665,7 @@ Hon. Secretary | Hon. Chairman`;
                     <tr
                       key={row.flat}
                       onClick={() => onSelectFlat && onSelectFlat(row.flat)}
-                      className="general-parking-notice-document-s48" style={{ background: idx % 2 === 1 ? '#f8fafc' : '#ffffff', cursor: onSelectFlat ? 'pointer' : 'default' }}
+                      className={`general-parking-notice-document-s48 ${(idx % 2 === 1 ? 'general-parking-notice-document-cond-3-true' : 'general-parking-notice-document-cond-4-false')} ${(onSelectFlat ? 'general-parking-notice-document-cond-5-true' : 'general-parking-notice-document-cond-6-false')}`}
                     >
                       <td className="general-parking-notice-document-s49">{row.srNo}</td>
                       <td className="general-parking-notice-document-s50">{row.flat}</td>

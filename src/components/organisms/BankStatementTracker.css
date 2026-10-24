@@ -1041,3 +1041,127 @@
   font-weight: 600;
 }
 
+
+/* Extracted Conditional Styles */
+.bank-statement-tracker-cond-1-true {
+  font-weight: 700;
+}
+
+.bank-statement-tracker-cond-2-false {
+  font-weight: 500;
+}
+
+.bank-statement-tracker-cond-3-true {
+  background: rgba(13, 148, 136, 0.15);
+  color: #0d9488;
+}
+
+.bank-statement-tracker-cond-4-false {
+  background: rgba(2, 132, 199, 0.15);
+  color: #0284c7;
+}
+
+.bank-statement-tracker-cond-5-true {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-6-false {
+  color: var(--muted);
+}
+
+.bank-statement-tracker-cond-7-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-8-false {
+  color: var(--muted);
+}
+
+.bank-statement-tracker-cond-9-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-10-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-11-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-12-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-13-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-14-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-15-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-16-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-17-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-18-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-19-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-20-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-21-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-22-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-23-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-24-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-25-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-26-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-27-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-28-false {
+  color: var(--coral);
+}
+
+.bank-statement-tracker-cond-29-true {
+  color: var(--pine);
+}
+
+.bank-statement-tracker-cond-30-false {
+  color: var(--amber);
+}
+

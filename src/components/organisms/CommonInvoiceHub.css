@@ -2536,3 +2536,189 @@
   padding-top: 6px;
 }
 
+
+/* Extracted Conditional Styles */
+.common-invoice-hub-cond-1-true {
+  border: 2px solid #C49B4F;
+  background: linear-gradient(135deg, #C49B4F 0%, #b38634 100%);
+  color: #0b2b26;
+  box-shadow: 0 4px 14px rgba(196,155,79,0.35);
+}
+
+.common-invoice-hub-cond-2-false {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.common-invoice-hub-cond-3-true {
+  background: #0b2b26;
+  color: #C49B4F;
+}
+
+.common-invoice-hub-cond-4-false {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.common-invoice-hub-cond-5-true {
+  background: #92400e;
+  color: #fff;
+}
+
+.common-invoice-hub-cond-6-false {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.common-invoice-hub-cond-7-true {
+  border: 2px solid #0b2b26;
+  background: #0b2b26;
+  color: #C49B4F;
+}
+
+.common-invoice-hub-cond-8-false {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.common-invoice-hub-cond-9-true {
+  background: #fff7ed;
+}
+
+.common-invoice-hub-cond-10-false {
+  background: #f8fafc;
+}
+
+.common-invoice-hub-cond-11-true {
+  background: #0b2b26;
+  color: #C49B4F;
+}
+
+.common-invoice-hub-cond-12-false {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.common-invoice-hub-cond-13-true {
+  background: #92400e;
+  color: #fff;
+}
+
+.common-invoice-hub-cond-14-false {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.common-invoice-hub-cond-15-true {
+  border: 2px solid #1e3a8a;
+  background: #1e3a8a;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(30,58,138,0.25);
+}
+
+.common-invoice-hub-cond-16-false {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: none;
+}
+
+.common-invoice-hub-cond-17-true {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.common-invoice-hub-cond-18-false {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.common-invoice-hub-cond-19-true {
+  border: 2px solid #0b2b26;
+  background: #0b2b26;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(11,43,38,0.25);
+}
+
+.common-invoice-hub-cond-20-false {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: none;
+}
+
+.common-invoice-hub-cond-21-true {
+  background: #4ade80;
+  color: #0b2b26;
+}
+
+.common-invoice-hub-cond-22-false {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.common-invoice-hub-cond-23-true {
+  border: 2.5px solid #16a34a;
+  box-shadow: 0 6px 20px rgba(22,163,74,0.18);
+}
+
+.common-invoice-hub-cond-24-false {
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.common-invoice-hub-cond-25-true {
+  color: #16a34a;
+}
+
+.common-invoice-hub-cond-26-false {
+  color: #15803d;
+}
+
+.common-invoice-hub-cond-27-true {
+  border: 2.5px solid #16a34a;
+  box-shadow: 0 6px 20px rgba(22,163,74,0.18);
+}
+
+.common-invoice-hub-cond-28-false {
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.common-invoice-hub-cond-29-true {
+  color: #16a34a;
+}
+
+.common-invoice-hub-cond-30-false {
+  color: #15803d;
+}
+
+.common-invoice-hub-cond-31-true {
+  border: 2.5px solid #1e3a8a;
+  box-shadow: 0 6px 20px rgba(30,58,138,0.15);
+}
+
+.common-invoice-hub-cond-32-false {
+  border: 2px solid #C49B4F;
+  box-shadow: 0 4px 16px rgba(196,155,79,0.15);
+}
+
+.common-invoice-hub-cond-33-true {
+  color: #1e3a8a;
+}
+
+.common-invoice-hub-cond-34-false {
+  color: #b45309;
+}
+
+.common-invoice-hub-cond-35-true {
+  color: #0b2b26;
+}
+
+.common-invoice-hub-cond-36-false {
+  color: #1e3a8a;
+}
+

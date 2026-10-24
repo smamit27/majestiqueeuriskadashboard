@@ -112,7 +112,7 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
           <button
             key={tab.id}
             onClick={() => setActiveSection(tab.id)}
-            className="resident-portal-s11" style={{ background: activeSection === tab.id ? '#0b2b26' : '#e2e8f0', color: activeSection === tab.id ? '#C49B4F' : '#334155' }}
+            className={`resident-portal-s11 ${(activeSection === tab.id ? 'resident-portal-cond-1-true' : 'resident-portal-cond-2-false')}`}
           >
             {tab.label}
           </button>
@@ -299,7 +299,7 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
                   <div className="resident-portal-s60">{c.title}</div>
                   <div className="resident-portal-s28">{c.category} • Logged on {c.date}</div>
                 </div>
-                <span className="resident-portal-s61" style={{ background: c.status === 'Resolved' ? '#dcfce7' : '#fef3c7', color: c.status === 'Resolved' ? '#15803d' : '#b45309' }}>
+                <span className={`resident-portal-s61 ${(c.status === 'Resolved' ? 'resident-portal-cond-3-true' : 'resident-portal-cond-4-false')}`}>
                   {c.status}
                 </span>
               </div>

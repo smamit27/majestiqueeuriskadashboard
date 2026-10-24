@@ -1709,3 +1709,225 @@
   margin-bottom: 4px;
 }
 
+
+/* Extracted Conditional Styles */
+.b-o-m-missing-bills-analytics-cond-1-true {
+  background: #ffffff;
+}
+
+.b-o-m-missing-bills-analytics-cond-2-false {
+  background: #c49b4f;
+}
+
+.b-o-m-missing-bills-analytics-cond-3-true {
+  border: 1.5px solid #0e3d34;
+  background: #ffffff;
+  color: #062b24;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.b-o-m-missing-bills-analytics-cond-4-false {
+  border: 1.5px solid transparent;
+  background: transparent;
+  color: #64748b;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.b-o-m-missing-bills-analytics-cond-5-true {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.b-o-m-missing-bills-analytics-cond-6-false {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.b-o-m-missing-bills-analytics-cond-7-true {
+  background: #0e3d34;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.b-o-m-missing-bills-analytics-cond-8-false {
+  background: transparent;
+  color: #475569;
+  font-weight: 500;
+}
+
+.b-o-m-missing-bills-analytics-cond-9-true {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.b-o-m-missing-bills-analytics-cond-10-false {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.b-o-m-missing-bills-analytics-cond-11-true {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.b-o-m-missing-bills-analytics-cond-12-false {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.b-o-m-missing-bills-analytics-cond-13-true {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.b-o-m-missing-bills-analytics-cond-14-false {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.b-o-m-missing-bills-analytics-cond-15-true {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.b-o-m-missing-bills-analytics-cond-16-false {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.b-o-m-missing-bills-analytics-cond-17-true {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.b-o-m-missing-bills-analytics-cond-18-false {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.b-o-m-missing-bills-analytics-cond-19-true {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.b-o-m-missing-bills-analytics-cond-20-false {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.b-o-m-missing-bills-analytics-cond-21-true {
+  font-weight: 700;
+}
+
+.b-o-m-missing-bills-analytics-cond-22-false {
+  font-weight: 500;
+}
+
+.b-o-m-missing-bills-analytics-cond-23-true {
+  font-weight: 800;
+}
+
+.b-o-m-missing-bills-analytics-cond-24-false {
+  font-weight: 500;
+}
+
+.b-o-m-missing-bills-analytics-cond-25-true {
+  font-weight: 800;
+}
+
+.b-o-m-missing-bills-analytics-cond-26-false {
+  font-weight: 500;
+}
+
+.b-o-m-missing-bills-analytics-cond-27-true {
+  border: 1.5px solid #0e3d34;
+  background: #f8fafc;
+  box-shadow: 0 4px 12px rgba(14, 61, 52, 0.08);
+}
+
+.b-o-m-missing-bills-analytics-cond-28-false {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.b-o-m-missing-bills-analytics-cond-29-true {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.b-o-m-missing-bills-analytics-cond-30-false {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.b-o-m-missing-bills-analytics-cond-31-true {
+  background: #fffafa;
+}
+
+.b-o-m-missing-bills-analytics-cond-32-false {
+  background: #ffffff;
+}
+
+.b-o-m-missing-bills-analytics-cond-33-true {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.b-o-m-missing-bills-analytics-cond-34-false {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.b-o-m-missing-bills-analytics-cond-35-true {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.b-o-m-missing-bills-analytics-cond-36-false {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.b-o-m-missing-bills-analytics-cond-37-true {
+  font-weight: 700;
+  border: 1.5px solid #0e3d34;
+  background: #0e3d34;
+  color: #ffffff;
+}
+
+.b-o-m-missing-bills-analytics-cond-38-false {
+  font-weight: 500;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+}
+
+.b-o-m-missing-bills-analytics-cond-39-true {
+  background: #fffbfc;
+}
+
+.b-o-m-missing-bills-analytics-cond-40-false {
+  background: #ffffff;
+}
+
+.b-o-m-missing-bills-analytics-cond-41-true {
+  font-weight: 700;
+}
+
+.b-o-m-missing-bills-analytics-cond-42-false {
+  font-weight: 400;
+}
+
+.b-o-m-missing-bills-analytics-cond-43-true {
+  color: #b91c1c;
+  font-weight: 800;
+}
+
+.b-o-m-missing-bills-analytics-cond-44-false {
+  color: #0f172a;
+  font-weight: 600;
+}
+

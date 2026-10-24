@@ -429,3 +429,61 @@
   font-style: italic;
 }
 
+
+/* Extracted Conditional Styles */
+.parking-blueprint-map-cond-1-true {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.parking-blueprint-map-cond-2-false {
+  background: linear-gradient(180deg, #0d2636 0%, #081a24 100%);
+}
+
+.parking-blueprint-map-cond-3-true {
+  background: #0284c7;
+}
+
+.parking-blueprint-map-cond-4-false {
+  background: transparent;
+}
+
+.parking-blueprint-map-cond-5-true {
+  background: #e2e8f0;
+}
+
+.parking-blueprint-map-cond-6-false {
+  background: #06131c;
+}
+
+.parking-blueprint-map-cond-7-true {
+  background: #0284c7;
+}
+
+.parking-blueprint-map-cond-8-false {
+  background: transparent;
+}
+
+.parking-blueprint-map-cond-9-true {
+  cursor: grabbing;
+}
+
+.parking-blueprint-map-cond-10-false {
+  cursor: grab;
+}
+
+.parking-blueprint-map-cond-11-true {
+  transition: none;
+}
+
+.parking-blueprint-map-cond-12-false {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.parking-blueprint-map-cond-13-true {
+  background: #ffffff;
+}
+
+.parking-blueprint-map-cond-14-false {
+  background: #071620;
+}
+

@@ -229,3 +229,15 @@
   line-height: 1.45;
 }
 
+
+/* Extracted Conditional Styles */
+.document-manager-cond-1-true {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.document-manager-cond-2-false {
+  color: #475569;
+  font-weight: 500;
+}
+

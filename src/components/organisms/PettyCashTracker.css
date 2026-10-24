@@ -1081,3 +1081,139 @@
   white-space: nowrap;
 }
 
+
+/* Extracted Conditional Styles */
+.petty-cash-tracker-cond-1-true {
+  background: #0B2B26;
+  color: #fff;
+}
+
+.petty-cash-tracker-cond-2-false {
+  background: #E5E7EB;
+  color: #374151;
+}
+
+.petty-cash-tracker-cond-3-true {
+  background: #0B2B26;
+  color: #fff;
+}
+
+.petty-cash-tracker-cond-4-false {
+  background: #E5E7EB;
+  color: #374151;
+}
+
+.petty-cash-tracker-cond-5-true {
+  border: 1px solid #C49B4F;
+  background: #C49B4F;
+  color: #0B2B26;
+  font-weight: 800;
+}
+
+.petty-cash-tracker-cond-6-false {
+  border: 1px solid #E5E7EB;
+  background: #fff;
+  color: #475467;
+  font-weight: 600;
+}
+
+.petty-cash-tracker-cond-7-true {
+  background: #fcfdfd;
+}
+
+.petty-cash-tracker-cond-8-false {
+  background: #ffffff;
+}
+
+.petty-cash-tracker-cond-9-true {
+  background: #fcfdfd;
+}
+
+.petty-cash-tracker-cond-10-false {
+  background: #ffffff;
+}
+
+.petty-cash-tracker-cond-11-true {
+  color: #C49B4F;
+}
+
+.petty-cash-tracker-cond-12-false {
+  color: #667085;
+}
+
+.petty-cash-tracker-cond-13-true {
+  background: #0B2B26;
+  color: #fff;
+}
+
+.petty-cash-tracker-cond-14-false {
+  background: #F3F4F6;
+  color: #344054;
+}
+
+.petty-cash-tracker-cond-15-true {
+  background: #C49B4F;
+  color: #0B2B26;
+}
+
+.petty-cash-tracker-cond-16-false {
+  background: #F8FAFC;
+  color: #475467;
+}
+
+.petty-cash-tracker-cond-17-true {
+  color: #101828;
+}
+
+.petty-cash-tracker-cond-18-false {
+  color: #B42318;
+}
+
+.petty-cash-tracker-cond-19-true {
+  background: #F0FDF4;
+}
+
+.petty-cash-tracker-cond-20-false {
+  background: #FFF4F4;
+}
+
+.petty-cash-tracker-cond-21-true {
+  color: #0B6E4F;
+}
+
+.petty-cash-tracker-cond-22-false {
+  color: #B42318;
+}
+
+.petty-cash-tracker-cond-23-true {
+  color: #0B6E4F;
+}
+
+.petty-cash-tracker-cond-24-false {
+  color: #B42318;
+}
+
+.petty-cash-tracker-cond-25-true {
+  background: #fcfdfd;
+}
+
+.petty-cash-tracker-cond-26-false {
+  background: #ffffff;
+}
+
+.petty-cash-tracker-cond-27-true {
+  color: #0B6E4F;
+}
+
+.petty-cash-tracker-cond-28-false {
+  color: #B42318;
+}
+
+.petty-cash-tracker-cond-29-true {
+  color: #0B6E4F;
+}
+
+.petty-cash-tracker-cond-30-false {
+  color: #B42318;
+}
+

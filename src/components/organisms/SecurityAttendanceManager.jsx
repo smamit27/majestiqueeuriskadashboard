@@ -668,9 +668,8 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
             </div>
             <div className="security-attendance-manager-s4">
               {isAdmin && (
-                <button className="button-secondary" type="button" onClick={handleSave}
-                  disabled={!isDirty || saveStatus === 'saving'}
-                  style={{ opacity: (!isDirty || saveStatus === 'saving') ? 0.5 : 1 }}>
+                <button className={`button-secondary ${(!isDirty || saveStatus === 'saving' ? 'security-attendance-manager-cond-1-true' : 'security-attendance-manager-cond-2-false')}`} type="button" onClick={handleSave}
+                  disabled={!isDirty || saveStatus === 'saving'}>
                   💾 Save
                 </button>
               )}

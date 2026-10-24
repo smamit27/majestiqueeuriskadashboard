@@ -1020,3 +1020,43 @@
   border-color: #dc2626;
 }
 
+
+/* Extracted Conditional Styles */
+.fixed-deposit-tracker-cond-1-true {
+  background: rgba(52, 211, 153, 0.18);
+  color: #34d399;
+}
+
+.fixed-deposit-tracker-cond-2-false {
+  background: rgba(251, 191, 36, 0.18);
+  color: #fde047;
+}
+
+.fixed-deposit-tracker-cond-3-true {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.fixed-deposit-tracker-cond-4-false {
+  color: inherit;
+  font-weight: normal;
+}
+
+.fixed-deposit-tracker-cond-5-true {
+  background: #16a34a;
+}
+
+.fixed-deposit-tracker-cond-6-false {
+  background: #3b82f6;
+}
+
+.fixed-deposit-tracker-cond-7-true {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.fixed-deposit-tracker-cond-8-false {
+  background: #d1fae5;
+  color: #065f46;
+}
+

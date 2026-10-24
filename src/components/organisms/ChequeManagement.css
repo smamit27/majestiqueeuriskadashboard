@@ -909,3 +909,148 @@
   border-color: #b45309;
 }
 
+/* Conditional table & row states */
+.cheque-table-min-payback {
+  min-width: 1850px;
+}
+.cheque-table-min-common {
+  min-width: 1600px;
+}
+.cheque-table-min-wing {
+  min-width: 1200px;
+}
+
+.cheque-header-row-common {
+  background: #f0fdf4;
+}
+.cheque-header-row-wing {
+  background: #eff6ff;
+}
+
+.cheque-col-w110 {
+  width: 110px;
+}
+.cheque-col-w120 {
+  width: 120px;
+}
+
+.cheque-row-cancelled {
+  background: #f5f5f5;
+  opacity: 0.65;
+}
+.cheque-row-paid {
+  background: #f0fdf4;
+  opacity: 0.85;
+}
+
+.cheque-text-struck {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+.cheque-text-muted {
+  color: #9ca3af;
+}
+
+.cheque-amount-cancelled {
+  text-decoration: line-through;
+  color: #dc2626;
+}
+.cheque-amount-paid {
+  text-decoration: line-through;
+  color: #16a34a;
+}
+
+.cheque-color-wing-a {
+  color: #16a34a;
+}
+.cheque-color-wing-b {
+  color: #2563eb;
+}
+.cheque-color-wing-c {
+  color: #ea580c;
+}
+
+.cheque-opacity-unlocked {
+  opacity: 0.7;
+}
+
+.cheque-month-unlocked {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+.cheque-month-locked {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.cheque-badge-idle {
+  color: #6b7280;
+}
+.cheque-badge-pending {
+  color: #f59e0b;
+}
+.cheque-badge-saving {
+  color: #3b82f6;
+}
+.cheque-badge-saved {
+  color: #10b981;
+}
+.cheque-badge-error {
+  color: #ef4444;
+}
+
+.cheque-tab-btn-active-a {
+  background: #1e3a8a;
+  color: white;
+}
+.cheque-tab-btn-inactive-a {
+  background: white;
+  color: #1e3a8a;
+}
+.cheque-tab-btn-active-common {
+  background: #065f46;
+  color: white;
+}
+.cheque-tab-btn-inactive-common {
+  background: white;
+  color: #065f46;
+}
+
+.cheque-col-span-1 {
+  grid-column: span 1;
+}
+.cheque-col-span-full {
+  grid-column: 1 / -1;
+}
+
+.cheque-submit-common {
+  background: #059669;
+  border-color: #047857;
+}
+.cheque-submit-wing-a {
+  background: #1e3a8a;
+  border-color: #1e40af;
+}
+
+.cheque-grid-payback {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.cheque-grid-standard {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.cheque-status-success {
+  color: #166534;
+}
+.cheque-status-warning {
+  color: #b45309;
+}
+.cheque-outstanding-warning {
+  color: #d97706;
+}
+.cheque-outstanding-success {
+  color: #16a34a;
+}
+

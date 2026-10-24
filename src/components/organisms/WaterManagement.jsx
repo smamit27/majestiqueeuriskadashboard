@@ -366,7 +366,7 @@ export default function WaterManagement() {
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className="water-management-s21" style={{ background: activeCategory === cat.id ? '#0f172a' : '#f1f5f9', color: activeCategory === cat.id ? '#ffffff' : '#475569', border: activeCategory === cat.id ? '1px solid #0f172a' : '1px solid #e2e8f0' }}
+              className={`water-management-s21 ${(activeCategory === cat.id ? 'water-management-cond-1-true' : 'water-management-cond-2-false')}`}
             >
               {cat.label} ({cat.count})
             </button>

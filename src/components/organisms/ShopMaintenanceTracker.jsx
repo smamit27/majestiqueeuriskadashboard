@@ -82,7 +82,7 @@ function BalanceBadge({ value }) {
 
   return (
     <span
-      className="shop-maintenance-tracker-s1" style={{ background: isOutstanding ? 'rgba(180, 35, 24, 0.1)' : 'rgba(196, 155, 79, 0.14)', color: isOutstanding ? '#b42318' : '#8a6b2e', border: `1px solid ${isOutstanding ? 'rgba(180, 35, 24, 0.18)' : 'rgba(196, 155, 79, 0.24)'}` }}
+      className={`shop-maintenance-tracker-s1 ${(isOutstanding ? 'shop-maintenance-tracker-cond-1-true' : 'shop-maintenance-tracker-cond-2-false')}`} style={{ border: `1px solid ${isOutstanding ? 'rgba(180, 35, 24, 0.18)' : 'rgba(196, 155, 79, 0.24)'}` }}
     >
       {isOutstanding ? '⚠️ Outstanding' : '🕒 Pending Balance'}
     </span>
@@ -1316,7 +1316,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <span className="shop-maintenance-tracker-s13">Overall Pending (1-8)</span>
                 <span className="shop-maintenance-tracker-s14">💰</span>
               </div>
-              <div className="shop-maintenance-tracker-s15" style={{ color: overallPending > 0 ? '#fde047' : '#34d399' }}>
+              <div className={`shop-maintenance-tracker-s15 ${(overallPending > 0 ? 'shop-maintenance-tracker-cond-3-true' : 'shop-maintenance-tracker-cond-4-false')}`}>
                 ₹{formatValue(overallPending)}
               </div>
             </div>
@@ -1379,7 +1379,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   onClick={handleAutoSyncDueMonths}
                   disabled={saveStatus === 'saving'}
                   title="Checks and saves all new month maintenance to Firebase server"
-                  className="shop-maintenance-tracker-s24" style={{ cursor: saveStatus === 'saving' ? 'wait' : 'pointer' }}
+                  className={`shop-maintenance-tracker-s24 ${(saveStatus === 'saving' ? 'shop-maintenance-tracker-cond-5-true' : 'shop-maintenance-tracker-cond-6-false')}`}
                 >
                   ⚡ Sync Dues ({getCurrentMonthStr()})
                 </button>
@@ -1423,7 +1423,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             key={shop.id}
             type="button"
             onClick={() => setActiveShopId(shop.id)}
-            className="shop-maintenance-tracker-s34" style={{ border: activeShopId === shop.id ? '1px solid #0b2b26' : '1px solid #d0d5dd', background: activeShopId === shop.id ? '#0b2b26' : '#f8fafc', color: activeShopId === shop.id ? '#fff' : '#344054', boxShadow: activeShopId === shop.id ? '0 6px 16px rgba(11,43,38,0.16)' : 'none' }}
+            className={`shop-maintenance-tracker-s34 ${(activeShopId === shop.id ? 'shop-maintenance-tracker-cond-7-true' : 'shop-maintenance-tracker-cond-8-false')}`}
           >
             <span>{activeShopId === shop.id ? '🏪' : '🧾'}</span>
             <span>{shop.shopNo}</span>
@@ -1509,7 +1509,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               <div key={group.year} className="shop-maintenance-tracker-s54">
                 <div 
                   onClick={() => setExpandedYears(prev => ({ ...prev, [group.year]: !prev[group.year] }))}
-                  className="shop-maintenance-tracker-s55" style={{ borderBottom: isExpanded ? '1px solid rgba(61,63,52,0.08)' : 'none' }}
+                  className={`shop-maintenance-tracker-s55 ${(isExpanded ? 'shop-maintenance-tracker-cond-9-true' : 'shop-maintenance-tracker-cond-10-false')}`}
                 >
                   <div>
                     <div className="shop-maintenance-tracker-s56">Financial year</div>
@@ -1520,7 +1520,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     {group.receiptsTotal > 0 && (
                       <span className="shop-maintenance-tracker-s60">Receipts: {formatValue(group.receiptsTotal)}</span>
                     )}
-                    <span className="shop-maintenance-tracker-s61" style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
+                    <span className={`shop-maintenance-tracker-s61 ${(isExpanded ? 'shop-maintenance-tracker-cond-11-true' : 'shop-maintenance-tracker-cond-12-false')}`}>▼</span>
                   </div>
                 </div>
                 
@@ -1543,7 +1543,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                             <td className="shop-maintenance-tracker-s67">{entry.month}</td>
                             <td className="shop-maintenance-tracker-s67">{formatValue(entry.regularMain)}</td>
                             <td className="shop-maintenance-tracker-s67">
-                              <span className="shop-maintenance-tracker-s68" style={{ padding: entry.receipts ? '4px 8px' : '0', background: entry.receipts ? '#ecfdf3' : 'transparent', color: entry.receipts ? '#027a48' : 'inherit', fontWeight: entry.receipts ? 600 : 'normal' }}>
+                              <span className={`shop-maintenance-tracker-s68 ${(entry.receipts ? 'shop-maintenance-tracker-cond-13-true' : 'shop-maintenance-tracker-cond-14-false')}`}>
                                 {formatValue(entry.receipts)}
                               </span>
                             </td>
@@ -1621,7 +1621,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                           setNoticeRefPrefix('INV-ME/COMM/2026-27/');
                         }
                       }}
-                      className="shop-maintenance-tracker-s83" style={{ border: noticeDocType === 'invoice' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeDocType === 'invoice' ? '#0b2b26' : '#fff', color: noticeDocType === 'invoice' ? '#C49B4F' : '#334155' }}
+                      className={`shop-maintenance-tracker-s83 ${(noticeDocType === 'invoice' ? 'shop-maintenance-tracker-cond-15-true' : 'shop-maintenance-tracker-cond-16-false')}`}
                     >
                       🧾 Maintenance Invoice
                     </button>
@@ -1633,7 +1633,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                           setNoticeRefPrefix('ME-A/COMM/2026-27/NOT-');
                         }
                       }}
-                      className="shop-maintenance-tracker-s83" style={{ border: noticeDocType === 'notice' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeDocType === 'notice' ? '#0b2b26' : '#fff', color: noticeDocType === 'notice' ? '#C49B4F' : '#334155' }}
+                      className={`shop-maintenance-tracker-s83 ${(noticeDocType === 'notice' ? 'shop-maintenance-tracker-cond-17-true' : 'shop-maintenance-tracker-cond-18-false')}`}
                     >
                       📜 Demand Notice
                     </button>
@@ -1649,14 +1649,14 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     <button
                       type="button"
                       onClick={() => setNoticeTarget('single')}
-                      className="shop-maintenance-tracker-s83" style={{ border: noticeTarget === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeTarget === 'single' ? '#0b2b26' : '#fff', color: noticeTarget === 'single' ? '#fff' : '#334155' }}
+                      className={`shop-maintenance-tracker-s83 ${(noticeTarget === 'single' ? 'shop-maintenance-tracker-cond-19-true' : 'shop-maintenance-tracker-cond-20-false')}`}
                     >
                       Single Shop
                     </button>
                     <button
                       type="button"
                       onClick={() => setNoticeTarget('all_pending')}
-                      className="shop-maintenance-tracker-s83" style={{ border: noticeTarget === 'all_pending' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeTarget === 'all_pending' ? '#0b2b26' : '#fff', color: noticeTarget === 'all_pending' ? '#fff' : '#334155' }}
+                      className={`shop-maintenance-tracker-s83 ${(noticeTarget === 'all_pending' ? 'shop-maintenance-tracker-cond-21-true' : 'shop-maintenance-tracker-cond-22-false')}`}
                     >
                       All Pending Dues ({shops.filter(s => getShopNoticeData(s).pending > 0).length})
                     </button>
@@ -1664,7 +1664,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   <button
                     type="button"
                     onClick={() => setNoticeTarget('all')}
-                    className="shop-maintenance-tracker-s85" style={{ border: noticeTarget === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeTarget === 'all' ? '#0b2b26' : '#fff', color: noticeTarget === 'all' ? '#fff' : '#475569' }}
+                    className={`shop-maintenance-tracker-s85 ${(noticeTarget === 'all' ? 'shop-maintenance-tracker-cond-23-true' : 'shop-maintenance-tracker-cond-24-false')}`}
                   >
                     All 8 Commercial Shops (Batch)
                   </button>
@@ -1685,10 +1685,10 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                             key={s.id}
                             type="button"
                             onClick={() => setNoticeShopId(s.id)}
-                            className="shop-maintenance-tracker-s88" style={{ border: isSelected ? '1.5px solid #0b2b26' : '1px solid #cbd5e1', background: isSelected ? '#0b2b26' : '#fff', color: isSelected ? '#fff' : '#1e293b' }}
+                            className={`shop-maintenance-tracker-s88 ${(isSelected ? 'shop-maintenance-tracker-cond-25-true' : 'shop-maintenance-tracker-cond-26-false')}`}
                           >
                             <span>{s.shopNo}</span>
-                            <span className="shop-maintenance-tracker-s89" style={{ opacity: isSelected ? 0.85 : 0.6 }}>
+                            <span className={`shop-maintenance-tracker-s89 ${(isSelected ? 'shop-maintenance-tracker-cond-27-true' : 'shop-maintenance-tracker-cond-28-false')}`}>
                               (₹{formatValue(sData.pending)})
                             </span>
                           </button>
@@ -1811,7 +1811,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         <td className="shop-maintenance-tracker-s116">
                           {noticeDocType === 'invoice' ? 'TOTAL NET INVOICE AMOUNT DUE' : 'NET OUTSTANDING DUES PAYABLE'}
                         </td>
-                        <td className="shop-maintenance-tracker-s117" style={{ color: activeNoticeData.pending > 0 ? '#991b1b' : '#15803d' }}>
+                        <td className={`shop-maintenance-tracker-s117 ${(activeNoticeData.pending > 0 ? 'shop-maintenance-tracker-cond-29-true' : 'shop-maintenance-tracker-cond-30-false')}`}>
                           ₹{formatValue(activeNoticeData.pending)}
                         </td>
                       </tr>
@@ -1904,7 +1904,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       key={s.id}
                       type="button"
                       onClick={() => toggleShopSelection(s.id)}
-                      className="shop-maintenance-tracker-s136" style={{ border: selectedShops.includes(s.id) ? '1px solid #0b2b26' : '1px solid #d0d5dd', background: selectedShops.includes(s.id) ? '#0b2b26' : '#fff', color: selectedShops.includes(s.id) ? '#fff' : '#344054' }}
+                      className={`shop-maintenance-tracker-s136 ${(selectedShops.includes(s.id) ? 'shop-maintenance-tracker-cond-31-true' : 'shop-maintenance-tracker-cond-32-false')}`}
                     >
                       {s.shopNo}
                     </button>
@@ -1955,7 +1955,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <button 
                   type="submit"
                   disabled={saveStatus === 'saving'}
-                  className="shop-maintenance-tracker-s141" style={{ cursor: saveStatus === 'saving' ? 'wait' : 'pointer', opacity: saveStatus === 'saving' ? 0.72 : 1 }}
+                  className={`shop-maintenance-tracker-s141 ${(saveStatus === 'saving' ? 'shop-maintenance-tracker-cond-33-true' : 'shop-maintenance-tracker-cond-34-false')}`}
                 >
                   {saveStatus === 'saving' ? 'Saving...' : 'Save Receipts'}
                 </button>
@@ -2011,7 +2011,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <button
                   type="submit"
                   disabled={saveStatus === 'saving'}
-                  className="shop-maintenance-tracker-s141" style={{ cursor: saveStatus === 'saving' ? 'wait' : 'pointer', opacity: saveStatus === 'saving' ? 0.72 : 1 }}
+                  className={`shop-maintenance-tracker-s141 ${(saveStatus === 'saving' ? 'shop-maintenance-tracker-cond-35-true' : 'shop-maintenance-tracker-cond-36-false')}`}
                 >
                   {saveStatus === 'saving' ? 'Saving...' : 'Save Changes'}
                 </button>

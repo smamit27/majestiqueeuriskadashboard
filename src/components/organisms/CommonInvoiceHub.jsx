@@ -1567,7 +1567,7 @@ IFSC Code: HDFC0002454`;
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveCategory(tab.id)}
-                className="common-invoice-hub-s17" style={{ border: isSel ? '2px solid #C49B4F' : '1px solid rgba(255, 255, 255, 0.22)', background: isSel ? 'linear-gradient(135deg, #C49B4F 0%, #b38634 100%)' : 'rgba(255, 255, 255, 0.1)', color: isSel ? '#0b2b26' : '#ffffff', boxShadow: isSel ? '0 4px 14px rgba(196,155,79,0.35)' : 'none' }}
+                className={`common-invoice-hub-s17 ${(isSel ? 'common-invoice-hub-cond-1-true' : 'common-invoice-hub-cond-2-false')}`}
               >
                 <span>{tab.emoji}</span>
                 <span>{tab.label}</span>
@@ -1634,14 +1634,14 @@ IFSC Code: HDFC0002454`;
                   <button
                     type="button"
                     onClick={() => setCalcDocType('invoice')}
-                    className="common-invoice-hub-s35" style={{ background: calcDocType === 'invoice' ? '#0b2b26' : '#f1f5f9', color: calcDocType === 'invoice' ? '#C49B4F' : '#64748b' }}
+                    className={`common-invoice-hub-s35 ${(calcDocType === 'invoice' ? 'common-invoice-hub-cond-3-true' : 'common-invoice-hub-cond-4-false')}`}
                   >
                     Invoice
                   </button>
                   <button
                     type="button"
                     onClick={() => setCalcDocType('notice')}
-                    className="common-invoice-hub-s35" style={{ background: calcDocType === 'notice' ? '#92400e' : '#f1f5f9', color: calcDocType === 'notice' ? '#fff' : '#64748b' }}
+                    className={`common-invoice-hub-s35 ${(calcDocType === 'notice' ? 'common-invoice-hub-cond-5-true' : 'common-invoice-hub-cond-6-false')}`}
                   >
                     Notice
                   </button>
@@ -1666,7 +1666,7 @@ IFSC Code: HDFC0002454`;
                           setCalcIncludeEarlierPending(false);
                         }
                       }}
-                      className="common-invoice-hub-s38" style={{ border: calcFlat === fId ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: calcFlat === fId ? '#0b2b26' : '#fff', color: calcFlat === fId ? '#C49B4F' : '#334155' }}
+                      className={`common-invoice-hub-s38 ${(calcFlat === fId ? 'common-invoice-hub-cond-7-true' : 'common-invoice-hub-cond-8-false')}`}
                     >
                       Flat {fId}
                     </button>
@@ -1779,7 +1779,7 @@ IFSC Code: HDFC0002454`;
                 </div>
 
                 {/* Earlier Pending Arrears Toggle (Specifically for A-1002 or Arrears Recovery) */}
-                <div className="common-invoice-hub-s57" style={{ background: calcIncludeEarlierPending ? '#fff7ed' : '#f8fafc', border: `1px solid ${calcIncludeEarlierPending ? '#fdba74' : '#e2e8f0'}` }}>
+                <div className={`common-invoice-hub-s57 ${(calcIncludeEarlierPending ? 'common-invoice-hub-cond-9-true' : 'common-invoice-hub-cond-10-false')}`} style={{ border: `1px solid ${calcIncludeEarlierPending ? '#fdba74' : '#e2e8f0'}` }}>
                   <label className="common-invoice-hub-s58">
                     <input
                       type="checkbox"
@@ -2167,14 +2167,14 @@ IFSC Code: HDFC0002454`;
                   <button
                     type="button"
                     onClick={() => setCustomDocType('invoice')}
-                    className="common-invoice-hub-s130" style={{ background: customDocType === 'invoice' ? '#0b2b26' : '#f1f5f9', color: customDocType === 'invoice' ? '#C49B4F' : '#64748b' }}
+                    className={`common-invoice-hub-s130 ${(customDocType === 'invoice' ? 'common-invoice-hub-cond-11-true' : 'common-invoice-hub-cond-12-false')}`}
                   >
                     Invoice
                   </button>
                   <button
                     type="button"
                     onClick={() => setCustomDocType('notice')}
-                    className="common-invoice-hub-s130" style={{ background: customDocType === 'notice' ? '#92400e' : '#f1f5f9', color: customDocType === 'notice' ? '#fff' : '#64748b' }}
+                    className={`common-invoice-hub-s130 ${(customDocType === 'notice' ? 'common-invoice-hub-cond-13-true' : 'common-invoice-hub-cond-14-false')}`}
                   >
                     Notice
                   </button>
@@ -2530,11 +2530,11 @@ IFSC Code: HDFC0002454`;
                   key={flat.id}
                   type="button"
                   onClick={() => setCombActiveTab(flat.id)}
-                  className="common-invoice-hub-s163" style={{ border: isSelected ? '2px solid #1e3a8a' : '1px solid #cbd5e1', background: isSelected ? '#1e3a8a' : '#ffffff', color: isSelected ? '#ffffff' : '#0f172a', boxShadow: isSelected ? '0 3px 10px rgba(30,58,138,0.25)' : 'none' }}
+                  className={`common-invoice-hub-s163 ${(isSelected ? 'common-invoice-hub-cond-15-true' : 'common-invoice-hub-cond-16-false')}`}
                 >
                   <span>📄</span>
                   <span>Flat {flat.flatNo} ({flat.invoiceNo})</span>
-                  <span className="common-invoice-hub-s164" style={{ background: isSelected ? '#38bdf8' : '#f1f5f9', color: isSelected ? '#0f172a' : '#475569' }}>
+                  <span className={`common-invoice-hub-s164 ${(isSelected ? 'common-invoice-hub-cond-17-true' : 'common-invoice-hub-cond-18-false')}`}>
                     ₹{flat.total.toLocaleString('en-IN')}
                   </span>
                 </button>
@@ -2543,11 +2543,11 @@ IFSC Code: HDFC0002454`;
             <button
               type="button"
               onClick={() => setCombActiveTab('combined')}
-              className="common-invoice-hub-s163" style={{ border: isCombinedView ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: isCombinedView ? '#0b2b26' : '#ffffff', color: isCombinedView ? '#ffffff' : '#0f172a', boxShadow: isCombinedView ? '0 3px 10px rgba(11,43,38,0.25)' : 'none' }}
+              className={`common-invoice-hub-s163 ${(isCombinedView ? 'common-invoice-hub-cond-19-true' : 'common-invoice-hub-cond-20-false')}`}
             >
               <span>📊</span>
               <span>Combined 3-Flats Summary</span>
-              <span className="common-invoice-hub-s164" style={{ background: isCombinedView ? '#4ade80' : '#dcfce7', color: isCombinedView ? '#0b2b26' : '#166534' }}>
+              <span className={`common-invoice-hub-s164 ${(isCombinedView ? 'common-invoice-hub-cond-21-true' : 'common-invoice-hub-cond-22-false')}`}>
                 ₹67,200
               </span>
             </button>
@@ -2558,7 +2558,7 @@ IFSC Code: HDFC0002454`;
             {/* Flat A-302 */}
             <div
               onClick={() => setCombActiveTab('A-302')}
-              className="common-invoice-hub-s166" style={{ border: combActiveTab === 'A-302' ? '2.5px solid #16a34a' : '1px solid #bbf7d0', boxShadow: combActiveTab === 'A-302' ? '0 6px 20px rgba(22,163,74,0.18)' : '0 4px 16px rgba(0,0,0,0.04)' }}
+              className={`common-invoice-hub-s166 ${(combActiveTab === 'A-302' ? 'common-invoice-hub-cond-23-true' : 'common-invoice-hub-cond-24-false')}`}
             >
               <div>
                 <div className="common-invoice-hub-s167">
@@ -2596,7 +2596,7 @@ IFSC Code: HDFC0002454`;
                 </div>
               </div>
               <div className="common-invoice-hub-s178">
-                <span className="common-invoice-hub-s179" style={{ color: combActiveTab === 'A-302' ? '#16a34a' : '#15803d' }}>
+                <span className={`common-invoice-hub-s179 ${(combActiveTab === 'A-302' ? 'common-invoice-hub-cond-25-true' : 'common-invoice-hub-cond-26-false')}`}>
                   {combActiveTab === 'A-302' ? '● Currently Selected' : 'Click to View'}
                 </span>
                 <button
@@ -2612,7 +2612,7 @@ IFSC Code: HDFC0002454`;
             {/* Flat A-904 */}
             <div
               onClick={() => setCombActiveTab('A-904')}
-              className="common-invoice-hub-s166" style={{ border: combActiveTab === 'A-904' ? '2.5px solid #16a34a' : '1px solid #bbf7d0', boxShadow: combActiveTab === 'A-904' ? '0 6px 20px rgba(22,163,74,0.18)' : '0 4px 16px rgba(0,0,0,0.04)' }}
+              className={`common-invoice-hub-s166 ${(combActiveTab === 'A-904' ? 'common-invoice-hub-cond-27-true' : 'common-invoice-hub-cond-28-false')}`}
             >
               <div>
                 <div className="common-invoice-hub-s167">
@@ -2650,7 +2650,7 @@ IFSC Code: HDFC0002454`;
                 </div>
               </div>
               <div className="common-invoice-hub-s178">
-                <span className="common-invoice-hub-s179" style={{ color: combActiveTab === 'A-904' ? '#16a34a' : '#15803d' }}>
+                <span className={`common-invoice-hub-s179 ${(combActiveTab === 'A-904' ? 'common-invoice-hub-cond-29-true' : 'common-invoice-hub-cond-30-false')}`}>
                   {combActiveTab === 'A-904' ? '● Currently Selected' : 'Click to View'}
                 </span>
                 <button
@@ -2666,7 +2666,7 @@ IFSC Code: HDFC0002454`;
             {/* Flat A-1002 */}
             <div
               onClick={() => setCombActiveTab('A-1002')}
-              className="common-invoice-hub-s166" style={{ border: combActiveTab === 'A-1002' ? '2.5px solid #1e3a8a' : '2px solid #C49B4F', boxShadow: combActiveTab === 'A-1002' ? '0 6px 20px rgba(30,58,138,0.15)' : '0 4px 16px rgba(196,155,79,0.15)' }}
+              className={`common-invoice-hub-s166 ${(combActiveTab === 'A-1002' ? 'common-invoice-hub-cond-31-true' : 'common-invoice-hub-cond-32-false')}`}
             >
               <div>
                 <div className="common-invoice-hub-s167">
@@ -2706,7 +2706,7 @@ IFSC Code: HDFC0002454`;
                 </div>
               </div>
               <div className="common-invoice-hub-s178">
-                <span className="common-invoice-hub-s179" style={{ color: combActiveTab === 'A-1002' ? '#1e3a8a' : '#b45309' }}>
+                <span className={`common-invoice-hub-s179 ${(combActiveTab === 'A-1002' ? 'common-invoice-hub-cond-33-true' : 'common-invoice-hub-cond-34-false')}`}>
                   {combActiveTab === 'A-1002' ? '● Currently Selected' : 'Click to View'}
                 </span>
                 <button
@@ -2950,7 +2950,7 @@ IFSC Code: HDFC0002454`;
             <div className="common-invoice-hub-s229">
               <div className="common-invoice-hub-s230">
                 <div>
-                  <span className="common-invoice-hub-s231" style={{ color: isCombinedView ? '#0b2b26' : '#1e3a8a' }}>
+                  <span className={`common-invoice-hub-s231 ${(isCombinedView ? 'common-invoice-hub-cond-35-true' : 'common-invoice-hub-cond-36-false')}`}>
                     {isCombinedView ? 'Live Combined Statement Preview (A4)' : `Live Official Invoice Preview (Flat ${activeFlat.flatNo})`}
                   </span>
                   <div className="common-invoice-hub-s232">

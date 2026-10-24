@@ -2829,8 +2829,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
   const renderTabButton = (id, icon, label) => (
     <button
       onClick={() => { setSubTab(id); setEditingRowId(null); }}
-      className={`sub-tab-button ${subTab === id ? 'active' : ''} electricity-tracker-s1`}
-      style={{ background: subTab === id ? '#1e3a8a' : 'transparent', color: subTab === id ? 'white' : 'var(--muted)' }}
+      className={`sub-tab-button ${subTab === id ? 'active' : ''} electricity-tracker-s1 ${(subTab === id ? 'electricity-tracker-cond-1-true' : 'electricity-tracker-cond-2-false')}`}
     >
       {icon} {label}
     </button>
@@ -3020,11 +3019,9 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       {/* KPI METRICS ZONE */}
       {filteredBills.length > 0 && (
         <div className="electricity-tracker-s2">
-          <div className="attendance-summary-grid electricity-tracker-s39" style={{ background: subTab === 'buildingA'
-              ? 'linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%)'
-              : 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)', border: `1px solid ${subTab === 'buildingA' ? '#bbf7d0' : '#bae6fd'}` }}>
+          <div className={`attendance-summary-grid electricity-tracker-s39 ${(subTab === 'buildingA' ? 'electricity-tracker-cond-3-true' : 'electricity-tracker-cond-4-false')}`} style={{ border: `1px solid ${subTab === 'buildingA' ? '#bbf7d0' : '#bae6fd'}` }}>
             <div className="electricity-tracker-s40">
-              <p className="eyebrow electricity-tracker-s41" style={{ color: subTab === 'buildingA' ? '#166534' : '#0369a1' }}>
+              <p className={`eyebrow electricity-tracker-s41 ${(subTab === 'buildingA' ? 'electricity-tracker-cond-5-true' : 'electricity-tracker-cond-6-false')}`}>
                 {subTab === 'buildingA' ? '🏢 Building A Common Lift Consolidated Metrics' : (subTab === 'mahavitaran' ? '⚡ Mahavitaran MSEB Consolidated Metrics' : '📡 Tata Electricity Sub-Meter Consolidated Metrics')}
               </p>
               <span className="electricity-tracker-s42">{filteredBills.length} Billing Periods Tracked</span>
@@ -3032,7 +3029,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
             <div className="accounting-summary-card electricity-tracker-s43">
               <p className="eyebrow electricity-tracker-s44">Total Amount Billed</p>
-              <h3 className="electricity-tracker-s45" style={{ color: subTab === 'buildingA' ? '#166534' : '#0369a1' }}>₹{fmt(totalAmount)}</h3>
+              <h3 className={`electricity-tracker-s45 ${(subTab === 'buildingA' ? 'electricity-tracker-cond-7-true' : 'electricity-tracker-cond-8-false')}`}>₹{fmt(totalAmount)}</h3>
               <p className="electricity-tracker-s46">
                 {subTab === 'buildingA' ? `${filteredBills.length}-Month Audited Total` : 'Full 8-period audited total'}
               </p>
@@ -3231,7 +3228,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         return (
                           <tr key={m.monthKey} className="electricity-tracker-s80" style={{ background: isHighest ? '#fef3c7' : i % 2 === 0 ? '#f0fdf4' : 'white' }}>
                             <td className="electricity-tracker-s81">{monthlyData.length - i}</td>
-                            <td className="electricity-tracker-s82" style={{ color: isHighest ? '#92400e' : '#065f46' }}>
+                            <td className={`electricity-tracker-s82 ${(isHighest ? 'electricity-tracker-cond-9-true' : 'electricity-tracker-cond-10-false')}`}>
                               {isHighest ? '🔥 ' : ''}{m.label}
                             </td>
                             <td className="electricity-tracker-s83">
@@ -3394,9 +3391,9 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
             {/* Live calculation banner if readings are filled */}
             {subTab === 'tata' && formData.prevReading !== '' && formData.currReading !== '' && (
-              <div className="electricity-tracker-s111" style={{ background: n(formData.currReading) < n(formData.prevReading) ? '#fef3c7' : '#eff6ff', border: '1px solid ' + (n(formData.currReading) < n(formData.prevReading) ? '#fde68a' : '#bfdbfe') }}>
+              <div className={`electricity-tracker-s111 ${(n(formData.currReading) < n(formData.prevReading) ? 'electricity-tracker-cond-11-true' : 'electricity-tracker-cond-12-false')}`} style={{ border: '1px solid ' + (n(formData.currReading) < n(formData.prevReading) ? '#fde68a' : '#bfdbfe') }}>
                 <div>
-                  <div className="electricity-tracker-s112" style={{ color: n(formData.currReading) < n(formData.prevReading) ? '#92400e' : '#1e40af' }}>
+                  <div className={`electricity-tracker-s112 ${(n(formData.currReading) < n(formData.prevReading) ? 'electricity-tracker-cond-13-true' : 'electricity-tracker-cond-14-false')}`}>
                     {n(formData.currReading) < n(formData.prevReading) ? '🔄 10,000 Reset Rollover Detected:' : '📊 Standard Reading Calculation:'}
                   </div>
                   <div className="electricity-tracker-s113">
@@ -3450,7 +3447,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             })()}
 
             <div className="electricity-tracker-s120">
-              <button type="submit" className="button-primary electricity-tracker-s121" style={{ background: subTab === 'buildingA' ? '#166534' : '#0284c7', borderColor: subTab === 'buildingA' ? '#166534' : '#0284c7' }}>
+              <button type="submit" className={`button-primary electricity-tracker-s121 ${(subTab === 'buildingA' ? 'electricity-tracker-cond-15-true' : 'electricity-tracker-cond-16-false')}`}>
                 Calculate &amp; Create Bill
               </button>
             </div>
@@ -3531,7 +3528,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   if (subTab === 'tata') {
                     const isRolloverBill = c.isRollover || n(c.currReading) < n(c.prevReading);
                     return (
-                      <tr key={c.id || i} style={{ background: isRolloverBill ? '#fffdfa' : 'transparent' }}>
+                      <tr key={c.id || i} className={`${(isRolloverBill ? 'electricity-tracker-cond-17-true' : 'electricity-tracker-cond-18-false')}`}>
                         <td className="electricity-tracker-s148">{i + 1}</td>
 
                         {/* Billing Period */}
@@ -3753,7 +3750,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   if (subTab === 'buildingA') {
                     const isPaid = c.status === 'Paid';
                     return (
-                      <tr key={c.id || i} style={{ background: isPaid ? 'transparent' : '#fefdfa' }}>
+                      <tr key={c.id || i} className={`${(isPaid ? 'electricity-tracker-cond-19-true' : 'electricity-tracker-cond-20-false')}`}>
                         <td className="electricity-tracker-s148">{i + 1}</td>
 
                         {/* Billing Period */}
@@ -3825,7 +3822,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
                         {/* Status */}
                         <td className="electricity-tracker-s157">
-                          <span className="electricity-tracker-s188" style={{ background: isPaid ? '#dcfce7' : '#fef3c7', color: isPaid ? '#166534' : '#92400e', border: `1px solid ${isPaid ? '#86efac' : '#fde68a'}` }} title={c.paidDate ? `Paid on ${formatDateLabel(c.paidDate)}` : `Due on ${formatDateLabel(c.dueDate)} (Prompt: ₹${fmt(c.promptPaymentAmount || 36820)})`}>
+                          <span className={`electricity-tracker-s188 ${(isPaid ? 'electricity-tracker-cond-21-true' : 'electricity-tracker-cond-22-false')}`} style={{ border: `1px solid ${isPaid ? '#86efac' : '#fde68a'}` }} title={c.paidDate ? `Paid on ${formatDateLabel(c.paidDate)}` : `Due on ${formatDateLabel(c.dueDate)} (Prompt: ₹${fmt(c.promptPaymentAmount || 36820)})`}>
                             {isPaid ? '✅ Paid' : '⏳ Invoiced'}
                           </span>
                         </td>
@@ -4037,14 +4034,14 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     <button
                       type="button"
                       onClick={() => setTataInvoiceTarget('single')}
-                      className="electricity-tracker-s217" style={{ border: tataInvoiceTarget === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: tataInvoiceTarget === 'single' ? '#0b2b26' : '#fff', color: tataInvoiceTarget === 'single' ? '#C49B4F' : '#334155' }}
+                      className={`electricity-tracker-s217 ${(tataInvoiceTarget === 'single' ? 'electricity-tracker-cond-23-true' : 'electricity-tracker-cond-24-false')}`}
                     >
                       Single Period
                     </button>
                     <button
                       type="button"
                       onClick={() => setTataInvoiceTarget('all')}
-                      className="electricity-tracker-s217" style={{ border: tataInvoiceTarget === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: tataInvoiceTarget === 'all' ? '#0b2b26' : '#fff', color: tataInvoiceTarget === 'all' ? '#C49B4F' : '#334155' }}
+                      className={`electricity-tracker-s217 ${(tataInvoiceTarget === 'all' ? 'electricity-tracker-cond-25-true' : 'electricity-tracker-cond-26-false')}`}
                     >
                       All {tataBills.length} Billing Cycles
                     </button>

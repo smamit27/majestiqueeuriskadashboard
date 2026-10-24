@@ -709,10 +709,10 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
         {TABS.map(tab => (
           <button key={tab.id}
             onClick={() => { setActiveTab(tab.id); setSearch(''); setFilterStatus('All'); setFilterPriority('All'); }}
-            className="manager-task-tracker-s43" style={{ borderColor: activeTab === tab.id ? '#0b2b26' : 'rgba(61,63,52,0.15)', background: activeTab === tab.id ? '#0b2b26' : 'rgba(255,250,242,0.85)', color: activeTab === tab.id ? '#C49B4F' : '#1d2a24', boxShadow: activeTab === tab.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none' }}>
+            className={`manager-task-tracker-s43 ${(activeTab === tab.id ? 'manager-task-tracker-cond-1-true' : 'manager-task-tracker-cond-2-false')}`}>
             <span>{tab.emoji}</span>
             <span>{tab.label}</span>
-            <span className="manager-task-tracker-s44" style={{ background: activeTab === tab.id ? 'rgba(196,155,79,0.3)' : 'rgba(61,63,52,0.1)', color: activeTab === tab.id ? '#C49B4F' : '#5f665f' }}>
+            <span className={`manager-task-tracker-s44 ${(activeTab === tab.id ? 'manager-task-tracker-cond-3-true' : 'manager-task-tracker-cond-4-false')}`}>
               {(tasks[tab.id] || []).length}
             </span>
           </button>
@@ -771,7 +771,7 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
               📄 Print PDF
             </button>
 
-            {saveStatus && <span className="manager-task-tracker-s55" style={{ color: saveStatus.includes('✓') ? '#065f46' : '#991b1b' }}>{saveStatus}</span>}
+            {saveStatus && <span className={`manager-task-tracker-s55 ${(saveStatus.includes('✓') ? 'manager-task-tracker-cond-5-true' : 'manager-task-tracker-cond-6-false')}`}>{saveStatus}</span>}
 
             {/* Page size picker */}
             <label className="manager-task-tracker-s56">
@@ -807,7 +807,7 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
                 {COLUMNS.map(col => (
                   <th key={col.key}
                     onClick={col.sortable ? () => handleSort(col.key) : undefined}
-                    className="manager-task-tracker-s65" style={{ color: sort.key === col.key ? '#196c6c' : '#5f665f', cursor: col.sortable ? 'pointer' : 'default', minWidth: col.w, background: sort.key === col.key ? 'rgba(25,108,108,0.06)' : undefined }}>
+                    className={`manager-task-tracker-s65 ${(sort.key === col.key ? 'manager-task-tracker-cond-7-true' : 'manager-task-tracker-cond-8-false')} ${(col.sortable ? 'manager-task-tracker-cond-9-true' : 'manager-task-tracker-cond-10-false')}`} style={{ minWidth: col.w, background: sort.key === col.key ? 'rgba(25,108,108,0.06)' : undefined }}>
                     <span className="manager-task-tracker-s66">
                       {col.label}
                       {col.sortable && <SortIcon dir={sort.key === col.key ? sort.dir : null} />}
@@ -890,7 +890,7 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
                       <td className="manager-task-tracker-s86">{fmtDate(task.startDate)}</td>
 
                       {/* Deadline */}
-                      <td className="manager-task-tracker-s87" style={{ fontWeight: isOverdue ? 700 : 400, color: isOverdue ? '#991b1b' : '#5f665f' }}>{fmtDate(task.deadline)}</td>
+                      <td className={`manager-task-tracker-s87 ${(isOverdue ? 'manager-task-tracker-cond-11-true' : 'manager-task-tracker-cond-12-false')}`}>{fmtDate(task.deadline)}</td>
 
                       {/* Priority */}
                       <td className="manager-task-tracker-s84"><Pill text={task.priority} styleMap={PRIORITY_STYLE} /></td>
@@ -948,12 +948,7 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
                 p === '…' ? (
                   <span key={`gap-${i}`} className="manager-task-tracker-s97">…</span>
                 ) : (
-                  <button key={p} onClick={() => setPage(p)} style={{
-                    ...pgBtn(false),
-                    background: page === p ? '#0b2b26' : undefined,
-                    color:      page === p ? '#C49B4F' : undefined,
-                    fontWeight: page === p ? 700 : 500,
-                  }}>{p}</button>
+                  <button key={p} onClick={() => setPage(p)} className={`${(page === p ? 'manager-task-tracker-cond-13-true' : 'manager-task-tracker-cond-14-false')}`} style={{ ...pgBtn(false), background: page === p ? '#0b2b26' : undefined, color:      page === p ? '#C49B4F' : undefined }}>{p}</button>
                 )
               )}
 

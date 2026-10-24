@@ -346,7 +346,7 @@ function InvoiceModal({ invoice, onSave, onClose }) {
             ].map(({ label, val, bold }) => (
               <div key={label} className="park-plus-tracker-s13">
                 <div className="park-plus-tracker-s14">{label}</div>
-                <div style={{ fontSize: bold ? '1.12rem' : '0.96rem', fontWeight: bold ? 900 : 700, color: bold ? '#0f2952' : '#0284c7' }}>{val}</div>
+                <div className={`${(bold ? 'park-plus-tracker-cond-1-true' : 'park-plus-tracker-cond-2-false')}`}>{val}</div>
               </div>
             ))}
           </div>
@@ -792,7 +792,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                   <button
                     key={s}
                     onClick={() => setFilterStatus(s)}
-                    className="park-plus-tracker-s47" style={{ background: active ? (st ? st.bg : '#0f2952') : 'transparent', color: active ? (st ? st.color : '#ffffff') : '#64748b', boxShadow: active ? '0 1px 4px rgba(0, 0, 0, 0.1)' : 'none' }}
+                    className={`park-plus-tracker-s47 ${(active ? 'park-plus-tracker-cond-3-true' : 'park-plus-tracker-cond-4-false')}`} style={{ background: active ? (st ? st.bg : '#0f2952') : 'transparent', color: active ? (st ? st.color : '#ffffff') : '#64748b' }}
                   >
                     {s}
                   </button>
@@ -822,7 +822,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
             </button>
 
             {saveStatus && (
-              <span className="park-plus-tracker-s50" style={{ color: saveStatus.includes('✓') ? '#065f46' : '#991b1b' }}>
+              <span className={`park-plus-tracker-s50 ${(saveStatus.includes('✓') ? 'park-plus-tracker-cond-5-true' : 'park-plus-tracker-cond-6-false')}`}>
                 {saveStatus}
               </span>
             )}
@@ -923,7 +923,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                       </td>
 
                       {/* Due Date */}
-                      <td className="park-plus-tracker-s67" style={{ fontWeight: isOverdue ? 800 : 500, color: isOverdue ? '#b91c1c' : '#475569' }}>
+                      <td className={`park-plus-tracker-s67 ${(isOverdue ? 'park-plus-tracker-cond-7-true' : 'park-plus-tracker-cond-8-false')}`}>
                         {fmtDate(inv.dueDate)}
                       </td>
 
@@ -979,7 +979,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                       {/* Remarks */}
                       <td className="park-plus-tracker-s68">
                         {inv.remarks ? (
-                          <span className="park-plus-tracker-s77" style={{ color: inv.remarks.startsWith('⚠') ? '#92400e' : '#475569' }}>
+                          <span className={`park-plus-tracker-s77 ${(inv.remarks.startsWith('⚠') ? 'park-plus-tracker-cond-9-true' : 'park-plus-tracker-cond-10-false')}`}>
                             {inv.remarks}
                           </span>
                         ) : (
@@ -1031,7 +1031,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
             ].map(({ label, value, bold }) => (
               <div key={label} className="park-plus-tracker-s86">
                 <span className="park-plus-tracker-s87">{label}</span>
-                <span className="park-plus-tracker-s88" style={{ fontSize: bold ? '1.05rem' : '0.88rem', fontWeight: bold ? 900 : 700, color: bold ? '#0f2952' : '#0284c7' }}>
+                <span className={`park-plus-tracker-s88 ${(bold ? 'park-plus-tracker-cond-11-true' : 'park-plus-tracker-cond-12-false')}`}>
                   {value}
                 </span>
               </div>

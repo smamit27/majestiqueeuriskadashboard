@@ -322,3 +322,17 @@
   line-height: 1.4;
 }
 
+
+/* Extracted Conditional Styles */
+.water-management-cond-1-true {
+  background: #0f172a;
+  color: #ffffff;
+  border: 1px solid #0f172a;
+}
+
+.water-management-cond-2-false {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+

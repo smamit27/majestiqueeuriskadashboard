@@ -372,3 +372,13 @@
   line-height: 1.8;
 }
 
+
+/* Extracted Conditional Styles */
+.events-calendar-view-cond-1-true {
+  opacity: 1;
+}
+
+.events-calendar-view-cond-2-false {
+  opacity: 0.65;
+}
+

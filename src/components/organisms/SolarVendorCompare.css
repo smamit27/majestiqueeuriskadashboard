@@ -150,3 +150,21 @@
   font-weight: bold;
 }
 
+
+/* Extracted Conditional Styles */
+.solar-vendor-compare-cond-1-true {
+  background: #ffffff;
+}
+
+.solar-vendor-compare-cond-2-false {
+  background: #f8fafc;
+}
+
+.solar-vendor-compare-cond-3-true {
+  font-weight: 700;
+}
+
+.solar-vendor-compare-cond-4-false {
+  font-weight: 500;
+}
+

@@ -465,3 +465,13 @@
   margin: 0 auto;
 }
 
+
+/* Extracted Conditional Styles */
+.ai-mom-skeleton-loader-cond-1-true {
+  background: rgba(5, 150, 105, 0.02);
+}
+
+.ai-mom-skeleton-loader-cond-2-false {
+  background: rgba(37, 99, 235, 0.02);
+}
+

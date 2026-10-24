@@ -731,3 +731,63 @@
   font-family: monospace;
 }
 
+
+/* Extracted Conditional Styles */
+.park-plus-tracker-cond-1-true {
+  font-size: 1.12rem;
+  font-weight: 900;
+  color: #0f2952;
+}
+
+.park-plus-tracker-cond-2-false {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #0284c7;
+}
+
+.park-plus-tracker-cond-3-true {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.park-plus-tracker-cond-4-false {
+  box-shadow: none;
+}
+
+.park-plus-tracker-cond-5-true {
+  color: #065f46;
+}
+
+.park-plus-tracker-cond-6-false {
+  color: #991b1b;
+}
+
+.park-plus-tracker-cond-7-true {
+  font-weight: 800;
+  color: #b91c1c;
+}
+
+.park-plus-tracker-cond-8-false {
+  font-weight: 500;
+  color: #475569;
+}
+
+.park-plus-tracker-cond-9-true {
+  color: #92400e;
+}
+
+.park-plus-tracker-cond-10-false {
+  color: #475569;
+}
+
+.park-plus-tracker-cond-11-true {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #0f2952;
+}
+
+.park-plus-tracker-cond-12-false {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0284c7;
+}
+

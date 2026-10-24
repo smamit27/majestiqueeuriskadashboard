@@ -465,7 +465,7 @@ Your timely cooperation is appreciated.
               onClick={() => prevFlat && onSelectFlat && onSelectFlat(prevFlat)}
               disabled={!prevFlat}
               title={prevFlat ? `Previous flat: ${prevFlat}` : 'No previous flat'}
-              className="individual-flat-notice-card-s10" style={{ background: prevFlat ? '#ffffff' : '#f1f5f9', color: prevFlat ? '#1e293b' : '#94a3b8', cursor: prevFlat ? 'pointer' : 'not-allowed' }}
+              className={`individual-flat-notice-card-s10 ${(prevFlat ? 'individual-flat-notice-card-cond-1-true' : 'individual-flat-notice-card-cond-2-false')}`}
             >
               ◀ Prev
             </button>
@@ -474,7 +474,7 @@ Your timely cooperation is appreciated.
               onClick={() => nextFlat && onSelectFlat && onSelectFlat(nextFlat)}
               disabled={!nextFlat}
               title={nextFlat ? `Next flat: ${nextFlat}` : 'No next flat'}
-              className="individual-flat-notice-card-s10" style={{ background: nextFlat ? '#ffffff' : '#f1f5f9', color: nextFlat ? '#1e293b' : '#94a3b8', cursor: nextFlat ? 'pointer' : 'not-allowed' }}
+              className={`individual-flat-notice-card-s10 ${(nextFlat ? 'individual-flat-notice-card-cond-3-true' : 'individual-flat-notice-card-cond-4-false')}`}
             >
               Next ▶
             </button>
@@ -513,7 +513,7 @@ Your timely cooperation is appreciated.
             type="button"
             onClick={handleDownloadNoticePNG}
             disabled={downloading}
-            className="individual-flat-notice-card-s15" style={{ cursor: downloading ? 'wait' : 'pointer' }}
+            className={`individual-flat-notice-card-s15 ${(downloading ? 'individual-flat-notice-card-cond-5-true' : 'individual-flat-notice-card-cond-6-false')}`}
           >
             <span>📸</span>
             <span>{downloading ? 'Rendering Image...' : 'Download Notice (PNG)'}</span>

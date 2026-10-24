@@ -1464,3 +1464,161 @@
   line-height: 1.5;
 }
 
+
+/* Extracted Conditional Styles */
+.c-a-hardik-mehta-report-view-cond-1-true {
+  background: #0b2b26;
+  color: #C49B4F;
+  box-shadow: 0 2px 6px rgba(11, 43, 38, 0.15);
+}
+
+.c-a-hardik-mehta-report-view-cond-2-false {
+  background: transparent;
+  color: #5f665f;
+  box-shadow: none;
+}
+
+.c-a-hardik-mehta-report-view-cond-3-true {
+  background: rgba(196, 155, 79, 0.25);
+  color: #fef3c7;
+}
+
+.c-a-hardik-mehta-report-view-cond-4-false {
+  background: rgba(61, 63, 52, 0.06);
+  color: #5f665f;
+}
+
+.c-a-hardik-mehta-report-view-cond-5-true {
+  font-weight: 700;
+}
+
+.c-a-hardik-mehta-report-view-cond-6-false {
+  font-weight: 500;
+}
+
+.c-a-hardik-mehta-report-view-cond-7-true {
+  color: #854d0e;
+}
+
+.c-a-hardik-mehta-report-view-cond-8-false {
+  color: #1e293b;
+}
+
+.c-a-hardik-mehta-report-view-cond-9-true {
+  background: #ffffff;
+}
+
+.c-a-hardik-mehta-report-view-cond-10-false {
+  background: #fcfcfc;
+}
+
+.c-a-hardik-mehta-report-view-cond-11-true {
+  background: #ffffff;
+}
+
+.c-a-hardik-mehta-report-view-cond-12-false {
+  background: #fcfcfc;
+}
+
+.c-a-hardik-mehta-report-view-cond-13-true {
+  color: #86efac;
+}
+
+.c-a-hardik-mehta-report-view-cond-14-false {
+  color: #fca5a5;
+}
+
+.c-a-hardik-mehta-report-view-cond-15-true {
+  border: 1px solid #4ade80;
+}
+
+.c-a-hardik-mehta-report-view-cond-16-false {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.c-a-hardik-mehta-report-view-cond-17-true {
+  border: 1px solid #4ade80;
+}
+
+.c-a-hardik-mehta-report-view-cond-18-false {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.c-a-hardik-mehta-report-view-cond-19-true {
+  border: 1px solid #f87171;
+}
+
+.c-a-hardik-mehta-report-view-cond-20-false {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.c-a-hardik-mehta-report-view-cond-21-true {
+  border: 1px solid #f87171;
+}
+
+.c-a-hardik-mehta-report-view-cond-22-false {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.c-a-hardik-mehta-report-view-cond-23-true {
+  border: 1px solid #f87171;
+}
+
+.c-a-hardik-mehta-report-view-cond-24-false {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.c-a-hardik-mehta-report-view-cond-25-true {
+  border: 1px solid #f87171;
+}
+
+.c-a-hardik-mehta-report-view-cond-26-false {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.c-a-hardik-mehta-report-view-cond-27-true {
+  background: #ffffff;
+}
+
+.c-a-hardik-mehta-report-view-cond-28-false {
+  background: #f8fafc;
+}
+
+.c-a-hardik-mehta-report-view-cond-29-true {
+  color: #0f172a;
+}
+
+.c-a-hardik-mehta-report-view-cond-30-false {
+  color: #94a3b8;
+}
+
+.c-a-hardik-mehta-report-view-cond-31-true {
+  background: #991b1b;
+  color: #ffffff;
+}
+
+.c-a-hardik-mehta-report-view-cond-32-false {
+  background: #ffffff;
+  color: #475569;
+}
+
+.c-a-hardik-mehta-report-view-cond-33-true {
+  background: #991b1b;
+  color: #ffffff;
+}
+
+.c-a-hardik-mehta-report-view-cond-34-false {
+  background: #ffffff;
+  color: #475569;
+}
+
+.c-a-hardik-mehta-report-view-cond-35-true {
+  background: #991b1b;
+  color: #ffffff;
+}
+
+.c-a-hardik-mehta-report-view-cond-36-false {
+  background: #ffffff;
+  color: #475569;
+}
+

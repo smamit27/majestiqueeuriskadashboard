@@ -966,9 +966,9 @@ export default function FinanceTracker({ isAdmin = false }) {
             <span className="finance-tracker-s14">Total Expenses</span>
             <strong className="finance-tracker-s15">{isYearlyLoading ? '...' : `₹${fmt(yearlyExpense)}`}</strong>
           </div>
-          <div className="summary-card finance-tracker-s16" style={{ borderLeft: `4px solid ${yearlyIncome - yearlyExpense >= 0 ? '#3b82f6' : '#f97316'}`, background: yearlyIncome - yearlyExpense < 0 ? '#fff7ed' : '#eff6ff', border: `1px solid ${yearlyIncome - yearlyExpense >= 0 ? '#dbeafe' : '#ffedd5'}` }}>
-            <span className="finance-tracker-s17" style={{ color: yearlyIncome - yearlyExpense >= 0 ? '#1e40af' : '#c2410c' }}>Overall Balance</span>
-            <strong className="finance-tracker-s18" style={{ color: yearlyIncome - yearlyExpense >= 0 ? '#2563eb' : '#ea580c' }}>{isYearlyLoading ? '...' : `₹${fmt(yearlyIncome - yearlyExpense)}`}</strong>
+          <div className={`summary-card finance-tracker-s16 ${(yearlyIncome - yearlyExpense < 0 ? 'finance-tracker-cond-1-true' : 'finance-tracker-cond-2-false')}`} style={{ borderLeft: `4px solid ${yearlyIncome - yearlyExpense >= 0 ? '#3b82f6' : '#f97316'}`, border: `1px solid ${yearlyIncome - yearlyExpense >= 0 ? '#dbeafe' : '#ffedd5'}` }}>
+            <span className={`finance-tracker-s17 ${(yearlyIncome - yearlyExpense >= 0 ? 'finance-tracker-cond-3-true' : 'finance-tracker-cond-4-false')}`}>Overall Balance</span>
+            <strong className={`finance-tracker-s18 ${(yearlyIncome - yearlyExpense >= 0 ? 'finance-tracker-cond-5-true' : 'finance-tracker-cond-6-false')}`}>{isYearlyLoading ? '...' : `₹${fmt(yearlyIncome - yearlyExpense)}`}</strong>
           </div>
         </div>
       </div>
@@ -999,7 +999,7 @@ export default function FinanceTracker({ isAdmin = false }) {
                 💾 Save
               </button>
             )}
-            <button className="button-secondary finance-tracker-s26" onClick={() => setIsSearchOpen(!isSearchOpen)} style={{ background: isSearchOpen ? '#f1f5f9' : 'inherit' }}>
+            <button className={`button-secondary finance-tracker-s26 ${(isSearchOpen ? 'finance-tracker-cond-7-true' : 'finance-tracker-cond-8-false')}`} onClick={() => setIsSearchOpen(!isSearchOpen)}>
               🔍 Search
             </button>
             <button className="button-secondary finance-tracker-s26" onClick={handleDownloadExcel}>
@@ -1064,7 +1064,7 @@ export default function FinanceTracker({ isAdmin = false }) {
                   <tr key={idx}>
                     <td>{item.month}</td>
                     <td>
-                       <span className="finance-tracker-s37" style={{ background: item.type === 'Income' ? '#dcfce7' : '#fee2e2', color: item.type === 'Income' ? '#166534' : '#991b1b' }}>
+                       <span className={`finance-tracker-s37 ${(item.type === 'Income' ? 'finance-tracker-cond-9-true' : 'finance-tracker-cond-10-false')}`}>
                          {item.type}
                        </span>
                     </td>
@@ -1096,9 +1096,9 @@ export default function FinanceTracker({ isAdmin = false }) {
           <span>Total Expenses</span>
           <strong className="finance-tracker-s43">₹{fmt(totalExpense)}</strong>
         </div>
-        <div className="summary-card" style={{ borderLeft: `4px solid ${balance >= 0 ? '#3b82f6' : '#f97316'}`, background: balance < 0 ? '#fff7ed' : 'inherit' }}>
+        <div className={`summary-card ${(balance < 0 ? 'finance-tracker-cond-11-true' : 'finance-tracker-cond-12-false')}`} style={{ borderLeft: `4px solid ${balance >= 0 ? '#3b82f6' : '#f97316'}` }}>
           <span>Closing Balance</span>
-          <strong style={{ color: balance >= 0 ? '#2563eb' : '#ea580c' }}>₹{fmt(balance)}</strong>
+          <strong className={`${(balance >= 0 ? 'finance-tracker-cond-13-true' : 'finance-tracker-cond-14-false')}`}>₹{fmt(balance)}</strong>
         </div>
       </div>
 
@@ -1171,9 +1171,9 @@ export default function FinanceTracker({ isAdmin = false }) {
               <thead>
                 <tr className="finance-tracker-s59">
                   {selectedMonth >= '2026-06' && <th className="finance-tracker-s60">Cheque No</th>}
-                  <th className="finance-tracker-s61" style={{ width: selectedMonth >= '2026-06' ? '30%' : '40%' }}>Vendor Name</th>
+                  <th className={`finance-tracker-s61 ${(selectedMonth >= '2026-06' ? 'finance-tracker-cond-15-true' : 'finance-tracker-cond-16-false')}`}>Vendor Name</th>
                   <th className="finance-tracker-s62">Amount (₹)</th>
-                  <th className="finance-tracker-s61" style={{ width: selectedMonth >= '2026-06' ? '30%' : '35%' }}>Purpose</th>
+                  <th className={`finance-tracker-s61 ${(selectedMonth >= '2026-06' ? 'finance-tracker-cond-17-true' : 'finance-tracker-cond-18-false')}`}>Purpose</th>
                   <th className="finance-tracker-s63"></th>
                 </tr>
               </thead>
@@ -1274,7 +1274,7 @@ export default function FinanceTracker({ isAdmin = false }) {
       <div className="finance-tracker-s71">
         <div className="finance-tracker-s36">
           <p className="finance-tracker-s72">Final Balance for {formatMonthLabel(selectedMonth)}</p>
-          <h2 className="finance-tracker-s21" style={{ color: balance >= 0 ? '#10b981' : '#ef4444' }}>₹{fmt(balance)}</h2>
+          <h2 className={`finance-tracker-s21 ${(balance >= 0 ? 'finance-tracker-cond-19-true' : 'finance-tracker-cond-20-false')}`}>₹{fmt(balance)}</h2>
         </div>
       </div>
 

@@ -1297,3 +1297,189 @@
   box-shadow: 0 25px 80px rgba(0,0,0,0.2);
 }
 
+
+/* Extracted Conditional Styles */
+.workflow-manager-cond-1-true {
+  background: #0d9488;
+  color: #ffffff;
+}
+
+.workflow-manager-cond-2-false {
+  background: #ffffff;
+  color: #0d9488;
+}
+
+.workflow-manager-cond-3-true {
+  background: #fff1f2;
+}
+
+.workflow-manager-cond-4-false {
+  background: rgba(255,255,255,0.85);
+}
+
+.workflow-manager-cond-5-true {
+  color: #be123c;
+}
+
+.workflow-manager-cond-6-false {
+  color: #64748b;
+}
+
+.workflow-manager-cond-7-true {
+  color: #be123c;
+}
+
+.workflow-manager-cond-8-false {
+  color: #0f172a;
+}
+
+.workflow-manager-cond-9-true {
+  color: #be123c;
+}
+
+.workflow-manager-cond-10-false {
+  color: #64748b;
+}
+
+.workflow-manager-cond-11-true {
+  background: #faf5ff;
+}
+
+.workflow-manager-cond-12-false {
+  background: rgba(255,255,255,0.85);
+}
+
+.workflow-manager-cond-13-true {
+  background: #fff7ed;
+}
+
+.workflow-manager-cond-14-false {
+  background: rgba(255,255,255,0.85);
+}
+
+.workflow-manager-cond-15-true {
+  color: #c2410c;
+}
+
+.workflow-manager-cond-16-false {
+  color: #64748b;
+}
+
+.workflow-manager-cond-17-true {
+  color: #c2410c;
+}
+
+.workflow-manager-cond-18-false {
+  color: #0f172a;
+}
+
+.workflow-manager-cond-19-true {
+  color: #c2410c;
+}
+
+.workflow-manager-cond-20-false {
+  color: #64748b;
+}
+
+.workflow-manager-cond-21-true {
+  font-weight: 700;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.workflow-manager-cond-22-false {
+  font-weight: 500;
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.workflow-manager-cond-23-true {
+  border: 1.5px solid #fca5a5;
+}
+
+.workflow-manager-cond-24-false {
+  border: 1px solid #e2e8f0;
+}
+
+.workflow-manager-cond-25-true {
+  color: #991b1b;
+}
+
+.workflow-manager-cond-26-false {
+  color: #047857;
+}
+
+.workflow-manager-cond-27-true {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.workflow-manager-cond-28-false {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.workflow-manager-cond-29-true {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.workflow-manager-cond-30-false {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.workflow-manager-cond-31-true {
+  background: #ecfdf5;
+}
+
+.workflow-manager-cond-32-false {
+  background: #ffffff;
+}
+
+.workflow-manager-cond-33-true {
+  color: #047857;
+}
+
+.workflow-manager-cond-34-false {
+  color: #334155;
+}
+
+.workflow-manager-cond-35-true {
+  text-decoration: line-through;
+  color: #059669;
+}
+
+.workflow-manager-cond-36-false {
+  text-decoration: none;
+  color: #334155;
+}
+
+.workflow-manager-cond-37-true {
+  cursor: pointer;
+}
+
+.workflow-manager-cond-38-false {
+  cursor: default;
+}
+
+.workflow-manager-cond-39-true {
+  text-decoration: line-through;
+  color: #059669;
+}
+
+.workflow-manager-cond-40-false {
+  text-decoration: none;
+  color: #1e293b;
+}
+
+.workflow-manager-cond-41-true {
+  background: #be123c;
+}
+
+.workflow-manager-cond-42-false {
+  background: #0d9488;
+}
+

@@ -346,7 +346,7 @@ export default function TankerBillCalculator() {
               <div key={card.label} className="tanker-bill-calculator-s20">
                 <span className="tanker-bill-calculator-s21">{card.icon}</span>
                 <span className="tanker-bill-calculator-s22">{card.label}</span>
-                <strong className="tanker-bill-calculator-s23" style={{ fontSize: card.large ? '1.6rem' : '1.3rem', color: card.color }}>{card.value}</strong>
+                <strong className={`tanker-bill-calculator-s23 ${(card.large ? 'tanker-bill-calculator-cond-1-true' : 'tanker-bill-calculator-cond-2-false')}`} style={{ color: card.color }}>{card.value}</strong>
               </div>
             ))}
           </div>

@@ -355,3 +355,25 @@
   margin: 0;
 }
 
+
+/* Extracted Conditional Styles */
+.storage-manager-cond-1-true {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.storage-manager-cond-2-false {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.storage-manager-cond-3-true {
+  background: #0f172a;
+  color: #fff;
+}
+
+.storage-manager-cond-4-false {
+  background: #fff;
+  color: #475569;
+}
+

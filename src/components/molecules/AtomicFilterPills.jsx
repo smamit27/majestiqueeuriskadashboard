@@ -32,7 +32,7 @@ export default function AtomicFilterPills({
           >
             <span>{label}</span>
             {count !== undefined && (
-              <span className="atomic-filter-pills-s1" style={{ background: isSelected ? 'rgba(13,148,136,0.18)' : '#e2e8f0', color: isSelected ? '#0f766e' : '#64748b' }}>
+              <span className={`atomic-filter-pills-s1 ${(isSelected ? 'atomic-filter-pills-cond-1-true' : 'atomic-filter-pills-cond-2-false')}`}>
                 {count}
               </span>
             )}

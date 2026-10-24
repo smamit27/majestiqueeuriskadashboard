@@ -229,7 +229,7 @@ export default function VisualAgendaPoster({
               type="button"
               data-testid="color-mode-colorful-btn"
               onClick={() => setColorMode('colorful')}
-              className="visual-agenda-poster-s6" style={{ background: isColor ? '#ffffff' : 'transparent', color: isColor ? '#d90429' : '#64748b', boxShadow: isColor ? '0 2px 4px rgba(0,0,0,0.08)' : 'none' }}
+              className={`visual-agenda-poster-s6 ${(isColor ? 'visual-agenda-poster-cond-1-true' : 'visual-agenda-poster-cond-2-false')}`}
             >
               <Palette size={13} />
               🌈 Colorful
@@ -238,7 +238,7 @@ export default function VisualAgendaPoster({
               type="button"
               data-testid="color-mode-bw-btn"
               onClick={() => setColorMode('monochrome')}
-              className="visual-agenda-poster-s6" style={{ background: !isColor ? '#000000' : 'transparent', color: !isColor ? '#ffffff' : '#64748b', boxShadow: !isColor ? '0 2px 4px rgba(0,0,0,0.15)' : 'none' }}
+              className={`visual-agenda-poster-s6 ${(!isColor ? 'visual-agenda-poster-cond-3-true' : 'visual-agenda-poster-cond-4-false')}`}
             >
               ⬛ Black & White
             </button>
@@ -279,8 +279,7 @@ export default function VisualAgendaPoster({
             type="button"
             data-testid="export-pdf-btn"
             onClick={handlePrint}
-            className="button-primary visual-agenda-poster-s10"
-            style={{ background: isColor ? '#d90429' : '#000000', borderColor: isColor ? '#d90429' : '#000000' }}
+            className={`button-primary visual-agenda-poster-s10 ${(isColor ? 'visual-agenda-poster-cond-5-true' : 'visual-agenda-poster-cond-6-false')}`}
           >
             <Printer size={14} />
             Print / PDF
@@ -397,7 +396,7 @@ export default function VisualAgendaPoster({
 
                 {/* 2. Thematic Icon */}
                 <div 
-                  className="visual-agenda-poster-s32" style={{ color: isColor ? '#0f172a' : '#000000' }}
+                  className={`visual-agenda-poster-s32 ${(isColor ? 'visual-agenda-poster-cond-7-true' : 'visual-agenda-poster-cond-8-false')}`}
                 >
                   <IconComponent size={22} strokeWidth={1.8} />
                 </div>
@@ -442,11 +441,11 @@ export default function VisualAgendaPoster({
           {/* Text */}
           <div className="visual-agenda-poster-s40" style={{ color: theme.footerText }}>
             <div>
-              <strong className="visual-agenda-poster-s41" style={{ color: isColor ? '#b91c1c' : '#000000' }}>
+              <strong className={`visual-agenda-poster-s41 ${(isColor ? 'visual-agenda-poster-cond-9-true' : 'visual-agenda-poster-cond-10-false')}`}>
                 {footerHeadline}
               </strong>
             </div>
-            <div className="visual-agenda-poster-s42" style={{ color: isColor ? '#4b5563' : '#333333' }}>
+            <div className={`visual-agenda-poster-s42 ${(isColor ? 'visual-agenda-poster-cond-11-true' : 'visual-agenda-poster-cond-12-false')}`}>
               {footerSubtext}
             </div>
           </div>

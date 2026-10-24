@@ -325,3 +325,63 @@
   color: #94a3b8;
 }
 
+
+/* Extracted Conditional Styles */
+.visual-agenda-poster-cond-1-true {
+  background: #ffffff;
+  color: #d90429;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.visual-agenda-poster-cond-2-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.visual-agenda-poster-cond-3-true {
+  background: #000000;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.visual-agenda-poster-cond-4-false {
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.visual-agenda-poster-cond-5-true {
+  background: #d90429;
+  border-color: #d90429;
+}
+
+.visual-agenda-poster-cond-6-false {
+  background: #000000;
+  border-color: #000000;
+}
+
+.visual-agenda-poster-cond-7-true {
+  color: #0f172a;
+}
+
+.visual-agenda-poster-cond-8-false {
+  color: #000000;
+}
+
+.visual-agenda-poster-cond-9-true {
+  color: #b91c1c;
+}
+
+.visual-agenda-poster-cond-10-false {
+  color: #000000;
+}
+
+.visual-agenda-poster-cond-11-true {
+  color: #4b5563;
+}
+
+.visual-agenda-poster-cond-12-false {
+  color: #333333;
+}
+

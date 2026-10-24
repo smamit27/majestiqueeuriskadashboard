@@ -104,7 +104,7 @@ function EventCard({ event, formatDate, reminded, onToggleReminder }) {
   const isMultiDay = daysCount > 1;
 
   return (
-    <article className="events-calendar-view-s7" style={{ background: cfg.bg, border: `1.5px solid ${cfg.border}`, borderLeft: `4px solid ${cfg.color}`, opacity: upcoming ? 1 : 0.65 }}
+    <article className={`events-calendar-view-s7 ${(upcoming ? 'events-calendar-view-cond-1-true' : 'events-calendar-view-cond-2-false')}`} style={{ background: cfg.bg, border: `1.5px solid ${cfg.border}`, borderLeft: `4px solid ${cfg.color}` }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${cfg.color}22`; }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
     >

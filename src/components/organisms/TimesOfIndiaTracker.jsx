@@ -232,7 +232,7 @@ const TD_BASE = { padding: '13px 16px', verticalAlign: 'middle' };
 function StatusBadge({ status }) {
   const ok = status === 'Paid';
   return (
-    <span className="times-of-india-tracker-s1" style={{ background: ok ? 'rgba(209,250,229,0.7)' : 'rgba(253,224,71,0.28)', color: ok ? '#065f46' : '#92400e', border: `1px solid ${ok ? '#34d399' : '#fbbf24'}` }}>
+    <span className={`times-of-india-tracker-s1 ${(ok ? 'times-of-india-tracker-cond-1-true' : 'times-of-india-tracker-cond-2-false')}`} style={{ border: `1px solid ${ok ? '#34d399' : '#fbbf24'}` }}>
       {ok ? '✓ Paid' : '⏳ Pending'}
     </span>
   );
@@ -648,7 +648,7 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
             <tbody>
               {d.chronologicalTimeline.map((item, idx) => (
                 <React.Fragment key={item.srNo}>
-                  <tr className="times-of-india-tracker-s44" style={{ background: idx % 2 === 0 ? '#fff' : 'rgba(248,250,252,0.7)' }}>
+                  <tr className={`times-of-india-tracker-s44 ${(idx % 2 === 0 ? 'times-of-india-tracker-cond-3-true' : 'times-of-india-tracker-cond-4-false')}`}>
                     <td className="times-of-india-tracker-s45">{item.srNo}</td>
                     <td className="times-of-india-tracker-s46">{item.paymentDate}</td>
                     <td className="times-of-india-tracker-s47">{item.paymentMode}</td>
@@ -659,7 +659,7 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
                     <td className="times-of-india-tracker-s51">{Number(item.ratePerFlat).toLocaleString('en-IN')}</td>
                     <td className="times-of-india-tracker-s52">{Number(item.amountFor3Flats).toLocaleString('en-IN')}</td>
                     <td className="times-of-india-tracker-s53">
-                      <span className="times-of-india-tracker-s54" style={{ background: item.diff > 0 ? '#dcfce7' : '#f1f5f9', color: item.diff > 0 ? '#15803d' : '#475569' }}>
+                      <span className={`times-of-india-tracker-s54 ${(item.diff > 0 ? 'times-of-india-tracker-cond-5-true' : 'times-of-india-tracker-cond-6-false')}`}>
                         {item.diffLabel}
                       </span>
                     </td>
@@ -752,7 +752,7 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
                       <td className="times-of-india-tracker-s78">
                         ₹{Number(row.expected).toLocaleString('en-IN')}
                       </td>
-                      <td className="times-of-india-tracker-s79" style={{ color: isShort ? '#b91c1c' : '#15803d' }}>
+                      <td className={`times-of-india-tracker-s79 ${(isShort ? 'times-of-india-tracker-cond-7-true' : 'times-of-india-tracker-cond-8-false')}`}>
                         ₹{Number(row.paid).toLocaleString('en-IN')}
                       </td>
                       <td className="times-of-india-tracker-s80">
@@ -819,10 +819,10 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
                   <td className="times-of-india-tracker-s100">
                     Flats 302 & 904 paid till Mar 2027
                   </td>
-                  <td className="times-of-india-tracker-s101" style={{ color: reconGrandTotals.diff < 0 ? '#fca5a5' : '#86efac' }}>
+                  <td className={`times-of-india-tracker-s101 ${(reconGrandTotals.diff < 0 ? 'times-of-india-tracker-cond-9-true' : 'times-of-india-tracker-cond-10-false')}`}>
                     {reconGrandTotals.diff < 0 ? `-${Math.abs(reconGrandTotals.diff).toLocaleString('en-IN')}` : `+${reconGrandTotals.diff.toLocaleString('en-IN')}`}
                   </td>
-                  <td className="times-of-india-tracker-s102" style={{ color: reconGrandTotals.diff < 0 ? '#fca5a5' : '#86efac' }}>
+                  <td className={`times-of-india-tracker-s102 ${(reconGrandTotals.diff < 0 ? 'times-of-india-tracker-cond-11-true' : 'times-of-india-tracker-cond-12-false')}`}>
                     {reconGrandTotals.diff < 0 ? 'NET SHORTFALL' : 'FULLY SETTLED'}
                   </td>
                 </tr>
@@ -2154,7 +2154,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
           <button
             key={String(tab.id)}
             onClick={() => setActiveFlat(tab.id)}
-            className="times-of-india-tracker-s189" style={{ borderColor: activeFlat === tab.id ? '#0b2b26' : 'rgba(61,63,52,0.15)', background: activeFlat === tab.id ? '#0b2b26' : 'rgba(255,250,242,0.85)', color: activeFlat === tab.id ? '#C49B4F' : '#1d2a24', boxShadow: activeFlat === tab.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none' }}
+            className={`times-of-india-tracker-s189 ${(activeFlat === tab.id ? 'times-of-india-tracker-cond-13-true' : 'times-of-india-tracker-cond-14-false')}`}
           >
             <span>{tab.emoji}</span> <span>{tab.label}</span>
           </button>
@@ -2233,15 +2233,15 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <div className="times-of-india-tracker-s208">
                   <div className="times-of-india-tracker-s209">
                     <span>{paidCount}/{flat.bills.length} paid</span>
-                    <b style={{ color: pct > 0 ? '#065f46' : '#5f665f' }}>{pct}%</b>
+                    <b className={`${(pct > 0 ? 'times-of-india-tracker-cond-15-true' : 'times-of-india-tracker-cond-16-false')}`}>{pct}%</b>
                   </div>
                   <div className="times-of-india-tracker-s210">
-                    <div className="times-of-india-tracker-s211" style={{ width: `${pct}%`, minWidth: pct > 0 ? 4 : 0 }} />
+                    <div className={`times-of-india-tracker-s211 ${(pct > 0 ? 'times-of-india-tracker-cond-17-true' : 'times-of-india-tracker-cond-18-false')}`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
                 <div className="times-of-india-tracker-s212">
                   <div className="times-of-india-tracker-s213">Pending</div>
-                  <div className="times-of-india-tracker-s214" style={{ color: pendAmt > 0 ? '#991b1b' : '#065f46' }}>{fmt(pendAmt)}</div>
+                  <div className={`times-of-india-tracker-s214 ${(pendAmt > 0 ? 'times-of-india-tracker-cond-19-true' : 'times-of-india-tracker-cond-20-false')}`}>{fmt(pendAmt)}</div>
                 </div>
                 <div className="times-of-india-tracker-s212">
                   <div className="times-of-india-tracker-s215">Paid</div>
@@ -2296,19 +2296,19 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     return (
                       <tr
                         key={bill.id}
-                        className="times-of-india-tracker-s224" style={{ borderBottom: idx < flat.bills.length - 1 ? '1px solid rgba(61,63,52,0.055)' : 'none', background: rowBg }}
+                        className={`times-of-india-tracker-s224 ${(idx < flat.bills.length - 1 ? 'times-of-india-tracker-cond-21-true' : 'times-of-india-tracker-cond-22-false')}`} style={{ background: rowBg }}
                         onMouseEnter={e => { if (!isPaid) e.currentTarget.style.background = 'rgba(244,239,231,0.5)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = rowBg; }}
                       >
                         <td className="times-of-india-tracker-s225" style={{ ...TD_BASE }}>{idx + 1}</td>
                         <td style={TD_BASE}>
-                          <span className="times-of-india-tracker-s226" style={{ background: isNewRate ? 'rgba(147,197,253,0.22)' : 'rgba(196,155,79,0.13)', color: isNewRate ? '#1e40af' : '#78400e' }}>
+                          <span className={`times-of-india-tracker-s226 ${(isNewRate ? 'times-of-india-tracker-cond-23-true' : 'times-of-india-tracker-cond-24-false')}`}>
                             {bill.year}
                           </span>
                         </td>
                         <td className="times-of-india-tracker-s227" style={{ ...TD_BASE }}>{bill.period}</td>
                         <td className="times-of-india-tracker-s228" style={{ ...TD_BASE }}>{bill.months}</td>
-                        <td className="times-of-india-tracker-s229" style={{ ...TD_BASE, color: isNewRate ? '#1e40af' : '#78400e' }}>
+                        <td className={`times-of-india-tracker-s229 ${(isNewRate ? 'times-of-india-tracker-cond-25-true' : 'times-of-india-tracker-cond-26-false')}`} style={{ ...TD_BASE }}>
                           {fmt(bill.rate)}/yr
                         </td>
                         <td className="times-of-india-tracker-s230" style={{ ...TD_BASE }}>
@@ -2319,7 +2319,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         </td>
                         {isAdmin && (
                           <td className="times-of-india-tracker-s223" style={{ ...TD_BASE }}>
-                            <button onClick={() => toggleBill(flat.id, bill.id)} className="times-of-india-tracker-s231" style={{ background: isPaid ? 'rgba(61,63,52,0.07)' : '#0b2b26', color: isPaid ? '#5f665f' : '#C49B4F', border: isPaid ? '1px solid rgba(61,63,52,0.15)' : 'none' }}>
+                            <button onClick={() => toggleBill(flat.id, bill.id)} className={`times-of-india-tracker-s231 ${(isPaid ? 'times-of-india-tracker-cond-27-true' : 'times-of-india-tracker-cond-28-false')}`}>
                               {isPaid ? 'Unmark' : '✓ Mark Paid'}
                             </button>
                           </td>
@@ -2347,7 +2347,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       {fmt(TOTAL_PER_FLAT)}
                     </td>
                     <td className="times-of-india-tracker-s223" style={{ ...TD_BASE }}>
-                      <span className="times-of-india-tracker-s238" style={{ background: pendAmt === 0 ? 'rgba(209,250,229,0.7)' : 'rgba(254,226,226,0.6)', color: pendAmt === 0 ? '#065f46' : '#991b1b', border: `1px solid ${pendAmt === 0 ? '#34d399' : '#fca5a5'}` }}>
+                      <span className={`times-of-india-tracker-s238 ${(pendAmt === 0 ? 'times-of-india-tracker-cond-29-true' : 'times-of-india-tracker-cond-30-false')}`} style={{ border: `1px solid ${pendAmt === 0 ? '#34d399' : '#fca5a5'}` }}>
                         {pendAmt === 0 ? '✓ Fully Paid' : `${fmt(pendAmt)} due`}
                       </span>
                     </td>
@@ -2358,13 +2358,13 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             </div>
 
             {/* Current Cycle (Oct 2026 – Mar 2027) Settlement Snapshot */}
-            <div className="times-of-india-tracker-s239" style={{ border: (flat.id === 'A-302' || flat.id === 'A-904') ? '1.5px solid #86efac' : '1.5px solid #fde68a', background: (flat.id === 'A-302' || flat.id === 'A-904') ? '#f0fdf4' : '#fffbeb' }}>
+            <div className={`times-of-india-tracker-s239 ${(flat.id === 'A-302' || flat.id === 'A-904' ? 'times-of-india-tracker-cond-31-true' : 'times-of-india-tracker-cond-32-false')}`}>
               <div>
                 <div className="times-of-india-tracker-s240">
-                  <span className="times-of-india-tracker-s241" style={{ background: (flat.id === 'A-302' || flat.id === 'A-904') ? '#dcfce7' : '#fef3c7', color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#92400e', border: (flat.id === 'A-302' || flat.id === 'A-904') ? '1px solid #86efac' : '1px solid #fde68a' }}>
+                  <span className={`times-of-india-tracker-s241 ${(flat.id === 'A-302' || flat.id === 'A-904' ? 'times-of-india-tracker-cond-33-true' : 'times-of-india-tracker-cond-34-false')}`}>
                     {(flat.id === 'A-302' || flat.id === 'A-904') ? '✓ Current Cycle: PAID' : '⏳ Current Cycle: PENDING'}
                   </span>
-                  <span className="times-of-india-tracker-s242" style={{ color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#166534' : '#92400e' }}>
+                  <span className={`times-of-india-tracker-s242 ${(flat.id === 'A-302' || flat.id === 'A-904' ? 'times-of-india-tracker-cond-35-true' : 'times-of-india-tracker-cond-36-false')}`}>
                     Oct 2026 – Mar 2027 (6 Mos @ ₹3,000/mo = ₹18,000)
                   </span>
                 </div>
@@ -2378,10 +2378,10 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 </div>
               </div>
               <div className="times-of-india-tracker-s212">
-                <div className="times-of-india-tracker-s245" style={{ color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#b45309' }}>
+                <div className={`times-of-india-tracker-s245 ${(flat.id === 'A-302' || flat.id === 'A-904' ? 'times-of-india-tracker-cond-37-true' : 'times-of-india-tracker-cond-38-false')}`}>
                   {(flat.id === 'A-302' || flat.id === 'A-904') ? 'Paid Today' : 'Total Pending'}
                 </div>
-                <div className="times-of-india-tracker-s246" style={{ color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#b45309' }}>
+                <div className={`times-of-india-tracker-s246 ${(flat.id === 'A-302' || flat.id === 'A-904' ? 'times-of-india-tracker-cond-39-true' : 'times-of-india-tracker-cond-40-false')}`}>
                   {(flat.id === 'A-302' || flat.id === 'A-904') ? '₹18,000' : '₹31,200'}
                 </div>
               </div>
@@ -2427,14 +2427,14 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     <button
                       type="button"
                       onClick={() => setInvoiceScope('single')}
-                      className="times-of-india-tracker-s257" style={{ border: invoiceScope === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: invoiceScope === 'single' ? '#0b2b26' : '#fff', color: invoiceScope === 'single' ? '#C49B4F' : '#334155' }}
+                      className={`times-of-india-tracker-s257 ${(invoiceScope === 'single' ? 'times-of-india-tracker-cond-41-true' : 'times-of-india-tracker-cond-42-false')}`}
                     >
                       Single Flat
                     </button>
                     <button
                       type="button"
                       onClick={() => setInvoiceScope('all_pending')}
-                      className="times-of-india-tracker-s257" style={{ border: invoiceScope === 'all_pending' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: invoiceScope === 'all_pending' ? '#0b2b26' : '#fff', color: invoiceScope === 'all_pending' ? '#C49B4F' : '#334155' }}
+                      className={`times-of-india-tracker-s257 ${(invoiceScope === 'all_pending' ? 'times-of-india-tracker-cond-43-true' : 'times-of-india-tracker-cond-44-false')}`}
                     >
                       Pending Flats ({flats.filter(f => getFlatInvoiceData(f).pendingAmount > 0).length})
                     </button>
@@ -2442,7 +2442,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   <button
                     type="button"
                     onClick={() => setInvoiceScope('all')}
-                    className="times-of-india-tracker-s258" style={{ border: invoiceScope === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: invoiceScope === 'all' ? '#0b2b26' : '#fff', color: invoiceScope === 'all' ? '#C49B4F' : '#475569' }}
+                    className={`times-of-india-tracker-s258 ${(invoiceScope === 'all' ? 'times-of-india-tracker-cond-45-true' : 'times-of-india-tracker-cond-46-false')}`}
                   >
                     All 3 Flats (A-302, A-904, A-1002 Batch)
                   </button>
@@ -2463,10 +2463,10 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                             key={f.id}
                             type="button"
                             onClick={() => setInvoiceFlatId(f.id)}
-                            className="times-of-india-tracker-s261" style={{ border: isSelected ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: isSelected ? '#0b2b26' : '#fff', color: isSelected ? '#C49B4F' : '#1e293b' }}
+                            className={`times-of-india-tracker-s261 ${(isSelected ? 'times-of-india-tracker-cond-47-true' : 'times-of-india-tracker-cond-48-false')}`}
                           >
                             <div>{f.flatNo}</div>
-                            <div className="times-of-india-tracker-s262" style={{ opacity: isSelected ? 0.9 : 0.65 }}>
+                            <div className={`times-of-india-tracker-s262 ${(isSelected ? 'times-of-india-tracker-cond-49-true' : 'times-of-india-tracker-cond-50-false')}`}>
                               ₹{formatValue(sData.pendingAmount)} due
                             </div>
                           </button>
@@ -2485,14 +2485,14 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     <button
                       type="button"
                       onClick={() => setModalMode('month_range')}
-                      className="times-of-india-tracker-s264" style={{ border: modalMode === 'month_range' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: modalMode === 'month_range' ? '#0b2b26' : '#fff', color: modalMode === 'month_range' ? '#C49B4F' : '#334155' }}
+                      className={`times-of-india-tracker-s264 ${(modalMode === 'month_range' ? 'times-of-india-tracker-cond-51-true' : 'times-of-india-tracker-cond-52-false')}`}
                     >
                       📅 Month-Range Combined
                     </button>
                     <button
                       type="button"
                       onClick={() => setModalMode('historical')}
-                      className="times-of-india-tracker-s264" style={{ border: modalMode === 'historical' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: modalMode === 'historical' ? '#0b2b26' : '#fff', color: modalMode === 'historical' ? '#C49B4F' : '#334155' }}
+                      className={`times-of-india-tracker-s264 ${(modalMode === 'historical' ? 'times-of-india-tracker-cond-53-true' : 'times-of-india-tracker-cond-54-false')}`}
                     >
                       📑 60-Mo TOI Ledger
                     </button>
@@ -2752,7 +2752,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                             <td className="times-of-india-tracker-s304">{b.months}m</td>
                             <td className="times-of-india-tracker-s315">₹{formatValue(b.amount)}</td>
                             <td className="times-of-india-tracker-s304">
-                              <span className="times-of-india-tracker-s316" style={{ color: b.status === 'Paid' ? '#065f46' : '#92400e' }}>
+                              <span className={`times-of-india-tracker-s316 ${(b.status === 'Paid' ? 'times-of-india-tracker-cond-55-true' : 'times-of-india-tracker-cond-56-false')}`}>
                                 {b.status}
                               </span>
                             </td>

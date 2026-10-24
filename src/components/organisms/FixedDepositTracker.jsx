@@ -714,7 +714,7 @@ export default function FixedDepositTracker({ isAdmin }) {
         </div>
 
         <div className="fixed-deposit-tracker-s14">
-          <div className="fixed-deposit-tracker-s15" style={{ background: source === 'firebase' ? 'rgba(52, 211, 153, 0.18)' : 'rgba(251, 191, 36, 0.18)', color: source === 'firebase' ? '#34d399' : '#fde047' }}>
+          <div className={`fixed-deposit-tracker-s15 ${(source === 'firebase' ? 'fixed-deposit-tracker-cond-1-true' : 'fixed-deposit-tracker-cond-2-false')}`}>
             {source === 'firebase' ? '⚡ Live Sync Active' : '📋 Demo Mode'}
           </div>
 
@@ -1077,14 +1077,14 @@ export default function FixedDepositTracker({ isAdmin }) {
                           </td>
                           <td className="fixed-deposit-tracker-s100">{formatSummaryAmount(fd.principal)}</td>
                           <td className="fixed-deposit-tracker-s101">{fd.interestRate}%</td>
-                          <td className="fixed-deposit-tracker-s102" style={{ color: isMature ? '#dc2626' : 'inherit', fontWeight: isMature ? 700 : 'normal' }}>
+                          <td className={`fixed-deposit-tracker-s102 ${(isMature ? 'fixed-deposit-tracker-cond-3-true' : 'fixed-deposit-tracker-cond-4-false')}`}>
                             {fmtDate(fd.maturityDate)}
                             {isMature && <span className="fixed-deposit-tracker-s103">Matured!</span>}
                           </td>
                           <td className="fixed-deposit-tracker-s63">{formatSummaryAmount(fd.maturityValue)}</td>
                           <td className="fixed-deposit-tracker-s102">
                             <div className="fixed-deposit-tracker-s104">
-                              <div className="fixed-deposit-tracker-s105" style={{ width: `${elapsed}%`, background: isMature ? '#16a34a' : '#3b82f6' }}></div>
+                              <div className={`fixed-deposit-tracker-s105 ${(isMature ? 'fixed-deposit-tracker-cond-5-true' : 'fixed-deposit-tracker-cond-6-false')}`} style={{ width: `${elapsed}%` }}></div>
                             </div>
                             <span className="fixed-deposit-tracker-s106">{elapsed}%</span>
                           </td>
@@ -1160,7 +1160,7 @@ export default function FixedDepositTracker({ isAdmin }) {
                           <td className="fixed-deposit-tracker-s100">{formatSummaryAmount(proceeds)}</td>
                           <td className="fixed-deposit-tracker-s63">+₹{formatSummaryAmount(gain)}</td>
                           <td className="fixed-deposit-tracker-s102">
-                            <span className="fixed-deposit-tracker-s113" style={{ background: fd.status === 'Broken' ? '#fee2e2' : '#d1fae5', color: fd.status === 'Broken' ? '#991b1b' : '#065f46' }}>
+                            <span className={`fixed-deposit-tracker-s113 ${(fd.status === 'Broken' ? 'fixed-deposit-tracker-cond-7-true' : 'fixed-deposit-tracker-cond-8-false')}`}>
                               {fd.status}
                             </span>
                           </td>

@@ -932,3 +932,129 @@
   cursor: pointer;
 }
 
+
+/* Extracted Conditional Styles */
+.amc-tracker-cond-1-true {
+  font-weight: 700;
+  background: #ffffff;
+  color: #0369a1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.amc-tracker-cond-2-false {
+  font-weight: 500;
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.amc-tracker-cond-3-true {
+  font-weight: 700;
+  background: #ffffff;
+  color: #0369a1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.amc-tracker-cond-4-false {
+  font-weight: 500;
+  background: transparent;
+  color: #64748b;
+  box-shadow: none;
+}
+
+.amc-tracker-cond-5-true {
+  color: #ef4444;
+}
+
+.amc-tracker-cond-6-false {
+  color: #0369a1;
+}
+
+.amc-tracker-cond-7-true {
+  font-weight: 700;
+  border: 1px solid #0284c7;
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.amc-tracker-cond-8-false {
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+}
+
+.amc-tracker-cond-9-true {
+  background: #ffffff;
+}
+
+.amc-tracker-cond-10-false {
+  background: #fafafa;
+}
+
+.amc-tracker-cond-11-true {
+  border: 1px solid #bbf7d0;
+}
+
+.amc-tracker-cond-12-false {
+  border: 1px solid #e2e8f0;
+}
+
+.amc-tracker-cond-13-true {
+  color: #92400e;
+  background: #fef3c7;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.amc-tracker-cond-14-false {
+  color: #475569;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-weight: 400;
+}
+
+.amc-tracker-cond-15-true {
+  grid-template-columns: 1.2fr 1fr;
+}
+
+.amc-tracker-cond-16-false {
+  grid-template-columns: 1fr;
+}
+
+.amc-tracker-cond-17-true {
+  background: #f0f9ff;
+}
+
+.amc-tracker-cond-18-false {
+  background: transparent;
+}
+
+.amc-tracker-cond-19-true {
+  background: #f0fdf4;
+}
+
+.amc-tracker-cond-20-false {
+  background: #ffffff;
+}
+
+.amc-tracker-cond-21-true {
+  margin-bottom: 10px;
+}
+
+.amc-tracker-cond-22-false {
+  margin-bottom: 0;
+}
+
+.amc-tracker-cond-23-true {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.amc-tracker-cond-24-false {
+  background: #fef3c7;
+  color: #b45309;
+}
+

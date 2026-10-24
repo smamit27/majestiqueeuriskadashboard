@@ -428,3 +428,87 @@
   opacity: 0.6;
 }
 
+
+/* Extracted Conditional Styles */
+.finance-tracker-cond-1-true {
+  background: #fff7ed;
+}
+
+.finance-tracker-cond-2-false {
+  background: #eff6ff;
+}
+
+.finance-tracker-cond-3-true {
+  color: #1e40af;
+}
+
+.finance-tracker-cond-4-false {
+  color: #c2410c;
+}
+
+.finance-tracker-cond-5-true {
+  color: #2563eb;
+}
+
+.finance-tracker-cond-6-false {
+  color: #ea580c;
+}
+
+.finance-tracker-cond-7-true {
+  background: #f1f5f9;
+}
+
+.finance-tracker-cond-8-false {
+  background: inherit;
+}
+
+.finance-tracker-cond-9-true {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.finance-tracker-cond-10-false {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.finance-tracker-cond-11-true {
+  background: #fff7ed;
+}
+
+.finance-tracker-cond-12-false {
+  background: inherit;
+}
+
+.finance-tracker-cond-13-true {
+  color: #2563eb;
+}
+
+.finance-tracker-cond-14-false {
+  color: #ea580c;
+}
+
+.finance-tracker-cond-15-true {
+  width: 30%;
+}
+
+.finance-tracker-cond-16-false {
+  width: 40%;
+}
+
+.finance-tracker-cond-17-true {
+  width: 30%;
+}
+
+.finance-tracker-cond-18-false {
+  width: 35%;
+}
+
+.finance-tracker-cond-19-true {
+  color: #10b981;
+}
+
+.finance-tracker-cond-20-false {
+  color: #ef4444;
+}
+

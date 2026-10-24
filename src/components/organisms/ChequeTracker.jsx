@@ -400,7 +400,7 @@ export default function ChequeTracker() {
           <p className="eyebrow cheque-tracker-s9">Recovery Status (B)</p>
           <h3 className="cheque-tracker-s6">₹{fmt(stats.totalRecvFromB)} / ₹{fmt(stats.totalDueFromB)}</h3>
           <div className="cheque-tracker-s10">
-            <span className="header-badge cheque-tracker-s11" style={{ background: pendingB > 0 ? '#fff7ed' : '#ecfdf5', color: pendingB > 0 ? '#c2410c' : '#047857' }}>
+            <span className={`header-badge cheque-tracker-s11 ${(pendingB > 0 ? 'cheque-tracker-cond-1-true' : 'cheque-tracker-cond-2-false')}`}>
               {pendingB > 0 ? `₹${fmt(pendingB)} Pending` : 'Fully Recovered'}
             </span>
           </div>
@@ -409,7 +409,7 @@ export default function ChequeTracker() {
           <p className="eyebrow cheque-tracker-s13">Recovery Status (C)</p>
           <h3 className="cheque-tracker-s6">₹{fmt(stats.totalRecvFromC)} / ₹{fmt(stats.totalDueFromC)}</h3>
           <div className="cheque-tracker-s10">
-            <span className="header-badge cheque-tracker-s11" style={{ background: pendingC > 0 ? '#fff7ed' : '#ecfdf5', color: pendingC > 0 ? '#c2410c' : '#047857' }}>
+            <span className={`header-badge cheque-tracker-s11 ${(pendingC > 0 ? 'cheque-tracker-cond-3-true' : 'cheque-tracker-cond-4-false')}`}>
               {pendingC > 0 ? `₹${fmt(pendingC)} Pending` : 'Fully Recovered'}
             </span>
           </div>
@@ -495,7 +495,7 @@ export default function ChequeTracker() {
                     </select>
                   </td>
                   <td className="cheque-tracker-s42"><input className="attendance-register-input cheque-tracker-s43" value={e.aShare} onChange={v => updateRow(e.id, 'aShare', v.target.value)} /></td>
-                  <td className="cheque-tracker-s44"><input className="attendance-register-input cheque-tracker-s43" style={{ fontWeight: e.bReceiveDate ? 400 : 700 }} value={e.bShare} onChange={v => updateRow(e.id, 'bShare', v.target.value)} /></td>
+                  <td className="cheque-tracker-s44"><input className={`attendance-register-input cheque-tracker-s43 ${(e.bReceiveDate ? 'cheque-tracker-cond-5-true' : 'cheque-tracker-cond-6-false')}`} value={e.bShare} onChange={v => updateRow(e.id, 'bShare', v.target.value)} /></td>
                   <td className="cheque-tracker-s44">
                     <input
                       className={`attendance-register-input ${e.bReceiveDate ? 'input-status-received' : 'input-status-pending'}`}
@@ -504,7 +504,7 @@ export default function ChequeTracker() {
                       placeholder="Pending"
                     />
                   </td>
-                  <td className="cheque-tracker-s45"><input className="attendance-register-input cheque-tracker-s43" style={{ fontWeight: e.cReceiveDate ? 400 : 700 }} value={e.cShare} onChange={v => updateRow(e.id, 'cShare', v.target.value)} /></td>
+                  <td className="cheque-tracker-s45"><input className={`attendance-register-input cheque-tracker-s43 ${(e.cReceiveDate ? 'cheque-tracker-cond-7-true' : 'cheque-tracker-cond-8-false')}`} value={e.cShare} onChange={v => updateRow(e.id, 'cShare', v.target.value)} /></td>
                   <td className="cheque-tracker-s45">
                     <input
                       className={`attendance-register-input ${e.cReceiveDate ? 'input-status-received' : 'input-status-pending'}`}
@@ -532,9 +532,9 @@ export default function ChequeTracker() {
                 <td></td>
                 <td className="cheque-tracker-s43">₹{fmt(stats.totalPaidByA * 0.3766)}</td>
                 <td className="cheque-tracker-s43">₹{fmt(stats.totalDueFromB)}</td>
-                <td className="cheque-tracker-s49" style={{ color: pendingB > 0 ? '#dc2626' : '#166534' }}>{pendingB > 0 ? `₹${fmt(pendingB)} Bal` : 'Clear'}</td>
+                <td className={`cheque-tracker-s49 ${(pendingB > 0 ? 'cheque-tracker-cond-9-true' : 'cheque-tracker-cond-10-false')}`}>{pendingB > 0 ? `₹${fmt(pendingB)} Bal` : 'Clear'}</td>
                 <td className="cheque-tracker-s43">₹{fmt(stats.totalDueFromC)}</td>
-                <td className="cheque-tracker-s49" style={{ color: pendingC > 0 ? '#dc2626' : '#166534' }}>{pendingC > 0 ? `₹${fmt(pendingC)} Bal` : 'Clear'}</td>
+                <td className={`cheque-tracker-s49 ${(pendingC > 0 ? 'cheque-tracker-cond-11-true' : 'cheque-tracker-cond-12-false')}`}>{pendingC > 0 ? `₹${fmt(pendingC)} Bal` : 'Clear'}</td>
                 <td colSpan={2}></td>
               </tr>
             </tfoot>

@@ -429,7 +429,7 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
 
           <button
             onClick={() => setActiveView('presentation')}
-            className="workflow-manager-s11" style={{ background: activeView === 'presentation' ? '#0d9488' : '#ffffff', color: activeView === 'presentation' ? '#ffffff' : '#0d9488' }}
+            className={`workflow-manager-s11 ${(activeView === 'presentation' ? 'workflow-manager-cond-1-true' : 'workflow-manager-cond-2-false')}`}
           >
             <Presentation size={15} /> View PPT In-Portal
           </button>
@@ -495,20 +495,20 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
           </div>
         </div>
 
-        <div className="workflow-manager-s24" style={{ background: metrics.blockedTasks > 0 ? '#fff1f2' : 'rgba(255,255,255,0.85)', border: `1px solid ${metrics.blockedTasks > 0 ? '#fecdd3' : '#e2e8f0'}` }}>
-          <div className="workflow-manager-s25" style={{ color: metrics.blockedTasks > 0 ? '#be123c' : '#64748b' }}>
+        <div className={`workflow-manager-s24 ${(metrics.blockedTasks > 0 ? 'workflow-manager-cond-3-true' : 'workflow-manager-cond-4-false')}`} style={{ border: `1px solid ${metrics.blockedTasks > 0 ? '#fecdd3' : '#e2e8f0'}` }}>
+          <div className={`workflow-manager-s25 ${(metrics.blockedTasks > 0 ? 'workflow-manager-cond-5-true' : 'workflow-manager-cond-6-false')}`}>
             <span>Blocked Tasks</span>
             <AlertOctagon size={16} color="#e11d48" />
           </div>
-          <div className="workflow-manager-s26" style={{ color: metrics.blockedTasks > 0 ? '#be123c' : '#0f172a' }}>
+          <div className={`workflow-manager-s26 ${(metrics.blockedTasks > 0 ? 'workflow-manager-cond-7-true' : 'workflow-manager-cond-8-false')}`}>
             {metrics.blockedTasks}
           </div>
-          <div className="workflow-manager-s27" style={{ color: metrics.blockedTasks > 0 ? '#be123c' : '#64748b' }}>
+          <div className={`workflow-manager-s27 ${(metrics.blockedTasks > 0 ? 'workflow-manager-cond-9-true' : 'workflow-manager-cond-10-false')}`}>
             Impediments requiring action
           </div>
         </div>
 
-        <div className="workflow-manager-s24" style={{ background: pendingApprovals.length > 0 ? '#faf5ff' : 'rgba(255,255,255,0.85)', border: `1px solid ${pendingApprovals.length > 0 ? '#e9d5ff' : '#e2e8f0'}` }}>
+        <div className={`workflow-manager-s24 ${(pendingApprovals.length > 0 ? 'workflow-manager-cond-11-true' : 'workflow-manager-cond-12-false')}`} style={{ border: `1px solid ${pendingApprovals.length > 0 ? '#e9d5ff' : '#e2e8f0'}` }}>
           <div className="workflow-manager-s28">
             <span>Pending Review</span>
             <Eye size={16} color="#7e22ce" />
@@ -521,15 +521,15 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
           </div>
         </div>
 
-        <div className="workflow-manager-s24" style={{ background: metrics.overdueTasks > 0 ? '#fff7ed' : 'rgba(255,255,255,0.85)', border: `1px solid ${metrics.overdueTasks > 0 ? '#fed7aa' : '#e2e8f0'}` }}>
-          <div className="workflow-manager-s25" style={{ color: metrics.overdueTasks > 0 ? '#c2410c' : '#64748b' }}>
+        <div className={`workflow-manager-s24 ${(metrics.overdueTasks > 0 ? 'workflow-manager-cond-13-true' : 'workflow-manager-cond-14-false')}`} style={{ border: `1px solid ${metrics.overdueTasks > 0 ? '#fed7aa' : '#e2e8f0'}` }}>
+          <div className={`workflow-manager-s25 ${(metrics.overdueTasks > 0 ? 'workflow-manager-cond-15-true' : 'workflow-manager-cond-16-false')}`}>
             <span>Overdue Tasks</span>
             <AlertTriangle size={16} color="#ea580c" />
           </div>
-          <div className="workflow-manager-s26" style={{ color: metrics.overdueTasks > 0 ? '#c2410c' : '#0f172a' }}>
+          <div className={`workflow-manager-s26 ${(metrics.overdueTasks > 0 ? 'workflow-manager-cond-17-true' : 'workflow-manager-cond-18-false')}`}>
             {metrics.overdueTasks}
           </div>
-          <div className="workflow-manager-s27" style={{ color: metrics.overdueTasks > 0 ? '#c2410c' : '#64748b' }}>
+          <div className={`workflow-manager-s27 ${(metrics.overdueTasks > 0 ? 'workflow-manager-cond-19-true' : 'workflow-manager-cond-20-false')}`}>
             Past deadline target
           </div>
         </div>
@@ -549,7 +549,7 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
             <button
               key={tab.id}
               onClick={() => setActiveView(tab.id)}
-              className="workflow-manager-s33" style={{ fontWeight: activeView === tab.id ? 700 : 500, background: activeView === tab.id ? '#ffffff' : 'transparent', color: activeView === tab.id ? '#0f172a' : '#64748b', boxShadow: activeView === tab.id ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
+              className={`workflow-manager-s33 ${(activeView === tab.id ? 'workflow-manager-cond-21-true' : 'workflow-manager-cond-22-false')}`}
             >
               {tab.icon} {tab.label}
             </button>
@@ -632,7 +632,7 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
                         <div
                           key={task.id}
                           onClick={() => setSelectedTask(task)}
-                          className="workflow-manager-s46" style={{ border: task.status === WORKFLOW_STATUS.BLOCKED ? '1.5px solid #fca5a5' : '1px solid #e2e8f0' }}
+                          className={`workflow-manager-s46 ${(task.status === WORKFLOW_STATUS.BLOCKED ? 'workflow-manager-cond-23-true' : 'workflow-manager-cond-24-false')}`}
                         >
                           {/* Project Tag & Priority */}
                           <div className="workflow-manager-s47">
@@ -764,7 +764,7 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
                         <td className="workflow-manager-s66">
                           <div>{formatDate(task.deadline)}</div>
                           {daysLeft !== null && (
-                            <span className="workflow-manager-s72" style={{ color: isOverdue ? '#991b1b' : '#047857' }}>
+                            <span className={`workflow-manager-s72 ${(isOverdue ? 'workflow-manager-cond-25-true' : 'workflow-manager-cond-26-false')}`}>
                               {isOverdue ? `${Math.abs(daysLeft)}d overdue` : `${daysLeft}d left`}
                             </span>
                           )}
@@ -806,14 +806,14 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
               <button
                 disabled={currentPage <= 1}
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                className="workflow-manager-s77" style={{ cursor: currentPage <= 1 ? 'not-allowed' : 'pointer', opacity: currentPage <= 1 ? 0.5 : 1 }}
+                className={`workflow-manager-s77 ${(currentPage <= 1 ? 'workflow-manager-cond-27-true' : 'workflow-manager-cond-28-false')}`}
               >
                 Previous
               </button>
               <button
                 disabled={currentPage * pageSize >= filteredTasks.length}
                 onClick={() => setCurrentPage(p => p + 1)}
-                className="workflow-manager-s77" style={{ cursor: currentPage * pageSize >= filteredTasks.length ? 'not-allowed' : 'pointer', opacity: currentPage * pageSize >= filteredTasks.length ? 0.5 : 1 }}
+                className={`workflow-manager-s77 ${(currentPage * pageSize >= filteredTasks.length ? 'workflow-manager-cond-29-true' : 'workflow-manager-cond-30-false')}`}
               >
                 Next
               </button>
@@ -881,8 +881,8 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
                     <div className="workflow-manager-s91">Milestone Target Dates:</div>
                     <div className="workflow-manager-s92">
                       {prj.milestones.map(m => (
-                        <div key={m.id} className="workflow-manager-s93" style={{ background: m.completed ? '#ecfdf5' : '#ffffff' }}>
-                          <span className="workflow-manager-s94" style={{ color: m.completed ? '#047857' : '#334155' }}>
+                        <div key={m.id} className={`workflow-manager-s93 ${(m.completed ? 'workflow-manager-cond-31-true' : 'workflow-manager-cond-32-false')}`}>
+                          <span className={`workflow-manager-s94 ${(m.completed ? 'workflow-manager-cond-33-true' : 'workflow-manager-cond-34-false')}`}>
                             {m.completed ? <Check size={12} color="#059669" /> : <Clock size={12} color="#94a3b8" />}
                             {m.title}
                           </span>
@@ -974,7 +974,7 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
                                 disabled={!canManage}
                                 onChange={() => handleToggleQualityItem(task, idx)}
                               />
-                              <span style={{ textDecoration: q.passed ? 'line-through' : 'none', color: q.passed ? '#059669' : '#334155' }}>
+                              <span className={`${(q.passed ? 'workflow-manager-cond-35-true' : 'workflow-manager-cond-36-false')}`}>
                                 {q.item}
                               </span>
                             </div>
@@ -1088,14 +1088,14 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
                 </h5>
                 <div className="workflow-manager-s134">
                   {selectedTask.qualityChecklist.map((item, idx) => (
-                    <label key={idx} className="workflow-manager-s135" style={{ cursor: canManage ? 'pointer' : 'default' }}>
+                    <label key={idx} className={`workflow-manager-s135 ${(canManage ? 'workflow-manager-cond-37-true' : 'workflow-manager-cond-38-false')}`}>
                       <input
                         type="checkbox"
                         checked={item.passed}
                         disabled={!canManage}
                         onChange={() => handleToggleQualityItem(selectedTask, idx)}
                       />
-                      <span style={{ textDecoration: item.passed ? 'line-through' : 'none', color: item.passed ? '#059669' : '#1e293b' }}>
+                      <span className={`${(item.passed ? 'workflow-manager-cond-39-true' : 'workflow-manager-cond-40-false')}`}>
                         {item.item}
                       </span>
                     </label>
@@ -1208,7 +1208,7 @@ export default function WorkflowManager({ isAdmin, userRole, user }) {
               </button>
               <button
                 onClick={() => executeTransition(transitionPrompt.task, transitionPrompt.toStatus, { [transitionPrompt.field]: transitionPrompt.value })}
-                className="workflow-manager-s153" style={{ background: transitionPrompt.toStatus === WORKFLOW_STATUS.REJECTED ? '#be123c' : '#0d9488' }}
+                className={`workflow-manager-s153 ${(transitionPrompt.toStatus === WORKFLOW_STATUS.REJECTED ? 'workflow-manager-cond-41-true' : 'workflow-manager-cond-42-false')}`}
               >
                 Confirm {transitionPrompt.toStatus}
               </button>

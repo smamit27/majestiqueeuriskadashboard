@@ -154,37 +154,37 @@ function ScannedDocModal({ onClose, defaultDoc = 'phase2' }) {
           <div className="builder-discuss-s15">
             <button
               onClick={() => { setActiveDoc('phase2'); setZoom(1); }}
-              className="builder-discuss-s16" style={{ background: activeDoc === 'phase2' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'phase2' ? '#0b2b26' : '#ffffff' }}
+              className={`builder-discuss-s16 ${(activeDoc === 'phase2' ? 'builder-discuss-cond-1-true' : 'builder-discuss-cond-2-false')}`}
             >
               📑 Master Reco
             </button>
             <button
               onClick={() => { setActiveDoc('wingA'); setZoom(1); }}
-              className="builder-discuss-s16" style={{ background: activeDoc === 'wingA' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'wingA' ? '#0b2b26' : '#ffffff' }}
+              className={`builder-discuss-s16 ${(activeDoc === 'wingA' ? 'builder-discuss-cond-3-true' : 'builder-discuss-cond-4-false')}`}
             >
               📜 Wing A Audit
             </button>
             <button
               onClick={() => { setActiveDoc('ledger1'); setZoom(1); }}
-              className="builder-discuss-s16" style={{ background: activeDoc === 'ledger1' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'ledger1' ? '#0b2b26' : '#ffffff' }}
+              className={`builder-discuss-s16 ${(activeDoc === 'ledger1' ? 'builder-discuss-cond-5-true' : 'builder-discuss-cond-6-false')}`}
             >
               📒 BOM Page 1
             </button>
             <button
               onClick={() => { setActiveDoc('ledger2'); setZoom(1); }}
-              className="builder-discuss-s16" style={{ background: activeDoc === 'ledger2' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'ledger2' ? '#0b2b26' : '#ffffff' }}
+              className={`builder-discuss-s16 ${(activeDoc === 'ledger2' ? 'builder-discuss-cond-7-true' : 'builder-discuss-cond-8-false')}`}
             >
               📒 BOM Page 2
             </button>
             <button
               onClick={() => { setActiveDoc('ledger3'); setZoom(1); }}
-              className="builder-discuss-s16" style={{ background: activeDoc === 'ledger3' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'ledger3' ? '#0b2b26' : '#ffffff' }}
+              className={`builder-discuss-s16 ${(activeDoc === 'ledger3' ? 'builder-discuss-cond-9-true' : 'builder-discuss-cond-10-false')}`}
             >
               📒 BOM Page 3 (₹24L Trf)
             </button>
             <button
               onClick={() => { setActiveDoc('ledger4'); setZoom(1); }}
-              className="builder-discuss-s16" style={{ background: activeDoc === 'ledger4' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'ledger4' ? '#0b2b26' : '#ffffff' }}
+              className={`builder-discuss-s16 ${(activeDoc === 'ledger4' ? 'builder-discuss-cond-11-true' : 'builder-discuss-cond-12-false')}`}
             >
               📒 BOM Page 4 (Closing)
             </button>
@@ -196,7 +196,7 @@ function ScannedDocModal({ onClose, defaultDoc = 'phase2' }) {
           <img
             src={curr.src}
             alt={curr.title}
-            className="builder-discuss-s18" style={{ width: `${zoom * 100}%`, maxWidth: zoom <= 1 ? '760px' : 'none' }}
+            className={`builder-discuss-s18 ${(zoom <= 1 ? 'builder-discuss-cond-13-true' : 'builder-discuss-cond-14-false')}`} style={{ width: `${zoom * 100}%` }}
           />
         </div>
 
@@ -706,15 +706,15 @@ const handleExportRecoCSV = () => {
             <button
               key={tab.id}
               onClick={() => setSubTab(tab.id)}
-              className="builder-discuss-s39" style={{ border: active ? '1.5px solid rgba(196, 155, 79, 0.4)' : '1.5px solid transparent', background: active ? '#ffffff' : 'transparent', color: active ? '#1d2a24' : '#5f665f', boxShadow: active ? '0 3px 10px rgba(11, 43, 38, 0.08)' : 'none' }}
+              className={`builder-discuss-s39 ${(active ? 'builder-discuss-cond-15-true' : 'builder-discuss-cond-16-false')}`}
             >
               <div className="builder-discuss-s40">
                 <span className="builder-discuss-s41">{tab.icon}</span>
                 <div className="builder-discuss-s42">
-                  <div className="builder-discuss-s43" style={{ fontWeight: active ? 800 : 600, color: active ? '#0b2b26' : '#374151' }}>
+                  <div className={`builder-discuss-s43 ${(active ? 'builder-discuss-cond-17-true' : 'builder-discuss-cond-18-false')}`}>
                     {tab.title}
                   </div>
-                  <div className="builder-discuss-s44" style={{ color: active ? '#196c6c' : '#9ca3af' }}>
+                  <div className={`builder-discuss-s44 ${(active ? 'builder-discuss-cond-19-true' : 'builder-discuss-cond-20-false')}`}>
                     {tab.sub}
                   </div>
                 </div>
@@ -761,7 +761,7 @@ const handleExportRecoCSV = () => {
                     <button
                       key={w.id}
                       onClick={() => setWingFilter(w.id)}
-                      className="builder-discuss-s51" style={{ fontWeight: active ? 700 : 500, background: active ? '#ffffff' : 'transparent', color: active ? '#0b2b26' : '#5f665f', boxShadow: active ? '0 1px 4px rgba(0, 0, 0, 0.08)' : 'none' }}
+                      className={`builder-discuss-s51 ${(active ? 'builder-discuss-cond-21-true' : 'builder-discuss-cond-22-false')}`}
                     >
                       {w.label}
                     </button>
@@ -915,7 +915,7 @@ const handleExportRecoCSV = () => {
                 </thead>
                 <tbody>
                   {BUILDER_RECO_DATA.expenses.map((e, idx) => (
-                    <tr key={e.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                    <tr key={e.id} className={`builder-discuss-s82 ${(idx % 2 === 0 ? 'builder-discuss-cond-23-true' : 'builder-discuss-cond-24-false')}`}>
                       <td className="builder-discuss-s83">
                         <div className="builder-discuss-s84">{e.label}</div>
                         <div className="builder-discuss-s85">{e.notes}</div>
@@ -1005,7 +1005,7 @@ const handleExportRecoCSV = () => {
                 </thead>
                 <tbody>
                   {BUILDER_RECO_DATA.costShifts.map((c, idx) => (
-                    <tr key={c.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                    <tr key={c.id} className={`builder-discuss-s82 ${(idx % 2 === 0 ? 'builder-discuss-cond-25-true' : 'builder-discuss-cond-26-false')}`}>
                       <td className="builder-discuss-s83">
                         <div className="builder-discuss-s95">
                           <span className="builder-discuss-s96">{c.label}</span>
@@ -1131,7 +1131,7 @@ const handleExportRecoCSV = () => {
                 </thead>
                 <tbody>
                   {BUILDER_RECO_DATA.receipts.map((r, idx) => (
-                    <tr key={r.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                    <tr key={r.id} className={`builder-discuss-s82 ${(idx % 2 === 0 ? 'builder-discuss-cond-27-true' : 'builder-discuss-cond-28-false')}`}>
                       <td className="builder-discuss-s83">
                         <div className="builder-discuss-s84">{r.label}</div>
                         <div className="builder-discuss-s85">{r.notes}</div>
@@ -1419,7 +1419,7 @@ const handleExportRecoCSV = () => {
               </thead>
               <tbody>
                 {WING_A_AUDITED_STATEMENT.income.items.map((item, idx) => (
-                  <tr key={item.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                  <tr key={item.id} className={`builder-discuss-s82 ${(idx % 2 === 0 ? 'builder-discuss-cond-29-true' : 'builder-discuss-cond-30-false')}`}>
                     <td className="builder-discuss-s181">
                       {item.particular}
                       <span className="builder-discuss-s182">({item.notes})</span>
@@ -1495,7 +1495,7 @@ const handleExportRecoCSV = () => {
                   {filteredWingAExpenses.map((e, idx) => {
                     const pct = ((e.amount / WING_A_AUDITED_STATEMENT.expenditure.totalExpenditure) * 100).toFixed(2);
                     return (
-                      <tr key={e.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                      <tr key={e.id} className={`builder-discuss-s82 ${(idx % 2 === 0 ? 'builder-discuss-cond-31-true' : 'builder-discuss-cond-32-false')}`}>
                         <td className="builder-discuss-s195">{idx + 1}</td>
                         <td className="builder-discuss-s196">
                           <div className="builder-discuss-s96">{highlight(e.particular, wingASearch)}</div>
@@ -1742,7 +1742,7 @@ const handleExportRecoCSV = () => {
                     <button
                       key={w}
                       onClick={() => setLedgerWing(w)}
-                      className="builder-discuss-s266" style={{ border: active ? '1.5px solid #0b2b26' : '1px solid rgba(61, 63, 52, 0.15)', background: active ? '#0b2b26' : '#ffffff', color: active ? '#ffffff' : '#1d2a24', fontWeight: active ? 700 : 500 }}
+                      className={`builder-discuss-s266 ${(active ? 'builder-discuss-cond-33-true' : 'builder-discuss-cond-34-false')}`}
                     >
                       {w === 'All' ? 'All Wings' : `Wing ${w}`}
                     </button>
@@ -1759,7 +1759,7 @@ const handleExportRecoCSV = () => {
                     <button
                       key={p}
                       onClick={() => setLedgerPage(p)}
-                      className="builder-discuss-s267" style={{ border: active ? '1.5px solid #0b2b26' : '1px solid rgba(61, 63, 52, 0.15)', background: active ? '#0b2b26' : '#ffffff', color: active ? '#ffffff' : '#1d2a24', fontWeight: active ? 700 : 500 }}
+                      className={`builder-discuss-s267 ${(active ? 'builder-discuss-cond-35-true' : 'builder-discuss-cond-36-false')}`}
                     >
                       {p === 'All' ? 'All Pgs' : `Pg ${p}`}
                     </button>
@@ -1793,7 +1793,7 @@ const handleExportRecoCSV = () => {
                   <button
                     key={r}
                     onClick={() => setLedgerRemark(r)}
-                    className="builder-discuss-s271" style={{ border: active ? '1px solid #0b2b26' : '1px solid rgba(61, 63, 52, 0.12)', background: active ? '#0b2b26' : 'rgba(255, 250, 242, 0.7)', color: active ? '#C49B4F' : '#3d3f34', fontWeight: active ? 700 : 500 }}
+                    className={`builder-discuss-s271 ${(active ? 'builder-discuss-cond-37-true' : 'builder-discuss-cond-38-false')}`}
                   >
                     {r}
                   </button>
@@ -1853,8 +1853,8 @@ const handleExportRecoCSV = () => {
                         >
                           <td className="builder-discuss-s287">{t.id}</td>
                           <td className="builder-discuss-s288">{t.date}</td>
-                          <td className="builder-discuss-s289" style={{ color: t.crdr === 'Cr' || t.crdr === 'CR' ? '#065f46' : '#991b1b' }}>{t.crdr}</td>
-                          <td className="builder-discuss-s290" style={{ fontWeight: isSpecialTransfer ? 800 : 600, color: isSpecialTransfer ? '#0b2b26' : '#1d2a24' }}>
+                          <td className={`builder-discuss-s289 ${(t.crdr === 'Cr' || t.crdr === 'CR' ? 'builder-discuss-cond-39-true' : 'builder-discuss-cond-40-false')}`}>{t.crdr}</td>
+                          <td className={`builder-discuss-s290 ${(isSpecialTransfer ? 'builder-discuss-cond-41-true' : 'builder-discuss-cond-42-false')}`}>
                             {t.particulars}
                           </td>
                           <td className="builder-discuss-s291">
@@ -1873,7 +1873,7 @@ const handleExportRecoCSV = () => {
                               {t.wing}
                             </span>
                           </td>
-                          <td className="builder-discuss-s298" style={{ color: t.debit ? '#065f46' : '#cbd5e1' }}>
+                          <td className={`builder-discuss-s298 ${(t.debit ? 'builder-discuss-cond-43-true' : 'builder-discuss-cond-44-false')}`}>
                             {t.debit ? fmtINR(t.debit) : '—'}
                           </td>
                           <td className="builder-discuss-s298" style={{ color: t.credit ? (isSpecialTransfer ? '#b91c1c' : '#1d2a24') : '#cbd5e1' }}>

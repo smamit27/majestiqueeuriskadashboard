@@ -414,3 +414,65 @@
   color: #64748b;
 }
 
+
+/* Extracted Conditional Styles */
+.water-tank2-d-schematic-cond-1-true {
+  border: 1px solid #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.water-tank2-d-schematic-cond-2-false {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+}
+
+.water-tank2-d-schematic-cond-3-true {
+  border: 1px solid #0284c7;
+  background: #f0f9ff;
+  color: #0284c7;
+}
+
+.water-tank2-d-schematic-cond-4-false {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+}
+
+.water-tank2-d-schematic-cond-5-true {
+  border: 1px solid #16a34a;
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.water-tank2-d-schematic-cond-6-false {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+}
+
+.water-tank2-d-schematic-cond-7-true {
+  border: 1px solid #dc2626;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.water-tank2-d-schematic-cond-8-false {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+}
+
+.water-tank2-d-schematic-cond-9-true {
+  border: 1px solid #8b5cf6;
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.water-tank2-d-schematic-cond-10-false {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+}
+

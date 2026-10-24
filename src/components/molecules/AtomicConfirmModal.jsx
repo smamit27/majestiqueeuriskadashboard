@@ -47,7 +47,7 @@ export default function AtomicConfirmModal({
       }
     >
       <div className="atomic-confirm-modal-s1">
-        <div className="atomic-confirm-modal-s2" style={{ background: confirmVariant === 'danger' ? '#fee2e2' : '#fef3c7', color: confirmVariant === 'danger' ? '#dc2626' : '#d97706' }}>
+        <div className={`atomic-confirm-modal-s2 ${(confirmVariant === 'danger' ? 'atomic-confirm-modal-cond-1-true' : 'atomic-confirm-modal-cond-2-false')}`}>
           <AlertTriangle size={24} />
         </div>
         <div className="atomic-confirm-modal-s3">

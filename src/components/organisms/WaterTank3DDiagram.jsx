@@ -147,13 +147,13 @@ export default function WaterTank3DDiagram({ onSelectTank }) {
         <div className="water-tank3-d-diagram-s3">
           <button
             onClick={() => setViewSubMode('3d_interactive')}
-            className="water-tank3-d-diagram-s4" style={{ background: viewSubMode === '3d_interactive' ? '#0284c7' : 'transparent', color: viewSubMode === '3d_interactive' ? '#ffffff' : '#64748b' }}
+            className={`water-tank3-d-diagram-s4 ${(viewSubMode === '3d_interactive' ? 'water-tank3-d-diagram-cond-1-true' : 'water-tank3-d-diagram-cond-2-false')}`}
           >
             <Box size={16} /> 3D Spatial Interactive Model
           </button>
           <button
             onClick={() => setViewSubMode('master_render')}
-            className="water-tank3-d-diagram-s4" style={{ background: viewSubMode === 'master_render' ? '#0284c7' : 'transparent', color: viewSubMode === 'master_render' ? '#ffffff' : '#64748b' }}
+            className={`water-tank3-d-diagram-s4 ${(viewSubMode === 'master_render' ? 'water-tank3-d-diagram-cond-3-true' : 'water-tank3-d-diagram-cond-4-false')}`}
           >
             <Eye size={16} /> Master Architectural 3D Plan (High-Res)
           </button>
@@ -195,21 +195,21 @@ export default function WaterTank3DDiagram({ onSelectTank }) {
                 <button
                   onClick={() => setLightingMode('daylight')}
                   title="Daylight Mode"
-                  className="water-tank3-d-diagram-s9" style={{ background: lightingMode === 'daylight' ? '#ffffff' : 'transparent' }}
+                  className={`water-tank3-d-diagram-s9 ${(lightingMode === 'daylight' ? 'water-tank3-d-diagram-cond-5-true' : 'water-tank3-d-diagram-cond-6-false')}`}
                 >
                   <Sun size={15} color={lightingMode === 'daylight' ? '#f59e0b' : '#64748b'} />
                 </button>
                 <button
                   onClick={() => setLightingMode('dusk')}
                   title="Dusk / Twilight Mode"
-                  className="water-tank3-d-diagram-s9" style={{ background: lightingMode === 'dusk' ? '#ffffff' : 'transparent' }}
+                  className={`water-tank3-d-diagram-s9 ${(lightingMode === 'dusk' ? 'water-tank3-d-diagram-cond-7-true' : 'water-tank3-d-diagram-cond-8-false')}`}
                 >
                   <Sunset size={15} color={lightingMode === 'dusk' ? '#8b5cf6' : '#64748b'} />
                 </button>
                 <button
                   onClick={() => setLightingMode('cyberpunk')}
                   title="Night Luminescent Mode"
-                  className="water-tank3-d-diagram-s9" style={{ background: lightingMode === 'cyberpunk' ? '#ffffff' : 'transparent' }}
+                  className={`water-tank3-d-diagram-s9 ${(lightingMode === 'cyberpunk' ? 'water-tank3-d-diagram-cond-9-true' : 'water-tank3-d-diagram-cond-10-false')}`}
                 >
                   <Moon size={15} color={lightingMode === 'cyberpunk' ? '#0ea5e9' : '#64748b'} />
                 </button>
@@ -248,25 +248,25 @@ export default function WaterTank3DDiagram({ onSelectTank }) {
           <div className="water-tank3-d-diagram-s15">
             <button
               onClick={() => { setActiveHighlight('a_building'); if (onSelectTank) onSelectTank('a_building'); }}
-              className="water-tank3-d-diagram-s16" style={{ background: activeHighlight === 'a_building' ? '#2563eb' : 'transparent' }}
+              className={`water-tank3-d-diagram-s16 ${(activeHighlight === 'a_building' ? 'water-tank3-d-diagram-cond-11-true' : 'water-tank3-d-diagram-cond-12-false')}`}
             >
               Wing A: 75,800 L
             </button>
             <button
               onClick={() => { setActiveHighlight('common_underground'); if (onSelectTank) onSelectTank('common_underground'); }}
-              className="water-tank3-d-diagram-s16" style={{ background: activeHighlight === 'common_underground' ? '#0284c7' : 'transparent' }}
+              className={`water-tank3-d-diagram-s16 ${(activeHighlight === 'common_underground' ? 'water-tank3-d-diagram-cond-13-true' : 'water-tank3-d-diagram-cond-14-false')}`}
             >
               💧 Common Sump: 325,000 L
             </button>
             <button
               onClick={() => { setActiveHighlight('b_building'); if (onSelectTank) onSelectTank('b_building'); }}
-              className="water-tank3-d-diagram-s16" style={{ background: activeHighlight === 'b_building' ? '#0ea5e9' : 'transparent' }}
+              className={`water-tank3-d-diagram-s16 ${(activeHighlight === 'b_building' ? 'water-tank3-d-diagram-cond-15-true' : 'water-tank3-d-diagram-cond-16-false')}`}
             >
               Wing B: 88,600 L
             </button>
             <button
               onClick={() => { setActiveHighlight('c_building'); if (onSelectTank) onSelectTank('c_building'); }}
-              className="water-tank3-d-diagram-s16" style={{ background: activeHighlight === 'c_building' ? '#059669' : 'transparent' }}
+              className={`water-tank3-d-diagram-s16 ${(activeHighlight === 'c_building' ? 'water-tank3-d-diagram-cond-17-true' : 'water-tank3-d-diagram-cond-18-false')}`}
             >
               Wing C: 50,000 L
             </button>
@@ -282,10 +282,10 @@ export default function WaterTank3DDiagram({ onSelectTank }) {
               e.preventDefault();
               setZoomLevel(z => Math.min(Math.max(z - e.deltaY * 0.0012, 0.55), 1.85));
             }}
-            className="water-tank3-d-diagram-s17" style={{ background: theme.bg, cursor: isDragging ? 'grabbing' : 'grab' }}
+            className={`water-tank3-d-diagram-s17 ${(isDragging ? 'water-tank3-d-diagram-cond-19-true' : 'water-tank3-d-diagram-cond-20-false')}`} style={{ background: theme.bg }}
           >
             {/* 3D World Stage */}
-            <div className="water-tank3-d-diagram-s18" style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel}) rotateX(${cameraPitch}deg) rotateZ(${cameraYaw}deg)`, transition: isDragging ? 'none' : 'transform 0.15s ease-out' }}>
+            <div className={`water-tank3-d-diagram-s18 ${(isDragging ? 'water-tank3-d-diagram-cond-21-true' : 'water-tank3-d-diagram-cond-22-false')}`} style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel}) rotateX(${cameraPitch}deg) rotateZ(${cameraYaw}deg)` }}>
               
               {/* Society Base Ground Slab */}
               <div className="water-tank3-d-diagram-s19" style={{ background: theme.groundColor, boxShadow: `0 30px 80px ${theme.shadow}` }}>
@@ -317,7 +317,7 @@ export default function WaterTank3DDiagram({ onSelectTank }) {
                 {/* ─────────────────────────────────────────────────────────── */}
                 <div 
                   onClick={() => { setActiveHighlight('a_building'); if (onSelectTank) onSelectTank('a_building'); }}
-                  className="water-tank3-d-diagram-s26" style={{ background: theme.buildingColor, boxShadow: activeHighlight === 'a_building' ? '0 0 25px #2563eb' : `0 15px 35px ${theme.shadow}`, border: activeHighlight === 'a_building' ? '2px solid #2563eb' : '1px solid rgba(255,255,255,0.2)' }}
+                  className={`water-tank3-d-diagram-s26 ${(activeHighlight === 'a_building' ? 'water-tank3-d-diagram-cond-23-true' : 'water-tank3-d-diagram-cond-24-false')}`} style={{ background: theme.buildingColor, boxShadow: activeHighlight === 'a_building' ? '0 0 25px #2563eb' : `0 15px 35px ${theme.shadow}` }}
                 >
                   <div className="water-tank3-d-diagram-s27">
                     A BUILDING • 75,800 LITRES
@@ -344,7 +344,7 @@ export default function WaterTank3DDiagram({ onSelectTank }) {
                 {/* ─────────────────────────────────────────────────────────── */}
                 <div
                   onClick={() => { setActiveHighlight('common_underground'); if (onSelectTank) onSelectTank('common_underground'); }}
-                  className="water-tank3-d-diagram-s31" style={{ border: activeHighlight === 'common_underground' ? '3px solid #38bdf8' : '2px dashed #0284c7', boxShadow: activeHighlight === 'common_underground' ? '0 0 35px #0284c7, inset 0 0 20px #0284c7' : 'inset 0 0 15px rgba(2,132,199,0.3)' }}
+                  className={`water-tank3-d-diagram-s31 ${(activeHighlight === 'common_underground' ? 'water-tank3-d-diagram-cond-25-true' : 'water-tank3-d-diagram-cond-26-false')}`}
                 >
                   <div className="water-tank3-d-diagram-s32">
                     COMMON UNDERGROUND TANK • 325,000 L
@@ -388,7 +388,7 @@ export default function WaterTank3DDiagram({ onSelectTank }) {
                 {/* ─────────────────────────────────────────────────────────── */}
                 <div 
                   onClick={() => { setActiveHighlight('b_building'); if (onSelectTank) onSelectTank('b_building'); }}
-                  className="water-tank3-d-diagram-s42" style={{ background: theme.buildingColor, boxShadow: activeHighlight === 'b_building' ? '0 0 25px #0284c7' : `0 15px 35px ${theme.shadow}`, border: activeHighlight === 'b_building' ? '2px solid #0284c7' : '1px solid rgba(255,255,255,0.2)' }}
+                  className={`water-tank3-d-diagram-s42 ${(activeHighlight === 'b_building' ? 'water-tank3-d-diagram-cond-27-true' : 'water-tank3-d-diagram-cond-28-false')}`} style={{ background: theme.buildingColor, boxShadow: activeHighlight === 'b_building' ? '0 0 25px #0284c7' : `0 15px 35px ${theme.shadow}` }}
                 >
                   <div className="water-tank3-d-diagram-s43">
                     B BUILDING • 88,600 LITRES
@@ -425,7 +425,7 @@ export default function WaterTank3DDiagram({ onSelectTank }) {
                 {/* ─────────────────────────────────────────────────────────── */}
                 <div 
                   onClick={() => { setActiveHighlight('c_building'); if (onSelectTank) onSelectTank('c_building'); }}
-                  className="water-tank3-d-diagram-s49" style={{ background: theme.buildingColor, boxShadow: activeHighlight === 'c_building' ? '0 0 25px #059669' : `0 15px 35px ${theme.shadow}`, border: activeHighlight === 'c_building' ? '2px solid #059669' : '1px solid rgba(255,255,255,0.2)' }}
+                  className={`water-tank3-d-diagram-s49 ${(activeHighlight === 'c_building' ? 'water-tank3-d-diagram-cond-29-true' : 'water-tank3-d-diagram-cond-30-false')}`} style={{ background: theme.buildingColor, boxShadow: activeHighlight === 'c_building' ? '0 0 25px #059669' : `0 15px 35px ${theme.shadow}` }}
                 >
                   <div className="water-tank3-d-diagram-s50">
                     C BUILDING • 50,000 LITRES

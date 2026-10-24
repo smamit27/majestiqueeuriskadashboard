@@ -214,7 +214,7 @@ export default function WaterTankLevelMonitor() {
                   <button
                     key={pct}
                     onClick={() => setTargetSumpPct(pct)}
-                    className="water-tank-level-monitor-s41" style={{ border: targetSumpPct === pct ? '2px solid #0284c7' : '1px solid #cbd5e1', background: targetSumpPct === pct ? '#f0f9ff' : '#fff', color: targetSumpPct === pct ? '#0284c7' : '#475569' }}
+                    className={`water-tank-level-monitor-s41 ${(targetSumpPct === pct ? 'water-tank-level-monitor-cond-1-true' : 'water-tank-level-monitor-cond-2-false')}`}
                   >
                     {pct}% Fill
                   </button>
@@ -235,7 +235,7 @@ export default function WaterTankLevelMonitor() {
                   <button
                     key={opt.size}
                     onClick={() => setTankerCapacityOption(opt.size)}
-                    className="water-tank-level-monitor-s42" style={{ border: tankerCapacityOption === opt.size ? '2px solid #2563eb' : '1px solid #cbd5e1', background: tankerCapacityOption === opt.size ? '#eff6ff' : '#fff', color: tankerCapacityOption === opt.size ? '#1d4ed8' : '#475569' }}
+                    className={`water-tank-level-monitor-s42 ${(tankerCapacityOption === opt.size ? 'water-tank-level-monitor-cond-3-true' : 'water-tank-level-monitor-cond-4-false')}`}
                   >
                     {opt.label}
                   </button>

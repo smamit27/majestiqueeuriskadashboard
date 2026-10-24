@@ -916,3 +916,151 @@
   line-height: 1.5;
 }
 
+
+/* Extracted Conditional Styles */
+.water-tank-cleaning-analysis-cond-1-true {
+  color: #15803d;
+}
+
+.water-tank-cleaning-analysis-cond-2-false {
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-cond-3-true {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.water-tank-cleaning-analysis-cond-4-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-cond-5-true {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.water-tank-cleaning-analysis-cond-6-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-cond-7-true {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.water-tank-cleaning-analysis-cond-8-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-cond-9-true {
+  background: #059669;
+  color: #ffffff;
+}
+
+.water-tank-cleaning-analysis-cond-10-false {
+  background: transparent;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-cond-11-true {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-cond-12-false {
+  color: #64748b;
+  font-weight: 400;
+}
+
+.water-tank-cleaning-analysis-cond-13-true {
+  color: #dc2626;
+}
+
+.water-tank-cleaning-analysis-cond-14-false {
+  color: #059669;
+}
+
+.water-tank-cleaning-analysis-cond-15-true {
+  color: #0284c7;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-cond-16-false {
+  color: #64748b;
+  font-weight: 400;
+}
+
+.water-tank-cleaning-analysis-cond-17-true {
+  color: #dc2626;
+}
+
+.water-tank-cleaning-analysis-cond-18-false {
+  color: #059669;
+}
+
+.water-tank-cleaning-analysis-cond-19-true {
+  color: #dc2626;
+}
+
+.water-tank-cleaning-analysis-cond-20-false {
+  color: #059669;
+}
+
+.water-tank-cleaning-analysis-cond-21-true {
+  color: #dc2626;
+}
+
+.water-tank-cleaning-analysis-cond-22-false {
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-cond-23-true {
+  color: #dc2626;
+}
+
+.water-tank-cleaning-analysis-cond-24-false {
+  color: #15803d;
+}
+
+.water-tank-cleaning-analysis-cond-25-true {
+  border: 2px solid #0284c7;
+  background: #f0f9ff;
+  color: #0284c7;
+}
+
+.water-tank-cleaning-analysis-cond-26-false {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+}
+
+.water-tank-cleaning-analysis-cond-27-true {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 1px solid #86efac;
+}
+
+.water-tank-cleaning-analysis-cond-28-false {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border: 1px solid #fca5a5;
+}
+
+.water-tank-cleaning-analysis-cond-29-true {
+  color: #15803d;
+}
+
+.water-tank-cleaning-analysis-cond-30-false {
+  color: #b91c1c;
+}
+
+.water-tank-cleaning-analysis-cond-31-true {
+  color: #15803d;
+}
+
+.water-tank-cleaning-analysis-cond-32-false {
+  color: #b91c1c;
+}
+

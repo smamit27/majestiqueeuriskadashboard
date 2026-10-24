@@ -745,7 +745,7 @@ export default function MainDashboard({ stats, isAdmin }) {
                   key={tab.id}
                   type="button"
                   onClick={() => setKpiCategoryFilter(tab.id)}
-                  className="main-dashboard-s7" style={{ border: kpiCategoryFilter === tab.id ? '1px solid rgba(2, 132, 199, 0.4)' : '1px solid rgba(255, 255, 255, 0.7)', background: kpiCategoryFilter === tab.id ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(224, 242, 254, 0.85))' : 'rgba(255, 255, 255, 0.55)', color: kpiCategoryFilter === tab.id ? '#0284c7' : '#475569', boxShadow: kpiCategoryFilter === tab.id ? '0 4px 12px rgba(2, 132, 199, 0.15)' : 'none' }}
+                  className={`main-dashboard-s7 ${(kpiCategoryFilter === tab.id ? 'main-dashboard-cond-1-true' : 'main-dashboard-cond-2-false')}`}
                 >
                   {tab.label}
                 </button>
@@ -1197,7 +1197,7 @@ export default function MainDashboard({ stats, isAdmin }) {
               <div className="main-dashboard-s17">
                 <span className="main-dashboard-s18">Total Income: <strong className="main-dashboard-s19">{fmtCr(financeSummary.totalIncome)}</strong></span>
                 <span className="main-dashboard-s18">Total Expense: <strong className="main-dashboard-s20">{fmtCr(financeSummary.totalExpense)}</strong></span>
-                <span className="main-dashboard-s18">Avg Surplus/mo: <strong style={{ color: financeSummary.avgSurplus >= 0 ? '#065f46' : '#C62828' }}>{fmtCr(financeSummary.avgSurplus)}</strong></span>
+                <span className="main-dashboard-s18">Avg Surplus/mo: <strong className={`${(financeSummary.avgSurplus >= 0 ? 'main-dashboard-cond-3-true' : 'main-dashboard-cond-4-false')}`}>{fmtCr(financeSummary.avgSurplus)}</strong></span>
               </div>
             </LiquidGlassCard>
 

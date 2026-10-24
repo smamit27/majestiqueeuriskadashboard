@@ -425,3 +425,25 @@
   color: #dc2626;
 }
 
+
+/* Extracted Conditional Styles */
+.resident-portal-cond-1-true {
+  background: #0b2b26;
+  color: #C49B4F;
+}
+
+.resident-portal-cond-2-false {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.resident-portal-cond-3-true {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.resident-portal-cond-4-false {
+  background: #fef3c7;
+  color: #b45309;
+}
+

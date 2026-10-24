@@ -568,7 +568,7 @@ Status: Archived in Permanent Society Records.`;
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="monthly-mom-storage-vault-s2" style={{ background: toastMessage.type === 'success' ? '#ecfdf5' : '#eff6ff', color: toastMessage.type === 'success' ? '#065f46' : '#1e40af', border: `1px solid ${toastMessage.type === 'success' ? '#a7f3d0' : '#bfdbfe'}` }}>
+        <div className={`monthly-mom-storage-vault-s2 ${(toastMessage.type === 'success' ? 'monthly-mom-storage-vault-cond-1-true' : 'monthly-mom-storage-vault-cond-2-false')}`} style={{ border: `1px solid ${toastMessage.type === 'success' ? '#a7f3d0' : '#bfdbfe'}` }}>
           <div className="monthly-mom-storage-vault-s3">
             <CheckCircle2 size={18} color="#059669" />
             <span>{toastMessage.msg}</span>
@@ -624,7 +624,7 @@ Status: Archived in Permanent Society Records.`;
             type="button"
             data-testid="filter-scope-all-btn"
             onClick={() => setScopeFilter('ALL')}
-            className="monthly-mom-storage-vault-s14" style={{ background: scopeFilter === 'ALL' ? '#ffffff' : 'transparent', color: scopeFilter === 'ALL' ? '#0f172a' : '#64748b' }}
+            className={`monthly-mom-storage-vault-s14 ${(scopeFilter === 'ALL' ? 'monthly-mom-storage-vault-cond-3-true' : 'monthly-mom-storage-vault-cond-4-false')}`}
           >
             All Scopes ({momArchives.length})
           </button>
@@ -632,7 +632,7 @@ Status: Archived in Permanent Society Records.`;
             type="button"
             data-testid="filter-scope-wing-a-btn"
             onClick={() => setScopeFilter('A_BUILDING')}
-            className="monthly-mom-storage-vault-s14" style={{ background: scopeFilter === 'A_BUILDING' ? '#059669' : 'transparent', color: scopeFilter === 'A_BUILDING' ? '#ffffff' : '#64748b' }}
+            className={`monthly-mom-storage-vault-s14 ${(scopeFilter === 'A_BUILDING' ? 'monthly-mom-storage-vault-cond-5-true' : 'monthly-mom-storage-vault-cond-6-false')}`}
           >
             🏢 Wing 'A' ({momArchives.filter(m => m.scope === 'A_BUILDING').length})
           </button>
@@ -640,7 +640,7 @@ Status: Archived in Permanent Society Records.`;
             type="button"
             data-testid="filter-scope-common-btn"
             onClick={() => setScopeFilter('COMMON')}
-            className="monthly-mom-storage-vault-s14" style={{ background: scopeFilter === 'COMMON' ? '#2563eb' : 'transparent', color: scopeFilter === 'COMMON' ? '#ffffff' : '#64748b' }}
+            className={`monthly-mom-storage-vault-s14 ${(scopeFilter === 'COMMON' ? 'monthly-mom-storage-vault-cond-7-true' : 'monthly-mom-storage-vault-cond-8-false')}`}
           >
             🌐 Common ({momArchives.filter(m => m.scope === 'COMMON').length})
           </button>
@@ -700,7 +700,7 @@ Status: Archived in Permanent Society Records.`;
               <div>
                 {/* Badges Row */}
                 <div className="monthly-mom-storage-vault-s27">
-                  <span className="monthly-mom-storage-vault-s28" style={{ background: mom.scope === 'A_BUILDING' ? '#059669' : '#2563eb' }}>
+                  <span className={`monthly-mom-storage-vault-s28 ${(mom.scope === 'A_BUILDING' ? 'monthly-mom-storage-vault-cond-9-true' : 'monthly-mom-storage-vault-cond-10-false')}`}>
                     {mom.scope === 'A_BUILDING' ? "🏢 WING 'A'" : '🌐 COMMON CAMPUS'}
                   </span>
 
@@ -724,7 +724,7 @@ Status: Archived in Permanent Society Records.`;
                   <span className="monthly-mom-storage-vault-s33">
                     📅 {mom.meetingDate}
                   </span>
-                  <span className="monthly-mom-storage-vault-s34" style={{ background: mom.fileType === 'PDF' ? '#fef2f2' : '#f0fdf4', color: mom.fileType === 'PDF' ? '#dc2626' : '#16a34a', border: `1px solid ${mom.fileType === 'PDF' ? '#fecaca' : '#bbf7d0'}` }}>
+                  <span className={`monthly-mom-storage-vault-s34 ${(mom.fileType === 'PDF' ? 'monthly-mom-storage-vault-cond-11-true' : 'monthly-mom-storage-vault-cond-12-false')}`} style={{ border: `1px solid ${mom.fileType === 'PDF' ? '#fecaca' : '#bbf7d0'}` }}>
                     {mom.fileType === 'PDF' ? '📄 PDF' : '🖼️ IMAGE'} • {mom.fileSize}
                   </span>
                 </div>
@@ -827,7 +827,7 @@ Status: Archived in Permanent Society Records.`;
                       const monthName = new Date(uploadMonth + '-01').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
                       setUploadTitle(`Wing 'A' Monthly MOM — ${monthName}`);
                     }}
-                    className="monthly-mom-storage-vault-s50" style={{ border: uploadScope === 'A_BUILDING' ? '2px solid #059669' : '1px solid #cbd5e1', background: uploadScope === 'A_BUILDING' ? '#ecfdf5' : '#ffffff', color: uploadScope === 'A_BUILDING' ? '#047857' : '#475569' }}
+                    className={`monthly-mom-storage-vault-s50 ${(uploadScope === 'A_BUILDING' ? 'monthly-mom-storage-vault-cond-13-true' : 'monthly-mom-storage-vault-cond-14-false')}`}
                   >
                     🏢 Building 'A'
                   </button>
@@ -838,7 +838,7 @@ Status: Archived in Permanent Society Records.`;
                       const monthName = new Date(uploadMonth + '-01').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
                       setUploadTitle(`Common Infrastructure Monthly MOM — ${monthName}`);
                     }}
-                    className="monthly-mom-storage-vault-s50" style={{ border: uploadScope === 'COMMON' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: uploadScope === 'COMMON' ? '#eff6ff' : '#ffffff', color: uploadScope === 'COMMON' ? '#1d4ed8' : '#475569' }}
+                    className={`monthly-mom-storage-vault-s50 ${(uploadScope === 'COMMON' ? 'monthly-mom-storage-vault-cond-15-true' : 'monthly-mom-storage-vault-cond-16-false')}`}
                   >
                     🌐 Common Society
                   </button>
@@ -1264,7 +1264,7 @@ Status: Archived in Permanent Society Records.`;
                 data-testid="cancel-delete-mom-btn"
                 onClick={() => setDeletingMomDoc(null)}
                 disabled={isDeleting}
-                className="monthly-mom-storage-vault-s116" style={{ cursor: isDeleting ? 'not-allowed' : 'pointer' }}
+                className={`monthly-mom-storage-vault-s116 ${(isDeleting ? 'monthly-mom-storage-vault-cond-17-true' : 'monthly-mom-storage-vault-cond-18-false')}`}
               >
                 Cancel
               </button>
@@ -1274,7 +1274,7 @@ Status: Archived in Permanent Society Records.`;
                 data-testid="confirm-delete-mom-btn"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
-                className="monthly-mom-storage-vault-s117" style={{ background: isDeleting ? '#94a3b8' : '#dc2626', cursor: isDeleting ? 'not-allowed' : 'pointer' }}
+                className={`monthly-mom-storage-vault-s117 ${(isDeleting ? 'monthly-mom-storage-vault-cond-19-true' : 'monthly-mom-storage-vault-cond-20-false')}`}
               >
                 <Trash2 size={15} />
                 <span>{isDeleting ? 'Deleting...' : 'Yes, Delete Document'}</span>

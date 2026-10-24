@@ -13,15 +13,13 @@ export default function HousekeepingModule({ isAdmin = false, staffMembers, staf
       <div className="tab-navigation housekeeping-module-s1">
         <button
           onClick={() => setSubTab('tracking')}
-          className={`sub-tab-button ${subTab === 'tracking' ? 'active' : ''} housekeeping-module-s2`}
-          style={{ background: subTab === 'tracking' ? '#1e3a8a' : 'transparent', color: subTab === 'tracking' ? 'white' : '#64748b' }}
+          className={`sub-tab-button ${subTab === 'tracking' ? 'active' : ''} housekeeping-module-s2 ${(subTab === 'tracking' ? 'housekeeping-module-cond-1-true' : 'housekeeping-module-cond-2-false')}`}
         >
           📋 Housekeeping Deployment
         </button>
         <button
           onClick={() => setSubTab('billing')}
-          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''} housekeeping-module-s2`}
-          style={{ background: subTab === 'billing' ? '#1e3a8a' : 'transparent', color: subTab === 'billing' ? 'white' : '#64748b' }}
+          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''} housekeeping-module-s2 ${(subTab === 'billing' ? 'housekeeping-module-cond-3-true' : 'housekeeping-module-cond-4-false')}`}
         >
           💰 Bill Calculator
         </button>

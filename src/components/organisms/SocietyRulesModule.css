@@ -1275,3 +1275,67 @@
   cursor: pointer;
 }
 
+
+/* Extracted Conditional Styles */
+.society-rules-module-cond-1-true {
+  background: #047857;
+  color: #ffffff;
+}
+
+.society-rules-module-cond-2-false {
+  background: #ffffff;
+  color: #047857;
+}
+
+.society-rules-module-cond-3-true {
+  background: #047857;
+  color: #ffffff;
+}
+
+.society-rules-module-cond-4-false {
+  background: #ffffff;
+  color: #047857;
+}
+
+.society-rules-module-cond-5-true {
+  background: #991b1b;
+  color: #ffffff;
+}
+
+.society-rules-module-cond-6-false {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.society-rules-module-cond-7-true {
+  background: #0f172a;
+  color: #ffffff;
+  border: 1px solid #0f172a;
+}
+
+.society-rules-module-cond-8-false {
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+}
+
+.society-rules-module-cond-9-true {
+  background: rgba(255,255,255,0.25);
+  color: #ffffff;
+}
+
+.society-rules-module-cond-10-false {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.society-rules-module-cond-11-true {
+  background: #059669;
+  color: #ffffff;
+}
+
+.society-rules-module-cond-12-false {
+  background: #f1f5f9;
+  color: #334155;
+}
+
