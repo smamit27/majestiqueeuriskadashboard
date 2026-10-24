@@ -50,7 +50,6 @@ const StorageManager = lazy(() => import('./components/organisms/StorageManager.
 const WorkDistributionList = lazy(() => import('./components/organisms/WorkDistributionList.jsx'));
 const WorkflowManager = lazy(() => import('./components/organisms/WorkflowManager.jsx'));
 const InPortalDocumentViewer = lazy(() => import('./components/organisms/InPortalDocumentViewer.jsx'));
-const AiMomGenerator = lazy(() => import('./components/organisms/AiMomGenerator.jsx'));
 import { ROLES, ROLE_LABELS, MODULES, hasModuleAccess, resolveUserRole } from './services/rbacService.js';
 import { logAuditEvent, AUDIT_ACTIONS } from './services/auditService.js';
 
@@ -223,9 +222,6 @@ const TAB_ICONS = {
   ),
   document_viewer: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-  ),
-  ai_mom_generator: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/><circle cx="12" cy="9" r="1"/></svg>
   )
 };
 
@@ -324,7 +320,7 @@ export default function App() {
     : false;
 
   const isAuthOrDevBypass = Boolean(user || isDevAdminOverride);
-  const PUBLIC_TABS = ['water_management', 'society_rules', 'work_distribution', 'ai_mom_generator'];
+  const PUBLIC_TABS = ['water_management', 'society_rules', 'work_distribution'];
 
 
   // ── Cmd/Ctrl + K → open global search ──────────────────────────
@@ -494,12 +490,6 @@ export default function App() {
             label: 'AGM & Meetings',
             metric: 'AGM 2026 Minutes & Resolutions',
             render: () => <AgmMeetingTracker isAdmin={isAdmin} />
-          },
-          {
-            id: 'ai_mom_generator',
-            label: 'AI MOM Generator',
-            metric: 'Draft A-Building & Common MOM with AI',
-            render: () => <AiMomGenerator isAdmin={isAdmin} />
           },
           {
             id: 'emergency',
