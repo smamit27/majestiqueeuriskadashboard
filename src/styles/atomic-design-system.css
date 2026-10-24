@@ -1,0 +1,504 @@
+/* ==========================================================================
+   Project-Wide Atomic Design System
+   Standard UI tokens, primitives, and component classes
+   Eliminates repetitive inline CSS across all organisms and modules
+   ========================================================================== */
+
+/* ── 1. Atomic Buttons ── */
+.atomic-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  text-decoration: none;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.atomic-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Button Variants */
+.atomic-btn--primary {
+  background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+}
+
+.atomic-btn--primary:hover {
+  background: linear-gradient(135deg, #0f766e 0%, #047857 100%);
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+  transform: translateY(-1px);
+}
+
+.atomic-btn--secondary {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.atomic-btn--secondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.atomic-btn--danger {
+  background: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.atomic-btn--danger:hover {
+  background: #b91c1c;
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
+  transform: translateY(-1px);
+}
+
+.atomic-btn--success {
+  background: #059669;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
+.atomic-btn--success:hover {
+  background: #047857;
+  transform: translateY(-1px);
+}
+
+.atomic-btn--warning {
+  background: #d97706;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+}
+
+.atomic-btn--warning:hover {
+  background: #b45309;
+}
+
+.atomic-btn--ghost {
+  background: transparent;
+  color: #64748b;
+}
+
+.atomic-btn--ghost:hover {
+  background: rgba(241, 245, 249, 0.8);
+  color: #0f172a;
+}
+
+.atomic-btn--icon-only {
+  padding: 7px;
+  border-radius: 8px;
+}
+
+/* Button Sizes */
+.atomic-btn--sm {
+  padding: 5px 10px;
+  font-size: 0.76rem;
+  border-radius: 8px;
+}
+
+.atomic-btn--lg {
+  padding: 11px 22px;
+  font-size: 0.95rem;
+  border-radius: 12px;
+}
+
+/* ── 2. Atomic Badges & Status Pills ── */
+.atomic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.atomic-badge--success {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.atomic-badge--warning {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.atomic-badge--danger {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.atomic-badge--info {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid rgba(2, 132, 199, 0.2);
+}
+
+.atomic-badge--teal {
+  background: rgba(13, 148, 136, 0.12);
+  color: #0f766e;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+.atomic-badge--neutral {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* ── 3. Atomic Form Controls ── */
+.atomic-input {
+  width: 100%;
+  padding: 9px 13px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.88rem;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.atomic-input:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+.atomic-select {
+  width: 100%;
+  padding: 9px 13px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.88rem;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.atomic-select:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+.atomic-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.88rem;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.atomic-textarea:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+/* Search Input with Icon */
+.atomic-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.atomic-search-icon {
+  position: absolute;
+  left: 11px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.atomic-search-input {
+  width: 100%;
+  padding: 8px 30px 8px 34px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.84rem;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.atomic-search-input:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+.atomic-search-clear {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+}
+
+.atomic-search-clear:hover {
+  color: #0f172a;
+}
+
+/* ── 4. Atomic Cards & Panels ── */
+.atomic-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.atomic-card--hover:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  border-color: #cbd5e1;
+}
+
+.atomic-card-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.atomic-card-body {
+  padding: 22px;
+}
+
+.atomic-card-footer {
+  padding: 14px 22px;
+  border-top: 1px solid #f1f5f9;
+  background: #fafbfc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Stat Cards */
+.atomic-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.atomic-stat-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.atomic-stat-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.atomic-stat-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.atomic-stat-lbl {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ── 5. Atomic Filter Pills Group ── */
+.atomic-pills-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 8px 0;
+  scrollbar-width: thin;
+}
+
+.atomic-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.atomic-filter-pill:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.atomic-filter-pill--active {
+  font-weight: 700;
+  background: #f0fdfa;
+  border-color: #0d9488;
+  color: #0f766e;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.12);
+}
+
+/* ── 6. Atomic Modals ── */
+.atomic-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.atomic-modal-container {
+  background: #ffffff;
+  border-radius: 18px;
+  max-width: 580px;
+  width: 100%;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 90vh;
+}
+
+.atomic-modal-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.atomic-modal-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.atomic-modal-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.atomic-modal-close:hover {
+  color: #0f172a;
+}
+
+.atomic-modal-body {
+  padding: 22px;
+  overflow-y: auto;
+}
+
+.atomic-modal-footer {
+  padding: 14px 22px;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ── 7. Atomic Data Tables ── */
+.atomic-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.atomic-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  text-align: left;
+}
+
+.atomic-th {
+  background: #f8fafc;
+  padding: 11px 16px;
+  font-weight: 700;
+  color: #475569;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.atomic-td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+  vertical-align: middle;
+}
+
+.atomic-tr:hover {
+  background: #f8fafc;
+}
+
+.atomic-empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}

@@ -5,7 +5,17 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { saveDocumentFile, getDocumentFile, deleteDocumentFile, createSafeBlobUrl } from '../../utils/documentStorageDb.js';
 import { logAuditEvent, AUDIT_ACTIONS } from '../../services/auditService.js';
 import { ROLES, canEditModule, MODULES } from '../../services/rbacService.js';
-import { DocumentViewerModal } from './InPortalDocumentViewer.jsx';
+import {
+  AtomicButton,
+  AtomicBadge,
+  AtomicEmptyState
+} from '../atoms/index.js';
+import {
+  AtomicSearchBar,
+  AtomicModal,
+  AtomicFilterPills,
+  DocumentViewerModal
+} from '../molecules/index.js';
 
 export const DOCUMENT_CATEGORIES = [
   'All Categories',
@@ -517,29 +527,26 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
   };
 
   return (
-    <div className="section-card" style={{ padding: '24px', borderRadius: '16px', background: 'white' }}>
+    <div className="atomic-card" style={{ padding: '24px' }}>
       {/* Header Banner */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '1.8rem' }}>📁</span>
-            <div>
-              <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0b2b26' }}>Society Document Vault</h2>
-              <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#5f665f' }}>
-                Secure legal, AGM, compliance, and vendor agreements repository for Majestique Euriska
-              </p>
-            </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontSize: '1.8rem' }}>📁</span>
+          <div>
+            <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0b2b26' }}>Society Document Vault</h2>
+            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#5f665f' }}>
+              Secure legal, AGM, compliance, and vendor agreements repository for Majestique Euriska
+            </p>
           </div>
         </div>
 
         {canUpload && (
-          <button
+          <AtomicButton
+            variant="primary"
             onClick={() => setIsUploadModalOpen(true)}
-            className="button-primary"
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', borderRadius: '10px' }}
           >
             <span>+</span> Upload Document
-          </button>
+          </AtomicButton>
         )}
       </div>
 
@@ -547,21 +554,18 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px', background: '#f8fafc', padding: '16px', borderRadius: '12px' }}>
         {/* Search */}
         <div style={{ flex: '1 1 240px', minWidth: '200px' }}>
-          <input
-            type="text"
-            className="attendance-register-input"
-            style={{ width: '100%', textAlign: 'left', padding: '9px 14px', borderRadius: '8px' }}
-            placeholder="Search documents by title, keyword, or uploader..."
+          <AtomicSearchBar
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={setSearchQuery}
+            onClear={() => setSearchQuery('')}
+            placeholder="Search documents by title, keyword, or uploader..."
           />
         </div>
 
         {/* Category Dropdown */}
         <div style={{ flex: '0 1 200px' }}>
           <select
-            className="attendance-register-input"
-            style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', cursor: 'pointer' }}
+            className="atomic-select"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
@@ -575,8 +579,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
         {userRole !== ROLES.RESIDENT && userRole !== ROLES.SECURITY && (
           <div style={{ flex: '0 1 200px' }}>
             <select
-              className="attendance-register-input"
-              style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', cursor: 'pointer' }}
+              className="atomic-select"
               value={accessFilter}
               onChange={(e) => setAccessFilter(e.target.value)}
             >
@@ -593,31 +596,30 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
       {isLoading ? (
         <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>Loading document records...</div>
       ) : visibleDocuments.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px', background: '#f1f5f9', borderRadius: '12px', color: '#64748b' }}>
-          <span style={{ fontSize: '2rem', display: 'block', marginBottom: '8px' }}>📂</span>
-          <strong>No matching documents found.</strong>
-          <p style={{ fontSize: '0.85rem', margin: '6px 0 0' }}>Try adjusting your search filters or upload a new record.</p>
-        </div>
+        <AtomicEmptyState
+          title="No matching documents found."
+          description="Try adjusting your search filters or upload a new record."
+        />
       ) : (
-        <div style={{ overflowX: 'auto', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '12px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+        <div className="atomic-table-wrap">
+          <table className="atomic-table">
             <thead>
-              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid rgba(0,0,0,0.06)' }}>
-                <th style={{ padding: '12px 16px' }}>Document Name</th>
-                <th style={{ padding: '12px 16px' }}>Category</th>
-                <th style={{ padding: '12px 16px' }}>Version</th>
-                <th style={{ padding: '12px 16px' }}>Uploaded On</th>
-                <th style={{ padding: '12px 16px' }}>Access Level</th>
-                <th style={{ padding: '12px 16px' }}>Expiry</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right' }}>Action</th>
+              <tr>
+                <th className="atomic-th">Document Name</th>
+                <th className="atomic-th">Category</th>
+                <th className="atomic-th">Version</th>
+                <th className="atomic-th">Uploaded On</th>
+                <th className="atomic-th">Access Level</th>
+                <th className="atomic-th">Expiry</th>
+                <th className="atomic-th" style={{ textAlign: 'right' }}>Action</th>
               </tr>
             </thead>
             <tbody>
               {visibleDocuments.map((doc, idx) => {
                 const isExpiring = doc.expiryDate && (new Date(doc.expiryDate) - new Date()) / 86400000 < 60;
                 return (
-                  <tr key={doc.id || idx} style={{ borderBottom: '1px solid rgba(0,0,0,0.05)', transition: 'background 0.15s' }}>
-                    <td style={{ padding: '14px 16px', fontWeight: 600 }}>
+                  <tr key={doc.id || idx} className="atomic-tr">
+                    <td className="atomic-td" style={{ fontWeight: 600 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ color: '#ef4444', fontWeight: 800 }}>📄</span>
                         <div>
@@ -626,26 +628,19 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: '14px 16px' }}>
-                      <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '3px 8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700 }}>
+                    <td className="atomic-td">
+                      <AtomicBadge variant="info">
                         {doc.category}
-                      </span>
+                      </AtomicBadge>
                     </td>
-                    <td style={{ padding: '14px 16px', color: '#475569' }}>v{doc.version || '1.0'}</td>
-                    <td style={{ padding: '14px 16px', color: '#475569' }}>{doc.uploadDate}</td>
-                    <td style={{ padding: '14px 16px' }}>
-                      <span style={{
-                        padding: '3px 8px',
-                        borderRadius: '6px',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        background: doc.accessLevel === 'PUBLIC_RESIDENTS' ? '#dcfce7' : '#fef3c7',
-                        color: doc.accessLevel === 'PUBLIC_RESIDENTS' ? '#15803d' : '#b45309'
-                      }}>
+                    <td className="atomic-td" style={{ color: '#475569' }}>v{doc.version || '1.0'}</td>
+                    <td className="atomic-td" style={{ color: '#475569' }}>{doc.uploadDate}</td>
+                    <td className="atomic-td">
+                      <AtomicBadge variant={doc.accessLevel === 'PUBLIC_RESIDENTS' ? 'success' : 'warning'}>
                         {doc.accessLevel === 'PUBLIC_RESIDENTS' ? 'Public' : 'Committee Only'}
-                      </span>
+                      </AtomicBadge>
                     </td>
-                    <td style={{ padding: '14px 16px' }}>
+                    <td className="atomic-td">
                       {doc.expiryDate ? (
                         <span style={{ color: isExpiring ? '#dc2626' : '#475569', fontWeight: isExpiring ? 700 : 500 }}>
                           {doc.expiryDate} {isExpiring && '⚠️'}
@@ -654,9 +649,10 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                         <span style={{ color: '#94a3b8' }}>Perpetual</span>
                       )}
                     </td>
-                    <td style={{ padding: '14px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                    <td className="atomic-td" style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'inline-flex', gap: '6px', alignItems: 'center', justifyContent: 'flex-end' }}>
                         <button
+                          type="button"
                           onClick={() => {
                             const targetUrl = (doc.downloadUrl && doc.downloadUrl !== '#')
                               ? doc.downloadUrl
@@ -672,37 +668,14 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                             }
                           }}
                           title="Print Document (Native Clean Print)"
-                          style={{
-                            background: '#1e293b',
-                            color: '#e2e8f0',
-                            border: '1px solid #334155',
-                            padding: '6px 10px',
-                            borderRadius: '6px',
-                            fontSize: '0.76rem',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
+                          className="atomic-btn atomic-btn--secondary atomic-btn--sm"
                         >
                           🖨️ Print
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleViewInPortal(doc)}
-                          style={{
-                            background: '#0d9488',
-                            color: '#ffffff',
-                            border: 'none',
-                            padding: '6px 10px',
-                            borderRadius: '6px',
-                            fontSize: '0.76rem',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
+                          className="atomic-btn atomic-btn--primary atomic-btn--sm"
                         >
                           👁️ View
                         </button>
@@ -710,18 +683,8 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                           href={doc.downloadUrl || '#'}
                           download={doc.name}
                           onClick={(e) => handleDownloadDoc(doc, e)}
-                          style={{
-                            textDecoration: 'none',
-                            background: '#0b2b26',
-                            color: '#C49B4F',
-                            padding: '6px 10px',
-                            borderRadius: '6px',
-                            fontSize: '0.76rem',
-                            fontWeight: 700,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
+                          className="atomic-btn atomic-btn--secondary atomic-btn--sm"
+                          style={{ background: '#0b2b26', color: '#C49B4F', borderColor: '#0b2b26' }}
                         >
                           ⬇ Download
                         </a>
@@ -731,19 +694,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                             data-testid={`delete-doc-btn-${doc.id || doc.name}`}
                             onClick={(e) => handleRequestDelete(doc, e)}
                             title="Delete Document"
-                            style={{
-                              background: '#fef2f2',
-                              color: '#dc2626',
-                              border: '1px solid #fecaca',
-                              padding: '6px 10px',
-                              borderRadius: '6px',
-                              fontSize: '0.76rem',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '4px'
-                            }}
+                            className="atomic-btn atomic-btn--danger atomic-btn--sm"
                           >
                             🗑️ Delete
                           </button>
@@ -759,121 +710,111 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
       )}
 
       {/* Upload Modal */}
-      {isUploadModalOpen && (
-        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100 }}>
-          <div className="section-card" style={{ width: 'min(92vw, 550px)', background: 'white', padding: '28px', borderRadius: '16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ margin: 0, fontSize: '1.25rem' }}>Upload Society Document</h3>
-              <button onClick={() => setIsUploadModalOpen(false)} style={{ border: 'none', background: 'none', fontSize: '1.4rem', cursor: 'pointer' }}>×</button>
+      <AtomicModal
+        isOpen={isUploadModalOpen}
+        title="Upload Society Document"
+        onClose={() => setIsUploadModalOpen(false)}
+        maxWidth="550px"
+      >
+        <form onSubmit={handleUploadSubmit} style={{ display: 'grid', gap: '14px' }}>
+          <div>
+            <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Document Title *</label>
+            <input
+              type="text"
+              required
+              className="atomic-input"
+              placeholder="e.g. AGM 2026 Minutes & Accounts"
+              value={docName}
+              onChange={(e) => setDocName(e.target.value)}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div>
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Category *</label>
+              <select
+                className="atomic-select"
+                value={docCategory}
+                onChange={(e) => setDocCategory(e.target.value)}
+              >
+                {DOCUMENT_CATEGORIES.filter(c => c !== 'All Categories').map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
             </div>
 
-            <form onSubmit={handleUploadSubmit} style={{ display: 'grid', gap: '14px' }}>
-              <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Document Title *</label>
-                <input
-                  type="text"
-                  required
-                  className="attendance-register-input"
-                  style={{ width: '100%', textAlign: 'left' }}
-                  placeholder="e.g. AGM 2026 Minutes & Accounts"
-                  value={docName}
-                  onChange={(e) => setDocName(e.target.value)}
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Category *</label>
-                  <select
-                    className="attendance-register-input"
-                    style={{ width: '100%' }}
-                    value={docCategory}
-                    onChange={(e) => setDocCategory(e.target.value)}
-                  >
-                    {DOCUMENT_CATEGORIES.filter(c => c !== 'All Categories').map(c => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Access Level *</label>
-                  <select
-                    className="attendance-register-input"
-                    style={{ width: '100%' }}
-                    value={docAccess}
-                    onChange={(e) => setDocAccess(e.target.value)}
-                  >
-                    <option value="PUBLIC_RESIDENTS">Public (Residents & Committee)</option>
-                    <option value="COMMITTEE_ONLY">Committee Only</option>
-                    <option value="ADMIN_ONLY">Admin Only</option>
-                  </select>
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Version</label>
-                  <input
-                    type="text"
-                    className="attendance-register-input"
-                    style={{ width: '100%', textAlign: 'left' }}
-                    placeholder="1.0"
-                    value={docVersion}
-                    onChange={(e) => setDocVersion(e.target.value)}
-                  >
-                  </input>
-                </div>
-
-                <div>
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Expiry Date (Optional)</label>
-                  <input
-                    type="date"
-                    className="attendance-register-input"
-                    style={{ width: '100%' }}
-                    value={docExpiry}
-                    onChange={(e) => setDocExpiry(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Attach File (PDF, DOCX, XLSX)</label>
-                <input
-                  type="file"
-                  accept=".pdf,.docx,.xlsx,.jpg,.png"
-                  onChange={handleFileChange}
-                  style={{ width: '100%', fontSize: '0.85rem' }}
-                />
-              </div>
-
-              <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Description / Notes</label>
-                <textarea
-                  className="attendance-register-input"
-                  rows={2}
-                  style={{ width: '100%', textAlign: 'left', resize: 'vertical' }}
-                  placeholder="Key resolution points, approval notes, or vendor details..."
-                  value={docNotes}
-                  onChange={(e) => setDocNotes(e.target.value)}
-                />
-              </div>
-
-              {uploadError && <p style={{ color: '#ef4444', fontSize: '0.85rem', margin: 0 }}>{uploadError}</p>}
-              {uploadSuccess && <p style={{ color: '#10b981', fontSize: '0.85rem', margin: 0 }}>{uploadSuccess}</p>}
-
-              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '10px' }}>
-                <button type="button" className="button-secondary" onClick={() => setIsUploadModalOpen(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="button-primary">
-                  Upload & Archive
-                </button>
-              </div>
-            </form>
+            <div>
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Access Level *</label>
+              <select
+                className="atomic-select"
+                value={docAccess}
+                onChange={(e) => setDocAccess(e.target.value)}
+              >
+                <option value="PUBLIC_RESIDENTS">Public (Residents & Committee)</option>
+                <option value="COMMITTEE_ONLY">Committee Only</option>
+                <option value="ADMIN_ONLY">Admin Only</option>
+              </select>
+            </div>
           </div>
-        </div>
-      )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div>
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Version</label>
+              <input
+                type="text"
+                className="atomic-input"
+                placeholder="1.0"
+                value={docVersion}
+                onChange={(e) => setDocVersion(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Expiry Date (Optional)</label>
+              <input
+                type="date"
+                className="atomic-input"
+                value={docExpiry}
+                onChange={(e) => setDocExpiry(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Attach File (PDF, DOCX, XLSX)</label>
+            <input
+              type="file"
+              accept=".pdf,.docx,.xlsx,.jpg,.png"
+              onChange={handleFileChange}
+              className="atomic-input"
+              style={{ fontSize: '0.85rem' }}
+            />
+          </div>
+
+          <div>
+            <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Description / Notes</label>
+            <textarea
+              className="atomic-textarea"
+              rows={2}
+              placeholder="Key resolution points, approval notes, or vendor details..."
+              value={docNotes}
+              onChange={(e) => setDocNotes(e.target.value)}
+            />
+          </div>
+
+          {uploadError && <p style={{ color: '#ef4444', fontSize: '0.85rem', margin: 0 }}>{uploadError}</p>}
+          {uploadSuccess && <p style={{ color: '#10b981', fontSize: '0.85rem', margin: 0 }}>{uploadSuccess}</p>}
+
+          <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '10px' }}>
+            <AtomicButton variant="secondary" onClick={() => setIsUploadModalOpen(false)}>
+              Cancel
+            </AtomicButton>
+            <AtomicButton variant="primary" type="submit">
+              Upload & Archive
+            </AtomicButton>
+          </div>
+        </form>
+      </AtomicModal>
 
       {/* ── In-Portal Document & Presentation Viewer Modal ── */}
       {inPortalViewDoc && (
@@ -889,47 +830,29 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
       {deletingDoc && (
         <div
           data-testid="delete-doc-modal"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(15, 23, 42, 0.7)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1150,
-            padding: '16px'
-          }}
+          className="atomic-modal-backdrop"
           onClick={(e) => {
             if (e.target === e.currentTarget && !isDeleting) setDeletingDoc(null);
           }}
         >
-          <div
-            style={{
-              background: '#ffffff',
-              borderRadius: '16px',
-              maxWidth: '460px',
-              width: '100%',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              overflow: 'hidden',
-              border: '1px solid #fee2e2'
-            }}
-          >
-            <div style={{ background: '#fef2f2', padding: '18px 22px', borderBottom: '1px solid #fecaca', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ background: '#fee2e2', color: '#dc2626', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '1.2rem' }}>
-                🗑️
-              </div>
-              <div>
-                <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#991b1b' }}>
-                  Delete Document Record?
-                </h4>
-                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#b91c1c' }}>
-                  This action permanently removes this document
-                </p>
+          <div className="atomic-modal-container" style={{ maxWidth: '460px', border: '1px solid #fee2e2' }}>
+            <div className="atomic-modal-header" style={{ background: '#fef2f2', borderBottom: '1px solid #fecaca' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ background: '#fee2e2', color: '#dc2626', width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>
+                  🗑️
+                </div>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#991b1b' }}>
+                    Delete Document Record?
+                  </h4>
+                  <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#b91c1c' }}>
+                    This action permanently removes this document
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div style={{ padding: '20px 22px' }}>
+            <div className="atomic-modal-body">
               <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0', marginBottom: '16px', fontSize: '0.84rem' }}>
                 <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>
                   {deletingDoc.name}
@@ -948,22 +871,13 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
               </div>
             </div>
 
-            <div style={{ padding: '14px 22px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+            <div className="atomic-modal-footer">
               <button
                 type="button"
                 data-testid="cancel-delete-doc-btn"
                 onClick={() => setDeletingDoc(null)}
                 disabled={isDeleting}
-                style={{
-                  padding: '9px 16px',
-                  borderRadius: '8px',
-                  border: '1px solid #cbd5e1',
-                  background: '#ffffff',
-                  color: '#475569',
-                  fontSize: '0.84rem',
-                  fontWeight: 700,
-                  cursor: isDeleting ? 'not-allowed' : 'pointer'
-                }}
+                className="atomic-btn atomic-btn--secondary"
               >
                 Cancel
               </button>
@@ -973,19 +887,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                 data-testid="confirm-delete-doc-btn"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
-                style={{
-                  padding: '9px 18px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: isDeleting ? '#94a3b8' : '#dc2626',
-                  color: '#ffffff',
-                  fontSize: '0.84rem',
-                  fontWeight: 800,
-                  cursor: isDeleting ? 'not-allowed' : 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
+                className="atomic-btn atomic-btn--danger"
               >
                 {isDeleting ? 'Deleting...' : '🗑️ Delete Document'}
               </button>

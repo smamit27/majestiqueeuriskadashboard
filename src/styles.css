@@ -1,4 +1,5 @@
 @import './styles/liquid-glass-components.css';
+@import './styles/atomic-design-system.css';
 
 :root {
   color-scheme: light;
