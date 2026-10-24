@@ -24,7 +24,11 @@ import {
   Mic,
   MicOff,
   Share2,
-  Zap
+  Zap,
+  FolderOpen,
+  ArrowLeft,
+  ExternalLink,
+  BookmarkPlus
 } from 'lucide-react';
 import { generateMeetingMOM } from '../../services/aiMomService.js';
 import { 
@@ -39,6 +43,8 @@ import { collection, addDoc, getDocs, query, orderBy, limit } from 'firebase/fir
 import MultiSelectDropdown from '../molecules/MultiSelectDropdown.jsx';
 import { COMMITTEE_MEMBERS } from '../../data/committeeMembersData.js';
 import VisualAgendaPoster from './VisualAgendaPoster.jsx';
+import { OFFICIAL_MOM_TEMPLATES } from '../../data/momTemplatesData.js';
+import AiMomSkeletonLoader from '../molecules/AiMomSkeletonLoader.jsx';
 
 const SAMPLE_A_BUILDING_NOTES = `Wing A Managing Committee Monthly Review:
 1. Lift 1 between 4th and 5th floor had reported jerky movement. Otis technician visited on Tuesday, diagnosed sensor calibration issue. Sensor replaced under AMC; lift running smoothly now.
@@ -75,6 +81,20 @@ export default function AiMomGenerator({ isAdmin = false }) {
   const [saveFeedback, setSaveFeedback] = useState(false);
   const [savedMoms, setSavedMoms] = useState([]);
   const [editableMom, setEditableMom] = useState(null);
+  const [historyFilter, setHistoryFilter] = useState('all'); // 'all' | 'official' | 'wingA' | 'common' | 'saved'
+
+  // Filtered Templates & Drafts
+  const filteredOfficialTemplates = useMemo(() => {
+    if (historyFilter === 'wingA') return OFFICIAL_MOM_TEMPLATES.filter(t => t.scope === 'A_BUILDING');
+    if (historyFilter === 'common') return OFFICIAL_MOM_TEMPLATES.filter(t => t.scope === 'COMMON');
+    return OFFICIAL_MOM_TEMPLATES;
+  }, [historyFilter]);
+
+  const filteredSavedMoms = useMemo(() => {
+    if (historyFilter === 'wingA') return savedMoms.filter(m => m.scope === 'A_BUILDING');
+    if (historyFilter === 'common') return savedMoms.filter(m => m.scope === 'COMMON');
+    return savedMoms;
+  }, [savedMoms, historyFilter]);
 
   // ── AI Secretary Agent States & Autonomous Handlers ──
   const [agentFeedback, setAgentFeedback] = useState(null);
@@ -262,6 +282,16 @@ export default function AiMomGenerator({ isAdmin = false }) {
     }
 
     setIsGenerating(true);
+    const startTime = Date.now();
+
+    // Scroll into view of the skeleton loader
+    setTimeout(() => {
+      const skeletonEl = document.getElementById('ai-mom-generation-skeleton');
+      if (skeletonEl && typeof skeletonEl.scrollIntoView === 'function') {
+        skeletonEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 60);
+
     try {
       // Format selected committee members into official flat (name) labels
       const formattedAttendees = selectedAttendees.map(val => {
@@ -279,6 +309,14 @@ export default function AiMomGenerator({ isAdmin = false }) {
         chairperson,
         attendees: formattedAttendees
       });
+
+      // Ensure skeleton is visible for at least 1200ms so user can view the AI drafting skeleton
+      const elapsed = Date.now() - startTime;
+      const isTestEnv = typeof import.meta !== 'undefined' && import.meta.env?.MODE === 'test';
+      if (elapsed < 1200 && !isTestEnv) {
+        await new Promise(res => setTimeout(res, 1200 - elapsed));
+      }
+
       setGeneratedMom(result);
       setActiveView('preview');
 
@@ -442,31 +480,98 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
     URL.revokeObjectURL(url);
   };
 
-  // Save to persistent records
+  // Save to persistent records & local history
   const handleSaveToRecords = async () => {
     const docToSave = editableMom || generatedMom;
     if (!docToSave) return;
 
+    const recordToSave = {
+      ...docToSave,
+      id: docToSave.id || `mom-rec-${Date.now()}`,
+      savedAt: new Date().toISOString(),
+      rawNotes
+    };
+
+    // 1. Immediately update state and localStorage
+    setSavedMoms(prev => {
+      const updated = [recordToSave, ...prev.filter(m => m.id !== recordToSave.id)];
+      try {
+        localStorage.setItem('euriska_ai_moms', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+
+    setSaveFeedback(true);
+    setTimeout(() => setSaveFeedback(false), 2500);
+
+    setAgentFeedback({
+      type: 'success',
+      message: `Minutes of Meeting saved successfully to society history records!`
+    });
+    setTimeout(() => setAgentFeedback(null), 3500);
+
     try {
       if (isFirebaseConfigured && db) {
-        await addDoc(collection(db, 'aiMeetingMinutes'), {
-          ...docToSave,
-          savedAt: new Date().toISOString()
-        });
+        await addDoc(collection(db, 'aiMeetingMinutes'), recordToSave);
       }
-      setSaveFeedback(true);
-      setTimeout(() => setSaveFeedback(false), 2500);
     } catch (err) {
-      console.warn('Error saving to Firestore:', err);
-      setSaveFeedback(true);
-      setTimeout(() => setSaveFeedback(false), 2500);
+      console.warn('Error saving to Firestore (local copy preserved):', err);
     }
   };
 
-  // Restore past MOM from history
+  // Save current MOM as a reusable template in History
+  const handleSaveAsTemplate = () => {
+    const docToSave = editableMom || generatedMom;
+    if (!docToSave) return;
+
+    const defaultTitle = docToSave.title ? `${docToSave.title} (Template)` : `Custom Wing '${scope === 'A_BUILDING' ? 'A' : 'Common'}' Template`;
+    const templateTitle = window.prompt('Enter a name for this custom template:', defaultTitle);
+
+    if (templateTitle === null) return; // user cancelled
+
+    const newTemplate = {
+      ...docToSave,
+      id: `custom-tmpl-${Date.now()}`,
+      isCustomTemplate: true,
+      title: templateTitle.trim() || defaultTitle,
+      savedAt: new Date().toISOString(),
+      headerInfo: {
+        ...docToSave.headerInfo,
+        meetingType: meetingType,
+        meetingDate: meetingDate,
+        meetingTime: meetingTime,
+        venue: venue,
+        chairperson: chairperson
+      },
+      rawNotes
+    };
+
+    setSavedMoms(prev => {
+      const updated = [newTemplate, ...prev.filter(m => m.id !== newTemplate.id)];
+      try {
+        localStorage.setItem('euriska_ai_moms', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+
+    setAgentFeedback({
+      type: 'success',
+      message: `Template "${newTemplate.title}" saved successfully into Meeting History & Templates!`
+    });
+    setTimeout(() => setAgentFeedback(null), 4000);
+  };
+
+  // Restore past MOM or Official Template
   const handleRestoreFromHistory = (item) => {
-    setGeneratedMom(item);
-    setEditableMom(JSON.parse(JSON.stringify(item)));
+    const docToRestore = item.sampleMOM ? {
+      ...item.sampleMOM,
+      headerInfo: item.headerInfo,
+      rawNotes: item.rawNotes,
+      scope: item.scope
+    } : item;
+
+    setGeneratedMom(docToRestore);
+    setEditableMom(JSON.parse(JSON.stringify(docToRestore)));
     setScope(item.scope);
     setMeetingType(item.headerInfo?.meetingType || 'Managing Committee Meeting');
     setMeetingDate(item.headerInfo?.meetingDate || new Date().toISOString().split('T')[0]);
@@ -482,6 +587,33 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
     }
     if (item.rawNotes) setRawNotes(item.rawNotes);
     setActiveView('preview');
+  };
+
+  // Load an official template into the generator form
+  const handleLoadTemplateIntoForm = (template) => {
+    setScope(template.scope);
+    setMeetingType(template.headerInfo?.meetingType || 'Managing Committee Meeting');
+    setMeetingDate(template.headerInfo?.meetingDate || new Date().toISOString().split('T')[0]);
+    setMeetingTime(template.headerInfo?.meetingTime || '11:00 AM');
+    setVenue(template.headerInfo?.venue || '');
+    setChairperson(template.headerInfo?.chairperson || '');
+    if (template.headerInfo?.attendees && Array.isArray(template.headerInfo.attendees)) {
+      const restored = template.headerInfo.attendees.map(att => {
+        const found = COMMITTEE_MEMBERS.find(m => m.id === att || m.formatted === att || m.label === att);
+        return found ? found.id : att;
+      });
+      setSelectedAttendees(restored);
+    }
+    if (template.rawNotes) setRawNotes(template.rawNotes);
+    setAgentFeedback({
+      type: 'success',
+      message: `Template "${template.title}" loaded into form. Ready to customize or generate!`
+    });
+    setTimeout(() => setAgentFeedback(null), 4000);
+    const el = document.getElementById('mom-notes-textarea');
+    if (el && typeof el.scrollIntoView === 'function') {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   };
 
   // Delete an item from history
@@ -559,17 +691,39 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           </p>
         </div>
 
-        {/* Quick History Pill */}
-        {savedMoms.length > 0 && (
-          <button
-            onClick={() => setActiveView('history')}
-            className="button-secondary"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', padding: '8px 14px' }}
-          >
-            <History size={14} />
-            Meeting History ({savedMoms.length})
-          </button>
-        )}
+        {/* Quick History & Templates Action Button */}
+        <button
+          type="button"
+          data-testid="header-meeting-history-btn"
+          onClick={() => {
+            setActiveView('history');
+            setTimeout(() => {
+              const el = document.getElementById('meeting-history-templates-view');
+              if (el && typeof el.scrollIntoView === 'function') {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }, 60);
+          }}
+          className="button-secondary"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '0.84rem',
+            fontWeight: 700,
+            padding: '8px 16px',
+            borderRadius: '10px',
+            background: activeView === 'history' ? '#0f172a' : '#f8fafc',
+            color: activeView === 'history' ? '#ffffff' : '#1e293b',
+            border: activeView === 'history' ? '1.5px solid #0f172a' : '1.5px solid #cbd5e1',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
+          }}
+        >
+          <History size={15} />
+          Meeting History & Templates ({savedMoms.length + OFFICIAL_MOM_TEMPLATES.length})
+        </button>
       </div>
 
       {/* ── Big Scope Switcher: Building 'A' vs Common ── */}
@@ -812,7 +966,49 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           <label style={{ fontSize: '0.82rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             Enter Raw Notes / Discussions / Bullet Points:
           </label>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              data-testid="quick-wing-a-template-btn"
+              onClick={() => {
+                const tmpl = OFFICIAL_MOM_TEMPLATES.find(t => t.id === 'tmpl-wing-a-monthly');
+                if (tmpl) handleLoadTemplateIntoForm(tmpl);
+              }}
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                padding: '4px 10px',
+                borderRadius: '6px',
+                border: '1px solid #a7f3d0',
+                background: '#ecfdf5',
+                color: '#047857',
+                cursor: 'pointer'
+              }}
+              title="Load official pre-configured Wing 'A' template into form"
+            >
+              🏢 Wing 'A' Template
+            </button>
+            <button
+              type="button"
+              data-testid="quick-common-template-btn"
+              onClick={() => {
+                const tmpl = OFFICIAL_MOM_TEMPLATES.find(t => t.id === 'tmpl-common-infra-monthly');
+                if (tmpl) handleLoadTemplateIntoForm(tmpl);
+              }}
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                padding: '4px 10px',
+                borderRadius: '6px',
+                border: '1px solid #bfdbfe',
+                background: '#eff6ff',
+                color: '#1d4ed8',
+                cursor: 'pointer'
+              }}
+              title="Load official common campus template into form"
+            >
+              🌐 Common Template
+            </button>
             <button
               type="button"
               onClick={() => {
@@ -894,6 +1090,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
 
         {/* Big Textarea */}
         <textarea
+          id="mom-notes-textarea"
           value={rawNotes}
           onChange={e => setRawNotes(e.target.value)}
           placeholder="Paste or type meeting discussion points, lift complaints, vendor updates, dues status, decisions taken, or spoken transcript..."
@@ -922,6 +1119,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
 
           <button
             type="button"
+            data-testid="generate-mom-btn"
             onClick={handleGenerate}
             disabled={isGenerating || !rawNotes.trim()}
             style={{
@@ -947,90 +1145,100 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
         </div>
       </div>
 
-      {/* ── Generated MOM Workspace ── */}
-      {generatedMom && (
+      {/* ── SKELETON LOADER STATE (Animated skeleton letterhead while generating) ── */}
+      {isGenerating && (
+        <AiMomSkeletonLoader scope={scope} />
+      )}
+
+      {/* ── Generated MOM Workspace or History & Templates View ── */}
+      {!isGenerating && (generatedMom || activeView === 'history') && (
         <div className="mom-output-workspace" style={{ marginTop: '30px' }}>
           
           {/* Navigation & Action Toolbar */}
           <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px', paddingBottom: '14px', borderBottom: '1px solid #e2e8f0' }}>
             
             {/* View Mode Tabs */}
-            <div style={{ display: 'flex', gap: '6px', background: '#f1f5f9', padding: '4px', borderRadius: '10px' }}>
+            <div style={{ display: 'flex', gap: '6px', background: '#f1f5f9', padding: '4px', borderRadius: '10px', flexWrap: 'wrap' }}>
+              {generatedMom && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setActiveView('preview')}
+                    style={{
+                      padding: '7px 14px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      background: activeView === 'preview' ? '#ffffff' : 'transparent',
+                      color: activeView === 'preview' ? '#0f172a' : '#64748b',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: activeView === 'preview' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
+                    }}
+                  >
+                    📄 Official Letterhead
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveView('edit')}
+                    style={{
+                      padding: '7px 14px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      background: activeView === 'edit' ? '#ffffff' : 'transparent',
+                      color: activeView === 'edit' ? '#0f172a' : '#64748b',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: activeView === 'edit' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
+                    }}
+                  >
+                    ✏️ Edit & Customize
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveView('actions')}
+                    style={{
+                      padding: '7px 14px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      background: activeView === 'actions' ? '#ffffff' : 'transparent',
+                      color: activeView === 'actions' ? '#0f172a' : '#64748b',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: activeView === 'actions' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
+                    }}
+                  >
+                    📋 Action Register ({activeDoc.actionItems?.length || 0})
+                  </button>
+                  <button
+                    type="button"
+                    data-testid="view-poster-tab-btn"
+                    onClick={() => setActiveView('poster')}
+                    style={{
+                      padding: '7px 14px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      background: activeView === 'poster' ? '#ffffff' : 'transparent',
+                      color: activeView === 'poster' ? '#d90429' : '#64748b',
+                      fontSize: '0.82rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      boxShadow: activeView === 'poster' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <Sparkles size={14} color="#d90429" />
+                    🎨 Graphic Flyer
+                  </button>
+                </>
+              )}
               <button
                 type="button"
-                onClick={() => setActiveView('preview')}
-                style={{
-                  padding: '7px 14px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: activeView === 'preview' ? '#ffffff' : 'transparent',
-                  color: activeView === 'preview' ? '#0f172a' : '#64748b',
-                  fontSize: '0.82rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  boxShadow: activeView === 'preview' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
-                }}
-              >
-                📄 Official Letterhead
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveView('edit')}
-                style={{
-                  padding: '7px 14px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: activeView === 'edit' ? '#ffffff' : 'transparent',
-                  color: activeView === 'edit' ? '#0f172a' : '#64748b',
-                  fontSize: '0.82rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  boxShadow: activeView === 'edit' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
-                }}
-              >
-                ✏️ Edit & Customize
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveView('actions')}
-                style={{
-                  padding: '7px 14px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: activeView === 'actions' ? '#ffffff' : 'transparent',
-                  color: activeView === 'actions' ? '#0f172a' : '#64748b',
-                  fontSize: '0.82rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  boxShadow: activeView === 'actions' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
-                }}
-              >
-                📋 Action Register ({activeDoc.actionItems?.length || 0})
-              </button>
-              <button
-                type="button"
-                data-testid="view-poster-tab-btn"
-                onClick={() => setActiveView('poster')}
-                style={{
-                  padding: '7px 14px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: activeView === 'poster' ? '#ffffff' : 'transparent',
-                  color: activeView === 'poster' ? '#d90429' : '#64748b',
-                  fontSize: '0.82rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  boxShadow: activeView === 'poster' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                <Sparkles size={14} color="#d90429" />
-                🎨 Graphic Flyer
-              </button>
-              <button
-                type="button"
+                data-testid="tab-history-templates-btn"
                 onClick={() => setActiveView('history')}
                 style={{
                   padding: '7px 14px',
@@ -1044,88 +1252,121 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                   boxShadow: activeView === 'history' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
                 }}
               >
-                🕒 History ({savedMoms.length})
+                🕒 History & Templates ({savedMoms.length + OFFICIAL_MOM_TEMPLATES.length})
               </button>
             </div>
 
-            {/* Export & Print Actions */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <button
-                type="button"
-                onClick={handlePrint}
-                className="button-primary"
-                title="Print clean multi-page document"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
-              >
-                <Printer size={15} />
-                🖨️ Print / PDF
-              </button>
+            {/* Export & Action Buttons */}
+            {generatedMom ? (
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={handlePrint}
+                  className="button-primary"
+                  title="Print clean multi-page document"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
+                >
+                  <Printer size={15} />
+                  🖨️ Print / PDF
+                </button>
 
-              <button
-                type="button"
-                onClick={handleCopy}
-                className="button-secondary"
-                title="Copy markdown formatted MOM to clipboard"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
-              >
-                {copyFeedback ? <Check size={15} color="#10b981" /> : <Copy size={15} />}
-                {copyFeedback ? 'Copied!' : 'Copy'}
-              </button>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="button-secondary"
+                  title="Copy markdown formatted MOM to clipboard"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
+                >
+                  {copyFeedback ? <Check size={15} color="#10b981" /> : <Copy size={15} />}
+                  {copyFeedback ? 'Copied!' : 'Copy'}
+                </button>
 
-              <button
-                type="button"
-                onClick={handleDownload}
-                className="button-secondary"
-                title="Download formatted text file"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
-              >
-                <Download size={15} />
-                Export Text
-              </button>
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  className="button-secondary"
+                  title="Download formatted text file"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
+                >
+                  <Download size={15} />
+                  Export Text
+                </button>
 
-              <button
-                type="button"
-                onClick={handleSaveToRecords}
-                className="button-secondary"
-                title="Save into persistent society records"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
-              >
-                {saveFeedback ? <Check size={15} color="#10b981" /> : <Save size={15} />}
-                {saveFeedback ? 'Saved!' : 'Save'}
-              </button>
+                <button
+                  type="button"
+                  onClick={handleSaveToRecords}
+                  className="button-secondary"
+                  title="Save into persistent society records"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
+                >
+                  {saveFeedback ? <Check size={15} color="#10b981" /> : <Save size={15} />}
+                  {saveFeedback ? 'Saved!' : 'Save'}
+                </button>
 
-              <button
-                type="button"
-                data-testid="agent-whatsapp-broadcast-btn"
-                onClick={handleCopyWhatsAppNotice}
-                className="button-secondary"
-                title="Copy ready-to-share WhatsApp circular with resolutions"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '8px 14px',
-                  fontSize: '0.82rem',
-                  background: '#ecfdf5',
-                  color: '#047857',
-                  border: '1px solid #a7f3d0'
-                }}
-              >
-                <Share2 size={15} />
-                WhatsApp Broadcast
-              </button>
-            </div>
+                <button
+                  type="button"
+                  data-testid="save-as-template-btn"
+                  onClick={handleSaveAsTemplate}
+                  className="button-secondary"
+                  title="Save this MOM structure as a reusable template in Meeting History"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
+                >
+                  <BookmarkPlus size={15} color="#2563eb" />
+                  Save as Template
+                </button>
+
+                <button
+                  type="button"
+                  data-testid="agent-whatsapp-broadcast-btn"
+                  onClick={handleCopyWhatsAppNotice}
+                  className="button-secondary"
+                  title="Copy ready-to-share WhatsApp circular with resolutions"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 14px',
+                    fontSize: '0.82rem',
+                    background: '#ecfdf5',
+                    color: '#047857',
+                    border: '1px solid #a7f3d0'
+                  }}
+                >
+                  <Share2 size={15} />
+                  WhatsApp Broadcast
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('mom-notes-textarea');
+                    if (el && typeof el.scrollIntoView === 'function') {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                  }}
+                  className="button-secondary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
+                >
+                  <ArrowLeft size={14} />
+                  Back to Notes & Generator
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* AI Model Badge */}
-          <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', background: '#f8fafc', padding: '8px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.78rem', color: '#64748b' }}>
-            <div>
-              Generated with: <strong style={{ color: '#0f172a' }}>{activeDoc.aiModelUsed}</strong>
+          {/* AI Model Badge (Only when MOM generated) */}
+          {generatedMom && activeDoc.aiModelUsed && (
+            <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', background: '#f8fafc', padding: '8px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.78rem', color: '#64748b' }}>
+              <div>
+                Generated with: <strong style={{ color: '#0f172a' }}>{activeDoc.aiModelUsed}</strong>
+              </div>
+              <div>
+                Timestamp: {new Date(activeDoc.generatedAt).toLocaleString('en-IN')}
+              </div>
             </div>
-            <div>
-              Timestamp: {new Date(activeDoc.generatedAt).toLocaleString('en-IN')}
-            </div>
-          </div>
+          )}
 
           {/* ── VIEW 1: OFFICIAL LETTERHEAD PREVIEW (PRINTABLE AREA) ── */}
           {activeView === 'preview' && (
@@ -1474,74 +1715,332 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
             </div>
           )}
 
-          {/* ── VIEW 4: PAST HISTORY ── */}
+          {/* ── VIEW 4: PAST HISTORY & OFFICIAL SOCIETY TEMPLATES ── */}
           {activeView === 'history' && (
-            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ margin: '0 0 16px', fontSize: '1.1rem', fontWeight: 800, color: '#0b2b26' }}>
-                🕒 Previously Drafted Meeting Minutes
-              </h3>
-              {savedMoms.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
-                  No saved meeting minutes found. Generated minutes will appear here automatically.
+            <div data-testid="meeting-history-templates-view" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '26px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '22px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
+                <div>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#eff6ff', color: '#1d4ed8', padding: '3px 10px', borderRadius: '12px', fontSize: '0.74rem', fontWeight: 800, marginBottom: '6px', textTransform: 'uppercase' }}>
+                    <FolderOpen size={12} />
+                    Society Repository & Templates
+                  </div>
+                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0b2b26' }}>
+                    🕒 Meeting History & Standard Society Templates
+                  </h3>
+                  <p style={{ margin: '4px 0 0', fontSize: '0.84rem', color: '#64748b' }}>
+                    Load standardized society templates or restore previous meeting minutes and drafts.
+                  </p>
                 </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {savedMoms.map((m, idx) => (
-                    <div
-                      key={m.id || idx}
-                      onClick={() => handleRestoreFromHistory(m)}
-                      style={{
-                        padding: '16px',
-                        borderRadius: '10px',
-                        border: '1px solid #e2e8f0',
-                        background: '#f8fafc',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                          <span style={{
-                            fontSize: '0.68rem',
-                            fontWeight: 800,
-                            padding: '2px 8px',
-                            borderRadius: '10px',
-                            background: m.scope === 'A_BUILDING' ? '#059669' : '#2563eb',
-                            color: '#ffffff'
-                          }}>
-                            {m.scope === 'A_BUILDING' ? "BUILDING 'A'" : 'COMMON INFRA'}
-                          </span>
-                          <strong style={{ fontSize: '0.94rem', color: '#0f172a' }}>{m.title}</strong>
-                        </div>
-                        <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
-                          Date: {m.headerInfo?.meetingDate || 'N/A'} • {m.actionItems?.length || 0} Action Items • {m.resolutions?.length || 0} Resolutions
-                        </div>
-                      </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '0.8rem', color: '#059669', fontWeight: 700 }}>Restore ↗</span>
-                        <button
-                          type="button"
-                          onClick={(e) => handleDeleteHistory(m.id, e)}
-                          title="Delete from history"
-                          style={{
-                            background: 'transparent',
-                            border: 'none',
-                            color: '#94a3b8',
-                            cursor: 'pointer',
-                            padding: '4px'
-                          }}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  {generatedMom && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveView('preview')}
+                      className="button-secondary"
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', padding: '8px 14px' }}
+                    >
+                      <ArrowLeft size={14} />
+                      Back to Generated Letterhead
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById('mom-notes-textarea');
+                      if (el && typeof el.scrollIntoView === 'function') {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="button-primary"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', padding: '8px 14px' }}
+                  >
+                    ✍️ Draft New Minutes
+                  </button>
+                </div>
+              </div>
+
+              {/* Filter Tabs */}
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  onClick={() => setHistoryFilter('all')}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '20px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    border: '1px solid',
+                    borderColor: historyFilter === 'all' ? '#0f172a' : '#cbd5e1',
+                    background: historyFilter === 'all' ? '#0f172a' : '#ffffff',
+                    color: historyFilter === 'all' ? '#ffffff' : '#475569',
+                    cursor: 'pointer'
+                  }}
+                >
+                  All ({OFFICIAL_MOM_TEMPLATES.length + savedMoms.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHistoryFilter('official')}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '20px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    border: '1px solid',
+                    borderColor: historyFilter === 'official' ? '#2563eb' : '#cbd5e1',
+                    background: historyFilter === 'official' ? '#eff6ff' : '#ffffff',
+                    color: historyFilter === 'official' ? '#1d4ed8' : '#475569',
+                    cursor: 'pointer'
+                  }}
+                >
+                  🏛️ Standard Society Templates ({OFFICIAL_MOM_TEMPLATES.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHistoryFilter('wingA')}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '20px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    border: '1px solid',
+                    borderColor: historyFilter === 'wingA' ? '#059669' : '#cbd5e1',
+                    background: historyFilter === 'wingA' ? '#ecfdf5' : '#ffffff',
+                    color: historyFilter === 'wingA' ? '#047857' : '#475569',
+                    cursor: 'pointer'
+                  }}
+                >
+                  🏢 Wing 'A' Templates
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHistoryFilter('common')}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '20px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    border: '1px solid',
+                    borderColor: historyFilter === 'common' ? '#2563eb' : '#cbd5e1',
+                    background: historyFilter === 'common' ? '#eff6ff' : '#ffffff',
+                    color: historyFilter === 'common' ? '#1d4ed8' : '#475569',
+                    cursor: 'pointer'
+                  }}
+                >
+                  🌐 Common Infrastructure
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHistoryFilter('saved')}
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '20px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    border: '1px solid',
+                    borderColor: historyFilter === 'saved' ? '#d97706' : '#cbd5e1',
+                    background: historyFilter === 'saved' ? '#fffbeb' : '#ffffff',
+                    color: historyFilter === 'saved' ? '#b45309' : '#475569',
+                    cursor: 'pointer'
+                  }}
+                >
+                  💾 Saved History ({savedMoms.length})
+                </button>
+              </div>
+
+              {/* 1. Official Society Templates Grid */}
+              {(historyFilter === 'all' || historyFilter === 'official' || historyFilter === 'wingA' || historyFilter === 'common') && (
+                <div style={{ marginBottom: '32px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                    <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#1e293b' }}>
+                      🏛️ Official Standard Society Templates
+                    </h4>
+                    <span style={{ fontSize: '0.72rem', background: '#f1f5f9', color: '#475569', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
+                      Pre-verified Byelaw Formats
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+                    {filteredOfficialTemplates.map(tmpl => (
+                      <div
+                        key={tmpl.id}
+                        data-testid={`template-card-${tmpl.id}`}
+                        style={{
+                          borderRadius: '12px',
+                          border: tmpl.scope === 'A_BUILDING' ? '1.5px solid #a7f3d0' : '1.5px solid #bfdbfe',
+                          background: tmpl.scope === 'A_BUILDING' ? '#f0fdf4' : '#eff6ff',
+                          padding: '18px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                          gap: '14px',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                          transition: 'transform 0.15s ease, box-shadow 0.15s ease'
+                        }}
+                      >
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
+                            <span style={{
+                              fontSize: '0.68rem',
+                              fontWeight: 800,
+                              padding: '3px 8px',
+                              borderRadius: '10px',
+                              background: tmpl.scope === 'A_BUILDING' ? '#059669' : '#2563eb',
+                              color: '#ffffff',
+                              letterSpacing: '0.4px'
+                            }}>
+                              {tmpl.badgeText}
+                            </span>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>
+                              {tmpl.category}
+                            </span>
+                          </div>
+
+                          <h5 style={{ margin: '0 0 6px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
+                            {tmpl.title}
+                          </h5>
+                          <p style={{ margin: '0 0 12px', fontSize: '0.82rem', color: '#475569', lineHeight: '1.4' }}>
+                            {tmpl.description}
+                          </p>
+
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', fontSize: '0.72rem' }}>
+                            <span style={{ background: '#ffffff', padding: '3px 8px', borderRadius: '6px', border: '1px solid #e2e8f0', color: '#334155', fontWeight: 600 }}>
+                              👥 {tmpl.headerInfo.attendees.length} Attendees
+                            </span>
+                            <span style={{ background: '#ffffff', padding: '3px 8px', borderRadius: '6px', border: '1px solid #e2e8f0', color: '#334155', fontWeight: 600 }}>
+                              📋 {tmpl.sampleMOM.agendaItems.length} Agenda Items
+                            </span>
+                            <span style={{ background: '#ffffff', padding: '3px 8px', borderRadius: '6px', border: '1px solid #e2e8f0', color: '#334155', fontWeight: 600 }}>
+                              ⚖️ {tmpl.sampleMOM.resolutions.length} Resolutions
+                            </span>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '8px', paddingTop: '10px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+                          <button
+                            type="button"
+                            onClick={() => handleRestoreFromHistory(tmpl)}
+                            style={{
+                              flex: 1,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '6px',
+                              padding: '8px 12px',
+                              borderRadius: '8px',
+                              background: tmpl.scope === 'A_BUILDING' ? '#059669' : '#2563eb',
+                              color: '#ffffff',
+                              fontWeight: 700,
+                              fontSize: '0.78rem',
+                              border: 'none',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <ExternalLink size={13} />
+                            Load Template ↗
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleLoadTemplateIntoForm(tmpl)}
+                            title="Load notes & attendees into the editor form"
+                            style={{
+                              padding: '8px 12px',
+                              borderRadius: '8px',
+                              background: '#ffffff',
+                              color: '#334155',
+                              fontWeight: 700,
+                              fontSize: '0.78rem',
+                              border: '1px solid #cbd5e1',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Edit in Form
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
+
+              {/* 2. Saved Meeting Minutes & Custom Drafts */}
+              {(historyFilter === 'all' || historyFilter === 'saved' || historyFilter === 'wingA' || historyFilter === 'common') && (
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                    <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#1e293b' }}>
+                      💾 Previously Saved Meeting Minutes & Records ({filteredSavedMoms.length})
+                    </h4>
+                  </div>
+
+                  {filteredSavedMoms.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '36px', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', color: '#64748b' }}>
+                      <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600 }}>No saved custom meeting drafts match your selection.</p>
+                      <p style={{ margin: '6px 0 0', fontSize: '0.8rem', color: '#94a3b8' }}>Whenever you generate or click "Save into Society Records", your drafts appear here for instant retrieval.</p>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {filteredSavedMoms.map((m, idx) => (
+                        <div
+                          key={m.id || idx}
+                          onClick={() => handleRestoreFromHistory(m)}
+                          style={{
+                            padding: '16px',
+                            borderRadius: '10px',
+                            border: '1px solid #e2e8f0',
+                            background: '#f8fafc',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            transition: 'all 0.2s ease',
+                            flexWrap: 'wrap',
+                            gap: '12px'
+                          }}
+                        >
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                              <span style={{
+                                fontSize: '0.68rem',
+                                fontWeight: 800,
+                                padding: '2px 8px',
+                                borderRadius: '10px',
+                                background: m.scope === 'A_BUILDING' ? '#059669' : '#2563eb',
+                                color: '#ffffff'
+                              }}>
+                                {m.scope === 'A_BUILDING' ? "BUILDING 'A'" : 'COMMON INFRA'}
+                              </span>
+                              <strong style={{ fontSize: '0.94rem', color: '#0f172a' }}>{m.title}</strong>
+                            </div>
+                            <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                              Date: {m.headerInfo?.meetingDate || 'N/A'} • {m.actionItems?.length || 0} Action Items • {m.resolutions?.length || 0} Resolutions
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ fontSize: '0.8rem', color: '#059669', fontWeight: 700 }}>Restore & View ↗</span>
+                            <button
+                              type="button"
+                              onClick={(e) => handleDeleteHistory(m.id, e)}
+                              title="Delete from history"
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                color: '#94a3b8',
+                                cursor: 'pointer',
+                                padding: '4px'
+                              }}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
             </div>
           )}
 

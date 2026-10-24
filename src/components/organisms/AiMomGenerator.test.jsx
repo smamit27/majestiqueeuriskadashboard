@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import AiMomGenerator from './AiMomGenerator.jsx';
+import AiMomSkeletonLoader from '../molecules/AiMomSkeletonLoader.jsx';
 import { generateMeetingMOM } from '../../services/aiMomService.js';
 
 // Mock Firebase dependencies
@@ -287,5 +288,81 @@ describe('AiMomGenerator Component', () => {
     expect(screen.getByTestId('color-mode-bw-btn')).toBeInTheDocument();
     expect(screen.getByTestId('export-png-btn')).toBeInTheDocument();
     expect(screen.getByTestId('export-jpeg-btn')).toBeInTheDocument();
+  });
+
+  it('shows Meeting History and Templates view when clicking header button without active MOM', () => {
+    render(<AiMomGenerator isAdmin={true} />);
+
+    // Header Meeting History & Templates button is always visible
+    const historyBtn = screen.getByTestId('header-meeting-history-btn');
+    expect(historyBtn).toBeInTheDocument();
+    fireEvent.click(historyBtn);
+
+    // Meeting history & templates view should render
+    expect(screen.getByTestId('meeting-history-templates-view')).toBeInTheDocument();
+    expect(screen.getByText(/Meeting History & Standard Society Templates/i)).toBeInTheDocument();
+
+    // Official Society Templates should be listed
+    expect(screen.getByText(/Wing 'A' Monthly Managing Committee Template/i)).toBeInTheDocument();
+    expect(screen.getByText(/Joint Common Infrastructure & AMC Review Template/i)).toBeInTheDocument();
+    expect(screen.getByText(/Special General Body Meeting \(SGM\) Template/i)).toBeInTheDocument();
+  });
+
+  it('loads Wing A official template into form when clicking quick template button', () => {
+    render(<AiMomGenerator isAdmin={true} />);
+
+    const quickWingABtn = screen.getByTestId('quick-wing-a-template-btn');
+    fireEvent.click(quickWingABtn);
+
+    const textarea = screen.getByPlaceholderText(/Paste or type meeting discussion points/i);
+    expect(textarea.value).toContain("Wing 'A' Elevator AMC");
+    expect(screen.getByTestId('agent-feedback-toast')).toBeInTheDocument();
+  });
+
+  it('loads template directly into Letterhead preview from History & Templates library', () => {
+    render(<AiMomGenerator isAdmin={true} />);
+
+    // Open History view
+    fireEvent.click(screen.getByTestId('header-meeting-history-btn'));
+
+    // Find and click Load Template on Wing A template card
+    const card = screen.getByTestId('template-card-tmpl-wing-a-monthly');
+    const loadBtn = card.querySelector('button');
+    fireEvent.click(loadBtn);
+
+    // Should switch to Official Letterhead view with the template's content
+    expect(screen.getByText(/Official Letterhead/i)).toBeInTheDocument();
+    expect(screen.getByText(/Otis Elevator Maintenance & Sensor Replacement/i)).toBeInTheDocument();
+  });
+
+  it('renders AiMomSkeletonLoader molecule with Building A scope badge and animated stages', () => {
+    render(<AiMomSkeletonLoader scope="A_BUILDING" />);
+
+    expect(screen.getByTestId('ai-mom-skeleton-loader')).toBeInTheDocument();
+    expect(screen.getByText(/WING 'A' SCOPE/i)).toBeInTheDocument();
+    expect(screen.getByText(/AI Secretary Agent Active/i)).toBeInTheDocument();
+    expect(screen.getByText(/MAJESTIQUE EURISKA — WING 'A'/i)).toBeInTheDocument();
+  });
+
+  it('allows saving current MOM as a custom template', async () => {
+    vi.spyOn(window, 'prompt').mockReturnValue("My Custom Annual Wing 'A' Template");
+    render(<AiMomGenerator isAdmin={true} />);
+
+    // Generate MOM first
+    fireEvent.click(screen.getByTestId('generate-mom-btn'));
+    await waitFor(() => {
+      expect(screen.getByTestId('save-as-template-btn')).toBeInTheDocument();
+    });
+
+    const saveTmplBtn = screen.getByTestId('save-as-template-btn');
+    fireEvent.click(saveTmplBtn);
+
+    // Feedback should show template saved
+    expect(screen.getByTestId('agent-feedback-toast')).toBeInTheDocument();
+    expect(screen.getByText(/saved successfully into Meeting History & Templates/i)).toBeInTheDocument();
+
+    // Navigate to history and verify custom template exists
+    fireEvent.click(screen.getByTestId('tab-history-templates-btn'));
+    expect(screen.getAllByText(/My Custom Annual Wing 'A' Template/i).length).toBeGreaterThanOrEqual(1);
   });
 });
