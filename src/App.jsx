@@ -680,8 +680,8 @@ export default function App() {
           },
           {
             id: 'document_viewer',
-            label: 'In-Portal PPT & PDF Viewer',
-            metric: 'Interactive PPT Deck & PDF Reader',
+            label: 'In-Portal PPT, PDF & XLSX Viewer',
+            metric: 'Interactive Slides, PDF & Multi-Sheet Excel Viewer',
             render: () => <InPortalDocumentViewer initialDocId="workflow_ppt" />
           },
           {
