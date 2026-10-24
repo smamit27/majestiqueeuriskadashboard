@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { OFFICIAL_PENDING_PARKING_FLATS, isParkingSlotPending } from '../../data/parkingAllotmentData.js';
 import IndividualFlatNoticeCard from './IndividualFlatNoticeCard.jsx';
+import GeneralParkingNoticeDocument from './GeneralParkingNoticeDocument.jsx';
 
 /**
  * PendingParkingSlotsCard Component
@@ -452,24 +453,24 @@ export default function PendingParkingSlotsCard({
             }}>
               <button
                 type="button"
-                onClick={() => setActiveView('register')}
+                onClick={() => setActiveView('general')}
                 style={{
                   padding: '5px 12px',
                   borderRadius: 7,
                   border: 'none',
-                  background: activeView === 'register' ? '#ffffff' : 'transparent',
-                  color: activeView === 'register' ? '#0f2952' : '#64748b',
+                  background: activeView === 'general' ? '#ffffff' : 'transparent',
+                  color: activeView === 'general' ? '#0f2952' : '#64748b',
                   fontSize: '0.78rem',
                   fontWeight: 800,
                   cursor: 'pointer',
-                  boxShadow: activeView === 'register' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+                  boxShadow: activeView === 'general' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 5
                 }}
               >
-                <span>📋</span>
-                <span>3-Column Register</span>
+                <span>📜</span>
+                <span>General Notice</span>
               </button>
               <button
                 type="button"
@@ -489,8 +490,29 @@ export default function PendingParkingSlotsCard({
                   gap: 5
                 }}
               >
-                <span>📜</span>
+                <span>✉️</span>
                 <span>Flat Notice</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveView('register')}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: 7,
+                  border: 'none',
+                  background: activeView === 'register' ? '#ffffff' : 'transparent',
+                  color: activeView === 'register' ? '#0f2952' : '#64748b',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: activeView === 'register' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 5
+                }}
+              >
+                <span>📋</span>
+                <span>3-Column Register</span>
               </button>
             </div>
           </div>
@@ -639,14 +661,26 @@ export default function PendingParkingSlotsCard({
         </div>
       )}
 
-      {/* ── Conditional View: Individual Flat Notice OR 3-Column Register Card ── */}
-      {activeView === 'notice' ? (
+      {/* ── Conditional View: General Notice OR Individual Flat Notice OR 3-Column Register Card ── */}
+      {activeView === 'general' ? (
+        <GeneralParkingNoticeDocument
+          flatsList={items}
+          parkingRecords={parkingRecords}
+          onSelectFlat={(f) => {
+            setSelectedNoticeFlat(f);
+            setActiveView('notice');
+          }}
+          onBackToRegister={() => setActiveView('register')}
+          onSwitchToIndividual={() => setActiveView('notice')}
+        />
+      ) : activeView === 'notice' ? (
         <IndividualFlatNoticeCard
           flat={selectedNoticeFlat}
           flatsList={items}
           parkingRecords={parkingRecords}
           onSelectFlat={(f) => setSelectedNoticeFlat(f)}
           onBackToRegister={() => setActiveView('register')}
+          onSwitchToGeneral={() => setActiveView('general')}
         />
       ) : (
         /* ── The Exact UI Card Matching Mockup ── */

@@ -566,7 +566,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
         }}>
           {[
             { mode: 'table', icon: '📋', label: 'Table' },
-            { mode: 'pending-card', icon: '🖼️', label: 'Pending Slots Card' },
+            { mode: 'pending-card', icon: '📜', label: 'Pending Slots Card & Notice' },
             { mode: '2d', icon: '🗺️', label: '2D Layout' },
             { mode: '3d', icon: '🏙️', label: '3D Model' },
             { mode: 'grid', icon: '🅿️', label: 'OP Grid' },
@@ -864,7 +864,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                   boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)'
                 }}
               >
-                <span>🖼️ Switch to 3-Column Card View & Download Image</span>
+                <span>📜 View Official Parking Notice & Roster Card</span>
               </button>
             </div>
           )}

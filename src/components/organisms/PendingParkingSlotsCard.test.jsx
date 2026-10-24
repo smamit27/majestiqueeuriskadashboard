@@ -135,4 +135,49 @@ describe('PendingParkingSlotsCard', () => {
     expect(screen.getByText(/Flat No\. A-201/i)).toBeInTheDocument();
     expect(screen.getByText(/URGENT SUBMISSION & VERIFICATION/i)).toBeInTheDocument();
   });
+
+  it('switches to the official General Society Notice when clicking "General Notice"', () => {
+    render(<PendingParkingSlotsCard flatsList={['A-101', 'A-201', 'A-301']} />);
+
+    const generalNoticeBtn = screen.getByRole('button', { name: /General Notice/i });
+    fireEvent.click(generalNoticeBtn);
+
+    // Verify official circular title and legal references
+    expect(screen.getByText('CIRCULAR / OFFICIAL NOTICE')).toBeInTheDocument();
+    expect(screen.getByText(/Issued under Maharashtra Co-operative Societies Act 1960 & Society Bye-Laws Nos\. 78 to 84/i)).toBeInTheDocument();
+
+    // Verify bilingual society name
+    expect(screen.getByText(/मॅजेस्टिक युरिस्का 'ए' बिल्डिंग सहकारी गृहरचना संस्था मर्यादित/i)).toBeInTheDocument();
+    expect(screen.getByText(/REGISTER OF FLATS REQUIRING COVERED PARKING SLOT REGULARIZATION/i)).toBeInTheDocument();
+
+    // Verify signatories and official seal
+    expect(screen.getByText('Hon. Secretary')).toBeInTheDocument();
+    expect(screen.getByText('Hon. Chairman')).toBeInTheDocument();
+    expect(screen.getByText('★ OFFICIAL SEAL ★')).toBeInTheDocument();
+
+    // Verify quick action buttons
+    expect(screen.getByRole('button', { name: /Broadcast on WhatsApp/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Print \/ Save PDF/i })).toBeInTheDocument();
+  });
+
+  it('allows jumping between General Notice and Individual Flat Notice', () => {
+    render(<PendingParkingSlotsCard flatsList={['A-101', 'A-201']} initialView="general" />);
+
+    // Currently on General Notice
+    expect(screen.getByText('CIRCULAR / OFFICIAL NOTICE')).toBeInTheDocument();
+
+    // Switch to Individual Flat Notice
+    const indivBtn = screen.getByRole('button', { name: /Individual Flat Notice Letter/i });
+    fireEvent.click(indivBtn);
+
+    expect(screen.getByText(/TO THE MEMBER \/ RESIDENT/i)).toBeInTheDocument();
+    expect(screen.getByText(/Flat No\. A-101/i)).toBeInTheDocument();
+
+    // Switch back to General Notice
+    const genBtn = screen.getByRole('button', { name: /General Notice \(All 30 Flats\)/i });
+    fireEvent.click(genBtn);
+
+    expect(screen.getByText('CIRCULAR / OFFICIAL NOTICE')).toBeInTheDocument();
+  });
 });
+
