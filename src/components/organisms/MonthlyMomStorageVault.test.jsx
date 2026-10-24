@@ -3,6 +3,24 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import MonthlyMomStorageVault, { INITIAL_MONTHLY_MOM_ARCHIVE } from './MonthlyMomStorageVault.jsx';
 
+vi.mock('firebase/storage', () => ({
+  getStorage: vi.fn(),
+  ref: vi.fn(),
+  uploadBytes: vi.fn().mockResolvedValue({}),
+  getDownloadURL: vi.fn().mockResolvedValue('https://example.com/mock-mom.pdf')
+}));
+
+vi.mock('../../utils/documentStorageDb.js', () => ({
+  saveDocumentFile: vi.fn().mockResolvedValue(true),
+  getDocumentFile: vi.fn().mockResolvedValue({
+    blob: new Blob(['pdf-bytes'], { type: 'application/pdf' }),
+    fileName: 'mock.pdf'
+  }),
+  deleteDocumentFile: vi.fn().mockResolvedValue(true),
+  dataUrlToBlob: vi.fn().mockReturnValue(new Blob(['mock'])),
+  createSafeBlobUrl: vi.fn().mockReturnValue('blob:mock-url')
+}));
+
 describe('MonthlyMomStorageVault Component', () => {
   beforeEach(() => {
     localStorage.clear();

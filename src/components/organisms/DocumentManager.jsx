@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { collection, getDocs, addDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
-import { db, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
+import { db, storage, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { saveDocumentFile, getDocumentFile, createSafeBlobUrl } from '../../utils/documentStorageDb.js';
 import { logAuditEvent, AUDIT_ACTIONS } from '../../services/auditService.js';
 import { ROLES, canEditModule, MODULES } from '../../services/rbacService.js';
 import { DocumentViewerModal } from './InPortalDocumentViewer.jsx';
@@ -175,6 +177,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
   const [docExpiry, setDocExpiry] = useState('');
   const [docNotes, setDocNotes] = useState('');
   const [selectedFileName, setSelectedFileName] = useState('');
+  const [selectedFileObj, setSelectedFileObj] = useState(null);
 
   const canUpload = canEditModule(userRole, MODULES.DOCUMENTS);
 
@@ -246,9 +249,11 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
       if (file.size > 25 * 1024 * 1024) {
         setUploadError('File size exceeds the 25 MB safety limit.');
         setSelectedFileName('');
+        setSelectedFileObj(null);
         return;
       }
       setSelectedFileName(file.name);
+      setSelectedFileObj(file);
       setUploadError('');
     }
   };
@@ -263,7 +268,34 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
       return;
     }
 
+    const docId = `doc-${Date.now()}`;
+
+    // 1. Save binary file to IndexedDB for unlimited local persistence
+    if (selectedFileObj) {
+      try {
+        await saveDocumentFile(docId, selectedFileObj, {
+          fileName: selectedFileObj.name,
+          mimeType: selectedFileObj.type
+        });
+      } catch (e) {
+        console.warn('IndexedDB save notice:', e);
+      }
+    }
+
+    // 2. Upload to Firebase Storage if available
+    let cloudDownloadUrl = '#';
+    if (isFirebaseConfigured && storage && selectedFileObj) {
+      try {
+        const storageRef = ref(storage, `society_documents/${docId}_${selectedFileObj.name}`);
+        await uploadBytes(storageRef, selectedFileObj);
+        cloudDownloadUrl = await getDownloadURL(storageRef);
+      } catch (e) {
+        console.warn('Firebase storage notice:', e);
+      }
+    }
+
     const newDoc = {
+      id: docId,
       name: docName.trim(),
       category: docCategory,
       uploadDate: new Date().toISOString().split('T')[0],
@@ -271,9 +303,9 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
       version: docVersion.trim() || '1.0',
       expiryDate: docExpiry || '',
       accessLevel: docAccess,
-      fileSize: selectedFileName ? '1.5 MB' : 'Digital Record',
-      fileType: selectedFileName ? selectedFileName.split('.').pop().toUpperCase() : 'PDF',
-      downloadUrl: '#',
+      fileSize: selectedFileObj ? `${(selectedFileObj.size / (1024 * 1024)).toFixed(2)} MB` : 'Digital Record',
+      fileType: selectedFileObj ? selectedFileObj.name.split('.').pop().toUpperCase() : 'PDF',
+      downloadUrl: cloudDownloadUrl,
       notes: docNotes.trim(),
     };
 
@@ -306,12 +338,70 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
         setDocName('');
         setDocNotes('');
         setSelectedFileName('');
+        setSelectedFileObj(null);
       }, 1200);
     } catch (err) {
       console.error('Document upload error:', err);
       setUploadError('Failed to archive document. Saved locally in current session.');
       setDocuments(prev => [newDoc, ...prev]);
     }
+  };
+
+  const handleViewInPortal = async (doc) => {
+    // 1. Check IndexedDB
+    try {
+      const stored = await getDocumentFile(doc.id || doc.name);
+      if (stored && stored.blob) {
+        const blobUrl = createSafeBlobUrl(stored.blob);
+        setInPortalViewDoc({
+          url: blobUrl,
+          title: doc.name,
+          type: doc.fileType || 'PDF'
+        });
+        return;
+      }
+    } catch {}
+
+    // 2. Check cloud downloadUrl
+    if (doc.downloadUrl && doc.downloadUrl !== '#') {
+      setInPortalViewDoc({
+        url: doc.downloadUrl,
+        title: doc.name,
+        type: doc.fileType || 'PDF'
+      });
+      return;
+    }
+
+    // 3. Fallback to standard dossier PDF
+    setInPortalViewDoc({
+      url: '/Majestique_Euriska_Builder_Forensic_Audit_Full_Dossier.pdf',
+      title: doc.name,
+      type: doc.fileType || 'PDF'
+    });
+  };
+
+  const handleDownloadDoc = async (doc, e) => {
+    // 1. Check IndexedDB
+    try {
+      const stored = await getDocumentFile(doc.id || doc.name);
+      if (stored && stored.blob) {
+        e.preventDefault();
+        const url = URL.createObjectURL(stored.blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = stored.fileName || `${doc.name}.${(doc.fileType || 'PDF').toLowerCase()}`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        return;
+      }
+    } catch {}
+
+    if (doc.downloadUrl && doc.downloadUrl !== '#') {
+      return; // standard link download
+    }
+
+    e.preventDefault();
+    alert(`Downloading official archived document record: ${doc.name}`);
   };
 
   return (
@@ -487,16 +577,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                         🖨️ Print
                       </button>
                       <button
-                        onClick={() => {
-                          const targetUrl = (doc.downloadUrl && doc.downloadUrl !== '#')
-                            ? doc.downloadUrl
-                            : '/Majestique_Euriska_Builder_Forensic_Audit_Full_Dossier.pdf';
-                          setInPortalViewDoc({
-                            url: targetUrl,
-                            title: doc.name,
-                            type: doc.fileType || 'PDF'
-                          });
-                        }}
+                        onClick={() => handleViewInPortal(doc)}
                         style={{
                           background: '#0d9488',
                           color: '#ffffff',
@@ -517,12 +598,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                       <a
                         href={doc.downloadUrl || '#'}
                         download={doc.name}
-                        onClick={(e) => {
-                          if (doc.downloadUrl === '#') {
-                            e.preventDefault();
-                            alert(`Downloading official archived document: ${doc.name}`);
-                          }
-                        }}
+                        onClick={(e) => handleDownloadDoc(doc, e)}
                         style={{
                           textDecoration: 'none',
                           background: '#0b2b26',

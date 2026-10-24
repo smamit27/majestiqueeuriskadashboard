@@ -22,10 +22,19 @@ import {
   ExternalLink,
   Bot,
   FileCheck,
-  ShieldCheck
+  ShieldCheck,
+  Maximize2
 } from 'lucide-react';
-import { db, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
+import { db, storage, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
 import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { 
+  saveDocumentFile, 
+  getDocumentFile, 
+  deleteDocumentFile, 
+  dataUrlToBlob, 
+  createSafeBlobUrl 
+} from '../../utils/documentStorageDb.js';
 
 export const INITIAL_MONTHLY_MOM_ARCHIVE = [
   {
@@ -113,6 +122,10 @@ export default function MonthlyMomStorageVault({
   const [searchQuery, setSearchQuery] = useState('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [viewingDoc, setViewingDoc] = useState(null);
+  const [activeFileBlobUrl, setActiveFileBlobUrl] = useState(null);
+  const [isLoadingFile, setIsLoadingFile] = useState(false);
+  const [fileLoadError, setFileLoadError] = useState(null);
+  const [activeDocViewTab, setActiveDocViewTab] = useState('DOCUMENT'); // 'DOCUMENT' | 'SUMMARY'
   const [zoomLevel, setZoomLevel] = useState(1);
   const [toastMessage, setToastMessage] = useState(null);
 
@@ -128,6 +141,78 @@ export default function MonthlyMomStorageVault({
   const [fileType, setFileType] = useState('PDF');
   const [fileSizeText, setFileSizeText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Resolve binary Blob URL whenever viewingDoc changes
+  useEffect(() => {
+    let isCancelled = false;
+    let createdUrl = null;
+
+    if (!viewingDoc) {
+      if (activeFileBlobUrl) {
+        URL.revokeObjectURL(activeFileBlobUrl);
+        setActiveFileBlobUrl(null);
+      }
+      setFileLoadError(null);
+      return;
+    }
+
+    async function loadFileContent() {
+      setIsLoadingFile(true);
+      setFileLoadError(null);
+      try {
+        // 1. Look up binary from IndexedDB (stores unlimited MBs locally in browser)
+        const stored = await getDocumentFile(viewingDoc.id);
+        if (!isCancelled && stored && stored.blob) {
+          createdUrl = URL.createObjectURL(stored.blob);
+          setActiveFileBlobUrl(createdUrl);
+          setIsLoadingFile(false);
+          return;
+        }
+
+        // 2. Look up cloud downloadUrl
+        if (!isCancelled && viewingDoc.downloadUrl && viewingDoc.downloadUrl !== '#') {
+          setActiveFileBlobUrl(viewingDoc.downloadUrl);
+          setIsLoadingFile(false);
+          return;
+        }
+
+        // 3. Fallback to fileDataUrl
+        if (!isCancelled && viewingDoc.fileDataUrl) {
+          try {
+            const blob = dataUrlToBlob(viewingDoc.fileDataUrl);
+            createdUrl = URL.createObjectURL(blob);
+            setActiveFileBlobUrl(createdUrl);
+            setIsLoadingFile(false);
+            return;
+          } catch {
+            setActiveFileBlobUrl(viewingDoc.fileDataUrl);
+            setIsLoadingFile(false);
+            return;
+          }
+        }
+
+        if (!isCancelled) {
+          setActiveFileBlobUrl(null);
+          setIsLoadingFile(false);
+        }
+      } catch (err) {
+        console.warn('File retrieval error from IndexedDB:', err);
+        if (!isCancelled) {
+          setFileLoadError('Could not load binary file.');
+          setIsLoadingFile(false);
+        }
+      }
+    }
+
+    loadFileContent();
+
+    return () => {
+      isCancelled = true;
+      if (createdUrl) {
+        URL.revokeObjectURL(createdUrl);
+      }
+    };
+  }, [viewingDoc]);
 
   // Firestore sync
   useEffect(() => {
@@ -154,11 +239,18 @@ export default function MonthlyMomStorageVault({
     fetchRemoteArchives();
   }, []);
 
-  // Save to localStorage whenever archives update
+  // Save clean metadata to localStorage (never store huge base64 strings to prevent QuotaExceededError)
   const saveArchivesLocally = (newList) => {
     setMomArchives(newList);
     try {
-      localStorage.setItem('euriska_monthly_moms_vault', JSON.stringify(newList));
+      // Strip any huge base64 strings before localStorage save
+      const cleanList = newList.map(item => {
+        if (item.fileDataUrl && item.fileDataUrl.length > 100000) {
+          return { ...item, fileDataUrl: null };
+        }
+        return item;
+      });
+      localStorage.setItem('euriska_monthly_moms_vault', JSON.stringify(cleanList));
     } catch (err) {
       console.warn('LocalStorage save error:', err);
     }
@@ -214,12 +306,16 @@ export default function MonthlyMomStorageVault({
       setUploadTitle(`${uploadScope === 'A_BUILDING' ? "Wing 'A'" : 'Common Infrastructure'} Monthly MOM — ${monthName}`);
     }
 
-    // Convert to DataURL for preview & offline storage
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setFilePreviewUrl(event.target.result);
-    };
-    reader.readAsDataURL(file);
+    // Convert to DataURL for immediate image preview if small
+    if (isImage) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setFilePreviewUrl(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFilePreviewUrl(null);
+    }
   };
 
   // Submit new monthly MOM
@@ -233,9 +329,35 @@ export default function MonthlyMomStorageVault({
     setIsSubmitting(true);
     const monthObj = new Date(uploadMonth + '-01');
     const monthLabel = monthObj.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+    const recordId = `mom-upload-${Date.now()}`;
 
+    // 1. Save binary file to IndexedDB (stores unlimited MBs locally in browser)
+    if (uploadedFile) {
+      try {
+        await saveDocumentFile(recordId, uploadedFile, {
+          fileName: uploadedFile.name,
+          mimeType: uploadedFile.type
+        });
+      } catch (idbErr) {
+        console.warn('IndexedDB save notice:', idbErr);
+      }
+    }
+
+    // 2. Upload to Firebase Storage if available
+    let cloudDownloadUrl = '#';
+    if (isFirebaseConfigured && storage && uploadedFile) {
+      try {
+        const storageRef = ref(storage, `monthly_moms/${recordId}_${uploadedFile.name}`);
+        await uploadBytes(storageRef, uploadedFile);
+        cloudDownloadUrl = await getDownloadURL(storageRef);
+      } catch (storageErr) {
+        console.warn('Firebase storage notice (IndexedDB local store active):', storageErr);
+      }
+    }
+
+    // 3. Prepare clean record (never embed multi-megabyte base64 strings in Firestore or localStorage)
     const newRecord = {
-      id: `mom-upload-${Date.now()}`,
+      id: recordId,
       title: uploadTitle.trim(),
       month: uploadMonth,
       monthLabel: monthLabel,
@@ -247,17 +369,19 @@ export default function MonthlyMomStorageVault({
       fileType: fileType,
       fileName: uploadedFile ? uploadedFile.name : `MOM_${uploadScope}_${uploadMonth}.${fileType === 'IMAGE' ? 'jpg' : 'pdf'}`,
       fileSize: fileSizeText || '1.5 MB',
-      fileDataUrl: filePreviewUrl || null,
+      downloadUrl: cloudDownloadUrl,
+      // Only keep small image thumbnails in fileDataUrl; never large PDFs
+      fileDataUrl: fileType === 'IMAGE' && filePreviewUrl && filePreviewUrl.length < 150000 ? filePreviewUrl : null,
       notes: uploadNotes.trim() || 'Scanned Monthly MOM copy stored in society archives.',
       resolutionsCount: 2,
       actionItemsCount: 3
     };
 
-    // 1. Update local storage immediately
+    // 4. Update local state & localStorage metadata safely
     const updated = [newRecord, ...momArchives];
     saveArchivesLocally(updated);
 
-    // 2. Also save to Firestore
+    // 5. Also save metadata to Firestore (safe from size limit)
     try {
       if (isFirebaseConfigured && db) {
         await ensureFirebaseSession();
@@ -277,7 +401,7 @@ export default function MonthlyMomStorageVault({
           accessLevel: 'PUBLIC_RESIDENTS',
           fileSize: newRecord.fileSize,
           fileType: newRecord.fileType,
-          downloadUrl: '#',
+          downloadUrl: cloudDownloadUrl,
           notes: newRecord.notes,
           timestamp: serverTimestamp()
         });
@@ -303,6 +427,7 @@ export default function MonthlyMomStorageVault({
     if (!window.confirm('Are you sure you want to delete this archived Monthly MOM?')) return;
     const updated = momArchives.filter(m => m.id !== id);
     saveArchivesLocally(updated);
+    await deleteDocumentFile(id);
 
     try {
       if (isFirebaseConfigured && db) {
@@ -314,16 +439,46 @@ export default function MonthlyMomStorageVault({
   };
 
   // Download document
-  const handleDownloadFile = (mom, e) => {
+  const handleDownloadFile = async (mom, e) => {
     e?.stopPropagation();
+
+    // 1. Check IndexedDB
+    try {
+      const stored = await getDocumentFile(mom.id);
+      if (stored && stored.blob) {
+        const url = URL.createObjectURL(stored.blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = mom.fileName || `${mom.title}.${mom.fileType === 'IMAGE' ? 'jpg' : 'pdf'}`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        return;
+      }
+    } catch (err) {
+      console.warn('IndexedDB download check warning:', err);
+    }
+
+    // 2. Check cloud downloadUrl
+    if (mom.downloadUrl && mom.downloadUrl !== '#') {
+      const a = document.createElement('a');
+      a.href = mom.downloadUrl;
+      a.download = mom.fileName || `${mom.title}.pdf`;
+      a.target = '_blank';
+      a.click();
+      return;
+    }
+
+    // 3. Check fileDataUrl
     if (mom.fileDataUrl) {
       const a = document.createElement('a');
       a.href = mom.fileDataUrl;
-      a.download = mom.fileName || `Monthly_MOM_${mom.month}.pdf`;
+      a.download = mom.fileName || `Monthly_MOM_${mom.month}.${mom.fileType === 'IMAGE' ? 'jpg' : 'pdf'}`;
       a.click();
-    } else {
-      // Create a clean summary text download fallback
-      const content = `MAJESTIQUE EURISKA CO-OPERATIVE HOUSING SOCIETY LTD.
+      return;
+    }
+
+    // 4. Clean summary text fallback
+    const content = `MAJESTIQUE EURISKA CO-OPERATIVE HOUSING SOCIETY LTD.
 MONTHLY MINUTES OF MEETING (MOM) ARCHIVE RECORD
 --------------------------------------------------------------------------------
 Document Title : ${mom.title}
@@ -337,14 +492,13 @@ Key Discussion Points & Summary Notes:
 ${mom.notes}
 --------------------------------------------------------------------------------
 Status: Archived in Permanent Society Records.`;
-      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${mom.fileName || 'Monthly_MOM_' + mom.month}.txt`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${mom.fileName || 'Monthly_MOM_' + mom.month}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -1004,44 +1158,80 @@ Status: Archived in Permanent Society Records.`;
             onClick={e => e.stopPropagation()}
           >
             {/* Lightbox Toolbar */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px', background: '#0f172a', color: '#ffffff' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px', background: '#0f172a', color: '#ffffff', flexWrap: 'wrap', gap: '10px' }}>
               <div>
                 <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>{viewingDoc.title}</h4>
                 <span style={{ fontSize: '0.76rem', color: '#94a3b8' }}>
-                  {viewingDoc.monthLabel || viewingDoc.month} • {viewingDoc.fileName}
+                  {viewingDoc.monthLabel || viewingDoc.month} • {viewingDoc.fileName} • {viewingDoc.fileSize}
                 </span>
               </div>
 
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <button
-                  type="button"
-                  onClick={() => setZoomLevel(prev => Math.min(prev + 0.2, 2.0))}
-                  title="Zoom In"
-                  style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '6px', borderRadius: '6px', cursor: 'pointer' }}
-                >
-                  <ZoomIn size={16} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setZoomLevel(prev => Math.max(prev - 0.2, 0.6))}
-                  title="Zoom Out"
-                  style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '6px', borderRadius: '6px', cursor: 'pointer' }}
-                >
-                  <ZoomOut size={16} />
-                </button>
+                {viewingDoc.fileType === 'IMAGE' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setZoomLevel(prev => Math.min(prev + 0.2, 2.5))}
+                      title="Zoom In"
+                      style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer' }}
+                    >
+                      <ZoomIn size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoomLevel(prev => Math.max(prev - 0.2, 0.5))}
+                      title="Zoom Out"
+                      style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer' }}
+                    >
+                      <ZoomOut size={16} />
+                    </button>
+                  </>
+                )}
+
+                {viewingDoc.fileType === 'PDF' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (activeFileBlobUrl || viewingDoc.downloadUrl) {
+                        window.open(activeFileBlobUrl || viewingDoc.downloadUrl, '_blank');
+                      } else {
+                        handleDownloadFile(viewingDoc);
+                      }
+                    }}
+                    title="Open Full PDF in New Tab"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      background: 'rgba(255,255,255,0.15)',
+                      border: '1px solid rgba(255,255,255,0.25)',
+                      color: '#ffffff',
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <ExternalLink size={14} />
+                    Open in New Tab
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={() => handleDownloadFile(viewingDoc)}
                   title="Download File"
-                  style={{ background: '#2563eb', border: 'none', color: '#fff', padding: '6px 12px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                  style={{ background: '#2563eb', border: 'none', color: '#fff', padding: '6px 14px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                 >
-                  <Download size={14} style={{ marginRight: '4px' }} />
+                  <Download size={14} />
                   Download
                 </button>
+
                 <button
                   type="button"
                   onClick={() => setViewingDoc(null)}
-                  style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '1.2rem', cursor: 'pointer', padding: '0 6px' }}
+                  style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '1.3rem', cursor: 'pointer', padding: '0 6px', lineHeight: 1 }}
                 >
                   ✕
                 </button>
@@ -1049,44 +1239,101 @@ Status: Archived in Permanent Society Records.`;
             </div>
 
             {/* Document Content View */}
-            <div style={{ padding: '24px', overflowY: 'auto', flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#f8fafc' }}>
-              {viewingDoc.fileDataUrl && viewingDoc.fileType === 'IMAGE' ? (
-                <div style={{ transform: `scale(${zoomLevel})`, transition: 'transform 0.15s ease', textAlign: 'center' }}>
+            <div style={{ padding: '0', overflowY: 'auto', flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#f8fafc', position: 'relative', minHeight: '500px' }}>
+              {isLoadingFile ? (
+                <div style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
+                  <FileText size={40} color="#2563eb" style={{ marginBottom: '12px' }} />
+                  <p style={{ margin: 0, fontWeight: 700, fontSize: '0.92rem' }}>Loading document from storage...</p>
+                </div>
+              ) : activeFileBlobUrl && viewingDoc.fileType === 'IMAGE' ? (
+                <div style={{ padding: '24px', textAlign: 'center', width: '100%', overflow: 'auto' }}>
                   <img
-                    src={viewingDoc.fileDataUrl}
+                    src={activeFileBlobUrl}
                     alt={viewingDoc.title}
-                    style={{ maxWidth: '100%', maxHeight: '65vh', borderRadius: '8px', boxShadow: '0 4px 14px rgba(0,0,0,0.1)' }}
+                    style={{ transform: `scale(${zoomLevel})`, transition: 'transform 0.15s ease', maxWidth: '100%', maxHeight: '68vh', borderRadius: '8px', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}
                   />
                 </div>
-              ) : viewingDoc.fileDataUrl && viewingDoc.fileType === 'PDF' ? (
-                <iframe
-                  src={viewingDoc.fileDataUrl}
-                  title={viewingDoc.title}
-                  style={{ width: '100%', height: '65vh', border: 'none', borderRadius: '8px' }}
-                />
+              ) : activeFileBlobUrl && viewingDoc.fileType === 'PDF' ? (
+                <div style={{ width: '100%', height: '70vh', minHeight: '520px', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px', background: '#e2e8f0', fontSize: '0.78rem', color: '#334155' }}>
+                    <span>📄 <strong>{viewingDoc.fileName}</strong> ({viewingDoc.fileSize})</span>
+                    <button
+                      type="button"
+                      onClick={() => window.open(activeFileBlobUrl, '_blank')}
+                      style={{ border: 'none', background: '#2563eb', color: '#ffffff', padding: '3px 8px', borderRadius: '4px', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      ↗️ Full Screen Native Viewer
+                    </button>
+                  </div>
+                  <object
+                    data={activeFileBlobUrl}
+                    type="application/pdf"
+                    style={{ width: '100%', height: '100%', border: 'none' }}
+                  >
+                    <iframe
+                      src={activeFileBlobUrl}
+                      title={viewingDoc.title}
+                      style={{ width: '100%', height: '100%', border: 'none' }}
+                    >
+                      <div style={{ textAlign: 'center', padding: '40px', color: '#475569' }}>
+                        <p style={{ fontWeight: 700 }}>PDF Document Loaded</p>
+                        <button
+                          type="button"
+                          onClick={() => window.open(activeFileBlobUrl, '_blank')}
+                          className="button-primary"
+                        >
+                          Click to open in new tab
+                        </button>
+                      </div>
+                    </iframe>
+                  </object>
+                </div>
               ) : (
-                <div style={{ textAlign: 'center', padding: '36px', maxWidth: '500px' }}>
+                <div style={{ textAlign: 'center', padding: '36px', maxWidth: '580px', width: '100%' }}>
                   <FileText size={48} color="#2563eb" style={{ marginBottom: '12px' }} />
-                  <h4 style={{ margin: '0 0 8px', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
+                  <h4 style={{ margin: '0 0 8px', fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
                     {viewingDoc.title}
                   </h4>
-                  <div style={{ background: '#ffffff', padding: '16px', borderRadius: '10px', border: '1px solid #e2e8f0', textAlign: 'left', marginBottom: '16px', fontSize: '0.85rem', lineHeight: '1.5', color: '#334155' }}>
-                    <strong>Meeting Date:</strong> {viewingDoc.meetingDate}<br />
-                    <strong>Scope:</strong> {viewingDoc.scope === 'A_BUILDING' ? "Wing 'A'" : 'Common Infrastructure'}<br />
-                    <strong>Uploaded File:</strong> {viewingDoc.fileName} ({viewingDoc.fileSize})<br />
+                  <div style={{ background: '#ffffff', padding: '18px', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'left', marginBottom: '18px', fontSize: '0.86rem', lineHeight: '1.6', color: '#334155' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+                      <div><strong>Meeting Date:</strong> {viewingDoc.meetingDate}</div>
+                      <div><strong>Meeting Time:</strong> {viewingDoc.meetingTime || '10:30 AM'}</div>
+                      <div><strong>Scope:</strong> {viewingDoc.scope === 'A_BUILDING' ? "Wing 'A'" : 'Common Infrastructure'}</div>
+                      <div><strong>Presided By:</strong> {viewingDoc.chairperson || '(General Body)'}</div>
+                    </div>
+                    <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '10px' }}>
+                      <strong>File:</strong> {viewingDoc.fileName} ({viewingDoc.fileSize})
+                    </div>
                     <hr style={{ border: 'none', borderTop: '1px solid #f1f5f9', margin: '8px 0' }} />
-                    <strong>Summary & Deliberations:</strong><br />
-                    {viewingDoc.notes}
+                    <strong>Summary & Resolutions:</strong>
+                    <p style={{ margin: '6px 0 0', color: '#475569', fontSize: '0.84rem' }}>{viewingDoc.notes}</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleDownloadFile(viewingDoc)}
-                    className="button-primary"
-                    style={{ padding: '8px 16px', fontSize: '0.84rem' }}
-                  >
-                    <Download size={14} style={{ marginRight: '6px' }} />
-                    Download Archived Document
-                  </button>
+                  <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadFile(viewingDoc)}
+                      className="button-primary"
+                      style={{ padding: '8px 16px', fontSize: '0.84rem' }}
+                    >
+                      <Download size={14} style={{ marginRight: '6px' }} />
+                      Download Record
+                    </button>
+                    {onLoadIntoGenerator && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const doc = viewingDoc;
+                          setViewingDoc(null);
+                          onLoadIntoGenerator(doc);
+                        }}
+                        className="button-secondary"
+                        style={{ padding: '8px 16px', fontSize: '0.84rem' }}
+                      >
+                        <Sparkles size={14} style={{ marginRight: '6px', color: '#059669' }} />
+                        Open in AI Generator
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
