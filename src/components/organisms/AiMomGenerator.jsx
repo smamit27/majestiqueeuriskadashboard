@@ -38,6 +38,7 @@ import { db, isFirebaseConfigured } from '../../firebase.js';
 import { collection, addDoc, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import MultiSelectDropdown from '../molecules/MultiSelectDropdown.jsx';
 import { COMMITTEE_MEMBERS } from '../../data/committeeMembersData.js';
+import VisualAgendaPoster from './VisualAgendaPoster.jsx';
 
 const SAMPLE_A_BUILDING_NOTES = `Wing A Managing Committee Monthly Review:
 1. Lift 1 between 4th and 5th floor had reported jerky movement. Otis technician visited on Tuesday, diagnosed sensor calibration issue. Sensor replaced under AMC; lift running smoothly now.
@@ -1008,6 +1009,28 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               </button>
               <button
                 type="button"
+                data-testid="view-poster-tab-btn"
+                onClick={() => setActiveView('poster')}
+                style={{
+                  padding: '7px 14px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: activeView === 'poster' ? '#ffffff' : 'transparent',
+                  color: activeView === 'poster' ? '#d90429' : '#64748b',
+                  fontSize: '0.82rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: activeView === 'poster' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Sparkles size={14} color="#d90429" />
+                🎨 Graphic Flyer
+              </button>
+              <button
+                type="button"
                 onClick={() => setActiveView('history')}
                 style={{
                   padding: '7px 14px',
@@ -1520,6 +1543,18 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 </div>
               )}
             </div>
+          )}
+
+          {/* ── VIEW 5: GRAPHIC AGENDA FLYER (IMAGE & PDF POSTER) ── */}
+          {activeView === 'poster' && (
+            <VisualAgendaPoster
+              agendaData={activeDoc.agendaItems}
+              meetingDate={activeDoc.headerInfo?.meetingDate ? new Date(activeDoc.headerInfo.meetingDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'Sunday, 25 October 2026'}
+              meetingTime={activeDoc.headerInfo?.meetingTime || '11:00 AM'}
+              meetingType={activeDoc.headerInfo?.meetingType || 'Management Committee Meeting'}
+              scope={activeDoc.scope || scope}
+              onBack={() => setActiveView('preview')}
+            />
           )}
 
         </div>

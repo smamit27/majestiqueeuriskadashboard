@@ -267,4 +267,25 @@ describe('AiMomGenerator Component', () => {
     const copiedText = writeTextMock.mock.calls[0][0];
     expect(copiedText).toContain("MAJESTIQUE EURISKA - WING 'A'");
   });
+
+  it('switches to Graphic Flyer poster view and renders color switcher and download buttons', async () => {
+    render(<AiMomGenerator isAdmin={true} />);
+
+    const generateBtn = screen.getByRole('button', { name: /Generate AI MOM for Building 'A'/i });
+    fireEvent.click(generateBtn);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('view-poster-tab-btn')).toBeInTheDocument();
+    });
+
+    const posterTabBtn = screen.getByTestId('view-poster-tab-btn');
+    fireEvent.click(posterTabBtn);
+
+    // Verify Graphic Flyer elements
+    expect(screen.getByText('AGENDA')).toBeInTheDocument();
+    expect(screen.getByTestId('color-mode-colorful-btn')).toBeInTheDocument();
+    expect(screen.getByTestId('color-mode-bw-btn')).toBeInTheDocument();
+    expect(screen.getByTestId('export-png-btn')).toBeInTheDocument();
+    expect(screen.getByTestId('export-jpeg-btn')).toBeInTheDocument();
+  });
 });
