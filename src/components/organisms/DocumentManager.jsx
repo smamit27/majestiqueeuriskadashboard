@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { collection, getDocs, addDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, addDoc, setDoc, deleteDoc, doc, serverTimestamp, query, orderBy, where } from 'firebase/firestore';
 import { db, storage, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { saveDocumentFile, getDocumentFile, createSafeBlobUrl } from '../../utils/documentStorageDb.js';
+import { saveDocumentFile, getDocumentFile, deleteDocumentFile, createSafeBlobUrl } from '../../utils/documentStorageDb.js';
 import { logAuditEvent, AUDIT_ACTIONS } from '../../services/auditService.js';
 import { ROLES, canEditModule, MODULES } from '../../services/rbacService.js';
 import { DocumentViewerModal } from './InPortalDocumentViewer.jsx';
@@ -159,7 +159,14 @@ const SEED_DOCUMENTS = [
 ];
 
 export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
-  const [documents, setDocuments] = useState(SEED_DOCUMENTS);
+  const [documents, setDocuments] = useState(() => {
+    try {
+      const deletedIds = new Set(JSON.parse(localStorage.getItem('euriska_deleted_doc_ids') || '[]'));
+      return SEED_DOCUMENTS.filter(s => !deletedIds.has(s.id) && !deletedIds.has(s.name));
+    } catch {
+      return SEED_DOCUMENTS;
+    }
+  });
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [searchQuery, setSearchQuery] = useState('');
   const [accessFilter, setAccessFilter] = useState('ALL');
@@ -168,6 +175,8 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
   const [uploadError, setUploadError] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState('');
   const [inPortalViewDoc, setInPortalViewDoc] = useState(null);
+  const [deletingDoc, setDeletingDoc] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Upload Form state
   const [docName, setDocName] = useState('');
@@ -184,18 +193,24 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
   useEffect(() => {
     let cancelled = false;
     async function fetchDocs() {
-      if (!isFirebaseConfigured || !db) return;
+      const deletedIds = new Set(JSON.parse(localStorage.getItem('euriska_deleted_doc_ids') || '[]'));
+      if (!isFirebaseConfigured || !db) {
+        setDocuments(SEED_DOCUMENTS.filter(s => !deletedIds.has(s.id) && !deletedIds.has(s.name)));
+        return;
+      }
       setIsLoading(true);
       try {
         await ensureFirebaseSession();
         const q = query(collection(db, 'societyDocuments'), orderBy('uploadDate', 'desc'));
         const snap = await getDocs(q);
         if (!cancelled && !snap.empty) {
-          const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          const list = snap.docs
+            .map(d => ({ id: d.id, firestoreDocId: d.id, ...d.data() }))
+            .filter(d => !deletedIds.has(d.id) && !deletedIds.has(d.name));
           // Merge with seeds if distinct
           setDocuments(prev => {
             const ids = new Set(list.map(x => x.name));
-            const uniqueSeeds = SEED_DOCUMENTS.filter(s => !ids.has(s.name));
+            const uniqueSeeds = SEED_DOCUMENTS.filter(s => !ids.has(s.name) && !deletedIds.has(s.id) && !deletedIds.has(s.name));
             return [...list, ...uniqueSeeds];
           });
         }
@@ -312,8 +327,9 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
     try {
       if (isFirebaseConfigured && db) {
         await ensureFirebaseSession();
-        await addDoc(collection(db, 'societyDocuments'), {
+        await setDoc(doc(db, 'societyDocuments', docId), {
           ...newDoc,
+          firestoreDocId: docId,
           timestamp: serverTimestamp(),
         });
       }
@@ -402,6 +418,102 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
 
     e.preventDefault();
     alert(`Downloading official archived document record: ${doc.name}`);
+  };
+
+  const handleRequestDelete = (docItem, e) => {
+    e?.stopPropagation();
+    setDeletingDoc(docItem);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingDoc) return;
+    setIsDeleting(true);
+    const targetDoc = deletingDoc;
+    const docId = targetDoc.id;
+
+    // 1. Remove from documents state immediately
+    setDocuments(prev => prev.filter(d => (d.id !== docId && d.name !== targetDoc.name)));
+
+    // 2. Track deleted ID in localStorage to prevent resurrection
+    try {
+      const deletedIds = JSON.parse(localStorage.getItem('euriska_deleted_doc_ids') || '[]');
+      if (docId && !deletedIds.includes(docId)) deletedIds.push(docId);
+      if (targetDoc.name && !deletedIds.includes(targetDoc.name)) deletedIds.push(targetDoc.name);
+      if (targetDoc.firestoreDocId && !deletedIds.includes(targetDoc.firestoreDocId)) {
+        deletedIds.push(targetDoc.firestoreDocId);
+      }
+      localStorage.setItem('euriska_deleted_doc_ids', JSON.stringify(deletedIds));
+
+      // If it's a Monthly MOM, also add to euriska_deleted_mom_ids
+      if (targetDoc.category === 'Monthly MOM') {
+        const deletedMomIds = JSON.parse(localStorage.getItem('euriska_deleted_mom_ids') || '[]');
+        if (docId && !deletedMomIds.includes(docId)) deletedMomIds.push(docId);
+        if (targetDoc.firestoreDocId && !deletedMomIds.includes(targetDoc.firestoreDocId)) {
+          deletedMomIds.push(targetDoc.firestoreDocId);
+        }
+        localStorage.setItem('euriska_deleted_mom_ids', JSON.stringify(deletedMomIds));
+      }
+    } catch {}
+
+    // 3. Delete binary from IndexedDB
+    try {
+      if (docId) {
+        await deleteDocumentFile(docId);
+      }
+      if (targetDoc.name) {
+        await deleteDocumentFile(targetDoc.name);
+      }
+    } catch {}
+
+    // 4. Delete from Firestore if configured
+    try {
+      if (isFirebaseConfigured && db) {
+        await ensureFirebaseSession();
+        if (docId) {
+          await deleteDoc(doc(db, 'societyDocuments', docId));
+        }
+        if (targetDoc.firestoreDocId && targetDoc.firestoreDocId !== docId) {
+          await deleteDoc(doc(db, 'societyDocuments', targetDoc.firestoreDocId));
+        }
+        try {
+          const qDocs = query(collection(db, 'societyDocuments'), where('name', '==', targetDoc.name));
+          const snapDocs = await getDocs(qDocs);
+          snapDocs.forEach(d => {
+            deleteDoc(d.ref).catch(() => {});
+          });
+        } catch {}
+
+        if (targetDoc.category === 'Monthly MOM') {
+          try {
+            if (docId) {
+              await deleteDoc(doc(db, 'monthlyMeetingMomUploads', docId));
+            }
+            const qMoms = query(collection(db, 'monthlyMeetingMomUploads'), where('title', '==', targetDoc.name));
+            const snapMoms = await getDocs(qMoms);
+            snapMoms.forEach(d => {
+              deleteDoc(d.ref).catch(() => {});
+            });
+          } catch {}
+        }
+      }
+    } catch (err) {
+      console.warn('Firestore deletion notice in DocumentManager:', err);
+    }
+
+    // 5. Audit Trail Logging
+    try {
+      await logAuditEvent({
+        action: AUDIT_ACTIONS.DELETE || 'DELETE',
+        module: 'Document Management',
+        recordId: targetDoc.name,
+        user,
+        role: userRole,
+        notes: `Deleted document: ${targetDoc.name} (${targetDoc.category})`
+      });
+    } catch {}
+
+    setIsDeleting(false);
+    setDeletingDoc(null);
   };
 
   return (
@@ -543,77 +655,100 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                       )}
                     </td>
                     <td style={{ padding: '14px 16px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                      <button
-                        onClick={() => {
-                          const targetUrl = (doc.downloadUrl && doc.downloadUrl !== '#')
-                            ? doc.downloadUrl
-                            : '/Majestique_Euriska_Builder_Forensic_Audit_Full_Dossier.pdf';
-                          const printWin = window.open(targetUrl, '_blank');
-                          if (printWin) {
-                            printWin.focus();
-                            try {
-                              printWin.onload = () => {
-                                try { printWin.print(); } catch {}
-                              };
-                            } catch {}
-                          }
-                        }}
-                        title="Print Document (Native Clean Print)"
-                        style={{
-                          background: '#1e293b',
-                          color: '#e2e8f0',
-                          border: '1px solid #334155',
-                          padding: '6px 12px',
-                          borderRadius: '8px',
-                          fontSize: '0.78rem',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          marginRight: '8px'
-                        }}
-                      >
-                        🖨️ Print
-                      </button>
-                      <button
-                        onClick={() => handleViewInPortal(doc)}
-                        style={{
-                          background: '#0d9488',
-                          color: '#ffffff',
-                          border: 'none',
-                          padding: '6px 12px',
-                          borderRadius: '8px',
-                          fontSize: '0.78rem',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          marginRight: '8px'
-                        }}
-                      >
-                        👁️ View In-Portal
-                      </button>
-                      <a
-                        href={doc.downloadUrl || '#'}
-                        download={doc.name}
-                        onClick={(e) => handleDownloadDoc(doc, e)}
-                        style={{
-                          textDecoration: 'none',
-                          background: '#0b2b26',
-                          color: '#C49B4F',
-                          padding: '6px 14px',
-                          borderRadius: '8px',
-                          fontSize: '0.78rem',
-                          fontWeight: 700,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '6px'
-                        }}
-                      >
-                        ⬇ Download
-                      </a>
+                      <div style={{ display: 'inline-flex', gap: '6px', alignItems: 'center', justifyContent: 'flex-end' }}>
+                        <button
+                          onClick={() => {
+                            const targetUrl = (doc.downloadUrl && doc.downloadUrl !== '#')
+                              ? doc.downloadUrl
+                              : '/Majestique_Euriska_Builder_Forensic_Audit_Full_Dossier.pdf';
+                            const printWin = window.open(targetUrl, '_blank');
+                            if (printWin) {
+                              printWin.focus();
+                              try {
+                                printWin.onload = () => {
+                                  try { printWin.print(); } catch {}
+                                };
+                              } catch {}
+                            }
+                          }}
+                          title="Print Document (Native Clean Print)"
+                          style={{
+                            background: '#1e293b',
+                            color: '#e2e8f0',
+                            border: '1px solid #334155',
+                            padding: '6px 10px',
+                            borderRadius: '6px',
+                            fontSize: '0.76rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          🖨️ Print
+                        </button>
+                        <button
+                          onClick={() => handleViewInPortal(doc)}
+                          style={{
+                            background: '#0d9488',
+                            color: '#ffffff',
+                            border: 'none',
+                            padding: '6px 10px',
+                            borderRadius: '6px',
+                            fontSize: '0.76rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          👁️ View
+                        </button>
+                        <a
+                          href={doc.downloadUrl || '#'}
+                          download={doc.name}
+                          onClick={(e) => handleDownloadDoc(doc, e)}
+                          style={{
+                            textDecoration: 'none',
+                            background: '#0b2b26',
+                            color: '#C49B4F',
+                            padding: '6px 10px',
+                            borderRadius: '6px',
+                            fontSize: '0.76rem',
+                            fontWeight: 700,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          ⬇ Download
+                        </a>
+                        {canUpload && (
+                          <button
+                            type="button"
+                            data-testid={`delete-doc-btn-${doc.id || doc.name}`}
+                            onClick={(e) => handleRequestDelete(doc, e)}
+                            title="Delete Document"
+                            style={{
+                              background: '#fef2f2',
+                              color: '#dc2626',
+                              border: '1px solid #fecaca',
+                              padding: '6px 10px',
+                              borderRadius: '6px',
+                              fontSize: '0.76rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            🗑️ Delete
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
@@ -748,6 +883,115 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
           documentType={inPortalViewDoc.type}
           onClose={() => setInPortalViewDoc(null)}
         />
+      )}
+
+      {/* ── Document Deletion Confirmation Modal ── */}
+      {deletingDoc && (
+        <div
+          data-testid="delete-doc-modal"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.7)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1150,
+            padding: '16px'
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isDeleting) setDeletingDoc(null);
+          }}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              borderRadius: '16px',
+              maxWidth: '460px',
+              width: '100%',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              overflow: 'hidden',
+              border: '1px solid #fee2e2'
+            }}
+          >
+            <div style={{ background: '#fef2f2', padding: '18px 22px', borderBottom: '1px solid #fecaca', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ background: '#fee2e2', color: '#dc2626', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '1.2rem' }}>
+                🗑️
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#991b1b' }}>
+                  Delete Document Record?
+                </h4>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#b91c1c' }}>
+                  This action permanently removes this document
+                </p>
+              </div>
+            </div>
+
+            <div style={{ padding: '20px 22px' }}>
+              <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0', marginBottom: '16px', fontSize: '0.84rem' }}>
+                <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>
+                  {deletingDoc.name}
+                </div>
+                <div style={{ fontSize: '0.76rem', color: '#64748b', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  <span>📂 {deletingDoc.category}</span>
+                  <span>•</span>
+                  <span>📅 {deletingDoc.uploadDate}</span>
+                  <span>•</span>
+                  <span>📄 {deletingDoc.fileSize}</span>
+                </div>
+              </div>
+
+              <div style={{ background: '#fffbeb', border: '1px solid #fef3c7', padding: '12px', borderRadius: '8px', color: '#92400e', fontSize: '0.8rem', lineHeight: '1.45' }}>
+                ⚠️ This file and its metadata will be permanently deleted from local cache, IndexedDB, and remote society records.
+              </div>
+            </div>
+
+            <div style={{ padding: '14px 22px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                type="button"
+                data-testid="cancel-delete-doc-btn"
+                onClick={() => setDeletingDoc(null)}
+                disabled={isDeleting}
+                style={{
+                  padding: '9px 16px',
+                  borderRadius: '8px',
+                  border: '1px solid #cbd5e1',
+                  background: '#ffffff',
+                  color: '#475569',
+                  fontSize: '0.84rem',
+                  fontWeight: 700,
+                  cursor: isDeleting ? 'not-allowed' : 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                data-testid="confirm-delete-doc-btn"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                style={{
+                  padding: '9px 18px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: isDeleting ? '#94a3b8' : '#dc2626',
+                  color: '#ffffff',
+                  fontSize: '0.84rem',
+                  fontWeight: 800,
+                  cursor: isDeleting ? 'not-allowed' : 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                {isDeleting ? 'Deleting...' : '🗑️ Delete Document'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

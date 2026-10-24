@@ -3,6 +3,30 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import MonthlyMomStorageVault, { INITIAL_MONTHLY_MOM_ARCHIVE } from './MonthlyMomStorageVault.jsx';
 
+vi.mock('../../firebase.js', () => ({
+  db: {},
+  storage: {},
+  ensureFirebaseSession: vi.fn().mockResolvedValue(),
+  isFirebaseConfigured: true
+}));
+
+vi.mock('firebase/firestore', () => ({
+  collection: vi.fn(),
+  doc: vi.fn((_db, _coll, id) => ({ id })),
+  getDocs: vi.fn().mockResolvedValue({
+    empty: true,
+    docs: [],
+    forEach: vi.fn()
+  }),
+  setDoc: vi.fn().mockResolvedValue(),
+  addDoc: vi.fn().mockResolvedValue({ id: 'mock-doc-id' }),
+  deleteDoc: vi.fn().mockResolvedValue(),
+  serverTimestamp: vi.fn(),
+  query: vi.fn(),
+  orderBy: vi.fn(),
+  where: vi.fn()
+}));
+
 vi.mock('firebase/storage', () => ({
   getStorage: vi.fn(),
   ref: vi.fn(),
@@ -117,5 +141,64 @@ describe('MonthlyMomStorageVault Component', () => {
     expect(handleLoadMock).toHaveBeenCalledWith(expect.objectContaining({
       id: 'mom-oct-2026-wing-a'
     }));
+  });
+
+  it('opens delete confirmation modal when clicking Delete button on a card and allows canceling', () => {
+    render(<MonthlyMomStorageVault />);
+
+    const deleteBtn = screen.getByTestId('delete-mom-btn-mom-oct-2026-wing-a');
+    fireEvent.click(deleteBtn);
+
+    expect(screen.getByTestId('delete-mom-modal')).toBeInTheDocument();
+    expect(screen.getByText(/Delete Monthly MOM Record\?/i)).toBeInTheDocument();
+
+    // Cancel closes the modal and keeps the document
+    const cancelBtn = screen.getByTestId('cancel-delete-mom-btn');
+    fireEvent.click(cancelBtn);
+
+    expect(screen.queryByTestId('delete-mom-modal')).not.toBeInTheDocument();
+    expect(screen.getByText(/Wing 'A' Managing Committee Monthly Minutes — October 2026/i)).toBeInTheDocument();
+  });
+
+  it('permanently deletes a document when confirming deletion in the modal', async () => {
+    render(<MonthlyMomStorageVault />);
+
+    const deleteBtn = screen.getByTestId('delete-mom-btn-mom-oct-2026-wing-a');
+    fireEvent.click(deleteBtn);
+
+    expect(screen.getByTestId('delete-mom-modal')).toBeInTheDocument();
+
+    const confirmBtn = screen.getByTestId('confirm-delete-mom-btn');
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Wing 'A' Managing Committee Monthly Minutes — October 2026/i)).not.toBeInTheDocument();
+    });
+
+    // Check localStorage deleted tracking
+    const deleted = JSON.parse(localStorage.getItem('euriska_deleted_mom_ids') || '[]');
+    expect(deleted).toContain('mom-oct-2026-wing-a');
+  });
+
+  it('allows deleting a document directly from inside the lightbox viewer', async () => {
+    render(<MonthlyMomStorageVault />);
+
+    // Open lightbox
+    const viewBtn = screen.getByTestId('view-mom-btn-mom-sep-2026-common');
+    fireEvent.click(viewBtn);
+    expect(screen.getByTestId('view-mom-lightbox')).toBeInTheDocument();
+
+    // Click delete inside lightbox
+    const lightboxDeleteBtn = screen.getByTestId('lightbox-delete-mom-btn');
+    fireEvent.click(lightboxDeleteBtn);
+
+    expect(screen.getByTestId('delete-mom-modal')).toBeInTheDocument();
+
+    const confirmBtn = screen.getByTestId('confirm-delete-mom-btn');
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Joint Common Infrastructure & Apex Committee Minutes — September 2026/i)).not.toBeInTheDocument();
+    });
   });
 });

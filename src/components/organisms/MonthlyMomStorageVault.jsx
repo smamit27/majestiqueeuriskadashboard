@@ -23,10 +23,11 @@ import {
   Bot,
   FileCheck,
   ShieldCheck,
-  Maximize2
+  Maximize2,
+  AlertTriangle
 } from 'lucide-react';
 import { db, storage, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
-import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, setDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { 
   saveDocumentFile, 
@@ -104,14 +105,18 @@ export default function MonthlyMomStorageVault({
   currentScope = 'A_BUILDING',
   onClose = null 
 }) {
-  // Archives state with local persistence
+  // Archives state with local persistence and deleted IDs filtering
   const [momArchives, setMomArchives] = useState(() => {
     try {
+      const deletedIds = new Set(JSON.parse(localStorage.getItem('euriska_deleted_mom_ids') || '[]'));
       const stored = localStorage.getItem('euriska_monthly_moms_vault');
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) {
+          return parsed.filter(m => !deletedIds.has(m.id));
+        }
       }
+      return INITIAL_MONTHLY_MOM_ARCHIVE.filter(m => !deletedIds.has(m.id));
     } catch {}
     return INITIAL_MONTHLY_MOM_ARCHIVE;
   });
@@ -122,6 +127,8 @@ export default function MonthlyMomStorageVault({
   const [searchQuery, setSearchQuery] = useState('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [viewingDoc, setViewingDoc] = useState(null);
+  const [deletingMomDoc, setDeletingMomDoc] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [activeFileBlobUrl, setActiveFileBlobUrl] = useState(null);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
   const [fileLoadError, setFileLoadError] = useState(null);
@@ -219,15 +226,22 @@ export default function MonthlyMomStorageVault({
     if (!isFirebaseConfigured || !db) return;
     const fetchRemoteArchives = async () => {
       try {
+        const deletedIds = new Set(JSON.parse(localStorage.getItem('euriska_deleted_mom_ids') || '[]'));
         const q = query(collection(db, 'monthlyMeetingMomUploads'), orderBy('uploadDate', 'desc'));
         const snap = await getDocs(q);
         if (!snap.empty) {
-          const remoteList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          const remoteList = snap.docs.map(d => ({
+            firestoreDocId: d.id,
+            ...d.data(),
+            id: d.data().id || d.id
+          }));
           setMomArchives(prev => {
             const ids = new Set(prev.map(p => p.id));
             const merged = [...prev];
             remoteList.forEach(item => {
-              if (!ids.has(item.id)) merged.push(item);
+              if (!ids.has(item.id) && !deletedIds.has(item.id) && !deletedIds.has(item.firestoreDocId)) {
+                merged.push(item);
+              }
             });
             return merged.sort((a, b) => (b.month || '').localeCompare(a.month || ''));
           });
@@ -385,7 +399,7 @@ export default function MonthlyMomStorageVault({
     try {
       if (isFirebaseConfigured && db) {
         await ensureFirebaseSession();
-        await addDoc(collection(db, 'monthlyMeetingMomUploads'), {
+        await setDoc(doc(db, 'monthlyMeetingMomUploads', recordId), {
           ...newRecord,
           createdAt: serverTimestamp()
         });
@@ -421,21 +435,67 @@ export default function MonthlyMomStorageVault({
     showToast(`Monthly MOM for ${monthLabel} successfully uploaded and archived!`);
   };
 
-  // Delete an archived MOM
-  const handleDeleteMom = async (id, e) => {
-    e.stopPropagation();
-    if (!window.confirm('Are you sure you want to delete this archived Monthly MOM?')) return;
+  // Request delete (opens in-app confirmation modal)
+  const handleRequestDelete = (mom, e) => {
+    e?.stopPropagation();
+    setDeletingMomDoc(mom);
+  };
+
+  // Execute confirmed deletion
+  const handleConfirmDelete = async () => {
+    if (!deletingMomDoc) return;
+    setIsDeleting(true);
+    const mom = deletingMomDoc;
+    const id = mom.id;
+
+    // 1. Remove from state immediately
     const updated = momArchives.filter(m => m.id !== id);
     saveArchivesLocally(updated);
-    await deleteDocumentFile(id);
 
+    // 2. Track deleted ID in localStorage so seeds/remote sync never resurrect it
+    try {
+      const deletedList = JSON.parse(localStorage.getItem('euriska_deleted_mom_ids') || '[]');
+      if (!deletedList.includes(id)) deletedList.push(id);
+      if (mom.firestoreDocId && !deletedList.includes(mom.firestoreDocId)) {
+        deletedList.push(mom.firestoreDocId);
+      }
+      localStorage.setItem('euriska_deleted_mom_ids', JSON.stringify(deletedList));
+    } catch {}
+
+    // 3. Delete binary from IndexedDB
+    try {
+      await deleteDocumentFile(id);
+    } catch {}
+
+    // 4. Delete from Firestore
     try {
       if (isFirebaseConfigured && db) {
         await deleteDoc(doc(db, 'monthlyMeetingMomUploads', id));
-      }
-    } catch {}
+        if (mom.firestoreDocId && mom.firestoreDocId !== id) {
+          await deleteDoc(doc(db, 'monthlyMeetingMomUploads', mom.firestoreDocId));
+        }
 
-    showToast('Document removed from archives.');
+        // Also clean up from general societyDocuments if matching
+        try {
+          const qDocs = query(collection(db, 'societyDocuments'), where('name', '==', mom.title));
+          const snapDocs = await getDocs(qDocs);
+          snapDocs.forEach(d => {
+            deleteDoc(d.ref).catch(() => {});
+          });
+        } catch {}
+      }
+    } catch (err) {
+      console.warn('Firestore deletion error:', err);
+    }
+
+    // 5. Close lightbox if this document was open
+    if (viewingDoc?.id === id) {
+      setViewingDoc(null);
+    }
+
+    setIsDeleting(false);
+    setDeletingMomDoc(null);
+    showToast('Document permanently removed from archives.');
   };
 
   // Download document
@@ -840,18 +900,26 @@ Status: Archived in Permanent Society Records.`;
 
                 <button
                   type="button"
-                  onClick={(e) => handleDeleteMom(mom.id, e)}
+                  data-testid={`delete-mom-btn-${mom.id}`}
+                  onClick={(e) => handleRequestDelete(mom, e)}
                   title="Delete from archive"
                   style={{
-                    padding: '8px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '8px 10px',
                     borderRadius: '8px',
-                    background: 'transparent',
-                    color: '#94a3b8',
-                    border: 'none',
-                    cursor: 'pointer'
+                    background: '#fef2f2',
+                    color: '#dc2626',
+                    border: '1px solid #fecaca',
+                    fontSize: '0.76rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease'
                   }}
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={13} />
+                  <span>Delete</span>
                 </button>
               </div>
 
@@ -1230,6 +1298,29 @@ Status: Archived in Permanent Society Records.`;
 
                 <button
                   type="button"
+                  data-testid="lightbox-delete-mom-btn"
+                  onClick={(e) => handleRequestDelete(viewingDoc, e)}
+                  title="Delete Document"
+                  style={{
+                    background: 'rgba(239, 68, 68, 0.2)',
+                    border: '1px solid rgba(239, 68, 68, 0.4)',
+                    color: '#fca5a5',
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <Trash2 size={14} />
+                  Delete
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => setViewingDoc(null)}
                   style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '1.3rem', cursor: 'pointer', padding: '0 6px', lineHeight: 1 }}
                 >
@@ -1360,6 +1451,126 @@ Status: Archived in Permanent Society Records.`;
               )}
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* ── DELETE CONFIRMATION MODAL ── */}
+      {deletingMomDoc && (
+        <div
+          data-testid="delete-mom-modal"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(15, 23, 42, 0.7)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10000,
+            padding: '16px'
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isDeleting) setDeletingMomDoc(null);
+          }}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              borderRadius: '16px',
+              maxWidth: '460px',
+              width: '100%',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              overflow: 'hidden',
+              border: '1px solid #fee2e2'
+            }}
+          >
+            {/* Header */}
+            <div style={{ background: '#fef2f2', padding: '18px 22px', borderBottom: '1px solid #fecaca', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ background: '#fee2e2', color: '#dc2626', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Trash2 size={20} />
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#991b1b' }}>
+                  Delete Monthly MOM Record?
+                </h4>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#b91c1c' }}>
+                  This action permanently deletes the document
+                </p>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div style={{ padding: '20px 22px' }}>
+              <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0', marginBottom: '16px', fontSize: '0.84rem' }}>
+                <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>
+                  {deletingMomDoc.title}
+                </div>
+                <div style={{ fontSize: '0.76rem', color: '#64748b', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  <span>📅 {deletingMomDoc.month || deletingMomDoc.meetingDate}</span>
+                  <span>•</span>
+                  <span>📄 {deletingMomDoc.fileName || 'Archive Record'} ({deletingMomDoc.fileSize})</span>
+                  <span>•</span>
+                  <span>🏢 {deletingMomDoc.scope === 'A_BUILDING' ? "Wing 'A'" : 'Common Infra'}</span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', background: '#fffbeb', border: '1px solid #fef3c7', padding: '12px', borderRadius: '8px', color: '#92400e', fontSize: '0.8rem', lineHeight: '1.45' }}>
+                <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: '2px', color: '#d97706' }} />
+                <div>
+                  This file and its summary will be permanently erased from your browser cache, offline IndexedDB, and society Firestore records. This cannot be recovered.
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Buttons */}
+            <div style={{ padding: '14px 22px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                type="button"
+                data-testid="cancel-delete-mom-btn"
+                onClick={() => setDeletingMomDoc(null)}
+                disabled={isDeleting}
+                style={{
+                  padding: '9px 16px',
+                  borderRadius: '8px',
+                  border: '1px solid #cbd5e1',
+                  background: '#ffffff',
+                  color: '#475569',
+                  fontSize: '0.84rem',
+                  fontWeight: 700,
+                  cursor: isDeleting ? 'not-allowed' : 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                data-testid="confirm-delete-mom-btn"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                style={{
+                  padding: '9px 18px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: isDeleting ? '#94a3b8' : '#dc2626',
+                  color: '#ffffff',
+                  fontSize: '0.84rem',
+                  fontWeight: 800,
+                  cursor: isDeleting ? 'not-allowed' : 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 2px 6px rgba(220, 38, 38, 0.3)'
+                }}
+              >
+                <Trash2 size={15} />
+                <span>{isDeleting ? 'Deleting...' : 'Yes, Delete Document'}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
