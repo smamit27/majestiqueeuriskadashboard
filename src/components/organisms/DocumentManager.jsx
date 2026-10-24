@@ -7,6 +7,7 @@ import { DocumentViewerModal } from './InPortalDocumentViewer.jsx';
 
 export const DOCUMENT_CATEGORIES = [
   'All Categories',
+  'Monthly MOM',
   'AGM',
   'SGM',
   'Audit',
@@ -27,6 +28,34 @@ export const ACCESS_LEVELS = {
 };
 
 const SEED_DOCUMENTS = [
+  {
+    id: 'doc-mom-001',
+    name: "Wing 'A' Managing Committee Minutes — October 2026",
+    category: 'Monthly MOM',
+    uploadDate: '2026-10-19',
+    uploadedBy: 'Society Secretary',
+    version: '1.0',
+    expiryDate: '',
+    accessLevel: 'PUBLIC_RESIDENTS',
+    fileSize: '1.8 MB',
+    fileType: 'PDF',
+    downloadUrl: '#',
+    notes: 'Signed and approved October 2026 Wing A MOM: Otis Lift 2 door sensor replacement sanction, pre-monsoon terrace joint sealing, and WhatsApp reminders to 6 overdue flats.'
+  },
+  {
+    id: 'doc-mom-002',
+    name: "Joint Common Infrastructure & Apex Committee Minutes — September 2026",
+    category: 'Monthly MOM',
+    uploadDate: '2026-09-21',
+    uploadedBy: 'Apex Infrastructure Committee',
+    version: '1.0',
+    expiryDate: '',
+    accessLevel: 'PUBLIC_RESIDENTS',
+    fileSize: '2.4 MB',
+    fileType: 'JPG',
+    downloadUrl: '#',
+    notes: 'September 2026 common campus decisions: STP suction tanker clearance (₹8,500), Park+ RFID boom barrier sensor realignment at Gate 2, and Form-B fire certification.'
+  },
   {
     id: 'doc-000',
     name: 'Executive Workflow & Project Lifecycle Presentation',

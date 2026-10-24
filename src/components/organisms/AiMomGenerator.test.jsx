@@ -386,4 +386,21 @@ describe('AiMomGenerator Component', () => {
     expect(chairpersonInput.value).toBe('');
     expect(chairpersonInput.value).not.toContain('Rohan');
   });
+
+  it('opens Monthly MOM Storage Vault when clicking header button or quick upload button', () => {
+    render(<AiMomGenerator isAdmin={true} />);
+
+    // Header Vault button is visible
+    const vaultHeaderBtn = screen.getByTestId('header-monthly-mom-vault-btn');
+    expect(vaultHeaderBtn).toBeInTheDocument();
+    fireEvent.click(vaultHeaderBtn);
+
+    // Should render Monthly MOM storage vault
+    expect(screen.getByTestId('monthly-mom-vault-container')).toBeInTheDocument();
+    expect(screen.getByText(/Monthly MOM Storage & Upload Vault/i)).toBeInTheDocument();
+
+    // Quick upload button above textarea
+    const quickUploadBtn = screen.getByTestId('quick-upload-monthly-mom-btn');
+    expect(quickUploadBtn).toBeInTheDocument();
+  });
 });

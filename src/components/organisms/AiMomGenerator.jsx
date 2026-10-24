@@ -28,7 +28,9 @@ import {
   FolderOpen,
   ArrowLeft,
   ExternalLink,
-  BookmarkPlus
+  BookmarkPlus,
+  FolderArchive,
+  UploadCloud
 } from 'lucide-react';
 import { generateMeetingMOM } from '../../services/aiMomService.js';
 import { 
@@ -45,6 +47,7 @@ import { COMMITTEE_MEMBERS } from '../../data/committeeMembersData.js';
 import VisualAgendaPoster from './VisualAgendaPoster.jsx';
 import { OFFICIAL_MOM_TEMPLATES } from '../../data/momTemplatesData.js';
 import AiMomSkeletonLoader from '../molecules/AiMomSkeletonLoader.jsx';
+import MonthlyMomStorageVault from './MonthlyMomStorageVault.jsx';
 
 const SAMPLE_A_BUILDING_NOTES = `Wing A Managing Committee Monthly Review:
 1. Lift 1 between 4th and 5th floor had reported jerky movement. Otis technician visited on Tuesday, diagnosed sensor calibration issue. Sensor replaced under AMC; lift running smoothly now.
@@ -639,6 +642,26 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
     });
   };
 
+  // Load notes & metadata from an archived Monthly MOM upload into the generator
+  const handleLoadVaultMomIntoGenerator = (vaultMom) => {
+    setScope(vaultMom.scope || 'A_BUILDING');
+    setMeetingDate(vaultMom.meetingDate || new Date().toISOString().split('T')[0]);
+    if (vaultMom.meetingTime) setMeetingTime(vaultMom.meetingTime);
+    if (vaultMom.venue) setVenue(vaultMom.venue);
+    setChairperson(''); // clean empty field
+    if (vaultMom.notes) setRawNotes(vaultMom.notes);
+    setActiveView('preview');
+    setAgentFeedback({
+      type: 'success',
+      message: `📁 Loaded notes from "${vaultMom.title}" into the AI MOM Generator!`
+    });
+    setTimeout(() => setAgentFeedback(null), 4000);
+    const el = document.getElementById('mom-notes-textarea');
+    if (el && typeof el.scrollIntoView === 'function') {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   // Word & character stats
   const stats = useMemo(() => {
     const text = rawNotes.trim();
@@ -702,39 +725,73 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           </p>
         </div>
 
-        {/* Quick History & Templates Action Button */}
-        <button
-          type="button"
-          data-testid="header-meeting-history-btn"
-          onClick={() => {
-            setActiveView('history');
-            setTimeout(() => {
-              const el = document.getElementById('meeting-history-templates-view');
-              if (el && typeof el.scrollIntoView === 'function') {
-                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            }, 60);
-          }}
-          className="button-secondary"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '0.84rem',
-            fontWeight: 700,
-            padding: '8px 16px',
-            borderRadius: '10px',
-            background: activeView === 'history' ? '#0f172a' : '#f8fafc',
-            color: activeView === 'history' ? '#ffffff' : '#1e293b',
-            border: activeView === 'history' ? '1.5px solid #0f172a' : '1.5px solid #cbd5e1',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
-          }}
-        >
-          <History size={15} />
-          Meeting History & Templates ({savedMoms.length + OFFICIAL_MOM_TEMPLATES.length})
-        </button>
+        {/* Action Buttons: Monthly MOM Vault & Meeting History */}
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            data-testid="header-monthly-mom-vault-btn"
+            onClick={() => {
+              setActiveView('vault');
+              setTimeout(() => {
+                const el = document.getElementById('monthly-mom-vault-section');
+                if (el && typeof el.scrollIntoView === 'function') {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }, 60);
+            }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '0.84rem',
+              fontWeight: 800,
+              padding: '8px 16px',
+              borderRadius: '10px',
+              background: activeView === 'vault' ? '#1d4ed8' : '#eff6ff',
+              color: activeView === 'vault' ? '#ffffff' : '#1d4ed8',
+              border: activeView === 'vault' ? '1.5px solid #1d4ed8' : '1.5px solid #bfdbfe',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 4px rgba(37, 99, 235, 0.08)'
+            }}
+          >
+            <FolderArchive size={16} />
+            📁 Monthly MOM Vault & Upload (PDF / Image)
+          </button>
+
+          <button
+            type="button"
+            data-testid="header-meeting-history-btn"
+            onClick={() => {
+              setActiveView('history');
+              setTimeout(() => {
+                const el = document.getElementById('meeting-history-templates-view');
+                if (el && typeof el.scrollIntoView === 'function') {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }, 60);
+            }}
+            className="button-secondary"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '0.84rem',
+              fontWeight: 700,
+              padding: '8px 16px',
+              borderRadius: '10px',
+              background: activeView === 'history' ? '#0f172a' : '#f8fafc',
+              color: activeView === 'history' ? '#ffffff' : '#1e293b',
+              border: activeView === 'history' ? '1.5px solid #0f172a' : '1.5px solid #cbd5e1',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
+            }}
+          >
+            <History size={15} />
+            Meeting History & Templates ({savedMoms.length + OFFICIAL_MOM_TEMPLATES.length})
+          </button>
+        </div>
       </div>
 
       {/* ── Big Scope Switcher: Building 'A' vs Common ── */}
@@ -1097,6 +1154,36 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               {isListening ? <MicOff size={13} color="#dc2626" /> : <Mic size={13} color="#059669" />}
               {isListening ? '🔴 Recording...' : '🎙️ Voice Dictation'}
             </button>
+            <button
+              type="button"
+              data-testid="quick-upload-monthly-mom-btn"
+              onClick={() => {
+                setActiveView('vault');
+                setTimeout(() => {
+                  const el = document.getElementById('monthly-mom-vault-section');
+                  if (el && typeof el.scrollIntoView === 'function') {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }, 60);
+              }}
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                padding: '4px 10px',
+                borderRadius: '6px',
+                border: '1px solid #3b82f6',
+                background: '#eff6ff',
+                color: '#1d4ed8',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+              title="Upload and store scanned monthly MOM (PDF or Image)"
+            >
+              <UploadCloud size={13} color="#2563eb" />
+              📤 Upload Monthly MOM (Image / PDF)
+            </button>
           </div>
         </div>
 
@@ -1162,8 +1249,8 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
         <AiMomSkeletonLoader scope={scope} />
       )}
 
-      {/* ── Generated MOM Workspace or History & Templates View ── */}
-      {!isGenerating && (generatedMom || activeView === 'history') && (
+      {/* ── Generated MOM Workspace or History / Vault View ── */}
+      {!isGenerating && (generatedMom || activeView === 'history' || activeView === 'vault') && (
         <div className="mom-output-workspace" style={{ marginTop: '30px' }}>
           
           {/* Navigation & Action Toolbar */}
@@ -1248,6 +1335,28 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                   </button>
                 </>
               )}
+              <button
+                type="button"
+                data-testid="tab-monthly-mom-vault-btn"
+                onClick={() => setActiveView('vault')}
+                style={{
+                  padding: '7px 14px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: activeView === 'vault' ? '#ffffff' : 'transparent',
+                  color: activeView === 'vault' ? '#1d4ed8' : '#64748b',
+                  fontSize: '0.82rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: activeView === 'vault' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <FolderArchive size={14} color="#2563eb" />
+                📁 Monthly MOM Vault
+              </button>
               <button
                 type="button"
                 data-testid="tab-history-templates-btn"
@@ -2066,6 +2175,17 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               scope={activeDoc.scope || scope}
               onBack={() => setActiveView('preview')}
             />
+          )}
+
+          {/* ── VIEW 6: MONTHLY MOM STORAGE VAULT & UPLOADS ── */}
+          {activeView === 'vault' && (
+            <div id="monthly-mom-vault-section">
+              <MonthlyMomStorageVault
+                onLoadIntoGenerator={handleLoadVaultMomIntoGenerator}
+                currentScope={scope}
+                onClose={() => setActiveView(generatedMom ? 'preview' : 'history')}
+              />
+            </div>
           )}
 
         </div>
