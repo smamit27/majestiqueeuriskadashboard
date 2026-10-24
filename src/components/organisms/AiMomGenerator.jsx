@@ -49,8 +49,8 @@ export default function AiMomGenerator({ isAdmin = false }) {
   const [meetingDate, setMeetingDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [meetingTime, setMeetingTime] = useState('11:00 AM');
   const [venue, setVenue] = useState("Society Office / Wing 'A' Lobby");
-  const [chairperson, setChairperson] = useState('Mr. Rohan (Chairman)');
-  const [attendees, setAttendees] = useState('Mr. Rohan (Chairman), Society Secretary, Society Treasurer, Wing Committee Members, Estate Manager');
+  const [chairperson, setChairperson] = useState('');
+  const [attendees, setAttendees] = useState('');
   const [rawNotes, setRawNotes] = useState(SAMPLE_A_BUILDING_NOTES);
 
   // Output & UI States
@@ -567,6 +567,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               type="text"
               value={chairperson}
               onChange={e => setChairperson(e.target.value)}
+              placeholder="e.g. Society Chairman (optional)"
               className="attendance-register-input"
               style={{ width: '100%', padding: '8px 10px' }}
             />
@@ -580,7 +581,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               type="text"
               value={attendees}
               onChange={e => setAttendees(e.target.value)}
-              placeholder="Names or titles separated by commas"
+              placeholder="e.g. Committee Members, Secretary, Treasurer (optional)"
               className="attendance-register-input"
               style={{ width: '100%', padding: '8px 10px' }}
             />
@@ -1033,7 +1034,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px', textAlign: 'center' }}>
                   <div>
                     <div style={{ width: '180px', borderBottom: '1px solid #000000', marginBottom: '8px' }}></div>
-                    <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#0b2b26' }}>{activeDoc.headerInfo.chairperson}</div>
+                    <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#0b2b26' }}>{activeDoc.headerInfo.chairperson || 'Society Chairman'}</div>
                     <div style={{ fontSize: '0.74rem', color: '#64748b' }}>Chairman, Majestique Euriska</div>
                   </div>
 

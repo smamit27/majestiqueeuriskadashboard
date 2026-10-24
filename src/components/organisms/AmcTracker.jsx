@@ -885,7 +885,7 @@ export default function AmcTracker({ isAdmin = false }) {
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search equipment, vendor, or remarks (e.g. rohan, DG, Kirloskar)…"
+                placeholder="Search equipment, vendor, or remarks…"
                 style={{
                   width: '100%',
                   padding: '9px 12px 9px 36px',
@@ -1570,7 +1570,7 @@ export default function AmcTracker({ isAdmin = false }) {
               </div>
 
               <div>
-                <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#475569' }}>Remarks (e.g. Check With rohan Sir)</label>
+                <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#475569' }}>Remarks</label>
                 <textarea
                   rows={2}
                   value={eqForm.remarks}

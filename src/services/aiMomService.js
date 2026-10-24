@@ -23,7 +23,7 @@ export async function generateMeetingMOM({
   meetingTime = '11:00 AM',
   meetingType = 'Managing Committee Meeting',
   venue = '',
-  chairperson = 'Mr. Rohan (Chairman)',
+  chairperson = '',
   attendees = ''
 }) {
   const isABuilding = scope === 'A_BUILDING';
@@ -243,9 +243,9 @@ function generateHeuristicMom({
     if (isAction) {
       // Try to extract assignee if present
       let assignedTo = 'Estate Manager';
-      if (/rohan/i.test(cleanLine)) assignedTo = 'Mr. Rohan (Chairman)';
-      else if (/secretary|amishi/i.test(cleanLine)) assignedTo = 'Society Secretary';
+      if (/secretary/i.test(cleanLine)) assignedTo = 'Society Secretary';
       else if (/treasurer|finance/i.test(cleanLine)) assignedTo = 'Society Treasurer';
+      else if (/chairman|president/i.test(cleanLine)) assignedTo = chairperson || 'Society Chairman';
       else if (/vendor|contractor|technician/i.test(cleanLine)) assignedTo = 'Assigned Vendor / Contractor';
 
       actionList.push({
@@ -361,7 +361,7 @@ function enrichMomPayload(data, context) {
   const attendeeList = context.attendees
     ? context.attendees.split(/[,;\n]+/).map(a => a.trim()).filter(Boolean)
     : [
-        context.chairperson || 'Mr. Rohan (Chairman)',
+        context.chairperson || 'Society Chairman',
         'Society Secretary',
         'Society Treasurer',
         isABuilding ? 'Wing A Committee Representatives' : 'Representatives of Wings A, B, C & Shops',
