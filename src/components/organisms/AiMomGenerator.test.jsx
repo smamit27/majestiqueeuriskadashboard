@@ -225,4 +225,46 @@ describe('AiMomGenerator Component', () => {
     expect(screen.getAllByText(/A-204 \(Neha\)/i).length).toBeGreaterThanOrEqual(2);
     expect(screen.getAllByText(/A-301 \(Sandeep\)/i).length).toBeGreaterThanOrEqual(2);
   });
+
+  it('runs AI Secretary Auto-Detect Attendees from raw notes and updates quorum', async () => {
+    render(<AiMomGenerator isAdmin={true} />);
+
+    // In sample Building A notes, flat A-404 is mentioned
+    const autoDetectBtn = screen.getByTestId('agent-autodetect-attendees-btn');
+    fireEvent.click(autoDetectBtn);
+
+    // Should detect Afroza (A-404) and show feedback toast
+    await waitFor(() => {
+      expect(screen.getByTestId('agent-feedback-toast')).toBeInTheDocument();
+    });
+
+    expect(screen.getAllByText(/A-404 \(Afroza\)/i).length).toBeGreaterThanOrEqual(1);
+    // Quorum pill should be present and calculated
+    expect(screen.getByTestId('quorum-status-pill')).toBeInTheDocument();
+  });
+
+  it('copies official WhatsApp broadcast summary when clicking WhatsApp button', async () => {
+    const writeTextMock = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: writeTextMock
+      }
+    });
+
+    render(<AiMomGenerator isAdmin={true} />);
+
+    const generateBtn = screen.getByRole('button', { name: /Generate AI MOM for Building 'A'/i });
+    fireEvent.click(generateBtn);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('agent-whatsapp-broadcast-btn')).toBeInTheDocument();
+    });
+
+    const whatsappBtn = screen.getByTestId('agent-whatsapp-broadcast-btn');
+    fireEvent.click(whatsappBtn);
+
+    expect(writeTextMock).toHaveBeenCalled();
+    const copiedText = writeTextMock.mock.calls[0][0];
+    expect(copiedText).toContain("MAJESTIQUE EURISKA - WING 'A'");
+  });
 });

@@ -19,9 +19,20 @@ import {
   ListOrdered, 
   History,
   Check,
-  AlertCircle
+  AlertCircle,
+  Bot,
+  Mic,
+  MicOff,
+  Share2,
+  Zap
 } from 'lucide-react';
 import { generateMeetingMOM } from '../../services/aiMomService.js';
+import { 
+  scanNotesForAttendees, 
+  calculateQuorum, 
+  autoAssignActionItems, 
+  generateWhatsAppNotice 
+} from '../../services/aiSecretaryAgentService.js';
 import { SOCIETY_INFO } from '../../data/societyConfig.js';
 import { db, isFirebaseConfigured } from '../../firebase.js';
 import { collection, addDoc, getDocs, query, orderBy, limit } from 'firebase/firestore';
@@ -63,6 +74,122 @@ export default function AiMomGenerator({ isAdmin = false }) {
   const [saveFeedback, setSaveFeedback] = useState(false);
   const [savedMoms, setSavedMoms] = useState([]);
   const [editableMom, setEditableMom] = useState(null);
+
+  // ── AI Secretary Agent States & Autonomous Handlers ──
+  const [agentFeedback, setAgentFeedback] = useState(null);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+
+  // Real-time Statutory Quorum Calculation
+  const quorumInfo = useMemo(() => {
+    return calculateQuorum(selectedAttendees, scope, COMMITTEE_MEMBERS);
+  }, [selectedAttendees, scope]);
+
+  // Autonomous Attendee Scanner: scans notes and matches against roster
+  const handleAgentScanAttendees = () => {
+    const result = scanNotesForAttendees(rawNotes, COMMITTEE_MEMBERS);
+    if (result.totalDetected === 0) {
+      setAgentFeedback({
+        type: 'warning',
+        message: 'No committee members or flat numbers detected in the current notes. Mention e.g. "A-204 Neha" or "Rohan from C-306".'
+      });
+      setTimeout(() => setAgentFeedback(null), 4000);
+      return;
+    }
+
+    const nextSelected = Array.from(new Set([...selectedAttendees, ...result.detectedMemberIds, ...result.detectedRoles]));
+    setSelectedAttendees(nextSelected);
+    setAgentFeedback({
+      type: 'success',
+      message: `🤖 AI Secretary detected ${result.totalDetected} attendee(s): ${result.allMatchedLabels.join(', ')}`
+    });
+    setTimeout(() => setAgentFeedback(null), 5000);
+  };
+
+  // Autonomous Action Item Assignment
+  const handleSmartAutoAssign = () => {
+    if (!generatedMom) return;
+    const targetDoc = activeView === 'edit' && editableMom ? editableMom : generatedMom;
+    if (!targetDoc.actionItems) return;
+    const updatedActions = autoAssignActionItems(targetDoc.actionItems, selectedAttendees);
+    setGeneratedMom(prev => ({ ...prev, actionItems: updatedActions }));
+    if (editableMom) {
+      setEditableMom(prev => ({ ...prev, actionItems: updatedActions }));
+    }
+    setAgentFeedback({
+      type: 'success',
+      message: '🎯 AI Secretary auto-assigned all action items based on task domain!'
+    });
+    setTimeout(() => setAgentFeedback(null), 4000);
+  };
+
+  // WhatsApp Broadcast Copier
+  const handleCopyWhatsAppNotice = () => {
+    const targetDoc = activeView === 'edit' && editableMom ? editableMom : generatedMom;
+    if (!targetDoc) return;
+    const notice = generateWhatsAppNotice(targetDoc);
+    navigator.clipboard.writeText(notice);
+    setAgentFeedback({
+      type: 'success',
+      message: '📱 Official WhatsApp Meeting Summary copied to clipboard!'
+    });
+    setTimeout(() => setAgentFeedback(null), 3500);
+  };
+
+  // Speech-to-Text Voice Dictation using Web Speech API
+  const toggleVoiceDictation = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Voice dictation is supported in modern browsers like Google Chrome, Microsoft Edge, and Safari.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-IN';
+
+      recognition.onresult = (event) => {
+        let textToAdd = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            textToAdd += event.results[i][0].transcript + ' ';
+          }
+        }
+        if (textToAdd) {
+          setRawNotes(prev => (prev ? prev.trim() + '\n' + textToAdd.trim() : textToAdd.trim()));
+        }
+      };
+
+      recognition.onerror = (e) => {
+        console.warn('Speech recognition error:', e);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognition.start();
+      recognitionRef.current = recognition;
+      setIsListening(true);
+      setAgentFeedback({
+        type: 'info',
+        message: '🎙️ AI Secretary listening... Speak your meeting points clearly.'
+      });
+      setTimeout(() => setAgentFeedback(null), 3500);
+    } catch (err) {
+      console.error('Speech recognition start failed:', err);
+      setIsListening(false);
+    }
+  };
 
   // Sync venue default when scope changes if user hasn't heavily customized it
   const handleScopeChange = (newScope) => {
@@ -383,6 +510,39 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
   return (
     <div className="section-card ai-mom-container" style={{ padding: '24px', borderRadius: '18px', background: '#ffffff', minHeight: '85vh' }}>
       
+      {/* ── AI Secretary Agent Feedback Banner ── */}
+      {agentFeedback && (
+        <div
+          data-testid="agent-feedback-toast"
+          style={{
+            marginBottom: '16px',
+            padding: '10px 16px',
+            borderRadius: '10px',
+            fontSize: '0.84rem',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: agentFeedback.type === 'success' ? '#ecfdf5' : agentFeedback.type === 'warning' ? '#fffbeb' : '#eff6ff',
+            color: agentFeedback.type === 'success' ? '#065f46' : agentFeedback.type === 'warning' ? '#92400e' : '#1e40af',
+            border: `1px solid ${agentFeedback.type === 'success' ? '#a7f3d0' : agentFeedback.type === 'warning' ? '#fde68a' : '#bfdbfe'}`,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Bot size={18} />
+            <span>{agentFeedback.message}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setAgentFeedback(null)}
+            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'inherit', padding: 0, fontWeight: 800 }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* ── Top Header & Context ── */}
       <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
         <div>
@@ -572,6 +732,52 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           </div>
         </div>
 
+        {/* AI Secretary Autonomous Quorum & Scanner Bar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+          <div
+            data-testid="quorum-status-pill"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              background: quorumInfo.isQuorumMet ? 'rgba(5, 150, 105, 0.1)' : 'rgba(217, 119, 6, 0.1)',
+              color: quorumInfo.badgeColor,
+              fontSize: '0.74rem',
+              fontWeight: 800,
+              border: `1px solid ${quorumInfo.isQuorumMet ? '#a7f3d0' : '#fde68a'}`
+            }}
+          >
+            <Bot size={13} />
+            {quorumInfo.statusText}
+          </div>
+
+          <button
+            type="button"
+            data-testid="agent-autodetect-attendees-btn"
+            onClick={handleAgentScanAttendees}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 12px',
+              borderRadius: '8px',
+              border: '1px solid #059669',
+              background: 'linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(16, 185, 129, 0.15) 100%)',
+              color: '#065f46',
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+            title="Auto-scan raw notes and select present committee members"
+          >
+            <Zap size={13} color="#059669" />
+            Auto-Detect Attendees from Notes
+          </button>
+        </div>
+
         {/* Attendees Row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px', marginBottom: '18px' }}>
           <div>
@@ -659,6 +865,28 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               }}
             >
               🧹 Clear
+            </button>
+            <button
+              type="button"
+              data-testid="agent-voice-dictate-btn"
+              onClick={toggleVoiceDictation}
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                padding: '4px 10px',
+                borderRadius: '6px',
+                border: isListening ? '1.5px solid #ef4444' : '1px solid #cbd5e1',
+                background: isListening ? '#fef2f2' : '#ffffff',
+                color: isListening ? '#dc2626' : '#334155',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px'
+              }}
+              title="Dictate meeting points with speech-to-text"
+            >
+              {isListening ? <MicOff size={13} color="#dc2626" /> : <Mic size={13} color="#059669" />}
+              {isListening ? '🔴 Recording...' : '🎙️ Voice Dictation'}
             </button>
           </div>
         </div>
@@ -841,6 +1069,27 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               >
                 {saveFeedback ? <Check size={15} color="#10b981" /> : <Save size={15} />}
                 {saveFeedback ? 'Saved!' : 'Save'}
+              </button>
+
+              <button
+                type="button"
+                data-testid="agent-whatsapp-broadcast-btn"
+                onClick={handleCopyWhatsAppNotice}
+                className="button-secondary"
+                title="Copy ready-to-share WhatsApp circular with resolutions"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 14px',
+                  fontSize: '0.82rem',
+                  background: '#ecfdf5',
+                  color: '#047857',
+                  border: '1px solid #a7f3d0'
+                }}
+              >
+                <Share2 size={15} />
+                WhatsApp Broadcast
               </button>
             </div>
           </div>
@@ -1144,9 +1393,32 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           {/* ── VIEW 3: ACTION REGISTER ── */}
           {activeView === 'actions' && (
             <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '24px' }}>
-              <h3 style={{ margin: '0 0 16px', fontSize: '1.1rem', fontWeight: 800, color: '#0b2b26' }}>
-                📋 Action Item Accountability & Follow-up
-              </h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0b2b26' }}>
+                  📋 Action Item Accountability & Follow-up
+                </h3>
+                <button
+                  type="button"
+                  data-testid="agent-autoassign-actions-btn"
+                  onClick={handleSmartAutoAssign}
+                  className="button-secondary"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '0.8rem',
+                    padding: '6px 14px',
+                    background: '#eff6ff',
+                    color: '#1e40af',
+                    border: '1px solid #bfdbfe',
+                    borderRadius: '8px'
+                  }}
+                  title="Intelligently assign committee members and technicians based on task keywords"
+                >
+                  <Zap size={14} color="#2563eb" />
+                  🎯 Auto-Assign Owners via AI
+                </button>
+              </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' }}>
                 {activeDoc.actionItems?.map((act, idx) => (
                   <div key={idx} style={{ background: '#f8fafc', padding: '16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
