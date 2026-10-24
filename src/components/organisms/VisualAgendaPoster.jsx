@@ -139,6 +139,15 @@ export default function VisualAgendaPoster({
   }, [agendaData]);
 
   const isColor = colorMode === 'colorful';
+  const isCommon = scope === 'COMMON';
+
+  const footerHeadline = isCommon
+    ? 'Important: A minimum of 3 members from each committee must attend the meeting.'
+    : "Important: All Wing 'A' Committee members are requested to attend the meeting.";
+
+  const footerSubtext = isCommon
+    ? 'All committee members are requested to participate and contribute to the discussions and collective decision-making.'
+    : "All Wing 'A' committee members are requested to participate and contribute to the discussions and collective decision-making.";
 
   // Palette definitions
   const theme = {
@@ -618,11 +627,11 @@ export default function VisualAgendaPoster({
           <div style={{ fontSize: '0.82rem', lineHeight: '1.4', color: theme.footerText }}>
             <div>
               <strong style={{ fontSize: '0.86rem', color: isColor ? '#b91c1c' : '#000000' }}>
-                Important: A minimum of 3 members from each committee must attend the meeting.
+                {footerHeadline}
               </strong>
             </div>
             <div style={{ color: isColor ? '#4b5563' : '#333333', marginTop: '2px' }}>
-              All committee members are requested to participate and contribute to the discussions and collective decision-making.
+              {footerSubtext}
             </div>
           </div>
         </div>

@@ -102,4 +102,15 @@ describe('VisualAgendaPoster Component', () => {
       expect(html2canvas).toHaveBeenCalledTimes(2);
     });
   });
+
+  it('renders inter-committee quorum notice only for COMMON and wing-specific notice for A_BUILDING', () => {
+    // 1. Common Scope
+    const { rerender } = render(<VisualAgendaPoster scope="COMMON" />);
+    expect(screen.getByText(/A minimum of 3 members from each committee must attend the meeting/i)).toBeInTheDocument();
+
+    // 2. A Building Scope
+    rerender(<VisualAgendaPoster scope="A_BUILDING" />);
+    expect(screen.getByText(/All Wing 'A' Committee members are requested to attend/i)).toBeInTheDocument();
+    expect(screen.queryByText(/A minimum of 3 members from each committee/i)).not.toBeInTheDocument();
+  });
 });
