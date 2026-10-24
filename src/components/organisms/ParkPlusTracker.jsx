@@ -3,18 +3,43 @@ import {
   collection, doc, onSnapshot, setDoc, deleteDoc, serverTimestamp
 } from 'firebase/firestore';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import LiquidGlassCard from '../liquid-glass/LiquidGlassCard.jsx';
 
 // ─── Constants ──────────────────────────────────────────────────────────────────
 const PAYMENT_STATUS = ['Unpaid', 'Paid', 'Partial', 'Overdue'];
 
 const STATUS_STYLE = {
-  Paid:    { bg: '#d1fae5', color: '#065f46', border: '#6ee7b7' },
-  Unpaid:  { bg: '#fef9c3', color: '#713f12', border: '#fde047' },
-  Partial: { bg: '#dbeafe', color: '#1e3a8a', border: '#93c5fd' },
-  Overdue: { bg: '#fee2e2', color: '#991b1b', border: '#fca5a5' },
+  Paid: {
+    bg: 'rgba(16, 185, 129, 0.15)',
+    color: '#065f46',
+    border: 'rgba(16, 185, 129, 0.4)',
+    glow: 'rgba(16, 185, 129, 0.25)',
+    icon: '✓'
+  },
+  Unpaid: {
+    bg: 'rgba(245, 158, 11, 0.16)',
+    color: '#92400e',
+    border: 'rgba(245, 158, 11, 0.45)',
+    glow: 'rgba(245, 158, 11, 0.25)',
+    icon: '⏳'
+  },
+  Partial: {
+    bg: 'rgba(14, 165, 233, 0.16)',
+    color: '#0369a1',
+    border: 'rgba(14, 165, 233, 0.4)',
+    glow: 'rgba(14, 165, 233, 0.2)',
+    icon: '◐'
+  },
+  Overdue: {
+    bg: 'rgba(239, 68, 68, 0.16)',
+    color: '#991b1b',
+    border: 'rgba(239, 68, 68, 0.45)',
+    glow: 'rgba(239, 68, 68, 0.25)',
+    icon: '⚠'
+  },
 };
 
-// ─── Seed data from invoices ─────────────────────────────────────────────────────
+// ─── Seed data from verified invoices ───────────────────────────────────────────
 const INITIAL_INVOICES = [
   {
     id: 'PTI-202526-MAY',
@@ -29,8 +54,8 @@ const INITIAL_INVOICES = [
     igstAmt: 3375.0,
     grandTotal: 22125.0,
     paymentStatus: 'Paid',
-    paidDate: '',
-    remarks: '\u20b96,250 \u00d7 3 months',
+    paidDate: '2025-05-12',
+    remarks: '₹6,250 × 3 months quarterly retainer',
     period: '01-05-2025 to 31-07-2025',
   },
   {
@@ -46,9 +71,9 @@ const INITIAL_INVOICES = [
     igstAmt: 3600.0,
     grandTotal: 23600.0,
     paymentStatus: 'Paid',
-    paidDate: '',
-    remarks: '',
-    period: '',
+    paidDate: '2025-06-10',
+    remarks: 'Initial RFID sensor & boom barrier hardware setup',
+    period: 'Installation & Onboarding',
   },
   {
     id: 'PTI-202526-18817',
@@ -63,8 +88,8 @@ const INITIAL_INVOICES = [
     igstAmt: 1149.72,
     grandTotal: 7537.0,
     paymentStatus: 'Paid',
-    paidDate: '',
-    remarks: '',
+    paidDate: '2025-09-11',
+    remarks: 'Adjusted billing cycle for gate automation',
     period: '31-08-2025 to 30-09-2025',
   },
   {
@@ -80,8 +105,8 @@ const INITIAL_INVOICES = [
     igstAmt: 3392.25,
     grandTotal: 22238.0,
     paymentStatus: 'Paid',
-    paidDate: '',
-    remarks: '',
+    paidDate: '2025-10-14',
+    remarks: 'Q2 automated gate and maintenance service',
     period: '01-10-2025 to 31-12-2025',
   },
   {
@@ -97,8 +122,8 @@ const INITIAL_INVOICES = [
     igstAmt: 3426.74,
     grandTotal: 22464.0,
     paymentStatus: 'Paid',
-    paidDate: '',
-    remarks: '',
+    paidDate: '2026-01-12',
+    remarks: 'Q3 automated gate software subscription',
     period: '01-01-2026 to 31-03-2026',
   },
   {
@@ -114,8 +139,8 @@ const INITIAL_INVOICES = [
     igstAmt: 3543.75,
     grandTotal: 23231.25,
     paymentStatus: 'Paid',
-    paidDate: '',
-    remarks: '',
+    paidDate: '2026-04-10',
+    remarks: 'Annual renewal rate revision (+5% indexation)',
     period: '01-04-2026 to 30-06-2026',
   },
   {
@@ -132,7 +157,7 @@ const INITIAL_INVOICES = [
     grandTotal: 23231.0,
     paymentStatus: 'Unpaid',
     paidDate: '',
-    remarks: '',
+    remarks: 'Current quarter invoice awaiting committee clearance',
     period: '01-07-2026 to 30-09-2026',
   },
 ];
@@ -159,37 +184,65 @@ function formatINR(n) {
   return new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n || 0);
 }
 
-// ─── Sub-components ──────────────────────────────────────────────────────────────
+// ─── Glass Sub-components ────────────────────────────────────────────────────────
 function StatusPill({ status }) {
   const s = STATUS_STYLE[status];
-  if (!s) return <span style={{ color: '#c4b99a', fontSize: '0.78rem' }}>—</span>;
+  if (!s) return <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>—</span>;
   return (
     <span style={{
-      display: 'inline-block', fontSize: '0.72rem', fontWeight: 700,
-      letterSpacing: '0.04em', padding: '3px 10px', borderRadius: 20,
-      whiteSpace: 'nowrap', background: s.bg, color: s.color, border: `1px solid ${s.border}`,
-    }}>{status}</span>
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 5,
+      fontSize: '0.72rem',
+      fontWeight: 800,
+      letterSpacing: '0.04em',
+      padding: '4px 10px',
+      borderRadius: 20,
+      whiteSpace: 'nowrap',
+      background: s.bg,
+      color: s.color,
+      border: `1px solid ${s.border}`,
+      boxShadow: `0 2px 8px ${s.glow}`,
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)'
+    }}>
+      <span>{s.icon}</span>
+      <span>{status}</span>
+    </span>
   );
 }
 
 function DaysChip({ days }) {
-  if (days === null) return <span style={{ color: '#c4b99a', fontSize: '0.78rem' }}>—</span>;
-  const color = days < 0 ? '#991b1b' : days <= 5 ? '#d97706' : '#065f46';
-  const bg    = days < 0 ? '#fee2e2' : days <= 5 ? '#fef3c7' : '#d1fae5';
-  const label = days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? 'Due today!' : `${days}d left`;
+  if (days === null) return <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>—</span>;
+  const isOverdue = days < 0;
+  const isWarning = days >= 0 && days <= 5;
+  const color = isOverdue ? '#991b1b' : isWarning ? '#92400e' : '#065f46';
+  const bg    = isOverdue ? 'rgba(254, 226, 226, 0.75)' : isWarning ? 'rgba(254, 243, 199, 0.75)' : 'rgba(209, 250, 229, 0.75)';
+  const border = isOverdue ? 'rgba(239, 68, 68, 0.35)' : isWarning ? 'rgba(245, 158, 11, 0.35)' : 'rgba(16, 185, 129, 0.35)';
+  const label = isOverdue ? `${Math.abs(days)}d overdue` : days === 0 ? 'Due today!' : `${days}d left`;
   return (
     <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 4,
-      fontSize: '0.72rem', fontWeight: 700, padding: '3px 10px',
-      borderRadius: 20, background: bg, color,
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 4,
+      fontSize: '0.72rem',
+      fontWeight: 800,
+      padding: '3px 10px',
+      borderRadius: 20,
+      background: bg,
+      color,
+      border: `1px solid ${border}`,
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
+      whiteSpace: 'nowrap'
     }}>
-      {days < 0 && <span>⚠</span>}
+      {isOverdue && <span>⚠</span>}
       {label}
     </span>
   );
 }
 
-// ─── Invoice Form Modal ──────────────────────────────────────────────────────────
+// ─── Glass Modal Form ────────────────────────────────────────────────────────────
 const EMPTY_FORM = {
   invoiceDate: '', dueDate: '', description: '', hsn: '997319',
   qty: 1, uom: 'NOS', unitPrice: '', igstRate: 18,
@@ -207,15 +260,31 @@ function InvoiceModal({ invoice, onSave, onClose }) {
   const igstAmt    = Number(form.unitPrice || 0) * (Number(form.igstRate) / 100);
   const grandTotal = Number(form.unitPrice || 0) + igstAmt;
 
-  const F = {
-    width: '100%', padding: '8px 12px', borderRadius: 10,
-    border: '1px solid rgba(61,63,52,0.16)', background: '#fffefb',
-    color: '#1d2a24', fontSize: '0.88rem', fontFamily: 'inherit', outline: 'none',
+  const inputStyle = {
+    width: '100%',
+    padding: '9px 13px',
+    borderRadius: 12,
+    border: '1px solid rgba(255, 255, 255, 0.7)',
+    background: 'rgba(255, 255, 255, 0.85)',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
+    color: '#0f172a',
+    fontSize: '0.88rem',
+    fontFamily: 'inherit',
+    outline: 'none',
     boxSizing: 'border-box',
+    boxShadow: '0 2px 6px rgba(15, 23, 42, 0.04)',
+    transition: 'all 0.15s ease'
   };
-  const L = {
-    fontSize: '0.73rem', fontWeight: 700, textTransform: 'uppercase',
-    letterSpacing: '0.07em', color: '#5f665f', display: 'block', marginBottom: 5,
+
+  const labelStyle = {
+    fontSize: '0.72rem',
+    fontWeight: 800,
+    textTransform: 'uppercase',
+    letterSpacing: '0.06em',
+    color: '#475569',
+    display: 'block',
+    marginBottom: 5,
   };
 
   const handleSave = () => {
@@ -225,30 +294,67 @@ function InvoiceModal({ invoice, onSave, onClose }) {
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, zIndex: 9999,
-      background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(10px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16,
+      position: 'fixed',
+      inset: 0,
+      zIndex: 9999,
+      background: 'rgba(15, 23, 42, 0.55)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 16,
     }} onClick={onClose}>
       <div style={{
-        background: '#fffaf2', borderRadius: 22, padding: '28px 28px 22px',
-        width: '100%', maxWidth: 680, maxHeight: '92vh', overflowY: 'auto',
-        boxShadow: '0 40px 100px rgba(0,0,0,0.28)',
+        background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 246, 255, 0.94) 100%)',
+        backdropFilter: 'blur(25px)',
+        WebkitBackdropFilter: 'blur(25px)',
+        border: '1px solid rgba(255, 255, 255, 0.85)',
+        borderRadius: 24,
+        padding: '28px 32px 24px',
+        width: '100%',
+        maxWidth: 700,
+        maxHeight: '92vh',
+        overflowY: 'auto',
+        boxShadow: '0 30px 80px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.9)',
       }} onClick={e => e.stopPropagation()}>
 
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 }}>
           <div>
-            <p style={{ margin: 0, fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#196c6c' }}>
-              Park+ Payment
-            </p>
-            <h3 style={{ margin: '2px 0 0', fontSize: '1.2rem', fontWeight: 800, color: '#0b2b26' }}>
-              {invoice && invoice.id ? '✏️ Edit Invoice' : '➕ Add New Invoice'}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              background: 'rgba(2, 132, 199, 0.1)',
+              border: '1px solid rgba(2, 132, 199, 0.25)',
+              padding: '3px 10px',
+              borderRadius: 20,
+              fontSize: '0.70rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: '#0284c7'
+            }}>
+              <span>🅿️</span>
+              <span>Park+ Vendor Management</span>
+            </div>
+            <h3 style={{ margin: '6px 0 0', fontSize: '1.28rem', fontWeight: 800, color: '#0f172a' }}>
+              {invoice && invoice.id ? '✏️ Edit Invoice Entry' : '➕ Add New Park+ Invoice'}
             </h3>
           </div>
           <button onClick={onClose} style={{
-            background: 'rgba(61,63,52,0.08)', border: 'none', borderRadius: 10,
-            width: 36, height: 36, cursor: 'pointer', fontSize: '1rem',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(15, 23, 42, 0.06)',
+            border: 'none',
+            borderRadius: 10,
+            width: 36,
+            height: 36,
+            cursor: 'pointer',
+            fontSize: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#64748b'
           }}>✕</button>
         </div>
 
@@ -256,90 +362,101 @@ function InvoiceModal({ invoice, onSave, onClose }) {
 
           {/* Full-width: Description */}
           <label style={{ gridColumn: '1/-1' }}>
-            <span style={L}>Description *</span>
-            <input style={F} value={form.description} onChange={e => set('description', e.target.value)}
+            <span style={labelStyle}>Description *</span>
+            <input style={inputStyle} value={form.description} onChange={e => set('description', e.target.value)}
               placeholder="e.g. Automated Gate and Security Solution" />
           </label>
 
           {/* Period */}
           <label style={{ gridColumn: '1/-1' }}>
-            <span style={L}>Service Period</span>
-            <input style={F} value={form.period} onChange={e => set('period', e.target.value)}
+            <span style={labelStyle}>Service Period</span>
+            <input style={inputStyle} value={form.period} onChange={e => set('period', e.target.value)}
               placeholder="e.g. 01-07-2026 to 30-09-2026" />
           </label>
 
           {/* Invoice Date */}
           <label>
-            <span style={L}>Invoice Date *</span>
-            <input type="date" style={F} value={form.invoiceDate} onChange={e => set('invoiceDate', e.target.value)} />
+            <span style={labelStyle}>Invoice Date *</span>
+            <input type="date" style={inputStyle} value={form.invoiceDate} onChange={e => set('invoiceDate', e.target.value)} />
           </label>
 
           {/* Due Date */}
           <label>
-            <span style={L}>Due Date *</span>
-            <input type="date" style={F} value={form.dueDate} onChange={e => set('dueDate', e.target.value)} />
+            <span style={labelStyle}>Due Date *</span>
+            <input type="date" style={inputStyle} value={form.dueDate} onChange={e => set('dueDate', e.target.value)} />
           </label>
 
           {/* HSN/SAC */}
           <label>
-            <span style={L}>HSN/SAC Code</span>
-            <input style={F} value={form.hsn} onChange={e => set('hsn', e.target.value)} placeholder="997319" />
+            <span style={labelStyle}>HSN/SAC Code</span>
+            <input style={inputStyle} value={form.hsn} onChange={e => set('hsn', e.target.value)} placeholder="997319" />
           </label>
 
           {/* UOM */}
           <label>
-            <span style={L}>UOM</span>
-            <input style={F} value={form.uom} onChange={e => set('uom', e.target.value)} placeholder="NOS" />
+            <span style={labelStyle}>UOM</span>
+            <input style={inputStyle} value={form.uom} onChange={e => set('uom', e.target.value)} placeholder="NOS" />
           </label>
 
           {/* Unit Price */}
           <label>
-            <span style={L}>Unit Price (INR) *</span>
-            <input type="number" style={F} value={form.unitPrice} onChange={e => set('unitPrice', e.target.value)}
+            <span style={labelStyle}>Unit Price (INR) *</span>
+            <input type="number" style={inputStyle} value={form.unitPrice} onChange={e => set('unitPrice', e.target.value)}
               placeholder="18750.00" step="0.01" />
           </label>
 
           {/* IGST Rate */}
           <label>
-            <span style={L}>IGST Rate (%)</span>
-            <select style={F} value={form.igstRate} onChange={e => set('igstRate', Number(e.target.value))}>
+            <span style={labelStyle}>IGST Rate (%)</span>
+            <select style={inputStyle} value={form.igstRate} onChange={e => set('igstRate', Number(e.target.value))}>
               {[5, 12, 18, 28].map(r => <option key={r} value={r}>{r}%</option>)}
             </select>
           </label>
 
-          {/* Calculated totals */}
+          {/* Glass Calculation Preview */}
           <div style={{
-            gridColumn: '1/-1', background: 'rgba(25,108,108,0.06)',
-            borderRadius: 12, padding: '14px 18px',
-            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12,
+            gridColumn: '1/-1',
+            background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)',
+            border: '1px solid rgba(2, 132, 199, 0.2)',
+            borderRadius: 16,
+            padding: '14px 20px',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 12,
+            backdropFilter: 'blur(10px)',
           }}>
             {[
-              { label: 'Subtotal', val: `\u20b9${formatINR(form.unitPrice || 0)}` },
-              { label: `IGST (${form.igstRate}%)`, val: `\u20b9${formatINR(igstAmt)}` },
-              { label: 'Grand Total', val: `\u20b9${formatINR(grandTotal)}`, bold: true },
+              { label: 'Subtotal', val: `₹${formatINR(form.unitPrice || 0)}` },
+              { label: `IGST (${form.igstRate}%)`, val: `₹${formatINR(igstAmt)}` },
+              { label: 'Grand Total', val: `₹${formatINR(grandTotal)}`, bold: true },
             ].map(({ label, val, bold }) => (
               <div key={label} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '0.68rem', color: '#5f665f', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</div>
-                <div style={{ fontSize: bold ? '1.05rem' : '0.92rem', fontWeight: bold ? 800 : 700, color: bold ? '#0b2b26' : '#196c6c' }}>{val}</div>
+                <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</div>
+                <div style={{ fontSize: bold ? '1.12rem' : '0.96rem', fontWeight: bold ? 900 : 700, color: bold ? '#0f2952' : '#0284c7' }}>{val}</div>
               </div>
             ))}
           </div>
 
           {/* Payment Status */}
           <label style={{ gridColumn: '1/-1' }}>
-            <span style={L}>Payment Status</span>
+            <span style={labelStyle}>Payment Status</span>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {PAYMENT_STATUS.map(s => {
                 const st = STATUS_STYLE[s];
                 const active = form.paymentStatus === s;
                 return (
                   <button key={s} type="button" onClick={() => set('paymentStatus', s)} style={{
-                    padding: '6px 16px', borderRadius: 20, cursor: 'pointer',
-                    fontSize: '0.82rem', fontWeight: 700, fontFamily: 'inherit',
-                    border: `2px solid ${active ? st.border : 'rgba(61,63,52,0.12)'}`,
-                    background: active ? st.bg : 'transparent',
-                    color: active ? st.color : '#5f665f',
-                    transition: 'all 0.15s',
+                    padding: '6px 16px',
+                    borderRadius: 20,
+                    cursor: 'pointer',
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    fontFamily: 'inherit',
+                    border: `1.5px solid ${active ? st.border : 'rgba(203, 213, 225, 0.8)'}`,
+                    background: active ? st.bg : '#ffffff',
+                    color: active ? st.color : '#64748b',
+                    boxShadow: active ? `0 2px 8px ${st.glow}` : 'none',
+                    transition: 'all 0.15s ease',
                   }}>{s}</button>
                 );
               })}
@@ -349,35 +466,52 @@ function InvoiceModal({ invoice, onSave, onClose }) {
           {/* Paid Date */}
           {form.paymentStatus === 'Paid' && (
             <label>
-              <span style={L}>Paid On</span>
-              <input type="date" style={F} value={form.paidDate} onChange={e => set('paidDate', e.target.value)} />
+              <span style={labelStyle}>Paid On</span>
+              <input type="date" style={inputStyle} value={form.paidDate} onChange={e => set('paidDate', e.target.value)} />
             </label>
           )}
 
           {/* Remarks */}
           <label style={{ gridColumn: '1/-1' }}>
-            <span style={L}>Remarks</span>
-            <textarea rows={2} style={{ ...F, resize: 'vertical' }}
+            <span style={labelStyle}>Remarks</span>
+            <textarea rows={2} style={{ ...inputStyle, resize: 'vertical' }}
               value={form.remarks} onChange={e => set('remarks', e.target.value)}
-              placeholder="Any notes or payment reference..." />
+              placeholder="Any payment reference, cheque number, or transaction notes..." />
           </label>
 
         </div>
 
         {/* Footer */}
         <div style={{
-          display: 'flex', justifyContent: 'flex-end', gap: 10,
-          marginTop: 22, paddingTop: 18, borderTop: '1px solid rgba(61,63,52,0.1)',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: 10,
+          marginTop: 24,
+          paddingTop: 18,
+          borderTop: '1px solid rgba(226, 232, 240, 0.8)',
         }}>
           <button onClick={onClose} style={{
-            padding: '10px 22px', borderRadius: 12, border: '1px solid rgba(61,63,52,0.18)',
-            background: '#fff', cursor: 'pointer', fontWeight: 600,
-            fontSize: '0.88rem', fontFamily: 'inherit',
+            padding: '9px 20px',
+            borderRadius: 12,
+            border: '1px solid #cbd5e1',
+            background: '#ffffff',
+            cursor: 'pointer',
+            fontWeight: 700,
+            fontSize: '0.86rem',
+            fontFamily: 'inherit',
+            color: '#475569'
           }}>Cancel</button>
           <button onClick={handleSave} style={{
-            padding: '10px 24px', borderRadius: 12, border: 'none',
-            background: '#0b2b26', color: '#C49B4F', cursor: 'pointer',
-            fontWeight: 700, fontSize: '0.88rem', fontFamily: 'inherit',
+            padding: '9px 24px',
+            borderRadius: 12,
+            border: 'none',
+            background: 'linear-gradient(135deg, #0f2952 0%, #0284c7 100%)',
+            color: '#ffffff',
+            cursor: 'pointer',
+            fontWeight: 800,
+            fontSize: '0.86rem',
+            fontFamily: 'inherit',
+            boxShadow: '0 4px 14px rgba(2, 132, 199, 0.3)'
           }}>
             {invoice && invoice.id ? '💾 Save Changes' : '➕ Add Invoice'}
           </button>
@@ -467,7 +601,8 @@ export default function ParkPlusTracker({ isAdmin = false }) {
       const d = calcDaysLeft(i.dueDate, i.paymentStatus);
       return d !== null && d < 0;
     }).length;
-    return { totalGrand, totalPaid, totalUnpaid, overdueCount, count: invoices.length };
+    const paidPct = totalGrand > 0 ? Math.round((totalPaid / totalGrand) * 100) : 0;
+    return { totalGrand, totalPaid, totalUnpaid, overdueCount, count: invoices.length, paidPct };
   }, [invoices]);
 
   // ── Filter ────────────────────────────────────────────────────────────────────
@@ -504,11 +639,11 @@ export default function ParkPlusTracker({ isAdmin = false }) {
   const handleExportPDF = useCallback(() => {
     const listToPrint = filtered.length > 0 ? filtered : invoices;
     const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    
+
     const totalSubtotal = listToPrint.reduce((s, i) => s + (Number(i.unitPrice) || 0), 0);
     const totalIGST = listToPrint.reduce((s, i) => s + (Number(i.igstAmt) || 0), 0);
     const totalGrand = listToPrint.reduce((s, i) => s + (Number(i.grandTotal) || 0), 0);
-    
+
     const paidList = listToPrint.filter(i => i.paymentStatus === 'Paid');
     const unpaidList = listToPrint.filter(i => i.paymentStatus !== 'Paid');
     const totalPaid = paidList.reduce((s, i) => s + (Number(i.grandTotal) || 0), 0);
@@ -692,152 +827,344 @@ export default function ParkPlusTracker({ isAdmin = false }) {
 
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-      {/* ── Banner ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-        borderRadius: 20, padding: '20px 24px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: 16, boxShadow: '0 6px 28px rgba(11,43,38,0.18)',
-      }}>
-        <div>
-          <p style={{ margin: '0 0 2px', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#C49B4F' }}>
-            Vendor · Park+
-          </p>
-          <h2 style={{ margin: '0 0 2px', fontSize: '1.35rem', fontWeight: 800, color: '#fff' }}>
-            🅿️ Park+ Payment Tracker
-          </h2>
-          <p style={{ margin: 0, color: 'rgba(255,255,255,0.55)', fontSize: '0.82rem' }}>
-            RFID & Automated Gate Solution — Majestique Euriska
-          </p>
-        </div>
-
-        {/* Summary tiles */}
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-          {[
-            { label: 'Invoices',  value: stats.count,                         bg: 'rgba(255,255,255,0.1)',  color: '#fff'    },
-            { label: 'Total',     value: `\u20b9${formatINR(stats.totalGrand)}`,  bg: 'rgba(255,255,255,0.08)', color: '#e0f2fe' },
-            { label: 'Paid',      value: `\u20b9${formatINR(stats.totalPaid)}`,   bg: 'rgba(110,231,183,0.2)',  color: '#6ee7b7' },
-            { label: 'Pending',   value: `\u20b9${formatINR(stats.totalUnpaid)}`, bg: 'rgba(253,224,71,0.18)', color: '#fde047' },
-            { label: 'Overdue',   value: stats.overdueCount,                   bg: 'rgba(252,165,165,0.2)',  color: '#fca5a5' },
-          ].map(s => (
-            <div key={s.label} style={{ textAlign: 'center', background: s.bg, borderRadius: 10, padding: '8px 14px', minWidth: 60 }}>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 2 }}>{s.label}</div>
+      {/* ── Liquid Glass Hero Banner ── */}
+      <LiquidGlassCard
+        variant="operations"
+        style={{
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(14, 43, 60, 0.92) 50%, rgba(3, 105, 161, 0.90) 100%)',
+          backdropFilter: 'blur(24px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+          border: '1px solid rgba(255, 255, 255, 0.25)',
+          borderRadius: 24,
+          padding: '24px 28px',
+          boxShadow: '0 20px 50px rgba(15, 23, 42, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
+          color: '#ffffff'
+        }}
+      >
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 20,
+          position: 'relative',
+          zIndex: 2
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}>
+              <span style={{
+                background: 'rgba(2, 132, 199, 0.35)',
+                border: '1px solid rgba(56, 189, 248, 0.5)',
+                color: '#7dd3fc',
+                fontSize: '0.68rem',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                padding: '3px 10px',
+                borderRadius: 20,
+                backdropFilter: 'blur(8px)'
+              }}>
+                Vendor · Park+ (Park Mate)
+              </span>
+              <span style={{
+                background: 'rgba(16, 185, 129, 0.25)',
+                border: '1px solid rgba(52, 211, 153, 0.4)',
+                color: '#a7f3d0',
+                fontSize: '0.68rem',
+                fontWeight: 800,
+                padding: '3px 10px',
+                borderRadius: 20
+              }}>
+                Active Contract
+              </span>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* ── Table Card ── */}
-      <div style={{ background: 'rgba(255,250,242,0.95)', border: '1px solid rgba(61,63,52,0.1)', borderRadius: 20, boxShadow: '0 4px 24px rgba(11,43,38,0.06)', overflow: 'hidden' }}>
+            <h2 style={{
+              margin: '0 0 4px',
+              fontSize: 'clamp(1.4rem, 2.5vw, 1.85rem)',
+              fontWeight: 800,
+              color: '#ffffff',
+              letterSpacing: '-0.02em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10
+            }}>
+              <span>🅿️</span>
+              <span>Park+ Payment Tracker</span>
+            </h2>
 
-        {/* ── Toolbar ── */}
-        <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(61,63,52,0.08)', display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
-
-          {/* Search */}
-          <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 160 }}>
-            <span style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', opacity: 0.4, fontSize: '0.9rem', pointerEvents: 'none' }}>🔍</span>
-            <input type="search" placeholder="Search invoices..." value={search}
-              onChange={e => setSearch(e.target.value)} style={{
-                width: '100%', paddingLeft: 32, paddingRight: 12,
-                paddingTop: 7, paddingBottom: 7,
-                borderRadius: 10, border: '1.5px solid rgba(61,63,52,0.15)',
-                background: '#fffefb', fontSize: '0.85rem',
-                fontFamily: 'inherit', color: '#1d2a24', outline: 'none', boxSizing: 'border-box',
-              }} />
+            <p style={{
+              margin: 0,
+              color: 'rgba(255, 255, 255, 0.75)',
+              fontSize: '0.86rem',
+              lineHeight: 1.45
+            }}>
+              RFID & Automated Gate Solution — Majestique Euriska 'A' Building CHS Ltd.
+            </p>
           </div>
 
-          {/* Status filter chips */}
-          <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-            {['All', ...PAYMENT_STATUS].map(s => {
-              const st = STATUS_STYLE[s];
-              const active = filterStatus === s;
-              return (
-                <button key={s} onClick={() => setFilterStatus(s)} style={{
-                  padding: '5px 12px', borderRadius: 20, border: '1.5px solid',
-                  fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-                  background: active ? (st ? st.bg : '#0b2b26') : 'transparent',
-                  color:      active ? (st ? st.color : '#fff') : '#5f665f',
-                  borderColor:active ? (st ? st.border : '#0b2b26') : 'rgba(61,63,52,0.15)',
-                  transition: 'all 0.15s',
-                }}>{s}</button>
-              );
-            })}
+          {/* Quick Glass Stat Badges inside Hero */}
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+            {[
+              { label: 'Invoices', value: stats.count, bg: 'rgba(255, 255, 255, 0.12)', color: '#ffffff' },
+              { label: 'Total Billed', value: `₹${formatINR(stats.totalGrand)}`, bg: 'rgba(56, 189, 248, 0.16)', color: '#bae6fd' },
+              { label: 'Paid', value: `₹${formatINR(stats.totalPaid)}`, bg: 'rgba(16, 185, 129, 0.22)', color: '#6ee7b7' },
+              { label: 'Pending', value: `₹${formatINR(stats.totalUnpaid)}`, bg: 'rgba(245, 158, 11, 0.22)', color: '#fde047' },
+              { label: 'Overdue', value: stats.overdueCount, bg: stats.overdueCount > 0 ? 'rgba(239, 68, 68, 0.35)' : 'rgba(255, 255, 255, 0.08)', color: stats.overdueCount > 0 ? '#fca5a5' : 'rgba(255, 255, 255, 0.7)' },
+            ].map(s => (
+              <div key={s.label} style={{
+                textAlign: 'center',
+                background: s.bg,
+                border: '1px solid rgba(255, 255, 255, 0.18)',
+                borderRadius: 14,
+                padding: '9px 16px',
+                minWidth: 70,
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)'
+              }}>
+                <div style={{ fontSize: '1.05rem', fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontSize: '0.62rem', color: 'rgba(255, 255, 255, 0.7)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 3 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Contract & Retainer Timeline Glass Strip */}
+        <div style={{
+          marginTop: 18,
+          paddingTop: 16,
+          borderTop: '1px solid rgba(255, 255, 255, 0.14)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12,
+          fontSize: '0.78rem',
+          color: 'rgba(255, 255, 255, 0.82)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <span><strong>Contract Scope:</strong> Boom Barrier RFID Hardware + Quarterly Gate Software Support</span>
+            <span>•</span>
+            <span><strong>Retainer Rate:</strong> ₹18,750 / Quarter (+ 18% IGST)</span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '0.72rem', color: '#93c5fd', fontWeight: 700 }}>Settlement Progress:</span>
+            <div style={{ width: 110, height: 7, background: 'rgba(255, 255, 255, 0.2)', borderRadius: 999, overflow: 'hidden' }}>
+              <div style={{ width: `${stats.paidPct}%`, height: '100%', background: '#10b981', borderRadius: 999 }} />
+            </div>
+            <span style={{ fontWeight: 800, color: '#34d399', fontSize: '0.75rem' }}>{stats.paidPct}%</span>
+          </div>
+        </div>
+      </LiquidGlassCard>
+
+      {/* ── Main Liquid Glass Table Card ── */}
+      <LiquidGlassCard
+        style={{
+          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.88) 0%, rgba(240, 246, 255, 0.72) 100%)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          border: '1px solid rgba(255, 255, 255, 0.85)',
+          borderRadius: 24,
+          boxShadow: '0 20px 45px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
+          overflow: 'hidden'
+        }}
+      >
+        {/* ── Glass Toolbar ── */}
+        <div style={{
+          padding: '16px 20px',
+          borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
+          background: 'rgba(255, 255, 255, 0.6)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 12,
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          {/* Search Bar & Status Chips */}
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', flex: '1 1 320px' }}>
+            <div style={{ position: 'relative', minWidth: 220, flex: '1 1 220px' }}>
+              <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.5, fontSize: '0.9rem', pointerEvents: 'none' }}>🔍</span>
+              <input
+                type="search"
+                placeholder="Search invoices..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                style={{
+                  width: '100%',
+                  paddingLeft: 34,
+                  paddingRight: 12,
+                  paddingTop: 8,
+                  paddingBottom: 8,
+                  borderRadius: 12,
+                  border: '1.5px solid rgba(203, 213, 225, 0.8)',
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  fontSize: '0.84rem',
+                  fontFamily: 'inherit',
+                  color: '#0f172a',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  boxShadow: 'inset 0 1px 3px rgba(15, 23, 42, 0.04)'
+                }}
+              />
+            </div>
+
+            {/* Status filter chips */}
+            <div style={{
+              display: 'inline-flex',
+              background: 'rgba(241, 245, 249, 0.85)',
+              padding: 3,
+              borderRadius: 12,
+              border: '1px solid #cbd5e1',
+              flexWrap: 'wrap',
+              gap: 2
+            }}>
+              {['All', ...PAYMENT_STATUS].map(s => {
+                const st = STATUS_STYLE[s];
+                const active = filterStatus === s;
+                return (
+                  <button
+                    key={s}
+                    onClick={() => setFilterStatus(s)}
+                    style={{
+                      padding: '5px 12px',
+                      borderRadius: 9,
+                      border: 'none',
+                      fontSize: '0.74rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                      background: active ? (st ? st.bg : '#0f2952') : 'transparent',
+                      color: active ? (st ? st.color : '#ffffff') : '#64748b',
+                      boxShadow: active ? '0 1px 4px rgba(0, 0, 0, 0.1)' : 'none',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    {s}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Action buttons */}
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
             <button
               onClick={handleExportCSV}
               style={{
-                padding: '7px 14px', borderRadius: 10,
-                border: '1.5px solid rgba(61,63,52,0.18)',
-                background: '#fff', color: '#1d2a24',
-                fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
-                display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
-                transition: 'all 0.15s'
+                padding: '7px 14px',
+                borderRadius: 10,
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: '#0f172a',
+                fontWeight: 700,
+                fontSize: '0.80rem',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontFamily: 'inherit',
+                boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+                transition: 'all 0.15s ease'
               }}
               title="Export invoices to CSV"
             >
-              📥 Export CSV
+              <span>📥</span>
+              <span>Export CSV</span>
             </button>
+
             <button
               onClick={handleExportPDF}
               style={{
-                padding: '7px 14px', borderRadius: 10,
-                border: '1.5px solid rgba(61,63,52,0.18)',
-                background: '#fff', color: '#1d2a24',
-                fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
-                display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
-                transition: 'all 0.15s'
+                padding: '7px 14px',
+                borderRadius: 10,
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: '#0f172a',
+                fontWeight: 700,
+                fontSize: '0.80rem',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontFamily: 'inherit',
+                boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
+                transition: 'all 0.15s ease'
               }}
               title="Print or export as PDF"
             >
-              📄 Print PDF
+              <span>📄</span>
+              <span>Print PDF</span>
             </button>
+
             {saveStatus && (
-              <span style={{ fontSize: '0.8rem', color: saveStatus.includes('✓') ? '#065f46' : '#991b1b', fontWeight: 700 }}>
+              <span style={{ fontSize: '0.80rem', color: saveStatus.includes('✓') ? '#065f46' : '#991b1b', fontWeight: 800 }}>
                 {saveStatus}
               </span>
             )}
+
             {isAdmin && (
-              <button onClick={() => setModalInv({})} style={{
-                padding: '7px 15px', borderRadius: 10, border: 'none',
-                background: '#0b2b26', color: '#C49B4F',
-                fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
-              }}>➕ Add Invoice</button>
+              <button
+                onClick={() => setModalInv({})}
+                style={{
+                  padding: '7px 16px',
+                  borderRadius: 10,
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #0f2952 0%, #0284c7 100%)',
+                  color: '#ffffff',
+                  fontWeight: 800,
+                  fontSize: '0.80rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontFamily: 'inherit',
+                  boxShadow: '0 3px 10px rgba(2, 132, 199, 0.3)'
+                }}
+              >
+                <span>➕</span>
+                <span>Add Invoice</span>
+              </button>
             )}
           </div>
         </div>
 
-        {/* ── Table ── */}
+        {/* ── Liquid Glass Table ── */}
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 960 }}>
             <thead>
-              <tr style={{ background: 'rgba(244,239,231,0.95)' }}>
+              <tr style={{
+                background: 'linear-gradient(180deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.8) 100%)',
+                borderBottom: '1.5px solid rgba(203, 213, 225, 0.9)'
+              }}>
                 {[
-                  { label: '#',            w: 40  },
-                  { label: 'Invoice ID',   w: 170 },
-                  { label: 'Invoice Date', w: 110 },
-                  { label: 'Due Date',     w: 110 },
-                  { label: 'Description',  w: 220 },
-                  { label: 'Period',       w: 180 },
-                  { label: 'Subtotal',     w: 110 },
-                  { label: 'IGST',         w: 90  },
-                  { label: 'Grand Total',  w: 120 },
-                  { label: 'Status',       w: 120 },
-                  { label: 'Due In',       w: 100 },
-                  { label: 'Remarks',      w: 240 },
-                  ...(isAdmin ? [{ label: 'Actions', w: 90 }] : []),
+                  { label: '#',            w: 45,  align: 'center' },
+                  { label: 'Invoice ID',   w: 160, align: 'left'   },
+                  { label: 'Invoice Date', w: 105, align: 'left'   },
+                  { label: 'Due Date',     w: 105, align: 'left'   },
+                  { label: 'Description & Period', w: 230, align: 'left' },
+                  { label: 'Subtotal',     w: 110, align: 'right'  },
+                  { label: 'IGST (18%)',   w: 100, align: 'right'  },
+                  { label: 'Grand Total',  w: 125, align: 'right'  },
+                  { label: 'Payment Status', w: 120, align: 'center' },
+                  { label: 'Due In',       w: 110, align: 'center' },
+                  { label: 'Remarks',      w: 220, align: 'left'   },
+                  ...(isAdmin ? [{ label: 'Actions', w: 90, align: 'center' }] : []),
                 ].map(col => (
                   <th key={col.label} style={{
-                    padding: '10px 12px', textAlign: 'left', whiteSpace: 'nowrap',
-                    fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
-                    letterSpacing: '0.07em', color: '#5f665f',
-                    borderBottom: '2px solid rgba(61,63,52,0.1)', minWidth: col.w,
+                    padding: '11px 12px',
+                    textAlign: col.align || 'left',
+                    whiteSpace: 'nowrap',
+                    fontSize: '0.70rem',
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    color: '#0f2952',
+                    minWidth: col.w,
                   }}>{col.label}</th>
                 ))}
               </tr>
@@ -846,16 +1173,16 @@ export default function ParkPlusTracker({ isAdmin = false }) {
             <tbody>
               {isLoading ? (
                 <tr><td colSpan={12} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, color: '#5f665f', opacity: 0.7 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, color: '#64748b' }}>
                     <div style={{ fontSize: '2rem' }}>⏳</div>
-                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Loading invoices...</span>
+                    <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>Loading Park+ Invoices...</span>
                   </div>
                 </td></tr>
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={12} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, color: '#5f665f', opacity: 0.6 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, color: '#64748b' }}>
                     <div style={{ fontSize: '2.5rem' }}>📭</div>
-                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>No invoices match your filters</span>
+                    <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>No invoices match your filters</span>
                   </div>
                 </td></tr>
               ) : (
@@ -863,68 +1190,120 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                   const daysLeft  = calcDaysLeft(inv.dueDate, inv.paymentStatus);
                   const isPaid    = inv.paymentStatus === 'Paid';
                   const isOverdue = daysLeft !== null && daysLeft < 0;
-                  const rowBg     = isPaid ? 'rgba(209,250,229,0.2)' : isOverdue ? 'rgba(254,226,226,0.25)' : 'transparent';
+                  const rowBg     = isPaid
+                    ? 'rgba(240, 253, 244, 0.45)'
+                    : isOverdue
+                    ? 'rgba(254, 242, 242, 0.55)'
+                    : 'transparent';
 
                   return (
-                    <tr key={inv.id}
-                      style={{ borderBottom: '1px solid rgba(61,63,52,0.06)', background: rowBg, transition: 'background 0.12s' }}
-                      onMouseEnter={e => { if (!isPaid && !isOverdue) e.currentTarget.style.background = 'rgba(244,239,231,0.55)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = rowBg; }}>
-
-                      <td style={{ padding: '10px 12px', fontSize: '0.73rem', color: '#c4b99a', fontWeight: 700 }}>
+                    <tr
+                      key={inv.id}
+                      style={{
+                        borderBottom: '1px solid rgba(226, 232, 240, 0.7)',
+                        background: rowBg,
+                        transition: 'background 0.15s ease'
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = isPaid ? 'rgba(220, 252, 231, 0.65)' : 'rgba(241, 245, 249, 0.75)';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = rowBg;
+                      }}
+                    >
+                      {/* Sr. No */}
+                      <td style={{ padding: '10px 12px', fontSize: '0.76rem', color: '#64748b', fontWeight: 700, textAlign: 'center' }}>
                         {idx + 1}
                       </td>
 
+                      {/* Invoice ID & HSN */}
                       <td style={{ padding: '10px 12px' }}>
-                        <strong style={{ fontSize: '0.78rem', display: 'block', color: '#196c6c', fontFamily: 'monospace', letterSpacing: '0.04em' }}>
+                        <div style={{
+                          fontFamily: 'monospace',
+                          fontWeight: 800,
+                          fontSize: '0.84rem',
+                          color: '#0f2952',
+                          letterSpacing: '0.02em'
+                        }}>
                           {inv.id}
-                        </strong>
+                        </div>
                         {inv.hsn && (
-                          <span style={{ fontSize: '0.65rem', color: '#c4b99a', display: 'block', marginTop: 1 }}>HSN: {inv.hsn}</span>
+                          <span style={{
+                            fontSize: '0.66rem',
+                            color: '#0284c7',
+                            fontWeight: 600,
+                            display: 'inline-block',
+                            marginTop: 2
+                          }}>
+                            HSN: {inv.hsn}
+                          </span>
                         )}
                       </td>
 
-                      <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#5f665f', whiteSpace: 'nowrap' }}>
+                      {/* Invoice Date */}
+                      <td style={{ padding: '10px 12px', fontSize: '0.80rem', color: '#475569', whiteSpace: 'nowrap' }}>
                         {fmtDate(inv.invoiceDate)}
                       </td>
 
-                      <td style={{ padding: '10px 12px', fontSize: '0.8rem', whiteSpace: 'nowrap', fontWeight: isOverdue ? 700 : 400, color: isOverdue ? '#991b1b' : '#5f665f' }}>
+                      {/* Due Date */}
+                      <td style={{
+                        padding: '10px 12px',
+                        fontSize: '0.80rem',
+                        whiteSpace: 'nowrap',
+                        fontWeight: isOverdue ? 800 : 500,
+                        color: isOverdue ? '#b91c1c' : '#475569'
+                      }}>
                         {fmtDate(inv.dueDate)}
                       </td>
 
-                      <td style={{ padding: '10px 12px', maxWidth: 220 }}>
-                        <span style={{ fontSize: '0.82rem', color: '#1d2a24', fontWeight: 600, lineHeight: 1.4, display: 'block' }}>
+                      {/* Description & Period */}
+                      <td style={{ padding: '10px 12px', maxWidth: 240 }}>
+                        <div style={{ fontSize: '0.84rem', color: '#0f172a', fontWeight: 700, lineHeight: 1.35 }}>
                           {inv.description || '—'}
-                        </span>
+                        </div>
+                        {inv.period && (
+                          <div style={{ fontSize: '0.72rem', color: '#0284c7', fontWeight: 600, marginTop: 2 }}>
+                            Period: {inv.period}
+                          </div>
+                        )}
                       </td>
 
-                      <td style={{ padding: '10px 12px', fontSize: '0.75rem', color: '#5f665f' }}>
-                        {inv.period || <span style={{ color: '#c4b99a' }}>—</span>}
+                      {/* Subtotal */}
+                      <td style={{ padding: '10px 12px', fontSize: '0.84rem', color: '#334155', fontWeight: 600, whiteSpace: 'nowrap', textAlign: 'right', fontFamily: 'monospace' }}>
+                        ₹{formatINR(inv.unitPrice)}
                       </td>
 
-                      <td style={{ padding: '10px 12px', fontSize: '0.82rem', color: '#1d2a24', fontWeight: 600, whiteSpace: 'nowrap', textAlign: 'right' }}>
-                        {'\u20b9'}{formatINR(inv.unitPrice)}
+                      {/* IGST */}
+                      <td style={{ padding: '10px 12px', fontSize: '0.80rem', color: '#64748b', whiteSpace: 'nowrap', textAlign: 'right', fontFamily: 'monospace' }}>
+                        ₹{formatINR(inv.igstAmt)}
                       </td>
 
-                      <td style={{ padding: '10px 12px', fontSize: '0.78rem', color: '#5f665f', whiteSpace: 'nowrap', textAlign: 'right' }}>
-                        {'\u20b9'}{formatINR(inv.igstAmt)}
-                      </td>
-
+                      {/* Grand Total */}
                       <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', textAlign: 'right' }}>
-                        <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0b2b26' }}>
-                          {'\u20b9'}{formatINR(inv.grandTotal)}
+                        <span style={{ fontSize: '0.94rem', fontWeight: 900, color: '#0f2952', fontFamily: 'monospace' }}>
+                          ₹{formatINR(inv.grandTotal)}
                         </span>
                       </td>
 
-                      <td style={{ padding: '10px 12px' }}>
+                      {/* Status */}
+                      <td style={{ padding: '10px 12px', textAlign: 'center' }}>
                         {isAdmin ? (
-                          <select value={inv.paymentStatus || ''} onChange={e => quickStatus(inv.id, e.target.value)} style={{
-                            padding: '3px 8px', borderRadius: 8, border: '1.5px solid',
-                            borderColor: STATUS_STYLE[inv.paymentStatus] ? STATUS_STYLE[inv.paymentStatus].border : 'rgba(61,63,52,0.15)',
-                            background:  STATUS_STYLE[inv.paymentStatus] ? STATUS_STYLE[inv.paymentStatus].bg    : '#fff',
-                            color:       STATUS_STYLE[inv.paymentStatus] ? STATUS_STYLE[inv.paymentStatus].color : '#1d2a24',
-                            fontWeight: 600, fontSize: '0.73rem', cursor: 'pointer', fontFamily: 'inherit',
-                          }}>
+                          <select
+                            value={inv.paymentStatus || ''}
+                            onChange={e => quickStatus(inv.id, e.target.value)}
+                            style={{
+                              padding: '4px 10px',
+                              borderRadius: 10,
+                              border: `1.5px solid ${STATUS_STYLE[inv.paymentStatus]?.border || '#cbd5e1'}`,
+                              background: STATUS_STYLE[inv.paymentStatus]?.bg || '#ffffff',
+                              color: STATUS_STYLE[inv.paymentStatus]?.color || '#0f172a',
+                              fontWeight: 800,
+                              fontSize: '0.74rem',
+                              cursor: 'pointer',
+                              fontFamily: 'inherit',
+                              outline: 'none'
+                            }}
+                          >
                             {PAYMENT_STATUS.map(o => <option key={o} value={o}>{o}</option>)}
                           </select>
                         ) : (
@@ -932,38 +1311,60 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                         )}
                       </td>
 
-                      <td style={{ padding: '10px 12px' }}>
+                      {/* Due In */}
+                      <td style={{ padding: '10px 12px', textAlign: 'center' }}>
                         <DaysChip days={daysLeft} />
                       </td>
 
-                      <td style={{ padding: '10px 12px', maxWidth: 260 }}>
-                        {inv.remarks
-                          ? <span style={{
-                              fontSize: '0.75rem', color: inv.remarks.startsWith('⚠') ? '#92400e' : '#5f665f',
-                              lineHeight: 1.5, display: 'block',
-                              background: inv.remarks.startsWith('⚠') ? 'rgba(253,224,71,0.18)' : 'transparent',
-                              borderLeft: inv.remarks.startsWith('⚠') ? '3px solid #fcd34d' : 'none',
-                              padding: inv.remarks.startsWith('⚠') ? '4px 8px' : '0',
-                              borderRadius: inv.remarks.startsWith('⚠') ? '0 6px 6px 0' : '0',
-                            }}>{inv.remarks}</span>
-                          : <span style={{ color: '#c4b99a', fontSize: '0.75rem' }}>—</span>
-                        }
+                      {/* Remarks */}
+                      <td style={{ padding: '10px 12px', maxWidth: 240 }}>
+                        {inv.remarks ? (
+                          <span style={{
+                            fontSize: '0.74rem',
+                            color: inv.remarks.startsWith('⚠') ? '#92400e' : '#475569',
+                            lineHeight: 1.4,
+                            display: 'block'
+                          }}>
+                            {inv.remarks}
+                          </span>
+                        ) : (
+                          <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>—</span>
+                        )}
                       </td>
 
+                      {/* Actions (Admin) */}
                       {isAdmin && (
-                        <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
-                          <div style={{ display: 'flex', gap: 5 }}>
-                            <button onClick={() => setModalInv(inv)} title="Edit" style={{
-                              padding: '3px 8px', borderRadius: 7,
-                              border: '1px solid rgba(61,63,52,0.15)',
-                              background: '#fff', cursor: 'pointer', fontSize: '0.75rem',
-                            }}>✏️</button>
-                            <button onClick={() => deleteInvoice(inv.id)} title="Delete" style={{
-                              padding: '3px 8px', borderRadius: 7,
-                              border: '1px solid rgba(220,38,38,0.2)',
-                              background: '#fff0f0', color: '#dc2626',
-                              cursor: 'pointer', fontSize: '0.75rem',
-                            }}>🗑️</button>
+                        <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', textAlign: 'center' }}>
+                          <div style={{ display: 'inline-flex', gap: 6 }}>
+                            <button
+                              onClick={() => setModalInv(inv)}
+                              title="Edit invoice"
+                              style={{
+                                padding: '4px 9px',
+                                borderRadius: 8,
+                                border: '1px solid #cbd5e1',
+                                background: '#ffffff',
+                                cursor: 'pointer',
+                                fontSize: '0.76rem'
+                              }}
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              onClick={() => deleteInvoice(inv.id)}
+                              title="Delete invoice"
+                              style={{
+                                padding: '4px 9px',
+                                borderRadius: 8,
+                                border: '1px solid rgba(239, 68, 68, 0.3)',
+                                background: '#fee2e2',
+                                color: '#991b1b',
+                                cursor: 'pointer',
+                                fontSize: '0.76rem'
+                              }}
+                            >
+                              🗑️
+                            </button>
                           </div>
                         </td>
                       )}
@@ -975,25 +1376,39 @@ export default function ParkPlusTracker({ isAdmin = false }) {
           </table>
         </div>
 
-        {/* ── Footer totals ── */}
+        {/* ── Glass Footer Summary ── */}
         <div style={{
-          padding: '14px 16px', borderTop: '2px solid rgba(61,63,52,0.1)',
-          display: 'flex', justifyContent: 'flex-end', gap: 24, flexWrap: 'wrap',
-          background: 'rgba(244,239,231,0.55)',
+          padding: '14px 22px',
+          borderTop: '1.5px solid rgba(226, 232, 240, 0.9)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 16,
+          background: 'linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.8) 100%)',
+          backdropFilter: 'blur(10px)'
         }}>
-          {[
-            { label: `${filtered.length} invoice${filtered.length !== 1 ? 's' : ''} shown`, value: null },
-            { label: 'Subtotal', value: `\u20b9${formatINR(filtered.reduce((s, i) => s + (i.unitPrice || 0), 0))}` },
-            { label: 'IGST', value: `\u20b9${formatINR(filtered.reduce((s, i) => s + (i.igstAmt || 0), 0))}` },
-            { label: 'Grand Total', value: `\u20b9${formatINR(filtered.reduce((s, i) => s + (i.grandTotal || 0), 0))}`, bold: true },
-          ].map(({ label, value, bold }) => (
-            <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-              <span style={{ fontSize: '0.68rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>{label}</span>
-              {value && <span style={{ fontSize: bold ? '1rem' : '0.88rem', fontWeight: bold ? 800 : 700, color: bold ? '#0b2b26' : '#196c6c', marginTop: 1 }}>{value}</span>}
-            </div>
-          ))}
+          <div style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>
+            Showing <strong>{filtered.length}</strong> of <strong>{invoices.length}</strong> Park+ invoices
+            {filterStatus !== 'All' ? ` (Filtered by: ${filterStatus})` : ''}
+          </div>
+
+          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+            {[
+              { label: 'Subtotal', value: `₹${formatINR(filtered.reduce((s, i) => s + (i.unitPrice || 0), 0))}` },
+              { label: 'Total IGST (18%)', value: `₹${formatINR(filtered.reduce((s, i) => s + (i.igstAmt || 0), 0))}` },
+              { label: 'Grand Total', value: `₹${formatINR(filtered.reduce((s, i) => s + (i.grandTotal || 0), 0))}`, bold: true },
+            ].map(({ label, value, bold }) => (
+              <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <span style={{ fontSize: '0.66rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 700 }}>{label}</span>
+                <span style={{ fontSize: bold ? '1.05rem' : '0.88rem', fontWeight: bold ? 900 : 700, color: bold ? '#0f2952' : '#0284c7', fontFamily: 'monospace' }}>
+                  {value}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </LiquidGlassCard>
 
       {/* ── Modal ── */}
       {modalInv !== null && (
