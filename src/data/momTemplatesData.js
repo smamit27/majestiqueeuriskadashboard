@@ -23,9 +23,9 @@ export const OFFICIAL_MOM_TEMPLATES = [
       meetingDate: new Date().toISOString().split('T')[0],
       meetingTime: "10:30 AM",
       venue: "Wing 'A' Ground Floor Lobby / Society Office",
-      chairperson: "Mr. Rohan (Chairman)",
+      chairperson: "",
       attendees: [
-        "Mr. Rohan (Chairman)",
+        "Society Chairman",
         "A-101 (Amit)",
         "A-204 (Neha)",
         "A-301 (Sandeep)",
@@ -75,7 +75,7 @@ export const OFFICIAL_MOM_TEMPLATES = [
         {
           resNo: "RES-A/2026/01",
           subject: "Approval of Lift 2 Sensor Replacement Expenditure",
-          proposer: "Mr. Rohan (Chairman)",
+          proposer: "Society Chairman",
           seconder: "A-204 (Neha)",
           verdict: "Passed Unanimously",
           text: "RESOLVED THAT the expenditure of ₹4,200 towards Otis Elevator Door Sensor replacement for Wing 'A' Lift 2 is hereby sanctioned from the Wing Maintenance Fund."
@@ -137,9 +137,9 @@ export const OFFICIAL_MOM_TEMPLATES = [
       meetingDate: new Date().toISOString().split('T')[0],
       meetingTime: "11:30 AM",
       venue: "Society Clubhouse Conference Hall",
-      chairperson: "Mr. Rohan (Chairman)",
+      chairperson: "",
       attendees: [
-        "Mr. Rohan (Chairman)",
+        "Society Chairman",
         "Society Secretary",
         "Society Treasurer",
         "Estate Manager",
@@ -151,7 +151,7 @@ export const OFFICIAL_MOM_TEMPLATES = [
         "B-304 (Rajesh)",
         "C-104 (Rahul)",
         "C-202 (Sunita)",
-        "C-306 (Rohan C)"
+        "C-306 (Committee Member)"
       ]
     },
     rawNotes: `1. STP Plant Operations: Daily treated water output at 45 KLD. Sludge removal tanker required this week. Bio-culture dosing frequency maintained.
@@ -197,7 +197,7 @@ export const OFFICIAL_MOM_TEMPLATES = [
         {
           resNo: "RES-COM/2026/01",
           subject: "Procurement of Kirloskar DG Starter Battery",
-          proposer: "Mr. Rohan (Chairman)",
+          proposer: "Society Chairman",
           seconder: "B-201 (Vikram)",
           verdict: "Passed Unanimously",
           text: "RESOLVED THAT purchase of 1 No. Exide heavy-duty DG starter battery at ₹14,500 inclusive of GST and buyback be sanctioned from the Common Infrastructure Maintenance Account."
@@ -259,9 +259,9 @@ export const OFFICIAL_MOM_TEMPLATES = [
       meetingDate: new Date().toISOString().split('T')[0],
       meetingTime: "06:00 PM",
       venue: "Society Central Amphitheatre / Clubhouse",
-      chairperson: "Mr. Rohan (Chairman)",
+      chairperson: "",
       attendees: [
-        "Mr. Rohan (Chairman)",
+        "Society Chairman",
         "Society Secretary",
         "A-101 (Amit)",
         "A-204 (Neha)",
@@ -298,7 +298,7 @@ export const OFFICIAL_MOM_TEMPLATES = [
         {
           resNo: "RES-SGM/2026/01",
           subject: "Appointment of Structural Auditor for Wing 'A'",
-          proposer: "Mr. Rohan (Chairman)",
+          proposer: "Society Chairman",
           seconder: "A-101 (Amit)",
           verdict: "Passed with 2/3rd Majority",
           text: "RESOLVED THAT the appointment of M/s Technocivil Consultants for comprehensive structural auditing of Wing 'A' at ₹65,000 plus taxes is hereby ratified."

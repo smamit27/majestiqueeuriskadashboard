@@ -39,7 +39,7 @@ vi.mock('@google/genai', () => ({
                 {
                   resNo: isCommon ? "RES-COM/2026/01" : "RES-A/2026/01",
                   subject: isCommon ? "STP Sludge Clearance" : "Lift Repair Approval",
-                  proposer: "Mr. Rohan (Chairman)",
+                  proposer: "Society Chairman",
                   seconder: "Managing Committee Member",
                   verdict: "Passed Unanimously",
                   text: "RESOLVED THAT the operational action plan is hereby approved."
@@ -364,5 +364,26 @@ describe('AiMomGenerator Component', () => {
     // Navigate to history and verify custom template exists
     fireEvent.click(screen.getByTestId('tab-history-templates-btn'));
     expect(screen.getAllByText(/My Custom Annual Wing 'A' Template/i).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('keeps Presided By / Chairperson input field completely empty by default and when loading templates', () => {
+    render(<AiMomGenerator isAdmin={true} />);
+
+    const chairpersonInput = screen.getByTestId('mom-chairperson-input');
+    // Starts completely empty
+    expect(chairpersonInput.value).toBe('');
+    expect(chairpersonInput.value).not.toContain('Rohan');
+
+    // Loading Wing A template should keep chairperson empty
+    const quickWingABtn = screen.getByTestId('quick-wing-a-template-btn');
+    fireEvent.click(quickWingABtn);
+    expect(chairpersonInput.value).toBe('');
+    expect(chairpersonInput.value).not.toContain('Rohan');
+
+    // Loading Common template should keep chairperson empty
+    const quickCommonBtn = screen.getByTestId('quick-common-template-btn');
+    fireEvent.click(quickCommonBtn);
+    expect(chairpersonInput.value).toBe('');
+    expect(chairpersonInput.value).not.toContain('Rohan');
   });
 });

@@ -112,7 +112,7 @@ export default function AiMomGenerator({ isAdmin = false }) {
     if (result.totalDetected === 0) {
       setAgentFeedback({
         type: 'warning',
-        message: 'No committee members or flat numbers detected in the current notes. Mention e.g. "A-204 Neha" or "Rohan from C-306".'
+        message: 'No committee members or flat numbers detected in the current notes. Mention e.g. "A-204 Neha" or "A-301 Sandeep".'
       });
       setTimeout(() => setAgentFeedback(null), 4000);
       return;
@@ -237,7 +237,14 @@ export default function AiMomGenerator({ isAdmin = false }) {
     try {
       const local = localStorage.getItem('euriska_ai_moms');
       if (local) {
-        setSavedMoms(JSON.parse(local));
+        const parsed = JSON.parse(local);
+        const cleaned = Array.isArray(parsed) ? parsed.map(m => {
+          if (m?.headerInfo?.chairperson && /rohan/i.test(m.headerInfo.chairperson)) {
+            return { ...m, headerInfo: { ...m.headerInfo, chairperson: '' } };
+          }
+          return m;
+        }) : [];
+        setSavedMoms(cleaned);
       }
     } catch (e) {
       console.warn('Failed to load local MOM history:', e);
@@ -577,12 +584,14 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
     setMeetingDate(item.headerInfo?.meetingDate || new Date().toISOString().split('T')[0]);
     setMeetingTime(item.headerInfo?.meetingTime || '11:00 AM');
     setVenue(item.headerInfo?.venue || '');
-    setChairperson(item.headerInfo?.chairperson || '');
+    setChairperson(item.headerInfo?.chairperson && !/rohan/i.test(item.headerInfo.chairperson) ? item.headerInfo.chairperson : '');
     if (item.headerInfo?.attendees && Array.isArray(item.headerInfo.attendees)) {
-      const restored = item.headerInfo.attendees.map(att => {
-        const found = COMMITTEE_MEMBERS.find(m => m.id === att || m.formatted === att || m.label === att);
-        return found ? found.id : att;
-      });
+      const restored = item.headerInfo.attendees
+        .filter(att => !/rohan/i.test(att))
+        .map(att => {
+          const found = COMMITTEE_MEMBERS.find(m => m.id === att || m.formatted === att || m.label === att);
+          return found ? found.id : att;
+        });
       setSelectedAttendees(restored);
     }
     if (item.rawNotes) setRawNotes(item.rawNotes);
@@ -596,12 +605,14 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
     setMeetingDate(template.headerInfo?.meetingDate || new Date().toISOString().split('T')[0]);
     setMeetingTime(template.headerInfo?.meetingTime || '11:00 AM');
     setVenue(template.headerInfo?.venue || '');
-    setChairperson(template.headerInfo?.chairperson || '');
+    setChairperson(template.headerInfo?.chairperson && !/rohan/i.test(template.headerInfo.chairperson) ? template.headerInfo.chairperson : '');
     if (template.headerInfo?.attendees && Array.isArray(template.headerInfo.attendees)) {
-      const restored = template.headerInfo.attendees.map(att => {
-        const found = COMMITTEE_MEMBERS.find(m => m.id === att || m.formatted === att || m.label === att);
-        return found ? found.id : att;
-      });
+      const restored = template.headerInfo.attendees
+        .filter(att => !/rohan/i.test(att))
+        .map(att => {
+          const found = COMMITTEE_MEMBERS.find(m => m.id === att || m.formatted === att || m.label === att);
+          return found ? found.id : att;
+        });
       setSelectedAttendees(restored);
     }
     if (template.rawNotes) setRawNotes(template.rawNotes);
@@ -941,6 +952,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
             </label>
             <input
               type="text"
+              data-testid="mom-chairperson-input"
               value={chairperson}
               onChange={e => setChairperson(e.target.value)}
               placeholder="e.g. Society Chairman (optional)"
