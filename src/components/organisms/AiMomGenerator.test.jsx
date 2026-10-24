@@ -194,4 +194,35 @@ describe('AiMomGenerator Component', () => {
     expect(printSpy).toHaveBeenCalled();
     printSpy.mockRestore();
   });
+
+  it('allows selecting committee members through MultiSelectDropdown and includes them in generated minutes', async () => {
+    render(<AiMomGenerator isAdmin={true} />);
+
+    // Open multi-select dropdown
+    const trigger = screen.getByTestId('multiselect-trigger');
+    fireEvent.click(trigger);
+
+    // Select Neha (A-204) and Sandeep (A-301)
+    const nehaOption = screen.getByText('Neha');
+    fireEvent.click(nehaOption);
+
+    const sandeepOption = screen.getByText('Sandeep');
+    fireEvent.click(sandeepOption);
+
+    // Verify chips render in trigger
+    expect(screen.getByText(/A-204 \(Neha\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/A-301 \(Sandeep\)/i)).toBeInTheDocument();
+
+    // Generate MOM
+    const generateBtn = screen.getByRole('button', { name: /Generate AI MOM for Building 'A'/i });
+    fireEvent.click(generateBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Official Letterhead/i)).toBeInTheDocument();
+    });
+
+    // Check that attendees appear both in the selector chip and on the generated letterhead
+    expect(screen.getAllByText(/A-204 \(Neha\)/i).length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText(/A-301 \(Sandeep\)/i).length).toBeGreaterThanOrEqual(2);
+  });
 });

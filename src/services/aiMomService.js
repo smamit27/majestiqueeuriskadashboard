@@ -140,13 +140,14 @@ The JSON MUST follow this exact structure:
   "nextMeeting": "Scheduled date or timeframe for the follow-up meeting."
 }`;
 
+  const attendeesText = Array.isArray(attendees) ? attendees.join(', ') : (attendees || '');
   const prompt = `Meeting Metadata:
 - Date: ${meetingDate}
 - Time: ${meetingTime}
 - Meeting Type: ${meetingType}
 - Venue: ${venue}
 - Chairperson / Presided By: ${chairperson}
-- Attendees: ${attendees || 'Managing Committee members, Wing representatives, and residents'}
+- Attendees: ${attendeesText || 'Managing Committee members, Wing representatives, and residents'}
 
 Raw Meeting Notes / Transcript:
 """
@@ -358,15 +359,20 @@ function generateHeuristicMom({
 function enrichMomPayload(data, context) {
   const isABuilding = context.scope === 'A_BUILDING';
 
-  const attendeeList = context.attendees
-    ? context.attendees.split(/[,;\n]+/).map(a => a.trim()).filter(Boolean)
-    : [
-        context.chairperson || 'Society Chairman',
-        'Society Secretary',
-        'Society Treasurer',
-        isABuilding ? 'Wing A Committee Representatives' : 'Representatives of Wings A, B, C & Shops',
-        'Estate Manager'
-      ];
+  let attendeeList = [];
+  if (Array.isArray(context.attendees) && context.attendees.length > 0) {
+    attendeeList = context.attendees;
+  } else if (typeof context.attendees === 'string' && context.attendees.trim()) {
+    attendeeList = context.attendees.split(/[,;\n]+/).map(a => a.trim()).filter(Boolean);
+  } else {
+    attendeeList = [
+      context.chairperson || 'Society Chairman',
+      'Society Secretary',
+      'Society Treasurer',
+      isABuilding ? 'Wing A Committee Representatives' : 'Representatives of Wings A, B, C & Shops',
+      'Estate Manager'
+    ];
+  }
 
   return {
     id: `mom_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,

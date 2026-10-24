@@ -25,6 +25,8 @@ import { generateMeetingMOM } from '../../services/aiMomService.js';
 import { SOCIETY_INFO } from '../../data/societyConfig.js';
 import { db, isFirebaseConfigured } from '../../firebase.js';
 import { collection, addDoc, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import MultiSelectDropdown from '../molecules/MultiSelectDropdown.jsx';
+import { COMMITTEE_MEMBERS } from '../../data/committeeMembersData.js';
 
 const SAMPLE_A_BUILDING_NOTES = `Wing A Managing Committee Monthly Review:
 1. Lift 1 between 4th and 5th floor had reported jerky movement. Otis technician visited on Tuesday, diagnosed sensor calibration issue. Sensor replaced under AMC; lift running smoothly now.
@@ -50,7 +52,7 @@ export default function AiMomGenerator({ isAdmin = false }) {
   const [meetingTime, setMeetingTime] = useState('11:00 AM');
   const [venue, setVenue] = useState("Society Office / Wing 'A' Lobby");
   const [chairperson, setChairperson] = useState('');
-  const [attendees, setAttendees] = useState('');
+  const [selectedAttendees, setSelectedAttendees] = useState([]);
   const [rawNotes, setRawNotes] = useState(SAMPLE_A_BUILDING_NOTES);
 
   // Output & UI States
@@ -133,6 +135,12 @@ export default function AiMomGenerator({ isAdmin = false }) {
 
     setIsGenerating(true);
     try {
+      // Format selected committee members into official flat (name) labels
+      const formattedAttendees = selectedAttendees.map(val => {
+        const match = COMMITTEE_MEMBERS.find(m => m.id === val || m.label === val);
+        return match ? match.formatted : val;
+      });
+
       const result = await generateMeetingMOM({
         rawNotes,
         scope,
@@ -141,7 +149,7 @@ export default function AiMomGenerator({ isAdmin = false }) {
         meetingType,
         venue,
         chairperson,
-        attendees
+        attendees: formattedAttendees
       });
       setGeneratedMom(result);
       setActiveView('preview');
@@ -337,6 +345,13 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
     setMeetingTime(item.headerInfo?.meetingTime || '11:00 AM');
     setVenue(item.headerInfo?.venue || '');
     setChairperson(item.headerInfo?.chairperson || '');
+    if (item.headerInfo?.attendees && Array.isArray(item.headerInfo.attendees)) {
+      const restored = item.headerInfo.attendees.map(att => {
+        const found = COMMITTEE_MEMBERS.find(m => m.id === att || m.formatted === att || m.label === att);
+        return found ? found.id : att;
+      });
+      setSelectedAttendees(restored);
+    }
     if (item.rawNotes) setRawNotes(item.rawNotes);
     setActiveView('preview');
   };
@@ -574,16 +589,13 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
-              Key Attendees & Members Present
-            </label>
-            <input
-              type="text"
-              value={attendees}
-              onChange={e => setAttendees(e.target.value)}
-              placeholder="e.g. Committee Members, Secretary, Treasurer (optional)"
-              className="attendance-register-input"
-              style={{ width: '100%', padding: '8px 10px' }}
+            <MultiSelectDropdown
+              options={COMMITTEE_MEMBERS}
+              selectedValues={selectedAttendees}
+              onChange={setSelectedAttendees}
+              activeScope={scope}
+              label="Key Attendees & Committee Members Present"
+              placeholder="Select Committee Members (Flat No - Name)..."
             />
           </div>
         </div>
