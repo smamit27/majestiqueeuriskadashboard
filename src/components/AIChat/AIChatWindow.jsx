@@ -4,6 +4,8 @@ import { generateContextForQuery, getTabMetrics } from '../../services/ragServic
 import { askGemini } from '../../services/geminiService';
 import ChatMessage from './ChatMessage';
 import { useSuggestedQuestions } from '../../hooks/useSuggestedQuestions';
+import './AIChatWindow.css';
+
 
 const CHAT_TABS = [
   { id: 'general', label: '🏠 Society', title: 'Society Overview' },
@@ -95,7 +97,7 @@ export default function AIChatWindow({ isOpen, onClose, userRole = 'ADMIN' }) {
     <div className={`ai-chat-window ${isOpen ? 'ai-chat-window--open' : ''}`}>
       <div className="ai-chat-header">
         <div className="ai-chat-header-info">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="a-i-chat-window-s1">
             <Sparkles size={18} color="#10b981" />
             <h3>Euriska AI Assistant</h3>
           </div>

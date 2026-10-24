@@ -3,6 +3,8 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, Legend } from 'recharts';
 import * as XLSX from 'xlsx';
+import './ElectricityTracker.css';
+
 
 function formatDateLabel(val) {
   if (!val) return '—';
@@ -2827,24 +2829,19 @@ Majestique Euriska 'A' Building CHS Ltd.`;
   const renderTabButton = (id, icon, label) => (
     <button
       onClick={() => { setSubTab(id); setEditingRowId(null); }}
-      className={`sub-tab-button ${subTab === id ? 'active' : ''}`}
-      style={{
-        flex: 1, padding: '7px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer',
-        background: subTab === id ? '#1e3a8a' : 'transparent',
-        color: subTab === id ? 'white' : 'var(--muted)',
-        fontWeight: 600, fontSize: '0.82rem', transition: '0.2s'
-      }}
+      className={`sub-tab-button ${subTab === id ? 'active' : ''} electricity-tracker-s1`}
+      style={{ background: subTab === id ? '#1e3a8a' : 'transparent', color: subTab === id ? 'white' : 'var(--muted)' }}
     >
       {icon} {label}
     </button>
   );
 
   return (
-    <div className="electricity-tracker" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <div className="electricity-tracker electricity-tracker-s2">
 
       {/* Tab Navigation */}
-      <div className="table-card" style={{ padding: '6px', background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '12px' }}>
-        <div style={{ display: 'flex', gap: '6px' }}>
+      <div className="table-card electricity-tracker-s3">
+        <div className="electricity-tracker-s4">
           {renderTabButton('tata', '⚡️', 'Tata Electricity Bill')}
           {renderTabButton('buildingA', '🏢', 'A Building Electricity')}
           {renderTabButton('mahavitaran', '🔌', 'Mahavitaran (MSEB)')}
@@ -2852,28 +2849,28 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       </div>
 
       {/* Header Banner */}
-      <div className="table-card" style={{ padding: 0, borderRadius: '12px', overflow: 'hidden' }}>
-        <div className="attendance-table-card__header" style={{ padding: '12px 18px 10px', alignItems: 'center' }}>
+      <div className="table-card electricity-tracker-s5">
+        <div className="attendance-table-card__header electricity-tracker-s6">
           <div>
-            <p className="eyebrow" style={{ fontSize: '0.68rem', letterSpacing: '0.06em', marginBottom: '2px' }}>
+            <p className="eyebrow electricity-tracker-s7">
               {subTab === 'tata' ? 'Tata Electricity Sub-Meter Billing' : (subTab === 'mahavitaran' ? 'Mahavitaran Dashboard' : 'A Building Dashboard')}
             </p>
-            <h3 style={{ margin: '0 0 2px 0', fontSize: '1.15rem', fontWeight: 700, fontFamily: 'inherit', letterSpacing: '-0.01em' }}>
+            <h3 className="electricity-tracker-s8">
               {subTab === 'tata' ? 'Tata Electricity Bills' : (subTab === 'mahavitaran' ? 'MSEB Detailed Bills' : 'A Building Common Lift Bills')}
             </h3>
             {subTab === 'tata' && (
-              <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>
+              <p className="electricity-tracker-s9">
                 Consumer: <strong>Tata Play Limited</strong> (Broadband Hub) • Meter: <strong>TATA-EUR-01</strong> • 4-Digit Dial with <strong>10,000 Reset Rollover</strong>
               </p>
             )}
             {subTab === 'buildingA' && (
-              <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>
+              <p className="electricity-tracker-s9">
                 Consumer: <strong>THE CHAIRMAN EURISKA A WING (COMMON LIFT)</strong> • Consumer No: <strong>170003586858</strong> • Meter: <strong>08210034428</strong> • <strong>10.00 KW 3-Phase</strong>
               </p>
             )}
-            {subTab === 'mahavitaran' && <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>Detailed breakdown per MSEB format</p>}
+            {subTab === 'mahavitaran' && <p className="electricity-tracker-s9">Detailed breakdown per MSEB format</p>}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: badge.color, fontWeight: 600, fontSize: '0.78rem' }}>
+          <div className="electricity-tracker-s10" style={{ color: badge.color }}>
             <span>{badge.icon}</span>
             <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
           </div>
@@ -2882,47 +2879,39 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
       {/* TATA PLAY 10,000 RESET EXPLAINER & TARIFF PROGRESSION BANNER */}
       {subTab === 'tata' && (
-        <div style={{
-          background: 'linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)',
-          border: '1px solid #bfdbfe',
-          borderRadius: '10px',
-          padding: '10px 14px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.1rem' }}>🔄</span>
+        <div className="electricity-tracker-s11">
+          <div className="electricity-tracker-s12">
+            <div className="electricity-tracker-s13">
+              <span className="electricity-tracker-s14">🔄</span>
               <div>
-                <h4 style={{ margin: 0, color: '#1e3a8a', fontSize: '0.82rem', fontWeight: 700 }}>4-Digit Sub-Meter Rollover Principle (Reset After 10,000 Units)</h4>
-                <p style={{ margin: '1px 0 0 0', fontSize: '0.74rem', color: '#475569', lineHeight: 1.4 }}>
+                <h4 className="electricity-tracker-s15">4-Digit Sub-Meter Rollover Principle (Reset After 10,000 Units)</h4>
+                <p className="electricity-tracker-s16">
                   Sub-meter resets to 0000 after 9999. When <strong>Current (B) &lt; Previous (A)</strong>, consumption is: <code>Units = (10,000 - A) + B</code>.
                 </p>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              <span style={{ background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #fde68a' }}>
+            <div className="electricity-tracker-s17">
+              <span className="electricity-tracker-s18">
                 🔄 Sep 25 – May 26: 2568 ➔ 1557 (8,988 U)
               </span>
-              <span style={{ background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #fde68a' }}>
+              <span className="electricity-tracker-s18">
                 🔄 Mar 25 – Aug 25: 9073 ➔ 2568 (3,495 U)
               </span>
-              <span style={{ background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #fde68a' }}>
+              <span className="electricity-tracker-s18">
                 🔄 Mar 23 – Jul 23: 7629 ➔ 0177 (2,548 U)
               </span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', borderTop: '1px solid #dbeafe', paddingTop: '6px', flexWrap: 'wrap', fontSize: '0.72rem' }}>
-            <span style={{ fontWeight: 700, color: '#1e40af' }}>Tariff Rate Timeline:</span>
-            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+          <div className="electricity-tracker-s19">
+            <span className="electricity-tracker-s20">Tariff Rate Timeline:</span>
+            <span className="electricity-tracker-s21">
               <strong>Phase 1 (Mar 23 – Jan 24):</strong> ₹11.50 / u
             </span>
-            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+            <span className="electricity-tracker-s21">
               <strong>Phase 2 (Feb 24 – May 24):</strong> ₹12.50 / u
             </span>
-            <span style={{ background: '#dbeafe', padding: '2px 8px', borderRadius: '6px', border: '1px solid #93c5fd', color: '#1e40af', fontWeight: 700 }}>
+            <span className="electricity-tracker-s22">
               <strong>Phase 3 (Jun 24 – May 26):</strong> ₹13.00 / u (Current)
             </span>
           </div>
@@ -2931,55 +2920,47 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
       {/* BUILDING A MSEDCL DETAILS BANNER */}
       {subTab === 'buildingA' && (
-        <div style={{
-          background: 'linear-gradient(135deg, #f8fafc 0%, #f0fdf4 100%)',
-          border: '1px solid #bbf7d0',
-          borderRadius: '10px',
-          padding: '10px 14px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.2rem' }}>🏢</span>
+        <div className="electricity-tracker-s23">
+          <div className="electricity-tracker-s12">
+            <div className="electricity-tracker-s13">
+              <span className="electricity-tracker-s24">🏢</span>
               <div>
-                <h4 style={{ margin: 0, color: '#14532d', fontSize: '0.82rem', fontWeight: 700 }}>
+                <h4 className="electricity-tracker-s25">
                   Building A Wing Common Lift Meter (MSEDCL / Mahavitaran)
                 </h4>
-                <p style={{ margin: '1px 0 0 0', fontSize: '0.74rem', color: '#475569', lineHeight: 1.4 }}>
+                <p className="electricity-tracker-s16">
                   Consumer No: <strong>170003586858</strong> • Meter No: <strong>08210034428</strong> • Tariff: <strong>92/LT I Res 3-Phase</strong> • Load: <strong>10.00 KW</strong> • Unit: <strong>4745/Hadapsar</strong>
                 </p>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              <span style={{ background: '#dcfce7', color: '#166534', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #86efac' }}>
+            <div className="electricity-tracker-s17">
+              <span className="electricity-tracker-s26">
                 📍 Hadapsar Sub-Dn (4745)
               </span>
-              <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #bae6fd' }}>
+              <span className="electricity-tracker-s27">
                 🛡️ Security Deposit: ₹69,440
               </span>
-              <span style={{ background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 600, border: '1px solid #fde68a' }}>
+              <span className="electricity-tracker-s18">
                 ⚡ 10 Months Tracked: 17,712 Units
               </span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', borderTop: '1px solid #dcfce7', paddingTop: '6px', flexWrap: 'wrap', fontSize: '0.72rem' }}>
-            <span style={{ fontWeight: 700, color: '#166534' }}>MSEDCL Slabs (Post-Apr'26):</span>
-            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+          <div className="electricity-tracker-s28">
+            <span className="electricity-tracker-s29">MSEDCL Slabs (Post-Apr'26):</span>
+            <span className="electricity-tracker-s21">
               0–100: ₹3.96/u (FAC 0.15)
             </span>
-            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+            <span className="electricity-tracker-s21">
               101–300: ₹10.80/u (FAC 0.30)
             </span>
-            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+            <span className="electricity-tracker-s21">
               301–500: ₹15.03/u (FAC 0.40)
             </span>
-            <span style={{ background: 'white', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', color: '#475569' }}>
+            <span className="electricity-tracker-s21">
               &gt;500: ₹17.53/u (FAC 0.45)
             </span>
-            <span style={{ background: '#f0fdf4', padding: '2px 8px', borderRadius: '6px', border: '1px solid #86efac', color: '#166534', fontWeight: 600 }}>
+            <span className="electricity-tracker-s30">
               Wheeling: ₹1.60/u • Fixed: ₹445/mo • Duty: 16%
             </span>
           </div>
@@ -2987,27 +2968,25 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       )}
 
       {/* SEARCH & ACTIONS ZONE */}
-      <div className="section-card" style={{ padding: '10px 16px', background: '#f8fafc', border: '1px solid var(--line)', borderRadius: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          <div className="filter-field" style={{ flex: 1, minWidth: '220px', margin: 0 }}>
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>🔍 Search Period / Dates / Duration</label>
+      <div className="section-card electricity-tracker-s31">
+        <div className="electricity-tracker-s32">
+          <div className="filter-field electricity-tracker-s33">
+            <label className="eyebrow electricity-tracker-s34">🔍 Search Period / Dates / Duration</label>
             <input
               type="search"
               placeholder="Search period, date, units..."
               value={searchText}
               onChange={e => setSearchText(e.target.value)}
-              className="attendance-register-input"
-              style={{ textAlign: 'left', height: '34px', fontSize: '0.8rem', background: 'white', padding: '4px 10px' }}
+              className="attendance-register-input electricity-tracker-s35"
             />
           </div>
-          <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '6px 14px', height: '34px', fontSize: '0.78rem', marginTop: 'auto' }}>
+          <button className="button-secondary electricity-tracker-s36" onClick={handleDownloadExcel}>
             ⬇ Export to Excel
           </button>
           {subTab === 'buildingA' && (
             <button
-              className="button-secondary"
+              className="button-secondary electricity-tracker-s37"
               onClick={handlePrintBuildingAStatement}
-              style={{ padding: '6px 14px', height: '34px', fontSize: '0.78rem', marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}
               title="Print or export complete 10-month statement of Building A electricity bills"
             >
               <span>🖨️</span> Statement PDF
@@ -3016,34 +2995,19 @@ Majestique Euriska 'A' Building CHS Ltd.`;
           {subTab === 'tata' && (
             <>
               <button
-                className="button-primary"
+                className="button-primary electricity-tracker-s38"
                 onClick={() => {
                   setSelectedTataBillId(tataBills[0]?.id || 2001);
                   setTataInvoiceTarget('single');
                   setIsTataInvoiceModalOpen(true);
-                }}
-                style={{
-                  padding: '6px 14px',
-                  height: '34px',
-                  fontSize: '0.78rem',
-                  marginTop: 'auto',
-                  background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-                  color: '#C49B4F',
-                  border: '1px solid #C49B4F',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  cursor: 'pointer'
                 }}
                 title="Open interactive invoice generator for Tata electricity sub-meter bills"
               >
                 <span>🧾</span> Generate Tata Invoice
               </button>
               <button
-                className="button-secondary"
+                className="button-secondary electricity-tracker-s37"
                 onClick={handlePrintAllTataBills}
-                style={{ padding: '6px 14px', height: '34px', fontSize: '0.78rem', marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}
                 title="Print or export complete statement of Tata electricity bills"
               >
                 <span>🖨️</span> Statement PDF
@@ -3055,67 +3019,62 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
       {/* KPI METRICS ZONE */}
       {filteredBills.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div className="attendance-summary-grid" style={{
-            background: subTab === 'buildingA'
+        <div className="electricity-tracker-s2">
+          <div className="attendance-summary-grid electricity-tracker-s39" style={{ background: subTab === 'buildingA'
               ? 'linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%)'
-              : 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)',
-            padding: '12px 16px',
-            borderRadius: '12px',
-            border: `1px solid ${subTab === 'buildingA' ? '#bbf7d0' : '#bae6fd'}`
-          }}>
-            <div style={{ gridColumn: '1 / -1', marginBottom: '2px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <p className="eyebrow" style={{ color: subTab === 'buildingA' ? '#166534' : '#0369a1', margin: 0, fontSize: '0.68rem', letterSpacing: '0.05em' }}>
+              : 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)', border: `1px solid ${subTab === 'buildingA' ? '#bbf7d0' : '#bae6fd'}` }}>
+            <div className="electricity-tracker-s40">
+              <p className="eyebrow electricity-tracker-s41" style={{ color: subTab === 'buildingA' ? '#166534' : '#0369a1' }}>
                 {subTab === 'buildingA' ? '🏢 Building A Common Lift Consolidated Metrics' : (subTab === 'mahavitaran' ? '⚡ Mahavitaran MSEB Consolidated Metrics' : '📡 Tata Electricity Sub-Meter Consolidated Metrics')}
               </p>
-              <span style={{ fontSize: '0.72rem', color: '#64748b' }}>{filteredBills.length} Billing Periods Tracked</span>
+              <span className="electricity-tracker-s42">{filteredBills.length} Billing Periods Tracked</span>
             </div>
 
-            <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Total Amount Billed</p>
-              <h3 style={{ color: subTab === 'buildingA' ? '#166534' : '#0369a1', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>₹{fmt(totalAmount)}</h3>
-              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>
+            <div className="accounting-summary-card electricity-tracker-s43">
+              <p className="eyebrow electricity-tracker-s44">Total Amount Billed</p>
+              <h3 className="electricity-tracker-s45" style={{ color: subTab === 'buildingA' ? '#166534' : '#0369a1' }}>₹{fmt(totalAmount)}</h3>
+              <p className="electricity-tracker-s46">
                 {subTab === 'buildingA' ? `${filteredBills.length}-Month Audited Total` : 'Full 8-period audited total'}
               </p>
             </div>
 
-            <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Total Energy Consumed</p>
-              <h3 style={{ color: '#ea580c', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>{fmt(totalConsumption)} Units</h3>
-              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>
+            <div className="accounting-summary-card electricity-tracker-s43">
+              <p className="eyebrow electricity-tracker-s44">Total Energy Consumed</p>
+              <h3 className="electricity-tracker-s47">{fmt(totalConsumption)} Units</h3>
+              <p className="electricity-tracker-s46">
                 Avg ~{fmt(Math.round(totalConsumption / (filteredBills.length || 1)))} units / bill
               </p>
             </div>
 
-            <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>
+            <div className="accounting-summary-card electricity-tracker-s43">
+              <p className="eyebrow electricity-tracker-s44">
                 {subTab === 'buildingA' ? 'Average Monthly Bill' : 'Active Tariff Rate'}
               </p>
-              <h3 style={{ color: '#16a34a', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>
+              <h3 className="electricity-tracker-s48">
                 {subTab === 'buildingA' ? `₹${fmt(Math.round(totalAmount / (filteredBills.length || 1)))}` : '₹13.00 / Unit'}
               </h3>
-              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>
+              <p className="electricity-tracker-s46">
                 {subTab === 'buildingA' ? 'Effective avg ₹21.28 / unit' : 'Progressed from ₹11.50 ➔ ₹12.50'}
               </p>
             </div>
 
-            <div className="accounting-summary-card" style={{ background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <p className="eyebrow" style={{ fontSize: '0.68rem', marginBottom: '4px' }}>Meter Continuity</p>
-              <h3 style={{ color: '#8b5cf6', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>
+            <div className="accounting-summary-card electricity-tracker-s43">
+              <p className="eyebrow electricity-tracker-s44">Meter Continuity</p>
+              <h3 className="electricity-tracker-s49">
                 {subTab === 'buildingA'
                   ? `${filteredBills[filteredBills.length - 1]?.prevReading || '132533'} ➔ ${filteredBills[0]?.currReading || '150245'}`
                   : '3 Rollovers'}
               </h3>
-              <p style={{ margin: '2px 0 0 0', fontSize: '0.68rem', color: '#64748b' }}>
+              <p className="electricity-tracker-s46">
                 {subTab === 'buildingA' ? `${filteredBills.length} consecutive cycles (0 gaps)` : '7629 ➔ 1557 (0 gaps)'}
               </p>
             </div>
           </div>
 
           {/* HISTORICAL CONSUMPTION CHART */}
-          <div className="section-card" style={{ padding: '14px 18px', border: '1px solid var(--line)', borderRadius: '10px' }}>
-            <h4 style={{ margin: '0 0 12px 0', color: 'var(--ink)', fontSize: '0.82rem', fontWeight: 700 }}>Electricity Consumption by Billing Period (kWh Units)</h4>
-            <div style={{ width: '100%', height: 190 }}>
+          <div className="section-card electricity-tracker-s50">
+            <h4 className="electricity-tracker-s51">Electricity Consumption by Billing Period (kWh Units)</h4>
+            <div className="electricity-tracker-s52">
               <ResponsiveContainer>
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
@@ -3140,54 +3099,32 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             const totalMonthlyUnits = monthlyData.reduce((s, m) => s + m.units, 0);
             const totalMonthlyCost = monthlyData.reduce((s, m) => s + m.estCost, 0);
             return (
-              <div style={{
-                background: 'linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%)',
-                border: '1px solid #bbf7d0',
-                borderRadius: '12px',
-                padding: '16px 18px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '14px'
-              }}>
+              <div className="electricity-tracker-s53">
                 {/* Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
+                <div className="electricity-tracker-s54">
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '1.1rem' }}>📅</span>
-                      <h4 style={{ margin: 0, color: '#14532d', fontSize: '0.88rem', fontWeight: 800 }}>
+                    <div className="electricity-tracker-s13">
+                      <span className="electricity-tracker-s14">📅</span>
+                      <h4 className="electricity-tracker-s55">
                         {subTab === 'buildingA' ? 'Building A Monthly Consumption Breakdown' : 'Monthly Consumption Breakdown'}
                       </h4>
                     </div>
-                    <p style={{ margin: '2px 0 0 20px', fontSize: '0.72rem', color: '#15803d' }}>
+                    <p className="electricity-tracker-s56">
                       {subTab === 'buildingA'
                         ? 'Estimated monthly units by proportionally distributing each billing period across calendar months'
                         : 'Estimated monthly units by proportionally distributing each billing period across calendar months'}
                     </p>
                   </div>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <span style={{ background: '#dcfce7', color: '#166534', padding: '3px 10px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 700, border: '1px solid #86efac' }}>
+                  <div className="electricity-tracker-s57">
+                    <span className="electricity-tracker-s58">
                       {monthlyData.length} Months
                     </span>
-                    <span style={{ background: '#fef3c7', color: '#92400e', padding: '3px 10px', borderRadius: '12px', fontSize: '0.7rem', fontWeight: 700, border: '1px solid #fde68a' }}>
+                    <span className="electricity-tracker-s59">
                       Peak: {peakMonth.label} ({peakMonth.units.toLocaleString('en-IN')} u)
                     </span>
                     <button
                       onClick={() => handlePrintMonthlyBreakdown(monthlyData, subTab)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                        padding: '5px 12px',
-                        borderRadius: '8px',
-                        border: '1px solid #059669',
-                        background: '#064e3b',
-                        color: 'white',
-                        fontWeight: 700,
-                        fontSize: '0.74rem',
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                        transition: 'opacity 0.2s'
-                      }}
+                      className="electricity-tracker-s60"
                       title="Export Monthly Consumption Breakdown as PDF"
                     >
                       <span>🖨️</span> Download PDF
@@ -3196,32 +3133,32 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 </div>
 
                 {/* Mini KPI Row */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px' }}>
-                  <div style={{ background: 'white', borderRadius: '8px', padding: '8px 12px', border: '1px solid #d1fae5' }}>
-                    <div style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Avg Monthly</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#059669' }}>{avgMonthly.toFixed(0)} <span style={{ fontSize: '0.7rem', fontWeight: 600 }}>units</span></div>
+                <div className="electricity-tracker-s61">
+                  <div className="electricity-tracker-s62">
+                    <div className="electricity-tracker-s63">Avg Monthly</div>
+                    <div className="electricity-tracker-s64">{avgMonthly.toFixed(0)} <span className="electricity-tracker-s65">units</span></div>
                   </div>
-                  <div style={{ background: 'white', borderRadius: '8px', padding: '8px 12px', border: '1px solid #d1fae5' }}>
-                    <div style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Total Units</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0284c7' }}>{totalMonthlyUnits.toFixed(0)} <span style={{ fontSize: '0.7rem', fontWeight: 600 }}>kWh</span></div>
+                  <div className="electricity-tracker-s62">
+                    <div className="electricity-tracker-s63">Total Units</div>
+                    <div className="electricity-tracker-s66">{totalMonthlyUnits.toFixed(0)} <span className="electricity-tracker-s65">kWh</span></div>
                   </div>
-                  <div style={{ background: '#f0fdf4', borderRadius: '8px', padding: '8px 12px', border: '1px solid #bbf7d0' }}>
-                    <div style={{ fontSize: '0.65rem', color: '#15803d', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Avg Rate / Unit</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#16a34a' }}>₹{(totalMonthlyCost / (totalMonthlyUnits || 1)).toFixed(2)} <span style={{ fontSize: '0.7rem', fontWeight: 600 }}>/ u</span></div>
+                  <div className="electricity-tracker-s67">
+                    <div className="electricity-tracker-s68">Avg Rate / Unit</div>
+                    <div className="electricity-tracker-s69">₹{(totalMonthlyCost / (totalMonthlyUnits || 1)).toFixed(2)} <span className="electricity-tracker-s65">/ u</span></div>
                   </div>
-                  <div style={{ background: 'white', borderRadius: '8px', padding: '8px 12px', border: '1px solid #d1fae5' }}>
-                    <div style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Est. Total Cost</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#dc2626' }}>₹{fmt(totalMonthlyCost)}</div>
+                  <div className="electricity-tracker-s62">
+                    <div className="electricity-tracker-s63">Est. Total Cost</div>
+                    <div className="electricity-tracker-s70">₹{fmt(totalMonthlyCost)}</div>
                   </div>
-                  <div style={{ background: 'white', borderRadius: '8px', padding: '8px 12px', border: '1px solid #d1fae5' }}>
-                    <div style={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Peak Month</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#7c3aed' }}>{peakMonth.label}</div>
-                    <div style={{ fontSize: '0.65rem', color: '#9ca3af' }}>{peakMonth.units.toLocaleString('en-IN')} units</div>
+                  <div className="electricity-tracker-s62">
+                    <div className="electricity-tracker-s63">Peak Month</div>
+                    <div className="electricity-tracker-s71">{peakMonth.label}</div>
+                    <div className="electricity-tracker-s72">{peakMonth.units.toLocaleString('en-IN')} units</div>
                   </div>
                 </div>
 
                 {/* Trend Line Chart */}
-                <div style={{ width: '100%', height: 200 }}>
+                <div className="electricity-tracker-s73">
                   <ResponsiveContainer>
                     <LineChart data={monthlyData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#d1fae5" />
@@ -3272,18 +3209,18 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 </div>
 
                 {/* Monthly Table */}
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem', minWidth: 620 }}>
+                <div className="electricity-tracker-s74">
+                  <table className="electricity-tracker-s75">
                     <thead>
-                      <tr style={{ background: '#064e3b', color: 'white' }}>
-                        <th style={{ padding: '7px 10px', textAlign: 'left', fontWeight: 700, fontSize: '0.68rem' }}>#</th>
-                        <th style={{ padding: '7px 10px', textAlign: 'left', fontWeight: 700, fontSize: '0.68rem' }}>Month</th>
-                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Est. Units (kWh)</th>
-                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Avg Daily (u/day)</th>
-                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Days Covered</th>
-                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Avg Rate (₹/u)</th>
-                        <th style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontSize: '0.68rem' }}>Est. Cost (₹)</th>
-                        <th style={{ padding: '7px 10px', textAlign: 'center', fontWeight: 700, fontSize: '0.68rem' }}>Usage Bar</th>
+                      <tr className="electricity-tracker-s76">
+                        <th className="electricity-tracker-s77">#</th>
+                        <th className="electricity-tracker-s77">Month</th>
+                        <th className="electricity-tracker-s78">Est. Units (kWh)</th>
+                        <th className="electricity-tracker-s78">Avg Daily (u/day)</th>
+                        <th className="electricity-tracker-s78">Days Covered</th>
+                        <th className="electricity-tracker-s78">Avg Rate (₹/u)</th>
+                        <th className="electricity-tracker-s78">Est. Cost (₹)</th>
+                        <th className="electricity-tracker-s79">Usage Bar</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -3292,47 +3229,32 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         const isHighest = m.monthKey === peakMonth.monthKey;
                         const barColor = pct > 80 ? '#dc2626' : pct > 50 ? '#f59e0b' : '#059669';
                         return (
-                          <tr key={m.monthKey} style={{
-                            background: isHighest ? '#fef3c7' : i % 2 === 0 ? '#f0fdf4' : 'white',
-                            borderBottom: '1px solid #d1fae5'
-                          }}>
-                            <td style={{ padding: '6px 10px', color: '#9ca3af', fontWeight: 600 }}>{monthlyData.length - i}</td>
-                            <td style={{ padding: '6px 10px', fontWeight: 700, color: isHighest ? '#92400e' : '#065f46' }}>
+                          <tr key={m.monthKey} className="electricity-tracker-s80" style={{ background: isHighest ? '#fef3c7' : i % 2 === 0 ? '#f0fdf4' : 'white' }}>
+                            <td className="electricity-tracker-s81">{monthlyData.length - i}</td>
+                            <td className="electricity-tracker-s82" style={{ color: isHighest ? '#92400e' : '#065f46' }}>
                               {isHighest ? '🔥 ' : ''}{m.label}
                             </td>
-                            <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 700, color: '#0284c7', fontFamily: 'monospace' }}>
+                            <td className="electricity-tracker-s83">
                               {m.units.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                             </td>
-                            <td style={{ padding: '6px 10px', textAlign: 'right', color: '#475569', fontFamily: 'monospace' }}>
+                            <td className="electricity-tracker-s84">
                               {m.avgDaily}
                             </td>
-                            <td style={{ padding: '6px 10px', textAlign: 'right', color: '#9ca3af' }}>
+                            <td className="electricity-tracker-s85">
                               {m.days}
                             </td>
-                            <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 700, color: '#16a34a', fontFamily: 'monospace' }}>
+                            <td className="electricity-tracker-s86">
                               ₹{(m.estCost / (m.units || 1)).toFixed(2)}
                             </td>
-                            <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 600, color: '#dc2626', fontFamily: 'monospace' }}>
+                            <td className="electricity-tracker-s87">
                               ₹{fmt(m.estCost)}
                             </td>
-                            <td style={{ padding: '6px 10px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <div style={{
-                                  flex: 1,
-                                  height: 8,
-                                  background: '#e5e7eb',
-                                  borderRadius: 4,
-                                  overflow: 'hidden'
-                                }}>
-                                  <div style={{
-                                    width: `${pct}%`,
-                                    height: '100%',
-                                    background: barColor,
-                                    borderRadius: 4,
-                                    transition: 'width 0.3s ease'
-                                  }} />
+                            <td className="electricity-tracker-s88">
+                              <div className="electricity-tracker-s89">
+                                <div className="electricity-tracker-s90">
+                                  <div className="electricity-tracker-s91" style={{ width: `${pct}%`, background: barColor }} />
                                 </div>
-                                <span style={{ fontSize: '0.65rem', color: '#6b7280', minWidth: 28, textAlign: 'right' }}>
+                                <span className="electricity-tracker-s92">
                                   {pct.toFixed(0)}%
                                 </span>
                               </div>
@@ -3342,24 +3264,24 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       })}
                     </tbody>
                     <tfoot>
-                      <tr style={{ background: '#064e3b', color: 'white' }}>
-                        <td colSpan={2} style={{ padding: '7px 10px', fontWeight: 800, fontSize: '0.74rem' }}>TOTAL ({monthlyData.length} months)</td>
-                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 800, fontFamily: 'monospace' }}>
+                      <tr className="electricity-tracker-s76">
+                        <td colSpan={2} className="electricity-tracker-s93">TOTAL ({monthlyData.length} months)</td>
+                        <td className="electricity-tracker-s94">
                           {totalMonthlyUnits.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                         </td>
-                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>
+                        <td className="electricity-tracker-s95">
                           {(totalMonthlyUnits / monthlyData.reduce((s, m) => s + m.days, 0)).toFixed(2)}
                         </td>
-                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700 }}>
+                        <td className="electricity-tracker-s96">
                           {monthlyData.reduce((s, m) => s + m.days, 0)}
                         </td>
-                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 800, color: '#86efac', fontFamily: 'monospace' }}>
+                        <td className="electricity-tracker-s97">
                           ₹{(totalMonthlyCost / (totalMonthlyUnits || 1)).toFixed(2)}
                         </td>
-                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 800, fontFamily: 'monospace' }}>
+                        <td className="electricity-tracker-s94">
                           ₹{fmt(totalMonthlyCost)}
                         </td>
-                        <td style={{ padding: '7px 10px', textAlign: 'center', fontSize: '0.68rem', color: '#d1fae5' }}>
+                        <td className="electricity-tracker-s98">
                           Avg {avgMonthly.toFixed(0)} u/mo
                         </td>
                       </tr>
@@ -3367,7 +3289,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   </table>
                 </div>
 
-                <p style={{ margin: 0, fontSize: '0.68rem', color: '#6b7280', fontStyle: 'italic' }}>
+                <p className="electricity-tracker-s99">
                   * Monthly units are estimated by distributing each billing period's total consumption proportionally based on the number of days covered in each calendar month. Actual meter readings are taken across multi-month periods, not monthly.
                 </p>
               </div>
@@ -3378,13 +3300,13 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
       {/* CREATE NEW TATA ELECTRICITY BILL FORM (ADMIN ONLY) */}
       {isAdmin && (
-        <div className="section-card" style={{ padding: '16px 20px', border: '1px solid var(--line)', background: '#ffffff', borderRadius: '12px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+        <div className="section-card electricity-tracker-s100">
+          <div className="electricity-tracker-s101">
             <div>
-              <h4 style={{ margin: 0, color: 'var(--ink)', fontSize: '0.88rem', fontWeight: 700 }}>
+              <h4 className="electricity-tracker-s102">
                 ➕ {subTab === 'tata' ? 'Create New Tata Electricity Bill' : (subTab === 'buildingA' ? 'Add Building A Common Lift Bill' : (subTab === 'mahavitaran' ? 'Add Mahavitaran MSEB Bill' : 'Add A Building Bill'))}
               </h4>
-              <p style={{ margin: '2px 0 0 0', fontSize: '0.74rem', color: 'var(--muted)' }}>
+              <p className="electricity-tracker-s103">
                 {subTab === 'tata'
                   ? 'Enter sub-meter readings and duration. The system automatically detects 10,000 reset rollover if B < A.'
                   : subTab === 'buildingA'
@@ -3396,9 +3318,8 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             {subTab === 'tata' && latestTataBill && (
               <button
                 type="button"
-                className="button-secondary"
+                className="button-secondary electricity-tracker-s104"
                 onClick={applyNextTataPeriod}
-                style={{ padding: '5px 12px', fontSize: '0.76rem', background: '#eff6ff', color: '#1d4ed8', borderColor: '#bfdbfe', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}
                 title="Pre-fills start date and previous reading from latest bill"
               >
                 <span>⚡</span> Auto-Fill Next Cycle (Prev: {latestTataBill.currReading})
@@ -3408,9 +3329,8 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             {subTab === 'buildingA' && latestBuildingABill && (
               <button
                 type="button"
-                className="button-secondary"
+                className="button-secondary electricity-tracker-s105"
                 onClick={applyNextBuildingAPeriod}
-                style={{ padding: '5px 12px', fontSize: '0.76rem', background: '#f0fdf4', color: '#166534', borderColor: '#bbf7d0', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}
                 title="Pre-fills start date and previous reading from latest Building A bill"
               >
                 <span>⚡</span> Auto-Fill Next Cycle (Prev: {latestBuildingABill.currReading})
@@ -3418,14 +3338,13 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             )}
           </div>
 
-          <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px' }}>
+          <form onSubmit={handleFormSubmit} className="electricity-tracker-s106">
             {(subTab === 'tata' || subTab === 'buildingA') && (
               <>
-                <div className="field-group" style={{ gridColumn: 'span 2' }}>
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Billing Period Name <span style={{ color: '#ef4444' }}>*</span></label>
+                <div className="field-group electricity-tracker-s107">
+                  <label className="eyebrow electricity-tracker-s34">Billing Period Name <span className="electricity-tracker-s108">*</span></label>
                   <input
-                    className="attendance-register-input"
-                    style={{ textAlign: 'left', background: 'white', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }}
+                    className="attendance-register-input electricity-tracker-s109"
                     type="text"
                     placeholder={subTab === 'buildingA' ? "e.g. Sep 2026 (16 Aug – 14 Sep)" : "e.g. May 26 to Sep 26"}
                     value={formData.periodLabel}
@@ -3435,10 +3354,9 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 </div>
 
                 <div className="field-group">
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Duration <span style={{ color: '#ef4444' }}>*</span></label>
+                  <label className="eyebrow electricity-tracker-s34">Duration <span className="electricity-tracker-s108">*</span></label>
                   <input
-                    className="attendance-register-input"
-                    style={{ textAlign: 'left', background: 'white', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }}
+                    className="attendance-register-input electricity-tracker-s109"
                     type="text"
                     placeholder={subTab === 'buildingA' ? "e.g. 30 Days (0.97 Mo)" : "e.g. 4 Months (120 Days)"}
                     value={formData.duration}
@@ -3450,55 +3368,44 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             )}
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Start Date <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="date" value={formData.startMonth} onChange={e => handleFormChange('startMonth', e.target.value)} required />
+              <label className="eyebrow electricity-tracker-s34">Start Date <span className="electricity-tracker-s108">*</span></label>
+              <input className="attendance-register-input electricity-tracker-s110" type="date" value={formData.startMonth} onChange={e => handleFormChange('startMonth', e.target.value)} required />
             </div>
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>End Date <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="date" value={formData.endMonth} onChange={e => handleFormChange('endMonth', e.target.value)} required />
+              <label className="eyebrow electricity-tracker-s34">End Date <span className="electricity-tracker-s108">*</span></label>
+              <input className="attendance-register-input electricity-tracker-s110" type="date" value={formData.endMonth} onChange={e => handleFormChange('endMonth', e.target.value)} required />
             </div>
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Previous Reading (A) <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="number" step="any" placeholder="e.g. 2568" value={formData.prevReading} onChange={e => handleFormChange('prevReading', e.target.value)} required />
+              <label className="eyebrow electricity-tracker-s34">Previous Reading (A) <span className="electricity-tracker-s108">*</span></label>
+              <input className="attendance-register-input electricity-tracker-s110" type="number" step="any" placeholder="e.g. 2568" value={formData.prevReading} onChange={e => handleFormChange('prevReading', e.target.value)} required />
             </div>
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Current Reading (B) <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="number" step="any" placeholder="e.g. 1557" value={formData.currReading} onChange={e => handleFormChange('currReading', e.target.value)} required />
+              <label className="eyebrow electricity-tracker-s34">Current Reading (B) <span className="electricity-tracker-s108">*</span></label>
+              <input className="attendance-register-input electricity-tracker-s110" type="number" step="any" placeholder="e.g. 1557" value={formData.currReading} onChange={e => handleFormChange('currReading', e.target.value)} required />
             </div>
 
             <div className="field-group">
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '4px', fontSize: '0.68rem' }}>Per Unit Charge (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-              <input className="attendance-register-input" style={{ textAlign: 'left', height: '32px', fontSize: '0.78rem', padding: '4px 8px' }} type="number" step="any" placeholder={subTab === 'buildingA' ? '21.10' : '13.00'} value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
+              <label className="eyebrow electricity-tracker-s34">Per Unit Charge (₹) <span className="electricity-tracker-s108">*</span></label>
+              <input className="attendance-register-input electricity-tracker-s110" type="number" step="any" placeholder={subTab === 'buildingA' ? '21.10' : '13.00'} value={formData.ratePerUnit} onChange={e => handleFormChange('ratePerUnit', e.target.value)} required />
             </div>
 
             {/* Live calculation banner if readings are filled */}
             {subTab === 'tata' && formData.prevReading !== '' && formData.currReading !== '' && (
-              <div style={{
-                gridColumn: '1 / -1',
-                background: n(formData.currReading) < n(formData.prevReading) ? '#fef3c7' : '#eff6ff',
-                border: '1px solid ' + (n(formData.currReading) < n(formData.prevReading) ? '#fde68a' : '#bfdbfe'),
-                borderRadius: '8px',
-                padding: '8px 12px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '6px'
-              }}>
+              <div className="electricity-tracker-s111" style={{ background: n(formData.currReading) < n(formData.prevReading) ? '#fef3c7' : '#eff6ff', border: '1px solid ' + (n(formData.currReading) < n(formData.prevReading) ? '#fde68a' : '#bfdbfe') }}>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.75rem', color: n(formData.currReading) < n(formData.prevReading) ? '#92400e' : '#1e40af' }}>
+                  <div className="electricity-tracker-s112" style={{ color: n(formData.currReading) < n(formData.prevReading) ? '#92400e' : '#1e40af' }}>
                     {n(formData.currReading) < n(formData.prevReading) ? '🔄 10,000 Reset Rollover Detected:' : '📊 Standard Reading Calculation:'}
                   </div>
-                  <div style={{ fontSize: '0.72rem', color: '#475569' }}>
+                  <div className="electricity-tracker-s113">
                     {calculateSubmeterRollover(formData.prevReading, formData.currReading).formulaText}
                   </div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '0.72rem', color: '#64748b' }}>Estimated Bill: </span>
-                  <strong style={{ fontSize: '0.95rem', color: '#0369a1' }}>
+                <div className="electricity-tracker-s114">
+                  <span className="electricity-tracker-s42">Estimated Bill: </span>
+                  <strong className="electricity-tracker-s115">
                     ₹{fmt(calculateSubmeterRollover(formData.prevReading, formData.currReading).units * (n(formData.ratePerUnit) || 13))}
                   </strong>
                 </div>
@@ -3510,15 +3417,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               const curr = n(formData.currReading);
               if (curr < prev) {
                 return (
-                  <div style={{
-                    gridColumn: '1 / -1',
-                    background: '#fef2f2',
-                    border: '1px solid #fecaca',
-                    borderRadius: '8px',
-                    padding: '8px 12px',
-                    color: '#991b1b',
-                    fontSize: '0.75rem'
-                  }}>
+                  <div className="electricity-tracker-s116">
                     ⚠️ Current reading ({curr}) cannot be less than previous reading ({prev}).
                   </div>
                 );
@@ -3531,29 +3430,18 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               const grandTotal = Math.round(fixedCharge + energyTotal + wheelingCharge + fuelTotal + dutyAmount);
               const avgRate = (grandTotal / (consumption || 1)).toFixed(2);
               return (
-                <div style={{
-                  gridColumn: '1 / -1',
-                  background: '#f0fdf4',
-                  border: '1px solid #bbf7d0',
-                  borderRadius: '8px',
-                  padding: '8px 12px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '6px'
-                }}>
+                <div className="electricity-tracker-s117">
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: '0.75rem', color: '#166534' }}>
+                    <div className="electricity-tracker-s118">
                       🏢 Building A MSEDCL LT-1 Res 3-Phase Tariff Calculation:
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: '#475569' }}>
+                    <div className="electricity-tracker-s113">
                       {curr} - {prev} = <strong>{consumption} units</strong> • Fixed ₹445 + Energy ₹{fmt(energyTotal)} + Wheel ₹{fmt(wheelingCharge)} + FAC ₹{fmt(fuelTotal)} + 16% Duty ₹{fmt(dutyAmount)}
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontSize: '0.72rem', color: '#64748b' }}>Estimated Bill (@ avg ₹{avgRate}/u): </span>
-                    <strong style={{ fontSize: '0.98rem', color: '#15803d' }}>
+                  <div className="electricity-tracker-s114">
+                    <span className="electricity-tracker-s42">Estimated Bill (@ avg ₹{avgRate}/u): </span>
+                    <strong className="electricity-tracker-s119">
                       ₹{fmt(grandTotal)}
                     </strong>
                   </div>
@@ -3561,8 +3449,8 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               );
             })()}
 
-            <div style={{ gridColumn: '1 / -1', marginTop: '4px' }}>
-              <button type="submit" className="button-primary" style={{ padding: '8px 20px', height: '34px', fontSize: '0.8rem', background: subTab === 'buildingA' ? '#166534' : '#0284c7', borderColor: subTab === 'buildingA' ? '#166534' : '#0284c7' }}>
+            <div className="electricity-tracker-s120">
+              <button type="submit" className="button-primary electricity-tracker-s121" style={{ background: subTab === 'buildingA' ? '#166534' : '#0284c7', borderColor: subTab === 'buildingA' ? '#166534' : '#0284c7' }}>
                 Calculate &amp; Create Bill
               </button>
             </div>
@@ -3571,68 +3459,68 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       )}
 
       {/* MAIN TABLE */}
-      <div className="table-card" style={{ borderRadius: '12px', overflow: 'hidden' }}>
-        <div className="attendance-table-scroll" style={{ padding: '10px' }}>
-          <table className="attendance-table" style={{ minWidth: 980, fontSize: '0.78rem' }}>
+      <div className="table-card electricity-tracker-s122">
+        <div className="attendance-table-scroll electricity-tracker-s123">
+          <table className="attendance-table electricity-tracker-s124">
             <thead>
               {subTab === 'tata' ? (
-                <tr style={{ background: '#f8fafc' }}>
-                  <th style={{ width: 35, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>#</th>
-                  <th style={{ width: 200, padding: '7px 8px', fontSize: '0.7rem' }}>Billing Period</th>
-                  <th style={{ width: 140, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Duration</th>
-                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Prev (A)</th>
-                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Curr (B)</th>
-                  <th style={{ width: 95, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Status</th>
-                  <th style={{ width: 95, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Units (B - A)</th>
-                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Rate / Unit</th>
-                  <th style={{ width: 120, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem', background: '#f0f9ff' }}>Total Amount (₹)</th>
-                  <th style={{ width: 80, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Actions</th>
+                <tr className="electricity-tracker-s125">
+                  <th className="electricity-tracker-s126">#</th>
+                  <th className="electricity-tracker-s127">Billing Period</th>
+                  <th className="electricity-tracker-s128">Duration</th>
+                  <th className="electricity-tracker-s129">Prev (A)</th>
+                  <th className="electricity-tracker-s129">Curr (B)</th>
+                  <th className="electricity-tracker-s130">Status</th>
+                  <th className="electricity-tracker-s131">Units (B - A)</th>
+                  <th className="electricity-tracker-s129">Rate / Unit</th>
+                  <th className="electricity-tracker-s132">Total Amount (₹)</th>
+                  <th className="electricity-tracker-s133">Actions</th>
                 </tr>
               ) : subTab === 'buildingA' ? (
-                <tr style={{ background: '#f8fafc' }}>
-                  <th style={{ width: 35, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>#</th>
-                  <th style={{ width: 200, padding: '7px 8px', fontSize: '0.7rem' }}>Billing Period / Month</th>
-                  <th style={{ width: 130, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Duration</th>
-                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Prev Read</th>
-                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Curr Read</th>
-                  <th style={{ width: 95, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Status</th>
-                  <th style={{ width: 95, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Units Consumed</th>
-                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Avg Rate</th>
-                  <th style={{ width: 120, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem', background: '#f0fdf4' }}>Total Bill (₹)</th>
-                  <th style={{ width: 85, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Actions</th>
+                <tr className="electricity-tracker-s125">
+                  <th className="electricity-tracker-s126">#</th>
+                  <th className="electricity-tracker-s127">Billing Period / Month</th>
+                  <th className="electricity-tracker-s134">Duration</th>
+                  <th className="electricity-tracker-s129">Prev Read</th>
+                  <th className="electricity-tracker-s129">Curr Read</th>
+                  <th className="electricity-tracker-s130">Status</th>
+                  <th className="electricity-tracker-s131">Units Consumed</th>
+                  <th className="electricity-tracker-s129">Avg Rate</th>
+                  <th className="electricity-tracker-s135">Total Bill (₹)</th>
+                  <th className="electricity-tracker-s136">Actions</th>
                 </tr>
               ) : subTab === 'mahavitaran' ? (
-                <tr style={{ background: '#f8fafc' }}>
-                  <th style={{ width: 45, padding: '7px 8px', fontSize: '0.7rem' }}>Sr.</th>
-                  <th style={{ width: 180, padding: '7px 8px', fontSize: '0.7rem' }}>Billing Period</th>
-                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Readings</th>
-                  <th style={{ width: 75, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Units</th>
-                  <th style={{ width: 80, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Fixed</th>
-                  <th style={{ width: 95, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Energy</th>
-                  <th style={{ width: 90, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Wheeling</th>
-                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Fuel</th>
-                  <th style={{ width: 85, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Duty</th>
-                  <th style={{ width: 105, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem', background: '#f0f9ff' }}>Grand Total</th>
-                  <th style={{ width: 70, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Actions</th>
+                <tr className="electricity-tracker-s125">
+                  <th className="electricity-tracker-s137">Sr.</th>
+                  <th className="electricity-tracker-s138">Billing Period</th>
+                  <th className="electricity-tracker-s129">Readings</th>
+                  <th className="electricity-tracker-s139">Units</th>
+                  <th className="electricity-tracker-s140">Fixed</th>
+                  <th className="electricity-tracker-s131">Energy</th>
+                  <th className="electricity-tracker-s141">Wheeling</th>
+                  <th className="electricity-tracker-s129">Fuel</th>
+                  <th className="electricity-tracker-s129">Duty</th>
+                  <th className="electricity-tracker-s142">Grand Total</th>
+                  <th className="electricity-tracker-s143">Actions</th>
                 </tr>
               ) : (
-                <tr style={{ background: '#f8fafc' }}>
-                  <th style={{ width: 45, padding: '7px 8px', fontSize: '0.7rem' }}>Sr.</th>
-                  <th style={{ width: 220, padding: '7px 8px', fontSize: '0.7rem' }}>Period</th>
-                  <th style={{ width: 100, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Prev Read</th>
-                  <th style={{ width: 100, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Curr Read</th>
-                  <th style={{ width: 90, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Consumed</th>
-                  <th style={{ width: 90, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem' }}>Rate</th>
-                  <th style={{ width: 110, textAlign: 'right', padding: '7px 8px', fontSize: '0.7rem', background: '#f0f9ff' }}>Grand Total</th>
-                  <th style={{ width: 70, textAlign: 'center', padding: '7px 8px', fontSize: '0.7rem' }}>Actions</th>
+                <tr className="electricity-tracker-s125">
+                  <th className="electricity-tracker-s137">Sr.</th>
+                  <th className="electricity-tracker-s144">Period</th>
+                  <th className="electricity-tracker-s145">Prev Read</th>
+                  <th className="electricity-tracker-s145">Curr Read</th>
+                  <th className="electricity-tracker-s141">Consumed</th>
+                  <th className="electricity-tracker-s141">Rate</th>
+                  <th className="electricity-tracker-s146">Grand Total</th>
+                  <th className="electricity-tracker-s143">Actions</th>
                 </tr>
               )}
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={10} style={{ textAlign: 'center', padding: 24, opacity: 0.5, fontSize: '0.78rem' }}>Loading records...</td></tr>
+                <tr><td colSpan={10} className="electricity-tracker-s147">Loading records...</td></tr>
               ) : filteredBills.length === 0 ? (
-                <tr><td colSpan={10} style={{ textAlign: 'center', padding: 24, opacity: 0.5, fontSize: '0.78rem' }}>
+                <tr><td colSpan={10} className="electricity-tracker-s147">
                   {searchText ? `No bills found matching "${searchText}"` : 'No bills recorded.'}
                 </td></tr>
               ) : (
@@ -3644,25 +3532,24 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     const isRolloverBill = c.isRollover || n(c.currReading) < n(c.prevReading);
                     return (
                       <tr key={c.id || i} style={{ background: isRolloverBill ? '#fffdfa' : 'transparent' }}>
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center', fontWeight: 600, padding: '6px 8px', fontSize: '0.75rem' }}>{i + 1}</td>
+                        <td className="electricity-tracker-s148">{i + 1}</td>
 
                         {/* Billing Period */}
-                        <td style={{ verticalAlign: 'middle', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s149">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ width: '100%', padding: '4px', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s150"
                               type="text"
                               value={c.periodLabel || ''}
                               onChange={e => updateRow(actualIdx, 'periodLabel', e.target.value)}
                             />
                           ) : (
                             <div>
-                              <strong style={{ fontSize: '0.8rem', color: '#0f172a' }}>
+                              <strong className="electricity-tracker-s151">
                                 {c.periodLabel || `${formatDateLabel(c.startMonth)} to ${formatDateLabel(c.endMonth)}`}
                               </strong>
                               {c.startMonth && c.endMonth && (
-                                <div style={{ fontSize: '0.68rem', color: '#64748b' }}>
+                                <div className="electricity-tracker-s152">
                                   {formatDateLabel(c.startMonth)} – {formatDateLabel(c.endMonth)}
                                 </div>
                               )}
@@ -3671,37 +3558,26 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         </td>
 
                         {/* Duration */}
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s153">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ width: '100%', padding: '4px', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s150"
                               type="text"
                               value={c.duration || ''}
                               onChange={e => updateRow(actualIdx, 'duration', e.target.value)}
                             />
                           ) : (
-                            <span style={{
-                              background: '#eff6ff',
-                              color: '#1d4ed8',
-                              padding: '2px 7px',
-                              borderRadius: '12px',
-                              fontSize: '0.7rem',
-                              fontWeight: 600,
-                              border: '1px solid #bfdbfe',
-                              display: 'inline-block'
-                            }}>
+                            <span className="electricity-tracker-s154">
                               🗓️ {c.duration || computeBillingDuration(c.startMonth, c.endMonth) || '—'}
                             </span>
                           )}
                         </td>
 
                         {/* Prev Reading (A) */}
-                        <td style={{ textAlign: 'right', verticalAlign: 'middle', fontFamily: 'SF Mono, Consolas, Monaco, monospace', fontSize: '0.8rem', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s155">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s156"
                               type="text"
                               value={c.prevReading}
                               onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)}
@@ -3712,11 +3588,10 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         </td>
 
                         {/* Curr Reading (B) */}
-                        <td style={{ textAlign: 'right', verticalAlign: 'middle', fontFamily: 'SF Mono, Consolas, Monaco, monospace', fontSize: '0.8rem', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s155">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s156"
                               type="text"
                               value={c.currReading}
                               onChange={e => updateRow(actualIdx, 'currReading', e.target.value)}
@@ -3727,43 +3602,31 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         </td>
 
                         {/* Meter Status / 10k Reset Badge */}
-                        <td style={{ textAlign: 'center', verticalAlign: 'middle', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s157">
                           {isRolloverBill ? (
-                            <span style={{
-                              background: '#fef3c7',
-                              color: '#92400e',
-                              padding: '2px 5px',
-                              borderRadius: '8px',
-                              fontSize: '0.68rem',
-                              fontWeight: 700,
-                              border: '1px solid #fde68a',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '3px'
-                            }} title="(10000 - A) + B = Units">
+                            <span className="electricity-tracker-s158" title="(10000 - A) + B = Units">
                               🔄 10k Reset
                             </span>
                           ) : (
-                            <span style={{ color: '#64748b', fontSize: '0.68rem', fontWeight: 500 }}>
+                            <span className="electricity-tracker-s159">
                               Normal
                             </span>
                           )}
                         </td>
 
                         {/* Units Consumed (B - A) */}
-                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 700, verticalAlign: 'middle', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s160">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s156"
                               type="number"
                               value={c.consumption}
                               onChange={e => updateRow(actualIdx, 'consumption', e.target.value)}
                             />
                           ) : (
                             <div>
-                              <span style={{ fontSize: '0.84rem' }}>{fmt(n(c.consumption))}</span>
-                              <div style={{ fontSize: '0.64rem', color: '#94a3b8', fontWeight: 400 }}>
+                              <span className="electricity-tracker-s161">{fmt(n(c.consumption))}</span>
+                              <div className="electricity-tracker-s162">
                                 {isRolloverBill ? `(10k - ${c.prevReading}) + ${c.currReading}` : `${c.currReading} - ${c.prevReading}`}
                               </div>
                             </div>
@@ -3771,67 +3634,56 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         </td>
 
                         {/* Per Unit Rate */}
-                        <td style={{ textAlign: 'right', verticalAlign: 'middle', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s163">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s156"
                               type="number"
                               step="any"
                               value={c.ratePerUnit}
                               onChange={e => updateRow(actualIdx, 'ratePerUnit', e.target.value)}
                             />
                           ) : (
-                            <span style={{
-                              background: '#f0fdf4',
-                              color: '#15803d',
-                              padding: '2px 6px',
-                              borderRadius: '4px',
-                              fontSize: '0.75rem',
-                              fontWeight: 700,
-                              border: '1px solid #bbf7d0'
-                            }}>
+                            <span className="electricity-tracker-s164">
                               ₹{Number(c.ratePerUnit || 13).toFixed(2)}
                             </span>
                           )}
                         </td>
 
                         {/* Total Amount */}
-                        <td style={{ textAlign: 'right', color: '#0369a1', fontWeight: 700, verticalAlign: 'middle', fontSize: '0.88rem', background: '#f0f9ff', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s165">
                           ₹{fmt(c.grandTotal)}
                         </td>
 
                         {/* Actions */}
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
-                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'center' }}>
+                        <td className="electricity-tracker-s153">
+                          <div className="electricity-tracker-s166">
                             <button
-                              className="button-icon"
+                              className="button-icon electricity-tracker-s167"
                               title="Generate / Preview Tax Invoice"
                               onClick={() => {
                                 setSelectedTataBillId(c.id);
                                 setTataInvoiceTarget('single');
                                 setIsTataInvoiceModalOpen(true);
                               }}
-                              style={{ color: '#0b2b26', fontSize: '0.95rem', cursor: 'pointer', padding: '2px' }}
                             >
                               🧾
                             </button>
                             <button
-                              className="button-icon"
+                              className="button-icon electricity-tracker-s168"
                               title="Quick Print A4 PDF"
                               onClick={() => handlePrintTataBill(c)}
-                              style={{ color: '#0284c7', fontSize: '0.95rem', cursor: 'pointer', padding: '2px' }}
                             >
                               🖨️
                             </button>
                             {isAdmin && (
                               <>
                                 {isEditing ? (
-                                  <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a', fontSize: '0.85rem' }}>✅</button>
+                                  <button className="button-icon electricity-tracker-s169" title="Save" onClick={() => setEditingRowId(null)}>✅</button>
                                 ) : (
-                                  <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6', fontSize: '0.85rem' }}>✏️</button>
+                                  <button className="button-icon electricity-tracker-s170" title="Edit" onClick={() => setEditingRowId(c.id)}>✏️</button>
                                 )}
-                                <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444', fontSize: '0.85rem' }}>✕</button>
+                                <button className="button-icon electricity-tracker-s171" title="Delete" onClick={() => removeRow(actualIdx)}>✕</button>
                               </>
                             )}
                           </div>
@@ -3843,53 +3695,53 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   if (subTab === 'mahavitaran') {
                     return (
                       <tr key={c.id || i}>
-                        <td style={{ verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.75rem' }}>{i + 1}</td>
-                        <td style={{ padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s172">{i + 1}</td>
+                        <td className="electricity-tracker-s173">
                           {isEditing ? (
-                            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                              <input className="attendance-register-input" style={{ width: '110px', padding: '3px', fontSize: '0.75rem' }} type="date" value={c.startMonth} onChange={e => updateRow(actualIdx, 'startMonth', e.target.value)} />
+                            <div className="electricity-tracker-s174">
+                              <input className="attendance-register-input electricity-tracker-s175" type="date" value={c.startMonth} onChange={e => updateRow(actualIdx, 'startMonth', e.target.value)} />
                               <span>-</span>
-                              <input className="attendance-register-input" style={{ width: '110px', padding: '3px', fontSize: '0.75rem' }} type="date" value={c.endMonth} onChange={e => updateRow(actualIdx, 'endMonth', e.target.value)} />
+                              <input className="attendance-register-input electricity-tracker-s175" type="date" value={c.endMonth} onChange={e => updateRow(actualIdx, 'endMonth', e.target.value)} />
                             </div>
                           ) : (
-                            <span style={{ fontWeight: 600, fontSize: '0.78rem' }}>{formatDateLabel(c.startMonth)} -<br />{formatDateLabel(c.endMonth)}</span>
+                            <span className="electricity-tracker-s176">{formatDateLabel(c.startMonth)} -<br />{formatDateLabel(c.endMonth)}</span>
                           )}
                         </td>
-                        <td style={{ textAlign: 'right', fontSize: '0.75rem', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s177">
                           {isEditing ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                              <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.prevReading} onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)} />
-                              <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.currReading} onChange={e => updateRow(actualIdx, 'currReading', e.target.value)} />
+                            <div className="electricity-tracker-s178">
+                              <input className="attendance-register-input electricity-tracker-s179" type="number" step="any" value={c.prevReading} onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)} />
+                              <input className="attendance-register-input electricity-tracker-s179" type="number" step="any" value={c.currReading} onChange={e => updateRow(actualIdx, 'currReading', e.target.value)} />
                             </div>
                           ) : (
-                            <><span style={{ color: 'var(--muted)' }}>P: {n(c.prevReading)}</span><br /><span>C: {n(c.currReading)}</span></>
+                            <><span className="electricity-tracker-s180">P: {n(c.prevReading)}</span><br /><span>C: {n(c.currReading)}</span></>
                           )}
                         </td>
-                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 700, verticalAlign: 'middle', fontSize: '0.8rem', padding: '6px 8px' }}>{n(c.consumption)}</td>
-                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
-                          {isEditing ? <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.msebFixedCharge || c.fixed} onChange={e => updateRow(actualIdx, 'msebFixedCharge', e.target.value)} /> : `₹${fmt(n(c.fixed || c.msebFixedCharge || 445))}`}
+                        <td className="electricity-tracker-s181">{n(c.consumption)}</td>
+                        <td className="electricity-tracker-s182">
+                          {isEditing ? <input className="attendance-register-input electricity-tracker-s179" type="number" step="any" value={c.msebFixedCharge || c.fixed} onChange={e => updateRow(actualIdx, 'msebFixedCharge', e.target.value)} /> : `₹${fmt(n(c.fixed || c.msebFixedCharge || 445))}`}
                         </td>
-                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
-                          {isEditing ? <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.msebEnergyCharge || c.energy} onChange={e => updateRow(actualIdx, 'msebEnergyCharge', e.target.value)} /> : `₹${fmt(n(c.energy || c.msebEnergyCharge || 0))}`}
+                        <td className="electricity-tracker-s182">
+                          {isEditing ? <input className="attendance-register-input electricity-tracker-s179" type="number" step="any" value={c.msebEnergyCharge || c.energy} onChange={e => updateRow(actualIdx, 'msebEnergyCharge', e.target.value)} /> : `₹${fmt(n(c.energy || c.msebEnergyCharge || 0))}`}
                         </td>
-                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
-                          {isEditing ? <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.msebWheelingRate || c.wheelTotal} onChange={e => updateRow(actualIdx, 'msebWheelingRate', e.target.value)} /> : `₹${fmt(n(c.wheelTotal || (n(c.consumption) * 1.6)))}`}
+                        <td className="electricity-tracker-s182">
+                          {isEditing ? <input className="attendance-register-input electricity-tracker-s179" type="number" step="any" value={c.msebWheelingRate || c.wheelTotal} onChange={e => updateRow(actualIdx, 'msebWheelingRate', e.target.value)} /> : `₹${fmt(n(c.wheelTotal || (n(c.consumption) * 1.6)))}`}
                         </td>
-                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
-                          {isEditing ? <input className="attendance-register-input" style={{ padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.msebFuelAdj || c.fuel} onChange={e => updateRow(actualIdx, 'msebFuelAdj', e.target.value)} /> : `₹${fmt(n(c.fuel || c.msebFuelAdj || 0))}`}
+                        <td className="electricity-tracker-s182">
+                          {isEditing ? <input className="attendance-register-input electricity-tracker-s179" type="number" step="any" value={c.msebFuelAdj || c.fuel} onChange={e => updateRow(actualIdx, 'msebFuelAdj', e.target.value)} /> : `₹${fmt(n(c.fuel || c.msebFuelAdj || 0))}`}
                         </td>
-                        <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>₹{fmt(n(c.duty || (n(c.grandTotal) * 0.16 / 1.16)))}</td>
-                        <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 700, verticalAlign: 'middle', fontSize: '0.85rem', padding: '6px 8px' }}>₹{fmt(c.grandTotal)}</td>
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
-                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'center' }}>
+                        <td className="electricity-tracker-s182">₹{fmt(n(c.duty || (n(c.grandTotal) * 0.16 / 1.16)))}</td>
+                        <td className="electricity-tracker-s183">₹{fmt(c.grandTotal)}</td>
+                        <td className="electricity-tracker-s153">
+                          <div className="electricity-tracker-s166">
                             {isAdmin && (
                               <>
                                 {isEditing ? (
-                                  <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a', fontSize: '0.85rem' }}>✅</button>
+                                  <button className="button-icon electricity-tracker-s169" title="Save" onClick={() => setEditingRowId(null)}>✅</button>
                                 ) : (
-                                  <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6', fontSize: '0.85rem' }}>✏️</button>
+                                  <button className="button-icon electricity-tracker-s170" title="Edit" onClick={() => setEditingRowId(c.id)}>✏️</button>
                                 )}
-                                <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444', fontSize: '0.85rem' }}>✕</button>
+                                <button className="button-icon electricity-tracker-s171" title="Delete" onClick={() => removeRow(actualIdx)}>✕</button>
                               </>
                             )}
                           </div>
@@ -3902,25 +3754,24 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     const isPaid = c.status === 'Paid';
                     return (
                       <tr key={c.id || i} style={{ background: isPaid ? 'transparent' : '#fefdfa' }}>
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center', fontWeight: 600, padding: '6px 8px', fontSize: '0.75rem' }}>{i + 1}</td>
+                        <td className="electricity-tracker-s148">{i + 1}</td>
 
                         {/* Billing Period */}
-                        <td style={{ verticalAlign: 'middle', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s149">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ width: '100%', padding: '4px', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s150"
                               type="text"
                               value={c.periodLabel || ''}
                               onChange={e => updateRow(actualIdx, 'periodLabel', e.target.value)}
                             />
                           ) : (
                             <div>
-                              <strong style={{ fontSize: '0.8rem', color: '#0f172a' }}>
+                              <strong className="electricity-tracker-s151">
                                 {c.periodLabel || `${formatDateLabel(c.startMonth)} to ${formatDateLabel(c.endMonth)}`}
                               </strong>
                               {c.startMonth && c.endMonth && (
-                                <div style={{ fontSize: '0.68rem', color: '#64748b' }}>
+                                <div className="electricity-tracker-s152">
                                   {formatDateLabel(c.startMonth)} – {formatDateLabel(c.endMonth)}
                                 </div>
                               )}
@@ -3929,28 +3780,26 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         </td>
 
                         {/* Duration */}
-                        <td style={{ textAlign: 'center', verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.75rem', color: '#475569' }}>
+                        <td className="electricity-tracker-s184">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ width: '90px', padding: '3px', textAlign: 'center', fontSize: '0.75rem' }}
+                              className="attendance-register-input electricity-tracker-s185"
                               type="text"
                               value={c.duration || ''}
                               onChange={e => updateRow(actualIdx, 'duration', e.target.value)}
                             />
                           ) : (
-                            <span style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem' }}>
+                            <span className="electricity-tracker-s186">
                               {c.duration || computeBillingDuration(c.startMonth, c.endMonth) || '-'}
                             </span>
                           )}
                         </td>
 
                         {/* Prev Reading */}
-                        <td style={{ textAlign: 'right', verticalAlign: 'middle', padding: '6px 8px', fontFamily: 'monospace', fontSize: '0.78rem' }}>
+                        <td className="electricity-tracker-s187">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s156"
                               type="text"
                               value={c.prevReading}
                               onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)}
@@ -3961,11 +3810,10 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         </td>
 
                         {/* Curr Reading */}
-                        <td style={{ textAlign: 'right', verticalAlign: 'middle', padding: '6px 8px', fontFamily: 'monospace', fontSize: '0.78rem' }}>
+                        <td className="electricity-tracker-s187">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s156"
                               type="text"
                               value={c.currReading}
                               onChange={e => updateRow(actualIdx, 'currReading', e.target.value)}
@@ -3976,37 +3824,25 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         </td>
 
                         {/* Status */}
-                        <td style={{ textAlign: 'center', verticalAlign: 'middle', padding: '6px 8px' }}>
-                          <span style={{
-                            background: isPaid ? '#dcfce7' : '#fef3c7',
-                            color: isPaid ? '#166534' : '#92400e',
-                            padding: '2px 7px',
-                            borderRadius: '8px',
-                            fontSize: '0.68rem',
-                            fontWeight: 700,
-                            border: `1px solid ${isPaid ? '#86efac' : '#fde68a'}`,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '3px'
-                          }} title={c.paidDate ? `Paid on ${formatDateLabel(c.paidDate)}` : `Due on ${formatDateLabel(c.dueDate)} (Prompt: ₹${fmt(c.promptPaymentAmount || 36820)})`}>
+                        <td className="electricity-tracker-s157">
+                          <span className="electricity-tracker-s188" style={{ background: isPaid ? '#dcfce7' : '#fef3c7', color: isPaid ? '#166534' : '#92400e', border: `1px solid ${isPaid ? '#86efac' : '#fde68a'}` }} title={c.paidDate ? `Paid on ${formatDateLabel(c.paidDate)}` : `Due on ${formatDateLabel(c.dueDate)} (Prompt: ₹${fmt(c.promptPaymentAmount || 36820)})`}>
                             {isPaid ? '✅ Paid' : '⏳ Invoiced'}
                           </span>
                         </td>
 
                         {/* Units Consumed */}
-                        <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 700, verticalAlign: 'middle', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s160">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s156"
                               type="number"
                               value={c.consumption}
                               onChange={e => updateRow(actualIdx, 'consumption', e.target.value)}
                             />
                           ) : (
                             <div>
-                              <span style={{ fontSize: '0.84rem' }}>{fmt(n(c.consumption))}</span>
-                              <div style={{ fontSize: '0.64rem', color: '#94a3b8', fontWeight: 400 }}>
+                              <span className="electricity-tracker-s161">{fmt(n(c.consumption))}</span>
+                              <div className="electricity-tracker-s162">
                                 {c.currReading} - {c.prevReading}
                               </div>
                             </div>
@@ -4014,55 +3850,45 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         </td>
 
                         {/* Per Unit Rate */}
-                        <td style={{ textAlign: 'right', verticalAlign: 'middle', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s163">
                           {isEditing ? (
                             <input
-                              className="attendance-register-input"
-                              style={{ padding: '3px', textAlign: 'right', fontSize: '0.78rem' }}
+                              className="attendance-register-input electricity-tracker-s156"
                               type="number"
                               step="any"
                               value={c.ratePerUnit}
                               onChange={e => updateRow(actualIdx, 'ratePerUnit', e.target.value)}
                             />
                           ) : (
-                            <span style={{
-                              background: '#f0fdf4',
-                              color: '#15803d',
-                              padding: '2px 6px',
-                              borderRadius: '4px',
-                              fontSize: '0.75rem',
-                              fontWeight: 700,
-                              border: '1px solid #bbf7d0'
-                            }}>
+                            <span className="electricity-tracker-s164">
                               ₹{Number(c.ratePerUnit || (n(c.grandTotal) / (n(c.consumption) || 1))).toFixed(2)}
                             </span>
                           )}
                         </td>
 
                         {/* Total Amount */}
-                        <td style={{ textAlign: 'right', color: '#166534', fontWeight: 700, verticalAlign: 'middle', fontSize: '0.88rem', background: '#f0fdf4', padding: '6px 8px' }}>
+                        <td className="electricity-tracker-s189">
                           ₹{fmt(c.grandTotal)}
                         </td>
 
                         {/* Actions */}
-                        <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
-                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'center' }}>
+                        <td className="electricity-tracker-s153">
+                          <div className="electricity-tracker-s166">
                             <button
-                              className="button-icon"
+                              className="button-icon electricity-tracker-s190"
                               title="Print Official MSEDCL Bill Voucher (A4)"
                               onClick={() => handlePrintBuildingABill(c)}
-                              style={{ color: '#059669', fontSize: '0.95rem', cursor: 'pointer', padding: '2px' }}
                             >
                               🖨️
                             </button>
                             {isAdmin && (
                               <>
                                 {isEditing ? (
-                                  <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a', fontSize: '0.85rem' }}>✅</button>
+                                  <button className="button-icon electricity-tracker-s169" title="Save" onClick={() => setEditingRowId(null)}>✅</button>
                                 ) : (
-                                  <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6', fontSize: '0.85rem' }}>✏️</button>
+                                  <button className="button-icon electricity-tracker-s170" title="Edit" onClick={() => setEditingRowId(c.id)}>✏️</button>
                                 )}
-                                <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444', fontSize: '0.85rem' }}>✕</button>
+                                <button className="button-icon electricity-tracker-s171" title="Delete" onClick={() => removeRow(actualIdx)}>✕</button>
                               </>
                             )}
                           </div>
@@ -4073,50 +3899,50 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
                   return (
                     <tr key={c.id || i}>
-                      <td style={{ verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.75rem' }}>{i + 1}</td>
-                      <td style={{ padding: '6px 8px' }}>
+                      <td className="electricity-tracker-s172">{i + 1}</td>
+                      <td className="electricity-tracker-s173">
                         {isEditing ? (
-                          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                            <input className="attendance-register-input" style={{ width: '120px', padding: '3px', fontSize: '0.75rem' }} type="date" value={c.startMonth} onChange={e => updateRow(actualIdx, 'startMonth', e.target.value)} />
+                          <div className="electricity-tracker-s174">
+                            <input className="attendance-register-input electricity-tracker-s191" type="date" value={c.startMonth} onChange={e => updateRow(actualIdx, 'startMonth', e.target.value)} />
                             <span>-</span>
-                            <input className="attendance-register-input" style={{ width: '120px', padding: '3px', fontSize: '0.75rem' }} type="date" value={c.endMonth} onChange={e => updateRow(actualIdx, 'endMonth', e.target.value)} />
+                            <input className="attendance-register-input electricity-tracker-s191" type="date" value={c.endMonth} onChange={e => updateRow(actualIdx, 'endMonth', e.target.value)} />
                           </div>
                         ) : (
-                          <span style={{ fontWeight: 500, fontSize: '0.78rem' }}>{formatDateLabel(c.startMonth)} - {formatDateLabel(c.endMonth)}</span>
+                          <span className="electricity-tracker-s192">{formatDateLabel(c.startMonth)} - {formatDateLabel(c.endMonth)}</span>
                         )}
                       </td>
-                      <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
+                      <td className="electricity-tracker-s182">
                         {isEditing ? (
-                          <input className="attendance-register-input" style={{ textAlign: 'right', padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.prevReading} onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)} />
+                          <input className="attendance-register-input electricity-tracker-s193" type="number" step="any" value={c.prevReading} onChange={e => updateRow(actualIdx, 'prevReading', e.target.value)} />
                         ) : (
                           n(c.prevReading)
                         )}
                       </td>
-                      <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
+                      <td className="electricity-tracker-s182">
                         {isEditing ? (
-                          <input className="attendance-register-input" style={{ textAlign: 'right', padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.currReading} onChange={e => updateRow(actualIdx, 'currReading', e.target.value)} />
+                          <input className="attendance-register-input electricity-tracker-s193" type="number" step="any" value={c.currReading} onChange={e => updateRow(actualIdx, 'currReading', e.target.value)} />
                         ) : (
                           n(c.currReading)
                         )}
                       </td>
-                      <td style={{ textAlign: 'right', color: '#ea580c', fontWeight: 600, verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.8rem' }}>{n(c.consumption)}</td>
-                      <td style={{ textAlign: 'right', padding: '6px 8px', fontSize: '0.78rem' }}>
+                      <td className="electricity-tracker-s194">{n(c.consumption)}</td>
+                      <td className="electricity-tracker-s182">
                         {isEditing ? (
-                          <input className="attendance-register-input" style={{ textAlign: 'right', padding: '2px', fontSize: '0.75rem' }} type="number" step="any" value={c.ratePerUnit} onChange={e => updateRow(actualIdx, 'ratePerUnit', e.target.value)} />
+                          <input className="attendance-register-input electricity-tracker-s193" type="number" step="any" value={c.ratePerUnit} onChange={e => updateRow(actualIdx, 'ratePerUnit', e.target.value)} />
                         ) : (
                           `₹${n(c.ratePerUnit)}`
                         )}
                       </td>
-                      <td style={{ textAlign: 'right', color: '#2563eb', fontWeight: 700, verticalAlign: 'middle', padding: '6px 8px', fontSize: '0.85rem' }}>₹{fmt(c.grandTotal)}</td>
-                      <td style={{ verticalAlign: 'middle', textAlign: 'center', padding: '6px 8px' }}>
+                      <td className="electricity-tracker-s195">₹{fmt(c.grandTotal)}</td>
+                      <td className="electricity-tracker-s153">
                         {isAdmin && (
-                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
+                          <div className="electricity-tracker-s196">
                             {isEditing ? (
-                              <button className="button-icon" title="Save" onClick={() => setEditingRowId(null)} style={{ color: '#16a34a', fontSize: '0.85rem' }}>✅</button>
+                              <button className="button-icon electricity-tracker-s169" title="Save" onClick={() => setEditingRowId(null)}>✅</button>
                             ) : (
-                              <button className="button-icon" title="Edit" onClick={() => setEditingRowId(c.id)} style={{ color: '#3b82f6', fontSize: '0.85rem' }}>✏️</button>
+                              <button className="button-icon electricity-tracker-s170" title="Edit" onClick={() => setEditingRowId(c.id)}>✏️</button>
                             )}
-                            <button className="button-icon" title="Delete" onClick={() => removeRow(actualIdx)} style={{ color: '#ef4444', fontSize: '0.85rem' }}>✕</button>
+                            <button className="button-icon electricity-tracker-s171" title="Delete" onClick={() => removeRow(actualIdx)}>✕</button>
                           </div>
                         )}
                       </td>
@@ -4127,36 +3953,36 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             </tbody>
             <tfoot>
               {subTab === 'tata' ? (
-                <tr style={{ background: '#f8fafc', fontWeight: 700, fontSize: '0.82rem' }}>
-                  <td colSpan={6} style={{ textAlign: 'right', padding: '8px' }}>TOTAL (8 BILLING CYCLES):</td>
-                  <td style={{ textAlign: 'right', color: '#ea580c', padding: '8px', fontSize: '0.88rem' }}>{fmt(totalConsumption)}</td>
-                  <td style={{ textAlign: 'right', color: '#16a34a', padding: '8px', fontSize: '0.82rem' }}>₹{(totalAmount / (totalConsumption || 1)).toFixed(2)}</td>
-                  <td style={{ textAlign: 'right', color: '#0369a1', fontSize: '0.92rem', background: '#e0f2fe', padding: '8px' }}>₹{fmt(totalAmount)}</td>
+                <tr className="electricity-tracker-s197">
+                  <td colSpan={6} className="electricity-tracker-s198">TOTAL (8 BILLING CYCLES):</td>
+                  <td className="electricity-tracker-s199">{fmt(totalConsumption)}</td>
+                  <td className="electricity-tracker-s200">₹{(totalAmount / (totalConsumption || 1)).toFixed(2)}</td>
+                  <td className="electricity-tracker-s201">₹{fmt(totalAmount)}</td>
                   <td></td>
                 </tr>
               ) : subTab === 'buildingA' ? (
-                <tr style={{ background: '#f8fafc', fontWeight: 700, fontSize: '0.82rem' }}>
-                  <td colSpan={6} style={{ textAlign: 'right', padding: '8px' }}>TOTAL ({filteredBills.length} BILLING CYCLES):</td>
-                  <td style={{ textAlign: 'right', color: '#ea580c', padding: '8px', fontSize: '0.88rem' }}>{fmt(totalConsumption)}</td>
-                  <td style={{ textAlign: 'right', color: '#16a34a', padding: '8px', fontSize: '0.82rem' }}>₹{(totalAmount / (totalConsumption || 1)).toFixed(2)}</td>
-                  <td style={{ textAlign: 'right', color: '#166534', fontSize: '0.92rem', background: '#dcfce7', padding: '8px' }}>₹{fmt(totalAmount)}</td>
+                <tr className="electricity-tracker-s197">
+                  <td colSpan={6} className="electricity-tracker-s198">TOTAL ({filteredBills.length} BILLING CYCLES):</td>
+                  <td className="electricity-tracker-s199">{fmt(totalConsumption)}</td>
+                  <td className="electricity-tracker-s200">₹{(totalAmount / (totalConsumption || 1)).toFixed(2)}</td>
+                  <td className="electricity-tracker-s202">₹{fmt(totalAmount)}</td>
                   <td></td>
                 </tr>
               ) : subTab === 'mahavitaran' ? (
-                <tr style={{ background: '#f8fafc', fontWeight: 700, fontSize: '0.82rem' }}>
-                  <td colSpan={3} style={{ textAlign: 'right', padding: '8px' }}>GRAND TOTAL</td>
-                  <td style={{ textAlign: 'right', color: '#ea580c', padding: '8px', fontSize: '0.88rem' }}>{fmt(totalConsumption)}</td>
+                <tr className="electricity-tracker-s197">
+                  <td colSpan={3} className="electricity-tracker-s198">GRAND TOTAL</td>
+                  <td className="electricity-tracker-s199">{fmt(totalConsumption)}</td>
                   <td colSpan={4}></td>
                   <td></td>
-                  <td style={{ textAlign: 'right', color: '#2563eb', padding: '8px', fontSize: '0.92rem' }}>₹{fmt(totalAmount)}</td>
+                  <td className="electricity-tracker-s203">₹{fmt(totalAmount)}</td>
                   <td></td>
                 </tr>
               ) : (
-                <tr style={{ background: '#f8fafc', fontWeight: 700, fontSize: '0.82rem' }}>
-                  <td colSpan={4} style={{ textAlign: 'right', padding: '8px' }}>GRAND TOTAL</td>
-                  <td style={{ textAlign: 'right', color: '#ea580c', padding: '8px', fontSize: '0.88rem' }}>{fmt(totalConsumption)}</td>
+                <tr className="electricity-tracker-s197">
+                  <td colSpan={4} className="electricity-tracker-s198">GRAND TOTAL</td>
+                  <td className="electricity-tracker-s199">{fmt(totalConsumption)}</td>
                   <td></td>
-                  <td style={{ textAlign: 'right', color: '#2563eb', padding: '8px', fontSize: '0.92rem' }}>₹{fmt(totalAmount)}</td>
+                  <td className="electricity-tracker-s203">₹{fmt(totalAmount)}</td>
                   <td></td>
                 </tr>
               )}
@@ -4167,85 +3993,58 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
       {/* TATA ELECTRICITY INVOICE GENERATOR MODAL */}
       {isTataInvoiceModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 980, maxHeight: '92vh', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', overflow: 'hidden' }}>
+        <div className="electricity-tracker-s204">
+          <div className="electricity-tracker-s205">
             
             {/* Modal Header */}
-            <div style={{ padding: '18px 24px', background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+            <div className="electricity-tracker-s206">
               <div>
-                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#c49b4f', fontWeight: 800 }}>Commercial Sub-Meter Billing</span>
-                <h3 style={{ margin: '4px 0 0', fontSize: '1.25rem', fontWeight: 800 }}>🧾 Tata Electricity Sub-Meter Tax Invoice Generator</h3>
+                <span className="electricity-tracker-s207">Commercial Sub-Meter Billing</span>
+                <h3 className="electricity-tracker-s208">🧾 Tata Electricity Sub-Meter Tax Invoice Generator</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsTataInvoiceModalOpen(false)}
-                style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                className="electricity-tracker-s209"
               >
                 ✕
               </button>
             </div>
 
             {/* Modal Body: Split view */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(340px, 390px) 1fr', overflow: 'hidden', flex: 1 }}>
+            <div className="electricity-tracker-s210">
               
               {/* Left Column: Form Configuration & Inputs */}
-              <div style={{ padding: '18px', overflowY: 'auto', background: '#f8fafc', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div className="electricity-tracker-s211">
                 
                 {/* Quick Presets & Scope */}
-                <div style={{ background: '#ffffff', padding: '12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                    <label style={{ fontSize: '0.78rem', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <div className="electricity-tracker-s212">
+                  <div className="electricity-tracker-s213">
+                    <label className="electricity-tracker-s214">
                       📋 Quick Select / Billing Scope
                     </label>
                     <button
                       type="button"
                       onClick={handleResetToUploadedInvoice}
-                      style={{
-                        padding: '3px 8px',
-                        borderRadius: 4,
-                        fontSize: '0.7rem',
-                        fontWeight: 700,
-                        border: '1px solid #C49B4F',
-                        background: '#fffbeb',
-                        color: '#92400e',
-                        cursor: 'pointer'
-                      }}
+                      className="electricity-tracker-s215"
                       title="Load exact figures from the uploaded official invoice"
                     >
                       ⚡ Reset to Scanned Bill
                     </button>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 10 }}>
+                  <div className="electricity-tracker-s216">
                     <button
                       type="button"
                       onClick={() => setTataInvoiceTarget('single')}
-                      style={{
-                        padding: '6px 8px',
-                        borderRadius: 6,
-                        fontSize: '0.76rem',
-                        fontWeight: 700,
-                        border: tataInvoiceTarget === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: tataInvoiceTarget === 'single' ? '#0b2b26' : '#fff',
-                        color: tataInvoiceTarget === 'single' ? '#C49B4F' : '#334155',
-                        cursor: 'pointer'
-                      }}
+                      className="electricity-tracker-s217" style={{ border: tataInvoiceTarget === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: tataInvoiceTarget === 'single' ? '#0b2b26' : '#fff', color: tataInvoiceTarget === 'single' ? '#C49B4F' : '#334155' }}
                     >
                       Single Period
                     </button>
                     <button
                       type="button"
                       onClick={() => setTataInvoiceTarget('all')}
-                      style={{
-                        padding: '6px 8px',
-                        borderRadius: 6,
-                        fontSize: '0.76rem',
-                        fontWeight: 700,
-                        border: tataInvoiceTarget === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: tataInvoiceTarget === 'all' ? '#0b2b26' : '#fff',
-                        color: tataInvoiceTarget === 'all' ? '#C49B4F' : '#334155',
-                        cursor: 'pointer'
-                      }}
+                      className="electricity-tracker-s217" style={{ border: tataInvoiceTarget === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: tataInvoiceTarget === 'all' ? '#0b2b26' : '#fff', color: tataInvoiceTarget === 'all' ? '#C49B4F' : '#334155' }}
                     >
                       All {tataBills.length} Billing Cycles
                     </button>
@@ -4253,7 +4052,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
                   {tataInvoiceTarget === 'single' && (
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#64748b', marginBottom: 4 }}>
+                      <label className="electricity-tracker-s218">
                         Load Cycle Values:
                       </label>
                       <select
@@ -4262,15 +4061,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                           const found = tataBills.find(b => String(b.id) === e.target.value);
                           if (found) handleSelectTataBillForInvoice(found);
                         }}
-                        style={{
-                          width: '100%',
-                          padding: '6px 8px',
-                          borderRadius: 6,
-                          border: '1px solid #cbd5e1',
-                          fontSize: '0.78rem',
-                          fontWeight: 600,
-                          background: '#fff'
-                        }}
+                        className="electricity-tracker-s219"
                       >
                         {tataBills.map(b => (
                           <option key={b.id} value={b.id}>
@@ -4283,12 +4074,12 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 </div>
 
                 {/* Section 1: Period & Society Name */}
-                <div style={{ background: '#ffffff', padding: '12px', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <div className="electricity-tracker-s220">
+                  <div className="electricity-tracker-s221">
                     1. Period &amp; Society Details
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, color: '#334155', marginBottom: 3 }}>
+                    <label className="electricity-tracker-s222">
                       Electricity Charges for the month:
                     </label>
                     <input
@@ -4296,11 +4087,11 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       value={tataMonthRangeText}
                       onChange={(e) => setTataMonthRangeText(e.target.value)}
                       placeholder="e.g. Sep 25 to May 26"
-                      style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.8rem', fontWeight: 600 }}
+                      className="electricity-tracker-s223"
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, color: '#334155', marginBottom: 3 }}>
+                    <label className="electricity-tracker-s222">
                       Society Name &rarr;
                     </label>
                     <input
@@ -4308,19 +4099,19 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       value={tataSocietyName}
                       onChange={(e) => setTataSocietyName(e.target.value)}
                       placeholder="e.g. Majestique Euriska CHS"
-                      style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.8rem', fontWeight: 600 }}
+                      className="electricity-tracker-s223"
                     />
                   </div>
                 </div>
 
                 {/* Section 2: Readings & Consumption */}
-                <div style={{ background: '#ffffff', padding: '12px', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <div className="electricity-tracker-s220">
+                  <div className="electricity-tracker-s221">
                     2. Readings &amp; Consumption Calculation
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div className="electricity-tracker-s224">
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#334155', marginBottom: 3 }}>
+                      <label className="electricity-tracker-s225">
                         Previous Reading(A):
                       </label>
                       <input
@@ -4328,11 +4119,11 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         value={tataPrevReading}
                         onChange={(e) => handlePrevReadingChange(e.target.value)}
                         placeholder="Enter reading"
-                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.8rem', fontWeight: 700, color: '#0f172a' }}
+                        className="electricity-tracker-s226"
                       />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#334155', marginBottom: 3 }}>
+                      <label className="electricity-tracker-s225">
                         Current Reading(B):
                       </label>
                       <input
@@ -4340,12 +4131,12 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         value={tataCurrReading}
                         onChange={(e) => handleCurrReadingChange(e.target.value)}
                         placeholder="Enter reading"
-                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.8rem', fontWeight: 700, color: '#0f172a' }}
+                        className="electricity-tracker-s226"
                       />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#64748b', marginBottom: 3 }}>
+                    <label className="electricity-tracker-s227">
                       Meter Type / Note:
                     </label>
                     <input
@@ -4353,12 +4144,12 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       value={tataMeterNote}
                       onChange={(e) => setTataMeterNote(e.target.value)}
                       placeholder="(4 Digit Sub Meter)"
-                      style={{ width: '100%', padding: '5px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.76rem', color: '#475569' }}
+                      className="electricity-tracker-s228"
                     />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 8 }}>
+                  <div className="electricity-tracker-s229">
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#ea580c', marginBottom: 3 }}>
+                      <label className="electricity-tracker-s230">
                         Total Consumption(B-A):
                       </label>
                       <input
@@ -4366,11 +4157,11 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         value={tataConsumption}
                         onChange={(e) => setTataConsumption(e.target.value)}
                         placeholder="8988.00"
-                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #fdba74', background: '#fff7ed', fontSize: '0.82rem', fontWeight: 800, color: '#c2410c' }}
+                        className="electricity-tracker-s231"
                       />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#2563eb', marginBottom: 3 }}>
+                      <label className="electricity-tracker-s232">
                         Per unit Charges &rarr;
                       </label>
                       <input
@@ -4378,23 +4169,23 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         value={tataRatePerUnit}
                         onChange={(e) => setTataRatePerUnit(e.target.value)}
                         placeholder="13.00"
-                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #93c5fd', background: '#eff6ff', fontSize: '0.82rem', fontWeight: 800, color: '#1d4ed8' }}
+                        className="electricity-tracker-s233"
                       />
                     </div>
                   </div>
-                  <div style={{ fontSize: '0.68rem', color: '#64748b', background: '#f1f5f9', padding: '5px 8px', borderRadius: 4 }}>
+                  <div className="electricity-tracker-s234">
                     💡 <strong>Rollover:</strong> When B &lt; A, units auto-calculated as <code>(10,000 - A) + B</code>. Manual edits are also preserved.
                   </div>
                 </div>
 
                 {/* Section 3: Invoice Number, Date & Bill To */}
-                <div style={{ background: '#ffffff', padding: '12px', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <div className="electricity-tracker-s220">
+                  <div className="electricity-tracker-s221">
                     3. Invoice Meta &amp; Party Details
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div className="electricity-tracker-s224">
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#334155', marginBottom: 3 }}>
+                      <label className="electricity-tracker-s225">
                         Invoice Number:
                       </label>
                       <input
@@ -4402,11 +4193,11 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         value={tataInvoiceNo}
                         onChange={(e) => setTataInvoiceNo(e.target.value)}
                         placeholder="2026/01"
-                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.78rem', fontWeight: 700 }}
+                        className="electricity-tracker-s235"
                       />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#334155', marginBottom: 3 }}>
+                      <label className="electricity-tracker-s225">
                         Invoice Date:
                       </label>
                       <input
@@ -4414,24 +4205,24 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         value={tataInvoiceDateStr}
                         onChange={(e) => setTataInvoiceDateStr(e.target.value)}
                         placeholder="18 May 2026"
-                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.78rem', fontWeight: 700 }}
+                        className="electricity-tracker-s235"
                       />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#334155', marginBottom: 3 }}>
+                    <label className="electricity-tracker-s225">
                       Bill To (Recipient &amp; Address):
                     </label>
                     <textarea
                       rows={4}
                       value={tataBillTo}
                       onChange={(e) => setTataBillTo(e.target.value)}
-                      style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.74rem', lineHeight: 1.35, fontFamily: 'inherit' }}
+                      className="electricity-tracker-s236"
                     />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div className="electricity-tracker-s224">
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#64748b', marginBottom: 3 }}>
+                      <label className="electricity-tracker-s237">
                         ADD CGST 9% (₹):
                       </label>
                       <input
@@ -4439,11 +4230,11 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         value={tataCgstRate}
                         onChange={(e) => setTataCgstRate(e.target.value)}
                         placeholder="0.0"
-                        style={{ width: '100%', padding: '5px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.75rem' }}
+                        className="electricity-tracker-s238"
                       />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#64748b', marginBottom: 3 }}>
+                      <label className="electricity-tracker-s237">
                         ADD SGST 9% (₹):
                       </label>
                       <input
@@ -4451,52 +4242,52 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                         value={tataSgstRate}
                         onChange={(e) => setTataSgstRate(e.target.value)}
                         placeholder="0.0"
-                        style={{ width: '100%', padding: '5px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.75rem' }}
+                        className="electricity-tracker-s238"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Section 4: Society Footer Info */}
-                <div style={{ background: '#ffffff', padding: '12px', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <div className="electricity-tracker-s239">
+                  <div className="electricity-tracker-s221">
                     4. Society Footer Particulars
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#64748b', marginBottom: 2 }}>
+                    <label className="electricity-tracker-s240">
                       Company Address:
                     </label>
                     <input
                       type="text"
                       value={tataCompanyAddress}
                       onChange={(e) => setTataCompanyAddress(e.target.value)}
-                      style={{ width: '100%', padding: '5px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.72rem' }}
+                      className="electricity-tracker-s241"
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#64748b', marginBottom: 2 }}>
+                    <label className="electricity-tracker-s240">
                       Company PAN:
                     </label>
                     <input
                       type="text"
                       value={tataCompanyPan}
                       onChange={(e) => setTataCompanyPan(e.target.value)}
-                      style={{ width: '100%', padding: '5px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.72rem' }}
+                      className="electricity-tracker-s241"
                     />
                   </div>
                 </div>
 
                 {/* Real-time Calculation Summary */}
-                <div style={{ background: '#0b2b26', color: '#fff', padding: '12px', borderRadius: 8, fontSize: '0.76rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <span style={{ color: '#94a3b8' }}>Total Subtotal:</span>
-                    <strong style={{ color: '#fff' }}>₹{fmt(baseAmountVal)}</strong>
+                <div className="electricity-tracker-s242">
+                  <div className="electricity-tracker-s243">
+                    <span className="electricity-tracker-s244">Total Subtotal:</span>
+                    <strong className="electricity-tracker-s245">₹{fmt(baseAmountVal)}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: '0.88rem' }}>
-                    <span style={{ color: '#C49B4F', fontWeight: 800 }}>Grand Total Payable:</span>
-                    <strong style={{ color: '#4ade80', fontSize: '0.95rem' }}>₹{fmt(grandTotalVal)}</strong>
+                  <div className="electricity-tracker-s246">
+                    <span className="electricity-tracker-s247">Grand Total Payable:</span>
+                    <strong className="electricity-tracker-s248">₹{fmt(grandTotalVal)}</strong>
                   </div>
-                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: 6, fontSize: '0.7rem', color: '#e2e8f0', lineHeight: 1.35 }}>
+                  <div className="electricity-tracker-s249">
                     <strong>In Words:</strong> {amountWordsVal}
                   </div>
                 </div>
@@ -4504,70 +4295,60 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               </div>
 
               {/* Right Column: Live Official Scanned Template Replica */}
-              <div style={{ padding: '20px', overflowY: 'auto', background: '#e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ marginBottom: 10, fontSize: '0.78rem', color: '#475569', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div className="electricity-tracker-s250">
+                <div className="electricity-tracker-s251">
                   <span>📄 Live Preview: Official Scanned Invoice Replica (A4 Format)</span>
                 </div>
                 
-                <div style={{
-                  background: '#ffffff',
-                  width: '100%',
-                  maxWidth: 620,
-                  boxShadow: '0 8px 30px rgba(0,0,0,0.18)',
-                  border: '1px solid #94a3b8',
-                  color: '#000000',
-                  fontFamily: 'Arial, Helvetica, sans-serif',
-                  padding: '24px 28px',
-                  boxSizing: 'border-box'
-                }}>
+                <div className="electricity-tracker-s252">
                   {/* Society Header & Logo */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, gap: 14 }}>
-                    <div style={{ width: 95, flexShrink: 0, textAlign: 'center' }}>
+                  <div className="electricity-tracker-s253">
+                    <div className="electricity-tracker-s254">
                       <img
                         src="/logo.png"
                         alt="Majestique Euriska"
-                        style={{ maxWidth: 88, maxHeight: 70, objectFit: 'contain' }}
+                        className="electricity-tracker-s255"
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
                       />
                     </div>
-                    <div style={{ flex: 1, textAlign: 'center' }}>
-                      <div style={{ fontSize: '0.88rem', fontWeight: 900, textTransform: 'uppercase', color: '#000', lineHeight: 1.25, marginBottom: 2 }}>
+                    <div className="electricity-tracker-s256">
+                      <div className="electricity-tracker-s257">
                         MAJESTIQUE EURISKA A BUILDING COOPERATIVE HOUSING SOCIETY LTD
                       </div>
-                      <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#111', marginBottom: 2 }}>
+                      <div className="electricity-tracker-s258">
                         Reg. No PNA/PNA (4)/HSG/(TC)/21207/2019-20 Date 09/08/2019
                       </div>
-                      <div style={{ fontSize: '0.65rem', color: '#222', lineHeight: 1.25, marginBottom: 2 }}>
+                      <div className="electricity-tracker-s259">
                         Address: - S. No.2, Plot No C-1, Village Mohammed Wadi,<br />
                         Taluka Haveli, District Pune, Pune 411060
                       </div>
-                      <div style={{ fontSize: '0.65rem', color: '#222' }}>
+                      <div className="electricity-tracker-s260">
                         Email: majestiqueeuriska.a@gmail.com &nbsp;&nbsp;&nbsp;&nbsp; Phone No:
                       </div>
                     </div>
                   </div>
 
                   {/* 3-Column Table: Bill To | Invoice Number | Invoice Date */}
-                  <table style={{ width: '100%', borderCollapse: 'collapse', border: '1.5px solid #000', fontSize: '0.72rem', marginBottom: -1.5 }}>
+                  <table className="electricity-tracker-s261">
                     <thead>
                       <tr>
-                        <th style={{ width: '52%', border: '1.5px solid #000', padding: '5px 8px', textAlign: 'left', fontWeight: 900, background: '#fff' }}>Bill To</th>
-                        <th style={{ width: '24%', border: '1.5px solid #000', padding: '5px 8px', textAlign: 'center', fontWeight: 900, background: '#fff' }}>Invoice Number</th>
-                        <th style={{ width: '24%', border: '1.5px solid #000', padding: '5px 8px', textAlign: 'center', fontWeight: 900, background: '#fff' }}>Invoice Date</th>
+                        <th className="electricity-tracker-s262">Bill To</th>
+                        <th className="electricity-tracker-s263">Invoice Number</th>
+                        <th className="electricity-tracker-s263">Invoice Date</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td style={{ border: '1.5px solid #000', padding: '6px 8px', lineHeight: 1.35, verticalAlign: 'top' }}>
-                          <div style={{ fontWeight: 800 }}>{(tataBillTo.split('\n')[0] || 'Tata Play Broadband Private Limited')}</div>
+                        <td className="electricity-tracker-s264">
+                          <div className="electricity-tracker-s265">{(tataBillTo.split('\n')[0] || 'Tata Play Broadband Private Limited')}</div>
                           {tataBillTo.split('\n').slice(1).map((line, lIdx) => (
                             <div key={lIdx}>{line}</div>
                           ))}
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '6px 8px', textAlign: 'center', verticalAlign: 'middle', fontWeight: 800 }}>
+                        <td className="electricity-tracker-s266">
                           {tataInvoiceNo}
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '6px 8px', textAlign: 'center', verticalAlign: 'middle', fontWeight: 800 }}>
+                        <td className="electricity-tracker-s266">
                           {tataInvoiceDateStr}
                         </td>
                       </tr>
@@ -4575,72 +4356,72 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   </table>
 
                   {/* Services Table */}
-                  <table style={{ width: '100%', borderCollapse: 'collapse', border: '1.5px solid #000', fontSize: '0.72rem' }}>
+                  <table className="electricity-tracker-s267">
                     <thead>
                       <tr>
-                        <th style={{ width: '60%', border: '1.5px solid #000', padding: '6px 8px', textAlign: 'center', fontWeight: 900, background: '#fff' }}>Description of Services</th>
-                        <th style={{ width: '20%', border: '1.5px solid #000', padding: '6px 8px', textAlign: 'center', fontWeight: 900, background: '#fff' }}>Rate/Per unit</th>
-                        <th style={{ width: '20%', border: '1.5px solid #000', padding: '6px 8px', textAlign: 'center', fontWeight: 900, background: '#fff' }}>Amount</th>
+                        <th className="electricity-tracker-s268">Description of Services</th>
+                        <th className="electricity-tracker-s269">Rate/Per unit</th>
+                        <th className="electricity-tracker-s269">Amount</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td style={{ border: '1.5px solid #000', padding: '10px 10px', verticalAlign: 'top', lineHeight: 1.45 }}>
-                          <div style={{ fontWeight: 800, marginBottom: 8 }}>
+                        <td className="electricity-tracker-s270">
+                          <div className="electricity-tracker-s271">
                             Electricity Charges for the month {tataMonthRangeText}
                           </div>
-                          <div style={{ fontWeight: 800, marginBottom: 8 }}>
+                          <div className="electricity-tracker-s271">
                             Society Name &rarr; {tataSocietyName}
                           </div>
-                          <div style={{ fontWeight: 800, marginBottom: 2 }}>
+                          <div className="electricity-tracker-s272">
                             Previous Reading(A) &rarr; {tataPrevReading}
                           </div>
-                          <div style={{ fontWeight: 800, marginBottom: 2 }}>
+                          <div className="electricity-tracker-s272">
                             Current Reading(B) &rarr; {tataCurrReading} {tataMeterNote}
                           </div>
-                          <div style={{ fontWeight: 800, marginBottom: 8 }}>
+                          <div className="electricity-tracker-s271">
                             Total Consumption(B-A) &rarr; {tataConsumption}
                           </div>
-                          <div style={{ fontWeight: 800, marginTop: 12 }}>
+                          <div className="electricity-tracker-s273">
                             Per unit Charges &rarr; {tataRatePerUnit}
                           </div>
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '10px 8px', textAlign: 'center', verticalAlign: 'top', fontWeight: 800 }}>
+                        <td className="electricity-tracker-s274">
                           {tataRatePerUnit}
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '10px 8px', textAlign: 'right', verticalAlign: 'top', fontWeight: 800 }}>
+                        <td className="electricity-tracker-s275">
                           {fmt(baseAmountVal)}
                         </td>
                       </tr>
                       <tr>
-                        <td colSpan={2} style={{ border: '1.5px solid #000', padding: '5px 12px', textAlign: 'right', fontWeight: 800 }}>
+                        <td colSpan={2} className="electricity-tracker-s276">
                           Total :-
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>
+                        <td className="electricity-tracker-s277">
                           {fmt(baseAmountVal)}
                         </td>
                       </tr>
                       <tr>
-                        <td colSpan={2} style={{ border: '1.5px solid #000', padding: '5px 12px', textAlign: 'right', fontWeight: 800 }}>
+                        <td colSpan={2} className="electricity-tracker-s276">
                           ADD CGST 9%
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>
+                        <td className="electricity-tracker-s277">
                           {cgstVal ? fmt(cgstVal) : '0.0'}
                         </td>
                       </tr>
                       <tr>
-                        <td colSpan={2} style={{ border: '1.5px solid #000', padding: '5px 12px', textAlign: 'right', fontWeight: 800 }}>
+                        <td colSpan={2} className="electricity-tracker-s276">
                           ADD SGST 9%
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 8px', textAlign: 'right', fontWeight: 800 }}>
+                        <td className="electricity-tracker-s277">
                           {sgstVal ? fmt(sgstVal) : '0.0'}
                         </td>
                       </tr>
                       <tr>
-                        <td colSpan={2} style={{ border: '1.5px solid #000', padding: '6px 12px', textAlign: 'right', fontWeight: 900, fontSize: '0.78rem' }}>
+                        <td colSpan={2} className="electricity-tracker-s278">
                           Grand Total
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '6px 8px', textAlign: 'right', fontWeight: 900, fontSize: '0.78rem' }}>
+                        <td className="electricity-tracker-s279">
                           {fmt(grandTotalVal)}
                         </td>
                       </tr>
@@ -4648,48 +4429,26 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   </table>
 
                   {/* Amount in words and Stamp / Signature Box */}
-                  <div style={{ display: 'flex', border: '1.5px solid #000', borderTop: 'none', marginBottom: -1.5, minHeight: 95 }}>
-                    <div style={{ flex: 1, padding: '8px 10px', borderRight: '1.5px solid #000', fontSize: '0.72rem' }}>
-                      <div style={{ fontWeight: 800, marginBottom: 4 }}>Amount in word: -</div>
-                      <div style={{ fontWeight: 700, lineHeight: 1.35, fontSize: '0.74rem' }}>{amountWordsVal}</div>
+                  <div className="electricity-tracker-s280">
+                    <div className="electricity-tracker-s281">
+                      <div className="electricity-tracker-s282">Amount in word: -</div>
+                      <div className="electricity-tracker-s283">{amountWordsVal}</div>
                     </div>
-                    <div style={{ width: 220, padding: '6px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', position: 'relative' }}>
+                    <div className="electricity-tracker-s284">
                       {/* Stamp & Seal */}
-                      <div style={{
-                        position: 'relative',
-                        width: 76,
-                        height: 76,
-                        border: '1.8px dashed #3b286d',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#3b286d',
-                        opacity: 0.85,
-                        marginBottom: -20
-                      }}>
-                        <div style={{
-                          position: 'absolute',
-                          inset: 2,
-                          border: '1px solid #3b286d',
-                          borderRadius: '50%',
-                          fontSize: '3.5pt',
-                          textAlign: 'center',
-                          padding: 2,
-                          lineHeight: 1,
-                          fontWeight: 800
-                        }}>
+                      <div className="electricity-tracker-s285">
+                        <div className="electricity-tracker-s286">
                           MAJESTIQUE EURISKA 'A' BUILDING SAH. GRUHRACHANA SANSTHA MARYADIT
                         </div>
-                        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', fontSize: '5pt', lineHeight: 1.1, fontWeight: 700 }}>
+                        <div className="electricity-tracker-s287">
                           <div>Reg. No.</div>
-                          <div style={{ fontSize: '4.5pt' }}>PNA/PNA/(4)/<br />HSG/(TC)/21207</div>
+                          <div className="electricity-tracker-s288">PNA/PNA/(4)/<br />HSG/(TC)/21207</div>
                           <div>2019-20</div>
                           <div>Dt. 9/8/19</div>
                         </div>
                       </div>
                       {/* Signature */}
-                      <svg viewBox="0 0 100 40" style={{ position: 'relative', zIndex: 3, width: 100, height: 36, marginTop: -14, marginBottom: 2 }}>
+                      <svg viewBox="0 0 100 40" className="electricity-tracker-s289">
                         <path d="M10 28 Q 20 5, 30 25 T 50 15 T 70 28 T 90 20" fill="none" stroke="#000000" strokeWidth="2.2" strokeLinecap="round" />
                         <path d="M25 22 Q 40 38, 85 24" fill="none" stroke="#000000" strokeWidth="1.8" strokeLinecap="round" />
                       </svg>
@@ -4697,14 +4456,14 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   </div>
 
                   {/* Footer Box */}
-                  <div style={{ border: '1.5px solid #000', padding: '5px 8px', fontSize: '0.68rem', lineHeight: 1.35, fontWeight: 700, color: '#000' }}>
+                  <div className="electricity-tracker-s290">
                     <div>Company address: {tataCompanyAddress}</div>
                     <div>Company PAN : {tataCompanyPan}</div>
                   </div>
                 </div>
 
                 {tataInvoiceToast && (
-                  <div style={{ marginTop: 12, padding: '8px 16px', borderRadius: 8, background: '#0b2b26', color: '#fff', fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+                  <div className="electricity-tracker-s291">
                     {tataInvoiceToast}
                   </div>
                 )}
@@ -4712,26 +4471,26 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             </div>
 
             {/* Modal Footer Toolbar */}
-            <div style={{ padding: '14px 24px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-              <div style={{ fontSize: '0.82rem', color: '#475569' }}>
+            <div className="electricity-tracker-s292">
+              <div className="electricity-tracker-s293">
                 Scope: <strong>{tataInvoiceTarget === 'single' ? tataMonthRangeText : `All ${tataBills.length} Billing Cycles`}</strong>
-                &nbsp;• Grand Total: <strong style={{ color: '#0b2b26' }}>₹{fmt(grandTotalVal)}</strong>
+                &nbsp;• Grand Total: <strong className="electricity-tracker-s294">₹{fmt(grandTotalVal)}</strong>
               </div>
 
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+              <div className="electricity-tracker-s295">
                 {tataInvoiceTarget === 'single' && (
                   <>
                     <button
                       type="button"
                       onClick={() => handleCopyTataInvoiceText({ ...activeTataBill, periodLabel: tataMonthRangeText, grandTotal: grandTotalVal, prevReading: tataPrevReading, currReading: tataCurrReading, consumption: tataConsumption, ratePerUnit: tataRatePerUnit })}
-                      style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#334155', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                      className="electricity-tracker-s296"
                     >
                       📋 Copy Text
                     </button>
                     <button
                       type="button"
                       onClick={() => handleShareTataWhatsApp({ ...activeTataBill, periodLabel: tataMonthRangeText, grandTotal: grandTotalVal, prevReading: tataPrevReading, currReading: tataCurrReading, consumption: tataConsumption, ratePerUnit: tataRatePerUnit })}
-                      style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: '#25D366', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(37,211,102,0.3)' }}
+                      className="electricity-tracker-s297"
                     >
                       📱 Send WhatsApp
                     </button>
@@ -4741,20 +4500,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <button
                   type="button"
                   onClick={handlePrintTataInvoiceModalDoc}
-                  style={{
-                    padding: '8px 18px',
-                    borderRadius: 8,
-                    border: 'none',
-                    background: '#0b2b26',
-                    color: '#C49B4F',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    boxShadow: '0 4px 14px rgba(11,43,38,0.25)'
-                  }}
+                  className="electricity-tracker-s298"
                 >
                   🖨️ Print / Download PDF ({tataInvoiceTarget === 'single' ? '1 Invoice' : `${tataBillsForInvoice.length} Invoices`})
                 </button>
@@ -4762,7 +4508,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <button
                   type="button"
                   onClick={() => setIsTataInvoiceModalOpen(false)}
-                  style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#64748b', fontWeight: 600, cursor: 'pointer', fontSize: '0.82rem' }}
+                  className="electricity-tracker-s299"
                 >
                   Close
                 </button>

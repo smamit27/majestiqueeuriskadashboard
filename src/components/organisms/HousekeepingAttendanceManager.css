@@ -1,0 +1,33 @@
+/**
+ * HousekeepingAttendanceManager.css
+ * Extracted styles from HousekeepingAttendanceManager.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.housekeeping-attendance-manager-s1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.housekeeping-attendance-manager-s2 {
+  font-size: 1rem;
+}
+
+.housekeeping-attendance-manager-s3 {
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
+.housekeeping-attendance-manager-s4 {
+  min-width: 110px;
+}
+
+.housekeeping-attendance-manager-s5 {
+  text-align: center;
+  padding: 24px;
+  opacity: 0.6;
+}
+

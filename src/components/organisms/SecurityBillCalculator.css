@@ -1,0 +1,229 @@
+/**
+ * SecurityBillCalculator.css
+ * Extracted styles from SecurityBillCalculator.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.security-bill-calculator-s1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.security-bill-calculator-s2 {
+  margin: 0;
+}
+
+.security-bill-calculator-s3 {
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.2);
+  padding: 6px 12px;
+}
+
+.security-bill-calculator-s4 {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.security-bill-calculator-s5 {
+  width: 100px;
+  padding: 4px 8px;
+  margin: 0;
+  height: auto;
+  min-height: 0;
+}
+
+.security-bill-calculator-s6 {
+  width: 60px;
+  padding: 4px 8px;
+  margin: 0;
+  height: auto;
+  min-height: 0;
+}
+
+.security-bill-calculator-s7 {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.security-bill-calculator-s8 {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.security-bill-calculator-s9 {
+  border-color: #C49B4F;
+}
+
+.security-bill-calculator-s10 {
+  width: 120px;
+  padding: 4px 8px;
+  margin: 0;
+  height: auto;
+  min-height: 0;
+}
+
+.security-bill-calculator-s11 {
+  background: #0F3D35;
+  color: white;
+  border-color: #0F3D35;
+}
+
+.security-bill-calculator-s12 {
+  color: rgba(255,255,255,0.8);
+}
+
+.security-bill-calculator-s13 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.security-bill-calculator-s14 {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 10px;
+  padding: 16px 20px;
+}
+
+.security-bill-calculator-s15 {
+  margin-bottom: 8px;
+  color: #0F3D35;
+}
+
+.security-bill-calculator-s16 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.security-bill-calculator-s17 {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.security-bill-calculator-s18 {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.security-bill-calculator-s19 {
+  font-size: 1.1rem;
+  color: #0F3D35;
+}
+
+.security-bill-calculator-s20 {
+  background: #fefce8;
+  border: 1px solid #fde047;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: #713f12;
+}
+
+.security-bill-calculator-s21 {
+  padding: 0;
+}
+
+.security-bill-calculator-s22 {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.security-bill-calculator-s23 {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.security-bill-calculator-s24 {
+  background: #f8fafc;
+}
+
+.security-bill-calculator-s25 {
+  width: 18%;
+}
+
+.security-bill-calculator-s26 {
+  text-align: right;
+}
+
+.security-bill-calculator-s27 {
+  text-align: right;
+  color: #0F3D35;
+}
+
+.security-bill-calculator-s28 {
+  text-align: right;
+  font-size: 1.05rem;
+}
+
+.security-bill-calculator-s29 {
+  text-align: center;
+  padding: 40px;
+  opacity: 0.5;
+}
+
+.security-bill-calculator-s30 {
+  font-size: 0.8rem;
+  margin-left: 8px;
+  color: #0F3D35;
+  background: #dcfce7;
+  padding: 2px 6px;
+  border-radius: 12px;
+}
+
+.security-bill-calculator-s31 {
+  text-align: right;
+  color: #6b7280;
+}
+
+.security-bill-calculator-s32 {
+  font-size: 0.78rem;
+}
+
+.security-bill-calculator-s33 {
+  text-align: right;
+  font-weight: 600;
+  color: #0F3D35;
+}
+
+.security-bill-calculator-s34 {
+  color: #b45309;
+  font-style: normal;
+}
+
+.security-bill-calculator-s35 {
+  text-align: right;
+  font-weight: 800;
+  color: #0F3D35;
+  font-size: 1.1rem;
+}
+
+.security-bill-calculator-s36 {
+  text-align: right;
+  font-size: 1.1rem;
+}
+
+.security-bill-calculator-s37 {
+  padding: 60px 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.security-bill-calculator-s38 {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.security-bill-calculator-s39 {
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.security-bill-calculator-s40 {
+  max-width: 400px;
+  margin: 0 auto;
+}
+

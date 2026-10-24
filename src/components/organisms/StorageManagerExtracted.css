@@ -1,0 +1,357 @@
+/**
+ * StorageManagerExtracted.css
+ * Extracted styles from StorageManager.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.storage-manager-s1 {
+  width: 0.28%;
+}
+
+.storage-manager-s2 {
+  width: 100%;
+}
+
+.storage-manager-s3 {
+  width: 22%;
+}
+
+.storage-manager-s4 {
+  display: flex;
+  gap: 10px;
+}
+
+.storage-manager-s5 {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 13px;
+  outline: none;
+}
+
+.storage-manager-s6 {
+  font-size: 11px;
+  color: #64748b;
+  font-family: monospace;
+}
+
+.storage-manager-s7 {
+  font-size: 11px;
+  background: #f1f5f9;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.storage-manager-s8 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.storage-manager-s9 {
+  width: 60px;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.storage-manager-s10 {
+  height: 100%;
+  background: #3b82f6;
+}
+
+.storage-manager-s11 {
+  color: #059669;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.storage-manager-s12 {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.storage-manager-s13 {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.storage-manager-s14 {
+  font-size: 13px;
+  color: #475569;
+}
+
+.storage-manager-s15 {
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.storage-manager-s16 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.storage-manager-s17 {
+  margin: 0 0 16px 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.storage-manager-s18 {
+  color: #0f172a;
+}
+
+.storage-manager-s19 {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.storage-manager-s20 {
+  padding: 12px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.storage-manager-s21 {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 28px;
+}
+
+.storage-manager-s22 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.storage-manager-s23 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.storage-manager-s24 {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.storage-manager-s25 {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 13px;
+  outline: none;
+}
+
+.storage-manager-s26 {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 13px;
+  outline: none;
+  background: #fff;
+}
+
+.storage-manager-s27 {
+  margin-bottom: 16px;
+}
+
+.storage-manager-s28 {
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.storage-manager-s29 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.storage-manager-s30 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.storage-manager-s31 {
+  display: flex;
+  gap: 8px;
+}
+
+.storage-manager-s32 {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+}
+
+.storage-manager-s33 {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  line-clamp: 2;
+}
+
+.storage-manager-s34 {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.storage-manager-s35 {
+  flex: 1;
+  text-align: center;
+  padding: 6px 10px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.storage-manager-s36 {
+  padding: 6px 10px;
+  background: #f1f5f9;
+  color: #334155;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.storage-manager-s37 {
+  color: #10b981;
+}
+
+.storage-manager-s38 {
+  color: #f59e0b;
+}
+
+.storage-manager-s39 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+.storage-manager-s40 {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 8px 0 16px 0;
+}
+
+.storage-manager-s41 {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.storage-manager-s42 {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.storage-manager-s43 {
+  color: #94a3b8;
+}
+
+.storage-manager-s44 {
+  color: #34d399;
+}
+
+.storage-manager-s45 {
+  margin-top: 20px;
+  padding: 14px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.storage-manager-s46 {
+  color: #34d399;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.storage-manager-s47 {
+  margin: 0;
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.storage-manager-s48 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.storage-manager-s49 {
+  background: #f8fafc;
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.storage-manager-s50 {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.storage-manager-s51 {
+  margin: 0;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.storage-manager-s52 {
+  margin: 0;
+}
+

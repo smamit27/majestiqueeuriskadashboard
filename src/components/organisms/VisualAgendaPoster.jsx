@@ -23,6 +23,8 @@ import {
   Bot
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
+import './VisualAgendaPoster.css';
+
 
 /**
  * Maps agenda item title/category to a thematic Lucide icon
@@ -209,52 +211,25 @@ export default function VisualAgendaPoster({
   };
 
   return (
-    <div className="visual-agenda-container" style={{ width: '100%', maxWidth: '1100px', margin: '0 auto' }}>
+    <div className="visual-agenda-container visual-agenda-poster-s1">
       
       {/* ── Top Floating Action Control Bar (Hidden during Print) ── */}
       <div 
-        className="no-print" 
-        style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          flexWrap: 'wrap', 
-          gap: '12px', 
-          padding: '14px 18px', 
-          background: '#ffffff', 
-          borderRadius: '14px', 
-          border: '1px solid #e2e8f0', 
-          boxShadow: '0 4px 16px rgba(0,0,0,0.06)', 
-          marginBottom: '20px' 
-        }}
+        className="no-print visual-agenda-poster-s2"
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', fontWeight: 800, color: '#0b2b26' }}>
+        <div className="visual-agenda-poster-s3">
+          <div className="visual-agenda-poster-s4">
             <Sparkles size={16} color="#d90429" />
             Executive Visual Agenda Flyer
           </div>
 
           {/* Color Mode Switcher */}
-          <div style={{ display: 'flex', background: '#f1f5f9', padding: '3px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+          <div className="visual-agenda-poster-s5">
             <button
               type="button"
               data-testid="color-mode-colorful-btn"
               onClick={() => setColorMode('colorful')}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: 'none',
-                background: isColor ? '#ffffff' : 'transparent',
-                color: isColor ? '#d90429' : '#64748b',
-                fontWeight: 800,
-                fontSize: '0.78rem',
-                cursor: 'pointer',
-                boxShadow: isColor ? '0 2px 4px rgba(0,0,0,0.08)' : 'none',
-                transition: 'all 0.15s ease'
-              }}
+              className="visual-agenda-poster-s6" style={{ background: isColor ? '#ffffff' : 'transparent', color: isColor ? '#d90429' : '#64748b', boxShadow: isColor ? '0 2px 4px rgba(0,0,0,0.08)' : 'none' }}
             >
               <Palette size={13} />
               🌈 Colorful
@@ -263,21 +238,7 @@ export default function VisualAgendaPoster({
               type="button"
               data-testid="color-mode-bw-btn"
               onClick={() => setColorMode('monochrome')}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: 'none',
-                background: !isColor ? '#000000' : 'transparent',
-                color: !isColor ? '#ffffff' : '#64748b',
-                fontWeight: 800,
-                fontSize: '0.78rem',
-                cursor: 'pointer',
-                boxShadow: !isColor ? '0 2px 4px rgba(0,0,0,0.15)' : 'none',
-                transition: 'all 0.15s ease'
-              }}
+              className="visual-agenda-poster-s6" style={{ background: !isColor ? '#000000' : 'transparent', color: !isColor ? '#ffffff' : '#64748b', boxShadow: !isColor ? '0 2px 4px rgba(0,0,0,0.15)' : 'none' }}
             >
               ⬛ Black & White
             </button>
@@ -285,9 +246,9 @@ export default function VisualAgendaPoster({
         </div>
 
         {/* Action Export Buttons */}
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="visual-agenda-poster-s7">
           {exportFeedback && (
-            <span style={{ fontSize: '0.78rem', color: '#059669', fontWeight: 700 }}>
+            <span className="visual-agenda-poster-s8">
               {exportFeedback}
             </span>
           )}
@@ -297,8 +258,7 @@ export default function VisualAgendaPoster({
             data-testid="export-png-btn"
             disabled={isExporting}
             onClick={() => handleExportImage('png')}
-            className="button-secondary"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', padding: '7px 12px' }}
+            className="button-secondary visual-agenda-poster-s9"
           >
             <Download size={14} />
             Download PNG
@@ -309,8 +269,7 @@ export default function VisualAgendaPoster({
             data-testid="export-jpeg-btn"
             disabled={isExporting}
             onClick={() => handleExportImage('jpeg')}
-            className="button-secondary"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', padding: '7px 12px' }}
+            className="button-secondary visual-agenda-poster-s9"
           >
             <Download size={14} />
             Download JPEG
@@ -320,16 +279,8 @@ export default function VisualAgendaPoster({
             type="button"
             data-testid="export-pdf-btn"
             onClick={handlePrint}
-            className="button-primary"
-            style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '6px', 
-              fontSize: '0.82rem', 
-              padding: '7px 14px',
-              background: isColor ? '#d90429' : '#000000',
-              borderColor: isColor ? '#d90429' : '#000000'
-            }}
+            className="button-primary visual-agenda-poster-s10"
+            style={{ background: isColor ? '#d90429' : '#000000', borderColor: isColor ? '#d90429' : '#000000' }}
           >
             <Printer size={14} />
             Print / PDF
@@ -339,8 +290,7 @@ export default function VisualAgendaPoster({
             <button
               type="button"
               onClick={onBack}
-              className="button-secondary"
-              style={{ fontSize: '0.8rem', padding: '7px 12px' }}
+              className="button-secondary visual-agenda-poster-s11"
             >
               Back to Minutes
             </button>
@@ -352,162 +302,83 @@ export default function VisualAgendaPoster({
       <div 
         ref={posterRef}
         id="agenda-poster-canvas"
-        style={{
-          background: theme.bg,
-          width: '100%',
-          boxSizing: 'border-box',
-          padding: '28px 34px',
-          borderRadius: '16px',
-          border: `1.5px solid ${theme.cardBorder}`,
-          boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-        }}
+        className="visual-agenda-poster-s12" style={{ background: theme.bg, border: `1.5px solid ${theme.cardBorder}` }}
       >
         {/* ── TOP HEADER: Logo & Majestic Entrance Gate Photo ── */}
         <div 
-          style={{ 
-            display: 'flex', 
-            alignItems: 'stretch', 
-            borderRadius: '14px', 
-            overflow: 'hidden', 
-            border: `1px solid ${theme.cardBorder}`,
-            marginBottom: '20px',
-            background: '#ffffff',
-            minHeight: '135px'
-          }}
+          className="visual-agenda-poster-s13" style={{ border: `1px solid ${theme.cardBorder}` }}
         >
           {/* Left: Logo container with swooping decorative curve */}
           <div 
-            style={{ 
-              width: '26%', 
-              minWidth: '190px',
-              padding: '16px 20px', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              justifyContent: 'center', 
-              alignItems: 'center',
-              background: '#ffffff',
-              position: 'relative'
-            }}
+            className="visual-agenda-poster-s14"
           >
             <img 
               src="/euriska_logo.png" 
               alt="Majestique Euriska Logo" 
-              style={{ 
-                maxHeight: '90px', 
-                maxWidth: '100%', 
-                objectFit: 'contain',
-                filter: theme.imageFilter 
-              }} 
+              className="visual-agenda-poster-s15" style={{ filter: theme.imageFilter }} 
             />
             {/* Swooping curved separator in Colorful mode */}
             {isColor && (
               <div 
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  right: '-1px',
-                  bottom: 0,
-                  width: '4px',
-                  background: 'linear-gradient(180deg, #d90429 0%, #e63946 100%)',
-                  borderRadius: '2px'
-                }}
+                className="visual-agenda-poster-s16"
               />
             )}
           </div>
 
           {/* Right: Photograph of Majestique Euriska Entrance Gate */}
           <div 
-            style={{ 
-              flex: 1, 
-              position: 'relative',
-              overflow: 'hidden',
-              background: '#f8fafc'
-            }}
+            className="visual-agenda-poster-s17"
           >
             <img 
               src="/visuals/majestique_euriska_gate.jpg" 
               alt="Majestique Euriska Entrance Gate" 
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                minHeight: '135px',
-                maxHeight: '180px',
-                objectFit: 'cover',
-                display: 'block',
-                filter: theme.imageFilter
-              }} 
+              className="visual-agenda-poster-s18" style={{ filter: theme.imageFilter }} 
             />
           </div>
         </div>
 
         {/* ── HEADER TITLE BAR: Meeting Type, AGENDA badge, Date & Time ── */}
         <div 
-          style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            flexWrap: 'wrap', 
-            gap: '12px',
-            paddingBottom: '14px',
-            borderBottom: `2px solid ${theme.dividerColor}`,
-            marginBottom: '18px'
-          }}
+          className="visual-agenda-poster-s19" style={{ borderBottom: `2px solid ${theme.dividerColor}` }}
         >
           {/* Left: Title + Pill */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <div className="visual-agenda-poster-s20">
             <h1 
-              style={{ 
-                margin: 0, 
-                fontSize: '1.75rem', 
-                fontWeight: 900, 
-                color: theme.textMain, 
-                letterSpacing: '-0.02em' 
-              }}
+              className="visual-agenda-poster-s21" style={{ color: theme.textMain }}
             >
               {meetingType}
             </h1>
             <span 
-              style={{ 
-                background: theme.badgeBg, 
-                color: theme.badgeText, 
-                fontSize: '0.92rem', 
-                fontWeight: 900, 
-                padding: '4px 18px', 
-                borderRadius: '20px', 
-                letterSpacing: '3px',
-                textTransform: 'uppercase',
-                display: 'inline-block'
-              }}
+              className="visual-agenda-poster-s22" style={{ background: theme.badgeBg, color: theme.badgeText }}
             >
               AGENDA
             </span>
           </div>
 
           {/* Right: Date & Time in clean boxed tags */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="visual-agenda-poster-s23">
+            <div className="visual-agenda-poster-s24">
               <Calendar size={22} color={theme.accentColor} strokeWidth={2.2} />
-              <div style={{ lineHeight: 1.2 }}>
-                <span style={{ display: 'block', fontSize: '0.68rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>Date:</span>
-                <span style={{ fontSize: '0.88rem', fontWeight: 800, color: theme.textMain }}>{meetingDate}</span>
+              <div className="visual-agenda-poster-s25">
+                <span className="visual-agenda-poster-s26">Date:</span>
+                <span className="visual-agenda-poster-s27" style={{ color: theme.textMain }}>{meetingDate}</span>
               </div>
             </div>
 
-            <div style={{ height: '24px', width: '1px', background: theme.dividerColor }}></div>
+            <div className="visual-agenda-poster-s28" style={{ background: theme.dividerColor }}></div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="visual-agenda-poster-s24">
               <Clock size={22} color={theme.accentColor} strokeWidth={2.2} />
-              <div style={{ lineHeight: 1.2 }}>
-                <span style={{ display: 'block', fontSize: '0.68rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase' }}>Time:</span>
-                <span style={{ fontSize: '0.88rem', fontWeight: 800, color: theme.textMain }}>{meetingTime}</span>
+              <div className="visual-agenda-poster-s25">
+                <span className="visual-agenda-poster-s26">Time:</span>
+                <span className="visual-agenda-poster-s27" style={{ color: theme.textMain }}>{meetingTime}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* ── NUMBERED AGENDA ITEMS ROWS ── */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="visual-agenda-poster-s29">
           {items.map((item, index) => {
             const IconComponent = getAgendaIcon(item.title);
             const isLast = index === items.length - 1;
@@ -515,83 +386,37 @@ export default function VisualAgendaPoster({
             return (
               <div 
                 key={item.id || index}
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '14px',
-                  padding: '12px 0',
-                  borderBottom: isLast ? 'none' : `1px solid ${theme.dividerColor}`
-                }}
+                className="visual-agenda-poster-s30" style={{ borderBottom: isLast ? 'none' : `1px solid ${theme.dividerColor}` }}
               >
                 {/* 1. Red Numbered Circle */}
                 <div 
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '50%',
-                    background: theme.numberCircleBg,
-                    color: theme.numberCircleText,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 900,
-                    fontSize: '0.9rem',
-                    flexShrink: 0,
-                    marginTop: '2px'
-                  }}
+                  className="visual-agenda-poster-s31" style={{ background: theme.numberCircleBg, color: theme.numberCircleText }}
                 >
                   {index + 1}
                 </div>
 
                 {/* 2. Thematic Icon */}
                 <div 
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    color: isColor ? '#0f172a' : '#000000',
-                    marginTop: '1px'
-                  }}
+                  className="visual-agenda-poster-s32" style={{ color: isColor ? '#0f172a' : '#000000' }}
                 >
                   <IconComponent size={22} strokeWidth={1.8} />
                 </div>
 
                 {/* 3. Vertical Accent Pipe */}
                 <div 
-                  style={{
-                    width: '2px',
-                    minHeight: '28px',
-                    background: theme.pipeColor,
-                    flexShrink: 0,
-                    marginTop: '4px',
-                    borderRadius: '1px'
-                  }}
+                  className="visual-agenda-poster-s33" style={{ background: theme.pipeColor }}
                 />
 
                 {/* 4. Title & Description Body */}
-                <div style={{ flex: 1, paddingLeft: '4px' }}>
+                <div className="visual-agenda-poster-s34">
                   <h3 
-                    style={{ 
-                      margin: '0 0 3px 0', 
-                      fontSize: '0.96rem', 
-                      fontWeight: 800, 
-                      color: theme.textMain,
-                      letterSpacing: '-0.01em'
-                    }}
+                    className="visual-agenda-poster-s35" style={{ color: theme.textMain }}
                   >
                     {item.title}
                   </h3>
                   {item.description && (
                     <p 
-                      style={{ 
-                        margin: 0, 
-                        fontSize: '0.84rem', 
-                        lineHeight: '1.45', 
-                        color: theme.textMuted 
-                      }}
+                      className="visual-agenda-poster-s36" style={{ color: theme.textMuted }}
                     >
                       {item.description}
                     </p>
@@ -604,40 +429,31 @@ export default function VisualAgendaPoster({
 
         {/* ── BOTTOM CALLOUT BANNER: Quorum & Participation Directive ── */}
         <div 
-          style={{
-            marginTop: '20px',
-            padding: '12px 18px',
-            borderRadius: '12px',
-            background: theme.footerBg,
-            border: `1.5px solid ${theme.footerBorder}`,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '14px'
-          }}
+          className="visual-agenda-poster-s37" style={{ background: theme.footerBg, border: `1.5px solid ${theme.footerBorder}` }}
         >
           {/* Megaphone icon */}
-          <div style={{ flexShrink: 0 }}>
+          <div className="visual-agenda-poster-s38">
             <Megaphone size={26} color={theme.footerIconColor} strokeWidth={2.2} />
           </div>
 
           {/* Pipe */}
-          <div style={{ width: '2px', height: '36px', background: theme.pipeColor, flexShrink: 0 }} />
+          <div className="visual-agenda-poster-s39" style={{ background: theme.pipeColor }} />
 
           {/* Text */}
-          <div style={{ fontSize: '0.82rem', lineHeight: '1.4', color: theme.footerText }}>
+          <div className="visual-agenda-poster-s40" style={{ color: theme.footerText }}>
             <div>
-              <strong style={{ fontSize: '0.86rem', color: isColor ? '#b91c1c' : '#000000' }}>
+              <strong className="visual-agenda-poster-s41" style={{ color: isColor ? '#b91c1c' : '#000000' }}>
                 {footerHeadline}
               </strong>
             </div>
-            <div style={{ color: isColor ? '#4b5563' : '#333333', marginTop: '2px' }}>
+            <div className="visual-agenda-poster-s42" style={{ color: isColor ? '#4b5563' : '#333333' }}>
               {footerSubtext}
             </div>
           </div>
         </div>
 
         {/* Micro legal watermark */}
-        <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '0.68rem', color: '#94a3b8' }}>
+        <div className="visual-agenda-poster-s43">
           Majestique Euriska Co-operative Housing Society Ltd. • Official Management Committee Meeting Notice
         </div>
       </div>

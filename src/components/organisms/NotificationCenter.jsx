@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from '../../firebase.js';
 import { createPortal } from 'react-dom';
+import './NotificationCenter.css';
+
 
 const STORAGE_KEY = 'majestique_notif_read_ids';
 
@@ -195,7 +197,7 @@ export default function NotificationCenter({ isSidebarCollapsed }) {
           )}
         </button>
         {!isSidebarCollapsed && (
-          <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.65)', flex: 1 }}>
+          <span className="notification-center-s1">
             {loading ? 'Checking...' : unreadCount > 0 ? `${unreadCount} alert${unreadCount !== 1 ? 's' : ''}` : 'All clear'}
           </span>
         )}
@@ -204,7 +206,7 @@ export default function NotificationCenter({ isSidebarCollapsed }) {
       {open && createPortal(
         <>
           <div
-            style={{ position: 'fixed', inset: 0, zIndex: 8999 }}
+            className="notification-center-s2"
             onClick={() => setOpen(false)}
           />
           <div className="notif-panel">

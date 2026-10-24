@@ -8,6 +8,8 @@ import {
   OFFICIAL_POSTERS,
   QUICK_CONTACTS
 } from '../../data/societyRulesData.js';
+import './SocietyRulesModule.css';
+
 
 export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDENT' }) {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
@@ -199,114 +201,67 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
   }, []);
 
   return (
-    <div className="society-rules-container" style={{ padding: '24px 20px', maxWidth: '1440px', margin: '0 auto', color: '#0f172a' }}>
+    <div className="society-rules-container society-rules-module-s1">
       {/* ──────────────────────────────────────────────────────────────────────
           1. Legal Header Banner
       ────────────────────────────────────────────────────────────────────── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #991b1b 0%, #b91c1c 40%, #064e3b 100%)',
-        borderRadius: '20px',
-        padding: '30px 32px',
-        color: '#ffffff',
-        boxShadow: '0 14px 40px -10px rgba(153, 27, 27, 0.4)',
-        marginBottom: '26px',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
+      <div className="society-rules-module-s2">
         {/* Decorative background watermark */}
-        <div style={{
-          position: 'absolute',
-          right: '-10px',
-          bottom: '-30px',
-          fontSize: '11rem',
-          opacity: 0.08,
-          userSelect: 'none',
-          pointerEvents: 'none'
-        }}>
+        <div className="society-rules-module-s3">
           ⚖️
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px', position: 'relative', zIndex: 1 }}>
-          <div style={{ maxWidth: '840px' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.18)', padding: '5px 14px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px' }}>
+        <div className="society-rules-module-s4">
+          <div className="society-rules-module-s5">
+            <div className="society-rules-module-s6">
               <span>📢 Official Society Circulars</span>
               <span>•</span>
-              <span style={{ color: '#fef08a' }}>Applicable to A, B & C Buildings</span>
+              <span className="society-rules-module-s7">Applicable to A, B & C Buildings</span>
               <span>•</span>
-              <span style={{ color: '#a7f3d0' }}>{SOCIETY_INFO.regNoShort}</span>
+              <span className="society-rules-module-s8">{SOCIETY_INFO.regNoShort}</span>
             </div>
 
-            <h1 style={{ margin: '0 0 8px 0', fontSize: '1.95rem', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.25 }}>
+            <h1 className="society-rules-module-s9">
               Society Rules, Bylaws & Community Guidelines
             </h1>
 
-            <p style={{ margin: '0 0 14px 0', fontSize: '0.94rem', color: '#fef2f2', lineHeight: 1.5, maxWidth: '740px' }}>
+            <p className="society-rules-module-s10">
               Official regulations enforced for all residents, tenants, guests, visitors, and staff. Strictly ratified by the Majestique Euriska Society Management Committee.
             </p>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', fontSize: '0.78rem', color: '#fecaca' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+            <div className="society-rules-module-s11">
+              <span className="society-rules-module-s12">
                 📍 {SOCIETY_INFO.addressShort}
               </span>
               <span>•</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+              <span className="society-rules-module-s12">
                 ✉️ {SOCIETY_INFO.email}
               </span>
               <span>•</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+              <span className="society-rules-module-s12">
                 🛡️ Enforced by Managing Committee & Security Control
               </span>
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '220px' }}>
+          <div className="society-rules-module-s13">
             <button
               type="button"
               id="report-violation-btn"
               onClick={() => setIsViolationModalOpen(true)}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                background: '#ffffff',
-                color: '#991b1b',
-                border: 'none',
-                padding: '11px 18px',
-                borderRadius: '12px',
-                fontSize: '0.85rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
-                transition: 'all 0.15s ease'
-              }}
+              className="society-rules-module-s14"
             >
               <span>🚨</span>
               <span>Report Rule Violation</span>
             </button>
 
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div className="society-rules-module-s15">
               <button
                 type="button"
                 id="copy-rules-summary-btn"
                 onClick={handleCopyAllSummary}
-                style={{
-                  flex: 1,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  background: 'rgba(255,255,255,0.18)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(255,255,255,0.28)',
-                  padding: '9px 12px',
-                  borderRadius: '10px',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'background 0.15s'
-                }}
+                className="society-rules-module-s16"
               >
                 <span>{copiedSummary ? '✓ Copied' : '📋 Copy Summary'}</span>
               </button>
@@ -315,21 +270,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 type="button"
                 id="print-rules-btn"
                 onClick={() => window.print()}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  background: 'rgba(255,255,255,0.18)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(255,255,255,0.28)',
-                  padding: '9px 14px',
-                  borderRadius: '10px',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'background 0.15s'
-                }}
+                className="society-rules-module-s17"
                 title="Print or Save as PDF"
               >
                 <span>🖨️ Print</span>
@@ -339,21 +280,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 type="button"
                 id="view-visuals-btn"
                 onClick={() => window.dispatchEvent(new CustomEvent('changeTab', { detail: 'water_management' }))}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  background: 'rgba(255,255,255,0.25)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(255,255,255,0.4)',
-                  padding: '9px 14px',
-                  borderRadius: '10px',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'background 0.15s'
-                }}
+                className="society-rules-module-s18"
                 title="View Society CAD Plans, Infrastructure & Visuals"
               >
                 <span>📐 Visualization Work →</span>
@@ -363,21 +290,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 type="button"
                 id="view-work-distribution-btn"
                 onClick={() => window.dispatchEvent(new CustomEvent('changeTab', { detail: 'work_distribution' }))}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  background: 'rgba(255,255,255,0.25)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(255,255,255,0.4)',
-                  padding: '9px 14px',
-                  borderRadius: '10px',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'background 0.15s'
-                }}
+                className="society-rules-module-s18"
                 title="View Managing Committee Work Distribution & Portfolios"
               >
                 <span>👥 Work Distribution →</span>
@@ -387,60 +300,53 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
         </div>
 
         {/* Highlight Banner Strips (Real Data from Uploaded Posters) */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-          gap: '12px',
-          marginTop: '22px',
-          paddingTop: '18px',
-          borderTop: '1px solid rgba(255,255,255,0.2)'
-        }}>
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '10px' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#fed7aa', fontWeight: 800, letterSpacing: '0.04em' }}>🚗 Parking Violation Fine</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, marginTop: '2px', color: '#ffffff' }}>₹500 PER DAY</div>
-            <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>Debited directly without warning</div>
+        <div className="society-rules-module-s19">
+          <div className="society-rules-module-s20">
+            <div className="society-rules-module-s21">🚗 Parking Violation Fine</div>
+            <div className="society-rules-module-s22">₹500 PER DAY</div>
+            <div className="society-rules-module-s23">Debited directly without warning</div>
           </div>
 
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '10px' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#fed7aa', fontWeight: 800, letterSpacing: '0.04em' }}>🚰 Water Wastage & Overflow</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, marginTop: '2px', color: '#ffffff' }}>TANKER COST</div>
-            <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>100% added to flat maintenance</div>
+          <div className="society-rules-module-s20">
+            <div className="society-rules-module-s21">🚰 Water Wastage & Overflow</div>
+            <div className="society-rules-module-s22">TANKER COST</div>
+            <div className="society-rules-module-s23">100% added to flat maintenance</div>
           </div>
 
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '10px' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#fed7aa', fontWeight: 800, letterSpacing: '0.04em' }}>⚽ Corridor / Lobby Activity</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, marginTop: '2px', color: '#ffffff' }}>FINE + REPAIR COST</div>
-            <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>CCTV monitored / 1st warning active</div>
+          <div className="society-rules-module-s20">
+            <div className="society-rules-module-s21">⚽ Corridor / Lobby Activity</div>
+            <div className="society-rules-module-s22">FINE + REPAIR COST</div>
+            <div className="society-rules-module-s23">CCTV monitored / 1st warning active</div>
           </div>
 
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '10px' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#fed7aa', fontWeight: 800, letterSpacing: '0.04em' }}>🏛️ Clubhouse Charges</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, marginTop: '2px', color: '#ffffff' }}>₹1,000 + ₹2,000 Dep.</div>
-            <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>Up to 5 hrs | Double for full day</div>
+          <div className="society-rules-module-s20">
+            <div className="society-rules-module-s21">🏛️ Clubhouse Charges</div>
+            <div className="society-rules-module-s22">₹1,000 + ₹2,000 Dep.</div>
+            <div className="society-rules-module-s23">Up to 5 hrs | Double for full day</div>
           </div>
 
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '10px' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#fed7aa', fontWeight: 800, letterSpacing: '0.04em' }}>🎵 Music Cut-off Time</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, marginTop: '2px', color: '#ffffff' }}>10:00 PM Sharp</div>
-            <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>Premises allowed till 11:30 PM</div>
+          <div className="society-rules-module-s20">
+            <div className="society-rules-module-s21">🎵 Music Cut-off Time</div>
+            <div className="society-rules-module-s22">10:00 PM Sharp</div>
+            <div className="society-rules-module-s23">Premises allowed till 11:30 PM</div>
           </div>
 
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '10px' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#fed7aa', fontWeight: 800, letterSpacing: '0.04em' }}>🚭 Strict No-Smoking</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, marginTop: '2px', color: '#ffffff' }}>All Common Areas</div>
-            <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>Lifts, corridors, gardens, parking</div>
+          <div className="society-rules-module-s20">
+            <div className="society-rules-module-s21">🚭 Strict No-Smoking</div>
+            <div className="society-rules-module-s22">All Common Areas</div>
+            <div className="society-rules-module-s23">Lifts, corridors, gardens, parking</div>
           </div>
 
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '10px' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#fed7aa', fontWeight: 800, letterSpacing: '0.04em' }}>🏊‍♂️ Swimming Pool</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, marginTop: '2px', color: '#ffffff' }}>CLOSED THURSDAY</div>
-            <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>Compulsory cap & costume | No bachelors/friends</div>
+          <div className="society-rules-module-s20">
+            <div className="society-rules-module-s21">🏊‍♂️ Swimming Pool</div>
+            <div className="society-rules-module-s22">CLOSED THURSDAY</div>
+            <div className="society-rules-module-s23">Compulsory cap & costume | No bachelors/friends</div>
           </div>
 
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '10px 14px', borderRadius: '10px' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#fed7aa', fontWeight: 800, letterSpacing: '0.04em' }}>🏓 Table Tennis</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, marginTop: '2px', color: '#ffffff' }}>30 MIN LIMIT</div>
-            <div style={{ fontSize: '0.72rem', color: '#fecaca' }}>Order 1/0049 | Register mandatory | No AC</div>
+          <div className="society-rules-module-s20">
+            <div className="society-rules-module-s21">🏓 Table Tennis</div>
+            <div className="society-rules-module-s22">30 MIN LIMIT</div>
+            <div className="society-rules-module-s23">Order 1/0049 | Register mandatory | No AC</div>
           </div>
         </div>
       </div>
@@ -448,52 +354,31 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
       {/* ──────────────────────────────────────────────────────────────────────
           2. Official Circular Posters Gallery (From Uploaded Photos)
       ────────────────────────────────────────────────────────────────────── */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '18px',
-        padding: '24px 26px',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
-        marginBottom: '26px'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px' }}>
+      <div className="society-rules-module-s24">
+        <div className="society-rules-module-s25">
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: 700, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div className="society-rules-module-s26">
               <span>📷 Active Physical Notices</span>
             </div>
-            <h2 style={{ margin: '2px 0 4px 0', fontSize: '1.3rem', fontWeight: 800, color: '#0f172a' }}>
+            <h2 className="society-rules-module-s27">
               Official Society Circulars & Notice Posters
             </h2>
-            <p style={{ margin: 0, fontSize: '0.84rem', color: '#64748b' }}>
+            <p className="society-rules-module-s28">
               High-resolution digital archive of notices currently posted on society noticeboards, gates, and clubhouse entrance. Click any poster to view full-size.
             </p>
           </div>
 
-          <div style={{ fontSize: '0.8rem', color: '#047857', fontWeight: 700, background: '#ecfdf5', padding: '6px 14px', borderRadius: '20px', border: '1px solid #a7f3d0' }}>
+          <div className="society-rules-module-s29">
             ✓ {OFFICIAL_POSTERS.length} Official Posters Archived
           </div>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: '16px'
-        }}>
+        <div className="society-rules-module-s30">
           {OFFICIAL_POSTERS.map((poster) => (
             <div
               key={poster.id}
               onClick={() => setSelectedPoster(poster)}
-              style={{
-                background: '#f8fafc',
-                border: '1px solid #e2e8f0',
-                borderRadius: '14px',
-                overflow: 'hidden',
-                cursor: 'pointer',
-                transition: 'transform 0.18s ease, box-shadow 0.18s ease',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}
+              className="society-rules-module-s31"
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
                 e.currentTarget.style.boxShadow = '0 10px 24px rgba(0,0,0,0.08)';
@@ -503,57 +388,30 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <div style={{ position: 'relative', height: '170px', overflow: 'hidden', background: '#0f172a' }}>
+              <div className="society-rules-module-s32">
                 <img
                   src={poster.image}
                   alt={poster.title}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'top center',
-                    transition: 'transform 0.3s'
-                  }}
+                  className="society-rules-module-s33"
                 />
-                <span style={{
-                  position: 'absolute',
-                  top: '10px',
-                  right: '10px',
-                  background: 'rgba(15, 23, 42, 0.85)',
-                  backdropFilter: 'blur(4px)',
-                  color: '#ffffff',
-                  fontSize: '0.7rem',
-                  fontWeight: 700,
-                  padding: '3px 8px',
-                  borderRadius: '6px'
-                }}>
+                <span className="society-rules-module-s34">
                   🔍 Tap to Zoom
                 </span>
-                <span style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  left: '10px',
-                  background: '#dc2626',
-                  color: '#ffffff',
-                  fontSize: '0.68rem',
-                  fontWeight: 700,
-                  padding: '2px 8px',
-                  borderRadius: '6px'
-                }}>
+                <span className="society-rules-module-s35">
                   {poster.badge}
                 </span>
               </div>
 
-              <div style={{ padding: '14px 16px' }}>
-                <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#0f172a', marginBottom: '4px', lineHeight: 1.3 }}>
+              <div className="society-rules-module-s36">
+                <div className="society-rules-module-s37">
                   {poster.title}
                 </div>
                 {poster.marathiTitle && (
-                  <div style={{ fontSize: '0.78rem', color: '#047857', fontWeight: 600, marginBottom: '6px' }}>
+                  <div className="society-rules-module-s38">
                     {poster.marathiTitle}
                   </div>
                 )}
-                <p style={{ margin: 0, fontSize: '0.76rem', color: '#64748b', lineHeight: 1.4 }}>
+                <p className="society-rules-module-s39">
                   {poster.summary}
                 </p>
               </div>
@@ -565,57 +423,33 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
       {/* ──────────────────────────────────────────────────────────────────────
           3. Interactive Clubhouse & Lawn Booking Rules Calculator
       ────────────────────────────────────────────────────────────────────── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)',
-        borderRadius: '18px',
-        padding: '24px 26px',
-        border: '1px solid #a7f3d0',
-        marginBottom: '26px'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '18px' }}>
+      <div className="society-rules-module-s40">
+        <div className="society-rules-module-s41">
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: 700, color: '#047857', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div className="society-rules-module-s42">
               <span>🏛️ Official Circular (Dated 10-08-2026)</span>
             </div>
-            <h2 style={{ margin: '2px 0 4px 0', fontSize: '1.25rem', fontWeight: 800, color: '#064e3b' }}>
+            <h2 className="society-rules-module-s43">
               Clubhouse & Lawn Booking Calculator & Guidelines
             </h2>
-            <p style={{ margin: 0, fontSize: '0.84rem', color: '#047857' }}>
+            <p className="society-rules-module-s44">
               First-come-first-serve basis with 100% advance payment to the respective Building Committee Member.
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#064e3b' }}>Select Duration:</span>
+          <div className="society-rules-module-s45">
+            <span className="society-rules-module-s46">Select Duration:</span>
             <button
               type="button"
               onClick={() => setBookingHours('5')}
-              style={{
-                background: bookingHours === '5' ? '#047857' : '#ffffff',
-                color: bookingHours === '5' ? '#ffffff' : '#047857',
-                border: '1px solid #047857',
-                padding: '6px 14px',
-                borderRadius: '8px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
+              className="society-rules-module-s47" style={{ background: bookingHours === '5' ? '#047857' : '#ffffff', color: bookingHours === '5' ? '#ffffff' : '#047857' }}
             >
               Up to 5 Hours
             </button>
             <button
               type="button"
               onClick={() => setBookingHours('full')}
-              style={{
-                background: bookingHours === 'full' ? '#047857' : '#ffffff',
-                color: bookingHours === 'full' ? '#ffffff' : '#047857',
-                border: '1px solid #047857',
-                padding: '6px 14px',
-                borderRadius: '8px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
+              className="society-rules-module-s47" style={{ background: bookingHours === 'full' ? '#047857' : '#ffffff', color: bookingHours === 'full' ? '#ffffff' : '#047857' }}
             >
               Full Day (5+ Hours)
             </button>
@@ -623,58 +457,46 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
         </div>
 
         {/* Pricing Cards Strip */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '14px',
-          marginBottom: '18px'
-        }}>
-          <div style={{ background: '#ffffff', padding: '16px 18px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 700 }}>Non-Refundable Utilization Fee</div>
-            <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#065f46', marginTop: '4px' }}>
+        <div className="society-rules-module-s48">
+          <div className="society-rules-module-s49">
+            <div className="society-rules-module-s50">Non-Refundable Utilization Fee</div>
+            <div className="society-rules-module-s51">
               ₹{bookingHours === '5' ? '1,000' : '2,000'}
             </div>
-            <div style={{ fontSize: '0.74rem', color: '#64748b' }}>
+            <div className="society-rules-module-s52">
               {bookingHours === '5' ? 'Standard 5-hr charge' : 'Full 1-day utilization rate'}
             </div>
           </div>
 
-          <div style={{ background: '#ffffff', padding: '16px 18px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 700 }}>Refundable Security Deposit</div>
-            <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0284c7', marginTop: '4px' }}>
+          <div className="society-rules-module-s49">
+            <div className="society-rules-module-s50">Refundable Security Deposit</div>
+            <div className="society-rules-module-s53">
               ₹{bookingHours === '5' ? '2,000' : '4,000'}
             </div>
-            <div style={{ fontSize: '0.74rem', color: '#64748b' }}>
+            <div className="society-rules-module-s52">
               Refunded after AS-IS clean inspection
             </div>
           </div>
 
-          <div style={{ background: '#ffffff', padding: '16px 18px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-            <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 700 }}>Total Advance Payable</div>
-            <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#b91c1c', marginTop: '4px' }}>
+          <div className="society-rules-module-s49">
+            <div className="society-rules-module-s50">Total Advance Payable</div>
+            <div className="society-rules-module-s54">
               ₹{bookingHours === '5' ? '3,000' : '6,000'}
             </div>
-            <div style={{ fontSize: '0.74rem', color: '#64748b' }}>
+            <div className="society-rules-module-s52">
               100% advance to Building Committee Member
             </div>
           </div>
         </div>
 
         {/* Key Restrictions Grid directly from Circular Dt. 10-08-2026 (All 14 Clauses a to n) */}
-        <div style={{
-          background: 'rgba(255,255,255,0.85)',
-          padding: '20px 22px',
-          borderRadius: '14px',
-          border: '1px solid #cbd5e1',
-          fontSize: '0.82rem',
-          color: '#1e293b'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '14px', borderBottom: '1px solid #e2e8f0', paddingBottom: '10px' }}>
+        <div className="society-rules-module-s55">
+          <div className="society-rules-module-s56">
             <div>
-              <span style={{ fontWeight: 800, color: '#064e3b', fontSize: '0.95rem' }}>
+              <span className="society-rules-module-s57">
                 📋 Mandatory Conditions from Guidelines Dt. 10-08-2026 (All Clauses a to n):
               </span>
-              <div style={{ fontSize: '0.74rem', color: '#64748b', marginTop: '2px' }}>
+              <div className="society-rules-module-s58">
                 Official Guidelines ratified for Buildings A, B &amp; C • All 14 clauses must be adhered to strictly by residents, owners &amp; tenants
               </div>
             </div>
@@ -682,90 +504,81 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
               type="button"
               id="view-circular-poster-btn"
               onClick={() => setSelectedPoster(OFFICIAL_POSTERS.find(p => p.id === 'poster-clubhouse-guidelines'))}
-              style={{
-                background: '#ecfdf5',
-                color: '#047857',
-                border: '1px solid #a7f3d0',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
+              className="society-rules-module-s59"
             >
               📄 View Signed Circular Poster 🔍
             </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '10px 18px' }}>
+          <div className="society-rules-module-s60">
             {/* Clause a */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>a</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s62">a</span>
               <div><b>Utilization Fee (≤ 5 hrs):</b> ₹1,000/- (non-refundable) + ₹2,000/- (refundable deposit) for celebrations/functions up to 5 hours.</div>
             </div>
             {/* Clause b */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>b</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s62">b</span>
               <div><b>Charges for &gt; 5 hrs / Full Day:</b> Double charges apply: ₹2,000/- (non-refundable) + ₹4,000/- (refundable deposit) up to full 1-day use.</div>
             </div>
             {/* Clause c */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>c</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s62">c</span>
               <div><b>First-Come, First-Served:</b> 100% of above amount must be paid in advance to respective Building Committee member(s).</div>
             </div>
             {/* Clause d */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>d</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s62">d</span>
               <div><b>Committee Coordination:</b> Building committee must inform Common Committee to avoid any booking clashes.</div>
             </div>
             {/* Clause e */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>e</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s63">e</span>
               <div><b>AS-IS Clean Handover &amp; Damages:</b> Premises must be cleaned and given back in AS-IS condition. Damages or unclean area charged extra from deposit or paid by resident.</div>
             </div>
             {/* Clause f */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>f</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s63">f</span>
               <div><b>No Society Chairs for Personal Use:</b> Society chairs will NOT be given for personal home/flat use; must remain available for clubhouse events.</div>
             </div>
             {/* Clause g */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>g</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s63">g</span>
               <div><b>No Eating on Lawn:</b> Lawn area CANNOT be used for eating during any functions or events to preserve turf.</div>
             </div>
             {/* Clause h */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>h</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s63">h</span>
               <div><b>Strict Cooking Prohibition:</b> Cooking is NOT allowed in any portion of clubhouse/lawn. Only normal heating/microwave permitted.</div>
             </div>
             {/* Clause i */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#0369a1', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>i</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s64">i</span>
               <div><b>Premises Timings:</b> Clubhouse and lawn area allowed to be used till <b>11:30 PM</b> maximum.</div>
             </div>
             {/* Clause j */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>j</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s63">j</span>
               <div><b>Music Cut-Off at 10:00 PM:</b> Music MUST be stopped strictly by <b>10:00 PM sharp</b> as per Government noise pollution guidelines.</div>
             </div>
             {/* Clause k */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>k</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s63">k</span>
               <div><b>No Alcohol &amp; Smoking:</b> Consumption of alcoholic beverages and smoking is <b>strictly prohibited</b> during any functions or anytime.</div>
             </div>
             {/* Clause l */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#6d28d9', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>l</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s65">l</span>
               <div><b>No Festival Clashes:</b> Clubhouse/lawn area will NOT be available for private booking during common society festivals/celebrations.</div>
             </div>
             {/* Clause m */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#b91c1c', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>m</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s63">m</span>
               <div><b>No Stage, DJ, Extra Lights or Generators:</b> No stage setup, DJ, or extra lights. External private generators are strictly prohibited.</div>
             </div>
             {/* Clause n */}
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <span style={{ background: '#047857', color: '#ffffff', borderRadius: '50%', width: '20px', height: '20px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, flexShrink: 0 }}>n</span>
+            <div className="society-rules-module-s61">
+              <span className="society-rules-module-s62">n</span>
               <div><b>National Holidays (Aug 15 &amp; Jan 26):</b> No private booking rules in lawn area on Independence &amp; Republic Day; celebrations decided by Common Committee for all residents.</div>
             </div>
           </div>
@@ -775,21 +588,11 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
       {/* ──────────────────────────────────────────────────────────────────────
           4. Filter Controls & Search
       ────────────────────────────────────────────────────────────────────── */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '16px',
-        padding: '18px 20px',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-        marginBottom: '22px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '14px'
-      }}>
+      <div className="society-rules-module-s66">
         {/* Search Row */}
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <div style={{ flex: '1 1 300px', position: 'relative' }}>
-            <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: '1rem' }}>
+        <div className="society-rules-module-s67">
+          <div className="society-rules-module-s68">
+            <span className="society-rules-module-s69">
               🔍
             </span>
             <input
@@ -798,17 +601,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search rules (e.g. parking 500, smoking, clubhouse charges, footwear, drilling)..."
-              style={{
-                width: '100%',
-                boxSizing: 'border-box',
-                padding: '11px 40px 11px 42px',
-                border: '1px solid #cbd5e1',
-                borderRadius: '10px',
-                fontSize: '0.88rem',
-                outline: 'none',
-                background: '#f8fafc',
-                transition: 'border-color 0.15s, background-color 0.15s'
-              }}
+              className="society-rules-module-s70"
               onFocus={(e) => { e.target.style.borderColor = '#059669'; e.target.style.background = '#ffffff'; }}
               onBlur={(e) => { e.target.style.borderColor = '#cbd5e1'; e.target.style.background = '#f8fafc'; }}
             />
@@ -816,18 +609,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  color: '#94a3b8',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem',
-                  padding: '4px'
-                }}
+                className="society-rules-module-s71"
                 title="Clear search"
               >
                 ✕
@@ -836,8 +618,8 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
           </div>
 
           {/* Severity Quick Chips */}
-          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>Filter:</span>
+          <div className="society-rules-module-s72">
+            <span className="society-rules-module-s73">Filter:</span>
             {[
               { id: 'ALL', label: 'All Clauses' },
               { id: 'STRICT', label: '🚨 Strict Only' },
@@ -847,17 +629,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 key={chip.id}
                 type="button"
                 onClick={() => setSeverityFilter(chip.id)}
-                style={{
-                  background: severityFilter === chip.id ? '#991b1b' : '#f1f5f9',
-                  color: severityFilter === chip.id ? '#ffffff' : '#475569',
-                  border: 'none',
-                  padding: '6px 12px',
-                  borderRadius: '20px',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s'
-                }}
+                className="society-rules-module-s74" style={{ background: severityFilter === chip.id ? '#991b1b' : '#f1f5f9', color: severityFilter === chip.id ? '#ffffff' : '#475569' }}
               >
                 {chip.label}
               </button>
@@ -866,13 +638,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
         </div>
 
         {/* Category Filter Pills */}
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          overflowX: 'auto',
-          paddingBottom: '4px',
-          scrollbarWidth: 'thin'
-        }}>
+        <div className="society-rules-module-s75">
           {RULE_CATEGORIES.map((cat) => {
             const count = cat.id === 'ALL'
               ? INITIAL_SOCIETY_RULES.length
@@ -886,32 +652,11 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategory(cat.id)}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: isSelected ? '#0f172a' : '#f8fafc',
-                  color: isSelected ? '#ffffff' : '#334155',
-                  border: isSelected ? '1px solid #0f172a' : '1px solid #e2e8f0',
-                  padding: '8px 14px',
-                  borderRadius: '10px',
-                  fontSize: '0.82rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s ease'
-                }}
+                className="society-rules-module-s76" style={{ background: isSelected ? '#0f172a' : '#f8fafc', color: isSelected ? '#ffffff' : '#334155', border: isSelected ? '1px solid #0f172a' : '1px solid #e2e8f0' }}
               >
                 <span>{cat.icon}</span>
                 <span>{cat.label}</span>
-                <span style={{
-                  background: isSelected ? 'rgba(255,255,255,0.25)' : '#e2e8f0',
-                  color: isSelected ? '#ffffff' : '#475569',
-                  padding: '2px 7px',
-                  borderRadius: '10px',
-                  fontSize: '0.72rem',
-                  fontWeight: 700
-                }}>
+                <span className="society-rules-module-s77" style={{ background: isSelected ? 'rgba(255,255,255,0.25)' : '#e2e8f0', color: isSelected ? '#ffffff' : '#475569' }}>
                   {count}
                 </span>
               </button>
@@ -923,58 +668,37 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
       {/* ──────────────────────────────────────────────────────────────────────
           5. Rule Cards Grid
       ────────────────────────────────────────────────────────────────────── */}
-      <div style={{ marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600 }}>
-          Showing <span style={{ color: '#0f172a', fontWeight: 800 }}>{filteredRules.length}</span> official bylaws
+      <div className="society-rules-module-s78">
+        <div className="society-rules-module-s79">
+          Showing <span className="society-rules-module-s80">{filteredRules.length}</span> official bylaws
           {selectedCategory !== 'ALL' && ` in ${RULE_CATEGORIES.find(c => c.id === selectedCategory)?.label}`}
           {searchQuery && ` matching "${searchQuery}"`}
         </div>
 
         {filteredRules.length > 0 && (
-          <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
+          <div className="society-rules-module-s81">
             Click <b>📋 Copy</b> on any card to share in WhatsApp resident groups
           </div>
         )}
       </div>
 
       {filteredRules.length === 0 ? (
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '16px',
-          padding: '60px 20px',
-          textAlign: 'center',
-          border: '1px dashed #cbd5e1',
-          color: '#64748b'
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: '12px' }}>🔍</div>
-          <h3 style={{ margin: '0 0 6px 0', color: '#1e293b', fontSize: '1.2rem' }}>No matching rules found</h3>
-          <p style={{ margin: '0 0 16px 0', fontSize: '0.88rem' }}>
+        <div className="society-rules-module-s82">
+          <div className="society-rules-module-s83">🔍</div>
+          <h3 className="society-rules-module-s84">No matching rules found</h3>
+          <p className="society-rules-module-s85">
             Try searching for terms like "parking", "smoking", "clubhouse", "footwear", or clear filters.
           </p>
           <button
             type="button"
             onClick={() => { setSelectedCategory('ALL'); setSearchQuery(''); setSeverityFilter('ALL'); }}
-            style={{
-              background: '#047857',
-              color: '#ffffff',
-              border: 'none',
-              padding: '9px 18px',
-              borderRadius: '8px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              cursor: 'pointer'
-            }}
+            className="society-rules-module-s86"
           >
             Reset Filters
           </button>
         </div>
       ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
-          gap: '18px',
-          marginBottom: '36px'
-        }}>
+        <div className="society-rules-module-s87">
           {filteredRules.map((rule) => {
             const severityMeta = RULE_SEVERITIES[rule.severity] || RULE_SEVERITIES.STANDARD;
             const isCopied = copiedRuleId === rule.id;
@@ -982,94 +706,40 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
             return (
               <div
                 key={rule.id}
-                className="rule-card"
-                style={{
-                  background: '#ffffff',
-                  borderRadius: '16px',
-                  border: '1px solid #e2e8f0',
-                  boxShadow: '0 3px 12px rgba(0,0,0,0.04)',
-                  padding: '22px 22px 18px 22px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  transition: 'transform 0.15s ease, box-shadow 0.15s ease'
-                }}
+                className="rule-card society-rules-module-s88"
               >
                 <div>
                   {/* Card Header Pills */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                      <span style={{
-                        background: '#f1f5f9',
-                        color: '#334155',
-                        fontWeight: 700,
-                        fontSize: '0.72rem',
-                        padding: '4px 8px',
-                        borderRadius: '6px',
-                        letterSpacing: '0.04em'
-                      }}>
+                  <div className="society-rules-module-s89">
+                    <div className="society-rules-module-s72">
+                      <span className="society-rules-module-s90">
                         {rule.article}
                       </span>
-                      <span style={{
-                        background: '#f8fafc',
-                        color: '#64748b',
-                        fontSize: '0.72rem',
-                        fontWeight: 600,
-                        padding: '4px 8px',
-                        borderRadius: '6px'
-                      }}>
+                      <span className="society-rules-module-s91">
                         {rule.categoryIcon} {rule.categoryLabel}
                       </span>
                     </div>
 
-                    <span style={{
-                      background: severityMeta.bg,
-                      color: severityMeta.color,
-                      border: `1px solid ${severityMeta.border}`,
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      padding: '3px 9px',
-                      borderRadius: '14px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
+                    <span className="society-rules-module-s92" style={{ background: severityMeta.bg, color: severityMeta.color, border: `1px solid ${severityMeta.border}` }}>
                       <span>●</span>
                       <span>{severityMeta.label}</span>
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h3 style={{
-                    margin: '0 0 10px 0',
-                    fontSize: '1.08rem',
-                    fontWeight: 700,
-                    color: '#0f172a',
-                    lineHeight: 1.35
-                  }}>
+                  <h3 className="society-rules-module-s93">
                     {rule.title}
                   </h3>
 
                   {/* Timings Strip */}
                   {rule.timings && (
-                    <div style={{
-                      background: '#ecfdf5',
-                      border: '1px solid #a7f3d0',
-                      borderRadius: '8px',
-                      padding: '8px 12px',
-                      marginBottom: '12px',
-                      fontSize: '0.78rem',
-                      color: '#065f46',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '3px'
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>
+                    <div className="society-rules-module-s94">
+                      <div className="society-rules-module-s95">
                         <span>⏱️ Timings / Conditions:</span>
                         <span>{rule.timings}</span>
                       </div>
                       {rule.daysApplicable && (
-                        <div style={{ color: '#047857', fontSize: '0.74rem' }}>
+                        <div className="society-rules-module-s96">
                           📅 {rule.daysApplicable}
                         </div>
                       )}
@@ -1077,29 +747,18 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                   )}
 
                   {/* Summary */}
-                  <p style={{
-                    margin: '0 0 14px 0',
-                    fontSize: '0.85rem',
-                    color: '#475569',
-                    lineHeight: 1.5
-                  }}>
+                  <p className="society-rules-module-s97">
                     {rule.summary}
                   </p>
 
                   {/* Bulleted Guidelines */}
-                  <div style={{ marginBottom: '14px' }}>
-                    <div style={{ fontSize: '0.76rem', fontWeight: 700, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '6px' }}>
+                  <div className="society-rules-module-s98">
+                    <div className="society-rules-module-s99">
                       Key Guidelines & Protocols:
                     </div>
-                    <ul style={{
-                      margin: 0,
-                      paddingLeft: '18px',
-                      fontSize: '0.82rem',
-                      color: '#334155',
-                      lineHeight: 1.5
-                    }}>
+                    <ul className="society-rules-module-s100">
                       {rule.guidelines.map((item, idx) => (
-                        <li key={idx} style={{ marginBottom: '4px' }}>
+                        <li key={idx} className="society-rules-module-s101">
                           {item}
                         </li>
                       ))}
@@ -1108,16 +767,8 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
 
                   {/* Penalty Box */}
                   {rule.penalty && (
-                    <div style={{
-                      background: '#fff1f2',
-                      border: '1px solid #fecdd3',
-                      borderRadius: '8px',
-                      padding: '9px 12px',
-                      marginBottom: '14px',
-                      fontSize: '0.78rem',
-                      color: '#9f1239'
-                    }}>
-                      <strong style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '2px' }}>
+                    <div className="society-rules-module-s102">
+                      <strong className="society-rules-module-s103">
                         <span>⚠️ Non-Compliance Penalty:</span>
                       </strong>
                       <span>{rule.penalty}</span>
@@ -1126,16 +777,8 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 </div>
 
                 {/* Card Footer */}
-                <div style={{
-                  paddingTop: '12px',
-                  borderTop: '1px solid #f1f5f9',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '0.74rem',
-                  color: '#64748b'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div className="society-rules-module-s104">
+                  <div className="society-rules-module-s105">
                     <span>🛡️</span>
                     <span title="Enforcing Authority">Authority: <b>{rule.authority}</b></span>
                   </div>
@@ -1143,17 +786,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                   <button
                     type="button"
                     onClick={() => handleCopyRule(rule)}
-                    style={{
-                      background: isCopied ? '#059669' : '#f1f5f9',
-                      color: isCopied ? '#ffffff' : '#334155',
-                      border: 'none',
-                      padding: '5px 10px',
-                      borderRadius: '6px',
-                      fontSize: '0.74rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease'
-                    }}
+                    className="society-rules-module-s106" style={{ background: isCopied ? '#059669' : '#f1f5f9', color: isCopied ? '#ffffff' : '#334155' }}
                     title="Copy rule to clipboard"
                   >
                     {isCopied ? '✓ Copied' : '📋 Copy'}
@@ -1168,20 +801,13 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
       {/* ──────────────────────────────────────────────────────────────────────
           6. Quick Contacts & Enforcement Desk
       ────────────────────────────────────────────────────────────────────── */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '18px',
-        padding: '24px 26px',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
-        marginBottom: '26px'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px' }}>
+      <div className="society-rules-module-s24">
+        <div className="society-rules-module-s25">
           <div>
-            <h2 style={{ margin: '0 0 4px 0', fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>
+            <h2 className="society-rules-module-s107">
               Enforcement Desk & Society Contacts
             </h2>
-            <p style={{ margin: 0, fontSize: '0.84rem', color: '#64748b' }}>
+            <p className="society-rules-module-s28">
               For immediate rule clarifications, gate passes, or reporting ongoing violations.
             </p>
           </div>
@@ -1189,51 +815,33 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
           <button
             type="button"
             onClick={() => setIsViolationModalOpen(true)}
-            style={{
-              background: '#dc2626',
-              color: '#ffffff',
-              border: 'none',
-              padding: '9px 16px',
-              borderRadius: '10px',
-              fontSize: '0.82rem',
-              fontWeight: 700,
-              cursor: 'pointer'
-            }}
+            className="society-rules-module-s108"
           >
             Report an Incident
           </button>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-          gap: '14px'
-        }}>
+        <div className="society-rules-module-s109">
           {QUICK_CONTACTS.map((contact, idx) => (
             <div
               key={idx}
-              style={{
-                background: '#f8fafc',
-                border: '1px solid #e2e8f0',
-                borderRadius: '12px',
-                padding: '14px 16px'
-              }}
+              className="society-rules-module-s110"
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <span style={{ fontSize: '1.2rem' }}>{contact.icon}</span>
-                <span style={{ fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 700, color: '#64748b', letterSpacing: '0.04em' }}>
+              <div className="society-rules-module-s111">
+                <span className="society-rules-module-s112">{contact.icon}</span>
+                <span className="society-rules-module-s113">
                   {contact.role}
                 </span>
               </div>
-              <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#0f172a', marginBottom: '2px' }}>
+              <div className="society-rules-module-s114">
                 {contact.name}
               </div>
-              <div style={{ fontSize: '0.82rem', color: '#047857', fontWeight: 700, marginBottom: '4px' }}>
-                <a href={contact.action} style={{ color: '#047857', textDecoration: 'none' }}>
+              <div className="society-rules-module-s115">
+                <a href={contact.action} className="society-rules-module-s116">
                   {contact.contact}
                 </a>
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#64748b' }}>
+              <div className="society-rules-module-s117">
                 🕒 {contact.available}
               </div>
             </div>
@@ -1247,46 +855,18 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
       {selectedPoster && typeof document !== 'undefined' && createPortal(
         <div
           onClick={() => setSelectedPoster(null)}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(15, 23, 42, 0.88)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 999999,
-            padding: '20px',
-            boxSizing: 'border-box'
-          }}
+          className="society-rules-module-s118"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{
-              background: '#ffffff',
-              borderRadius: '20px',
-              maxWidth: '880px',
-              width: '100%',
-              maxHeight: '92vh',
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 30px 60px -12px rgba(0,0,0,0.5)',
-              position: 'relative',
-              animation: 'fadeIn 0.2s ease-out'
-            }}
+            className="society-rules-module-s119"
           >
-            <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+            <div className="society-rules-module-s120">
               <div>
-                <span style={{ fontSize: '0.7rem', fontWeight: 700, background: '#dc2626', color: '#ffffff', padding: '3px 9px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                <span className="society-rules-module-s121">
                   {selectedPoster.badge}
                 </span>
-                <h3 style={{ margin: '4px 0 0 0', fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
+                <h3 className="society-rules-module-s122">
                   {selectedPoster.title}
                 </h3>
               </div>
@@ -1294,54 +874,29 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 type="button"
                 onClick={() => setSelectedPoster(null)}
                 aria-label="Close"
-                style={{
-                  background: '#e2e8f0',
-                  border: 'none',
-                  borderRadius: '50%',
-                  width: '34px',
-                  height: '34px',
-                  fontSize: '1.1rem',
-                  color: '#475569',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'background 0.15s ease'
-                }}
+                className="society-rules-module-s123"
               >
                 ✕
               </button>
             </div>
 
-            <div style={{ overflowY: 'auto', padding: '16px', textAlign: 'center', background: '#0b1329', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="society-rules-module-s124">
               <img
                 src={selectedPoster.image}
                 alt={selectedPoster.title}
-                style={{ maxWidth: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}
+                className="society-rules-module-s125"
               />
             </div>
 
-            <div style={{ padding: '14px 20px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-              <div style={{ fontSize: '0.82rem', color: '#64748b', maxWidth: '500px' }}>
+            <div className="society-rules-module-s126">
+              <div className="society-rules-module-s127">
                 {selectedPoster.summary}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="society-rules-module-s128">
                 <button
                   type="button"
                   onClick={() => handlePrintPoster(selectedPoster)}
-                  style={{
-                    background: '#ffffff',
-                    color: '#0f172a',
-                    border: '1px solid #cbd5e1',
-                    padding: '7px 14px',
-                    borderRadius: '8px',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '5px'
-                  }}
+                  className="society-rules-module-s129"
                 >
                   <span>🖨️</span>
                   <span>Print Poster</span>
@@ -1349,19 +904,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 <button
                   type="button"
                   onClick={() => handleDownloadPoster(selectedPoster)}
-                  style={{
-                    background: '#ffffff',
-                    color: '#0f172a',
-                    border: '1px solid #cbd5e1',
-                    padding: '7px 14px',
-                    borderRadius: '8px',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '5px'
-                  }}
+                  className="society-rules-module-s129"
                 >
                   <span>⬇️</span>
                   <span>Download</span>
@@ -1370,18 +913,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                   href={selectedPoster.image}
                   target="_blank"
                   rel="noreferrer"
-                  style={{
-                    background: '#047857',
-                    color: '#ffffff',
-                    textDecoration: 'none',
-                    padding: '7px 14px',
-                    borderRadius: '8px',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
+                  className="society-rules-module-s130"
                 >
                   <span>Open Full Size</span>
                   <span>↗</span>
@@ -1397,38 +929,14 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
           8. Report Violation Modal (Portaled to document.body for instant centering)
       ────────────────────────────────────────────────────────────────────── */}
       {isViolationModalOpen && typeof document !== 'undefined' && createPortal(
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          width: '100vw',
-          height: '100vh',
-          background: 'rgba(15, 23, 42, 0.7)',
-          backdropFilter: 'blur(5px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 999999,
-          padding: '16px',
-          boxSizing: 'border-box'
-        }}>
-          <div style={{
-            background: '#ffffff',
-            borderRadius: '20px',
-            maxWidth: '520px',
-            width: '100%',
-            padding: '26px 28px',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
-            position: 'relative'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+        <div className="society-rules-module-s131">
+          <div className="society-rules-module-s132">
+            <div className="society-rules-module-s133">
               <div>
-                <h3 style={{ margin: '0 0 4px 0', fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>
+                <h3 className="society-rules-module-s134">
                   🚨 Report Society Rule Violation
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748b' }}>
+                <p className="society-rules-module-s135">
                   Reports are dispatched immediately to the Estate Manager & Security Gate.
                 </p>
               </div>
@@ -1436,31 +944,24 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 type="button"
                 onClick={() => setIsViolationModalOpen(false)}
                 aria-label="Close"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '1.2rem',
-                  color: '#94a3b8',
-                  cursor: 'pointer',
-                  padding: '4px'
-                }}
+                className="society-rules-module-s136"
               >
                 ✕
               </button>
             </div>
 
             {violationForm.submitted ? (
-              <div style={{ textAlign: 'center', padding: '30px 10px' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '10px' }}>✅</div>
-                <h4 style={{ margin: '0 0 6px 0', color: '#065f46', fontSize: '1.1rem' }}>Report Logged Successfully</h4>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: '#475569' }}>
+              <div className="society-rules-module-s137">
+                <div className="society-rules-module-s138">✅</div>
+                <h4 className="society-rules-module-s139">Report Logged Successfully</h4>
+                <p className="society-rules-module-s140">
                   Security staff and Estate Manager have been alerted to verify flat {violationForm.flatNumber}.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmitViolation} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <form onSubmit={handleSubmitViolation} className="society-rules-module-s141">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+                  <label className="society-rules-module-s142">
                     Violating Flat Number *
                   </label>
                   <input
@@ -1469,33 +970,18 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                     placeholder="e.g. A-402, B-107, C-801"
                     value={violationForm.flatNumber}
                     onChange={(e) => setViolationForm({ ...violationForm, flatNumber: e.target.value })}
-                    style={{
-                      width: '100%',
-                      boxSizing: 'border-box',
-                      padding: '10px 12px',
-                      border: '1px solid #cbd5e1',
-                      borderRadius: '8px',
-                      fontSize: '0.88rem'
-                    }}
+                    className="society-rules-module-s143"
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+                  <label className="society-rules-module-s142">
                     Type of Violation *
                   </label>
                   <select
                     value={violationForm.ruleType}
                     onChange={(e) => setViolationForm({ ...violationForm, ruleType: e.target.value })}
-                    style={{
-                      width: '100%',
-                      boxSizing: 'border-box',
-                      padding: '10px 12px',
-                      border: '1px solid #cbd5e1',
-                      borderRadius: '8px',
-                      fontSize: '0.88rem',
-                      background: '#ffffff'
-                    }}
+                    className="society-rules-module-s144"
                   >
                     <option value="Unauthorized / Wrong Parking (Fine ₹500/day)">Unauthorized / Wrong Parking (Fine ₹500/day)</option>
                     <option value="Parking in Another Resident Slot Without Prior Permission">Parking in Another Resident Slot Without Prior Permission</option>
@@ -1515,7 +1001,7 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+                  <label className="society-rules-module-s142">
                     Details & Location *
                   </label>
                   <textarea
@@ -1524,60 +1010,25 @@ export default function SocietyRulesModule({ isAdmin = false, userRole = 'RESIDE
                     placeholder="Provide brief details (e.g. Car parked in A-304 slot without permission, or smoking in Wing A 4th floor lobby)..."
                     value={violationForm.details}
                     onChange={(e) => setViolationForm({ ...violationForm, details: e.target.value })}
-                    style={{
-                      width: '100%',
-                      boxSizing: 'border-box',
-                      padding: '10px 12px',
-                      border: '1px solid #cbd5e1',
-                      borderRadius: '8px',
-                      fontSize: '0.88rem',
-                      resize: 'vertical'
-                    }}
+                    className="society-rules-module-s145"
                   />
                 </div>
 
-                <div style={{
-                  background: '#fef2f2',
-                  border: '1px solid #fecaca',
-                  borderRadius: '8px',
-                  padding: '10px 12px',
-                  fontSize: '0.76rem',
-                  color: '#991b1b'
-                }}>
+                <div className="society-rules-module-s146">
                   🚨 <b>Reminder:</b> Per official society notice, parking violations attract a <b>₹500 per day fine</b> added directly to maintenance. Photo/video evidence shared in society group is accepted.
                 </div>
 
-                <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
+                <div className="society-rules-module-s147">
                   <button
                     type="button"
                     onClick={() => setIsViolationModalOpen(false)}
-                    style={{
-                      flex: 1,
-                      padding: '10px',
-                      border: '1px solid #cbd5e1',
-                      background: '#ffffff',
-                      color: '#475569',
-                      borderRadius: '8px',
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                      cursor: 'pointer'
-                    }}
+                    className="society-rules-module-s148"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    style={{
-                      flex: 1,
-                      padding: '10px',
-                      border: 'none',
-                      background: '#dc2626',
-                      color: '#ffffff',
-                      borderRadius: '8px',
-                      fontSize: '0.85rem',
-                      fontWeight: 700,
-                      cursor: 'pointer'
-                    }}
+                    className="society-rules-module-s149"
                   >
                     Submit Report
                   </button>

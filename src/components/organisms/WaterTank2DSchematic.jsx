@@ -14,6 +14,8 @@ import {
   Activity,
   ShieldCheck
 } from 'lucide-react';
+import './WaterTank2DSchematic.css';
+
 
 export default function WaterTank2DSchematic({ onSelectTank }) {
   const [selectedAssetId, setSelectedAssetId] = useState('common_underground');
@@ -30,116 +32,41 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '20px',
-      background: '#ffffff',
-      borderRadius: '20px',
-      padding: '24px',
-      border: '1px solid #e2e8f0',
-      boxShadow: '0 4px 24px rgba(0,0,0,0.03)'
-    }}>
+    <div className="water-tank2-d-schematic-s1">
       {/* Controls Bar */}
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '12px',
-        paddingBottom: '16px',
-        borderBottom: '1px solid #f1f5f9'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            background: '#eff6ff',
-            color: '#2563eb',
-            padding: '8px 12px',
-            borderRadius: '10px',
-            fontWeight: 700,
-            fontSize: '0.88rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-          }}>
+      <div className="water-tank2-d-schematic-s2">
+        <div className="water-tank2-d-schematic-s3">
+          <div className="water-tank2-d-schematic-s4">
             <Layers size={16} /> 2D Master Blueprint & Flow Schematic
           </div>
-          <span style={{ fontSize: '0.82rem', color: '#64748b' }}>
+          <span className="water-tank2-d-schematic-s5">
             Interactive vector map of Society Water Network • Total 5,39,400 L
           </span>
         </div>
 
         {/* Pipeline Layer Filters */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+        <div className="water-tank2-d-schematic-s6">
           <button
             onClick={() => setActiveLayer('all')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '8px',
-              border: activeLayer === 'all' ? '1px solid #2563eb' : '1px solid #e2e8f0',
-              background: activeLayer === 'all' ? '#eff6ff' : '#ffffff',
-              color: activeLayer === 'all' ? '#1d4ed8' : '#64748b',
-              fontWeight: 600,
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
+            className="water-tank2-d-schematic-s7" style={{ border: activeLayer === 'all' ? '1px solid #2563eb' : '1px solid #e2e8f0', background: activeLayer === 'all' ? '#eff6ff' : '#ffffff', color: activeLayer === 'all' ? '#1d4ed8' : '#64748b' }}
           >
             All Systems
           </button>
           <button
             onClick={() => setActiveLayer('domestic')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '8px',
-              border: activeLayer === 'domestic' ? '1px solid #0284c7' : '1px solid #e2e8f0',
-              background: activeLayer === 'domestic' ? '#f0f9ff' : '#ffffff',
-              color: activeLayer === 'domestic' ? '#0284c7' : '#64748b',
-              fontWeight: 600,
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
+            className="water-tank2-d-schematic-s7" style={{ border: activeLayer === 'domestic' ? '1px solid #0284c7' : '1px solid #e2e8f0', background: activeLayer === 'domestic' ? '#f0f9ff' : '#ffffff', color: activeLayer === 'domestic' ? '#0284c7' : '#64748b' }}
           >
             <Droplets size={14} color="#0284c7" /> Domestic Water
           </button>
           <button
             onClick={() => setActiveLayer('recycled')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '8px',
-              border: activeLayer === 'recycled' ? '1px solid #16a34a' : '1px solid #e2e8f0',
-              background: activeLayer === 'recycled' ? '#f0fdf4' : '#ffffff',
-              color: activeLayer === 'recycled' ? '#16a34a' : '#64748b',
-              fontWeight: 600,
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
+            className="water-tank2-d-schematic-s7" style={{ border: activeLayer === 'recycled' ? '1px solid #16a34a' : '1px solid #e2e8f0', background: activeLayer === 'recycled' ? '#f0fdf4' : '#ffffff', color: activeLayer === 'recycled' ? '#16a34a' : '#64748b' }}
           >
             <Leaf size={14} color="#16a34a" /> STP Flushing
           </button>
           <button
             onClick={() => setActiveLayer('fire')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '8px',
-              border: activeLayer === 'fire' ? '1px solid #dc2626' : '1px solid #e2e8f0',
-              background: activeLayer === 'fire' ? '#fef2f2' : '#ffffff',
-              color: activeLayer === 'fire' ? '#dc2626' : '#64748b',
-              fontWeight: 600,
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
+            className="water-tank2-d-schematic-s7" style={{ border: activeLayer === 'fire' ? '1px solid #dc2626' : '1px solid #e2e8f0', background: activeLayer === 'fire' ? '#fef2f2' : '#ffffff', color: activeLayer === 'fire' ? '#dc2626' : '#64748b' }}
           >
             <Flame size={14} color="#dc2626" /> Fire Reserve
           </button>
@@ -147,73 +74,31 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
           {/* Flow Simulation Toggle */}
           <button
             onClick={() => setIsSimulatingFlow(!isSimulatingFlow)}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '8px',
-              border: isSimulatingFlow ? '1px solid #8b5cf6' : '1px solid #e2e8f0',
-              background: isSimulatingFlow ? '#f5f3ff' : '#ffffff',
-              color: isSimulatingFlow ? '#7c3aed' : '#64748b',
-              fontWeight: 600,
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
+            className="water-tank2-d-schematic-s7" style={{ border: isSimulatingFlow ? '1px solid #8b5cf6' : '1px solid #e2e8f0', background: isSimulatingFlow ? '#f5f3ff' : '#ffffff', color: isSimulatingFlow ? '#7c3aed' : '#64748b' }}
           >
             <Activity size={14} /> {isSimulatingFlow ? 'Flow: Active' : 'Flow: Paused'}
           </button>
 
           {/* Zoom controls */}
-          <div style={{ display: 'flex', gap: '4px', marginLeft: '4px' }}>
+          <div className="water-tank2-d-schematic-s8">
             <button
               onClick={() => setZoomLevel(z => Math.min(z + 0.15, 1.6))}
               aria-label="Zoom in"
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '6px',
-                border: '1px solid #e2e8f0',
-                background: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }}
+              className="water-tank2-d-schematic-s9"
             >
               <ZoomIn size={15} color="#475569" />
             </button>
             <button
               onClick={() => setZoomLevel(z => Math.max(z - 0.15, 0.7))}
               aria-label="Zoom out"
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '6px',
-                border: '1px solid #e2e8f0',
-                background: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }}
+              className="water-tank2-d-schematic-s9"
             >
               <ZoomOut size={15} color="#475569" />
             </button>
             <button
               onClick={() => setZoomLevel(1)}
               aria-label="Reset zoom"
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '6px',
-                border: '1px solid #e2e8f0',
-                background: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }}
+              className="water-tank2-d-schematic-s9"
             >
               <RotateCcw size={15} color="#475569" />
             </button>
@@ -222,25 +107,10 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
       </div>
 
       {/* Main Schematic & Detail Panel Container */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 340px',
-        gap: '20px',
-        minHeight: '600px'
-      }} className="schematic-grid">
+      <div className="schematic-grid water-tank2-d-schematic-s10">
         
         {/* SVG Canvas Map */}
-        <div style={{
-          position: 'relative',
-          background: '#f8fafc',
-          borderRadius: '16px',
-          border: '1px solid #cbd5e1',
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '16px'
-        }}>
+        <div className="water-tank2-d-schematic-s11">
           
           {/* Animated CSS for Pipeline Water Flow */}
           <style>{`
@@ -291,44 +161,16 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
           `}</style>
 
           {/* North Direction Compass Badge */}
-          <div style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            background: 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(8px)',
-            borderRadius: '50%',
-            width: '46px',
-            height: '46px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-            border: '1px solid #e2e8f0',
-            zIndex: 10
-          }}>
-            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#dc2626', lineHeight: 1 }}>▲ N</span>
-            <span style={{ fontSize: '0.55rem', fontWeight: 600, color: '#64748b' }}>North</span>
+          <div className="water-tank2-d-schematic-s12">
+            <span className="water-tank2-d-schematic-s13">▲ N</span>
+            <span className="water-tank2-d-schematic-s14">North</span>
           </div>
 
           {/* Site Overview Vector Map */}
-          <div style={{
-            transform: `scale(${zoomLevel})`,
-            transformOrigin: 'center center',
-            transition: 'transform 0.25s ease-out',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center'
-          }}>
+          <div className="water-tank2-d-schematic-s15" style={{ transform: `scale(${zoomLevel})` }}>
             <svg
               viewBox="0 0 700 860"
-              style={{
-                width: '100%',
-                maxWidth: '680px',
-                height: 'auto',
-                filter: 'drop-shadow(0 10px 25px rgba(0,0,0,0.05))'
-              }}
+              className="water-tank2-d-schematic-s16"
             >
               {/* Defs: Gradients and Markers */}
               <defs>
@@ -750,110 +592,55 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
         </div>
 
         {/* Selected Asset Inspection Card (Right Sidebar) */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          background: '#f8fafc',
-          borderRadius: '16px',
-          padding: '20px',
-          border: '1px solid #e2e8f0'
-        }}>
+        <div className="water-tank2-d-schematic-s17">
           {selectedTank ? (
             <>
               {/* Header */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '12px',
-                paddingBottom: '14px',
-                borderBottom: '1px solid #e2e8f0'
-              }}>
-                <div style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '10px',
-                  background: selectedTank.color,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.4rem',
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-                }}>
+              <div className="water-tank2-d-schematic-s18">
+                <div className="water-tank2-d-schematic-s19" style={{ background: selectedTank.color }}>
                   {selectedTank.icon}
                 </div>
                 <div>
-                  <h3 style={{ margin: '0 0 4px', fontSize: '1.05rem', fontWeight: 800, color: '#0f172a' }}>
+                  <h3 className="water-tank2-d-schematic-s20">
                     {selectedTank.name}
                   </h3>
-                  <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>
+                  <p className="water-tank2-d-schematic-s21">
                     {selectedTank.location}
                   </p>
                 </div>
               </div>
 
               {/* Key Metrics */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '10px'
-              }}>
-                <div style={{
-                  background: '#ffffff',
-                  padding: '12px',
-                  borderRadius: '10px',
-                  border: '1px solid #e2e8f0'
-                }}>
-                  <span style={{ fontSize: '0.72rem', color: '#64748b', display: 'block', marginBottom: '4px' }}>
+              <div className="water-tank2-d-schematic-s22">
+                <div className="water-tank2-d-schematic-s23">
+                  <span className="water-tank2-d-schematic-s24">
                     Invoice Capacity
                   </span>
-                  <strong style={{ fontSize: '1.1rem', color: '#0f172a', fontWeight: 800 }}>
+                  <strong className="water-tank2-d-schematic-s25">
                     {selectedTank.capacity.toLocaleString('en-IN')} L
                   </strong>
                 </div>
 
-                <div style={{
-                  background: '#ffffff',
-                  padding: '12px',
-                  borderRadius: '10px',
-                  border: '1px solid #e2e8f0'
-                }}>
-                  <span style={{ fontSize: '0.72rem', color: '#64748b', display: 'block', marginBottom: '4px' }}>
+                <div className="water-tank2-d-schematic-s23">
+                  <span className="water-tank2-d-schematic-s24">
                     Current Water Level
                   </span>
-                  <strong style={{ fontSize: '1.1rem', color: selectedTank.color, fontWeight: 800 }}>
+                  <strong className="water-tank2-d-schematic-s26" style={{ color: selectedTank.color }}>
                     {selectedTank.currentLevelPct}% Full
                   </strong>
                 </div>
               </div>
 
               {/* Visual Liquid Level Progress */}
-              <div style={{
-                background: '#ffffff',
-                padding: '14px',
-                borderRadius: '12px',
-                border: '1px solid #e2e8f0'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.8rem' }}>
-                  <span style={{ color: '#64748b' }}>Estimated Remaining Volume:</span>
-                  <strong style={{ color: '#0f172a' }}>{selectedTank.currentLitres.toLocaleString('en-IN')} L</strong>
+              <div className="water-tank2-d-schematic-s27">
+                <div className="water-tank2-d-schematic-s28">
+                  <span className="water-tank2-d-schematic-s29">Estimated Remaining Volume:</span>
+                  <strong className="water-tank2-d-schematic-s30">{selectedTank.currentLitres.toLocaleString('en-IN')} L</strong>
                 </div>
-                <div style={{
-                  width: '100%',
-                  height: '10px',
-                  background: '#e2e8f0',
-                  borderRadius: '999px',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
-                    width: `${selectedTank.currentLevelPct}%`,
-                    height: '100%',
-                    background: selectedTank.gradient,
-                    borderRadius: '999px',
-                    transition: 'width 0.4s'
-                  }} />
+                <div className="water-tank2-d-schematic-s31">
+                  <div className="water-tank2-d-schematic-s32" style={{ width: `${selectedTank.currentLevelPct}%`, background: selectedTank.gradient }} />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '0.72rem', color: '#94a3b8' }}>
+                <div className="water-tank2-d-schematic-s33">
                   <span>Empty (0 L)</span>
                   <span>Sensor: {selectedTank.sensorTelemetry.currentDepthMeters}m depth</span>
                   <span>Full ({selectedTank.capacity.toLocaleString('en-IN')} L)</span>
@@ -862,23 +649,17 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
 
               {/* Chambers Breakdown */}
               <div>
-                <h4 style={{ margin: '0 0 8px', fontSize: '0.82rem', fontWeight: 700, color: '#334155' }}>
+                <h4 className="water-tank2-d-schematic-s34">
                   Chambers / Storage Units ({selectedTank.tanksCount} Units)
                 </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div className="water-tank2-d-schematic-s35">
                   {selectedTank.chambers.map((c, i) => (
-                    <div key={i} style={{
-                      background: '#ffffff',
-                      padding: '8px 10px',
-                      borderRadius: '8px',
-                      border: '1px solid #e2e8f0',
-                      fontSize: '0.75rem'
-                    }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, color: '#0f172a' }}>
+                    <div key={i} className="water-tank2-d-schematic-s36">
+                      <div className="water-tank2-d-schematic-s37">
                         <span>{c.name}</span>
                         <span>{c.capacity.toLocaleString('en-IN')} L ({c.currentPct}%)</span>
                       </div>
-                      <div style={{ color: '#64748b', fontSize: '0.7rem', marginTop: '2px' }}>
+                      <div className="water-tank2-d-schematic-s38">
                         {c.purpose}
                       </div>
                     </div>
@@ -887,17 +668,11 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
               </div>
 
               {/* Pump & Supply Line Details */}
-              <div style={{
-                background: '#eff6ff',
-                padding: '12px',
-                borderRadius: '10px',
-                border: '1px solid #bfdbfe',
-                fontSize: '0.78rem'
-              }}>
-                <div style={{ fontWeight: 700, color: '#1e40af', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div className="water-tank2-d-schematic-s39">
+                <div className="water-tank2-d-schematic-s40">
                   <ShieldCheck size={14} /> Supply & Telemetry
                 </div>
-                <div style={{ color: '#1e3a8a', lineHeight: 1.4 }}>
+                <div className="water-tank2-d-schematic-s41">
                   <strong>Inflow:</strong> {selectedTank.inflowSources.join(', ')}<br />
                   <strong>Outflow:</strong> {selectedTank.outflowTo.join(', ')}<br />
                   <strong>Sensor:</strong> {selectedTank.sensorTelemetry.sensorType}
@@ -905,19 +680,13 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
               </div>
 
               {/* Cleaning & Hygiene Record */}
-              <div style={{
-                background: '#ffffff',
-                padding: '12px',
-                borderRadius: '10px',
-                border: '1px solid #e2e8f0',
-                fontSize: '0.75rem'
-              }}>
-                <div style={{ fontWeight: 700, color: '#334155', marginBottom: '4px' }}>
+              <div className="water-tank2-d-schematic-s42">
+                <div className="water-tank2-d-schematic-s43">
                   🧼 Hygiene & Compliance Status
                 </div>
-                <div style={{ color: '#475569', lineHeight: 1.5 }}>
+                <div className="water-tank2-d-schematic-s44">
                   Last Cleaned: <strong>{selectedTank.cleaningInfo.lastCleaned}</strong><br />
-                  Next Due: <strong style={{ color: '#d97706' }}>{selectedTank.cleaningInfo.nextDue}</strong><br />
+                  Next Due: <strong className="water-tank2-d-schematic-s45">{selectedTank.cleaningInfo.nextDue}</strong><br />
                   Water Quality: TDS <strong>{selectedTank.cleaningInfo.tdsPpm} ppm</strong> • pH <strong>{selectedTank.cleaningInfo.phValue}</strong>
                 </div>
               </div>
@@ -925,50 +694,34 @@ export default function WaterTank2DSchematic({ onSelectTank }) {
           ) : selectedAncillary ? (
             <>
               {/* Ancillary detail card */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                paddingBottom: '14px',
-                borderBottom: '1px solid #e2e8f0'
-              }}>
-                <div style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '10px',
-                  background: selectedAncillary.color,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#fff',
-                  fontWeight: 700
-                }}>
+              <div className="water-tank2-d-schematic-s46">
+                <div className="water-tank2-d-schematic-s47" style={{ background: selectedAncillary.color }}>
                   ⚙️
                 </div>
                 <div>
-                  <h3 style={{ margin: '0 0 2px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
+                  <h3 className="water-tank2-d-schematic-s48">
                     {selectedAncillary.name}
                   </h3>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Code: {selectedAncillary.code}</span>
+                  <span className="water-tank2-d-schematic-s49">Code: {selectedAncillary.code}</span>
                 </div>
               </div>
 
-              <div style={{ background: '#ffffff', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '0.8rem' }}>
-                <span style={{ color: '#64748b', display: 'block' }}>Capacity / Rating:</span>
-                <strong style={{ fontSize: '1rem', color: '#0f172a' }}>{selectedAncillary.capacity}</strong>
+              <div className="water-tank2-d-schematic-s50">
+                <span className="water-tank2-d-schematic-s51">Capacity / Rating:</span>
+                <strong className="water-tank2-d-schematic-s52">{selectedAncillary.capacity}</strong>
               </div>
 
-              <div style={{ background: '#ffffff', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '0.8rem' }}>
-                <span style={{ color: '#64748b', display: 'block' }}>Operational Status:</span>
-                <strong style={{ color: '#16a34a' }}>● {selectedAncillary.status}</strong>
+              <div className="water-tank2-d-schematic-s50">
+                <span className="water-tank2-d-schematic-s51">Operational Status:</span>
+                <strong className="water-tank2-d-schematic-s53">● {selectedAncillary.status}</strong>
               </div>
 
-              <div style={{ background: '#ffffff', padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '0.78rem', color: '#475569', lineHeight: 1.5 }}>
+              <div className="water-tank2-d-schematic-s54">
                 <strong>Location:</strong> {selectedAncillary.location}
               </div>
             </>
           ) : (
-            <div style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
+            <div className="water-tank2-d-schematic-s55">
               Select a water tank or asset on the map to inspect details.
             </div>
           )}

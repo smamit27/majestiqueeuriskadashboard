@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import './EventsCalendarView.css';
+
 
 // ─── Category config ──────────────────────────────────────────────────────────
 const CATEGORY_CONFIG = {
@@ -79,29 +81,17 @@ function groupEventsByMonth(events) {
 function AnnouncementCard({ item, formatDate }) {
   const priorityColor = item.priority === 'High' ? '#ef4444' : item.priority === 'Medium' ? '#f59e0b' : '#6b7280';
   return (
-    <article style={{
-      background: 'rgba(255,255,255,0.04)',
-      border: '1px solid rgba(255,255,255,0.08)',
-      borderRadius: 12,
-      padding: '16px 18px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 8,
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-        <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 600, color: 'var(--color-text-primary, #f1f5f9)' }}>
+    <article className="events-calendar-view-s1">
+      <div className="events-calendar-view-s2">
+        <h4 className="events-calendar-view-s3">
           {item.title}
         </h4>
-        <span style={{
-          fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
-          color: priorityColor, background: `${priorityColor}18`, border: `1px solid ${priorityColor}30`,
-          borderRadius: 6, padding: '2px 8px', whiteSpace: 'nowrap', flexShrink: 0,
-        }}>
+        <span className="events-calendar-view-s4" style={{ color: priorityColor, background: `${priorityColor}18`, border: `1px solid ${priorityColor}30` }}>
           {item.priority}
         </span>
       </div>
-      <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.75, lineHeight: 1.5 }}>{item.summary}</p>
-      <small style={{ opacity: 0.5, fontSize: '0.78rem' }}>{item.audience} · {formatDate(item.postedOn)}</small>
+      <p className="events-calendar-view-s5">{item.summary}</p>
+      <small className="events-calendar-view-s6">{item.audience} · {formatDate(item.postedOn)}</small>
     </article>
   );
 }
@@ -114,39 +104,21 @@ function EventCard({ event, formatDate, reminded, onToggleReminder }) {
   const isMultiDay = daysCount > 1;
 
   return (
-    <article style={{
-      background: cfg.bg,
-      border: `1.5px solid ${cfg.border}`,
-      borderLeft: `4px solid ${cfg.color}`,
-      borderRadius: 14,
-      padding: '18px 20px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 12,
-      opacity: upcoming ? 1 : 0.65,
-      transition: 'transform 0.18s, box-shadow 0.18s',
-      cursor: 'default',
-    }}
+    <article className="events-calendar-view-s7" style={{ background: cfg.bg, border: `1.5px solid ${cfg.border}`, borderLeft: `4px solid ${cfg.color}`, opacity: upcoming ? 1 : 0.65 }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${cfg.color}22`; }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
     >
       {/* Header row */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{
-            fontSize: '1.5rem', width: 40, height: 40, display: 'flex', alignItems: 'center',
-            justifyContent: 'center', background: `${cfg.color}20`, borderRadius: 10,
-          }}>
+      <div className="events-calendar-view-s8">
+        <div className="events-calendar-view-s9">
+          <span className="events-calendar-view-s10" style={{ background: `${cfg.color}20` }}>
             {cfg.emoji}
           </span>
           <div>
-            <span style={{
-              fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
-              color: cfg.accent, display: 'block', marginBottom: 2,
-            }}>
+            <span className="events-calendar-view-s11" style={{ color: cfg.accent }}>
               {event.category}
             </span>
-            <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--color-text-primary, #f1f5f9)', lineHeight: 1.3 }}>
+            <h4 className="events-calendar-view-s12">
               {event.title}
             </h4>
           </div>
@@ -156,24 +128,10 @@ function EventCard({ event, formatDate, reminded, onToggleReminder }) {
         <button
           onClick={() => onToggleReminder(event.id)}
           title={reminded ? 'Remove reminder' : 'Set reminder'}
-          style={{
-            flexShrink: 0,
-            background: reminded ? `${cfg.color}22` : 'rgba(255,255,255,0.05)',
-            border: `1.5px solid ${reminded ? cfg.color : 'rgba(255,255,255,0.12)'}`,
-            borderRadius: 8,
-            padding: '6px 10px',
-            cursor: 'pointer',
-            fontSize: '0.78rem',
-            fontWeight: 600,
-            color: reminded ? cfg.color : 'rgba(255,255,255,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 5,
-            transition: 'all 0.2s',
-          }}
+          className="events-calendar-view-s13" style={{ background: reminded ? `${cfg.color}22` : 'rgba(255,255,255,0.05)', border: `1.5px solid ${reminded ? cfg.color : 'rgba(255,255,255,0.12)'}`, color: reminded ? cfg.color : 'rgba(255,255,255,0.5)' }}
         >
           <span>{reminded ? '🔔' : '🔕'}</span>
-          <span style={{ display: 'none', ['@media (min-width: 500px)']: { display: 'inline' } }}>
+          <span className="events-calendar-view-s14" style={{ ['@media (min-width: 500px)']: { display: 'inline' } }}>
             {reminded ? 'Reminded' : 'Remind me'}
           </span>
         </button>
@@ -181,33 +139,25 @@ function EventCard({ event, formatDate, reminded, onToggleReminder }) {
 
       {/* Description */}
       {event.description && (
-        <p style={{ margin: 0, fontSize: '0.875rem', opacity: 0.78, lineHeight: 1.6 }}>
+        <p className="events-calendar-view-s15">
           {event.description}
         </p>
       )}
 
       {/* Date / venue / attendees */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px', alignItems: 'center' }}>
+      <div className="events-calendar-view-s16">
         {/* Date chip */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 6,
-          background: `${cfg.color}15`, border: `1px solid ${cfg.color}25`,
-          borderRadius: 8, padding: '5px 10px', fontSize: '0.82rem', fontWeight: 600,
-          color: cfg.accent,
-        }}>
+        <div className="events-calendar-view-s17" style={{ background: `${cfg.color}15`, border: `1px solid ${cfg.color}25`, color: cfg.accent }}>
           <span>📆</span>
           {isMultiDay
-            ? <span>{formatDateShort(event.date)} – {formatDateShort(event.endDate)} <span style={{ fontWeight: 400, opacity: 0.75 }}>({daysCount} days)</span></span>
+            ? <span>{formatDateShort(event.date)} – {formatDateShort(event.endDate)} <span className="events-calendar-view-s18">({daysCount} days)</span></span>
             : <span>{formatDateFull(event.date)}</span>
           }
         </div>
 
         {/* Venue chip */}
         {event.venue && (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            fontSize: '0.82rem', opacity: 0.72,
-          }}>
+          <div className="events-calendar-view-s19">
             <span>📍</span>
             <span>{event.venue}</span>
           </div>
@@ -215,10 +165,7 @@ function EventCard({ event, formatDate, reminded, onToggleReminder }) {
 
         {/* Attendees chip */}
         {event.attendees && (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            fontSize: '0.82rem', opacity: 0.65,
-          }}>
+          <div className="events-calendar-view-s20">
             <span>👥</span>
             <span>{event.attendees} expected</span>
           </div>
@@ -226,10 +173,7 @@ function EventCard({ event, formatDate, reminded, onToggleReminder }) {
 
         {/* Past indicator */}
         {!upcoming && (
-          <span style={{
-            marginLeft: 'auto', fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase',
-            letterSpacing: '0.06em', opacity: 0.5,
-          }}>Past</span>
+          <span className="events-calendar-view-s21">Past</span>
         )}
       </div>
     </article>
@@ -257,51 +201,36 @@ export default function EventsCalendarView({ events, announcements, formatDate }
   const upcomingCount = events.filter(e => isUpcoming(e.date)).length;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+    <div className="events-calendar-view-s22">
 
       {/* ── Page header ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(99,102,241,0.08) 100%)',
-        border: '1px solid rgba(245,158,11,0.2)',
-        borderRadius: 18,
-        padding: '24px 28px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: 20,
-      }}>
+      <div className="events-calendar-view-s23">
         <div>
-          <p style={{ margin: '0 0 4px', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#f59e0b', opacity: 0.9 }}>
+          <p className="events-calendar-view-s24">
             Events &amp; Announcements
           </p>
-          <h2 style={{ margin: '0 0 6px', fontSize: '1.5rem', fontWeight: 800 }}>Festival Calendar 2026</h2>
-          <p style={{ margin: 0, opacity: 0.65, fontSize: '0.9rem' }}>
+          <h2 className="events-calendar-view-s25">Festival Calendar 2026</h2>
+          <p className="events-calendar-view-s26">
             Community events, festivals &amp; upcoming activities for Majestique Euriska
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 16 }}>
+        <div className="events-calendar-view-s27">
           {[
             { label: 'Total Events', value: events.length, emoji: '📅' },
             { label: 'Upcoming', value: upcomingCount, emoji: '⏳' },
             { label: 'Festivals', value: festivalCount, emoji: '🎉' },
           ].map(s => (
-            <div key={s.label} style={{
-              textAlign: 'center',
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: 12, padding: '12px 18px',
-            }}>
-              <div style={{ fontSize: '1.3rem' }}>{s.emoji}</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, lineHeight: 1.2 }}>{s.value}</div>
-              <div style={{ fontSize: '0.72rem', opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.label}</div>
+            <div key={s.label} className="events-calendar-view-s28">
+              <div className="events-calendar-view-s29">{s.emoji}</div>
+              <div className="events-calendar-view-s30">{s.value}</div>
+              <div className="events-calendar-view-s31">{s.label}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* ── Category filter pills ── */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div className="events-calendar-view-s32">
         {categories.map(cat => {
           const cfg = cat === 'All' ? { color: '#6366f1', bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.3)', emoji: '🗓️' } : getCategoryConfig(cat);
           const isActive = activeFilter === cat;
@@ -309,20 +238,7 @@ export default function EventsCalendarView({ events, announcements, formatDate }
             <button
               key={cat}
               onClick={() => setActiveFilter(cat)}
-              style={{
-                background: isActive ? cfg.color : cfg.bg,
-                border: `1.5px solid ${isActive ? cfg.color : cfg.border}`,
-                color: isActive ? '#fff' : cfg.color,
-                borderRadius: 20,
-                padding: '6px 14px',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.18s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
-              }}
+              className="events-calendar-view-s33" style={{ background: isActive ? cfg.color : cfg.bg, border: `1.5px solid ${isActive ? cfg.color : cfg.border}`, color: isActive ? '#fff' : cfg.color }}
             >
               <span>{cfg.emoji}</span>
               <span>{cat}</span>
@@ -332,37 +248,29 @@ export default function EventsCalendarView({ events, announcements, formatDate }
       </div>
 
       {/* ── Two-column layout ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,360px)', gap: 24, alignItems: 'start' }}>
+      <div className="events-calendar-view-s34">
 
         {/* Left: grouped events by month */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+        <div className="events-calendar-view-s22">
           {monthGroups.length === 0 ? (
-            <div style={{
-              textAlign: 'center', padding: '60px 20px', opacity: 0.5,
-              background: 'rgba(255,255,255,0.03)', borderRadius: 16, border: '1px dashed rgba(255,255,255,0.12)',
-            }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>📭</div>
+            <div className="events-calendar-view-s35">
+              <div className="events-calendar-view-s36">📭</div>
               <p>No events match this filter.</p>
             </div>
           ) : (
             monthGroups.map(group => (
               <div key={group.label}>
                 {/* Month header */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14,
-                }}>
-                  <h3 style={{
-                    margin: 0, fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase',
-                    letterSpacing: '0.1em', opacity: 0.55,
-                  }}>
+                <div className="events-calendar-view-s37">
+                  <h3 className="events-calendar-view-s38">
                     {group.label}
                   </h3>
-                  <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.08)' }} />
-                  <span style={{ fontSize: '0.75rem', opacity: 0.4 }}>{group.events.length} event{group.events.length !== 1 ? 's' : ''}</span>
+                  <div className="events-calendar-view-s39" />
+                  <span className="events-calendar-view-s40">{group.events.length} event{group.events.length !== 1 ? 's' : ''}</span>
                 </div>
 
                 {/* Events in this month */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div className="events-calendar-view-s41">
                   {group.events.map(ev => (
                     <EventCard
                       key={ev.id}
@@ -379,24 +287,15 @@ export default function EventsCalendarView({ events, announcements, formatDate }
         </div>
 
         {/* Right: announcements sidebar */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: 16,
-            padding: '18px 20px',
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700 }}>📢 Announcements</h3>
-              <span style={{
-                fontSize: '0.72rem', fontWeight: 700, background: 'rgba(99,102,241,0.15)',
-                color: '#818cf8', border: '1px solid rgba(99,102,241,0.3)',
-                borderRadius: 20, padding: '2px 10px',
-              }}>
+        <div className="events-calendar-view-s42">
+          <div className="events-calendar-view-s43">
+            <div className="events-calendar-view-s44">
+              <h3 className="events-calendar-view-s45">📢 Announcements</h3>
+              <span className="events-calendar-view-s46">
                 {announcements.length} posts
               </span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div className="events-calendar-view-s41">
               {announcements.map(ann => (
                 <AnnouncementCard key={ann.id} item={ann} formatDate={formatDate} />
               ))}
@@ -405,16 +304,11 @@ export default function EventsCalendarView({ events, announcements, formatDate }
 
           {/* Reminder summary */}
           {Object.values(reminders).some(Boolean) && (
-            <div style={{
-              background: 'rgba(245,158,11,0.08)',
-              border: '1.5px solid rgba(245,158,11,0.25)',
-              borderRadius: 14,
-              padding: '14px 18px',
-            }}>
-              <p style={{ margin: '0 0 8px', fontWeight: 700, fontSize: '0.88rem', color: '#f59e0b' }}>
+            <div className="events-calendar-view-s47">
+              <p className="events-calendar-view-s48">
                 🔔 Your Reminders
               </p>
-              <ul style={{ margin: 0, padding: '0 0 0 18px', fontSize: '0.82rem', opacity: 0.8, lineHeight: 1.8 }}>
+              <ul className="events-calendar-view-s49">
                 {events
                   .filter(ev => reminders[ev.id])
                   .map(ev => (

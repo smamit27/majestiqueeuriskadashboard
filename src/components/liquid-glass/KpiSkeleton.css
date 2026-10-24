@@ -1,0 +1,12 @@
+/**
+ * KpiSkeleton.css
+ * Extracted styles from KpiSkeleton.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.kpi-skeleton-s1 {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+

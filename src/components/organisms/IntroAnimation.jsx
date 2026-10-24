@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import confetti from 'canvas-confetti';
+import './IntroAnimation.css';
+
 
 export default function IntroAnimation({ onFinish }) {
   const overlayRef = useRef(null);
@@ -66,19 +68,16 @@ export default function IntroAnimation({ onFinish }) {
     <div
       ref={overlayRef}
       data-testid="intro-overlay"
-      style={{ position: 'fixed', inset: 0, zIndex: 99999, overflow: 'hidden', pointerEvents: 'auto' }}
+      className="intro-animation-s1"
     >
       {/* Doors */}
-      <div ref={leftDoorRef} style={{ position: 'absolute', left: 0, top: 0, width: '50%', height: '100%', background: '#e8f4fd' }} />
-      <div ref={rightDoorRef} style={{ position: 'absolute', right: 0, top: 0, width: '50%', height: '100%', background: '#e8f4fd' }} />
+      <div ref={leftDoorRef} className="intro-animation-s2" />
+      <div ref={rightDoorRef} className="intro-animation-s3" />
 
       {/* Bunny */}
       <div
         ref={bunnyRef}
-        style={{
-          position: 'absolute', bottom: '12%', left: '2%', width: 220, zIndex: 20,
-          filter: 'drop-shadow(0 12px 24px rgba(0,0,0,.12))', opacity: 0
-        }}
+        className="intro-animation-s4"
       >
         <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Ears */}
@@ -116,23 +115,11 @@ export default function IntroAnimation({ onFinish }) {
       </div>
 
       {/* Welcome text – centred over the doors */}
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 30, pointerEvents: 'none',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        padding: '0 24px', textAlign: 'center'
-      }}>
-        <h1 ref={welcomeRef} style={{
-          margin: 0, fontSize: 'clamp(2.8rem,9vw,5.5rem)', fontWeight: 900,
-          color: '#C49B4F', textTransform: 'uppercase', letterSpacing: '0.06em',
-          lineHeight: 1, textShadow: '0 4px 20px rgba(196,155,79,.35)'
-        }}>
+      <div className="intro-animation-s5">
+        <h1 ref={welcomeRef} className="intro-animation-s6">
           Welcome to
         </h1>
-        <h2 ref={brandRef} style={{
-          margin: '12px 0 0', fontSize: 'clamp(1.8rem,6.5vw,4.2rem)', fontWeight: 900,
-          color: 'white', textTransform: 'uppercase', letterSpacing: '0.04em',
-          lineHeight: 1.2, textShadow: '0 4px 20px rgba(11,43,38,.2)'
-        }}>
+        <h2 ref={brandRef} className="intro-animation-s7">
           Majestique Euriska
         </h2>
       </div>

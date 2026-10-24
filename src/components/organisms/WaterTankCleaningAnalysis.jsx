@@ -9,6 +9,8 @@ import {
   Building2,
   Scale
 } from 'lucide-react';
+import './WaterTankCleaningAnalysis.css';
+
 
 export default function WaterTankCleaningAnalysis() {
   const [selectedWingTab, setSelectedWingTab] = useState('all'); // 'all' | 'a_building' | 'b_building' | 'c_building'
@@ -275,75 +277,32 @@ export default function WaterTankCleaningAnalysis() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="water-tank-cleaning-analysis-s1">
       
       {/* Important Context Banner */}
-      <div style={{
-        background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
-        border: '1px solid #fde68a',
-        borderRadius: '16px',
-        padding: '20px 24px',
-        display: 'flex',
-        alignItems: 'flex-start',
-        gap: '16px',
-        boxShadow: '0 4px 15px rgba(245, 158, 11, 0.08)'
-      }}>
-        <div style={{
-          width: '40px',
-          height: '40px',
-          borderRadius: '10px',
-          background: '#f59e0b',
-          color: '#ffffff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0
-        }}>
+      <div className="water-tank-cleaning-analysis-s2">
+        <div className="water-tank-cleaning-analysis-s3">
           <AlertCircle size={22} />
         </div>
-        <div style={{ flex: 1 }}>
-          <h3 style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: 800, color: '#92400e' }}>
+        <div className="water-tank-cleaning-analysis-s4">
+          <h3 className="water-tank-cleaning-analysis-s5">
             Invoiced Water Tank Cleaning Bill & Capacity Rate Audit
           </h3>
-          <p style={{ margin: 0, fontSize: '0.85rem', color: '#78350f', lineHeight: 1.5 }}>
+          <p className="water-tank-cleaning-analysis-s6">
             <strong>Important Clarification:</strong> The invoices analyzed below are for <strong>water tank sanitization & cleaning services</strong>, not tank purchase. The <strong>₹5,100</strong> (A), <strong>₹5,200</strong> (B), and <strong>₹3,200</strong> (C) amounts are the actual invoiced cleaning totals. The analysis uncovers line-by-line pricing, effective ₹/1,000 L, and identifies where rates differ between wings.
           </p>
         </div>
         
-        <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+        <div className="water-tank-cleaning-analysis-s7">
           <button
             onClick={handlePrintAudit}
-            style={{
-              padding: '8px 14px',
-              borderRadius: '8px',
-              border: '1px solid #d97706',
-              background: '#ffffff',
-              color: '#b45309',
-              fontWeight: 700,
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
+            className="water-tank-cleaning-analysis-s8"
           >
             <Printer size={15} /> Print Audit PDF
           </button>
           <button
             onClick={handleExportCSV}
-            style={{
-              padding: '8px 14px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              background: '#ffffff',
-              color: '#334155',
-              fontWeight: 700,
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
+            className="water-tank-cleaning-analysis-s9"
           >
             <Download size={15} /> Export CSV
           </button>
@@ -351,113 +310,79 @@ export default function WaterTankCleaningAnalysis() {
       </div>
 
       {/* 4 Summary Cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '16px'
-      }}>
+      <div className="water-tank-cleaning-analysis-s10">
         {/* Card 1: Total Cleaning Bill */}
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '14px',
-          padding: '18px',
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
-        }}>
-          <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block', marginBottom: '4px' }}>
+        <div className="water-tank-cleaning-analysis-s11">
+          <span className="water-tank-cleaning-analysis-s12">
             Total Invoiced Cleaning Bill
           </span>
-          <strong style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0284c7' }}>
+          <strong className="water-tank-cleaning-analysis-s13">
             ₹{totals.totalCleaningBill.toLocaleString('en-IN')}
           </strong>
-          <span style={{ fontSize: '0.72rem', color: '#059669', display: 'block', marginTop: '4px', fontWeight: 600 }}>
+          <span className="water-tank-cleaning-analysis-s14">
             ₹58.44 / flat across 231 flats (A: 87 · B: 96 · C: 48)
           </span>
         </div>
 
         {/* Card 2: Total Storage Cleaned */}
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '14px',
-          padding: '18px',
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
-        }}>
-          <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block', marginBottom: '4px' }}>
+        <div className="water-tank-cleaning-analysis-s11">
+          <span className="water-tank-cleaning-analysis-s12">
             Total Overhead Storage Cleaned
           </span>
-          <strong style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a' }}>
+          <strong className="water-tank-cleaning-analysis-s15">
             {totals.totalCapacityL.toLocaleString('en-IN')} L
           </strong>
-          <span style={{ fontSize: '0.72rem', color: '#64748b', display: 'block', marginTop: '4px' }}>
+          <span className="water-tank-cleaning-analysis-s16">
             16 Listed Tanks / Units across 3 Wings
           </span>
         </div>
 
         {/* Card 3: Overall Bill per 1,000 L */}
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '14px',
-          padding: '18px',
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
-        }}>
-          <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block', marginBottom: '4px' }}>
+        <div className="water-tank-cleaning-analysis-s11">
+          <span className="water-tank-cleaning-analysis-s12">
             Society Effective Rate
           </span>
-          <strong style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a' }}>
+          <strong className="water-tank-cleaning-analysis-s15">
             ₹{totals.overallBillPer1kL.toFixed(2)}
           </strong>
-          <span style={{ fontSize: '0.72rem', color: '#64748b', display: 'block', marginTop: '4px' }}>
+          <span className="water-tank-cleaning-analysis-s16">
             Per 1,000 Litres Cleaned
           </span>
         </div>
 
         {/* Card 4: Most Cost-Efficient Wing */}
-        <div style={{
-          background: '#f0fdf4',
-          borderRadius: '14px',
-          padding: '18px',
-          border: '1px solid #bbf7d0',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
-        }}>
-          <span style={{ fontSize: '0.75rem', color: '#166534', display: 'block', marginBottom: '4px' }}>
+        <div className="water-tank-cleaning-analysis-s17">
+          <span className="water-tank-cleaning-analysis-s18">
             Lowest Rate per 1,000 L
           </span>
-          <strong style={{ fontSize: '1.6rem', fontWeight: 900, color: '#15803d' }}>
+          <strong className="water-tank-cleaning-analysis-s19">
             B Building (₹58.69)
           </strong>
-          <span style={{ fontSize: '0.72rem', color: '#16a34a', display: 'block', marginTop: '4px', fontWeight: 600 }}>
+          <span className="water-tank-cleaning-analysis-s20">
             Lowest unit cost despite largest capacity
           </span>
         </div>
       </div>
 
       {/* Building Summary Table */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '16px',
-        padding: '24px',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.03)'
-      }}>
-        <h3 style={{ margin: '0 0 16px', fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div className="water-tank-cleaning-analysis-s21">
+        <h3 className="water-tank-cleaning-analysis-s22">
           <Building2 size={18} color="#0284c7" /> Building Capacity & Invoiced Cleaning Bill Comparison
         </h3>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+        <div className="water-tank-cleaning-analysis-s23">
+          <table className="water-tank-cleaning-analysis-s24">
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                <th style={{ padding: '12px', textAlign: 'left', color: '#475569', fontWeight: 700 }}>Building</th>
-                <th style={{ padding: '12px', textAlign: 'center', color: '#475569', fontWeight: 700 }}>Flats</th>
-                <th style={{ padding: '12px', textAlign: 'right', color: '#475569', fontWeight: 700 }}>Capacity (L)</th>
-                <th style={{ padding: '12px', textAlign: 'right', color: '#475569', fontWeight: 700 }}>Cleaning Bill (₹)</th>
-                <th style={{ padding: '12px', textAlign: 'center', color: '#475569', fontWeight: 700 }}>Tanks</th>
-                <th style={{ padding: '12px', textAlign: 'right', color: '#475569', fontWeight: 700 }}>Bill / 1,000 L</th>
-                <th style={{ padding: '12px', textAlign: 'right', color: '#475569', fontWeight: 700 }}>Cost / Flat</th>
-                <th style={{ padding: '12px', textAlign: 'right', color: '#475569', fontWeight: 700 }}>Storage / Flat</th>
-                <th style={{ padding: '12px', textAlign: 'center', color: '#475569', fontWeight: 700 }}>Efficiency Rank</th>
+              <tr className="water-tank-cleaning-analysis-s25">
+                <th className="water-tank-cleaning-analysis-s26">Building</th>
+                <th className="water-tank-cleaning-analysis-s27">Flats</th>
+                <th className="water-tank-cleaning-analysis-s28">Capacity (L)</th>
+                <th className="water-tank-cleaning-analysis-s28">Cleaning Bill (₹)</th>
+                <th className="water-tank-cleaning-analysis-s27">Tanks</th>
+                <th className="water-tank-cleaning-analysis-s28">Bill / 1,000 L</th>
+                <th className="water-tank-cleaning-analysis-s28">Cost / Flat</th>
+                <th className="water-tank-cleaning-analysis-s28">Storage / Flat</th>
+                <th className="water-tank-cleaning-analysis-s27">Efficiency Rank</th>
               </tr>
             </thead>
             <tbody>
@@ -466,39 +391,39 @@ export default function WaterTankCleaningAnalysis() {
                 const costPerFlat = (row.cleaningBill / flatCount).toFixed(2);
                 const storagePerFlat = Math.round(row.capacityL / flatCount);
                 return (
-                  <tr key={idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px', fontWeight: 700, color: row.color, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: row.color }} />
+                  <tr key={idx} className="water-tank-cleaning-analysis-s29">
+                    <td className="water-tank-cleaning-analysis-s30" style={{ color: row.color }}>
+                      <span className="water-tank-cleaning-analysis-s31" style={{ background: row.color }} />
                       {row.building}
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700, color: '#0f172a' }}>
-                      <span style={{ background: '#f1f5f9', padding: '3px 8px', borderRadius: '6px', fontSize: '0.78rem' }}>
+                    <td className="water-tank-cleaning-analysis-s32">
+                      <span className="water-tank-cleaning-analysis-s33">
                         {flatCount} Flats
                       </span>
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right', fontWeight: 600 }}>{row.capacityL.toLocaleString('en-IN')} L</td>
-                    <td style={{ padding: '12px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>₹{row.cleaningBill.toLocaleString('en-IN')}</td>
-                    <td style={{ padding: '12px', textAlign: 'center', fontWeight: 600 }}>{row.tanksCount}</td>
-                    <td style={{ padding: '12px', textAlign: 'right', fontWeight: 800, color: row.billPer1kL < 60 ? '#15803d' : '#0f172a' }}>
+                    <td className="water-tank-cleaning-analysis-s34">{row.capacityL.toLocaleString('en-IN')} L</td>
+                    <td className="water-tank-cleaning-analysis-s35">₹{row.cleaningBill.toLocaleString('en-IN')}</td>
+                    <td className="water-tank-cleaning-analysis-s36">{row.tanksCount}</td>
+                    <td className="water-tank-cleaning-analysis-s37" style={{ color: row.billPer1kL < 60 ? '#15803d' : '#0f172a' }}>
                       ₹{row.billPer1kL.toFixed(2)}
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right', fontWeight: 800, color: '#0284c7' }}>
+                    <td className="water-tank-cleaning-analysis-s38">
                       ₹{costPerFlat}
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right', fontWeight: 600, color: '#475569' }}>
+                    <td className="water-tank-cleaning-analysis-s39">
                       {storagePerFlat} L
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'center' }}>
+                    <td className="water-tank-cleaning-analysis-s40">
                       {row.building === 'B Building' ? (
-                        <span style={{ background: '#dcfce7', color: '#15803d', padding: '3px 8px', borderRadius: '6px', fontSize: '0.72rem', fontWeight: 700 }}>
+                        <span className="water-tank-cleaning-analysis-s41">
                           ★ Lowest (Rank 1)
                         </span>
                       ) : row.building === 'C Building' ? (
-                        <span style={{ background: '#e0f2fe', color: '#0369a1', padding: '3px 8px', borderRadius: '6px', fontSize: '0.72rem', fontWeight: 700 }}>
+                        <span className="water-tank-cleaning-analysis-s42">
                           Rank 2
                         </span>
                       ) : (
-                        <span style={{ background: '#fef3c7', color: '#b45309', padding: '3px 8px', borderRadius: '6px', fontSize: '0.72rem', fontWeight: 700 }}>
+                        <span className="water-tank-cleaning-analysis-s43">
                           Rank 3 (₹67.28)
                         </span>
                       )}
@@ -506,16 +431,16 @@ export default function WaterTankCleaningAnalysis() {
                   </tr>
                 );
               })}
-              <tr style={{ background: '#f8fafc', borderTop: '2px solid #cbd5e1', fontWeight: 800 }}>
-                <td style={{ padding: '12px', color: '#0f172a' }}>TOTAL</td>
-                <td style={{ padding: '12px', textAlign: 'center', color: '#0284c7' }}>231 Flats</td>
-                <td style={{ padding: '12px', textAlign: 'right' }}>{totals.totalCapacityL.toLocaleString('en-IN')} L</td>
-                <td style={{ padding: '12px', textAlign: 'right', color: '#0284c7', fontSize: '1rem' }}>₹{totals.totalCleaningBill.toLocaleString('en-IN')}</td>
-                <td style={{ padding: '12px', textAlign: 'center' }}>{totals.totalTanks}</td>
-                <td style={{ padding: '12px', textAlign: 'right', color: '#0284c7', fontSize: '1rem' }}>₹{totals.overallBillPer1kL.toFixed(2)}</td>
-                <td style={{ padding: '12px', textAlign: 'right', color: '#0284c7', fontSize: '0.95rem' }}>₹{(totals.totalCleaningBill / 231).toFixed(2)}</td>
-                <td style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>{Math.round(totals.totalCapacityL / 231)} L</td>
-                <td style={{ padding: '12px', textAlign: 'center', color: '#64748b' }}>Average</td>
+              <tr className="water-tank-cleaning-analysis-s44">
+                <td className="water-tank-cleaning-analysis-s45">TOTAL</td>
+                <td className="water-tank-cleaning-analysis-s46">231 Flats</td>
+                <td className="water-tank-cleaning-analysis-s47">{totals.totalCapacityL.toLocaleString('en-IN')} L</td>
+                <td className="water-tank-cleaning-analysis-s48">₹{totals.totalCleaningBill.toLocaleString('en-IN')}</td>
+                <td className="water-tank-cleaning-analysis-s40">{totals.totalTanks}</td>
+                <td className="water-tank-cleaning-analysis-s48">₹{totals.overallBillPer1kL.toFixed(2)}</td>
+                <td className="water-tank-cleaning-analysis-s49">₹{(totals.totalCleaningBill / 231).toFixed(2)}</td>
+                <td className="water-tank-cleaning-analysis-s50">{Math.round(totals.totalCapacityL / 231)} L</td>
+                <td className="water-tank-cleaning-analysis-s51">Average</td>
               </tr>
             </tbody>
           </table>
@@ -523,89 +448,40 @@ export default function WaterTankCleaningAnalysis() {
       </div>
 
       {/* Building-Wise Detailed Calculations */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '16px',
-        padding: '24px',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.03)'
-      }}>
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '12px',
-          marginBottom: '20px'
-        }}>
+      <div className="water-tank-cleaning-analysis-s21">
+        <div className="water-tank-cleaning-analysis-s52">
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
+            <h3 className="water-tank-cleaning-analysis-s53">
               Building-Wise Line-by-Line Tank Cleaning Details
             </h3>
-            <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+            <span className="water-tank-cleaning-analysis-s54">
               Shows exactly how each building total is formed and where quoted rates differ
             </span>
           </div>
 
           {/* Wing Switcher */}
-          <div style={{ display: 'flex', gap: '6px', background: '#f1f5f9', padding: '4px', borderRadius: '10px' }}>
+          <div className="water-tank-cleaning-analysis-s55">
             <button
               onClick={() => setSelectedWingTab('all')}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: 'none',
-                background: selectedWingTab === 'all' ? '#0284c7' : 'transparent',
-                color: selectedWingTab === 'all' ? '#ffffff' : '#64748b',
-                fontWeight: 700,
-                fontSize: '0.78rem',
-                cursor: 'pointer'
-              }}
+              className="water-tank-cleaning-analysis-s56" style={{ background: selectedWingTab === 'all' ? '#0284c7' : 'transparent', color: selectedWingTab === 'all' ? '#ffffff' : '#64748b' }}
             >
               All Wings
             </button>
             <button
               onClick={() => setSelectedWingTab('a_building')}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: 'none',
-                background: selectedWingTab === 'a_building' ? '#2563eb' : 'transparent',
-                color: selectedWingTab === 'a_building' ? '#ffffff' : '#64748b',
-                fontWeight: 700,
-                fontSize: '0.78rem',
-                cursor: 'pointer'
-              }}
+              className="water-tank-cleaning-analysis-s56" style={{ background: selectedWingTab === 'a_building' ? '#2563eb' : 'transparent', color: selectedWingTab === 'a_building' ? '#ffffff' : '#64748b' }}
             >
               A Building (₹5,100)
             </button>
             <button
               onClick={() => setSelectedWingTab('b_building')}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: 'none',
-                background: selectedWingTab === 'b_building' ? '#0284c7' : 'transparent',
-                color: selectedWingTab === 'b_building' ? '#ffffff' : '#64748b',
-                fontWeight: 700,
-                fontSize: '0.78rem',
-                cursor: 'pointer'
-              }}
+              className="water-tank-cleaning-analysis-s56" style={{ background: selectedWingTab === 'b_building' ? '#0284c7' : 'transparent', color: selectedWingTab === 'b_building' ? '#ffffff' : '#64748b' }}
             >
               B Building (₹5,200)
             </button>
             <button
               onClick={() => setSelectedWingTab('c_building')}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: 'none',
-                background: selectedWingTab === 'c_building' ? '#059669' : 'transparent',
-                color: selectedWingTab === 'c_building' ? '#ffffff' : '#64748b',
-                fontWeight: 700,
-                fontSize: '0.78rem',
-                cursor: 'pointer'
-              }}
+              className="water-tank-cleaning-analysis-s56" style={{ background: selectedWingTab === 'c_building' ? '#059669' : 'transparent', color: selectedWingTab === 'c_building' ? '#ffffff' : '#64748b' }}
             >
               C Building (₹3,200)
             </button>
@@ -613,77 +489,65 @@ export default function WaterTankCleaningAnalysis() {
         </div>
 
         {/* Wing Cards Grid */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="water-tank-cleaning-analysis-s1">
           
           {/* A Building Detail */}
           {(selectedWingTab === 'all' || selectedWingTab === 'a_building') && (
-            <div style={{
-              borderRadius: '14px',
-              border: '1px solid #bfdbfe',
-              background: '#f8fafc',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                background: '#eff6ff',
-                padding: '14px 20px',
-                borderBottom: '1px solid #bfdbfe',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ background: '#2563eb', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontWeight: 800, fontSize: '0.8rem' }}>
+            <div className="water-tank-cleaning-analysis-s57">
+              <div className="water-tank-cleaning-analysis-s58">
+                <div className="water-tank-cleaning-analysis-s59">
+                  <span className="water-tank-cleaning-analysis-s60">
                     Wing A
                   </span>
-                  <strong style={{ fontSize: '1rem', color: '#1e3a8a' }}>A Building — Detailed Calculation</strong>
-                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>(Capacity: 75,800 L • 6 Units)</span>
+                  <strong className="water-tank-cleaning-analysis-s61">A Building — Detailed Calculation</strong>
+                  <span className="water-tank-cleaning-analysis-s54">(Capacity: 75,800 L • 6 Units)</span>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <strong style={{ fontSize: '1.1rem', color: '#2563eb' }}>₹5,100</strong>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Effective ₹67.28 / 1,000 L</span>
+                <div className="water-tank-cleaning-analysis-s62">
+                  <strong className="water-tank-cleaning-analysis-s63">₹5,100</strong>
+                  <span className="water-tank-cleaning-analysis-s64">Effective ₹67.28 / 1,000 L</span>
                 </div>
               </div>
 
-              <div style={{ padding: '16px', overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+              <div className="water-tank-cleaning-analysis-s65">
+                <table className="water-tank-cleaning-analysis-s66">
                   <thead>
-                    <tr style={{ background: '#ffffff', borderBottom: '1px solid #e2e8f0' }}>
-                      <th style={{ padding: '8px', textAlign: 'center', color: '#64748b' }}>#</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Capacity (L)</th>
-                      <th style={{ padding: '8px', textAlign: 'center', color: '#64748b' }}>Qty</th>
-                      <th style={{ padding: '8px', textAlign: 'left', color: '#64748b' }}>Invoice Note</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Quoted Cleaning (₹)</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Effective ₹/1,000 L</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Invoice Line Total (₹)</th>
+                    <tr className="water-tank-cleaning-analysis-s67">
+                      <th className="water-tank-cleaning-analysis-s68">#</th>
+                      <th className="water-tank-cleaning-analysis-s69">Capacity (L)</th>
+                      <th className="water-tank-cleaning-analysis-s68">Qty</th>
+                      <th className="water-tank-cleaning-analysis-s70">Invoice Note</th>
+                      <th className="water-tank-cleaning-analysis-s69">Quoted Cleaning (₹)</th>
+                      <th className="water-tank-cleaning-analysis-s69">Effective ₹/1,000 L</th>
+                      <th className="water-tank-cleaning-analysis-s69">Invoice Line Total (₹)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {details.a_building.items.map(item => (
-                      <tr key={item.id} style={{ borderBottom: '1px solid #f1f5f9', background: '#fff' }}>
-                        <td style={{ padding: '8px', textAlign: 'center', fontWeight: 700 }}>{item.id}</td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700 }}>{item.capacityL.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '8px', textAlign: 'center' }}>{item.qty}</td>
-                        <td style={{ padding: '8px', color: item.note === '2 in 1' ? '#2563eb' : '#64748b', fontWeight: item.note === '2 in 1' ? 700 : 400 }}>
+                      <tr key={item.id} className="water-tank-cleaning-analysis-s71">
+                        <td className="water-tank-cleaning-analysis-s72">{item.id}</td>
+                        <td className="water-tank-cleaning-analysis-s73">{item.capacityL.toLocaleString('en-IN')}</td>
+                        <td className="water-tank-cleaning-analysis-s74">{item.qty}</td>
+                        <td className="water-tank-cleaning-analysis-s75" style={{ color: item.note === '2 in 1' ? '#2563eb' : '#64748b', fontWeight: item.note === '2 in 1' ? 700 : 400 }}>
                           {item.note}
                         </td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700 }}>₹{item.quotedCleaning.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '8px', textAlign: 'right', color: item.effectivePer1kL > 100 ? '#dc2626' : '#059669', fontWeight: 700 }}>
+                        <td className="water-tank-cleaning-analysis-s73">₹{item.quotedCleaning.toLocaleString('en-IN')}</td>
+                        <td className="water-tank-cleaning-analysis-s73" style={{ color: item.effectivePer1kL > 100 ? '#dc2626' : '#059669' }}>
                           ₹{item.effectivePer1kL.toFixed(2)}
                         </td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                        <td className="water-tank-cleaning-analysis-s76">
                           ₹{item.lineTotal.toLocaleString('en-IN')}
                         </td>
                       </tr>
                     ))}
-                    <tr style={{ background: '#eff6ff', fontWeight: 800, borderTop: '2px solid #bfdbfe' }}>
-                      <td colSpan={4} style={{ padding: '10px', color: '#1e3a8a' }}>TOTAL A BUILDING</td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#1e3a8a' }}>₹{details.a_building.totalBill}</td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#1e3a8a' }}>₹{details.a_building.billPer1kL.toFixed(2)}</td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#2563eb', fontSize: '0.95rem' }}>₹{details.a_building.totalBill}</td>
+                    <tr className="water-tank-cleaning-analysis-s77">
+                      <td colSpan={4} className="water-tank-cleaning-analysis-s78">TOTAL A BUILDING</td>
+                      <td className="water-tank-cleaning-analysis-s79">₹{details.a_building.totalBill}</td>
+                      <td className="water-tank-cleaning-analysis-s79">₹{details.a_building.billPer1kL.toFixed(2)}</td>
+                      <td className="water-tank-cleaning-analysis-s80">₹{details.a_building.totalBill}</td>
                     </tr>
                   </tbody>
                 </table>
-                <div style={{ marginTop: '10px', fontSize: '0.75rem', color: '#64748b' }}>
+                <div className="water-tank-cleaning-analysis-s81">
                   <strong>Bill Calculation:</strong> {details.a_building.calculationFormula}
                 </div>
               </div>
@@ -692,73 +556,61 @@ export default function WaterTankCleaningAnalysis() {
 
           {/* B Building Detail */}
           {(selectedWingTab === 'all' || selectedWingTab === 'b_building') && (
-            <div style={{
-              borderRadius: '14px',
-              border: '1px solid #bae6fd',
-              background: '#f8fafc',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                background: '#f0f9ff',
-                padding: '14px 20px',
-                borderBottom: '1px solid #bae6fd',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ background: '#0284c7', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontWeight: 800, fontSize: '0.8rem' }}>
+            <div className="water-tank-cleaning-analysis-s82">
+              <div className="water-tank-cleaning-analysis-s83">
+                <div className="water-tank-cleaning-analysis-s59">
+                  <span className="water-tank-cleaning-analysis-s84">
                     Wing B
                   </span>
-                  <strong style={{ fontSize: '1rem', color: '#0369a1' }}>B Building — Detailed Calculation</strong>
-                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>(Capacity: 88,600 L • 6 Units)</span>
+                  <strong className="water-tank-cleaning-analysis-s85">B Building — Detailed Calculation</strong>
+                  <span className="water-tank-cleaning-analysis-s54">(Capacity: 88,600 L • 6 Units)</span>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <strong style={{ fontSize: '1.1rem', color: '#0284c7' }}>₹5,200</strong>
-                  <span style={{ fontSize: '0.75rem', color: '#15803d', display: 'block', fontWeight: 700 }}>Effective ₹58.69 / 1,000 L (Best Rate)</span>
+                <div className="water-tank-cleaning-analysis-s62">
+                  <strong className="water-tank-cleaning-analysis-s86">₹5,200</strong>
+                  <span className="water-tank-cleaning-analysis-s87">Effective ₹58.69 / 1,000 L (Best Rate)</span>
                 </div>
               </div>
 
-              <div style={{ padding: '16px', overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+              <div className="water-tank-cleaning-analysis-s65">
+                <table className="water-tank-cleaning-analysis-s66">
                   <thead>
-                    <tr style={{ background: '#ffffff', borderBottom: '1px solid #e2e8f0' }}>
-                      <th style={{ padding: '8px', textAlign: 'center', color: '#64748b' }}>#</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Capacity (L)</th>
-                      <th style={{ padding: '8px', textAlign: 'center', color: '#64748b' }}>Qty</th>
-                      <th style={{ padding: '8px', textAlign: 'left', color: '#64748b' }}>Invoice Note</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Quoted Cleaning (₹)</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Effective ₹/1,000 L</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Invoice Line Total (₹)</th>
+                    <tr className="water-tank-cleaning-analysis-s67">
+                      <th className="water-tank-cleaning-analysis-s68">#</th>
+                      <th className="water-tank-cleaning-analysis-s69">Capacity (L)</th>
+                      <th className="water-tank-cleaning-analysis-s68">Qty</th>
+                      <th className="water-tank-cleaning-analysis-s70">Invoice Note</th>
+                      <th className="water-tank-cleaning-analysis-s69">Quoted Cleaning (₹)</th>
+                      <th className="water-tank-cleaning-analysis-s69">Effective ₹/1,000 L</th>
+                      <th className="water-tank-cleaning-analysis-s69">Invoice Line Total (₹)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {details.b_building.items.map(item => (
-                      <tr key={item.id} style={{ borderBottom: '1px solid #f1f5f9', background: '#fff' }}>
-                        <td style={{ padding: '8px', textAlign: 'center', fontWeight: 700 }}>{item.id}</td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700 }}>{item.capacityL.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '8px', textAlign: 'center' }}>{item.qty}</td>
-                        <td style={{ padding: '8px', color: item.note === '2 in 1' ? '#0284c7' : '#64748b', fontWeight: item.note === '2 in 1' ? 700 : 400 }}>
+                      <tr key={item.id} className="water-tank-cleaning-analysis-s71">
+                        <td className="water-tank-cleaning-analysis-s72">{item.id}</td>
+                        <td className="water-tank-cleaning-analysis-s73">{item.capacityL.toLocaleString('en-IN')}</td>
+                        <td className="water-tank-cleaning-analysis-s74">{item.qty}</td>
+                        <td className="water-tank-cleaning-analysis-s75" style={{ color: item.note === '2 in 1' ? '#0284c7' : '#64748b', fontWeight: item.note === '2 in 1' ? 700 : 400 }}>
                           {item.note}
                         </td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700 }}>₹{item.quotedCleaning.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '8px', textAlign: 'right', color: item.effectivePer1kL > 100 ? '#dc2626' : '#059669', fontWeight: 700 }}>
+                        <td className="water-tank-cleaning-analysis-s73">₹{item.quotedCleaning.toLocaleString('en-IN')}</td>
+                        <td className="water-tank-cleaning-analysis-s73" style={{ color: item.effectivePer1kL > 100 ? '#dc2626' : '#059669' }}>
                           ₹{item.effectivePer1kL.toFixed(2)}
                         </td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                        <td className="water-tank-cleaning-analysis-s76">
                           ₹{item.lineTotal.toLocaleString('en-IN')}
                         </td>
                       </tr>
                     ))}
-                    <tr style={{ background: '#f0f9ff', fontWeight: 800, borderTop: '2px solid #bae6fd' }}>
-                      <td colSpan={4} style={{ padding: '10px', color: '#0369a1' }}>TOTAL B BUILDING</td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#0369a1' }}>₹{details.b_building.totalBill}</td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#0369a1' }}>₹{details.b_building.billPer1kL.toFixed(2)}</td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#0284c7', fontSize: '0.95rem' }}>₹{details.b_building.totalBill}</td>
+                    <tr className="water-tank-cleaning-analysis-s88">
+                      <td colSpan={4} className="water-tank-cleaning-analysis-s89">TOTAL B BUILDING</td>
+                      <td className="water-tank-cleaning-analysis-s90">₹{details.b_building.totalBill}</td>
+                      <td className="water-tank-cleaning-analysis-s90">₹{details.b_building.billPer1kL.toFixed(2)}</td>
+                      <td className="water-tank-cleaning-analysis-s91">₹{details.b_building.totalBill}</td>
                     </tr>
                   </tbody>
                 </table>
-                <div style={{ marginTop: '10px', fontSize: '0.75rem', color: '#64748b' }}>
+                <div className="water-tank-cleaning-analysis-s81">
                   <strong>Bill Calculation:</strong> {details.b_building.calculationFormula}
                 </div>
               </div>
@@ -767,71 +619,59 @@ export default function WaterTankCleaningAnalysis() {
 
           {/* C Building Detail */}
           {(selectedWingTab === 'all' || selectedWingTab === 'c_building') && (
-            <div style={{
-              borderRadius: '14px',
-              border: '1px solid #a7f3d0',
-              background: '#f8fafc',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                background: '#f0fdf4',
-                padding: '14px 20px',
-                borderBottom: '1px solid #a7f3d0',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ background: '#059669', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontWeight: 800, fontSize: '0.8rem' }}>
+            <div className="water-tank-cleaning-analysis-s92">
+              <div className="water-tank-cleaning-analysis-s93">
+                <div className="water-tank-cleaning-analysis-s59">
+                  <span className="water-tank-cleaning-analysis-s94">
                     Wing C
                   </span>
-                  <strong style={{ fontSize: '1rem', color: '#065f46' }}>C Building — Detailed Calculation</strong>
-                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>(Capacity: 50,000 L • 4 Units)</span>
+                  <strong className="water-tank-cleaning-analysis-s95">C Building — Detailed Calculation</strong>
+                  <span className="water-tank-cleaning-analysis-s54">(Capacity: 50,000 L • 4 Units)</span>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <strong style={{ fontSize: '1.1rem', color: '#059669' }}>₹3,200</strong>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Effective ₹64.00 / 1,000 L</span>
+                <div className="water-tank-cleaning-analysis-s62">
+                  <strong className="water-tank-cleaning-analysis-s96">₹3,200</strong>
+                  <span className="water-tank-cleaning-analysis-s64">Effective ₹64.00 / 1,000 L</span>
                 </div>
               </div>
 
-              <div style={{ padding: '16px', overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+              <div className="water-tank-cleaning-analysis-s65">
+                <table className="water-tank-cleaning-analysis-s66">
                   <thead>
-                    <tr style={{ background: '#ffffff', borderBottom: '1px solid #e2e8f0' }}>
-                      <th style={{ padding: '8px', textAlign: 'center', color: '#64748b' }}>#</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Capacity (L)</th>
-                      <th style={{ padding: '8px', textAlign: 'center', color: '#64748b' }}>Qty</th>
-                      <th style={{ padding: '8px', textAlign: 'left', color: '#64748b' }}>Invoice Note</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Quoted Cleaning (₹)</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Effective ₹/1,000 L</th>
-                      <th style={{ padding: '8px', textAlign: 'right', color: '#64748b' }}>Invoice Line Total (₹)</th>
+                    <tr className="water-tank-cleaning-analysis-s67">
+                      <th className="water-tank-cleaning-analysis-s68">#</th>
+                      <th className="water-tank-cleaning-analysis-s69">Capacity (L)</th>
+                      <th className="water-tank-cleaning-analysis-s68">Qty</th>
+                      <th className="water-tank-cleaning-analysis-s70">Invoice Note</th>
+                      <th className="water-tank-cleaning-analysis-s69">Quoted Cleaning (₹)</th>
+                      <th className="water-tank-cleaning-analysis-s69">Effective ₹/1,000 L</th>
+                      <th className="water-tank-cleaning-analysis-s69">Invoice Line Total (₹)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {details.c_building.items.map(item => (
-                      <tr key={item.id} style={{ borderBottom: '1px solid #f1f5f9', background: '#fff' }}>
-                        <td style={{ padding: '8px', textAlign: 'center', fontWeight: 700 }}>{item.id}</td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700 }}>{item.capacityL.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '8px', textAlign: 'center' }}>{item.qty}</td>
-                        <td style={{ padding: '8px', color: '#64748b' }}>{item.note}</td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700 }}>₹{item.quotedCleaning.toLocaleString('en-IN')}</td>
-                        <td style={{ padding: '8px', textAlign: 'right', color: item.effectivePer1kL > 100 ? '#dc2626' : '#059669', fontWeight: 700 }}>
+                      <tr key={item.id} className="water-tank-cleaning-analysis-s71">
+                        <td className="water-tank-cleaning-analysis-s72">{item.id}</td>
+                        <td className="water-tank-cleaning-analysis-s73">{item.capacityL.toLocaleString('en-IN')}</td>
+                        <td className="water-tank-cleaning-analysis-s74">{item.qty}</td>
+                        <td className="water-tank-cleaning-analysis-s97">{item.note}</td>
+                        <td className="water-tank-cleaning-analysis-s73">₹{item.quotedCleaning.toLocaleString('en-IN')}</td>
+                        <td className="water-tank-cleaning-analysis-s73" style={{ color: item.effectivePer1kL > 100 ? '#dc2626' : '#059669' }}>
                           ₹{item.effectivePer1kL.toFixed(2)}
                         </td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>
+                        <td className="water-tank-cleaning-analysis-s76">
                           ₹{item.lineTotal.toLocaleString('en-IN')}
                         </td>
                       </tr>
                     ))}
-                    <tr style={{ background: '#f0fdf4', fontWeight: 800, borderTop: '2px solid #a7f3d0' }}>
-                      <td colSpan={4} style={{ padding: '10px', color: '#065f46' }}>TOTAL C BUILDING</td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#065f46' }}>₹{details.c_building.totalBill}</td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#065f46' }}>₹{details.c_building.billPer1kL.toFixed(2)}</td>
-                      <td style={{ padding: '10px', textAlign: 'right', color: '#059669', fontSize: '0.95rem' }}>₹{details.c_building.totalBill}</td>
+                    <tr className="water-tank-cleaning-analysis-s98">
+                      <td colSpan={4} className="water-tank-cleaning-analysis-s99">TOTAL C BUILDING</td>
+                      <td className="water-tank-cleaning-analysis-s100">₹{details.c_building.totalBill}</td>
+                      <td className="water-tank-cleaning-analysis-s100">₹{details.c_building.billPer1kL.toFixed(2)}</td>
+                      <td className="water-tank-cleaning-analysis-s101">₹{details.c_building.totalBill}</td>
                     </tr>
                   </tbody>
                 </table>
-                <div style={{ marginTop: '10px', fontSize: '0.75rem', color: '#64748b' }}>
+                <div className="water-tank-cleaning-analysis-s81">
                   <strong>Bill Calculation:</strong> {details.c_building.calculationFormula}
                 </div>
               </div>
@@ -844,77 +684,55 @@ export default function WaterTankCleaningAnalysis() {
       {/* ───────────────────────────────────────────────────────────── */}
       {/* RATE DISPARITY AUDIT: WHERE CHARGE IS HIGHER OR LOWER         */}
       {/* ───────────────────────────────────────────────────────────── */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '16px',
-        padding: '24px',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.03)'
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          marginBottom: '16px',
-          paddingBottom: '12px',
-          borderBottom: '1px solid #f1f5f9'
-        }}>
-          <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
-            background: '#fef2f2',
-            color: '#dc2626',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+      <div className="water-tank-cleaning-analysis-s21">
+        <div className="water-tank-cleaning-analysis-s102">
+          <div className="water-tank-cleaning-analysis-s103">
             <Scale size={18} />
           </div>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
+            <h3 className="water-tank-cleaning-analysis-s104">
               Where the Cleaning Charge Is Higher or Lower (Audit Analysis)
             </h3>
-            <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+            <span className="water-tank-cleaning-analysis-s54">
               Compares identical capacities appearing in more than one building
             </span>
           </div>
         </div>
 
         {/* Identical Capacity Table */}
-        <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+        <div className="water-tank-cleaning-analysis-s105">
+          <table className="water-tank-cleaning-analysis-s66">
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                <th style={{ padding: '10px', textAlign: 'left', color: '#475569' }}>Capacity (L)</th>
-                <th style={{ padding: '10px', textAlign: 'right', color: '#475569' }}>A Charge</th>
-                <th style={{ padding: '10px', textAlign: 'right', color: '#475569' }}>B Charge</th>
-                <th style={{ padding: '10px', textAlign: 'right', color: '#475569' }}>C Charge</th>
-                <th style={{ padding: '10px', textAlign: 'right', color: '#475569' }}>Lowest Seen</th>
-                <th style={{ padding: '10px', textAlign: 'left', color: '#475569' }}>Difference vs Lowest</th>
-                <th style={{ padding: '10px', textAlign: 'center', color: '#475569' }}>Audit Finding</th>
+              <tr className="water-tank-cleaning-analysis-s25">
+                <th className="water-tank-cleaning-analysis-s106">Capacity (L)</th>
+                <th className="water-tank-cleaning-analysis-s107">A Charge</th>
+                <th className="water-tank-cleaning-analysis-s107">B Charge</th>
+                <th className="water-tank-cleaning-analysis-s107">C Charge</th>
+                <th className="water-tank-cleaning-analysis-s107">Lowest Seen</th>
+                <th className="water-tank-cleaning-analysis-s106">Difference vs Lowest</th>
+                <th className="water-tank-cleaning-analysis-s108">Audit Finding</th>
               </tr>
             </thead>
             <tbody>
               {rateDisparityAudit.identicalComparisons.map((item, i) => (
-                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '10px', fontWeight: 800, color: '#0f172a' }}>{item.capacityL.toLocaleString('en-IN')} L</td>
-                  <td style={{ padding: '10px', textAlign: 'right', fontWeight: 600 }}>{item.aCharge !== '—' ? `₹${item.aCharge}` : '—'}</td>
-                  <td style={{ padding: '10px', textAlign: 'right', fontWeight: 600, color: item.status === 'Discrepancy' ? '#dc2626' : '#0f172a' }}>
+                <tr key={i} className="water-tank-cleaning-analysis-s29">
+                  <td className="water-tank-cleaning-analysis-s109">{item.capacityL.toLocaleString('en-IN')} L</td>
+                  <td className="water-tank-cleaning-analysis-s110">{item.aCharge !== '—' ? `₹${item.aCharge}` : '—'}</td>
+                  <td className="water-tank-cleaning-analysis-s110" style={{ color: item.status === 'Discrepancy' ? '#dc2626' : '#0f172a' }}>
                     {item.bCharge !== '—' ? `₹${item.bCharge}` : '—'}
                   </td>
-                  <td style={{ padding: '10px', textAlign: 'right', fontWeight: 600 }}>{item.cCharge !== '—' ? `₹${item.cCharge}` : '—'}</td>
-                  <td style={{ padding: '10px', textAlign: 'right', fontWeight: 800, color: '#16a34a' }}>₹{item.lowestSeen}</td>
-                  <td style={{ padding: '10px', fontWeight: 600, color: item.status === 'Discrepancy' ? '#dc2626' : '#15803d' }}>
+                  <td className="water-tank-cleaning-analysis-s110">{item.cCharge !== '—' ? `₹${item.cCharge}` : '—'}</td>
+                  <td className="water-tank-cleaning-analysis-s111">₹{item.lowestSeen}</td>
+                  <td className="water-tank-cleaning-analysis-s112" style={{ color: item.status === 'Discrepancy' ? '#dc2626' : '#15803d' }}>
                     {item.differenceVsLowest}
                   </td>
-                  <td style={{ padding: '10px', textAlign: 'center' }}>
+                  <td className="water-tank-cleaning-analysis-s113">
                     {item.status === 'Discrepancy' ? (
-                      <span style={{ background: '#fee2e2', color: '#b91c1c', padding: '4px 8px', borderRadius: '6px', fontSize: '0.72rem', fontWeight: 700 }}>
+                      <span className="water-tank-cleaning-analysis-s114">
                         ⚠ +₹100 Rate Variance
                       </span>
                     ) : (
-                      <span style={{ background: '#dcfce7', color: '#15803d', padding: '4px 8px', borderRadius: '6px', fontSize: '0.72rem', fontWeight: 700 }}>
+                      <span className="water-tank-cleaning-analysis-s115">
                         ✓ Uniform Quoted Price
                       </span>
                     )}
@@ -926,24 +744,13 @@ export default function WaterTankCleaningAnalysis() {
         </div>
 
         {/* Direct Observations List */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '12px',
-          marginBottom: '20px'
-        }}>
+        <div className="water-tank-cleaning-analysis-s116">
           {rateDisparityAudit.directObservations.map((obs, i) => (
-            <div key={i} style={{
-              background: '#f8fafc',
-              padding: '12px 14px',
-              borderRadius: '10px',
-              border: '1px solid #e2e8f0',
-              fontSize: '0.8rem'
-            }}>
-              <div style={{ fontWeight: 800, color: '#1e293b', marginBottom: '4px' }}>
+            <div key={i} className="water-tank-cleaning-analysis-s117">
+              <div className="water-tank-cleaning-analysis-s118">
                 • {obs.point}
               </div>
-              <div style={{ color: '#475569', lineHeight: 1.4 }}>
+              <div className="water-tank-cleaning-analysis-s119">
                 {obs.observation}
               </div>
             </div>
@@ -951,18 +758,10 @@ export default function WaterTankCleaningAnalysis() {
         </div>
 
         {/* Auditor Conclusion Callout */}
-        <div style={{
-          background: '#f0fdf4',
-          border: '1px solid #86efac',
-          borderRadius: '12px',
-          padding: '16px 20px',
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: '12px'
-        }}>
-          <CheckCircle2 size={20} color="#16a34a" style={{ flexShrink: 0, marginTop: '2px' }} />
-          <div style={{ fontSize: '0.82rem', color: '#166534', lineHeight: 1.5 }}>
-            <strong style={{ fontSize: '0.9rem', display: 'block', marginBottom: '4px', color: '#14532d' }}>
+        <div className="water-tank-cleaning-analysis-s120">
+          <CheckCircle2 size={20} color="#16a34a" className="water-tank-cleaning-analysis-s121" />
+          <div className="water-tank-cleaning-analysis-s122">
+            <strong className="water-tank-cleaning-analysis-s123">
               Society Audit Conclusion & Next Steps:
             </strong>
             {rateDisparityAudit.conclusion}
@@ -973,53 +772,26 @@ export default function WaterTankCleaningAnalysis() {
       {/* ───────────────────────────────────────────────────────────── */}
       {/* RATE CARD STANDARDIZATION SIMULATOR                           */}
       {/* ───────────────────────────────────────────────────────────── */}
-      <div style={{
-        background: '#ffffff',
-        borderRadius: '16px',
-        padding: '24px',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.03)'
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          marginBottom: '16px',
-          paddingBottom: '12px',
-          borderBottom: '1px solid #f1f5f9'
-        }}>
-          <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
-            background: '#f5f3ff',
-            color: '#7c3aed',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+      <div className="water-tank-cleaning-analysis-s21">
+        <div className="water-tank-cleaning-analysis-s102">
+          <div className="water-tank-cleaning-analysis-s124">
             <Calculator size={18} />
           </div>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
+            <h3 className="water-tank-cleaning-analysis-s104">
               Standard Contractual Rate Card Simulator
             </h3>
-            <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+            <span className="water-tank-cleaning-analysis-s54">
               Simulate vendor contract negotiations with a standardized rate per 1,000 Litres
             </span>
           </div>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '24px',
-          alignItems: 'center'
-        }}>
+        <div className="water-tank-cleaning-analysis-s125">
           {/* Controls */}
           <div>
-            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>
-              Proposed Standardized Rate: <strong style={{ color: '#0284c7', fontSize: '1rem' }}>₹{simulatedRatePer1kL} / 1,000 L</strong>
+            <label className="water-tank-cleaning-analysis-s126">
+              Proposed Standardized Rate: <strong className="water-tank-cleaning-analysis-s127">₹{simulatedRatePer1kL} / 1,000 L</strong>
             </label>
             <input
               type="range"
@@ -1028,30 +800,21 @@ export default function WaterTankCleaningAnalysis() {
               step="1"
               value={simulatedRatePer1kL}
               onChange={(e) => setSimulatedRatePer1kL(Number(e.target.value))}
-              style={{ width: '100%', accentColor: '#0284c7', cursor: 'pointer' }}
+              className="water-tank-cleaning-analysis-s128"
             />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#94a3b8', marginTop: '4px' }}>
+            <div className="water-tank-cleaning-analysis-s129">
               <span>₹40/1kL (Aggressive)</span>
               <span>₹58.69/1kL (B-Wing Rate)</span>
               <span>₹62.97/1kL (Current Avg)</span>
               <span>₹80/1kL</span>
             </div>
 
-            <div style={{ display: 'flex', gap: '8px', marginTop: '14px' }}>
+            <div className="water-tank-cleaning-analysis-s130">
               {[50, 55, 58.69, 60, 62.97].map((r) => (
                 <button
                   key={r}
                   onClick={() => setSimulatedRatePer1kL(r)}
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: '6px',
-                    border: simulatedRatePer1kL === r ? '2px solid #0284c7' : '1px solid #cbd5e1',
-                    background: simulatedRatePer1kL === r ? '#f0f9ff' : '#ffffff',
-                    color: simulatedRatePer1kL === r ? '#0284c7' : '#475569',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    cursor: 'pointer'
-                  }}
+                  className="water-tank-cleaning-analysis-s131" style={{ border: simulatedRatePer1kL === r ? '2px solid #0284c7' : '1px solid #cbd5e1', background: simulatedRatePer1kL === r ? '#f0f9ff' : '#ffffff', color: simulatedRatePer1kL === r ? '#0284c7' : '#475569' }}
                 >
                   ₹{r}
                 </button>
@@ -1060,21 +823,16 @@ export default function WaterTankCleaningAnalysis() {
           </div>
 
           {/* Outcome Card */}
-          <div style={{
-            background: costDifference <= 0 ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' : 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
-            borderRadius: '14px',
-            padding: '20px',
-            border: costDifference <= 0 ? '1px solid #86efac' : '1px solid #fca5a5'
-          }}>
-            <div style={{ fontSize: '0.8rem', color: costDifference <= 0 ? '#15803d' : '#b91c1c', fontWeight: 700, marginBottom: '4px' }}>
+          <div className="water-tank-cleaning-analysis-s132" style={{ background: costDifference <= 0 ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' : 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)', border: costDifference <= 0 ? '1px solid #86efac' : '1px solid #fca5a5' }}>
+            <div className="water-tank-cleaning-analysis-s133" style={{ color: costDifference <= 0 ? '#15803d' : '#b91c1c' }}>
               {costDifference <= 0 ? 'Projected Society Savings' : 'Projected Cost Increase'}
             </div>
             
-            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: costDifference <= 0 ? '#15803d' : '#b91c1c' }}>
+            <div className="water-tank-cleaning-analysis-s134" style={{ color: costDifference <= 0 ? '#15803d' : '#b91c1c' }}>
               {costDifference <= 0 ? `Savings: ₹${Math.abs(costDifference).toLocaleString('en-IN')}` : `Extra: ₹${costDifference.toLocaleString('en-IN')}`}
             </div>
 
-            <div style={{ fontSize: '0.8rem', color: '#475569', marginTop: '8px', lineHeight: 1.5 }}>
+            <div className="water-tank-cleaning-analysis-s135">
               • Current Actual Invoice Total: <strong>₹{totals.totalCleaningBill.toLocaleString('en-IN')}</strong> (@ ₹62.97/1kL)<br />
               • Simulated Contract Total: <strong>₹{simulatedTotalCost.toLocaleString('en-IN')}</strong> (@ ₹{simulatedRatePer1kL}/1kL across 2,14,400 L)
             </div>

@@ -1,0 +1,26 @@
+/**
+ * AtomicEmptyState.css
+ * Extracted styles from AtomicEmptyState.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.atomic-empty-state-s1 {
+  color: #94a3b8;
+}
+
+.atomic-empty-state-s2 {
+  font-weight: 700;
+  font-size: 0.96rem;
+  color: #1e293b;
+}
+
+.atomic-empty-state-s3 {
+  font-size: 0.82rem;
+  color: #64748b;
+  max-width: 320px;
+}
+
+.atomic-empty-state-s4 {
+  margin-top: 8px;
+}
+

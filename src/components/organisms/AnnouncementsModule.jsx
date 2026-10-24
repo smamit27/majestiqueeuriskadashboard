@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from '../../firebase.js';
 import { announcements as mockAnnouncements } from '../../data/mockData.js';
+import './AnnouncementsModule.css';
+
 
 const CATEGORY_OPTIONS = ['General', 'Maintenance', 'Event', 'Emergency', 'Water', 'Safety', 'Security', 'Finance'];
 const PRIORITY_OPTIONS  = ['High', 'Medium', 'Low'];
@@ -157,11 +159,11 @@ export default function AnnouncementsModule({ isAdmin = false }) {
             <span>Total</span>
           </div>
           <div className="ann-hero-stat">
-            <strong style={{ color: '#fcd34d' }}>{highCount}</strong>
+            <strong className="announcements-module-s1">{highCount}</strong>
             <span>High Priority</span>
           </div>
           <div className="ann-hero-stat">
-            <strong style={{ color: '#C49B4F' }}>{pinnedCount}</strong>
+            <strong className="announcements-module-s2">{pinnedCount}</strong>
             <span>Pinned</span>
           </div>
         </div>

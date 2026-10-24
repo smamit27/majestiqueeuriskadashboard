@@ -57,6 +57,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase.js';
 import { announcements, complaints, dues, events, finance, members, staff, visitors } from './data/mockData.js';
 import { useCollection } from './hooks/useCollection.js';
+import './App.css';
+
 
 const currencyFormatter = new Intl.NumberFormat('en-IN', {
   style: 'currency',
@@ -809,7 +811,7 @@ export default function App() {
       {/* ── PWA Install Banner ── */}
       {showPwaBanner && (
         <div className="pwa-install-banner">
-          <span style={{ fontSize: '1.6rem' }}>📲</span>
+          <span className="app-s1">📲</span>
           <div>
             <strong>Install ME Dashboard</strong>
             <p>Add to home screen for quick access</p>
@@ -888,44 +890,41 @@ export default function App() {
           style={{}}
         >
           {!isAuthOrDevBypass && !PUBLIC_TABS.includes(normalizedActiveTab) ? (
-            <div className="section-card" style={{ padding: '48px 32px', textAlign: 'center', background: 'white', borderRadius: '16px', maxWidth: '580px', margin: '40px auto', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.06)' }}>
-              <span style={{ fontSize: '3rem', display: 'block', marginBottom: '16px' }}>🔐</span>
-              <h2 style={{ margin: '0 0 10px', color: '#0f172a' }}>Admin Login / Sign In Required</h2>
-              <p style={{ color: '#64748b', margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: '1.6' }}>
+            <div className="section-card app-s2">
+              <span className="app-s3">🔐</span>
+              <h2 className="app-s4">Admin Login / Sign In Required</h2>
+              <p className="app-s5">
                 Majestique Euriska is a private society portal. Only <b>Visualization Work</b> and <b>Society Rules</b> are accessible without signing in. To view or manage this module, please sign in with your authorized admin account.
               </p>
-              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <div className="app-s6">
                 <button 
-                  className="button-primary" 
+                  className="button-primary app-s7" 
                   onClick={() => setIsAuthModalOpen(true)}
-                  style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', fontSize: '0.95rem' }}
                 >
                   <span>Admin Login / Sign In</span>
                 </button>
                 <button 
-                  className="button-secondary" 
+                  className="button-secondary app-s8" 
                   onClick={() => handleTabChange('society_rules')}
-                  style={{ padding: '12px 20px', fontSize: '0.95rem' }}
                 >
                   Go to Society Rules
                 </button>
                 <button 
-                  className="button-secondary" 
+                  className="button-secondary app-s8" 
                   onClick={() => handleTabChange('water_management')}
-                  style={{ padding: '12px 20px', fontSize: '0.95rem' }}
                 >
                   Go to Visualization Work
                 </button>
               </div>
-              <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '24px' }}>
+              <p className="app-s9">
                 Authorized Administrators: <code>majestiqueeuriska.a@gmail.com</code> | <code>smamit27@gmail.com</code>
               </p>
             </div>
           ) : !hasModuleAccess(userRole, normalizedActiveTab) ? (
-            <div className="section-card" style={{ padding: '48px', textAlign: 'center', background: 'white', borderRadius: '16px' }}>
-              <span style={{ fontSize: '3rem', display: 'block', marginBottom: '12px' }}>🔒</span>
-              <h2 style={{ margin: '0 0 8px', color: '#991b1b' }}>Access Denied (RBAC Protected)</h2>
-              <p style={{ color: '#64748b', maxWidth: '440px', margin: '0 auto 20px', fontSize: '0.9rem' }}>
+            <div className="section-card app-s10">
+              <span className="app-s11">🔒</span>
+              <h2 className="app-s12">Access Denied (RBAC Protected)</h2>
+              <p className="app-s13">
                 Your current role (<b>{ROLE_LABELS[userRole] || userRole}</b>) is not authorized to access this module. Society data is protected behind strict role policies.
               </p>
               <button className="button-primary" onClick={() => handleTabChange('society_rules')}>

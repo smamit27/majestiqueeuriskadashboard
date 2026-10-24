@@ -16,6 +16,8 @@ import {
   AtomicFilterPills,
   DocumentViewerModal
 } from '../molecules/index.js';
+import './DocumentManager.css';
+
 
 export const DOCUMENT_CATEGORIES = [
   'All Categories',
@@ -527,14 +529,14 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
   };
 
   return (
-    <div className="atomic-card" style={{ padding: '24px' }}>
+    <div className="atomic-card document-manager-s1">
       {/* Header Banner */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ fontSize: '1.8rem' }}>📁</span>
+      <div className="document-manager-s2">
+        <div className="document-manager-s3">
+          <span className="document-manager-s4">📁</span>
           <div>
-            <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0b2b26' }}>Society Document Vault</h2>
-            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#5f665f' }}>
+            <h2 className="document-manager-s5">Society Document Vault</h2>
+            <p className="document-manager-s6">
               Secure legal, AGM, compliance, and vendor agreements repository for Majestique Euriska
             </p>
           </div>
@@ -551,9 +553,9 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
       </div>
 
       {/* Filter Toolbar */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px', background: '#f8fafc', padding: '16px', borderRadius: '12px' }}>
+      <div className="document-manager-s7">
         {/* Search */}
-        <div style={{ flex: '1 1 240px', minWidth: '200px' }}>
+        <div className="document-manager-s8">
           <AtomicSearchBar
             value={searchQuery}
             onChange={setSearchQuery}
@@ -563,7 +565,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
         </div>
 
         {/* Category Dropdown */}
-        <div style={{ flex: '0 1 200px' }}>
+        <div className="document-manager-s9">
           <select
             className="atomic-select"
             value={selectedCategory}
@@ -577,7 +579,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
 
         {/* Access Level Filter (Visible to committee and admin) */}
         {userRole !== ROLES.RESIDENT && userRole !== ROLES.SECURITY && (
-          <div style={{ flex: '0 1 200px' }}>
+          <div className="document-manager-s9">
             <select
               className="atomic-select"
               value={accessFilter}
@@ -594,7 +596,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
 
       {/* Documents Grid / Table */}
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>Loading document records...</div>
+        <div className="document-manager-s10">Loading document records...</div>
       ) : visibleDocuments.length === 0 ? (
         <AtomicEmptyState
           title="No matching documents found."
@@ -611,7 +613,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                 <th className="atomic-th">Uploaded On</th>
                 <th className="atomic-th">Access Level</th>
                 <th className="atomic-th">Expiry</th>
-                <th className="atomic-th" style={{ textAlign: 'right' }}>Action</th>
+                <th className="atomic-th document-manager-s11">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -619,12 +621,12 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                 const isExpiring = doc.expiryDate && (new Date(doc.expiryDate) - new Date()) / 86400000 < 60;
                 return (
                   <tr key={doc.id || idx} className="atomic-tr">
-                    <td className="atomic-td" style={{ fontWeight: 600 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ color: '#ef4444', fontWeight: 800 }}>📄</span>
+                    <td className="atomic-td document-manager-s12">
+                      <div className="document-manager-s13">
+                        <span className="document-manager-s14">📄</span>
                         <div>
-                          <div style={{ color: '#0f172a' }}>{doc.name}</div>
-                          {doc.notes && <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>{doc.notes}</div>}
+                          <div className="document-manager-s15">{doc.name}</div>
+                          {doc.notes && <div className="document-manager-s16">{doc.notes}</div>}
                         </div>
                       </div>
                     </td>
@@ -633,8 +635,8 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                         {doc.category}
                       </AtomicBadge>
                     </td>
-                    <td className="atomic-td" style={{ color: '#475569' }}>v{doc.version || '1.0'}</td>
-                    <td className="atomic-td" style={{ color: '#475569' }}>{doc.uploadDate}</td>
+                    <td className="atomic-td document-manager-s17">v{doc.version || '1.0'}</td>
+                    <td className="atomic-td document-manager-s17">{doc.uploadDate}</td>
                     <td className="atomic-td">
                       <AtomicBadge variant={doc.accessLevel === 'PUBLIC_RESIDENTS' ? 'success' : 'warning'}>
                         {doc.accessLevel === 'PUBLIC_RESIDENTS' ? 'Public' : 'Committee Only'}
@@ -646,11 +648,11 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                           {doc.expiryDate} {isExpiring && '⚠️'}
                         </span>
                       ) : (
-                        <span style={{ color: '#94a3b8' }}>Perpetual</span>
+                        <span className="document-manager-s18">Perpetual</span>
                       )}
                     </td>
-                    <td className="atomic-td" style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'inline-flex', gap: '6px', alignItems: 'center', justifyContent: 'flex-end' }}>
+                    <td className="atomic-td document-manager-s19">
+                      <div className="document-manager-s20">
                         <button
                           type="button"
                           onClick={() => {
@@ -683,8 +685,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                           href={doc.downloadUrl || '#'}
                           download={doc.name}
                           onClick={(e) => handleDownloadDoc(doc, e)}
-                          className="atomic-btn atomic-btn--secondary atomic-btn--sm"
-                          style={{ background: '#0b2b26', color: '#C49B4F', borderColor: '#0b2b26' }}
+                          className="atomic-btn atomic-btn--secondary atomic-btn--sm document-manager-s21"
                         >
                           ⬇ Download
                         </a>
@@ -716,9 +717,9 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
         onClose={() => setIsUploadModalOpen(false)}
         maxWidth="550px"
       >
-        <form onSubmit={handleUploadSubmit} style={{ display: 'grid', gap: '14px' }}>
+        <form onSubmit={handleUploadSubmit} className="document-manager-s22">
           <div>
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Document Title *</label>
+            <label className="eyebrow document-manager-s23">Document Title *</label>
             <input
               type="text"
               required
@@ -729,9 +730,9 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div className="document-manager-s24">
             <div>
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Category *</label>
+              <label className="eyebrow document-manager-s23">Category *</label>
               <select
                 className="atomic-select"
                 value={docCategory}
@@ -744,7 +745,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
             </div>
 
             <div>
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Access Level *</label>
+              <label className="eyebrow document-manager-s23">Access Level *</label>
               <select
                 className="atomic-select"
                 value={docAccess}
@@ -757,9 +758,9 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div className="document-manager-s24">
             <div>
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Version</label>
+              <label className="eyebrow document-manager-s23">Version</label>
               <input
                 type="text"
                 className="atomic-input"
@@ -770,7 +771,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
             </div>
 
             <div>
-              <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Expiry Date (Optional)</label>
+              <label className="eyebrow document-manager-s23">Expiry Date (Optional)</label>
               <input
                 type="date"
                 className="atomic-input"
@@ -781,18 +782,17 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
           </div>
 
           <div>
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Attach File (PDF, DOCX, XLSX)</label>
+            <label className="eyebrow document-manager-s23">Attach File (PDF, DOCX, XLSX)</label>
             <input
               type="file"
               accept=".pdf,.docx,.xlsx,.jpg,.png"
               onChange={handleFileChange}
-              className="atomic-input"
-              style={{ fontSize: '0.85rem' }}
+              className="atomic-input document-manager-s25"
             />
           </div>
 
           <div>
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Description / Notes</label>
+            <label className="eyebrow document-manager-s23">Description / Notes</label>
             <textarea
               className="atomic-textarea"
               rows={2}
@@ -802,10 +802,10 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
             />
           </div>
 
-          {uploadError && <p style={{ color: '#ef4444', fontSize: '0.85rem', margin: 0 }}>{uploadError}</p>}
-          {uploadSuccess && <p style={{ color: '#10b981', fontSize: '0.85rem', margin: 0 }}>{uploadSuccess}</p>}
+          {uploadError && <p className="document-manager-s26">{uploadError}</p>}
+          {uploadSuccess && <p className="document-manager-s27">{uploadSuccess}</p>}
 
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '10px' }}>
+          <div className="document-manager-s28">
             <AtomicButton variant="secondary" onClick={() => setIsUploadModalOpen(false)}>
               Cancel
             </AtomicButton>
@@ -835,17 +835,17 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
             if (e.target === e.currentTarget && !isDeleting) setDeletingDoc(null);
           }}
         >
-          <div className="atomic-modal-container" style={{ maxWidth: '460px', border: '1px solid #fee2e2' }}>
-            <div className="atomic-modal-header" style={{ background: '#fef2f2', borderBottom: '1px solid #fecaca' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ background: '#fee2e2', color: '#dc2626', width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>
+          <div className="atomic-modal-container document-manager-s29">
+            <div className="atomic-modal-header document-manager-s30">
+              <div className="document-manager-s3">
+                <div className="document-manager-s31">
                   🗑️
                 </div>
                 <div>
-                  <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#991b1b' }}>
+                  <h4 className="document-manager-s32">
                     Delete Document Record?
                   </h4>
-                  <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#b91c1c' }}>
+                  <p className="document-manager-s33">
                     This action permanently removes this document
                   </p>
                 </div>
@@ -853,11 +853,11 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
             </div>
 
             <div className="atomic-modal-body">
-              <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0', marginBottom: '16px', fontSize: '0.84rem' }}>
-                <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>
+              <div className="document-manager-s34">
+                <div className="document-manager-s35">
                   {deletingDoc.name}
                 </div>
-                <div style={{ fontSize: '0.76rem', color: '#64748b', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <div className="document-manager-s36">
                   <span>📂 {deletingDoc.category}</span>
                   <span>•</span>
                   <span>📅 {deletingDoc.uploadDate}</span>
@@ -866,7 +866,7 @@ export default function DocumentManager({ user, userRole = ROLES.RESIDENT }) {
                 </div>
               </div>
 
-              <div style={{ background: '#fffbeb', border: '1px solid #fef3c7', padding: '12px', borderRadius: '8px', color: '#92400e', fontSize: '0.8rem', lineHeight: '1.45' }}>
+              <div className="document-manager-s37">
                 ⚠️ This file and its metadata will be permanently deleted from local cache, IndexedDB, and remote society records.
               </div>
             </div>

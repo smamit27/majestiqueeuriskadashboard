@@ -25,6 +25,8 @@ import {
   Zap,
   DollarSign
 } from 'lucide-react';
+import './WaterTankManagement.css';
+
 
 export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
   const [activeTab, setActiveTab] = useState('3d'); // '3d' | '2d' | 'monitor' | 'schedule' | 'hygiene'
@@ -313,98 +315,40 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div className="water-tank-management-s1">
       
       {/* ── Top Liquid Glass Hero Banner ── */}
       <LiquidGlassCard
         variant="operations"
-        style={{
-          background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.94) 0%, rgba(3, 105, 161, 0.90) 50%, rgba(15, 23, 42, 0.95) 100%)',
-          borderRadius: 24,
-          padding: '28px 32px',
-          color: '#ffffff',
-          position: 'relative',
-          overflow: 'hidden',
-          boxShadow: '0 16px 40px rgba(2, 132, 199, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.15) inset'
-        }}
+        className="water-tank-management-s2"
       >
         {/* Background ambient water glow */}
-        <div style={{
-          position: 'absolute',
-          top: '-50px',
-          right: '-50px',
-          width: '280px',
-          height: '280px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(2, 132, 199, 0.05) 70%, transparent 100%)',
-          pointerEvents: 'none',
-          filter: 'blur(20px)'
-        }} />
+        <div className="water-tank-management-s3" />
 
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '20px',
-          position: 'relative',
-          zIndex: 1
-        }}>
+        <div className="water-tank-management-s4">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-              <span style={{
-                background: 'rgba(56, 189, 248, 0.25)',
-                border: '1px solid rgba(56, 189, 248, 0.5)',
-                color: '#e0f2fe',
-                padding: '5px 12px',
-                borderRadius: '20px',
-                fontWeight: 800,
-                fontSize: '0.72rem',
-                letterSpacing: '0.5px',
-                textTransform: 'uppercase',
-                backdropFilter: 'blur(8px)'
-              }}>
+            <div className="water-tank-management-s5">
+              <span className="water-tank-management-s6">
                 Society Water Infrastructure
               </span>
-              <span style={{ color: '#bae6fd', fontSize: '0.82rem', fontWeight: 700 }}>
+              <span className="water-tank-management-s7">
                 Official Layout & Invoices
               </span>
             </div>
 
-            <h1 style={{
-              margin: '0 0 8px',
-              fontSize: '2rem',
-              fontWeight: 900,
-              letterSpacing: '-0.5px',
-              textShadow: '0 2px 10px rgba(0,0,0,0.3)'
-            }}>
+            <h1 className="water-tank-management-s8">
               💧 Water Tank Management
             </h1>
-            <p style={{ margin: 0, color: '#e0f2fe', fontSize: '0.92rem', maxWidth: '660px', lineHeight: 1.55 }}>
+            <p className="water-tank-management-s9">
               Central monitoring, 2D flow blueprint, 3D architectural spatial model, and automated supply scheduling across all 4 society water storage systems.
             </p>
           </div>
 
           {/* Action Buttons */}
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <div className="water-tank-management-s10">
             <button
               onClick={handlePrintReport}
-              style={{
-                padding: '10px 20px',
-                borderRadius: '12px',
-                border: '1.5px solid rgba(255,255,255,0.85)',
-                background: 'rgba(255, 255, 255, 0.95)',
-                color: '#0369a1',
-                fontWeight: 800,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
-                backdropFilter: 'blur(8px)',
-                transition: 'transform 0.15s ease'
-              }}
+              className="water-tank-management-s11"
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
             >
@@ -412,21 +356,7 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
             </button>
             <button
               onClick={handleExportJSON}
-              style={{
-                padding: '10px 20px',
-                borderRadius: '12px',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                background: 'rgba(255, 255, 255, 0.15)',
-                color: '#ffffff',
-                fontWeight: 800,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                backdropFilter: 'blur(8px)',
-                transition: 'transform 0.15s ease'
-              }}
+              className="water-tank-management-s12"
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
             >
@@ -436,82 +366,47 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
         </div>
 
         {/* 4 Frosted Summary Stat Cards */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-          gap: '14px',
-          marginTop: '26px',
-          position: 'relative',
-          zIndex: 1
-        }}>
+        <div className="water-tank-management-s13">
           {/* Card 1: Total Storage */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.12)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: '16px',
-            padding: '16px 18px',
-            border: '1px solid rgba(255, 255, 255, 0.22)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)'
-          }}>
-            <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#bae6fd', display: 'block', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <div className="water-tank-management-s14">
+            <span className="water-tank-management-s15">
               Total Storage Capacity
             </span>
-            <strong style={{ fontSize: '1.5rem', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>5,39,400 L</strong>
-            <span style={{ fontSize: '0.72rem', color: '#e0f2fe', display: 'block', marginTop: '3px' }}>
+            <strong className="water-tank-management-s16">5,39,400 L</strong>
+            <span className="water-tank-management-s17">
               From Invoices (All Tanks)
             </span>
           </div>
 
           {/* Card 2: Underground Common */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.12)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: '16px',
-            padding: '16px 18px',
-            border: '1px solid rgba(255, 255, 255, 0.22)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)'
-          }}>
-            <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#bae6fd', display: 'block', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <div className="water-tank-management-s14">
+            <span className="water-tank-management-s15">
               Underground Sump
             </span>
-            <strong style={{ fontSize: '1.5rem', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>3,25,000 L</strong>
-            <span style={{ fontSize: '0.72rem', color: '#e0f2fe', display: 'block', marginTop: '3px' }}>
+            <strong className="water-tank-management-s16">3,25,000 L</strong>
+            <span className="water-tank-management-s17">
               4 Chambers • 100K L Fire Sump
             </span>
           </div>
 
           {/* Card 3: Overhead Storage Total */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.12)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: '16px',
-            padding: '16px 18px',
-            border: '1px solid rgba(255, 255, 255, 0.22)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)'
-          }}>
-            <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#bae6fd', display: 'block', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <div className="water-tank-management-s14">
+            <span className="water-tank-management-s15">
               Overhead Tanks (A, B, C)
             </span>
-            <strong style={{ fontSize: '1.5rem', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>2,14,400 L</strong>
-            <span style={{ fontSize: '0.72rem', color: '#e0f2fe', display: 'block', marginTop: '3px' }}>
+            <strong className="water-tank-management-s16">2,14,400 L</strong>
+            <span className="water-tank-management-s17">
               A: 75.8K • B: 88.6K • C: 50K
             </span>
           </div>
 
           {/* Card 4: Daily Consumption */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.12)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: '16px',
-            padding: '16px 18px',
-            border: '1px solid rgba(255, 255, 255, 0.22)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)'
-          }}>
-            <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#bae6fd', display: 'block', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <div className="water-tank-management-s14">
+            <span className="water-tank-management-s15">
               Avg Daily Consumption
             </span>
-            <strong style={{ fontSize: '1.5rem', fontWeight: 900, fontFamily: 'monospace', color: '#ffffff' }}>~82,000 L / day</strong>
-            <span style={{ fontSize: '0.72rem', color: '#a7f3d0', display: 'block', marginTop: '3px', fontWeight: 700 }}>
+            <strong className="water-tank-management-s16">~82,000 L / day</strong>
+            <span className="water-tank-management-s18">
               ~5.2 Days Autonomy at 100%
             </span>
           </div>
@@ -521,146 +416,46 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
       {/* ── Frosted Navigation Sub-Tabs ── */}
       <LiquidGlassCard
         variant="default"
-        style={{
-          display: 'flex',
-          gap: '8px',
-          overflowX: 'auto',
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(248, 250, 252, 0.78) 100%)',
-          padding: '8px 12px',
-          borderRadius: '18px',
-          border: '1px solid rgba(226, 232, 240, 0.85)',
-          backdropFilter: 'blur(18px) saturate(180%)',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)'
-        }}
+        className="water-tank-management-s19"
       >
         <button
           onClick={() => setActiveTab('3d')}
-          style={{
-            padding: '10px 18px',
-            borderRadius: '12px',
-            border: 'none',
-            background: activeTab === '3d' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent',
-            color: activeTab === '3d' ? '#ffffff' : '#64748b',
-            fontWeight: 800,
-            fontSize: '0.88rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: activeTab === '3d' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none',
-            transition: 'all 0.18s ease',
-            whiteSpace: 'nowrap'
-          }}
+          className="water-tank-management-s20" style={{ background: activeTab === '3d' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === '3d' ? '#ffffff' : '#64748b', boxShadow: activeTab === '3d' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
         >
           <Box size={16} /> 3D Diagram & Spatial Model
         </button>
 
         <button
           onClick={() => setActiveTab('2d')}
-          style={{
-            padding: '10px 18px',
-            borderRadius: '12px',
-            border: 'none',
-            background: activeTab === '2d' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent',
-            color: activeTab === '2d' ? '#ffffff' : '#64748b',
-            fontWeight: 800,
-            fontSize: '0.88rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: activeTab === '2d' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none',
-            transition: 'all 0.18s ease',
-            whiteSpace: 'nowrap'
-          }}
+          className="water-tank-management-s20" style={{ background: activeTab === '2d' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === '2d' ? '#ffffff' : '#64748b', boxShadow: activeTab === '2d' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
         >
           <Layers size={16} /> 2D Blueprint & Pipeline Flow
         </button>
 
         <button
           onClick={() => setActiveTab('monitor')}
-          style={{
-            padding: '10px 18px',
-            borderRadius: '12px',
-            border: 'none',
-            background: activeTab === 'monitor' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent',
-            color: activeTab === 'monitor' ? '#ffffff' : '#64748b',
-            fontWeight: 800,
-            fontSize: '0.88rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: activeTab === 'monitor' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none',
-            transition: 'all 0.18s ease',
-            whiteSpace: 'nowrap'
-          }}
+          className="water-tank-management-s20" style={{ background: activeTab === 'monitor' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === 'monitor' ? '#ffffff' : '#64748b', boxShadow: activeTab === 'monitor' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
         >
           <Activity size={16} /> Live Tank Gauges & Monitoring
         </button>
 
         <button
           onClick={() => setActiveTab('schedule')}
-          style={{
-            padding: '10px 18px',
-            borderRadius: '12px',
-            border: 'none',
-            background: activeTab === 'schedule' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent',
-            color: activeTab === 'schedule' ? '#ffffff' : '#64748b',
-            fontWeight: 800,
-            fontSize: '0.88rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: activeTab === 'schedule' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none',
-            transition: 'all 0.18s ease',
-            whiteSpace: 'nowrap'
-          }}
+          className="water-tank-management-s20" style={{ background: activeTab === 'schedule' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === 'schedule' ? '#ffffff' : '#64748b', boxShadow: activeTab === 'schedule' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
         >
           <Clock size={16} /> Supply & Booster Pump Schedule
         </button>
 
         <button
           onClick={() => setActiveTab('hygiene')}
-          style={{
-            padding: '10px 18px',
-            borderRadius: '12px',
-            border: 'none',
-            background: activeTab === 'hygiene' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent',
-            color: activeTab === 'hygiene' ? '#ffffff' : '#64748b',
-            fontWeight: 800,
-            fontSize: '0.88rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: activeTab === 'hygiene' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none',
-            transition: 'all 0.18s ease',
-            whiteSpace: 'nowrap'
-          }}
+          className="water-tank-management-s20" style={{ background: activeTab === 'hygiene' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === 'hygiene' ? '#ffffff' : '#64748b', boxShadow: activeTab === 'hygiene' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
         >
           <ShieldCheck size={16} /> Hygiene, Cleaning & Water Quality
         </button>
 
         <button
           onClick={() => setActiveTab('cleaning_audit')}
-          style={{
-            padding: '10px 18px',
-            borderRadius: '12px',
-            border: 'none',
-            background: activeTab === 'cleaning_audit' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent',
-            color: activeTab === 'cleaning_audit' ? '#ffffff' : '#64748b',
-            fontWeight: 800,
-            fontSize: '0.88rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: activeTab === 'cleaning_audit' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none',
-            transition: 'all 0.18s ease',
-            whiteSpace: 'nowrap'
-          }}
+          className="water-tank-management-s20" style={{ background: activeTab === 'cleaning_audit' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent', color: activeTab === 'cleaning_audit' ? '#ffffff' : '#64748b', boxShadow: activeTab === 'cleaning_audit' ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none' }}
         >
           <DollarSign size={16} /> Cleaning Bills & Rate Analysis
         </button>
@@ -680,54 +475,29 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
       )}
 
       {activeTab === 'schedule' && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '20px'
-        }}>
+        <div className="water-tank-management-s21">
           {/* Supply Windows Card */}
           <LiquidGlassCard
             variant="default"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(248, 250, 252, 0.82) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              borderRadius: '20px',
-              padding: '26px',
-              border: '1px solid rgba(226, 232, 240, 0.85)',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.04)'
-            }}
+            className="water-tank-management-s22"
           >
-            <h3 style={{ margin: '0 0 16px', fontSize: '1.15rem', fontWeight: 900, color: '#0f2952', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h3 className="water-tank-management-s23">
               <Clock size={18} color="#0284c7" /> Building Water Supply Timings
             </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="water-tank-management-s24">
               {WATER_SUPPLY_SCHEDULES.map((s, idx) => (
-                <div key={idx} style={{
-                  padding: '14px 16px',
-                  borderRadius: '14px',
-                  background: 'rgba(248, 250, 252, 0.8)',
-                  border: '1px solid rgba(226, 232, 240, 0.8)',
-                  backdropFilter: 'blur(8px)'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <strong style={{ color: '#0f2952', fontSize: '0.92rem' }}>{s.session}</strong>
-                    <span style={{
-                      background: 'rgba(2, 132, 199, 0.12)',
-                      color: '#0284c7',
-                      border: '1px solid rgba(2, 132, 199, 0.25)',
-                      padding: '4px 10px',
-                      borderRadius: '8px',
-                      fontSize: '0.78rem',
-                      fontWeight: 800
-                    }}>
+                <div key={idx} className="water-tank-management-s25">
+                  <div className="water-tank-management-s26">
+                    <strong className="water-tank-management-s27">{s.session}</strong>
+                    <span className="water-tank-management-s28">
                       {s.time}
                     </span>
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#475569', lineHeight: 1.5 }}>
+                  <div className="water-tank-management-s29">
                     <strong>Wings:</strong> {s.wing}<br />
                     <strong>Target Line:</strong> {s.target}<br />
-                    <span style={{ color: '#0369a1' }}><strong>Booster Trigger:</strong> {s.boosterPumpSchedule}</span>
+                    <span className="water-tank-management-s30"><strong>Booster Trigger:</strong> {s.boosterPumpSchedule}</span>
                   </div>
                 </div>
               ))}
@@ -737,43 +507,22 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
           {/* Booster Pump Telemetry Card */}
           <LiquidGlassCard
             variant="default"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(248, 250, 252, 0.82) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              borderRadius: '20px',
-              padding: '26px',
-              border: '1px solid rgba(226, 232, 240, 0.85)',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.04)'
-            }}
+            className="water-tank-management-s22"
           >
-            <h3 style={{ margin: '0 0 16px', fontSize: '1.15rem', fontWeight: 900, color: '#0f2952', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h3 className="water-tank-management-s23">
               <Zap size={18} color="#d97706" /> Booster Transfer Pumps (Underground Sump)
             </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div className="water-tank-management-s31">
               {WATER_TANKS_DATA.common_underground.pumps.map((p, idx) => (
-                <div key={idx} style={{
-                  padding: '16px',
-                  borderRadius: '14px',
-                  background: p.status === 'Running' ? 'rgba(240, 253, 244, 0.8)' : 'rgba(248, 250, 252, 0.8)',
-                  border: p.status === 'Running' ? '1px solid #86efac' : '1px solid rgba(226, 232, 240, 0.8)',
-                  backdropFilter: 'blur(8px)'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <strong style={{ color: '#0f2952', fontSize: '0.94rem' }}>{p.name}</strong>
-                    <span style={{
-                      background: p.status === 'Running' ? '#16a34a' : '#64748b',
-                      color: '#ffffff',
-                      padding: '3px 9px',
-                      borderRadius: '8px',
-                      fontSize: '0.72rem',
-                      fontWeight: 800,
-                      boxShadow: p.status === 'Running' ? '0 2px 6px rgba(22, 163, 74, 0.3)' : 'none'
-                    }}>
+                <div key={idx} className="water-tank-management-s32" style={{ background: p.status === 'Running' ? 'rgba(240, 253, 244, 0.8)' : 'rgba(248, 250, 252, 0.8)', border: p.status === 'Running' ? '1px solid #86efac' : '1px solid rgba(226, 232, 240, 0.8)' }}>
+                  <div className="water-tank-management-s33">
+                    <strong className="water-tank-management-s34">{p.name}</strong>
+                    <span className="water-tank-management-s35" style={{ background: p.status === 'Running' ? '#16a34a' : '#64748b', boxShadow: p.status === 'Running' ? '0 2px 6px rgba(22, 163, 74, 0.3)' : 'none' }}>
                       ● {p.status}
                     </span>
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#475569', lineHeight: 1.5 }}>
+                  <div className="water-tank-management-s29">
                     • Rated Flow: <strong>{p.flowRateM3Hr} m³/hr (~24,000 Litres/Hour)</strong><br />
                     • Current Draw: <strong>{p.currentAmps} Amps (3-Phase 415V)</strong><br />
                     • Last Preventative Service: <strong>{p.lastService}</strong>
@@ -783,17 +532,7 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
             </div>
 
             {/* Auto Float Logic Note */}
-            <div style={{
-              marginTop: '16px',
-              padding: '14px',
-              borderRadius: '12px',
-              background: 'rgba(239, 246, 255, 0.8)',
-              border: '1px solid rgba(191, 219, 254, 0.8)',
-              fontSize: '0.78rem',
-              color: '#1e40af',
-              lineHeight: 1.5,
-              backdropFilter: 'blur(8px)'
-            }}>
+            <div className="water-tank-management-s36">
               <strong>Automation Logic:</strong> Pumps auto-start when any building overhead tank drops below 55% capacity and auto-cut-off at 95% full to prevent overflowing. Duty cycles alternate weekly between Pump 1 and Pump 2.
             </div>
           </LiquidGlassCard>
@@ -801,60 +540,31 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
       )}
 
       {activeTab === 'hygiene' && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '20px'
-        }}>
+        <div className="water-tank-management-s21">
           {/* Water Quality Lab Test Results */}
           <LiquidGlassCard
             variant="default"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(248, 250, 252, 0.82) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              borderRadius: '20px',
-              padding: '26px',
-              border: '1px solid rgba(226, 232, 240, 0.85)',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.04)'
-            }}
+            className="water-tank-management-s22"
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 900, color: '#0f2952', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="water-tank-management-s37">
+              <h3 className="water-tank-management-s38">
                 <ShieldCheck size={18} color="#16a34a" /> Potable Water Quality Lab Certification
               </h3>
-              <span style={{
-                background: 'rgba(220, 252, 231, 0.8)',
-                color: '#15803d',
-                border: '1px solid rgba(134, 239, 172, 0.8)',
-                padding: '4px 10px',
-                borderRadius: '8px',
-                fontSize: '0.75rem',
-                fontWeight: 800
-              }}>
+              <span className="water-tank-management-s39">
                 100% Certified Safe
               </span>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div className="water-tank-management-s40">
               {WATER_QUALITY_TEST_RESULTS.map((r, idx) => (
-                <div key={idx} style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '12px 14px',
-                  borderRadius: '12px',
-                  background: 'rgba(248, 250, 252, 0.8)',
-                  border: '1px solid rgba(226, 232, 240, 0.8)',
-                  fontSize: '0.8rem',
-                  backdropFilter: 'blur(8px)'
-                }}>
+                <div key={idx} className="water-tank-management-s41">
                   <div>
-                    <strong style={{ color: '#0f2952' }}>{r.parameter}</strong>
-                    <div style={{ color: '#64748b', fontSize: '0.72rem' }}>Limit: {r.acceptableLimit}</div>
+                    <strong className="water-tank-management-s42">{r.parameter}</strong>
+                    <div className="water-tank-management-s43">Limit: {r.acceptableLimit}</div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontWeight: 800, color: '#0284c7', fontSize: '0.92rem', fontFamily: 'monospace' }}>{r.value}</span>
-                    <div style={{ color: '#16a34a', fontSize: '0.72rem', fontWeight: 800 }}>✓ {r.status}</div>
+                  <div className="water-tank-management-s44">
+                    <span className="water-tank-management-s45">{r.value}</span>
+                    <div className="water-tank-management-s46">✓ {r.status}</div>
                   </div>
                 </div>
               ))}
@@ -864,48 +574,27 @@ export default function WaterTankManagement({ isAdmin: _isAdmin = false }) {
           {/* Tank Cleaning History & Schedule */}
           <LiquidGlassCard
             variant="default"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(248, 250, 252, 0.82) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              borderRadius: '20px',
-              padding: '26px',
-              border: '1px solid rgba(226, 232, 240, 0.85)',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.04)'
-            }}
+            className="water-tank-management-s22"
           >
-            <h3 style={{ margin: '0 0 16px', fontSize: '1.15rem', fontWeight: 900, color: '#0f2952', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h3 className="water-tank-management-s23">
               <Calendar size={18} color="#2563eb" /> Tank Cleaning & Sanitization Log
             </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div className="water-tank-management-s31">
               {TANK_CLEANING_HISTORY.map((c, idx) => (
-                <div key={idx} style={{
-                  padding: '16px',
-                  borderRadius: '14px',
-                  background: 'rgba(248, 250, 252, 0.8)',
-                  border: '1px solid rgba(226, 232, 240, 0.8)',
-                  backdropFilter: 'blur(8px)'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                    <strong style={{ color: '#0f2952', fontSize: '0.94rem' }}>{c.tanks}</strong>
-                    <span style={{
-                      background: 'rgba(254, 243, 199, 0.9)',
-                      color: '#b45309',
-                      border: '1px solid rgba(252, 211, 77, 0.8)',
-                      padding: '4px 10px',
-                      borderRadius: '8px',
-                      fontSize: '0.72rem',
-                      fontWeight: 800
-                    }}>
+                <div key={idx} className="water-tank-management-s47">
+                  <div className="water-tank-management-s48">
+                    <strong className="water-tank-management-s34">{c.tanks}</strong>
+                    <span className="water-tank-management-s49">
                       Next: {c.nextDue}
                     </span>
                   </div>
 
-                  <div style={{ fontSize: '0.8rem', color: '#475569', lineHeight: 1.5 }}>
+                  <div className="water-tank-management-s29">
                     • Cleaned: <strong>{c.date}</strong><br />
                     • Agency: <strong>{c.vendor}</strong><br />
                     • Process: {c.method}<br />
-                    • Certificate ID: <strong style={{ color: '#2563eb' }}>{c.certificateNo}</strong> • Invoice: ₹{c.invoiceAmount.toLocaleString('en-IN')}
+                    • Certificate ID: <strong className="water-tank-management-s50">{c.certificateNo}</strong> • Invoice: ₹{c.invoiceAmount.toLocaleString('en-IN')}
                   </div>
                 </div>
               ))}

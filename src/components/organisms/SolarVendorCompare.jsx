@@ -1,4 +1,6 @@
 import React from 'react';
+import './SolarVendorCompare.css';
+
 
 const COMPARISON_DATA = [
   { icon: '🖥️', criteria: 'System Size', v1: '20 kW', v2: '20 kW', v3: '20 kW' },
@@ -38,62 +40,62 @@ const COMPARISON_DATA = [
 
 export default function SolarVendorCompare() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, minWidth: 0 }}>
-      <div className="table-card attendance-table-card" style={{ padding: 0 }}>
+    <div className="solar-vendor-compare-s1">
+      <div className="table-card attendance-table-card solar-vendor-compare-s2">
         <div className="attendance-table-card__header">
           <div>
             <p className="eyebrow">Project Final Evaluation</p>
             <h3>Final Solar Vendor Comparison (20 kW)</h3>
           </div>
           <div className="attendance-table-card__actions">
-            <span style={{ fontSize: '0.85rem', color: '#6b7280', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ color: '#f59e0b' }}>☀️</span> Evaluate • Compare • Choose
+            <span className="solar-vendor-compare-s3">
+              <span className="solar-vendor-compare-s4">☀️</span> Evaluate • Compare • Choose
             </span>
           </div>
         </div>
       </div>
 
-      <div className="table-card" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', padding: 0 }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+      <div className="table-card solar-vendor-compare-s5">
+        <table className="solar-vendor-compare-s6">
           <thead>
             <tr>
-              <th style={{ background: '#1e3a8a', color: 'white', padding: '16px', textAlign: 'left', fontWeight: 700, width: '250px', letterSpacing: '0.05em' }}>
+              <th className="solar-vendor-compare-s7">
                 CRITERIA
               </th>
-              <th style={{ background: '#1d4ed8', color: 'white', padding: '16px', textAlign: 'center', minWidth: '200px' }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '4px' }}>SOLARSQUARE</div>
-                <div style={{ fontSize: '0.75rem', color: '#fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                  ★★★★★ <span style={{ color: 'white', fontWeight: 600 }}>EXCELLENT</span>
+              <th className="solar-vendor-compare-s8">
+                <div className="solar-vendor-compare-s9">SOLARSQUARE</div>
+                <div className="solar-vendor-compare-s10">
+                  ★★★★★ <span className="solar-vendor-compare-s11">EXCELLENT</span>
                 </div>
               </th>
-              <th style={{ background: '#15803d', color: 'white', padding: '16px', textAlign: 'center', minWidth: '200px' }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '4px' }}>AFM SOLAR</div>
-                <div style={{ fontSize: '0.75rem', color: '#fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                  ★★★★☆ <span style={{ color: 'white', fontWeight: 600 }}>GOOD</span>
+              <th className="solar-vendor-compare-s12">
+                <div className="solar-vendor-compare-s9">AFM SOLAR</div>
+                <div className="solar-vendor-compare-s10">
+                  ★★★★☆ <span className="solar-vendor-compare-s11">GOOD</span>
                 </div>
               </th>
-              <th style={{ background: '#ea580c', color: 'white', padding: '16px', textAlign: 'center', minWidth: '200px' }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '4px' }}>SURYATECH</div>
-                <div style={{ fontSize: '0.75rem', color: '#fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                  ★★★☆☆ <span style={{ color: 'white', fontWeight: 600 }}>GOOD</span>
+              <th className="solar-vendor-compare-s13">
+                <div className="solar-vendor-compare-s9">SURYATECH</div>
+                <div className="solar-vendor-compare-s10">
+                  ★★★☆☆ <span className="solar-vendor-compare-s11">GOOD</span>
                 </div>
               </th>
             </tr>
           </thead>
           <tbody>
             {COMPARISON_DATA.map((row, idx) => (
-              <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
-                <td style={{ padding: '10px 16px', fontWeight: 600, color: '#334155', borderRight: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ width: '20px', textAlign: 'center', filter: 'grayscale(0.2)' }}>{row.icon}</span>
+              <tr key={idx} className="solar-vendor-compare-s14" style={{ background: idx % 2 === 0 ? '#ffffff' : '#f8fafc' }}>
+                <td className="solar-vendor-compare-s15">
+                  <span className="solar-vendor-compare-s16">{row.icon}</span>
                   {row.criteria}
                 </td>
-                <td style={{ padding: '10px 16px', textAlign: 'center', color: '#1e293b', fontWeight: row.v1.includes('Excellent') || row.v1.includes('Optimized') || row.v1.includes('Very High') ? 700 : 500 }}>
+                <td className="solar-vendor-compare-s17" style={{ fontWeight: row.v1.includes('Excellent') || row.v1.includes('Optimized') || row.v1.includes('Very High') ? 700 : 500 }}>
                   {row.v1}
                 </td>
-                <td style={{ padding: '10px 16px', textAlign: 'center', color: '#475569' }}>
+                <td className="solar-vendor-compare-s18">
                   {row.v2}
                 </td>
-                <td style={{ padding: '10px 16px', textAlign: 'center', color: '#475569' }}>
+                <td className="solar-vendor-compare-s18">
                   {row.v3}
                 </td>
               </tr>
@@ -102,8 +104,8 @@ export default function SolarVendorCompare() {
         </table>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 20px', background: '#eff6ff', borderRadius: '8px', border: '1px solid #bfdbfe', color: '#1e40af', fontSize: '0.9rem', fontWeight: 500 }}>
-        <div style={{ background: '#1e3a8a', color: 'white', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>₹</div>
+      <div className="solar-vendor-compare-s19">
+        <div className="solar-vendor-compare-s20">₹</div>
         Note: Solar plant insurance will be taken separately by society to cover natural risks.
       </div>
     </div>

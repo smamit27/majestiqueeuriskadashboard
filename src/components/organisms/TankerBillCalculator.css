@@ -1,0 +1,228 @@
+/**
+ * TankerBillCalculator.css
+ * Extracted styles from TankerBillCalculator.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.tanker-bill-calculator-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tanker-bill-calculator-s2 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.tanker-bill-calculator-s3 {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tanker-bill-calculator-s4 {
+  opacity: 0.5;
+  font-size: 0.9rem;
+}
+
+.tanker-bill-calculator-s5 {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.15);
+  font-size: 0.95rem;
+  background: rgba(255,255,255,0.8);
+}
+
+.tanker-bill-calculator-s6 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tanker-bill-calculator-s7 {
+  padding: 0;
+}
+
+.tanker-bill-calculator-s8 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.tanker-bill-calculator-s9 {
+  margin: 0;
+  font-size: 0.82rem;
+  opacity: 0.6;
+}
+
+.tanker-bill-calculator-s10 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+  gap: 12px;
+}
+
+.tanker-bill-calculator-s11 {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tanker-bill-calculator-s12 {
+  font-size: 0.82rem;
+  opacity: 0.65;
+}
+
+.tanker-bill-calculator-s13 {
+  font-size: 0.82rem;
+  padding: 6px 14px;
+}
+
+.tanker-bill-calculator-s14 {
+  text-align: center;
+  padding: 40px;
+  opacity: 0.6;
+}
+
+.tanker-bill-calculator-s15 {
+  text-align: center;
+  padding: 48px 24px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 16px;
+  border: 1px dashed rgba(0,0,0,0.12);
+  color: #6b7280;
+}
+
+.tanker-bill-calculator-s16 {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.tanker-bill-calculator-s17 {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.tanker-bill-calculator-s18 {
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.tanker-bill-calculator-s19 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 16px;
+}
+
+.tanker-bill-calculator-s20 {
+  background: rgba(255,255,255,0.7);
+  border-radius: 14px;
+  padding: 20px 24px;
+  border: 1px solid rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  backdrop-filter: blur(10px);
+}
+
+.tanker-bill-calculator-s21 {
+  font-size: 1.5rem;
+}
+
+.tanker-bill-calculator-s22 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tanker-bill-calculator-s23 {
+  font-weight: 800;
+}
+
+.tanker-bill-calculator-s24 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: 12px;
+}
+
+.tanker-bill-calculator-s25 {
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.tanker-bill-calculator-s26 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tanker-bill-calculator-s27 {
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+.tanker-bill-calculator-s28 {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.tanker-bill-calculator-s29 {
+  margin-top: 4px;
+}
+
+.tanker-bill-calculator-s30 {
+  text-align: left;
+}
+
+.tanker-bill-calculator-s31 {
+  text-align: right;
+}
+
+.tanker-bill-calculator-s32 {
+  font-weight: 700;
+}
+
+.tanker-bill-calculator-s33 {
+  text-align: right;
+  color: #0f3d35;
+  font-weight: 700;
+}
+
+.tanker-bill-calculator-s34 {
+  text-align: right;
+  color: #0f3d35;
+  font-size: 1.05rem;
+  font-weight: 800;
+  border-top: 2px solid #0f3d35;
+}
+
+.tanker-bill-calculator-s35 {
+  padding: 16px 20px 0;
+}
+
+.tanker-bill-calculator-s36 {
+  margin: 4px 0 16px;
+}
+
+.tanker-bill-calculator-s37 {
+  font-weight: 600;
+}
+
+.tanker-bill-calculator-s38 {
+  text-align: right;
+  font-weight: 600;
+}
+

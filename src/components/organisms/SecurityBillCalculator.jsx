@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc, deleteDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './SecurityBillCalculator.css';
+
 
 const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(2026, 3 + i, 1);
@@ -605,109 +607,107 @@ export default function SecurityBillCalculator() {
     <div className="attendance-manager attendance-manager--register">
       {/* Settings & Summary Panel */}
       <div className="attendance-manager__controls stack-card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+        <div className="security-bill-calculator-s1">
           <div>
             <p className="eyebrow">Monthly Security Billing</p>
             <h3>Security Cost Distribution</h3>
-            <p style={{ margin: 0 }}>Configure guard counts and salaries. Chauhan shifts building each month.</p>
+            <p className="security-bill-calculator-s2">Configure guard counts and salaries. Chauhan shifts building each month.</p>
           </div>
           <button
-            className="button-secondary"
+            className="button-secondary security-bill-calculator-s3"
             type="button"
             onClick={(e) => handleDeleteBill(e)}
-            style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)', padding: '6px 12px' }}
           >
             🗑️ Delete Month Data
           </button>
         </div>
 
-        <div className="attendance-control-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))' }}>
+        <div className="attendance-control-grid security-bill-calculator-s4">
           <div className="summary-card summary-card--inline">
             <span>Main Gate Salary</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '100px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s5"
               value={form.mainGateGuardSalary} onChange={e => handleFieldChange('mainGateGuardSalary', e.target.value)}
             />
           </div>
           <div className="summary-card summary-card--inline">
             <span>Morning Guards</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '60px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s6"
               value={form.mainGateMorning} onChange={e => handleFieldChange('mainGateMorning', e.target.value)}
             />
           </div>
           <div className="summary-card summary-card--inline">
             <span>Evening Guards</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '60px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s6"
               value={form.mainGateEvening} onChange={e => handleFieldChange('mainGateEvening', e.target.value)}
             />
           </div>
         </div>
         {/* Row 2: Flat counts */}
-        <div className="attendance-control-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))' }}>
+        <div className="attendance-control-grid security-bill-calculator-s7">
           <div className="summary-card summary-card--inline">
             <span>A Building Flats</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '60px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s6"
               value={form.flatsA} onChange={e => handleFieldChange('flatsA', e.target.value)}
             />
           </div>
           <div className="summary-card summary-card--inline">
             <span>B Building Flats</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '60px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s6"
               value={form.flatsB} onChange={e => handleFieldChange('flatsB', e.target.value)}
             />
           </div>
           <div className="summary-card summary-card--inline">
             <span>C Building Flats</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '60px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s6"
               value={form.flatsC} onChange={e => handleFieldChange('flatsC', e.target.value)}
             />
           </div>
-          <div className="summary-card summary-card--inline" style={{ background: '#f0fdf4', borderColor: '#86efac' }}>
+          <div className="summary-card summary-card--inline security-bill-calculator-s8">
             <span>Total Flats</span>
             <strong>{n(form.flatsA) + n(form.flatsB) + n(form.flatsC)}</strong>
           </div>
         </div>
 
-        <div className="attendance-control-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))' }}>
-          <div className="summary-card summary-card--inline" style={{ borderColor: '#C49B4F' }}>
+        <div className="attendance-control-grid security-bill-calculator-s4">
+          <div className="summary-card summary-card--inline security-bill-calculator-s9">
             <span>Chauhan (Internal) Salary</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '100px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s5"
               value={form.chauhanSalary} onChange={e => handleFieldChange('chauhanSalary', e.target.value)}
             />
           </div>
-          <div className="summary-card summary-card--inline" style={{ borderColor: '#C49B4F' }}>
+          <div className="summary-card summary-card--inline security-bill-calculator-s9">
             <span>Chauhanji Days Worked</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input"
-              style={{ width: '60px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s6"
               placeholder={`/${bill.daysInMonth}`}
               value={form.chauhanDays} onChange={e => handleFieldChange('chauhanDays', e.target.value)}
             />
           </div>
-          <div className="summary-card summary-card--inline" style={{ borderColor: '#C49B4F' }}>
+          <div className="summary-card summary-card--inline security-bill-calculator-s9">
             <span>Vendor Morn Salary (12h)</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '100px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s5"
               value={form.vendorMornSalary} onChange={e => handleFieldChange('vendorMornSalary', e.target.value)}
             />
           </div>
-          <div className="summary-card summary-card--inline" style={{ borderColor: '#C49B4F' }}>
+          <div className="summary-card summary-card--inline security-bill-calculator-s9">
             <span>Vendor Eve Salary (12h)</span>
             <input
-              type="text" inputMode="numeric" className="attendance-register-input" style={{ width: '100px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              type="text" inputMode="numeric" className="attendance-register-input security-bill-calculator-s5"
               value={form.vendorEveSalary} onChange={e => handleFieldChange('vendorEveSalary', e.target.value)}
             />
           </div>
-          <div className="summary-card summary-card--inline" style={{ borderColor: '#C49B4F' }}>
+          <div className="summary-card summary-card--inline security-bill-calculator-s9">
             <span>Chauhan Placement</span>
             <select
-              className="attendance-register-input" style={{ width: '120px', padding: '4px 8px', margin: 0, height: 'auto', minHeight: 0 }}
+              className="attendance-register-input security-bill-calculator-s10"
               value={form.chauhanLocation} onChange={e => handleFieldChange('chauhanLocation', e.target.value)}
             >
               <option value="auto">Auto-Rotate ({getChauhanDefaultLocation(selectedMonth)})</option>
@@ -719,13 +719,13 @@ export default function SecurityBillCalculator() {
         </div>
 
         <div className="attendance-summary-grid">
-          <div className="summary-card" style={{ background: '#0F3D35', color: 'white', borderColor: '#0F3D35' }}>
-            <span style={{ color: 'rgba(255,255,255,0.8)' }}>Grand Total Bill</span>
+          <div className="summary-card security-bill-calculator-s11">
+            <span className="security-bill-calculator-s12">Grand Total Bill</span>
             <strong>₹{fmt(bill.grandTotal)}</strong>
           </div>
         </div>
 
-        <div className="attendance-note" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500, color: badge.color }}>
+        <div className="attendance-note security-bill-calculator-s13" style={{ color: badge.color }}>
           <span>{badge.icon}</span>
           <span>{isLoading ? 'Loading…' : saveMsg || 'Ready'}</span>
         </div>
@@ -733,28 +733,28 @@ export default function SecurityBillCalculator() {
 
       {/* Attendance Link Summary */}
       {attSummary ? (
-        <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '16px 20px' }}>
-          <p className="eyebrow" style={{ marginBottom: 8, color: '#0F3D35' }}>Linked from Attendance Register ✓</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
+        <div className="security-bill-calculator-s14">
+          <p className="eyebrow security-bill-calculator-s15">Linked from Attendance Register ✓</p>
+          <div className="security-bill-calculator-s16">
             {[
               { label: 'A Bldg Shifts', val: `${attSummary.aMorn}M / ${attSummary.aEve}E` },
               { label: 'B Bldg Shifts', val: `${attSummary.bMorn}M / ${attSummary.bEve}E` },
               { label: 'C Bldg Shifts', val: `${attSummary.cMorn}M / ${attSummary.cEve}E` },
               { label: 'Main Gate Shifts', val: `${attSummary.mainMorn}M / ${attSummary.mainEve}E` },
             ].map(({ label, val }) => (
-              <div key={label} className="summary-card summary-card--inline" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
-                <span style={{ fontSize: '0.78rem', color: '#6b7280' }}>{label}</span>
-                <strong style={{ fontSize: '1.1rem', color: '#0F3D35' }}>{val}</strong>
+              <div key={label} className="summary-card summary-card--inline security-bill-calculator-s17">
+                <span className="security-bill-calculator-s18">{label}</span>
+                <strong className="security-bill-calculator-s19">{val}</strong>
               </div>
             ))}
           </div>
         </div>
       ) : (
-        <div style={{ background: '#fefce8', border: '1px solid #fde047', borderRadius: 10, padding: '12px 16px', fontSize: '0.9rem', color: '#713f12' }}>
+        <div className="security-bill-calculator-s20">
           ⚠️ No saved attendance data for {formatLongMonth(selectedMonth)}. Go to <strong>Security Tracking</strong>, fill in the register and save it first.
         </div>
       )}
-      <div className="table-card attendance-table-card attendance-table-card--register" style={{ padding: 0 }}>
+      <div className="table-card attendance-table-card attendance-table-card--register security-bill-calculator-s21">
         <div className="attendance-month-tabs" role="tablist">
           {FINANCIAL_YEAR_MONTHS.map((mv) => (
             <button
@@ -774,12 +774,11 @@ export default function SecurityBillCalculator() {
                 <p className="eyebrow">Building Breakdown</p>
                 <h3>Final Security Bill — {formatLongMonth(selectedMonth)}</h3>
               </div>
-              <div className="attendance-table-card__actions" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <div className="attendance-table-card__actions security-bill-calculator-s22">
                 <button
-                  className="button-secondary"
+                  className="button-secondary security-bill-calculator-s23"
                   type="button"
                   onClick={handlePrintPDF}
-                  style={{ background: '#f8fafc', fontWeight: 600 }}
                 >
                   🖨️ Print Bill (PDF)
                 </button>
@@ -792,20 +791,20 @@ export default function SecurityBillCalculator() {
             <div className="attendance-table-scroll">
               <table className="attendance-table attendance-table--register attendance-table--bill">
                 <thead>
-                  <tr style={{ background: '#f8fafc' }}>
-                    <th style={{ width: '18%' }}>Building</th>
-                    <th style={{ textAlign: 'right' }}>Flats (Share %)</th>
-                    {bill.usedAttendance && <th style={{ textAlign: 'right', color: '#0F3D35' }}>Shifts (M/E)</th>}
-                    <th style={{ textAlign: 'right' }}>Main Gate Share (₹)</th>
-                    <th style={{ textAlign: 'right' }}>Chauhan Cost (₹)</th>
-                    <th style={{ textAlign: 'right' }}>Vendor Guard Cost (₹)</th>
-                    <th style={{ textAlign: 'right', fontSize: '1.05rem' }}>Total Due (₹)</th>
+                  <tr className="security-bill-calculator-s24">
+                    <th className="security-bill-calculator-s25">Building</th>
+                    <th className="security-bill-calculator-s26">Flats (Share %)</th>
+                    {bill.usedAttendance && <th className="security-bill-calculator-s27">Shifts (M/E)</th>}
+                    <th className="security-bill-calculator-s26">Main Gate Share (₹)</th>
+                    <th className="security-bill-calculator-s26">Chauhan Cost (₹)</th>
+                    <th className="security-bill-calculator-s26">Vendor Guard Cost (₹)</th>
+                    <th className="security-bill-calculator-s28">Total Due (₹)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {isLoading ? (
                     <tr>
-                      <td colSpan={bill.usedAttendance ? 7 : 6} style={{ textAlign: 'center', padding: '40px', opacity: 0.5 }}>Loading billing data...</td>
+                      <td colSpan={bill.usedAttendance ? 7 : 6} className="security-bill-calculator-s29">Loading billing data...</td>
                     </tr>
                   ) : (
                     bill.buildings.map((b) => {
@@ -813,17 +812,17 @@ export default function SecurityBillCalculator() {
                       const k = ATT_KEYS[b];
                       return (
                         <tr key={b}>
-                          <td><strong>{b}</strong> {b === bill.actualChauhanLoc && <span style={{ fontSize: '0.8rem', marginLeft: 8, color: '#0F3D35', background: '#dcfce7', padding: '2px 6px', borderRadius: 12 }}>Chauhan Shift</span>}</td>
-                          <td style={{ textAlign: 'right', color: '#6b7280' }}>{data.flats} flats <span style={{ fontSize: '0.78rem' }}>({data.flatRatioPct}%)</span></td>
+                          <td><strong>{b}</strong> {b === bill.actualChauhanLoc && <span className="security-bill-calculator-s30">Chauhan Shift</span>}</td>
+                          <td className="security-bill-calculator-s31">{data.flats} flats <span className="security-bill-calculator-s32">({data.flatRatioPct}%)</span></td>
                           {bill.usedAttendance && (
-                            <td style={{ textAlign: 'right', fontWeight: 600, color: '#0F3D35' }}>
-                              {b === bill.actualChauhanLoc ? <em style={{ color: '#b45309', fontStyle: 'normal' }}>Chauhan</em> : `${attSummary[`${k}Morn`]}M / ${attSummary[`${k}Eve`]}E`}
+                            <td className="security-bill-calculator-s33">
+                              {b === bill.actualChauhanLoc ? <em className="security-bill-calculator-s34">Chauhan</em> : `${attSummary[`${k}Morn`]}M / ${attSummary[`${k}Eve`]}E`}
                             </td>
                           )}
-                          <td style={{ textAlign: 'right' }}>{fmt(data.mainGate)}</td>
-                          <td style={{ textAlign: 'right', color: data.chauhan > 0 ? '#0B2B26' : 'inherit' }}>{fmt(data.chauhan)}</td>
-                          <td style={{ textAlign: 'right', color: data.vendor > 0 ? '#C49B4F' : 'inherit' }}>{fmt(data.vendor)}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 800, color: '#0F3D35', fontSize: '1.1rem' }}>{fmt(data.total)}</td>
+                          <td className="security-bill-calculator-s26">{fmt(data.mainGate)}</td>
+                          <td className="security-bill-calculator-s26" style={{ color: data.chauhan > 0 ? '#0B2B26' : 'inherit' }}>{fmt(data.chauhan)}</td>
+                          <td className="security-bill-calculator-s26" style={{ color: data.vendor > 0 ? '#C49B4F' : 'inherit' }}>{fmt(data.vendor)}</td>
+                          <td className="security-bill-calculator-s35">{fmt(data.total)}</td>
                         </tr>
                       );
                     })
@@ -832,22 +831,22 @@ export default function SecurityBillCalculator() {
                 <tfoot>
                   <tr>
                     <th>Grand Total</th>
-                    <th style={{ textAlign: 'right' }}>{bill.totalFlats} flats</th>
-                    {bill.usedAttendance && <th style={{ textAlign: 'right' }}>-</th>}
-                    <th style={{ textAlign: 'right' }}>{fmt(bill.mainGateTotal)}</th>
-                    <th style={{ textAlign: 'right' }}>{fmt(n(form.chauhanSalary))}</th>
-                    <th style={{ textAlign: 'right' }}>{fmt((n(form.vendorMornSalary) + n(form.vendorEveSalary)) * 2)}</th>
-                    <th style={{ textAlign: 'right', fontSize: '1.1rem' }}>{fmt(bill.grandTotal)}</th>
+                    <th className="security-bill-calculator-s26">{bill.totalFlats} flats</th>
+                    {bill.usedAttendance && <th className="security-bill-calculator-s26">-</th>}
+                    <th className="security-bill-calculator-s26">{fmt(bill.mainGateTotal)}</th>
+                    <th className="security-bill-calculator-s26">{fmt(n(form.chauhanSalary))}</th>
+                    <th className="security-bill-calculator-s26">{fmt((n(form.vendorMornSalary) + n(form.vendorEveSalary)) * 2)}</th>
+                    <th className="security-bill-calculator-s36">{fmt(bill.grandTotal)}</th>
                   </tr>
                 </tfoot>
               </table>
             </div>
           </>
         ) : (
-          <div style={{ padding: '60px 20px', textAlign: 'center', color: '#6b7280' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📋</div>
-            <h4 style={{ marginBottom: '8px', color: '#374151' }}>Bill not generated yet</h4>
-            <p style={{ maxWidth: '400px', margin: '0 auto' }}>
+          <div className="security-bill-calculator-s37">
+            <div className="security-bill-calculator-s38">📋</div>
+            <h4 className="security-bill-calculator-s39">Bill not generated yet</h4>
+            <p className="security-bill-calculator-s40">
               The final security bill will appear here once you save the attendance records for <strong>{formatLongMonth(selectedMonth)}</strong> in the Tracking tab.
             </p>
           </div>

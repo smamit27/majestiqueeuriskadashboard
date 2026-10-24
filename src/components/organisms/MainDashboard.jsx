@@ -46,6 +46,8 @@ import { useSocietyKpis } from '../../hooks/useSocietyKpis.js';
 import { useFinanceKpis } from '../../hooks/useFinanceKpis.js';
 import { useMaintenanceKpis } from '../../hooks/useMaintenanceKpis.js';
 import { useOperationsKpis } from '../../hooks/useOperationsKpis.js';
+import './MainDashboard.css';
+
 
 // ─── Formatters ─────────────────────────────────────────────────────────────────
 const fmt = (v) => Number(v || 0).toLocaleString('en-IN');
@@ -662,7 +664,7 @@ export default function MainDashboard({ stats, isAdmin }) {
               <span>🏪 14 Shops</span>
             </div>
             <div className="society-wing-card__progress">
-              <div className="society-wing-card__fill" style={{ width: '100%', background: '#C62828' }} />
+              <div className="society-wing-card__fill main-dashboard-s1" />
             </div>
             <div className="society-wing-card__link">View Tenant Roster →</div>
           </div>
@@ -683,7 +685,7 @@ export default function MainDashboard({ stats, isAdmin }) {
               <span>⚡ Tata Power</span>
             </div>
             <div className="society-wing-card__progress">
-              <div className="society-wing-card__fill" style={{ width: '100%', background: '#3b82f6' }} />
+              <div className="society-wing-card__fill main-dashboard-s2" />
             </div>
             <div className="society-wing-card__meta">Shared Common Utilities</div>
           </div>
@@ -704,7 +706,7 @@ export default function MainDashboard({ stats, isAdmin }) {
               <span>🛡️ Security Guard Post</span>
             </div>
             <div className="society-wing-card__progress">
-              <div className="society-wing-card__fill" style={{ width: '100%', background: '#10b981' }} />
+              <div className="society-wing-card__fill main-dashboard-s3" />
             </div>
             <div className="society-wing-card__meta">Shared Borewell & Tanker Supply</div>
           </div>
@@ -713,7 +715,7 @@ export default function MainDashboard({ stats, isAdmin }) {
 
       {/* ── Loading Skeleton / Indicator ── */}
       {loading && (
-        <div style={{ marginTop: 24 }}>
+        <div className="main-dashboard-s4">
           <KpiGrid columns={4}>
             <KpiSkeleton count={8} />
           </KpiGrid>
@@ -725,13 +727,13 @@ export default function MainDashboard({ stats, isAdmin }) {
           {/* ══════════════════════════════════════════════════════════════════════
               LIQUID GLASS KPI CATEGORY SELECTOR & EXECUTIVE METRICS
           ══════════════════════════════════════════════════════════════════════ */}
-          <div className="exec-section-heading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginTop: 28 }}>
+          <div className="exec-section-heading main-dashboard-s5">
             <div>
               <h2>📊 Executive Society Health Indicators</h2>
               <span className="exec-section-sub">Real-time Liquid Glass metrics across Society, Finance, Maintenance & Operations</span>
             </div>
 
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <div className="main-dashboard-s6">
               {[
                 { id: 'all', label: '🌟 All KPIs' },
                 { id: 'society', label: '🏛️ Society' },
@@ -743,19 +745,7 @@ export default function MainDashboard({ stats, isAdmin }) {
                   key={tab.id}
                   type="button"
                   onClick={() => setKpiCategoryFilter(tab.id)}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: 20,
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    border: kpiCategoryFilter === tab.id ? '1px solid rgba(2, 132, 199, 0.4)' : '1px solid rgba(255, 255, 255, 0.7)',
-                    background: kpiCategoryFilter === tab.id ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(224, 242, 254, 0.85))' : 'rgba(255, 255, 255, 0.55)',
-                    color: kpiCategoryFilter === tab.id ? '#0284c7' : '#475569',
-                    boxShadow: kpiCategoryFilter === tab.id ? '0 4px 12px rgba(2, 132, 199, 0.15)' : 'none',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    backdropFilter: 'blur(8px)'
-                  }}
+                  className="main-dashboard-s7" style={{ border: kpiCategoryFilter === tab.id ? '1px solid rgba(2, 132, 199, 0.4)' : '1px solid rgba(255, 255, 255, 0.7)', background: kpiCategoryFilter === tab.id ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(224, 242, 254, 0.85))' : 'rgba(255, 255, 255, 0.55)', color: kpiCategoryFilter === tab.id ? '#0284c7' : '#475569', boxShadow: kpiCategoryFilter === tab.id ? '0 4px 12px rgba(2, 132, 199, 0.15)' : 'none' }}
                 >
                   {tab.label}
                 </button>
@@ -767,9 +757,9 @@ export default function MainDashboard({ stats, isAdmin }) {
               CATEGORY A: SOCIETY KPIS
           ══════════════════════════════════════════════════════════════════════ */}
           {(kpiCategoryFilter === 'all' || kpiCategoryFilter === 'society') && (
-            <div style={{ marginBottom: 20 }}>
+            <div className="main-dashboard-s8">
               {kpiCategoryFilter !== 'all' && (
-                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0284c7', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <h3 className="main-dashboard-s9">
                   <Building2 size={16} /> Society Demographics & Infrastructure
                 </h3>
               )}
@@ -840,9 +830,9 @@ export default function MainDashboard({ stats, isAdmin }) {
               CATEGORY B: FINANCE KPIS
           ══════════════════════════════════════════════════════════════════════ */}
           {(kpiCategoryFilter === 'all' || kpiCategoryFilter === 'finance') && (
-            <div style={{ marginBottom: 20 }}>
+            <div className="main-dashboard-s8">
               {kpiCategoryFilter !== 'all' && (
-                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#059669', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <h3 className="main-dashboard-s10">
                   <Wallet size={16} /> Financial Telemetry & Treasury
                 </h3>
               )}
@@ -964,9 +954,9 @@ export default function MainDashboard({ stats, isAdmin }) {
               CATEGORY C: MAINTENANCE KPIS
           ══════════════════════════════════════════════════════════════════════ */}
           {(kpiCategoryFilter === 'all' || kpiCategoryFilter === 'maintenance') && (
-            <div style={{ marginBottom: 20 }}>
+            <div className="main-dashboard-s8">
               {kpiCategoryFilter !== 'all' && (
-                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#6366f1', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <h3 className="main-dashboard-s11">
                   <Wrench size={16} /> Maintenance & Facility Workflows
                 </h3>
               )}
@@ -1027,9 +1017,9 @@ export default function MainDashboard({ stats, isAdmin }) {
               CATEGORY D: OPERATIONS KPIS
           ══════════════════════════════════════════════════════════════════════ */}
           {(kpiCategoryFilter === 'all' || kpiCategoryFilter === 'operations') && (
-            <div style={{ marginBottom: 20 }}>
+            <div className="main-dashboard-s8">
               {kpiCategoryFilter !== 'all' && (
-                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0891b2', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <h3 className="main-dashboard-s12">
                   <Shield size={16} /> Security, Utilities & Operational Governance
                 </h3>
               )}
@@ -1125,7 +1115,7 @@ export default function MainDashboard({ stats, isAdmin }) {
           {/* ══════════════════════════════════════════════════════════════════════
               🚨 REQUIRES ATTENTION SECTION (LIQUID GLASS UPGRADE)
           ══════════════════════════════════════════════════════════════════════ */}
-          <LiquidGlassCard className="exec-attention-section" padding="lg" style={{ marginTop: 24 }}>
+          <LiquidGlassCard className="exec-attention-section main-dashboard-s4" padding="lg">
             <div className="exec-attention-header">
               <div className="exec-attention-title">
                 <span>🚨</span> Requires Attention
@@ -1142,10 +1132,10 @@ export default function MainDashboard({ stats, isAdmin }) {
                     <span className={`exec-attention-badge exec-attention-badge--${item.severity}`}>
                       {item.badge}
                     </span>
-                    <h4 style={{ margin: '0 0 4px', fontSize: '0.92rem', fontWeight: 700, color: '#171717' }}>
+                    <h4 className="main-dashboard-s13">
                       {item.title}
                     </h4>
-                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#6B7280', lineHeight: 1.4 }}>
+                    <p className="main-dashboard-s14">
                       {item.details}
                     </p>
                   </div>
@@ -1160,14 +1150,14 @@ export default function MainDashboard({ stats, isAdmin }) {
           {/* ══════════════════════════════════════════════════════════════════════
               Row 2: Finance Chart + Task Pie + Occupancy Pie (LIQUID GLASS WRAPPER)
           ══════════════════════════════════════════════════════════════════════ */}
-          <div className="exec-charts-grid" style={{ marginTop: 24 }}>
+          <div className="exec-charts-grid main-dashboard-s4">
             {/* Finance Income vs Expense Trend */}
             <LiquidGlassCard className="exec-card" padding="lg">
               <h3 className="exec-card-title">
                 📈 Income vs Expense Trend
                 <button
                   type="button"
-                  style={{ marginLeft: 'auto', background: 'none', border: 'none', fontSize: '0.78rem', color: '#C62828', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+                  className="main-dashboard-s15"
                   onClick={() => navigate('finance')}
                 >
                   View Details →
@@ -1199,20 +1189,20 @@ export default function MainDashboard({ stats, isAdmin }) {
                   </AreaChart>
                 </ResponsiveContainer>
               ) : (
-                <div style={{ height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
+                <div className="main-dashboard-s16">
                   No finance data available
                 </div>
               )}
               {/* Summary bar */}
-              <div style={{ display: 'flex', gap: 20, marginTop: 12, paddingTop: 12, borderTop: '1px solid #E5E7EB', fontSize: '0.78rem', flexWrap: 'wrap' }}>
-                <span style={{ color: '#6B7280' }}>Total Income: <strong style={{ color: '#059669' }}>{fmtCr(financeSummary.totalIncome)}</strong></span>
-                <span style={{ color: '#6B7280' }}>Total Expense: <strong style={{ color: '#C62828' }}>{fmtCr(financeSummary.totalExpense)}</strong></span>
-                <span style={{ color: '#6B7280' }}>Avg Surplus/mo: <strong style={{ color: financeSummary.avgSurplus >= 0 ? '#065f46' : '#C62828' }}>{fmtCr(financeSummary.avgSurplus)}</strong></span>
+              <div className="main-dashboard-s17">
+                <span className="main-dashboard-s18">Total Income: <strong className="main-dashboard-s19">{fmtCr(financeSummary.totalIncome)}</strong></span>
+                <span className="main-dashboard-s18">Total Expense: <strong className="main-dashboard-s20">{fmtCr(financeSummary.totalExpense)}</strong></span>
+                <span className="main-dashboard-s18">Avg Surplus/mo: <strong style={{ color: financeSummary.avgSurplus >= 0 ? '#065f46' : '#C62828' }}>{fmtCr(financeSummary.avgSurplus)}</strong></span>
               </div>
             </LiquidGlassCard>
 
             {/* Right: Task Status + Occupancy Pie */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="main-dashboard-s21">
               {/* Task Status Pie */}
               <LiquidGlassCard className="exec-card" padding="default">
                 <h3 className="exec-card-title">📊 Task Status Breakdown</h3>
@@ -1237,7 +1227,7 @@ export default function MainDashboard({ stats, isAdmin }) {
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280', fontSize: '0.85rem' }}>
+                  <div className="main-dashboard-s22">
                     No tasks yet
                   </div>
                 )}
@@ -1247,7 +1237,7 @@ export default function MainDashboard({ stats, isAdmin }) {
               <LiquidGlassCard className="exec-card" padding="default" interactive={true} onClick={() => navigate('tenants')}>
                 <h3 className="exec-card-title">🏠 Occupancy Split (Building A)</h3>
                 <div className="exec-occupancy-wrap">
-                  <div style={{ width: 110, height: 100, flexShrink: 0 }}>
+                  <div className="main-dashboard-s23">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={occupancyPie} cx="50%" cy="50%" innerRadius={28} outerRadius={42} paddingAngle={4} dataKey="value">
@@ -1259,12 +1249,12 @@ export default function MainDashboard({ stats, isAdmin }) {
                   </div>
                   <div className="exec-occupancy-legend">
                     <div className="exec-occupancy-row">
-                      <span className="exec-occupancy-dot" style={{ background: '#C62828' }} />
-                      <span style={{ color: '#171717' }}>Owners: <strong>{tenantStats.owners}</strong></span>
+                      <span className="exec-occupancy-dot main-dashboard-s24" />
+                      <span className="main-dashboard-s25">Owners: <strong>{tenantStats.owners}</strong></span>
                     </div>
                     <div className="exec-occupancy-row">
-                      <span className="exec-occupancy-dot" style={{ background: '#F59E0B' }} />
-                      <span style={{ color: '#171717' }}>Tenants: <strong>{tenantStats.tenants}</strong></span>
+                      <span className="exec-occupancy-dot main-dashboard-s26" />
+                      <span className="main-dashboard-s25">Tenants: <strong>{tenantStats.tenants}</strong></span>
                     </div>
                   </div>
                 </div>
@@ -1275,24 +1265,24 @@ export default function MainDashboard({ stats, isAdmin }) {
           {/* ══════════════════════════════════════════════════════════════════════
               Row 3: Pending Tasks + Alerts (AMC + Lease Expiry)
           ══════════════════════════════════════════════════════════════════════ */}
-          <div className="exec-grid-2col" style={{ marginTop: 24 }}>
+          <div className="exec-grid-2col main-dashboard-s4">
             {/* Pending Priority Tasks */}
             <LiquidGlassCard className="exec-card" padding="lg">
               <h3 className="exec-card-title">
                 🔥 Priority Tasks
-                <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#6B7280', marginLeft: 6 }}>
+                <span className="main-dashboard-s27">
                   (A Building + Common)
                 </span>
                 <button
                   type="button"
-                  style={{ marginLeft: 'auto', background: 'none', border: 'none', fontSize: '0.78rem', color: '#C62828', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+                  className="main-dashboard-s15"
                   onClick={() => navigate('manager_tasks')}
                 >
                   View All →
                 </button>
               </h3>
               {taskStats.priorityTasks.length === 0 ? (
-                <div style={{ padding: 20, textAlign: 'center', color: '#6B7280', fontSize: '0.85rem' }}>
+                <div className="main-dashboard-s28">
                   ✅ All tasks are completed!
                 </div>
               ) : (
@@ -1307,22 +1297,13 @@ export default function MainDashboard({ stats, isAdmin }) {
                         {t.taskCategory || '—'}
                       </span>
                       {t.priority && (
-                        <span style={{
-                          fontSize: '0.65rem', fontWeight: 700, padding: '1px 7px', borderRadius: 12,
-                          background: t.priority === 'High' ? '#fee2e2' : t.priority === 'Medium' ? '#fef3c7' : '#d1fae5',
-                          color: t.priority === 'High' ? '#C62828' : t.priority === 'Medium' ? '#92400e' : '#065f46',
-                          flexShrink: 0,
-                        }}>
+                        <span className="main-dashboard-s29" style={{ background: t.priority === 'High' ? '#fee2e2' : t.priority === 'Medium' ? '#fef3c7' : '#d1fae5', color: t.priority === 'High' ? '#C62828' : t.priority === 'Medium' ? '#92400e' : '#065f46' }}>
                           {t.priority}
                         </span>
                       )}
                       <span className="exec-task-deadline">
                         {daysLeft !== null ? (
-                          <span style={{
-                            fontSize: '0.7rem', fontWeight: 700, padding: '1px 6px', borderRadius: 10,
-                            background: daysLeft < 0 ? '#fee2e2' : daysLeft <= 3 ? '#fef3c7' : '#d1fae5',
-                            color: daysLeft < 0 ? '#C62828' : daysLeft <= 3 ? '#d97706' : '#065f46',
-                          }}>
+                          <span className="main-dashboard-s30" style={{ background: daysLeft < 0 ? '#fee2e2' : daysLeft <= 3 ? '#fef3c7' : '#d1fae5', color: daysLeft < 0 ? '#C62828' : daysLeft <= 3 ? '#d97706' : '#065f46' }}>
                             {daysLeft < 0 ? `${Math.abs(daysLeft)}d overdue` : `${daysLeft}d left`}
                           </span>
                         ) : (
@@ -1336,10 +1317,10 @@ export default function MainDashboard({ stats, isAdmin }) {
             </LiquidGlassCard>
 
             {/* Alerts Column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="main-dashboard-s21">
               {/* AMC Alerts */}
               <LiquidGlassCard className="exec-card" padding="default">
-                <h3 className="exec-card-title" style={{ cursor: 'pointer' }} onClick={() => navigate('amc')}>
+                <h3 className="exec-card-title main-dashboard-s31" onClick={() => navigate('amc')}>
                   ⚠️ AMC Alerts
                 </h3>
                 {amcAlerts.length === 0 ? (
@@ -1348,7 +1329,7 @@ export default function MainDashboard({ stats, isAdmin }) {
                     <div className="exec-alert-text"><strong>All contracts active</strong>No expiries in the next 60 days</div>
                   </div>
                 ) : amcAlerts.map((a) => (
-                  <div key={a.id} className="exec-alert-item" style={{ cursor: 'pointer' }} onClick={() => navigate('amc')}>
+                  <div key={a.id} className="exec-alert-item main-dashboard-s31" onClick={() => navigate('amc')}>
                     <div className={`exec-alert-dot exec-alert-dot--${a.severity}`} />
                     <div className="exec-alert-text">
                       <strong>{a.name}</strong>
@@ -1361,11 +1342,11 @@ export default function MainDashboard({ stats, isAdmin }) {
               {/* Lease Expiry Alerts */}
               {tenantStats.leaseAlerts.length > 0 && (
                 <LiquidGlassCard className="exec-card" padding="default">
-                  <h3 className="exec-card-title" style={{ cursor: 'pointer' }} onClick={() => navigate('tenants')}>
+                  <h3 className="exec-card-title main-dashboard-s31" onClick={() => navigate('tenants')}>
                     🏠 Lease Expiry Alerts
                   </h3>
                   {tenantStats.leaseAlerts.slice(0, 5).map((la) => (
-                    <div key={la.flat} className="exec-alert-item" style={{ cursor: 'pointer' }} onClick={() => navigate('tenants')}>
+                    <div key={la.flat} className="exec-alert-item main-dashboard-s31" onClick={() => navigate('tenants')}>
                       <div className={`exec-alert-dot exec-alert-dot--${la.days < 0 ? 'red' : la.days <= 30 ? 'amber' : 'green'}`} />
                       <div className="exec-alert-text">
                         <strong>{la.flat} — {la.tenant}</strong>
@@ -1382,14 +1363,14 @@ export default function MainDashboard({ stats, isAdmin }) {
               {/* Petty Cash Summary */}
               <LiquidGlassCard className="exec-card" padding="default" interactive={true} onClick={() => navigate('petty_cash')}>
                 <h3 className="exec-card-title">💵 Petty Cash Summary</h3>
-                <div style={{ display: 'flex', gap: 14 }}>
-                  <div style={{ flex: 1, background: '#f0fdf4', borderRadius: 12, padding: '12px 14px', border: '1px solid rgba(16,185,129,0.15)' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', color: '#6B7280', letterSpacing: '0.06em' }}>A Building</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#065f46', marginTop: 4 }}>₹{fmt(pettyCashSummary.buildingA)}</div>
+                <div className="main-dashboard-s32">
+                  <div className="main-dashboard-s33">
+                    <div className="main-dashboard-s34">A Building</div>
+                    <div className="main-dashboard-s35">₹{fmt(pettyCashSummary.buildingA)}</div>
                   </div>
-                  <div style={{ flex: 1, background: '#eff6ff', borderRadius: 12, padding: '12px 14px', border: '1px solid rgba(59,130,246,0.15)' }}>
-                    <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', color: '#6B7280', letterSpacing: '0.06em' }}>Common</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e40af', marginTop: 4 }}>₹{fmt(pettyCashSummary.common)}</div>
+                  <div className="main-dashboard-s36">
+                    <div className="main-dashboard-s34">Common</div>
+                    <div className="main-dashboard-s37">₹{fmt(pettyCashSummary.common)}</div>
                   </div>
                 </div>
               </LiquidGlassCard>
@@ -1400,12 +1381,12 @@ export default function MainDashboard({ stats, isAdmin }) {
               Row 4: Monthly Surplus Bar Chart (full width)
           ══════════════════════════════════════════════════════════════════════ */}
           {financeData.length > 2 && (
-            <LiquidGlassCard className="exec-card" padding="lg" style={{ marginTop: 24 }}>
+            <LiquidGlassCard className="exec-card main-dashboard-s4" padding="lg">
               <h3 className="exec-card-title">
                 📊 Monthly Surplus Trend
                 <button
                   type="button"
-                  style={{ marginLeft: 'auto', background: 'none', border: 'none', fontSize: '0.78rem', color: '#C62828', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+                  className="main-dashboard-s15"
                   onClick={() => navigate('finance')}
                 >
                   Finance Tracker →
@@ -1434,7 +1415,7 @@ export default function MainDashboard({ stats, isAdmin }) {
               Quick Navigation
           ══════════════════════════════════════════════════════════════════════ */}
           {isAdmin && (
-            <LiquidGlassCard className="exec-card" padding="lg" style={{ marginTop: 24 }}>
+            <LiquidGlassCard className="exec-card main-dashboard-s4" padding="lg">
               <h3 className="exec-card-title">🚀 Quick Navigation</h3>
               <div className="exec-quick-nav">
                 {QUICK_LINKS.map((link) => (

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Search, X } from 'lucide-react';
+import './AtomicSearchBar.css';
+
 
 /**
  * AtomicSearchBar Molecule
@@ -34,7 +36,7 @@ export default function AtomicSearchBar({
         </button>
       )}
       {countText && (
-        <span style={{ marginLeft: '12px', fontSize: '0.78rem', color: '#64748b', whiteSpace: 'nowrap' }}>
+        <span className="atomic-search-bar-s1">
           {countText}
         </span>
       )}

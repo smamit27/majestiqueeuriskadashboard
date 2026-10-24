@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc, deleteDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './HousekeepingAttendanceManager.css';
+
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -659,17 +661,10 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
 
         {/* Auto-save status */}
         <div
-          className="attendance-note"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontWeight: 500,
-            color: statusBadge.color,
-            transition: 'color 0.3s',
-          }}
+          className="attendance-note housekeeping-attendance-manager-s1"
+          style={{ color: statusBadge.color }}
         >
-          <span style={{ fontSize: '1rem' }}>{statusBadge.icon}</span>
+          <span className="housekeeping-attendance-manager-s2">{statusBadge.icon}</span>
           <span>
             {isLoading
               ? `Loading ${formatLongMonthLabel(selectedMonth)}…`
@@ -713,10 +708,9 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
             </button>
             {isAdmin && (
               <button
-                className="button-secondary"
+                className="button-secondary housekeeping-attendance-manager-s3"
                 type="button"
                 onClick={(e) => handleDeleteMonthData(e)}
-                style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
               >
                 🗑️ Delete
               </button>
@@ -729,7 +723,7 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
           <table className="attendance-table attendance-table--register">
             <thead>
               <tr>
-                <th style={{ minWidth: 110 }}>Date</th>
+                <th className="housekeeping-attendance-manager-s4">Date</th>
                 {MANPOWER_COLUMNS.map((col) => (
                   <th key={col.key}>{col.label}</th>
                 ))}
@@ -741,7 +735,7 @@ export default function HousekeepingAttendanceManager({ isAdmin = false, staffMe
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center', padding: '24px', opacity: 0.6 }}>
+                  <td colSpan={8} className="housekeeping-attendance-manager-s5">
                     Loading {formatLongMonthLabel(selectedMonth)}…
                   </td>
                 </tr>

@@ -4,6 +4,8 @@ import {
 } from 'firebase/firestore';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 import LiquidGlassCard from '../liquid-glass/LiquidGlassCard.jsx';
+import './ParkPlusTracker.css';
+
 
 // ─── Constants ──────────────────────────────────────────────────────────────────
 const PAYMENT_STATUS = ['Unpaid', 'Paid', 'Partial', 'Overdue'];
@@ -187,25 +189,9 @@ function formatINR(n) {
 // ─── Glass Sub-components ────────────────────────────────────────────────────────
 function StatusPill({ status }) {
   const s = STATUS_STYLE[status];
-  if (!s) return <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>—</span>;
+  if (!s) return <span className="park-plus-tracker-s1">—</span>;
   return (
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: 5,
-      fontSize: '0.72rem',
-      fontWeight: 800,
-      letterSpacing: '0.04em',
-      padding: '4px 10px',
-      borderRadius: 20,
-      whiteSpace: 'nowrap',
-      background: s.bg,
-      color: s.color,
-      border: `1px solid ${s.border}`,
-      boxShadow: `0 2px 8px ${s.glow}`,
-      backdropFilter: 'blur(8px)',
-      WebkitBackdropFilter: 'blur(8px)'
-    }}>
+    <span className="park-plus-tracker-s2" style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}`, boxShadow: `0 2px 8px ${s.glow}` }}>
       <span>{s.icon}</span>
       <span>{status}</span>
     </span>
@@ -213,7 +199,7 @@ function StatusPill({ status }) {
 }
 
 function DaysChip({ days }) {
-  if (days === null) return <span style={{ color: '#94a3b8', fontSize: '0.78rem' }}>—</span>;
+  if (days === null) return <span className="park-plus-tracker-s1">—</span>;
   const isOverdue = days < 0;
   const isWarning = days >= 0 && days <= 5;
   const color = isOverdue ? '#991b1b' : isWarning ? '#92400e' : '#065f46';
@@ -221,21 +207,7 @@ function DaysChip({ days }) {
   const border = isOverdue ? 'rgba(239, 68, 68, 0.35)' : isWarning ? 'rgba(245, 158, 11, 0.35)' : 'rgba(16, 185, 129, 0.35)';
   const label = isOverdue ? `${Math.abs(days)}d overdue` : days === 0 ? 'Due today!' : `${days}d left`;
   return (
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: 4,
-      fontSize: '0.72rem',
-      fontWeight: 800,
-      padding: '3px 10px',
-      borderRadius: 20,
-      background: bg,
-      color,
-      border: `1px solid ${border}`,
-      backdropFilter: 'blur(8px)',
-      WebkitBackdropFilter: 'blur(8px)',
-      whiteSpace: 'nowrap'
-    }}>
+    <span className="park-plus-tracker-s3" style={{ background: bg, color, border: `1px solid ${border}` }}>
       {isOverdue && <span>⚠</span>}
       {label}
     </span>
@@ -293,82 +265,34 @@ function InvoiceModal({ invoice, onSave, onClose }) {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      zIndex: 9999,
-      background: 'rgba(15, 23, 42, 0.55)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 16,
-    }} onClick={onClose}>
-      <div style={{
-        background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 246, 255, 0.94) 100%)',
-        backdropFilter: 'blur(25px)',
-        WebkitBackdropFilter: 'blur(25px)',
-        border: '1px solid rgba(255, 255, 255, 0.85)',
-        borderRadius: 24,
-        padding: '28px 32px 24px',
-        width: '100%',
-        maxWidth: 700,
-        maxHeight: '92vh',
-        overflowY: 'auto',
-        boxShadow: '0 30px 80px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.9)',
-      }} onClick={e => e.stopPropagation()}>
+    <div className="park-plus-tracker-s4" onClick={onClose}>
+      <div className="park-plus-tracker-s5" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 }}>
+        <div className="park-plus-tracker-s6">
           <div>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              background: 'rgba(2, 132, 199, 0.1)',
-              border: '1px solid rgba(2, 132, 199, 0.25)',
-              padding: '3px 10px',
-              borderRadius: 20,
-              fontSize: '0.70rem',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              color: '#0284c7'
-            }}>
+            <div className="park-plus-tracker-s7">
               <span>🅿️</span>
               <span>Park+ Vendor Management</span>
             </div>
-            <h3 style={{ margin: '6px 0 0', fontSize: '1.28rem', fontWeight: 800, color: '#0f172a' }}>
+            <h3 className="park-plus-tracker-s8">
               {invoice && invoice.id ? '✏️ Edit Invoice Entry' : '➕ Add New Park+ Invoice'}
             </h3>
           </div>
-          <button onClick={onClose} style={{
-            background: 'rgba(15, 23, 42, 0.06)',
-            border: 'none',
-            borderRadius: 10,
-            width: 36,
-            height: 36,
-            cursor: 'pointer',
-            fontSize: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#64748b'
-          }}>✕</button>
+          <button onClick={onClose} className="park-plus-tracker-s9">✕</button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 18px' }}>
+        <div className="park-plus-tracker-s10">
 
           {/* Full-width: Description */}
-          <label style={{ gridColumn: '1/-1' }}>
+          <label className="park-plus-tracker-s11">
             <span style={labelStyle}>Description *</span>
             <input style={inputStyle} value={form.description} onChange={e => set('description', e.target.value)}
               placeholder="e.g. Automated Gate and Security Solution" />
           </label>
 
           {/* Period */}
-          <label style={{ gridColumn: '1/-1' }}>
+          <label className="park-plus-tracker-s11">
             <span style={labelStyle}>Service Period</span>
             <input style={inputStyle} value={form.period} onChange={e => set('period', e.target.value)}
               placeholder="e.g. 01-07-2026 to 30-09-2026" />
@@ -414,50 +338,28 @@ function InvoiceModal({ invoice, onSave, onClose }) {
           </label>
 
           {/* Glass Calculation Preview */}
-          <div style={{
-            gridColumn: '1/-1',
-            background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)',
-            border: '1px solid rgba(2, 132, 199, 0.2)',
-            borderRadius: 16,
-            padding: '14px 20px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 12,
-            backdropFilter: 'blur(10px)',
-          }}>
+          <div className="park-plus-tracker-s12">
             {[
               { label: 'Subtotal', val: `₹${formatINR(form.unitPrice || 0)}` },
               { label: `IGST (${form.igstRate}%)`, val: `₹${formatINR(igstAmt)}` },
               { label: 'Grand Total', val: `₹${formatINR(grandTotal)}`, bold: true },
             ].map(({ label, val, bold }) => (
-              <div key={label} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</div>
+              <div key={label} className="park-plus-tracker-s13">
+                <div className="park-plus-tracker-s14">{label}</div>
                 <div style={{ fontSize: bold ? '1.12rem' : '0.96rem', fontWeight: bold ? 900 : 700, color: bold ? '#0f2952' : '#0284c7' }}>{val}</div>
               </div>
             ))}
           </div>
 
           {/* Payment Status */}
-          <label style={{ gridColumn: '1/-1' }}>
+          <label className="park-plus-tracker-s11">
             <span style={labelStyle}>Payment Status</span>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div className="park-plus-tracker-s15">
               {PAYMENT_STATUS.map(s => {
                 const st = STATUS_STYLE[s];
                 const active = form.paymentStatus === s;
                 return (
-                  <button key={s} type="button" onClick={() => set('paymentStatus', s)} style={{
-                    padding: '6px 16px',
-                    borderRadius: 20,
-                    cursor: 'pointer',
-                    fontSize: '0.82rem',
-                    fontWeight: 800,
-                    fontFamily: 'inherit',
-                    border: `1.5px solid ${active ? st.border : 'rgba(203, 213, 225, 0.8)'}`,
-                    background: active ? st.bg : '#ffffff',
-                    color: active ? st.color : '#64748b',
-                    boxShadow: active ? `0 2px 8px ${st.glow}` : 'none',
-                    transition: 'all 0.15s ease',
-                  }}>{s}</button>
+                  <button key={s} type="button" onClick={() => set('paymentStatus', s)} className="park-plus-tracker-s16" style={{ border: `1.5px solid ${active ? st.border : 'rgba(203, 213, 225, 0.8)'}`, background: active ? st.bg : '#ffffff', color: active ? st.color : '#64748b', boxShadow: active ? `0 2px 8px ${st.glow}` : 'none' }}>{s}</button>
                 );
               })}
             </div>
@@ -472,9 +374,9 @@ function InvoiceModal({ invoice, onSave, onClose }) {
           )}
 
           {/* Remarks */}
-          <label style={{ gridColumn: '1/-1' }}>
+          <label className="park-plus-tracker-s11">
             <span style={labelStyle}>Remarks</span>
-            <textarea rows={2} style={{ ...inputStyle, resize: 'vertical' }}
+            <textarea rows={2} className="park-plus-tracker-s17" style={{ ...inputStyle }}
               value={form.remarks} onChange={e => set('remarks', e.target.value)}
               placeholder="Any payment reference, cheque number, or transaction notes..." />
           </label>
@@ -482,37 +384,9 @@ function InvoiceModal({ invoice, onSave, onClose }) {
         </div>
 
         {/* Footer */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: 10,
-          marginTop: 24,
-          paddingTop: 18,
-          borderTop: '1px solid rgba(226, 232, 240, 0.8)',
-        }}>
-          <button onClick={onClose} style={{
-            padding: '9px 20px',
-            borderRadius: 12,
-            border: '1px solid #cbd5e1',
-            background: '#ffffff',
-            cursor: 'pointer',
-            fontWeight: 700,
-            fontSize: '0.86rem',
-            fontFamily: 'inherit',
-            color: '#475569'
-          }}>Cancel</button>
-          <button onClick={handleSave} style={{
-            padding: '9px 24px',
-            borderRadius: 12,
-            border: 'none',
-            background: 'linear-gradient(135deg, #0f2952 0%, #0284c7 100%)',
-            color: '#ffffff',
-            cursor: 'pointer',
-            fontWeight: 800,
-            fontSize: '0.86rem',
-            fontFamily: 'inherit',
-            boxShadow: '0 4px 14px rgba(2, 132, 199, 0.3)'
-          }}>
+        <div className="park-plus-tracker-s18">
+          <button onClick={onClose} className="park-plus-tracker-s19">Cancel</button>
+          <button onClick={handleSave} className="park-plus-tracker-s20">
             {invoice && invoice.id ? '💾 Save Changes' : '➕ Add Invoice'}
           </button>
         </div>
@@ -827,86 +701,36 @@ export default function ParkPlusTracker({ isAdmin = false }) {
 
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div className="park-plus-tracker-s21">
 
       {/* ── Liquid Glass Hero Banner ── */}
       <LiquidGlassCard
         variant="operations"
-        style={{
-          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(14, 43, 60, 0.92) 50%, rgba(3, 105, 161, 0.90) 100%)',
-          backdropFilter: 'blur(24px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-          border: '1px solid rgba(255, 255, 255, 0.25)',
-          borderRadius: 24,
-          padding: '24px 28px',
-          boxShadow: '0 20px 50px rgba(15, 23, 42, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
-          color: '#ffffff'
-        }}
+        className="park-plus-tracker-s22"
       >
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 20,
-          position: 'relative',
-          zIndex: 2
-        }}>
+        <div className="park-plus-tracker-s23">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}>
-              <span style={{
-                background: 'rgba(2, 132, 199, 0.35)',
-                border: '1px solid rgba(56, 189, 248, 0.5)',
-                color: '#7dd3fc',
-                fontSize: '0.68rem',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                padding: '3px 10px',
-                borderRadius: 20,
-                backdropFilter: 'blur(8px)'
-              }}>
+            <div className="park-plus-tracker-s24">
+              <span className="park-plus-tracker-s25">
                 Vendor · Park+ (Park Mate)
               </span>
-              <span style={{
-                background: 'rgba(16, 185, 129, 0.25)',
-                border: '1px solid rgba(52, 211, 153, 0.4)',
-                color: '#a7f3d0',
-                fontSize: '0.68rem',
-                fontWeight: 800,
-                padding: '3px 10px',
-                borderRadius: 20
-              }}>
+              <span className="park-plus-tracker-s26">
                 Active Contract
               </span>
             </div>
 
-            <h2 style={{
-              margin: '0 0 4px',
-              fontSize: 'clamp(1.4rem, 2.5vw, 1.85rem)',
-              fontWeight: 800,
-              color: '#ffffff',
-              letterSpacing: '-0.02em',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10
-            }}>
+            <h2 className="park-plus-tracker-s27">
               <span>🅿️</span>
               <span>Park+ Payment Tracker</span>
             </h2>
 
-            <p style={{
-              margin: 0,
-              color: 'rgba(255, 255, 255, 0.75)',
-              fontSize: '0.86rem',
-              lineHeight: 1.45
-            }}>
+            <p className="park-plus-tracker-s28">
               RFID & Automated Gate Solution — Majestique Euriska 'A' Building CHS Ltd.
             </p>
           </div>
 
           {/* Quick Glass Stat Badges inside Hero */}
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div className="park-plus-tracker-s29">
             {[
               { label: 'Invoices', value: stats.count, bg: 'rgba(255, 255, 255, 0.12)', color: '#ffffff' },
               { label: 'Total Billed', value: `₹${formatINR(stats.totalGrand)}`, bg: 'rgba(56, 189, 248, 0.16)', color: '#bae6fd' },
@@ -914,115 +738,53 @@ export default function ParkPlusTracker({ isAdmin = false }) {
               { label: 'Pending', value: `₹${formatINR(stats.totalUnpaid)}`, bg: 'rgba(245, 158, 11, 0.22)', color: '#fde047' },
               { label: 'Overdue', value: stats.overdueCount, bg: stats.overdueCount > 0 ? 'rgba(239, 68, 68, 0.35)' : 'rgba(255, 255, 255, 0.08)', color: stats.overdueCount > 0 ? '#fca5a5' : 'rgba(255, 255, 255, 0.7)' },
             ].map(s => (
-              <div key={s.label} style={{
-                textAlign: 'center',
-                background: s.bg,
-                border: '1px solid rgba(255, 255, 255, 0.18)',
-                borderRadius: 14,
-                padding: '9px 16px',
-                minWidth: 70,
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)'
-              }}>
-                <div style={{ fontSize: '1.05rem', fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</div>
-                <div style={{ fontSize: '0.62rem', color: 'rgba(255, 255, 255, 0.7)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 3 }}>{s.label}</div>
+              <div key={s.label} className="park-plus-tracker-s30" style={{ background: s.bg }}>
+                <div className="park-plus-tracker-s31" style={{ color: s.color }}>{s.value}</div>
+                <div className="park-plus-tracker-s32">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Contract & Retainer Timeline Glass Strip */}
-        <div style={{
-          marginTop: 18,
-          paddingTop: 16,
-          borderTop: '1px solid rgba(255, 255, 255, 0.14)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 12,
-          fontSize: '0.78rem',
-          color: 'rgba(255, 255, 255, 0.82)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+        <div className="park-plus-tracker-s33">
+          <div className="park-plus-tracker-s34">
             <span><strong>Contract Scope:</strong> Boom Barrier RFID Hardware + Quarterly Gate Software Support</span>
             <span>•</span>
             <span><strong>Retainer Rate:</strong> ₹18,750 / Quarter (+ 18% IGST)</span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: '0.72rem', color: '#93c5fd', fontWeight: 700 }}>Settlement Progress:</span>
-            <div style={{ width: 110, height: 7, background: 'rgba(255, 255, 255, 0.2)', borderRadius: 999, overflow: 'hidden' }}>
-              <div style={{ width: `${stats.paidPct}%`, height: '100%', background: '#10b981', borderRadius: 999 }} />
+          <div className="park-plus-tracker-s35">
+            <span className="park-plus-tracker-s36">Settlement Progress:</span>
+            <div className="park-plus-tracker-s37">
+              <div className="park-plus-tracker-s38" style={{ width: `${stats.paidPct}%` }} />
             </div>
-            <span style={{ fontWeight: 800, color: '#34d399', fontSize: '0.75rem' }}>{stats.paidPct}%</span>
+            <span className="park-plus-tracker-s39">{stats.paidPct}%</span>
           </div>
         </div>
       </LiquidGlassCard>
 
       {/* ── Main Liquid Glass Table Card ── */}
       <LiquidGlassCard
-        style={{
-          background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.88) 0%, rgba(240, 246, 255, 0.72) 100%)',
-          backdropFilter: 'blur(20px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-          border: '1px solid rgba(255, 255, 255, 0.85)',
-          borderRadius: 24,
-          boxShadow: '0 20px 45px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
-          overflow: 'hidden'
-        }}
+        className="park-plus-tracker-s40"
       >
         {/* ── Glass Toolbar ── */}
-        <div style={{
-          padding: '16px 20px',
-          borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
-          background: 'rgba(255, 255, 255, 0.6)',
-          backdropFilter: 'blur(12px)',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 12,
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
+        <div className="park-plus-tracker-s41">
           {/* Search Bar & Status Chips */}
-          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', flex: '1 1 320px' }}>
-            <div style={{ position: 'relative', minWidth: 220, flex: '1 1 220px' }}>
-              <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.5, fontSize: '0.9rem', pointerEvents: 'none' }}>🔍</span>
+          <div className="park-plus-tracker-s42">
+            <div className="park-plus-tracker-s43">
+              <span className="park-plus-tracker-s44">🔍</span>
               <input
                 type="search"
                 placeholder="Search invoices..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                style={{
-                  width: '100%',
-                  paddingLeft: 34,
-                  paddingRight: 12,
-                  paddingTop: 8,
-                  paddingBottom: 8,
-                  borderRadius: 12,
-                  border: '1.5px solid rgba(203, 213, 225, 0.8)',
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  fontSize: '0.84rem',
-                  fontFamily: 'inherit',
-                  color: '#0f172a',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                  boxShadow: 'inset 0 1px 3px rgba(15, 23, 42, 0.04)'
-                }}
+                className="park-plus-tracker-s45"
               />
             </div>
 
             {/* Status filter chips */}
-            <div style={{
-              display: 'inline-flex',
-              background: 'rgba(241, 245, 249, 0.85)',
-              padding: 3,
-              borderRadius: 12,
-              border: '1px solid #cbd5e1',
-              flexWrap: 'wrap',
-              gap: 2
-            }}>
+            <div className="park-plus-tracker-s46">
               {['All', ...PAYMENT_STATUS].map(s => {
                 const st = STATUS_STYLE[s];
                 const active = filterStatus === s;
@@ -1030,19 +792,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                   <button
                     key={s}
                     onClick={() => setFilterStatus(s)}
-                    style={{
-                      padding: '5px 12px',
-                      borderRadius: 9,
-                      border: 'none',
-                      fontSize: '0.74rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      fontFamily: 'inherit',
-                      background: active ? (st ? st.bg : '#0f2952') : 'transparent',
-                      color: active ? (st ? st.color : '#ffffff') : '#64748b',
-                      boxShadow: active ? '0 1px 4px rgba(0, 0, 0, 0.1)' : 'none',
-                      transition: 'all 0.15s ease'
-                    }}
+                    className="park-plus-tracker-s47" style={{ background: active ? (st ? st.bg : '#0f2952') : 'transparent', color: active ? (st ? st.color : '#ffffff') : '#64748b', boxShadow: active ? '0 1px 4px rgba(0, 0, 0, 0.1)' : 'none' }}
                   >
                     {s}
                   </button>
@@ -1052,25 +802,10 @@ export default function ParkPlusTracker({ isAdmin = false }) {
           </div>
 
           {/* Action buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <div className="park-plus-tracker-s48">
             <button
               onClick={handleExportCSV}
-              style={{
-                padding: '7px 14px',
-                borderRadius: 10,
-                border: '1px solid #cbd5e1',
-                background: '#ffffff',
-                color: '#0f172a',
-                fontWeight: 700,
-                fontSize: '0.80rem',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                fontFamily: 'inherit',
-                boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
-                transition: 'all 0.15s ease'
-              }}
+              className="park-plus-tracker-s49"
               title="Export invoices to CSV"
             >
               <span>📥</span>
@@ -1079,22 +814,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
 
             <button
               onClick={handleExportPDF}
-              style={{
-                padding: '7px 14px',
-                borderRadius: 10,
-                border: '1px solid #cbd5e1',
-                background: '#ffffff',
-                color: '#0f172a',
-                fontWeight: 700,
-                fontSize: '0.80rem',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                fontFamily: 'inherit',
-                boxShadow: '0 1px 3px rgba(15, 23, 42, 0.04)',
-                transition: 'all 0.15s ease'
-              }}
+              className="park-plus-tracker-s49"
               title="Print or export as PDF"
             >
               <span>📄</span>
@@ -1102,7 +822,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
             </button>
 
             {saveStatus && (
-              <span style={{ fontSize: '0.80rem', color: saveStatus.includes('✓') ? '#065f46' : '#991b1b', fontWeight: 800 }}>
+              <span className="park-plus-tracker-s50" style={{ color: saveStatus.includes('✓') ? '#065f46' : '#991b1b' }}>
                 {saveStatus}
               </span>
             )}
@@ -1110,21 +830,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
             {isAdmin && (
               <button
                 onClick={() => setModalInv({})}
-                style={{
-                  padding: '7px 16px',
-                  borderRadius: 10,
-                  border: 'none',
-                  background: 'linear-gradient(135deg, #0f2952 0%, #0284c7 100%)',
-                  color: '#ffffff',
-                  fontWeight: 800,
-                  fontSize: '0.80rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  fontFamily: 'inherit',
-                  boxShadow: '0 3px 10px rgba(2, 132, 199, 0.3)'
-                }}
+                className="park-plus-tracker-s51"
               >
                 <span>➕</span>
                 <span>Add Invoice</span>
@@ -1134,13 +840,10 @@ export default function ParkPlusTracker({ isAdmin = false }) {
         </div>
 
         {/* ── Liquid Glass Table ── */}
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 960 }}>
+        <div className="park-plus-tracker-s52">
+          <table className="park-plus-tracker-s53">
             <thead>
-              <tr style={{
-                background: 'linear-gradient(180deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.8) 100%)',
-                borderBottom: '1.5px solid rgba(203, 213, 225, 0.9)'
-              }}>
+              <tr className="park-plus-tracker-s54">
                 {[
                   { label: '#',            w: 45,  align: 'center' },
                   { label: 'Invoice ID',   w: 160, align: 'left'   },
@@ -1155,34 +858,24 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                   { label: 'Remarks',      w: 220, align: 'left'   },
                   ...(isAdmin ? [{ label: 'Actions', w: 90, align: 'center' }] : []),
                 ].map(col => (
-                  <th key={col.label} style={{
-                    padding: '11px 12px',
-                    textAlign: col.align || 'left',
-                    whiteSpace: 'nowrap',
-                    fontSize: '0.70rem',
-                    fontWeight: 800,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
-                    color: '#0f2952',
-                    minWidth: col.w,
-                  }}>{col.label}</th>
+                  <th key={col.label} className="park-plus-tracker-s55" style={{ textAlign: col.align || 'left', minWidth: col.w }}>{col.label}</th>
                 ))}
               </tr>
             </thead>
 
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={12} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, color: '#64748b' }}>
-                    <div style={{ fontSize: '2rem' }}>⏳</div>
-                    <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>Loading Park+ Invoices...</span>
+                <tr><td colSpan={12} className="park-plus-tracker-s56">
+                  <div className="park-plus-tracker-s57">
+                    <div className="park-plus-tracker-s58">⏳</div>
+                    <span className="park-plus-tracker-s59">Loading Park+ Invoices...</span>
                   </div>
                 </td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={12} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, color: '#64748b' }}>
-                    <div style={{ fontSize: '2.5rem' }}>📭</div>
-                    <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>No invoices match your filters</span>
+                <tr><td colSpan={12} className="park-plus-tracker-s56">
+                  <div className="park-plus-tracker-s57">
+                    <div className="park-plus-tracker-s60">📭</div>
+                    <span className="park-plus-tracker-s59">No invoices match your filters</span>
                   </div>
                 </td></tr>
               ) : (
@@ -1199,11 +892,7 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                   return (
                     <tr
                       key={inv.id}
-                      style={{
-                        borderBottom: '1px solid rgba(226, 232, 240, 0.7)',
-                        background: rowBg,
-                        transition: 'background 0.15s ease'
-                      }}
+                      className="park-plus-tracker-s61" style={{ background: rowBg }}
                       onMouseEnter={e => {
                         e.currentTarget.style.background = isPaid ? 'rgba(220, 252, 231, 0.65)' : 'rgba(241, 245, 249, 0.75)';
                       }}
@@ -1212,97 +901,68 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                       }}
                     >
                       {/* Sr. No */}
-                      <td style={{ padding: '10px 12px', fontSize: '0.76rem', color: '#64748b', fontWeight: 700, textAlign: 'center' }}>
+                      <td className="park-plus-tracker-s62">
                         {idx + 1}
                       </td>
 
                       {/* Invoice ID & HSN */}
-                      <td style={{ padding: '10px 12px' }}>
-                        <div style={{
-                          fontFamily: 'monospace',
-                          fontWeight: 800,
-                          fontSize: '0.84rem',
-                          color: '#0f2952',
-                          letterSpacing: '0.02em'
-                        }}>
+                      <td className="park-plus-tracker-s63">
+                        <div className="park-plus-tracker-s64">
                           {inv.id}
                         </div>
                         {inv.hsn && (
-                          <span style={{
-                            fontSize: '0.66rem',
-                            color: '#0284c7',
-                            fontWeight: 600,
-                            display: 'inline-block',
-                            marginTop: 2
-                          }}>
+                          <span className="park-plus-tracker-s65">
                             HSN: {inv.hsn}
                           </span>
                         )}
                       </td>
 
                       {/* Invoice Date */}
-                      <td style={{ padding: '10px 12px', fontSize: '0.80rem', color: '#475569', whiteSpace: 'nowrap' }}>
+                      <td className="park-plus-tracker-s66">
                         {fmtDate(inv.invoiceDate)}
                       </td>
 
                       {/* Due Date */}
-                      <td style={{
-                        padding: '10px 12px',
-                        fontSize: '0.80rem',
-                        whiteSpace: 'nowrap',
-                        fontWeight: isOverdue ? 800 : 500,
-                        color: isOverdue ? '#b91c1c' : '#475569'
-                      }}>
+                      <td className="park-plus-tracker-s67" style={{ fontWeight: isOverdue ? 800 : 500, color: isOverdue ? '#b91c1c' : '#475569' }}>
                         {fmtDate(inv.dueDate)}
                       </td>
 
                       {/* Description & Period */}
-                      <td style={{ padding: '10px 12px', maxWidth: 240 }}>
-                        <div style={{ fontSize: '0.84rem', color: '#0f172a', fontWeight: 700, lineHeight: 1.35 }}>
+                      <td className="park-plus-tracker-s68">
+                        <div className="park-plus-tracker-s69">
                           {inv.description || '—'}
                         </div>
                         {inv.period && (
-                          <div style={{ fontSize: '0.72rem', color: '#0284c7', fontWeight: 600, marginTop: 2 }}>
+                          <div className="park-plus-tracker-s70">
                             Period: {inv.period}
                           </div>
                         )}
                       </td>
 
                       {/* Subtotal */}
-                      <td style={{ padding: '10px 12px', fontSize: '0.84rem', color: '#334155', fontWeight: 600, whiteSpace: 'nowrap', textAlign: 'right', fontFamily: 'monospace' }}>
+                      <td className="park-plus-tracker-s71">
                         ₹{formatINR(inv.unitPrice)}
                       </td>
 
                       {/* IGST */}
-                      <td style={{ padding: '10px 12px', fontSize: '0.80rem', color: '#64748b', whiteSpace: 'nowrap', textAlign: 'right', fontFamily: 'monospace' }}>
+                      <td className="park-plus-tracker-s72">
                         ₹{formatINR(inv.igstAmt)}
                       </td>
 
                       {/* Grand Total */}
-                      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', textAlign: 'right' }}>
-                        <span style={{ fontSize: '0.94rem', fontWeight: 900, color: '#0f2952', fontFamily: 'monospace' }}>
+                      <td className="park-plus-tracker-s73">
+                        <span className="park-plus-tracker-s74">
                           ₹{formatINR(inv.grandTotal)}
                         </span>
                       </td>
 
                       {/* Status */}
-                      <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                      <td className="park-plus-tracker-s75">
                         {isAdmin ? (
                           <select
                             value={inv.paymentStatus || ''}
                             onChange={e => quickStatus(inv.id, e.target.value)}
-                            style={{
-                              padding: '4px 10px',
-                              borderRadius: 10,
-                              border: `1.5px solid ${STATUS_STYLE[inv.paymentStatus]?.border || '#cbd5e1'}`,
-                              background: STATUS_STYLE[inv.paymentStatus]?.bg || '#ffffff',
-                              color: STATUS_STYLE[inv.paymentStatus]?.color || '#0f172a',
-                              fontWeight: 800,
-                              fontSize: '0.74rem',
-                              cursor: 'pointer',
-                              fontFamily: 'inherit',
-                              outline: 'none'
-                            }}
+                            className="park-plus-tracker-s76" style={{ border: `1.5px solid ${STATUS_STYLE[inv.paymentStatus]?.border || '#cbd5e1'}`, background: STATUS_STYLE[inv.paymentStatus]?.bg || '#ffffff', color: STATUS_STYLE[inv.paymentStatus]?.color || '#0f172a' }}
                           >
                             {PAYMENT_STATUS.map(o => <option key={o} value={o}>{o}</option>)}
                           </select>
@@ -1312,56 +972,36 @@ export default function ParkPlusTracker({ isAdmin = false }) {
                       </td>
 
                       {/* Due In */}
-                      <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                      <td className="park-plus-tracker-s75">
                         <DaysChip days={daysLeft} />
                       </td>
 
                       {/* Remarks */}
-                      <td style={{ padding: '10px 12px', maxWidth: 240 }}>
+                      <td className="park-plus-tracker-s68">
                         {inv.remarks ? (
-                          <span style={{
-                            fontSize: '0.74rem',
-                            color: inv.remarks.startsWith('⚠') ? '#92400e' : '#475569',
-                            lineHeight: 1.4,
-                            display: 'block'
-                          }}>
+                          <span className="park-plus-tracker-s77" style={{ color: inv.remarks.startsWith('⚠') ? '#92400e' : '#475569' }}>
                             {inv.remarks}
                           </span>
                         ) : (
-                          <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>—</span>
+                          <span className="park-plus-tracker-s78">—</span>
                         )}
                       </td>
 
                       {/* Actions (Admin) */}
                       {isAdmin && (
-                        <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', textAlign: 'center' }}>
-                          <div style={{ display: 'inline-flex', gap: 6 }}>
+                        <td className="park-plus-tracker-s79">
+                          <div className="park-plus-tracker-s80">
                             <button
                               onClick={() => setModalInv(inv)}
                               title="Edit invoice"
-                              style={{
-                                padding: '4px 9px',
-                                borderRadius: 8,
-                                border: '1px solid #cbd5e1',
-                                background: '#ffffff',
-                                cursor: 'pointer',
-                                fontSize: '0.76rem'
-                              }}
+                              className="park-plus-tracker-s81"
                             >
                               ✏️
                             </button>
                             <button
                               onClick={() => deleteInvoice(inv.id)}
                               title="Delete invoice"
-                              style={{
-                                padding: '4px 9px',
-                                borderRadius: 8,
-                                border: '1px solid rgba(239, 68, 68, 0.3)',
-                                background: '#fee2e2',
-                                color: '#991b1b',
-                                cursor: 'pointer',
-                                fontSize: '0.76rem'
-                              }}
+                              className="park-plus-tracker-s82"
                             >
                               🗑️
                             </button>
@@ -1377,31 +1017,21 @@ export default function ParkPlusTracker({ isAdmin = false }) {
         </div>
 
         {/* ── Glass Footer Summary ── */}
-        <div style={{
-          padding: '14px 22px',
-          borderTop: '1.5px solid rgba(226, 232, 240, 0.9)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 16,
-          background: 'linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.8) 100%)',
-          backdropFilter: 'blur(10px)'
-        }}>
-          <div style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>
+        <div className="park-plus-tracker-s83">
+          <div className="park-plus-tracker-s84">
             Showing <strong>{filtered.length}</strong> of <strong>{invoices.length}</strong> Park+ invoices
             {filterStatus !== 'All' ? ` (Filtered by: ${filterStatus})` : ''}
           </div>
 
-          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div className="park-plus-tracker-s85">
             {[
               { label: 'Subtotal', value: `₹${formatINR(filtered.reduce((s, i) => s + (i.unitPrice || 0), 0))}` },
               { label: 'Total IGST (18%)', value: `₹${formatINR(filtered.reduce((s, i) => s + (i.igstAmt || 0), 0))}` },
               { label: 'Grand Total', value: `₹${formatINR(filtered.reduce((s, i) => s + (i.grandTotal || 0), 0))}`, bold: true },
             ].map(({ label, value, bold }) => (
-              <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <span style={{ fontSize: '0.66rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 700 }}>{label}</span>
-                <span style={{ fontSize: bold ? '1.05rem' : '0.88rem', fontWeight: bold ? 900 : 700, color: bold ? '#0f2952' : '#0284c7', fontFamily: 'monospace' }}>
+              <div key={label} className="park-plus-tracker-s86">
+                <span className="park-plus-tracker-s87">{label}</span>
+                <span className="park-plus-tracker-s88" style={{ fontSize: bold ? '1.05rem' : '0.88rem', fontWeight: bold ? 900 : 700, color: bold ? '#0f2952' : '#0284c7' }}>
                   {value}
                 </span>
               </div>

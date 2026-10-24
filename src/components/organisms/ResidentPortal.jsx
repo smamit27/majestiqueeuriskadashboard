@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { initialTenantData } from '../../data/tenantSeedData.js';
 import { initialParkingData } from '../../data/parkingAllotmentData.js';
 import { emergencyServices } from '../../data/emergencyData.js';
+import './ResidentPortal.css';
+
 
 const DEFAULT_ANNOUNCEMENTS = [
   { title: 'Biannual Lift Servicing Schedule - Wing A & B', date: '04 Oct 2026' },
@@ -67,27 +69,26 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div className="resident-portal-s1">
       {/* Resident Welcome Header */}
-      <div className="section-card" style={{ padding: '24px', background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', color: 'white', borderRadius: '16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+      <div className="section-card resident-portal-s2">
+        <div className="resident-portal-s3">
           <div>
-            <div style={{ display: 'inline-block', background: 'rgba(196,155,79,0.25)', border: '1px solid #C49B4F', color: '#fde047', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, marginBottom: '8px' }}>
+            <div className="resident-portal-s4">
               RESIDENT SELF-SERVICE PORTAL
             </div>
-            <h2 style={{ margin: 0, fontSize: '1.6rem', fontWeight: 800 }}>Welcome, Flat {flatRecord.flat}</h2>
-            <p style={{ margin: '4px 0 0', opacity: 0.85, fontSize: '0.9rem' }}>
+            <h2 className="resident-portal-s5">Welcome, Flat {flatRecord.flat}</h2>
+            <p className="resident-portal-s6">
               Occupant: <b>{flatRecord.tenantName || 'Owner Resident'}</b> ({flatRecord.occupantType}) • Wing A
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>Switch Demo Unit:</span>
+          <div className="resident-portal-s7">
+            <span className="resident-portal-s8">Switch Demo Unit:</span>
             <select
               value={activeFlat}
               onChange={(e) => setActiveFlat(e.target.value)}
-              className="attendance-register-input"
-              style={{ background: 'white', color: '#0b2b26', fontWeight: 700, padding: '6px 12px' }}
+              className="attendance-register-input resident-portal-s9"
             >
               <option value="A-302">Flat A-302</option>
               <option value="A-904">Flat A-904</option>
@@ -99,7 +100,7 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
       </div>
 
       {/* Navigation Sub-Tabs */}
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+      <div className="resident-portal-s10">
         {[
           { id: 'overview', label: '🏠 My Flat & Overview' },
           { id: 'maintenance', label: '💰 My Maintenance & Dues' },
@@ -111,18 +112,7 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
           <button
             key={tab.id}
             onClick={() => setActiveSection(tab.id)}
-            style={{
-              padding: '10px 18px',
-              borderRadius: '10px',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              background: activeSection === tab.id ? '#0b2b26' : '#e2e8f0',
-              color: activeSection === tab.id ? '#C49B4F' : '#334155',
-              whiteSpace: 'nowrap',
-              transition: 'all 0.15s'
-            }}
+            className="resident-portal-s11" style={{ background: activeSection === tab.id ? '#0b2b26' : '#e2e8f0', color: activeSection === tab.id ? '#C49B4F' : '#334155' }}
           >
             {tab.label}
           </button>
@@ -131,55 +121,54 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
 
       {/* TAB CONTENT: Overview */}
       {activeSection === 'overview' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+        <div className="resident-portal-s12">
           {/* Flat Status Card */}
-          <div className="section-card" style={{ padding: '20px', background: 'white', borderRadius: '12px' }}>
-            <h4 style={{ margin: '0 0 14px', color: '#0b2b26' }}>Unit Profile: {flatRecord.flat}</h4>
-            <div style={{ display: 'grid', gap: '10px', fontSize: '0.88rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: '#64748b' }}>Occupancy Status:</span>
-                <span style={{ fontWeight: 700, color: '#16a34a' }}>✓ {flatRecord.status || 'Active'}</span>
+          <div className="section-card resident-portal-s13">
+            <h4 className="resident-portal-s14">Unit Profile: {flatRecord.flat}</h4>
+            <div className="resident-portal-s15">
+              <div className="resident-portal-s16">
+                <span className="resident-portal-s17">Occupancy Status:</span>
+                <span className="resident-portal-s18">✓ {flatRecord.status || 'Active'}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: '#64748b' }}>Occupant Category:</span>
-                <span style={{ fontWeight: 700 }}>{flatRecord.occupantType}</span>
+              <div className="resident-portal-s16">
+                <span className="resident-portal-s17">Occupant Category:</span>
+                <span className="resident-portal-s19">{flatRecord.occupantType}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: '#64748b' }}>Intercom Link:</span>
-                <span style={{ fontWeight: 700 }}>{flatRecord.primaryIntercom ? 'Active' : 'Unconfigured'}</span>
+              <div className="resident-portal-s16">
+                <span className="resident-portal-s17">Intercom Link:</span>
+                <span className="resident-portal-s19">{flatRecord.primaryIntercom ? 'Active' : 'Unconfigured'}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: '#64748b' }}>Registered Family/Users:</span>
-                <span style={{ fontWeight: 700 }}>{flatRecord.activeUsers || 2} persons</span>
+              <div className="resident-portal-s16">
+                <span className="resident-portal-s17">Registered Family/Users:</span>
+                <span className="resident-portal-s19">{flatRecord.activeUsers || 2} persons</span>
               </div>
             </div>
           </div>
 
           {/* Maintenance Snapshot */}
-          <div className="section-card" style={{ padding: '20px', background: 'white', borderRadius: '12px' }}>
-            <h4 style={{ margin: '0 0 14px', color: '#0b2b26' }}>Maintenance Status</h4>
-            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '14px', marginBottom: '12px' }}>
-              <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 700 }}>CURRENT BILL (OCT 2026 – MAR 2027)</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#15803d', marginTop: '4px' }}>₹18,000 / 6 Months</div>
-              <div style={{ fontSize: '0.78rem', color: '#166534', marginTop: '4px' }}>Status: Paid in full today (23-Oct-2026) • Inv: ME/A/18/Oct26</div>
+          <div className="section-card resident-portal-s13">
+            <h4 className="resident-portal-s14">Maintenance Status</h4>
+            <div className="resident-portal-s20">
+              <div className="resident-portal-s21">CURRENT BILL (OCT 2026 – MAR 2027)</div>
+              <div className="resident-portal-s22">₹18,000 / 6 Months</div>
+              <div className="resident-portal-s23">Status: Paid in full today (23-Oct-2026) • Inv: ME/A/18/Oct26</div>
             </div>
             <button
               onClick={() => setActiveSection('maintenance')}
-              className="button-secondary"
-              style={{ width: '100%', padding: '8px' }}
+              className="button-secondary resident-portal-s24"
             >
               View Payment Receipts
             </button>
           </div>
 
           {/* Recent Society Notice */}
-          <div className="section-card" style={{ padding: '20px', background: 'white', borderRadius: '12px' }}>
-            <h4 style={{ margin: '0 0 14px', color: '#0b2b26' }}>Latest Society Announcements</h4>
-            <div style={{ display: 'grid', gap: '8px', fontSize: '0.85rem' }}>
+          <div className="section-card resident-portal-s13">
+            <h4 className="resident-portal-s14">Latest Society Announcements</h4>
+            <div className="resident-portal-s25">
               {announcements.slice(0, 2).map((a, i) => (
-                <div key={i} style={{ borderLeft: '3px solid #C49B4F', paddingLeft: '8px' }}>
-                  <div style={{ fontWeight: 700, color: '#0f172a' }}>{a.title}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{a.date}</div>
+                <div key={i} className="resident-portal-s26">
+                  <div className="resident-portal-s27">{a.title}</div>
+                  <div className="resident-portal-s28">{a.date}</div>
                 </div>
               ))}
             </div>
@@ -189,47 +178,47 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
 
       {/* TAB CONTENT: Maintenance */}
       {activeSection === 'maintenance' && (
-        <div className="section-card" style={{ padding: '24px', background: 'white', borderRadius: '14px' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#0b2b26' }}>Maintenance & Payment Ledger ({activeFlat})</h3>
-          <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '16px' }}>
+        <div className="section-card resident-portal-s29">
+          <h3 className="resident-portal-s30">Maintenance & Payment Ledger ({activeFlat})</h3>
+          <p className="resident-portal-s31">
             Official ledger records for Wing A. Approved rate: ₹3,000 / month (₹9,000 / quarter).
           </p>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <table className="resident-portal-s32">
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                <th style={{ padding: '10px 12px' }}>Period</th>
-                <th style={{ padding: '10px 12px' }}>Invoice No</th>
-                <th style={{ padding: '10px 12px' }}>Amount</th>
-                <th style={{ padding: '10px 12px' }}>Payment Date</th>
-                <th style={{ padding: '10px 12px' }}>UTR / Cheque Ref</th>
-                <th style={{ padding: '10px 12px' }}>Status</th>
+              <tr className="resident-portal-s33">
+                <th className="resident-portal-s34">Period</th>
+                <th className="resident-portal-s34">Invoice No</th>
+                <th className="resident-portal-s34">Amount</th>
+                <th className="resident-portal-s34">Payment Date</th>
+                <th className="resident-portal-s34">UTR / Cheque Ref</th>
+                <th className="resident-portal-s34">Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#f0fdf4' }}>
-                <td style={{ padding: '12px', fontWeight: 700 }}>Oct 2026 to Mar 2027</td>
-                <td style={{ padding: '12px', fontWeight: 600 }}>ME/A/18/Oct26</td>
-                <td style={{ padding: '12px', fontWeight: 800, color: '#15803d' }}>₹18,000</td>
-                <td style={{ padding: '12px' }}>23-10-2026</td>
-                <td style={{ padding: '12px', fontFamily: 'monospace' }}>HDFCN261023904</td>
-                <td style={{ padding: '12px' }}><span style={{ color: '#15803d', fontWeight: 800 }}>✓ Paid Today</span></td>
+              <tr className="resident-portal-s35">
+                <td className="resident-portal-s36">Oct 2026 to Mar 2027</td>
+                <td className="resident-portal-s37">ME/A/18/Oct26</td>
+                <td className="resident-portal-s38">₹18,000</td>
+                <td className="resident-portal-s39">23-10-2026</td>
+                <td className="resident-portal-s40">HDFCN261023904</td>
+                <td className="resident-portal-s39"><span className="resident-portal-s41">✓ Paid Today</span></td>
               </tr>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                <td style={{ padding: '12px' }}>April to June 2026</td>
-                <td style={{ padding: '12px' }}>ME/A/18/APR-26</td>
-                <td style={{ padding: '12px', fontWeight: 700 }}>₹9,000</td>
-                <td style={{ padding: '12px' }}>15-05-2026</td>
-                <td style={{ padding: '12px', fontFamily: 'monospace' }}>HDFCN261358921</td>
-                <td style={{ padding: '12px' }}><span style={{ color: '#15803d', fontWeight: 700 }}>✓ Paid</span></td>
+              <tr className="resident-portal-s42">
+                <td className="resident-portal-s39">April to June 2026</td>
+                <td className="resident-portal-s39">ME/A/18/APR-26</td>
+                <td className="resident-portal-s36">₹9,000</td>
+                <td className="resident-portal-s39">15-05-2026</td>
+                <td className="resident-portal-s40">HDFCN261358921</td>
+                <td className="resident-portal-s39"><span className="resident-portal-s43">✓ Paid</span></td>
               </tr>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                <td style={{ padding: '12px' }}>Oct 25 to Mar 26</td>
-                <td style={{ padding: '12px' }}>ME/A/15/OCT-25</td>
-                <td style={{ padding: '12px', fontWeight: 700 }}>₹18,000</td>
-                <td style={{ padding: '12px' }}>21-11-2025</td>
-                <td style={{ padding: '12px', fontFamily: 'monospace' }}>HDFCN52025112110</td>
-                <td style={{ padding: '12px' }}><span style={{ color: '#15803d', fontWeight: 700 }}>✓ Paid</span></td>
+              <tr className="resident-portal-s42">
+                <td className="resident-portal-s39">Oct 25 to Mar 26</td>
+                <td className="resident-portal-s39">ME/A/15/OCT-25</td>
+                <td className="resident-portal-s36">₹18,000</td>
+                <td className="resident-portal-s39">21-11-2025</td>
+                <td className="resident-portal-s40">HDFCN52025112110</td>
+                <td className="resident-portal-s39"><span className="resident-portal-s43">✓ Paid</span></td>
               </tr>
             </tbody>
           </table>
@@ -238,18 +227,18 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
 
       {/* TAB CONTENT: Parking */}
       {activeSection === 'parking' && (
-        <div className="section-card" style={{ padding: '24px', background: 'white', borderRadius: '14px' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#0b2b26' }}>Allotted Parking Space</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
-            <div style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '10px' }}>
-              <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Assigned Slot</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0b2b26', marginTop: '4px' }}>{parkingRecord.slot}</div>
-              <div style={{ fontSize: '0.8rem', color: '#10b981', marginTop: '4px' }}>✓ Covered Stilt / Basement</div>
+        <div className="section-card resident-portal-s29">
+          <h3 className="resident-portal-s30">Allotted Parking Space</h3>
+          <div className="resident-portal-s44">
+            <div className="resident-portal-s45">
+              <div className="resident-portal-s28">Assigned Slot</div>
+              <div className="resident-portal-s46">{parkingRecord.slot}</div>
+              <div className="resident-portal-s47">✓ Covered Stilt / Basement</div>
             </div>
-            <div style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '10px' }}>
-              <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Park+ Boom Barrier RFID Tag</div>
-              <div style={{ fontSize: '1.2rem', fontWeight: 700, fontFamily: 'monospace', color: '#334155', marginTop: '4px' }}>{parkingRecord.rfidTag}</div>
-              <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>Automated Fastag Society Access</div>
+            <div className="resident-portal-s45">
+              <div className="resident-portal-s28">Park+ Boom Barrier RFID Tag</div>
+              <div className="resident-portal-s48">{parkingRecord.rfidTag}</div>
+              <div className="resident-portal-s49">Automated Fastag Society Access</div>
             </div>
           </div>
         </div>
@@ -257,24 +246,23 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
 
       {/* TAB CONTENT: Complaints */}
       {activeSection === 'complaints' && (
-        <div className="section-card" style={{ padding: '24px', background: 'white', borderRadius: '14px' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#0b2b26' }}>Raise a Complaint / Service Request</h3>
+        <div className="section-card resident-portal-s29">
+          <h3 className="resident-portal-s30">Raise a Complaint / Service Request</h3>
 
           {feedbackMsg && (
-            <div style={{ background: '#dcfce7', color: '#15803d', padding: '12px', borderRadius: '8px', marginBottom: '16px', fontWeight: 600 }}>
+            <div className="resident-portal-s50">
               {feedbackMsg}
             </div>
           )}
 
-          <form onSubmit={handleLodgeComplaint} style={{ display: 'grid', gap: '12px', marginBottom: '24px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px' }}>
+          <form onSubmit={handleLodgeComplaint} className="resident-portal-s51">
+            <div className="resident-portal-s52">
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Category</label>
+                <label className="eyebrow resident-portal-s53">Category</label>
                 <select
                   value={complaintCategory}
                   onChange={(e) => setComplaintCategory(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ width: '100%' }}
+                  className="attendance-register-input resident-portal-s54"
                 >
                   <option value="Plumbing / Water">Plumbing / Water</option>
                   <option value="Electrical / Power">Electrical / Power</option>
@@ -286,40 +274,32 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Issue Description *</label>
+                <label className="eyebrow resident-portal-s53">Issue Description *</label>
                 <input
                   type="text"
                   required
                   placeholder="Describe the maintenance issue or request..."
                   value={complaintText}
                   onChange={(e) => setComplaintText(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ width: '100%', textAlign: 'left' }}
+                  className="attendance-register-input resident-portal-s55"
                 />
               </div>
             </div>
 
-            <button type="submit" className="button-primary" style={{ justifySelf: 'start', padding: '10px 20px' }}>
+            <button type="submit" className="button-primary resident-portal-s56">
               Submit Request
             </button>
           </form>
 
-          <h4 style={{ margin: '0 0 12px' }}>Your Past Requests ({complaintsList.length})</h4>
-          <div style={{ display: 'grid', gap: '8px' }}>
+          <h4 className="resident-portal-s57">Your Past Requests ({complaintsList.length})</h4>
+          <div className="resident-portal-s58">
             {complaintsList.map(c => (
-              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <div key={c.id} className="resident-portal-s59">
                 <div>
-                  <div style={{ fontWeight: 600, color: '#0f172a' }}>{c.title}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{c.category} • Logged on {c.date}</div>
+                  <div className="resident-portal-s60">{c.title}</div>
+                  <div className="resident-portal-s28">{c.category} • Logged on {c.date}</div>
                 </div>
-                <span style={{
-                  padding: '4px 10px',
-                  borderRadius: '12px',
-                  fontSize: '0.72rem',
-                  fontWeight: 700,
-                  background: c.status === 'Resolved' ? '#dcfce7' : '#fef3c7',
-                  color: c.status === 'Resolved' ? '#15803d' : '#b45309'
-                }}>
+                <span className="resident-portal-s61" style={{ background: c.status === 'Resolved' ? '#dcfce7' : '#fef3c7', color: c.status === 'Resolved' ? '#15803d' : '#b45309' }}>
                   {c.status}
                 </span>
               </div>
@@ -330,24 +310,24 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
 
       {/* TAB CONTENT: Society Rules */}
       {activeSection === 'rules' && (
-        <div className="section-card" style={{ padding: '24px', background: 'white', borderRadius: '14px' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#0b2b26' }}>Society Rules & Guidelines</h3>
-          <div style={{ display: 'grid', gap: '14px', fontSize: '0.88rem' }}>
-            <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px' }}>
-              <strong style={{ color: '#0b2b26' }}>🔨 Drilling & Renovation Hours:</strong>
-              <p style={{ margin: '4px 0 0', color: '#475569' }}>
+        <div className="section-card resident-portal-s29">
+          <h3 className="resident-portal-s30">Society Rules & Guidelines</h3>
+          <div className="resident-portal-s62">
+            <div className="resident-portal-s63">
+              <strong className="resident-portal-s64">🔨 Drilling & Renovation Hours:</strong>
+              <p className="resident-portal-s65">
                 Strictly permitted between <b>10:00 AM – 1:00 PM</b> and <b>3:00 PM – 6:00 PM</b>, Monday to Saturday only. No drilling or heavy construction work is allowed on Sundays or public holidays.
               </p>
             </div>
-            <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px' }}>
-              <strong style={{ color: '#0b2b26' }}>🚗 Parking Protocols:</strong>
-              <p style={{ margin: '4px 0 0', color: '#475569' }}>
+            <div className="resident-portal-s63">
+              <strong className="resident-portal-s64">🚗 Parking Protocols:</strong>
+              <p className="resident-portal-s65">
                 Park only within designated white lines in your allotted slot. Visitor vehicles must register at the main gate and are restricted to visitor bays for maximum 12 hours.
               </p>
             </div>
-            <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px' }}>
-              <strong style={{ color: '#0b2b26' }}>🗑️ Waste Segregation:</strong>
-              <p style={{ margin: '4px 0 0', color: '#475569' }}>
+            <div className="resident-portal-s63">
+              <strong className="resident-portal-s64">🗑️ Waste Segregation:</strong>
+              <p className="resident-portal-s65">
                 Dry and wet waste segregation is mandatory. Collection occurs daily at 9:30 AM outside apartment doors.
               </p>
             </div>
@@ -357,15 +337,15 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
 
       {/* TAB CONTENT: Emergency Contacts */}
       {activeSection === 'emergency' && (
-        <div className="section-card" style={{ padding: '24px', background: 'white', borderRadius: '14px' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#0b2b26' }}>Society Emergency Contacts</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+        <div className="section-card resident-portal-s29">
+          <h3 className="resident-portal-s30">Society Emergency Contacts</h3>
+          <div className="resident-portal-s66">
             {emergencyServices.slice(0, 6).map((item, idx) => (
-              <div key={idx} style={{ background: '#fef2f2', border: '1px solid #fecaca', padding: '14px', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.8rem', color: '#991b1b', fontWeight: 700 }}>{item.badge || 'Emergency'}</div>
-                <div style={{ fontWeight: 800, fontSize: '1rem', color: '#1e293b', marginTop: '2px' }}>{item.icon} {item.name}</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#dc2626', marginTop: '4px' }}>
-                  <a href={`tel:${item.primaryNumber}`} style={{ textDecoration: 'none', color: '#dc2626' }}>📞 {item.primaryNumber}</a>
+              <div key={idx} className="resident-portal-s67">
+                <div className="resident-portal-s68">{item.badge || 'Emergency'}</div>
+                <div className="resident-portal-s69">{item.icon} {item.name}</div>
+                <div className="resident-portal-s70">
+                  <a href={`tel:${item.primaryNumber}`} className="resident-portal-s71">📞 {item.primaryNumber}</a>
                 </div>
               </div>
             ))}

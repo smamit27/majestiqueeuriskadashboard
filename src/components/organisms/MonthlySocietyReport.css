@@ -1,0 +1,268 @@
+/**
+ * MonthlySocietyReport.css
+ * Extracted styles from MonthlySocietyReport.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.monthly-society-report-s1 {
+  padding: 28px;
+  border-radius: 16px;
+  background: white;
+}
+
+.monthly-society-report-s2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.monthly-society-report-s3 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0b2b26;
+}
+
+.monthly-society-report-s4 {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #5f665f;
+}
+
+.monthly-society-report-s5 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.monthly-society-report-s6 {
+  padding: 8px 12px;
+  font-weight: 700;
+}
+
+.monthly-society-report-s7 {
+  padding: 8px 14px;
+}
+
+.monthly-society-report-s8 {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+.monthly-society-report-s9 {
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 24px;
+  background: #fafaf9;
+}
+
+.monthly-society-report-s10 {
+  border-bottom: 2px solid #0b2b26;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.monthly-society-report-s11 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #0b2b26;
+  text-transform: uppercase;
+}
+
+.monthly-society-report-s12 {
+  margin: 4px 0;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.monthly-society-report-s13 {
+  display: inline-block;
+  background: #0b2b26;
+  color: #C49B4F;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.monthly-society-report-s14 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.monthly-society-report-s15 {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.monthly-society-report-s16 {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.monthly-society-report-s17 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 4px;
+}
+
+.monthly-society-report-s18 {
+  font-size: 0.72rem;
+  color: #16a34a;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.monthly-society-report-s19 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #16a34a;
+  margin-top: 4px;
+}
+
+.monthly-society-report-s20 {
+  font-size: 0.72rem;
+  color: #dc2626;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.monthly-society-report-s21 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #dc2626;
+  margin-top: 4px;
+}
+
+.monthly-society-report-s22 {
+  background: #0b2b26;
+  padding: 16px;
+  border-radius: 10px;
+  color: white;
+}
+
+.monthly-society-report-s23 {
+  font-size: 0.72rem;
+  color: #C49B4F;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.monthly-society-report-s24 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #fff;
+  margin-top: 4px;
+}
+
+.monthly-society-report-s25 {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.monthly-society-report-s26 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  color: #0b2b26;
+}
+
+.monthly-society-report-s27 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.monthly-society-report-s28 {
+  border-left: 3px solid #3b82f6;
+  padding-left: 10px;
+}
+
+.monthly-society-report-s29 {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.monthly-society-report-s30 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.monthly-society-report-s31 {
+  border-left: 3px solid #10b981;
+  padding-left: 10px;
+}
+
+.monthly-society-report-s32 {
+  border-left: 3px solid #f59e0b;
+  padding-left: 10px;
+}
+
+.monthly-society-report-s33 {
+  border-left: 3px solid #06b6d4;
+  padding-left: 10px;
+}
+
+.monthly-society-report-s34 {
+  border-left: 3px solid #8b5cf6;
+  padding-left: 10px;
+}
+
+.monthly-society-report-s35 {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 18px;
+}
+
+.monthly-society-report-s36 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.monthly-society-report-s37 {
+  margin: 0;
+  font-size: 1rem;
+  color: #0b2b26;
+}
+
+.monthly-society-report-s38 {
+  font-size: 0.78rem;
+  color: #b45309;
+  font-weight: 700;
+}
+
+.monthly-society-report-s39 {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #16a34a;
+}
+
+.monthly-society-report-s40 {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.85rem;
+  color: #334155;
+}
+
+.monthly-society-report-s41 {
+  margin-bottom: 6px;
+}
+

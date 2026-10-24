@@ -10,6 +10,8 @@ import {
   toOptionalNumber,
   MONTH_ORDER
 } from '../../data/shopSeedData.js';
+import './ShopMaintenanceTracker.css';
+
 
 const SHOP_MAINTENANCE_COLLECTION = 'shopMaintenance';
 const SHOP_MAINTENANCE_DOC_ID = 'shop_maintenance_ledger';
@@ -80,19 +82,7 @@ function BalanceBadge({ value }) {
 
   return (
     <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 6,
-        padding: '6px 10px',
-        borderRadius: 999,
-        background: isOutstanding ? 'rgba(180, 35, 24, 0.1)' : 'rgba(196, 155, 79, 0.14)',
-        color: isOutstanding ? '#b42318' : '#8a6b2e',
-        border: `1px solid ${isOutstanding ? 'rgba(180, 35, 24, 0.18)' : 'rgba(196, 155, 79, 0.24)'}`,
-        fontSize: '0.78rem',
-        fontWeight: 700,
-        whiteSpace: 'nowrap',
-      }}
+      className="shop-maintenance-tracker-s1" style={{ background: isOutstanding ? 'rgba(180, 35, 24, 0.1)' : 'rgba(196, 155, 79, 0.14)', color: isOutstanding ? '#b42318' : '#8a6b2e', border: `1px solid ${isOutstanding ? 'rgba(180, 35, 24, 0.18)' : 'rgba(196, 155, 79, 0.24)'}` }}
     >
       {isOutstanding ? '⚠️ Outstanding' : '🕒 Pending Balance'}
     </span>
@@ -1303,69 +1293,36 @@ Majestique Euriska 'A' Building CHS Ltd.`;
         : '#d1fadf';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, fontFamily: 'Inter, system-ui, sans-serif' }}>
-      <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #134e44 60%, #196c6c 100%)',
-        borderRadius: 20,
-        padding: '24px 28px',
-        color: '#fff',
-        boxShadow: '0 8px 32px rgba(11,43,38,0.25)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 20,
-      }}>
+    <div className="shop-maintenance-tracker-s2">
+      <div className="shop-maintenance-tracker-s3">
         {/* Top Row: Title on Left, Summary KPI & Sync status on Right */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
-          <div style={{ minWidth: 280, flex: '1 1 auto' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 999, background: 'rgba(196,155,79,0.18)', border: '1px solid rgba(196,155,79,0.35)', marginBottom: 8 }}>
-              <span style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#fef08a' }}>🏬 Commercial Wing • 8 Shops</span>
+        <div className="shop-maintenance-tracker-s4">
+          <div className="shop-maintenance-tracker-s5">
+            <div className="shop-maintenance-tracker-s6">
+              <span className="shop-maintenance-tracker-s7">🏬 Commercial Wing • 8 Shops</span>
             </div>
-            <h2 style={{ margin: '2px 0 6px', fontSize: '1.45rem', fontWeight: 800, letterSpacing: '-0.01em' }}>
+            <h2 className="shop-maintenance-tracker-s8">
               🏪 Shop Maintenance Ledger
             </h2>
-            <p style={{ margin: 0, color: 'rgba(255,255,255,0.78)', fontSize: '0.88rem', lineHeight: 1.4 }}>
+            <p className="shop-maintenance-tracker-s9">
               Monthly maintenance billing, payment receipts, and balance movement for all shops.
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <div className="shop-maintenance-tracker-s10">
             {/* KPI Card */}
-            <div style={{
-              background: 'rgba(255,255,255,0.08)',
-              border: '1px solid rgba(255,255,255,0.18)',
-              borderRadius: 14,
-              padding: '10px 18px',
-              minWidth: 210,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-              backdropFilter: 'blur(10px)',
-              boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.1)'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>Overall Pending (1-8)</span>
-                <span style={{ fontSize: '0.85rem' }}>💰</span>
+            <div className="shop-maintenance-tracker-s11">
+              <div className="shop-maintenance-tracker-s12">
+                <span className="shop-maintenance-tracker-s13">Overall Pending (1-8)</span>
+                <span className="shop-maintenance-tracker-s14">💰</span>
               </div>
-              <div style={{ fontSize: '1.45rem', fontWeight: 900, color: overallPending > 0 ? '#fde047' : '#34d399', letterSpacing: '-0.02em', lineHeight: 1.15 }}>
+              <div className="shop-maintenance-tracker-s15" style={{ color: overallPending > 0 ? '#fde047' : '#34d399' }}>
                 ₹{formatValue(overallPending)}
               </div>
             </div>
 
             {/* Cloud Sync Status Pill */}
-            <div style={{
-              padding: '8px 14px',
-              borderRadius: 12,
-              background: saveTone,
-              color: saveTextTone,
-              fontSize: '0.74rem',
-              fontWeight: 800,
-              border: '1px solid rgba(255,255,255,0.22)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              maxWidth: 240,
-              lineHeight: 1.3
-            }}>
+            <div className="shop-maintenance-tracker-s16" style={{ background: saveTone, color: saveTextTone }}>
               <span>{saveStatus === 'saving' || saveStatus === 'loading' ? '⏳' : saveStatus === 'error' ? '⚠️' : '☁️'}</span>
               <span>{saveMessage}</span>
             </div>
@@ -1373,33 +1330,14 @@ Majestique Euriska 'A' Building CHS Ltd.`;
         </div>
 
         {/* Bottom Row: Auto-billing Tag on Left, Action Toolbar on Right */}
-        <div style={{
-          borderTop: '1px solid rgba(255,255,255,0.14)',
-          paddingTop: 16,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 12
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <span style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              color: '#d1fae5',
-              background: 'rgba(16, 185, 129, 0.2)',
-              border: '1px solid rgba(52, 211, 153, 0.4)',
-              padding: '5px 12px',
-              borderRadius: 999
-            }}>
+        <div className="shop-maintenance-tracker-s17">
+          <div className="shop-maintenance-tracker-s18">
+            <span className="shop-maintenance-tracker-s19">
               ⚡ Auto-Billed on 1st of every month (₹1,500/mo) • Up to {getCurrentMonthStr()}
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <div className="shop-maintenance-tracker-s20">
             <button
               type="button"
               onClick={() => {
@@ -1408,21 +1346,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 setNoticeTarget('all_pending');
                 setIsNoticeModalOpen(true);
               }}
-              style={{
-                padding: '9px 16px',
-                borderRadius: 999,
-                background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-                color: '#C49B4F',
-                border: '1px solid #C49B4F',
-                fontWeight: 800,
-                cursor: 'pointer',
-                fontSize: '0.82rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 7,
-                boxShadow: '0 4px 14px rgba(11,43,38,0.35)',
-                transition: 'all 0.2s ease'
-              }}
+              className="shop-maintenance-tracker-s21"
             >
               🧾 Generate Shop Invoices
             </button>
@@ -1435,21 +1359,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 setNoticeTarget('all_pending');
                 setIsNoticeModalOpen(true);
               }}
-              style={{
-                padding: '9px 16px',
-                borderRadius: 999,
-                background: 'linear-gradient(135deg, #c49b4f 0%, #b38634 100%)',
-                color: '#fff',
-                border: 'none',
-                fontWeight: 800,
-                cursor: 'pointer',
-                fontSize: '0.82rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 7,
-                boxShadow: '0 4px 14px rgba(196,155,79,0.35)',
-                transition: 'all 0.2s ease'
-              }}
+              className="shop-maintenance-tracker-s22"
             >
               📜 Generate Shop Notices
             </button>
@@ -1457,21 +1367,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             <button
               type="button"
               onClick={handlePrintAllShopsPDF}
-              style={{
-                padding: '9px 16px',
-                borderRadius: 999,
-                background: 'rgba(255,255,255,0.14)',
-                color: '#fff',
-                border: '1px solid rgba(255,255,255,0.25)',
-                fontWeight: 700,
-                cursor: 'pointer',
-                fontSize: '0.82rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 7,
-                backdropFilter: 'blur(8px)',
-                transition: 'all 0.2s ease'
-              }}
+              className="shop-maintenance-tracker-s23"
             >
               🖨️ Print Summary (All)
             </button>
@@ -1483,21 +1379,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   onClick={handleAutoSyncDueMonths}
                   disabled={saveStatus === 'saving'}
                   title="Checks and saves all new month maintenance to Firebase server"
-                  style={{
-                    padding: '9px 15px',
-                    borderRadius: 999,
-                    background: 'rgba(255,255,255,0.14)',
-                    color: '#fff',
-                    border: '1px solid rgba(255,255,255,0.25)',
-                    fontWeight: 700,
-                    cursor: saveStatus === 'saving' ? 'wait' : 'pointer',
-                    fontSize: '0.82rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    backdropFilter: 'blur(8px)',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className="shop-maintenance-tracker-s24" style={{ cursor: saveStatus === 'saving' ? 'wait' : 'pointer' }}
                 >
                   ⚡ Sync Dues ({getCurrentMonthStr()})
                 </button>
@@ -1505,38 +1387,13 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <button
                   type="button"
                   onClick={() => setIsInsertModalOpen(true)}
-                  style={{
-                    padding: '9px 16px',
-                    borderRadius: 999,
-                    background: '#047857',
-                    color: '#fff',
-                    border: '1px solid #10b981',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    fontSize: '0.82rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    boxShadow: '0 4px 12px rgba(4,120,87,0.3)',
-                    transition: 'all 0.2s ease'
-                  }}
+                  className="shop-maintenance-tracker-s25"
                 >
                   + Add Maintenance / Receipt
                 </button>
               </>
             ) : (
-              <span style={{
-                padding: '7px 12px',
-                borderRadius: 999,
-                background: 'rgba(255,255,255,0.1)',
-                color: 'rgba(255,255,255,0.75)',
-                border: '1px solid rgba(255,255,255,0.18)',
-                fontWeight: 700,
-                fontSize: '0.76rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 5
-              }}>
+              <span className="shop-maintenance-tracker-s26">
                 🔒 Read-only view
               </span>
             )}
@@ -1545,50 +1402,28 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       </div>
 
       {/* Rate Slabs Strip */}
-      <div style={{
-        padding: '12px 20px',
-        borderRadius: '14px',
-        background: 'rgba(196, 155, 79, 0.08)',
-        border: '1px solid rgba(196, 155, 79, 0.22)',
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '12px',
-        alignItems: 'center'
-      }}>
-        <span style={{ fontSize: '0.76rem', fontWeight: 800, color: 'rgb(120, 64, 14)' }}>📋 Approved Rate Slabs:</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', color: '#475569' }}>
-          <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '3px', background: 'rgb(196, 155, 79)' }}></span>
+      <div className="shop-maintenance-tracker-s27">
+        <span className="shop-maintenance-tracker-s28">📋 Approved Rate Slabs:</span>
+        <span className="shop-maintenance-tracker-s29">
+          <span className="shop-maintenance-tracker-s30"></span>
           <b>Oct 2021 – Jun 2024</b>: ₹1,100 / month (33 months)
         </span>
-        <span style={{ color: 'rgba(61, 63, 52, 0.25)' }}>•</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.76rem', color: '#475569' }}>
-          <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '3px', background: '#38bdf8' }}></span>
+        <span className="shop-maintenance-tracker-s31">•</span>
+        <span className="shop-maintenance-tracker-s29">
+          <span className="shop-maintenance-tracker-s32"></span>
           <b>Jul 2024 – Present ({getCurrentMonthStr()})</b>: ₹1,500 / month (Billed on 1st)
         </span>
       </div>
 
 
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+      <div className="shop-maintenance-tracker-s33">
         {shops.map((shop) => (
           <button
             key={shop.id}
             type="button"
             onClick={() => setActiveShopId(shop.id)}
-            style={{
-              border: activeShopId === shop.id ? '1px solid #0b2b26' : '1px solid #d0d5dd',
-              borderRadius: 999,
-              padding: '10px 14px',
-              background: activeShopId === shop.id ? '#0b2b26' : '#f8fafc',
-              color: activeShopId === shop.id ? '#fff' : '#344054',
-              fontWeight: 700,
-              cursor: 'pointer',
-              boxShadow: activeShopId === shop.id ? '0 6px 16px rgba(11,43,38,0.16)' : 'none',
-              transition: 'all 0.2s ease',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-            }}
+            className="shop-maintenance-tracker-s34" style={{ border: activeShopId === shop.id ? '1px solid #0b2b26' : '1px solid #d0d5dd', background: activeShopId === shop.id ? '#0b2b26' : '#f8fafc', color: activeShopId === shop.id ? '#fff' : '#344054', boxShadow: activeShopId === shop.id ? '0 6px 16px rgba(11,43,38,0.16)' : 'none' }}
           >
             <span>{activeShopId === shop.id ? '🏪' : '🧾'}</span>
             <span>{shop.shopNo}</span>
@@ -1596,14 +1431,14 @@ Majestique Euriska 'A' Building CHS Ltd.`;
         ))}
       </div>
 
-      <div style={{ background: '#fff', borderRadius: 18, padding: 20, border: '1px solid rgba(61,63,52,0.08)', boxShadow: '0 8px 24px rgba(16,24,40,0.06)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16, padding: '14px 16px', borderRadius: 14, background: 'linear-gradient(135deg, rgba(244,239,231,0.95), rgba(255,250,242,0.95))', border: '1px solid rgba(61,63,52,0.08)' }}>
+      <div className="shop-maintenance-tracker-s35">
+        <div className="shop-maintenance-tracker-s36">
           <div>
-            <p style={{ margin: 0, fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#667085' }}>Active Shop</p>
-            <h3 style={{ margin: '4px 0 0', fontSize: '1.15rem', fontWeight: 800 }}>{activeShop.shopNo}</h3>
-            <p style={{ margin: '4px 0 0', color: '#667085', fontSize: '0.9rem' }}>{activeShop.name}</p>
+            <p className="shop-maintenance-tracker-s37">Active Shop</p>
+            <h3 className="shop-maintenance-tracker-s38">{activeShop.shopNo}</h3>
+            <p className="shop-maintenance-tracker-s39">{activeShop.name}</p>
           </div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div className="shop-maintenance-tracker-s40">
             <button
               type="button"
               onClick={() => {
@@ -1613,20 +1448,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 setNoticeShopId(activeShop.id);
                 setIsNoticeModalOpen(true);
               }}
-              style={{
-                padding: '8px 16px',
-                borderRadius: 8,
-                background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-                color: '#C49B4F',
-                border: '1px solid #C49B4F',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                fontSize: '0.85rem',
-                boxShadow: '0 4px 12px rgba(11,43,38,0.25)'
-              }}
+              className="shop-maintenance-tracker-s41"
             >
               🧾 Generate Invoice ({activeShop.shopNo})
             </button>
@@ -1639,62 +1461,32 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 setNoticeShopId(activeShop.id);
                 setIsNoticeModalOpen(true);
               }}
-              style={{
-                padding: '8px 16px',
-                borderRadius: 8,
-                background: 'linear-gradient(135deg, #c49b4f 0%, #a87d2b 100%)',
-                color: '#fff',
-                border: 'none',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                fontSize: '0.85rem',
-                boxShadow: '0 4px 12px rgba(196,155,79,0.3)'
-              }}
+              className="shop-maintenance-tracker-s42"
             >
               📜 Notice ({activeShop.shopNo})
             </button>
             <button
               onClick={handlePrintShopPDF}
-              style={{
-                padding: '8px 16px',
-                borderRadius: 8,
-                background: '#0b2b26',
-                color: '#fff',
-                border: 'none',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                fontSize: '0.85rem',
-                boxShadow: '0 4px 12px rgba(11,43,38,0.18)'
-              }}
+              className="shop-maintenance-tracker-s43"
             >
               🖨️ Print {activeShop.shopNo} Statement (PDF)
             </button>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 16 }}>
+        <div className="shop-maintenance-tracker-s44">
           {[
             { label: '📞 Contact No', value: formatValue(activeShop.contactNo), sub: 'Owner Contact', accent: '#0b2b26' },
             { label: '🧾 Monthly Maintenance Total', value: formatValue(totalRegularMain), sub: 'Total Due', accent: '#196c6c' },
             { label: '📥 Receipts Total', value: formatValue(totalReceipts), sub: 'Till July 2026', accent: '#065f46' },
             { label: 'Remaining Balance', value: formatValue(totalRegularMain - totalReceipts), sub: 'Overall Pending', accent: '#991b1b' },
           ].map(c => (
-            <div key={c.label} style={{
-              background: 'rgba(255,250,242,0.97)', border: '1px solid rgba(61,63,52,0.1)',
-              borderRadius: 14, padding: '16px 18px',
-              boxShadow: '0 2px 10px rgba(11,43,38,0.06)',
-            }}>
-              <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#5f665f', marginBottom: 6 }}>{c.label}</div>
-              <div style={{ fontSize: '1.3rem', fontWeight: 800, color: c.accent, lineHeight: 1 }}>{c.value}</div>
-              <div style={{ fontSize: '0.7rem', color: '#8a9080', marginTop: 5 }}>{c.sub}</div>
+            <div key={c.label} className="shop-maintenance-tracker-s45">
+              <div className="shop-maintenance-tracker-s46">{c.label}</div>
+              <div className="shop-maintenance-tracker-s47" style={{ color: c.accent }}>{c.value}</div>
+              <div className="shop-maintenance-tracker-s48">{c.sub}</div>
               {c.label === '📥 Receipts Total' && activeShop.ledger.some((entry) => Number(entry.receipts) > 0) && (
-                <div style={{ marginTop: 6, fontSize: '0.75rem', color: '#8a4b0f', fontWeight: 600, lineHeight: 1.5 }}>
+                <div className="shop-maintenance-tracker-s49">
                   {activeShop.ledger
                     .filter((entry) => Number(entry.receipts) > 0)
                     .map((entry) => `${entry.month}: ${formatValue(entry.receipts)}`)
@@ -1705,77 +1497,70 @@ Majestique Euriska 'A' Building CHS Ltd.`;
           ))}
         </div>
 
-        <div style={{ marginTop: 4, display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ padding: '12px 14px', background: '#f8fafc', border: '1px solid rgba(61,63,52,0.08)', borderRadius: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-            <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#344054', textTransform: 'uppercase', letterSpacing: '0.06em' }}>📋 Monthly Ledger</div>
-            <span style={{ fontSize: '0.74rem', color: '#667085', fontWeight: 700 }}>Year-wise view • grouped by financial year</span>
+        <div className="shop-maintenance-tracker-s50">
+          <div className="shop-maintenance-tracker-s51">
+            <div className="shop-maintenance-tracker-s52">📋 Monthly Ledger</div>
+            <span className="shop-maintenance-tracker-s53">Year-wise view • grouped by financial year</span>
           </div>
 
           {yearGroups.map((group) => {
             const isExpanded = expandedYears[group.year];
             return (
-              <div key={group.year} style={{ borderRadius: 14, border: '1px solid rgba(61,63,52,0.1)', overflow: 'hidden', background: '#fff' }}>
+              <div key={group.year} className="shop-maintenance-tracker-s54">
                 <div 
                   onClick={() => setExpandedYears(prev => ({ ...prev, [group.year]: !prev[group.year] }))}
-                  style={{ cursor: 'pointer', padding: '12px 14px', background: 'rgba(244,239,231,0.3)', borderBottom: isExpanded ? '1px solid rgba(61,63,52,0.08)' : 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}
+                  className="shop-maintenance-tracker-s55" style={{ borderBottom: isExpanded ? '1px solid rgba(61,63,52,0.08)' : 'none' }}
                 >
                   <div>
-                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#8a6b2e', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Financial year</div>
-                    <div style={{ fontSize: '1rem', fontWeight: 800, color: '#101828' }}>{group.year}</div>
+                    <div className="shop-maintenance-tracker-s56">Financial year</div>
+                    <div className="shop-maintenance-tracker-s57">{group.year}</div>
                   </div>
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                    <span style={{ padding: '6px 10px', borderRadius: 999, background: '#f2f4f7', color: '#344054', fontSize: '0.74rem', fontWeight: 700 }}>Yearly Maintenance: {formatValue(group.regularMainTotal)}</span>
+                  <div className="shop-maintenance-tracker-s58">
+                    <span className="shop-maintenance-tracker-s59">Yearly Maintenance: {formatValue(group.regularMainTotal)}</span>
                     {group.receiptsTotal > 0 && (
-                      <span style={{ padding: '6px 10px', borderRadius: 999, background: 'rgba(16, 185, 129, 0.1)', color: '#047857', fontSize: '0.74rem', fontWeight: 700 }}>Receipts: {formatValue(group.receiptsTotal)}</span>
+                      <span className="shop-maintenance-tracker-s60">Receipts: {formatValue(group.receiptsTotal)}</span>
                     )}
-                    <span style={{ fontSize: '1.2rem', color: '#8a6b2e', marginLeft: 4, transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>▼</span>
+                    <span className="shop-maintenance-tracker-s61" style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
                   </div>
                 </div>
                 
                 {isExpanded && (
-                  <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <div className="shop-maintenance-tracker-s62">
+                    <table className="shop-maintenance-tracker-s63">
                       <thead>
                         <tr>
-                          <th style={{ padding: '11px 16px', borderBottom: '2px solid rgba(61,63,52,0.1)', color: '#5f665f', fontWeight: 700, fontSize: '0.66rem', textTransform: 'uppercase', letterSpacing: '0.07em', whiteSpace: 'nowrap', background: 'rgba(244,239,231,0.7)', textAlign: 'left' }}>Month</th>
-                          <th style={{ padding: '11px 16px', borderBottom: '2px solid rgba(61,63,52,0.1)', color: '#5f665f', fontWeight: 700, fontSize: '0.66rem', textTransform: 'uppercase', letterSpacing: '0.07em', whiteSpace: 'nowrap', background: 'rgba(244,239,231,0.7)', textAlign: 'left' }}>Monthly Maintenance</th>
-                          <th style={{ padding: '11px 16px', borderBottom: '2px solid rgba(61,63,52,0.1)', color: '#5f665f', fontWeight: 700, fontSize: '0.66rem', textTransform: 'uppercase', letterSpacing: '0.07em', whiteSpace: 'nowrap', background: 'rgba(244,239,231,0.7)', textAlign: 'left' }}>Receipts</th>
+                          <th className="shop-maintenance-tracker-s64">Month</th>
+                          <th className="shop-maintenance-tracker-s64">Monthly Maintenance</th>
+                          <th className="shop-maintenance-tracker-s64">Receipts</th>
                           {isAdmin && (
-                            <th style={{ padding: '11px 16px', borderBottom: '2px solid rgba(61,63,52,0.1)', color: '#5f665f', fontWeight: 700, fontSize: '0.66rem', textTransform: 'uppercase', letterSpacing: '0.07em', whiteSpace: 'nowrap', background: 'rgba(244,239,231,0.7)', textAlign: 'right' }}>Actions</th>
+                            <th className="shop-maintenance-tracker-s65">Actions</th>
                           )}
                         </tr>
                       </thead>
                       <tbody>
                         {group.entries.map((entry) => (
-                          <tr key={entry.month} style={{ background: 'rgba(209, 250, 229, 0.1)' }}>
-                            <td style={{ padding: '13px 16px', verticalAlign: 'middle', borderBottom: '1px solid rgba(61,63,52,0.05)' }}>{entry.month}</td>
-                            <td style={{ padding: '13px 16px', verticalAlign: 'middle', borderBottom: '1px solid rgba(61,63,52,0.05)' }}>{formatValue(entry.regularMain)}</td>
-                            <td style={{ padding: '13px 16px', verticalAlign: 'middle', borderBottom: '1px solid rgba(61,63,52,0.05)' }}>
-                              <span style={{
-                                padding: entry.receipts ? '4px 8px' : '0',
-                                borderRadius: '4px',
-                                background: entry.receipts ? '#ecfdf3' : 'transparent',
-                                color: entry.receipts ? '#027a48' : 'inherit',
-                                fontWeight: entry.receipts ? 600 : 'normal',
-                                display: 'inline-block'
-                              }}>
+                          <tr key={entry.month} className="shop-maintenance-tracker-s66">
+                            <td className="shop-maintenance-tracker-s67">{entry.month}</td>
+                            <td className="shop-maintenance-tracker-s67">{formatValue(entry.regularMain)}</td>
+                            <td className="shop-maintenance-tracker-s67">
+                              <span className="shop-maintenance-tracker-s68" style={{ padding: entry.receipts ? '4px 8px' : '0', background: entry.receipts ? '#ecfdf3' : 'transparent', color: entry.receipts ? '#027a48' : 'inherit', fontWeight: entry.receipts ? 600 : 'normal' }}>
                                 {formatValue(entry.receipts)}
                               </span>
                             </td>
                             {isAdmin && (
-                              <td style={{ padding: '13px 16px', verticalAlign: 'middle', borderBottom: '1px solid rgba(61,63,52,0.05)', textAlign: 'right' }}>
-                                <div style={{ display: 'inline-flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                              <td className="shop-maintenance-tracker-s69">
+                                <div className="shop-maintenance-tracker-s70">
                                   <button
                                     type="button"
                                     onClick={() => startEditingEntry(activeShop.id, entry)}
-                                    style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid #0b2b26', background: '#fff', color: '#0b2b26', fontWeight: 800, cursor: 'pointer', fontSize: '0.75rem' }}
+                                    className="shop-maintenance-tracker-s71"
                                   >
                                     Edit
                                   </button>
                                   <button
                                     type="button"
                                     onClick={() => handleDeleteEntry(activeShop.id, entry.month)}
-                                    style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid #fecdca', background: '#fff5f4', color: '#b42318', fontWeight: 800, cursor: 'pointer', fontSize: '0.75rem' }}
+                                    className="shop-maintenance-tracker-s72"
                                   >
                                     Delete
                                   </button>
@@ -1796,38 +1581,38 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
       {/* Notice Generator Modal */}
       {isNoticeModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 960, maxHeight: '92vh', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', overflow: 'hidden' }}>
+        <div className="shop-maintenance-tracker-s73">
+          <div className="shop-maintenance-tracker-s74">
             
             {/* Modal Header */}
-            <div style={{ padding: '18px 24px', background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+            <div className="shop-maintenance-tracker-s75">
               <div>
-                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#c49b4f', fontWeight: 800 }}>Society Commercial Wing</span>
-                <h3 style={{ margin: '4px 0 0', fontSize: '1.25rem', fontWeight: 800 }}>
+                <span className="shop-maintenance-tracker-s76">Society Commercial Wing</span>
+                <h3 className="shop-maintenance-tracker-s77">
                   {noticeDocType === 'invoice' ? '🧾 Commercial Shop Maintenance Invoice Generator' : '📜 Commercial Shop Maintenance Demand Notice Generator'}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsNoticeModalOpen(false)}
-                style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                className="shop-maintenance-tracker-s78"
               >
                 ✕
               </button>
             </div>
 
             {/* Modal Body: Split view (Configuration on left, Live Preview on right) */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', overflow: 'hidden', flex: 1 }}>
+            <div className="shop-maintenance-tracker-s79">
               
               {/* Left Column: Form & Selection */}
-              <div style={{ padding: '20px', overflowY: 'auto', background: '#f8fafc', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div className="shop-maintenance-tracker-s80">
                 
                 {/* Document Type Switcher */}
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <label className="shop-maintenance-tracker-s81">
                     1. Document Type
                   </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                  <div className="shop-maintenance-tracker-s82">
                     <button
                       type="button"
                       onClick={() => {
@@ -1836,16 +1621,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                           setNoticeRefPrefix('INV-ME/COMM/2026-27/');
                         }
                       }}
-                      style={{
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        border: noticeDocType === 'invoice' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: noticeDocType === 'invoice' ? '#0b2b26' : '#fff',
-                        color: noticeDocType === 'invoice' ? '#C49B4F' : '#334155',
-                        cursor: 'pointer'
-                      }}
+                      className="shop-maintenance-tracker-s83" style={{ border: noticeDocType === 'invoice' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeDocType === 'invoice' ? '#0b2b26' : '#fff', color: noticeDocType === 'invoice' ? '#C49B4F' : '#334155' }}
                     >
                       🧾 Maintenance Invoice
                     </button>
@@ -1857,16 +1633,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                           setNoticeRefPrefix('ME-A/COMM/2026-27/NOT-');
                         }
                       }}
-                      style={{
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        border: noticeDocType === 'notice' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: noticeDocType === 'notice' ? '#0b2b26' : '#fff',
-                        color: noticeDocType === 'notice' ? '#C49B4F' : '#334155',
-                        cursor: 'pointer'
-                      }}
+                      className="shop-maintenance-tracker-s83" style={{ border: noticeDocType === 'notice' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeDocType === 'notice' ? '#0b2b26' : '#fff', color: noticeDocType === 'notice' ? '#C49B4F' : '#334155' }}
                     >
                       📜 Demand Notice
                     </button>
@@ -1875,39 +1642,21 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
                 {/* Target Scope Selection */}
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <label className="shop-maintenance-tracker-s81">
                     2. Select Target Shops
                   </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 10 }}>
+                  <div className="shop-maintenance-tracker-s84">
                     <button
                       type="button"
                       onClick={() => setNoticeTarget('single')}
-                      style={{
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        border: noticeTarget === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: noticeTarget === 'single' ? '#0b2b26' : '#fff',
-                        color: noticeTarget === 'single' ? '#fff' : '#334155',
-                        cursor: 'pointer'
-                      }}
+                      className="shop-maintenance-tracker-s83" style={{ border: noticeTarget === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeTarget === 'single' ? '#0b2b26' : '#fff', color: noticeTarget === 'single' ? '#fff' : '#334155' }}
                     >
                       Single Shop
                     </button>
                     <button
                       type="button"
                       onClick={() => setNoticeTarget('all_pending')}
-                      style={{
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        border: noticeTarget === 'all_pending' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: noticeTarget === 'all_pending' ? '#0b2b26' : '#fff',
-                        color: noticeTarget === 'all_pending' ? '#fff' : '#334155',
-                        cursor: 'pointer'
-                      }}
+                      className="shop-maintenance-tracker-s83" style={{ border: noticeTarget === 'all_pending' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeTarget === 'all_pending' ? '#0b2b26' : '#fff', color: noticeTarget === 'all_pending' ? '#fff' : '#334155' }}
                     >
                       All Pending Dues ({shops.filter(s => getShopNoticeData(s).pending > 0).length})
                     </button>
@@ -1915,17 +1664,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   <button
                     type="button"
                     onClick={() => setNoticeTarget('all')}
-                    style={{
-                      width: '100%',
-                      padding: '6px 10px',
-                      borderRadius: 8,
-                      fontSize: '0.78rem',
-                      fontWeight: 600,
-                      border: noticeTarget === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                      background: noticeTarget === 'all' ? '#0b2b26' : '#fff',
-                      color: noticeTarget === 'all' ? '#fff' : '#475569',
-                      cursor: 'pointer'
-                    }}
+                    className="shop-maintenance-tracker-s85" style={{ border: noticeTarget === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: noticeTarget === 'all' ? '#0b2b26' : '#fff', color: noticeTarget === 'all' ? '#fff' : '#475569' }}
                   >
                     All 8 Commercial Shops (Batch)
                   </button>
@@ -1934,10 +1673,10 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 {/* Single Shop Selector Pills */}
                 {noticeTarget === 'single' && (
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#64748b', marginBottom: 6 }}>
+                    <label className="shop-maintenance-tracker-s86">
                       Choose Specific Shop:
                     </label>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    <div className="shop-maintenance-tracker-s87">
                       {shops.map(s => {
                         const sData = getShopNoticeData(s);
                         const isSelected = noticeShopId === s.id;
@@ -1946,22 +1685,10 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                             key={s.id}
                             type="button"
                             onClick={() => setNoticeShopId(s.id)}
-                            style={{
-                              padding: '5px 10px',
-                              borderRadius: 6,
-                              fontSize: '0.78rem',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              border: isSelected ? '1.5px solid #0b2b26' : '1px solid #cbd5e1',
-                              background: isSelected ? '#0b2b26' : '#fff',
-                              color: isSelected ? '#fff' : '#1e293b',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 4
-                            }}
+                            className="shop-maintenance-tracker-s88" style={{ border: isSelected ? '1.5px solid #0b2b26' : '1px solid #cbd5e1', background: isSelected ? '#0b2b26' : '#fff', color: isSelected ? '#fff' : '#1e293b' }}
                           >
                             <span>{s.shopNo}</span>
-                            <span style={{ fontSize: '0.68rem', opacity: isSelected ? 0.85 : 0.6 }}>
+                            <span className="shop-maintenance-tracker-s89" style={{ opacity: isSelected ? 0.85 : 0.6 }}>
                               (₹{formatValue(sData.pending)})
                             </span>
                           </button>
@@ -1972,59 +1699,59 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 )}
 
                 {/* Dates & Reference Configuration */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="shop-maintenance-tracker-s90">
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                    <label className="shop-maintenance-tracker-s91">
                       {noticeDocType === 'invoice' ? 'Invoice Date' : 'Notice Date'}
                     </label>
                     <input
                       type="date"
                       value={noticeDate}
                       onChange={(e) => setNoticeDate(e.target.value)}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                      className="shop-maintenance-tracker-s92"
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#b45309', marginBottom: 4 }}>
+                    <label className="shop-maintenance-tracker-s93">
                       Payment Due Date
                     </label>
                     <input
                       type="date"
                       value={noticeDueDate}
                       onChange={(e) => setNoticeDueDate(e.target.value)}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #fde68a', background: '#fffbeb', fontSize: '0.82rem', fontWeight: 700, color: '#92400e' }}
+                      className="shop-maintenance-tracker-s94"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                  <label className="shop-maintenance-tracker-s91">
                     {noticeDocType === 'invoice' ? 'Invoice Number Prefix' : 'Reference Number Prefix'}
                   </label>
                   <input
                     type="text"
                     value={noticeRefPrefix}
                     onChange={(e) => setNoticeRefPrefix(e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                    className="shop-maintenance-tracker-s92"
                   />
                 </div>
 
                 {/* Custom Resolution / Note */}
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                  <label className="shop-maintenance-tracker-s91">
                     Important Note / Terms (Editable)
                   </label>
                   <textarea
                     rows={4}
                     value={noticeCustomNote}
                     onChange={(e) => setNoticeCustomNote(e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.78rem', lineHeight: 1.4, resize: 'vertical' }}
+                    className="shop-maintenance-tracker-s95"
                   />
                 </div>
 
                 {/* Society Bank Details Quick Preview */}
-                <div style={{ padding: '10px 12px', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, fontSize: '0.76rem', color: '#065f46' }}>
-                  <div style={{ fontWeight: 800, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div className="shop-maintenance-tracker-s96">
+                  <div className="shop-maintenance-tracker-s97">
                     <span>🏦 Remittance Account Info</span>
                   </div>
                   <div><strong>Bank:</strong> HDFC Bank • CA-INSTITUTION</div>
@@ -2034,71 +1761,57 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               </div>
 
               {/* Right Column: Live Letterhead Preview */}
-              <div style={{ padding: '24px', overflowY: 'auto', background: '#eaedf0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div className="shop-maintenance-tracker-s98">
                 
                 {/* Simulated Paper Document */}
-                <div style={{
-                  background: '#ffffff',
-                  width: '100%',
-                  maxWidth: 580,
-                  borderRadius: 4,
-                  padding: '28px 32px',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
-                  border: '1px solid #cbd5e1',
-                  color: '#0f172a',
-                  fontSize: '0.82rem',
-                  lineHeight: 1.5,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 12
-                }}>
+                <div className="shop-maintenance-tracker-s99">
                   {/* Letterhead */}
-                  <div style={{ textAlign: 'center', borderBottom: '2px solid #0b2b26', paddingBottom: 10 }}>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 900, color: '#0b2b26' }}>
+                  <div className="shop-maintenance-tracker-s100">
+                    <div className="shop-maintenance-tracker-s101">
                       MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.
                     </div>
-                    <div style={{ fontSize: '0.68rem', color: '#475569', marginTop: 2 }}>
+                    <div className="shop-maintenance-tracker-s102">
                       Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • Mohammed Wadi, Pune - 411060
                     </div>
-                    <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 8px', borderRadius: 999, background: '#f1f5f9', color: '#0b2b26', fontSize: '0.65rem', fontWeight: 800, border: '1px solid #cbd5e1' }}>
+                    <span className="shop-maintenance-tracker-s103">
                       {noticeDocType === 'invoice' ? 'COMMERCIAL WING • MAINTENANCE BILL / TAX INVOICE' : 'COMMERCIAL WING • FORMAL DEMAND NOTICE'}
                     </span>
                   </div>
 
                   {/* Ref & Date */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', color: '#334155', borderBottom: '1px dashed #e2e8f0', paddingBottom: 6 }}>
+                  <div className="shop-maintenance-tracker-s104">
                     <div><strong>{noticeDocType === 'invoice' ? 'Invoice / Bill No:' : 'Ref No:'}</strong> {noticeRefPrefix}{String(activeNoticeData.id).padStart(2, '0')}</div>
                     <div><strong>{noticeDocType === 'invoice' ? 'Invoice Date:' : 'Notice Date:'}</strong> {formatDisplayDate(noticeDate)}</div>
                   </div>
 
                   {/* Recipient */}
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px 12px', fontSize: '0.78rem' }}>
-                    <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700 }}>{noticeDocType === 'invoice' ? 'BILLED TO:' : 'TO:'}</div>
-                    <div style={{ fontWeight: 800, fontSize: '0.88rem' }}>{activeNoticeData.name}</div>
-                    <div style={{ color: '#0b2b26', fontWeight: 700 }}>Unit: {activeNoticeData.shopNo} • Contact: {activeNoticeData.contactNo || 'N/A'}</div>
+                  <div className="shop-maintenance-tracker-s105">
+                    <div className="shop-maintenance-tracker-s106">{noticeDocType === 'invoice' ? 'BILLED TO:' : 'TO:'}</div>
+                    <div className="shop-maintenance-tracker-s107">{activeNoticeData.name}</div>
+                    <div className="shop-maintenance-tracker-s108">Unit: {activeNoticeData.shopNo} • Contact: {activeNoticeData.contactNo || 'N/A'}</div>
                   </div>
 
                   {/* Subject */}
-                  <div style={{ background: '#f1f5f9', padding: '6px 10px', borderLeft: '3px solid #0b2b26', fontSize: '0.78rem', fontWeight: 700 }}>
+                  <div className="shop-maintenance-tracker-s109">
                     {noticeDocType === 'invoice' ? 'Subject: Commercial Shop Maintenance Charges Bill' : 'Subject: Demand Notice for Outstanding Commercial Maintenance Dues'}
                   </div>
 
                   {/* Financial Table */}
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', margin: '4px 0' }}>
+                  <table className="shop-maintenance-tracker-s110">
                     <tbody>
-                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td style={{ padding: '6px 8px' }}>Total Maintenance Demand Billed</td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 600 }}>₹{formatValue(activeNoticeData.billed)}</td>
+                      <tr className="shop-maintenance-tracker-s111">
+                        <td className="shop-maintenance-tracker-s112">Total Maintenance Demand Billed</td>
+                        <td className="shop-maintenance-tracker-s113">₹{formatValue(activeNoticeData.billed)}</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td style={{ padding: '6px 8px' }}>Total Receipts Credited</td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#15803d', fontWeight: 600 }}>(-) ₹{formatValue(activeNoticeData.paid)}</td>
+                      <tr className="shop-maintenance-tracker-s111">
+                        <td className="shop-maintenance-tracker-s112">Total Receipts Credited</td>
+                        <td className="shop-maintenance-tracker-s114">(-) ₹{formatValue(activeNoticeData.paid)}</td>
                       </tr>
-                      <tr style={{ background: '#fffbeb', borderTop: '2px solid #fde68a', fontWeight: 800 }}>
-                        <td style={{ padding: '8px', color: '#92400e' }}>
+                      <tr className="shop-maintenance-tracker-s115">
+                        <td className="shop-maintenance-tracker-s116">
                           {noticeDocType === 'invoice' ? 'TOTAL NET INVOICE AMOUNT DUE' : 'NET OUTSTANDING DUES PAYABLE'}
                         </td>
-                        <td style={{ padding: '8px', textAlign: 'right', fontSize: '0.95rem', color: activeNoticeData.pending > 0 ? '#991b1b' : '#15803d' }}>
+                        <td className="shop-maintenance-tracker-s117" style={{ color: activeNoticeData.pending > 0 ? '#991b1b' : '#15803d' }}>
                           ₹{formatValue(activeNoticeData.pending)}
                         </td>
                       </tr>
@@ -2106,24 +1819,24 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   </table>
 
                   {/* Due banner */}
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.76rem' }}>
+                  <div className="shop-maintenance-tracker-s118">
                     <div>
-                      <span style={{ color: '#92400e', fontWeight: 700 }}>Payment Due Date: </span>
-                      <strong style={{ color: '#78350f' }}>{formatDisplayDate(noticeDueDate)}</strong>
+                      <span className="shop-maintenance-tracker-s119">Payment Due Date: </span>
+                      <strong className="shop-maintenance-tracker-s120">{formatDisplayDate(noticeDueDate)}</strong>
                     </div>
-                    <span style={{ color: '#92400e', fontWeight: 700 }}>HDFC A/C: 50200075533530</span>
+                    <span className="shop-maintenance-tracker-s119">HDFC A/C: 50200075533530</span>
                   </div>
 
                   {/* Signatures */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginTop: 16, paddingTop: 10, borderTop: '1px solid #e2e8f0', textAlign: 'center', fontSize: '0.68rem', color: '#64748b' }}>
-                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 24 }}>Coordinator</div></div>
-                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 24 }}>Secretary</div></div>
-                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 24 }}>Treasurer / Chairman</div></div>
+                  <div className="shop-maintenance-tracker-s121">
+                    <div><div className="shop-maintenance-tracker-s122">Coordinator</div></div>
+                    <div><div className="shop-maintenance-tracker-s122">Secretary</div></div>
+                    <div><div className="shop-maintenance-tracker-s122">Treasurer / Chairman</div></div>
                   </div>
                 </div>
 
                 {noticeToast && (
-                  <div style={{ marginTop: 12, padding: '8px 16px', borderRadius: 8, background: '#0b2b26', color: '#fff', fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+                  <div className="shop-maintenance-tracker-s123">
                     {noticeToast}
                   </div>
                 )}
@@ -2131,25 +1844,25 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             </div>
 
             {/* Modal Footer Toolbar */}
-            <div style={{ padding: '14px 24px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-              <div style={{ fontSize: '0.82rem', color: '#475569' }}>
+            <div className="shop-maintenance-tracker-s124">
+              <div className="shop-maintenance-tracker-s125">
                 Selected Target: <strong>{noticeTarget === 'single' ? activeNoticeShop.shopNo : noticeTarget === 'all_pending' ? `All ${shopsForNotice.length} Pending Shops` : 'All 8 Shops'}</strong>
               </div>
 
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+              <div className="shop-maintenance-tracker-s126">
                 {noticeTarget === 'single' && (
                   <>
                     <button
                       type="button"
                       onClick={() => handleCopyNoticeText(activeNoticeShop)}
-                      style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#334155', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                      className="shop-maintenance-tracker-s127"
                     >
                       📋 Copy Text
                     </button>
                     <button
                       type="button"
                       onClick={() => handleShareWhatsApp(activeNoticeShop)}
-                      style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: '#25D366', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(37,211,102,0.3)' }}
+                      className="shop-maintenance-tracker-s128"
                     >
                       📱 Send WhatsApp
                     </button>
@@ -2159,20 +1872,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <button
                   type="button"
                   onClick={handlePrintNotices}
-                  style={{
-                    padding: '8px 18px',
-                    borderRadius: 8,
-                    border: 'none',
-                    background: '#0b2b26',
-                    color: '#fff',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    boxShadow: '0 4px 14px rgba(11,43,38,0.25)'
-                  }}
+                  className="shop-maintenance-tracker-s129"
                 >
                   🖨️ Print / Download PDF ({shopsForNotice.length} Notice{shopsForNotice.length > 1 ? 's' : ''})
                 </button>
@@ -2180,7 +1880,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <button
                   type="button"
                   onClick={() => setIsNoticeModalOpen(false)}
-                  style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#64748b', fontWeight: 600, cursor: 'pointer', fontSize: '0.82rem' }}
+                  className="shop-maintenance-tracker-s130"
                 >
                   Close
                 </button>
@@ -2192,24 +1892,19 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       )}
 
       {isAdmin && isInsertModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '10vh' }}>
-          <div style={{ background: '#fff', borderRadius: 12, padding: 24, width: '100%', maxWidth: 400, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: '1.2rem', color: '#101828' }}>Add Shop Maintenance</h3>
-            <form onSubmit={handleInsertSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="shop-maintenance-tracker-s131">
+          <div className="shop-maintenance-tracker-s132">
+            <h3 className="shop-maintenance-tracker-s133">Add Shop Maintenance</h3>
+            <form onSubmit={handleInsertSubmit} className="shop-maintenance-tracker-s134">
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#344054', marginBottom: 8 }}>Select Shops</label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                <label className="shop-maintenance-tracker-s135">Select Shops</label>
+                <div className="shop-maintenance-tracker-s87">
                   {shops.map(s => (
                     <button
                       key={s.id}
                       type="button"
                       onClick={() => toggleShopSelection(s.id)}
-                      style={{
-                        padding: '4px 10px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
-                        border: selectedShops.includes(s.id) ? '1px solid #0b2b26' : '1px solid #d0d5dd',
-                        background: selectedShops.includes(s.id) ? '#0b2b26' : '#fff',
-                        color: selectedShops.includes(s.id) ? '#fff' : '#344054',
-                      }}
+                      className="shop-maintenance-tracker-s136" style={{ border: selectedShops.includes(s.id) ? '1px solid #0b2b26' : '1px solid #d0d5dd', background: selectedShops.includes(s.id) ? '#0b2b26' : '#fff', color: selectedShops.includes(s.id) ? '#fff' : '#344054' }}
                     >
                       {s.shopNo}
                     </button>
@@ -2218,49 +1913,49 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               </div>
               
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#344054', marginBottom: 4 }}>Month</label>
+                <label className="shop-maintenance-tracker-s137">Month</label>
                 <input 
                   type="text" 
                   value={insertMonth} 
                   onChange={(e) => setInsertMonth(e.target.value)} 
                   placeholder="e.g. Aug-26"
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #d0d5dd', fontSize: '0.9rem' }}
+                  className="shop-maintenance-tracker-s138"
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#344054', marginBottom: 4 }}>Monthly Maintenance Amount</label>
+                <label className="shop-maintenance-tracker-s137">Monthly Maintenance Amount</label>
                 <input 
                   type="number" 
                   value={insertRegularAmount} 
                   onChange={(e) => setInsertRegularAmount(e.target.value)} 
                   placeholder="e.g. 1500"
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #d0d5dd', fontSize: '0.9rem' }}
+                  className="shop-maintenance-tracker-s138"
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#344054', marginBottom: 4 }}>Receipt Amount (Optional)</label>
+                <label className="shop-maintenance-tracker-s137">Receipt Amount (Optional)</label>
                 <input 
                   type="number" 
                   value={insertAmount} 
                   onChange={(e) => setInsertAmount(e.target.value)} 
                   placeholder="e.g. 1500"
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #d0d5dd', fontSize: '0.9rem' }}
+                  className="shop-maintenance-tracker-s138"
                 />
               </div>
-              <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+              <div className="shop-maintenance-tracker-s139">
                 <button 
                   type="button" 
                   onClick={() => setIsInsertModalOpen(false)}
-                  style={{ flex: 1, padding: '10px', borderRadius: 8, background: '#fff', border: '1px solid #d0d5dd', color: '#344054', fontWeight: 600, cursor: 'pointer' }}
+                  className="shop-maintenance-tracker-s140"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
                   disabled={saveStatus === 'saving'}
-                  style={{ flex: 1, padding: '10px', borderRadius: 8, background: '#0b2b26', border: 'none', color: '#fff', fontWeight: 600, cursor: saveStatus === 'saving' ? 'wait' : 'pointer', opacity: saveStatus === 'saving' ? 0.72 : 1 }}
+                  className="shop-maintenance-tracker-s141" style={{ cursor: saveStatus === 'saving' ? 'wait' : 'pointer', opacity: saveStatus === 'saving' ? 0.72 : 1 }}
                 >
                   {saveStatus === 'saving' ? 'Saving...' : 'Save Receipts'}
                 </button>
@@ -2271,52 +1966,52 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       )}
 
       {isAdmin && editingEntry && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '10vh' }}>
-          <div style={{ background: '#fff', borderRadius: 12, padding: 24, width: '100%', maxWidth: 400, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: '1.2rem', color: '#101828' }}>Edit Shop Maintenance</h3>
-            <form onSubmit={handleEditSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="shop-maintenance-tracker-s131">
+          <div className="shop-maintenance-tracker-s132">
+            <h3 className="shop-maintenance-tracker-s133">Edit Shop Maintenance</h3>
+            <form onSubmit={handleEditSubmit} className="shop-maintenance-tracker-s134">
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#344054', marginBottom: 4 }}>Month</label>
+                <label className="shop-maintenance-tracker-s137">Month</label>
                 <input
                   type="text"
                   value={editingEntry.month}
                   onChange={(event) => handleEditFieldChange('month', event.target.value)}
                   placeholder="e.g. Aug-26"
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #d0d5dd', fontSize: '0.9rem' }}
+                  className="shop-maintenance-tracker-s138"
                 />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#344054', marginBottom: 4 }}>Monthly Maintenance Amount</label>
+                <label className="shop-maintenance-tracker-s137">Monthly Maintenance Amount</label>
                 <input
                   type="number"
                   value={editingEntry.regularMain}
                   onChange={(event) => handleEditFieldChange('regularMain', event.target.value)}
                   placeholder="e.g. 1500"
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #d0d5dd', fontSize: '0.9rem' }}
+                  className="shop-maintenance-tracker-s138"
                 />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#344054', marginBottom: 4 }}>Receipt Amount</label>
+                <label className="shop-maintenance-tracker-s137">Receipt Amount</label>
                 <input
                   type="number"
                   value={editingEntry.receipts}
                   onChange={(event) => handleEditFieldChange('receipts', event.target.value)}
                   placeholder="e.g. 1500"
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #d0d5dd', fontSize: '0.9rem' }}
+                  className="shop-maintenance-tracker-s138"
                 />
               </div>
-              <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+              <div className="shop-maintenance-tracker-s139">
                 <button
                   type="button"
                   onClick={() => setEditingEntry(null)}
-                  style={{ flex: 1, padding: '10px', borderRadius: 8, background: '#fff', border: '1px solid #d0d5dd', color: '#344054', fontWeight: 600, cursor: 'pointer' }}
+                  className="shop-maintenance-tracker-s140"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saveStatus === 'saving'}
-                  style={{ flex: 1, padding: '10px', borderRadius: 8, background: '#0b2b26', border: 'none', color: '#fff', fontWeight: 600, cursor: saveStatus === 'saving' ? 'wait' : 'pointer', opacity: saveStatus === 'saving' ? 0.72 : 1 }}
+                  className="shop-maintenance-tracker-s141" style={{ cursor: saveStatus === 'saving' ? 'wait' : 'pointer', opacity: saveStatus === 'saving' ? 0.72 : 1 }}
                 >
                   {saveStatus === 'saving' ? 'Saving...' : 'Save Changes'}
                 </button>

@@ -4,6 +4,8 @@ import * as XLSX from 'xlsx';
 import { db, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
 import { financeSeedData } from '../../data/financeSeedData.js';
 import { SOCIETY_INFO } from '../../data/societyConfig.js';
+import './MonthlySocietyReport.css';
+
 
 const FY_MONTHS = [
   '2026-09', '2026-08', '2026-07', '2026-06', '2026-05', '2026-04',
@@ -178,20 +180,19 @@ export default function MonthlySocietyReport() {
   }, [selectedMonth]);
 
   return (
-    <div className="section-card" style={{ padding: '28px', borderRadius: '16px', background: 'white' }}>
+    <div className="section-card monthly-society-report-s1">
       {/* Top Controls */}
-      <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
+      <div className="no-print monthly-society-report-s2">
         <div>
-          <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0b2b26' }}>Monthly Society Report</h2>
-          <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#5f665f' }}>
+          <h2 className="monthly-society-report-s3">Monthly Society Report</h2>
+          <p className="monthly-society-report-s4">
             Comprehensive financial, operational, and maintenance statement for committee review
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div className="monthly-society-report-s5">
           <select
-            className="attendance-register-input"
-            style={{ padding: '8px 12px', fontWeight: 700 }}
+            className="attendance-register-input monthly-society-report-s6"
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
           >
@@ -200,87 +201,87 @@ export default function MonthlySocietyReport() {
             ))}
           </select>
 
-          <button onClick={handleExportExcel} className="button-secondary" style={{ padding: '8px 14px' }}>
+          <button onClick={handleExportExcel} className="button-secondary monthly-society-report-s7">
             📊 Export Excel
           </button>
-          <button onClick={handlePrint} className="button-primary" style={{ padding: '8px 14px' }}>
+          <button onClick={handlePrint} className="button-primary monthly-society-report-s7">
             🖨️ Print / PDF
           </button>
         </div>
       </div>
 
       {isLoading || !reportData ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>Generating Monthly Statement...</div>
+        <div className="monthly-society-report-s8">Generating Monthly Statement...</div>
       ) : (
-        <div className="report-printable-area" style={{ border: '1px solid rgba(0,0,0,0.1)', borderRadius: '12px', padding: '24px', background: '#fafaf9' }}>
+        <div className="report-printable-area monthly-society-report-s9">
           {/* Official Letterhead */}
-          <div style={{ borderBottom: '2px solid #0b2b26', paddingBottom: '16px', marginBottom: '20px', textAlign: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#0b2b26', textTransform: 'uppercase' }}>{SOCIETY_INFO.name}</h3>
-            <p style={{ margin: '4px 0', fontSize: '0.8rem', color: '#475569' }}>{SOCIETY_INFO.fullLegalHeader}</p>
-            <div style={{ display: 'inline-block', background: '#0b2b26', color: '#C49B4F', padding: '4px 16px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 700, marginTop: '8px' }}>
+          <div className="monthly-society-report-s10">
+            <h3 className="monthly-society-report-s11">{SOCIETY_INFO.name}</h3>
+            <p className="monthly-society-report-s12">{SOCIETY_INFO.fullLegalHeader}</p>
+            <div className="monthly-society-report-s13">
               EXECUTIVE MONTHLY STATEMENT — {monthLabel.toUpperCase()}
             </div>
           </div>
 
           {/* Cashflow Summary Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-            <div style={{ background: 'white', padding: '16px', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.06)' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>Opening Balance</div>
-              <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', marginTop: '4px' }}>{fmt(reportData.openingBalance)}</div>
+          <div className="monthly-society-report-s14">
+            <div className="monthly-society-report-s15">
+              <div className="monthly-society-report-s16">Opening Balance</div>
+              <div className="monthly-society-report-s17">{fmt(reportData.openingBalance)}</div>
             </div>
-            <div style={{ background: 'white', padding: '16px', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.06)' }}>
-              <div style={{ fontSize: '0.72rem', color: '#16a34a', fontWeight: 700, textTransform: 'uppercase' }}>Total Income</div>
-              <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#16a34a', marginTop: '4px' }}>+{fmt(reportData.totalIncome)}</div>
+            <div className="monthly-society-report-s15">
+              <div className="monthly-society-report-s18">Total Income</div>
+              <div className="monthly-society-report-s19">+{fmt(reportData.totalIncome)}</div>
             </div>
-            <div style={{ background: 'white', padding: '16px', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.06)' }}>
-              <div style={{ fontSize: '0.72rem', color: '#dc2626', fontWeight: 700, textTransform: 'uppercase' }}>Total Expenses</div>
-              <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#dc2626', marginTop: '4px' }}>-{fmt(reportData.totalExpense)}</div>
+            <div className="monthly-society-report-s15">
+              <div className="monthly-society-report-s20">Total Expenses</div>
+              <div className="monthly-society-report-s21">-{fmt(reportData.totalExpense)}</div>
             </div>
-            <div style={{ background: '#0b2b26', padding: '16px', borderRadius: '10px', color: 'white' }}>
-              <div style={{ fontSize: '0.72rem', color: '#C49B4F', fontWeight: 700, textTransform: 'uppercase' }}>Closing Balance</div>
-              <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#fff', marginTop: '4px' }}>{fmt(reportData.closingBalance)}</div>
+            <div className="monthly-society-report-s22">
+              <div className="monthly-society-report-s23">Closing Balance</div>
+              <div className="monthly-society-report-s24">{fmt(reportData.closingBalance)}</div>
             </div>
           </div>
 
           {/* Major Departmental Expenses Table */}
-          <div style={{ background: 'white', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.06)', padding: '18px', marginBottom: '20px' }}>
-            <h4 style={{ margin: '0 0 14px', fontSize: '1rem', color: '#0b2b26' }}>Major Operating Expenditures</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px' }}>
-              <div style={{ borderLeft: '3px solid #3b82f6', paddingLeft: '10px' }}>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>🛡️ Security Services</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{fmt(reportData.securityExpense)}</div>
+          <div className="monthly-society-report-s25">
+            <h4 className="monthly-society-report-s26">Major Operating Expenditures</h4>
+            <div className="monthly-society-report-s27">
+              <div className="monthly-society-report-s28">
+                <div className="monthly-society-report-s29">🛡️ Security Services</div>
+                <div className="monthly-society-report-s30">{fmt(reportData.securityExpense)}</div>
               </div>
-              <div style={{ borderLeft: '3px solid #10b981', paddingLeft: '10px' }}>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>🧹 Housekeeping & Hygiene</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{fmt(reportData.housekeepingExpense)}</div>
+              <div className="monthly-society-report-s31">
+                <div className="monthly-society-report-s29">🧹 Housekeeping & Hygiene</div>
+                <div className="monthly-society-report-s30">{fmt(reportData.housekeepingExpense)}</div>
               </div>
-              <div style={{ borderLeft: '3px solid #f59e0b', paddingLeft: '10px' }}>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>⚡ Common Electricity</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{fmt(reportData.electricityExpense)}</div>
+              <div className="monthly-society-report-s32">
+                <div className="monthly-society-report-s29">⚡ Common Electricity</div>
+                <div className="monthly-society-report-s30">{fmt(reportData.electricityExpense)}</div>
               </div>
-              <div style={{ borderLeft: '3px solid #06b6d4', paddingLeft: '10px' }}>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>💧 Water Supply & Tankers</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{fmt(reportData.waterExpense)}</div>
+              <div className="monthly-society-report-s33">
+                <div className="monthly-society-report-s29">💧 Water Supply & Tankers</div>
+                <div className="monthly-society-report-s30">{fmt(reportData.waterExpense)}</div>
               </div>
-              <div style={{ borderLeft: '3px solid #8b5cf6', paddingLeft: '10px' }}>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>📋 Lift & Asset AMCs</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{fmt(reportData.amcExpense)}</div>
+              <div className="monthly-society-report-s34">
+                <div className="monthly-society-report-s29">📋 Lift & Asset AMCs</div>
+                <div className="monthly-society-report-s30">{fmt(reportData.amcExpense)}</div>
               </div>
             </div>
           </div>
 
           {/* Pending Tasks & Action Items */}
-          <div style={{ background: 'white', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.06)', padding: '18px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <h4 style={{ margin: 0, fontSize: '1rem', color: '#0b2b26' }}>Pending Estate Tasks ({reportData.pendingTasksCount})</h4>
-              <span style={{ fontSize: '0.78rem', color: '#b45309', fontWeight: 700 }}>High Priority Committee Oversight</span>
+          <div className="monthly-society-report-s35">
+            <div className="monthly-society-report-s36">
+              <h4 className="monthly-society-report-s37">Pending Estate Tasks ({reportData.pendingTasksCount})</h4>
+              <span className="monthly-society-report-s38">High Priority Committee Oversight</span>
             </div>
             {reportData.pendingTasksList.length === 0 ? (
-              <p style={{ margin: 0, fontSize: '0.85rem', color: '#16a34a' }}>✓ All tasks for this period have been marked completed.</p>
+              <p className="monthly-society-report-s39">✓ All tasks for this period have been marked completed.</p>
             ) : (
-              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85rem', color: '#334155' }}>
+              <ul className="monthly-society-report-s40">
                 {reportData.pendingTasksList.map((t, idx) => (
-                  <li key={t.id || idx} style={{ marginBottom: '6px' }}>
+                  <li key={t.id || idx} className="monthly-society-report-s41">
                     <strong>{t.title || t.task || 'Task'}</strong> — Due: {t.deadline || 'Ongoing'} ({t.status || 'Pending'})
                   </li>
                 ))}

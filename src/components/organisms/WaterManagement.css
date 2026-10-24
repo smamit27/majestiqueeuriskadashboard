@@ -1,0 +1,324 @@
+/**
+ * WaterManagement.css
+ * Extracted styles from WaterManagement.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.water-management-s1 {
+  font-family: Inter, system-ui, sans-serif;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.water-management-s2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.92);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: pointer;
+}
+
+.water-management-s3 {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 1000000;
+}
+
+.water-management-s4 {
+  max-width: 90%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: default;
+}
+
+.water-management-s5 {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+}
+
+.water-management-s6 {
+  color: #fff;
+  text-align: center;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.water-management-s7 {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.water-management-s8 {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.water-management-s9 {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.water-management-s10 {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(2,132,199,0.4);
+}
+
+.water-management-s11 {
+  background: #334155;
+  color: #ffffff;
+  border: 1px solid #64748b;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.water-management-s12 {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(220,38,38,0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.water-management-s13 {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.water-management-s14 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.water-management-s15 {
+  font-size: 1.8rem;
+}
+
+.water-management-s16 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.water-management-s17 {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.water-management-s18 {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+}
+
+.water-management-s19 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.water-management-s20 {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.water-management-s21 {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.water-management-s22 {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1;
+  max-width: 440px;
+  justify-content: flex-end;
+}
+
+.water-management-s23 {
+  width: 100%;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.85rem;
+  outline: none;
+  background: #ffffff;
+}
+
+.water-management-s24 {
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.water-management-s25 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  max-width: 100%;
+}
+
+.water-management-s26 {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.water-management-s27 {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  position: relative;
+  background: #f1f5f9;
+}
+
+.water-management-s28 {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.water-management-s29 {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.water-management-s30 {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.water-management-s31 {
+  padding: 16px;
+}
+
+.water-management-s32 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.water-management-s33 {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+

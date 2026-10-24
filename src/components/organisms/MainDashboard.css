@@ -1,0 +1,258 @@
+/**
+ * MainDashboard.css
+ * Extracted styles from MainDashboard.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.main-dashboard-s1 {
+  width: 100%;
+  background: #C62828;
+}
+
+.main-dashboard-s2 {
+  width: 100%;
+  background: #3b82f6;
+}
+
+.main-dashboard-s3 {
+  width: 100%;
+  background: #10b981;
+}
+
+.main-dashboard-s4 {
+  margin-top: 24px;
+}
+
+.main-dashboard-s5 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.main-dashboard-s6 {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.main-dashboard-s7 {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.main-dashboard-s8 {
+  margin-bottom: 20px;
+}
+
+.main-dashboard-s9 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0284c7;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.main-dashboard-s10 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #059669;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.main-dashboard-s11 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #6366f1;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.main-dashboard-s12 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0891b2;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.main-dashboard-s13 {
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #171717;
+}
+
+.main-dashboard-s14 {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6B7280;
+  line-height: 1.4;
+}
+
+.main-dashboard-s15 {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  color: #C62828;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.main-dashboard-s16 {
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+}
+
+.main-dashboard-s17 {
+  display: flex;
+  gap: 20px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #E5E7EB;
+  font-size: 0.78rem;
+  flex-wrap: wrap;
+}
+
+.main-dashboard-s18 {
+  color: #6B7280;
+}
+
+.main-dashboard-s19 {
+  color: #059669;
+}
+
+.main-dashboard-s20 {
+  color: #C62828;
+}
+
+.main-dashboard-s21 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.main-dashboard-s22 {
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+  font-size: 0.85rem;
+}
+
+.main-dashboard-s23 {
+  width: 110px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+.main-dashboard-s24 {
+  background: #C62828;
+}
+
+.main-dashboard-s25 {
+  color: #171717;
+}
+
+.main-dashboard-s26 {
+  background: #F59E0B;
+}
+
+.main-dashboard-s27 {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #6B7280;
+  margin-left: 6px;
+}
+
+.main-dashboard-s28 {
+  padding: 20px;
+  text-align: center;
+  color: #6B7280;
+  font-size: 0.85rem;
+}
+
+.main-dashboard-s29 {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.main-dashboard-s30 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.main-dashboard-s31 {
+  cursor: pointer;
+}
+
+.main-dashboard-s32 {
+  display: flex;
+  gap: 14px;
+}
+
+.main-dashboard-s33 {
+  flex: 1;
+  background: #f0fdf4;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(16,185,129,0.15);
+}
+
+.main-dashboard-s34 {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #6B7280;
+  letter-spacing: 0.06em;
+}
+
+.main-dashboard-s35 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #065f46;
+  margin-top: 4px;
+}
+
+.main-dashboard-s36 {
+  flex: 1;
+  background: #eff6ff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(59,130,246,0.15);
+}
+
+.main-dashboard-s37 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1e40af;
+  margin-top: 4px;
+}
+

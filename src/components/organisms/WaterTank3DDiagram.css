@@ -1,0 +1,764 @@
+/**
+ * WaterTank3DDiagram.css
+ * Extracted styles from WaterTank3DDiagram.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.water-tank3-d-diagram-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.03);
+}
+
+.water-tank3-d-diagram-s2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.water-tank3-d-diagram-s3 {
+  display: flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+}
+
+.water-tank3-d-diagram-s4 {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.water-tank3-d-diagram-s5 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.water-tank3-d-diagram-s6 {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.water-tank3-d-diagram-s7 {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.water-tank3-d-diagram-s8 {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 2px;
+  margin-left: 6px;
+}
+
+.water-tank3-d-diagram-s9 {
+  padding: 6px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.water-tank3-d-diagram-s10 {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.water-tank3-d-diagram-s11 {
+  position: relative;
+}
+
+.water-tank3-d-diagram-s12 {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 20;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  color: #f8fafc;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  pointer-events: none;
+}
+
+.water-tank3-d-diagram-s13 {
+  font-weight: 700;
+  color: #38bdf8;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.water-tank3-d-diagram-s14 {
+  opacity: 0.7;
+  margin-top: 3px;
+  font-size: 0.7rem;
+}
+
+.water-tank3-d-diagram-s15 {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(10px);
+  padding: 6px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.water-tank3-d-diagram-s16 {
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.water-tank3-d-diagram-s17 {
+  width: 100%;
+  height: 660px;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  perspective: 1200px;
+  user-select: none;
+}
+
+.water-tank3-d-diagram-s18 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.water-tank3-d-diagram-s19 {
+  width: 640px;
+  height: 820px;
+  border-radius: 24px;
+  position: relative;
+  border: 2px solid rgba(255,255,255,0.1);
+  transform-style: preserve-3d;
+}
+
+.water-tank3-d-diagram-s20 {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 110px;
+  height: 780px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.water-tank3-d-diagram-s21 {
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 50%;
+  width: 3px;
+  background-image: linear-gradient(to bottom, #ffffff 50%, transparent 50%);
+  background-size: 3px 30px;
+  opacity: 0.6;
+}
+
+.water-tank3-d-diagram-s22 {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  right: 10px;
+  padding: 6px;
+  background: #0f172a;
+  border-radius: 6px;
+  color: #38bdf8;
+  font-size: 9px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.water-tank3-d-diagram-s23 {
+  font-size: 7px;
+  color: #94a3b8;
+}
+
+.water-tank3-d-diagram-s24 {
+  position: absolute;
+  bottom: 150px;
+  left: 10px;
+  right: 10px;
+  padding: 8px 4px;
+  background: #3f6212;
+  border-radius: 6px;
+  color: #f7fee7;
+  font-size: 9px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.water-tank3-d-diagram-s25 {
+  position: absolute;
+  bottom: 70px;
+  left: 10px;
+  right: 10px;
+  padding: 8px 4px;
+  background: #15803d;
+  border-radius: 6px;
+  color: #f0fdf4;
+  font-size: 9px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.water-tank3-d-diagram-s26 {
+  position: absolute;
+  top: 40px;
+  left: 180px;
+  width: 320px;
+  height: 140px;
+  border-radius: 12px;
+  transform: translateZ(60px);
+  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.water-tank3-d-diagram-s27 {
+  position: absolute;
+  top: -15px;
+  background: #1e3a8a;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transform: translateZ(20px);
+}
+
+.water-tank3-d-diagram-s28 {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+  transform: translateZ(25px);
+}
+
+.water-tank3-d-diagram-s29 {
+  width: 28px;
+  height: 34px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.water-tank3-d-diagram-s30 {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.water-tank3-d-diagram-s31 {
+  position: absolute;
+  top: 220px;
+  left: 220px;
+  width: 240px;
+  height: 140px;
+  background: rgba(2, 132, 199, 0.18);
+  border-radius: 16px;
+  transform: translateZ(0px);
+  transform-style: preserve-3d;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.water-tank3-d-diagram-s32 {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%) translateZ(10px);
+  background: #0284c7;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.5);
+}
+
+.water-tank3-d-diagram-s33 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  height: 100%;
+  margin-top: 4px;
+}
+
+.water-tank3-d-diagram-s34 {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 8px;
+  border: 1px solid #38bdf8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.water-tank3-d-diagram-s35 {
+  font-size: 9px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.water-tank3-d-diagram-s36 {
+  font-size: 8px;
+  color: #cffafe;
+}
+
+.water-tank3-d-diagram-s37 {
+  font-size: 8px;
+  color: #a7f3d0;
+}
+
+.water-tank3-d-diagram-s38 {
+  background: rgba(239, 68, 68, 0.45);
+  border-radius: 8px;
+  border: 1px solid #ef4444;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.water-tank3-d-diagram-s39 {
+  font-size: 8px;
+  color: #fee2e2;
+}
+
+.water-tank3-d-diagram-s40 {
+  position: absolute;
+  top: 240px;
+  left: 145px;
+  width: 65px;
+  height: 95px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #f87171;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: #ef4444;
+  text-align: center;
+}
+
+.water-tank3-d-diagram-s41 {
+  position: absolute;
+  top: 240px;
+  right: 100px;
+  width: 65px;
+  height: 95px;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid #c084fc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: #a855f7;
+  text-align: center;
+}
+
+.water-tank3-d-diagram-s42 {
+  position: absolute;
+  top: 390px;
+  left: 180px;
+  width: 320px;
+  height: 140px;
+  border-radius: 12px;
+  transform: translateZ(60px);
+  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.water-tank3-d-diagram-s43 {
+  position: absolute;
+  top: -15px;
+  background: #0369a1;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transform: translateZ(20px);
+}
+
+.water-tank3-d-diagram-s44 {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  transform: translateZ(25px);
+}
+
+.water-tank3-d-diagram-s45 {
+  width: 26px;
+  height: 32px;
+  border-radius: 13px;
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.water-tank3-d-diagram-s46 {
+  position: absolute;
+  top: 555px;
+  left: 200px;
+  width: 280px;
+  height: 60px;
+  background: rgba(6, 182, 212, 0.15);
+  border-radius: 10px;
+  border: 1px solid #06b6d4;
+  transform: translateZ(15px);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 15px;
+}
+
+.water-tank3-d-diagram-s47 {
+  background: #06b6d4;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.water-tank3-d-diagram-s48 {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.water-tank3-d-diagram-s49 {
+  position: absolute;
+  top: 635px;
+  left: 180px;
+  width: 320px;
+  height: 140px;
+  border-radius: 12px;
+  transform: translateZ(60px);
+  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.water-tank3-d-diagram-s50 {
+  position: absolute;
+  top: -15px;
+  background: #065f46;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transform: translateZ(20px);
+}
+
+.water-tank3-d-diagram-s51 {
+  width: 28px;
+  height: 34px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.water-tank3-d-diagram-s52 {
+  position: absolute;
+  bottom: 30px;
+  right: 25px;
+  width: 90px;
+  height: 60px;
+  background: #d97706;
+  border-radius: 8px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  box-shadow: 0 6px 15px rgba(217, 119, 6, 0.4);
+}
+
+.water-tank3-d-diagram-s53 {
+  font-size: 7px;
+  opacity: 0.9;
+}
+
+.water-tank3-d-diagram-s54 {
+  position: relative;
+  background: #0f172a;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.water-tank3-d-diagram-s55 {
+  width: 100%;
+  padding: 12px 20px;
+  background: rgba(30, 41, 59, 0.95);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.water-tank3-d-diagram-s56 {
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.water-tank3-d-diagram-s57 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.water-tank3-d-diagram-s58 {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #334155;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.water-tank3-d-diagram-s59 {
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: #0284c7;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.water-tank3-d-diagram-s60 {
+  position: relative;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.water-tank3-d-diagram-s61 {
+  position: relative;
+  max-width: 850px;
+  transform-origin: top center;
+  transition: transform 0.2s ease-out;
+}
+
+.water-tank3-d-diagram-s62 {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.water-tank3-d-diagram-s63 {
+  position: absolute;
+  top: 16%;
+  left: 52%;
+  transform: translate(-50%, -50%);
+  background: rgba(37, 99, 235, 0.95);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.water-tank3-d-diagram-s64 {
+  position: absolute;
+  top: 36%;
+  left: 53%;
+  transform: translate(-50%, -50%);
+  background: rgba(2, 132, 199, 0.95);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.water-tank3-d-diagram-s65 {
+  position: absolute;
+  top: 47%;
+  left: 53%;
+  transform: translate(-50%, -50%);
+  background: rgba(14, 165, 233, 0.95);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.water-tank3-d-diagram-s66 {
+  position: absolute;
+  top: 79%;
+  left: 54%;
+  transform: translate(-50%, -50%);
+  background: rgba(5, 150, 105, 0.95);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.water-tank3-d-diagram-s67 {
+  position: absolute;
+  top: 65%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  background: rgba(22, 163, 74, 0.92);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  border: 1px solid #ffffff;
+}
+
+.water-tank3-d-diagram-s68 {
+  position: absolute;
+  top: 88%;
+  right: 5%;
+  background: rgba(217, 119, 6, 0.92);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  border: 1px solid #ffffff;
+}
+

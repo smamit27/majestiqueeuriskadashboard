@@ -1,0 +1,611 @@
+/**
+ * GeneralParkingNoticeDocument.css
+ * Extracted styles from GeneralParkingNoticeDocument.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.general-parking-notice-document-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.general-parking-notice-document-s2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 18px;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.general-parking-notice-document-s3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.general-parking-notice-document-s4 {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.general-parking-notice-document-s5 {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #0284c7;
+  background: #f0f9ff;
+  color: #0369a1;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.general-parking-notice-document-s6 {
+  font-size: 0.78rem;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.general-parking-notice-document-s7 {
+  color: #dc2626;
+  font-weight: 800;
+}
+
+.general-parking-notice-document-s8 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.general-parking-notice-document-s9 {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.general-parking-notice-document-s10 {
+  padding: 7px 13px;
+  border-radius: 8px;
+  border: none;
+  background: #25d366;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(37, 211, 102, 0.25);
+}
+
+.general-parking-notice-document-s11 {
+  padding: 7px 13px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f2952;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.general-parking-notice-document-s12 {
+  padding: 7px 15px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #0f2952 0%, #1e3a8a 100%);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(15, 41, 82, 0.25);
+}
+
+.general-parking-notice-document-s13 {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: clamp(24px, 4vw, 48px);
+  font-family: "Times New Roman", Times, Georgia, serif;
+  color: #1e293b;
+  line-height: 1.5;
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.general-parking-notice-document-s14 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 900;
+  color: rgba(15, 41, 82, 0.03);
+  letter-spacing: 0.15em;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s15 {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 3px double #0f2952;
+  position: relative;
+}
+
+.general-parking-notice-document-s16 {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: 2px solid #0f2952;
+  padding: 3px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.general-parking-notice-document-s17 {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.general-parking-notice-document-s18 {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.general-parking-notice-document-s19 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #991b1b;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s20 {
+  margin: 2px 0 0;
+  font-size: clamp(1.15rem, 2.3vw, 1.48rem);
+  font-weight: 800;
+  color: #0f2952;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.general-parking-notice-document-s21 {
+  font-size: 0.78rem;
+  color: #334155;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s22 {
+  font-size: 0.74rem;
+  color: #475569;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s23 {
+  font-size: 0.74rem;
+  color: #0369a1;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s24 {
+  height: 2px;
+  background: #d97706;
+  margin: 4px 0 16px;
+}
+
+.general-parking-notice-document-s25 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #0f2952;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin-bottom: 16px;
+}
+
+.general-parking-notice-document-s26 {
+  font-family: monospace;
+  font-weight: 800;
+}
+
+.general-parking-notice-document-s27 {
+  text-align: center;
+  margin: 14px 0 20px;
+  padding: 8px 16px;
+  border-top: 1px solid #cbd5e1;
+  border-bottom: 1px solid #cbd5e1;
+  background: #f8fafc;
+}
+
+.general-parking-notice-document-s28 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f2952;
+  letter-spacing: 0.05em;
+}
+
+.general-parking-notice-document-s29 {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #b45309;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin-top: 2px;
+}
+
+.general-parking-notice-document-s30 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s31 {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #0f2952;
+}
+
+.general-parking-notice-document-s32 {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0f2952;
+  line-height: 1.35;
+}
+
+.general-parking-notice-document-s33 {
+  height: 2px;
+  background: #b91c1c;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.general-parking-notice-document-s34 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 0.94rem;
+}
+
+.general-parking-notice-document-s35 {
+  margin: 0;
+  text-indent: 24px;
+  text-align: justify;
+}
+
+.general-parking-notice-document-s36 {
+  margin: 8px 0;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.general-parking-notice-document-s37 {
+  background: #f1f5f9;
+  padding: 8px 12px;
+  border-bottom: 1px solid #cbd5e1;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: #0f2952;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s38 {
+  color: #b91c1c;
+}
+
+.general-parking-notice-document-s39 {
+  max-height: 420px;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+.general-parking-notice-document-s40 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.80rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s41 {
+  background: #f8fafc;
+  border-bottom: 1.5px solid #cbd5e1;
+  color: #0f2952;
+}
+
+.general-parking-notice-document-s42 {
+  padding: 7px 8px;
+  text-align: center;
+  width: 50px;
+}
+
+.general-parking-notice-document-s43 {
+  padding: 7px 10px;
+  text-align: center;
+  width: 90px;
+}
+
+.general-parking-notice-document-s44 {
+  padding: 7px 8px;
+  text-align: center;
+  width: 60px;
+}
+
+.general-parking-notice-document-s45 {
+  padding: 7px 12px;
+  text-align: left;
+}
+
+.general-parking-notice-document-s46 {
+  padding: 7px 10px;
+  text-align: left;
+  width: 130px;
+}
+
+.general-parking-notice-document-s47 {
+  padding: 7px 10px;
+  text-align: center;
+  width: 130px;
+}
+
+.general-parking-notice-document-s48 {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.general-parking-notice-document-s49 {
+  padding: 6px 8px;
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.general-parking-notice-document-s50 {
+  padding: 6px 10px;
+  text-align: center;
+  font-weight: 800;
+  color: #0f2952;
+}
+
+.general-parking-notice-document-s51 {
+  padding: 6px 8px;
+  text-align: center;
+  color: #475569;
+}
+
+.general-parking-notice-document-s52 {
+  padding: 6px 12px;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.general-parking-notice-document-s53 {
+  padding: 6px 10px;
+  color: #0369a1;
+  font-weight: 700;
+}
+
+.general-parking-notice-document-s54 {
+  padding: 6px 10px;
+  text-align: center;
+}
+
+.general-parking-notice-document-s55 {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border: 1px solid #fecaca;
+  display: inline-block;
+}
+
+.general-parking-notice-document-s56 {
+  background: #fffbeb;
+  border: 1.5px solid #f59e0b;
+  border-radius: 6px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s57 {
+  font-weight: 800;
+  color: #92400e;
+  font-size: 0.86rem;
+}
+
+.general-parking-notice-document-s58 {
+  font-size: 0.84rem;
+  color: #1e293b;
+  line-height: 1.5;
+  margin-left: 6px;
+}
+
+.general-parking-notice-document-s59 {
+  color: #0369a1;
+}
+
+.general-parking-notice-document-s60 {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid #cbd5e1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 20px;
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s61 {
+  font-size: 0.84rem;
+  color: #475569;
+}
+
+.general-parking-notice-document-s62 {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0f2952;
+  margin-top: 2px;
+}
+
+.general-parking-notice-document-s63 {
+  display: flex;
+  gap: 36px;
+  margin-top: 40px;
+  align-items: flex-end;
+}
+
+.general-parking-notice-document-s64 {
+  width: 130px;
+  height: 1px;
+  background: #64748b;
+  margin-bottom: 4px;
+}
+
+.general-parking-notice-document-s65 {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0f2952;
+}
+
+.general-parking-notice-document-s66 {
+  font-size: 0.70rem;
+  color: #64748b;
+}
+
+.general-parking-notice-document-s67 {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  border: 2.5px solid #4338ca;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  color: #4338ca;
+  transform: rotate(-4deg);
+  box-shadow: inset 0 0 4px rgba(67, 56, 202, 0.15);
+  user-select: none;
+}
+
+.general-parking-notice-document-s68 {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid #4338ca;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+
+.general-parking-notice-document-s69 {
+  font-size: 0.50rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.general-parking-notice-document-s70 {
+  font-size: 0.44rem;
+  font-weight: 700;
+}
+
+.general-parking-notice-document-s71 {
+  color: #b91c1c;
+  font-size: 0.54rem;
+  margin: 2px 0;
+  font-weight: 800;
+}
+
+.general-parking-notice-document-s72 {
+  font-size: 0.42rem;
+  color: #4338ca;
+}
+
+.general-parking-notice-document-s73 {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px dashed #cbd5e1;
+  font-size: 0.72rem;
+  color: #64748b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.general-parking-notice-document-s74 {
+  font-style: italic;
+}
+

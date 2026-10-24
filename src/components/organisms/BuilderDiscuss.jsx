@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { BUILDER_RECO_DATA, WING_A_AUDITED_STATEMENT, BOM_PASSBOOK_LEDGER, fmtINR, CA_HARDIK_MEHTA_REPORT } from '../../data/builderRecoData.js';
 import CAHardikMehtaReportView from './CAHardikMehtaReportView.jsx';
 import BOMMissingBillsAnalytics from './BOMMissingBillsAnalytics.jsx';
+import './BuilderDiscuss.css';
+
 
 
 function todayISO() {
@@ -15,7 +17,7 @@ function highlight(text, query) {
   return (
     <>
       {text.slice(0, idx)}
-      <mark style={{ background: '#fff0cc', color: '#b98216', borderRadius: 3, padding: '0 3px', fontWeight: 600 }}>
+      <mark className="builder-discuss-s1">
         {text.slice(idx, idx + query.length)}
       </mark>
       {text.slice(idx + query.length)}
@@ -86,67 +88,45 @@ function ScannedDocModal({ onClose, defaultDoc = 'phase2' }) {
 
   return (
     <div
-      style={{
-        position: 'fixed', inset: 0,
-        background: 'rgba(11, 43, 38, 0.78)',
-        backdropFilter: 'blur(8px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        zIndex: 1050, padding: 16
-      }}
+      className="builder-discuss-s2"
       onClick={onClose}
     >
       <div
-        style={{
-          background: '#fffaf2',
-          borderRadius: 20,
-          width: '100%',
-          maxWidth: 960,
-          maxHeight: '94vh',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
-          border: '1.5px solid rgba(61, 63, 52, 0.2)',
-          overflow: 'hidden'
-        }}
+        className="builder-discuss-s3"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{
-          padding: '14px 22px',
-          borderBottom: '1px solid rgba(61, 63, 52, 0.12)',
-          background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-          color: '#ffffff'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+        <div className="builder-discuss-s4">
+          <div className="builder-discuss-s5">
             <div>
-              <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#C49B4F', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              <span className="builder-discuss-s6">
                 OFFICIAL AUDIT DOCUMENTATION
               </span>
-              <h3 style={{ margin: '2px 0 0', fontSize: '1.15rem', fontWeight: 800, fontFamily: 'Fraunces, serif' }}>
+              <h3 className="builder-discuss-s7">
                 {curr.title}
               </h3>
-              <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)' }}>{curr.sub}</p>
+              <p className="builder-discuss-s8">{curr.sub}</p>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 2 }}>
+            <div className="builder-discuss-s9">
+              <div className="builder-discuss-s10">
                 <button
                   onClick={() => setZoom(z => Math.max(0.6, z - 0.2))}
-                  style={{ background: 'none', border: 'none', color: '#fff', padding: '4px 8px', cursor: 'pointer', fontWeight: 700 }}
+                  className="builder-discuss-s11"
                   title="Zoom Out"
                 >
                   −
                 </button>
                 <button
                   onClick={() => setZoom(1)}
-                  style={{ background: 'none', border: 'none', color: '#fff', padding: '4px 8px', cursor: 'pointer', fontSize: '0.75rem' }}
+                  className="builder-discuss-s12"
                   title="Reset Zoom"
                 >
                   {Math.round(zoom * 100)}%
                 </button>
                 <button
                   onClick={() => setZoom(z => Math.min(2.2, z + 0.2))}
-                  style={{ background: 'none', border: 'none', color: '#fff', padding: '4px 8px', cursor: 'pointer', fontWeight: 700 }}
+                  className="builder-discuss-s11"
                   title="Zoom In"
                 >
                   +
@@ -156,27 +136,14 @@ function ScannedDocModal({ onClose, defaultDoc = 'phase2' }) {
               <a
                 href={curr.src}
                 download={curr.downloadName}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: 8,
-                  background: '#C49B4F',
-                  color: '#0b2b26',
-                  fontWeight: 700,
-                  fontSize: '0.8rem',
-                  textDecoration: 'none'
-                }}
+                className="builder-discuss-s13"
               >
                 ⬇ Download Scan
               </a>
 
               <button
                 onClick={onClose}
-                style={{
-                  background: 'rgba(255,255,255,0.2)',
-                  border: 'none', borderRadius: '50%',
-                  width: 32, height: 32, color: '#fff',
-                  cursor: 'pointer', fontSize: 16
-                }}
+                className="builder-discuss-s14"
               >
                 ✕
               </button>
@@ -184,70 +151,40 @@ function ScannedDocModal({ onClose, defaultDoc = 'phase2' }) {
           </div>
 
           {/* Doc Switcher Buttons inside modal */}
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <div className="builder-discuss-s15">
             <button
               onClick={() => { setActiveDoc('phase2'); setZoom(1); }}
-              style={{
-                padding: '5px 10px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                background: activeDoc === 'phase2' ? '#ffffff' : 'rgba(255,255,255,0.12)',
-                color: activeDoc === 'phase2' ? '#0b2b26' : '#ffffff',
-                fontWeight: 700, fontSize: '0.74rem'
-              }}
+              className="builder-discuss-s16" style={{ background: activeDoc === 'phase2' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'phase2' ? '#0b2b26' : '#ffffff' }}
             >
               📑 Master Reco
             </button>
             <button
               onClick={() => { setActiveDoc('wingA'); setZoom(1); }}
-              style={{
-                padding: '5px 10px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                background: activeDoc === 'wingA' ? '#ffffff' : 'rgba(255,255,255,0.12)',
-                color: activeDoc === 'wingA' ? '#0b2b26' : '#ffffff',
-                fontWeight: 700, fontSize: '0.74rem'
-              }}
+              className="builder-discuss-s16" style={{ background: activeDoc === 'wingA' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'wingA' ? '#0b2b26' : '#ffffff' }}
             >
               📜 Wing A Audit
             </button>
             <button
               onClick={() => { setActiveDoc('ledger1'); setZoom(1); }}
-              style={{
-                padding: '5px 10px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                background: activeDoc === 'ledger1' ? '#ffffff' : 'rgba(255,255,255,0.12)',
-                color: activeDoc === 'ledger1' ? '#0b2b26' : '#ffffff',
-                fontWeight: 700, fontSize: '0.74rem'
-              }}
+              className="builder-discuss-s16" style={{ background: activeDoc === 'ledger1' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'ledger1' ? '#0b2b26' : '#ffffff' }}
             >
               📒 BOM Page 1
             </button>
             <button
               onClick={() => { setActiveDoc('ledger2'); setZoom(1); }}
-              style={{
-                padding: '5px 10px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                background: activeDoc === 'ledger2' ? '#ffffff' : 'rgba(255,255,255,0.12)',
-                color: activeDoc === 'ledger2' ? '#0b2b26' : '#ffffff',
-                fontWeight: 700, fontSize: '0.74rem'
-              }}
+              className="builder-discuss-s16" style={{ background: activeDoc === 'ledger2' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'ledger2' ? '#0b2b26' : '#ffffff' }}
             >
               📒 BOM Page 2
             </button>
             <button
               onClick={() => { setActiveDoc('ledger3'); setZoom(1); }}
-              style={{
-                padding: '5px 10px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                background: activeDoc === 'ledger3' ? '#ffffff' : 'rgba(255,255,255,0.12)',
-                color: activeDoc === 'ledger3' ? '#0b2b26' : '#ffffff',
-                fontWeight: 700, fontSize: '0.74rem'
-              }}
+              className="builder-discuss-s16" style={{ background: activeDoc === 'ledger3' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'ledger3' ? '#0b2b26' : '#ffffff' }}
             >
               📒 BOM Page 3 (₹24L Trf)
             </button>
             <button
               onClick={() => { setActiveDoc('ledger4'); setZoom(1); }}
-              style={{
-                padding: '5px 10px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                background: activeDoc === 'ledger4' ? '#ffffff' : 'rgba(255,255,255,0.12)',
-                color: activeDoc === 'ledger4' ? '#0b2b26' : '#ffffff',
-                fontWeight: 700, fontSize: '0.74rem'
-              }}
+              className="builder-discuss-s16" style={{ background: activeDoc === 'ledger4' ? '#ffffff' : 'rgba(255,255,255,0.12)', color: activeDoc === 'ledger4' ? '#0b2b26' : '#ffffff' }}
             >
               📒 BOM Page 4 (Closing)
             </button>
@@ -255,43 +192,18 @@ function ScannedDocModal({ onClose, defaultDoc = 'phase2' }) {
         </div>
 
         {/* Image Display */}
-        <div style={{
-          flex: 1,
-          overflow: 'auto',
-          padding: 20,
-          background: '#1d2a24',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'flex-start'
-        }}>
+        <div className="builder-discuss-s17">
           <img
             src={curr.src}
             alt={curr.title}
-            style={{
-              width: `${zoom * 100}%`,
-              maxWidth: zoom <= 1 ? '760px' : 'none',
-              borderRadius: 8,
-              boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-              transition: 'width 0.15s ease'
-            }}
+            className="builder-discuss-s18" style={{ width: `${zoom * 100}%`, maxWidth: zoom <= 1 ? '760px' : 'none' }}
           />
         </div>
 
         {/* Footer info */}
-        <div style={{
-          padding: '10px 20px',
-          background: '#fffaf2',
-          borderTop: '1px solid rgba(61, 63, 52, 0.1)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          fontSize: '0.82rem',
-          color: '#5f665f',
-          flexWrap: 'wrap',
-          gap: 8
-        }}>
+        <div className="builder-discuss-s19">
           <span>{curr.sourceNote}</span>
-          <span style={{ fontWeight: 700, color: '#196c6c' }}>{curr.badge}</span>
+          <span className="builder-discuss-s20">{curr.badge}</span>
         </div>
       </div>
     </div>
@@ -675,155 +587,55 @@ const handleExportRecoCSV = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div className="builder-discuss-s21">
 
       {/* ── Executive Header Banner ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #133e36 50%, #1b4d42 100%)',
-        borderRadius: 18,
-        padding: '20px 24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: 16,
-        boxShadow: '0 8px 24px rgba(11, 43, 38, 0.12)',
-        border: '1px solid rgba(196, 155, 79, 0.28)',
-        color: '#ffffff'
-      }}>
-        <div style={{ flex: '1 1 340px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6, flexWrap: 'wrap' }}>
-            <span style={{
-              background: 'rgba(196, 155, 79, 0.25)',
-              color: '#fef3c7',
-              border: '1px solid rgba(196, 155, 79, 0.45)',
-              fontSize: '0.64rem',
-              fontWeight: 800,
-              padding: '2.5px 8px',
-              borderRadius: 6,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase'
-            }}>
+      <div className="builder-discuss-s22">
+        <div className="builder-discuss-s23">
+          <div className="builder-discuss-s24">
+            <span className="builder-discuss-s25">
               BUILDER ENGAGEMENT &amp; WORKS
             </span>
-            <span style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              color: 'rgba(255, 255, 255, 0.9)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              fontSize: '0.64rem',
-              fontWeight: 700,
-              padding: '2.5px 8px',
-              borderRadius: 6
-            }}>
+            <span className="builder-discuss-s26">
               Eisha Asset Developers
             </span>
-            <span style={{
-              background: 'rgba(110, 231, 183, 0.15)',
-              color: '#6ee7b7',
-              border: '1px solid rgba(110, 231, 183, 0.3)',
-              fontSize: '0.64rem',
-              fontWeight: 700,
-              padding: '2.5px 8px',
-              borderRadius: 6
-            }}>
+            <span className="builder-discuss-s27">
               Certified Audit Statements
             </span>
           </div>
 
-          <h2 style={{
-            margin: '0 0 4px',
-            fontSize: '1.35rem',
-            fontWeight: 800,
-            color: '#ffffff',
-            fontFamily: 'Fraunces, serif',
-            letterSpacing: '-0.01em'
-          }}>
+          <h2 className="builder-discuss-s28">
             Builder Discuss Ledger
           </h2>
-          <p style={{
-            margin: 0,
-            color: 'rgba(255, 255, 255, 0.76)',
-            fontSize: '0.82rem',
-            lineHeight: 1.45
-          }}>
+          <p className="builder-discuss-s29">
             Independent developer reconciliations, CA Hardik Mehta recoverable report, Wing A certified audit &amp; verified BOM passbook
           </p>
         </div>
 
         {/* Executive High-Impact Stat Badges */}
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="builder-discuss-s30">
           {/* CA Recoverable Claim */}
-          <div style={{
-            background: 'rgba(239, 68, 68, 0.18)',
-            border: '1.5px solid rgba(248, 113, 113, 0.45)',
-            borderRadius: 12,
-            padding: '10px 16px',
-            minWidth: 140,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              fontSize: '0.64rem',
-              color: '#fed7aa',
-              fontWeight: 800,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4
-            }}>
+          <div className="builder-discuss-s31">
+            <div className="builder-discuss-s32">
               <span>⚖️</span> CA Claim Dues
             </div>
-            <div style={{
-              fontSize: '1.25rem',
-              fontWeight: 800,
-              color: '#fca5a5',
-              lineHeight: 1.15,
-              marginTop: 3,
-              fontFamily: 'system-ui, -apple-system, sans-serif'
-            }}>
+            <div className="builder-discuss-s33">
               {fmtINR(CA_HARDIK_MEHTA_REPORT?.meta?.keyFigures?.amountReceivable || 1207058)}
             </div>
-            <div style={{ fontSize: '0.62rem', color: 'rgba(255, 255, 255, 0.65)', marginTop: 2 }}>
+            <div className="builder-discuss-s34">
               Net Receivable (Oct 21–Dec 25)
             </div>
           </div>
 
           {/* Unspent Tally Closing Balance */}
-          <div style={{
-            background: 'rgba(196, 155, 79, 0.18)',
-            border: '1.5px solid rgba(196, 155, 79, 0.45)',
-            borderRadius: 12,
-            padding: '10px 16px',
-            minWidth: 140,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              fontSize: '0.64rem',
-              color: '#fde68a',
-              fontWeight: 800,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4
-            }}>
+          <div className="builder-discuss-s35">
+            <div className="builder-discuss-s36">
               <span>🏦</span> Unspent Tally
             </div>
-            <div style={{
-              fontSize: '1.25rem',
-              fontWeight: 800,
-              color: '#fef3c7',
-              lineHeight: 1.15,
-              marginTop: 3,
-              fontFamily: 'system-ui, -apple-system, sans-serif'
-            }}>
+            <div className="builder-discuss-s37">
               {fmtINR(BUILDER_RECO_DATA.postPeriodLedger.closingBalance)}
             </div>
-            <div style={{ fontSize: '0.62rem', color: 'rgba(255, 255, 255, 0.65)', marginTop: 2 }}>
+            <div className="builder-discuss-s34">
               As on 31.03.2026 (Phase II)
             </div>
           </div>
@@ -831,15 +643,7 @@ const handleExportRecoCSV = () => {
       </div>
 
       {/* ── Modern Segmented Sub-Tabs Bar ── */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: 6,
-        background: 'rgba(61, 63, 52, 0.06)',
-        padding: '5px',
-        borderRadius: 14,
-        border: '1px solid rgba(61, 63, 52, 0.1)'
-      }}>
+      <div className="builder-discuss-s38">
         {[
           {
             id: 'reco',
@@ -902,56 +706,20 @@ const handleExportRecoCSV = () => {
             <button
               key={tab.id}
               onClick={() => setSubTab(tab.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '9px 12px',
-                borderRadius: 10,
-                border: active ? '1.5px solid rgba(196, 155, 79, 0.4)' : '1.5px solid transparent',
-                background: active ? '#ffffff' : 'transparent',
-                color: active ? '#1d2a24' : '#5f665f',
-                cursor: 'pointer',
-                transition: 'all 0.18s ease',
-                boxShadow: active ? '0 3px 10px rgba(11, 43, 38, 0.08)' : 'none',
-                textAlign: 'left'
-              }}
+              className="builder-discuss-s39" style={{ border: active ? '1.5px solid rgba(196, 155, 79, 0.4)' : '1.5px solid transparent', background: active ? '#ffffff' : 'transparent', color: active ? '#1d2a24' : '#5f665f', boxShadow: active ? '0 3px 10px rgba(11, 43, 38, 0.08)' : 'none' }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                <span style={{ fontSize: '1.15rem', flexShrink: 0 }}>{tab.icon}</span>
-                <div style={{ minWidth: 0 }}>
-                  <div style={{
-                    fontSize: '0.82rem',
-                    fontWeight: active ? 800 : 600,
-                    color: active ? '#0b2b26' : '#374151',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}>
+              <div className="builder-discuss-s40">
+                <span className="builder-discuss-s41">{tab.icon}</span>
+                <div className="builder-discuss-s42">
+                  <div className="builder-discuss-s43" style={{ fontWeight: active ? 800 : 600, color: active ? '#0b2b26' : '#374151' }}>
                     {tab.title}
                   </div>
-                  <div style={{
-                    fontSize: '0.67rem',
-                    color: active ? '#196c6c' : '#9ca3af',
-                    fontWeight: 500,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}>
+                  <div className="builder-discuss-s44" style={{ color: active ? '#196c6c' : '#9ca3af' }}>
                     {tab.sub}
                   </div>
                 </div>
               </div>
-              <span style={{
-                background: active ? tab.badgeActiveBg : tab.badgeInactiveBg,
-                color: active ? tab.badgeActiveColor : tab.badgeInactiveColor,
-                padding: '2.5px 7px',
-                borderRadius: 6,
-                fontSize: '0.66rem',
-                fontWeight: 700,
-                flexShrink: 0,
-                marginLeft: 6
-              }}>
+              <span className="builder-discuss-s45" style={{ background: active ? tab.badgeActiveBg : tab.badgeInactiveBg, color: active ? tab.badgeActiveColor : tab.badgeInactiveColor }}>
                 {tab.badge}
               </span>
             </button>
@@ -972,34 +740,16 @@ const handleExportRecoCSV = () => {
       {/* ── TAB 1: DEVELOPER MAINTENANCE RECONCILIATION ────────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════════ */}
       {subTab === 'reco' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div className="builder-discuss-s46">
 
           {/* Action Toolbar & Document Inspection */}
-          <div style={{
-            background: '#ffffff',
-            borderRadius: 14,
-            padding: '10px 16px',
-            border: '1px solid rgba(61, 63, 52, 0.12)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 10,
-            boxShadow: '0 2px 8px rgba(11, 43, 38, 0.04)'
-          }}>
+          <div className="builder-discuss-s47">
             {/* Wing Scope Segmented Selector */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#196c6c', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <div className="builder-discuss-s48">
+              <span className="builder-discuss-s49">
                 Scope:
               </span>
-              <div style={{
-                display: 'inline-flex',
-                background: '#f4efe7',
-                padding: '3px',
-                borderRadius: 9,
-                gap: 2,
-                border: '1px solid rgba(61, 63, 52, 0.08)'
-              }}>
+              <div className="builder-discuss-s50">
                 {[
                   { id: 'all', label: 'All Wings (A, B & C • 231 Flats)' },
                   { id: 'A', label: 'Wing A (87 Flats • Sep 2019)' },
@@ -1011,18 +761,7 @@ const handleExportRecoCSV = () => {
                     <button
                       key={w.id}
                       onClick={() => setWingFilter(w.id)}
-                      style={{
-                        padding: '5px 12px',
-                        borderRadius: 7,
-                        border: 'none',
-                        fontSize: '0.76rem',
-                        fontWeight: active ? 700 : 500,
-                        cursor: 'pointer',
-                        background: active ? '#ffffff' : 'transparent',
-                        color: active ? '#0b2b26' : '#5f665f',
-                        boxShadow: active ? '0 1px 4px rgba(0, 0, 0, 0.08)' : 'none',
-                        transition: 'all 0.15s ease'
-                      }}
+                      className="builder-discuss-s51" style={{ fontWeight: active ? 700 : 500, background: active ? '#ffffff' : 'transparent', color: active ? '#0b2b26' : '#5f665f', boxShadow: active ? '0 1px 4px rgba(0, 0, 0, 0.08)' : 'none' }}
                     >
                       {w.label}
                     </button>
@@ -1032,23 +771,10 @@ const handleExportRecoCSV = () => {
             </div>
 
             {/* Action Buttons */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <div className="builder-discuss-s48">
               <button
                 onClick={() => { setModalDefaultDoc('phase2'); setShowDocModal(true); }}
-                style={{
-                  padding: '7px 14px',
-                  borderRadius: 8,
-                  border: '1.5px solid rgba(196, 155, 79, 0.5)',
-                  background: 'rgba(196, 155, 79, 0.1)',
-                  color: '#92400e',
-                  fontWeight: 700,
-                  fontSize: '0.78rem',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  transition: 'all 0.15s ease'
-                }}
+                className="builder-discuss-s52"
                 title="View high-resolution scan of developer audit sheet"
               >
                 <span>🔍</span>
@@ -1057,19 +783,7 @@ const handleExportRecoCSV = () => {
 
               <button
                 onClick={handleExportRecoCSV}
-                style={{
-                  padding: '7px 12px',
-                  borderRadius: 8,
-                  border: '1px solid rgba(61, 63, 52, 0.18)',
-                  background: '#ffffff',
-                  color: '#1d2a24',
-                  fontWeight: 600,
-                  fontSize: '0.78rem',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 5
-                }}
+                className="builder-discuss-s53"
               >
                 <span>📥</span>
                 <span>Export CSV</span>
@@ -1077,19 +791,7 @@ const handleExportRecoCSV = () => {
 
               <button
                 onClick={handlePrintReco}
-                style={{
-                  padding: '7px 12px',
-                  borderRadius: 8,
-                  border: 'none',
-                  background: '#0b2b26',
-                  color: '#ffffff',
-                  fontWeight: 600,
-                  fontSize: '0.78rem',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 5
-                }}
+                className="builder-discuss-s54"
               >
                 <span>🖨️</span>
                 <span>Print Statement</span>
@@ -1098,146 +800,114 @@ const handleExportRecoCSV = () => {
           </div>
 
           {/* Key Summary Cards Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-            <div style={{
-              background: '#ffffff', borderRadius: 16, padding: '18px 20px',
-              border: '1.5px solid rgba(61, 63, 52, 0.1)', boxShadow: '0 2px 10px rgba(11, 43, 38, 0.04)'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#16a34a', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div className="builder-discuss-s55">
+            <div className="builder-discuss-s56">
+              <div className="builder-discuss-s57">
+                <span className="builder-discuss-s58">
                   Total Receipts Collected
                 </span>
-                <span style={{ background: '#dcfce7', color: '#166534', padding: '2px 6px', borderRadius: 6, fontSize: '0.68rem', fontWeight: 700 }}>
+                <span className="builder-discuss-s59">
                   Inflow
                 </span>
               </div>
-              <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#1d2a24' }}>
+              <div className="builder-discuss-s60">
                 {wingFilter === 'A' ? fmtINR(BUILDER_RECO_DATA.totalReceipts.wingA) : wingFilter === 'B' ? fmtINR(BUILDER_RECO_DATA.totalReceipts.wingB) : fmtINR(BUILDER_RECO_DATA.totalReceipts.total)}
               </div>
-              <div style={{ fontSize: '0.76rem', color: '#5f665f', marginTop: 6 }}>
+              <div className="builder-discuss-s61">
                 Wing A: <strong>{fmtINR(BUILDER_RECO_DATA.totalReceipts.wingA)}</strong> • Wing B: <strong>{fmtINR(BUILDER_RECO_DATA.totalReceipts.wingB)}</strong>
               </div>
             </div>
 
-            <div style={{
-              background: '#ffffff', borderRadius: 16, padding: '18px 20px',
-              border: '1.5px solid rgba(61, 63, 52, 0.1)', boxShadow: '0 2px 10px rgba(11, 43, 38, 0.04)'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#c2410c', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div className="builder-discuss-s56">
+              <div className="builder-discuss-s57">
+                <span className="builder-discuss-s62">
                   Net Total Expenses (I + II)
                 </span>
-                <span style={{ background: '#ffedd5', color: '#9a3412', padding: '2px 6px', borderRadius: 6, fontSize: '0.68rem', fontWeight: 700 }}>
+                <span className="builder-discuss-s63">
                   After Cost Shift
                 </span>
               </div>
-              <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#1d2a24' }}>
+              <div className="builder-discuss-s60">
                 {wingFilter === 'A' ? fmtINR(BUILDER_RECO_DATA.totalExpensesNet.wingA) : wingFilter === 'B' ? fmtINR(BUILDER_RECO_DATA.totalExpensesNet.wingB) : fmtINR(BUILDER_RECO_DATA.totalExpensesNet.total)}
               </div>
-              <div style={{ fontSize: '0.76rem', color: '#5f665f', marginTop: 6 }}>
+              <div className="builder-discuss-s61">
                 Wing A: <strong>{fmtINR(BUILDER_RECO_DATA.totalExpensesNet.wingA)}</strong> • Wing B: <strong>{fmtINR(BUILDER_RECO_DATA.totalExpensesNet.wingB)}</strong>
               </div>
             </div>
 
-            <div style={{
-              background: '#ffffff', borderRadius: 16, padding: '18px 20px',
-              border: '1.5px solid rgba(61, 63, 52, 0.1)', boxShadow: '0 2px 10px rgba(11, 43, 38, 0.04)'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#196c6c', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div className="builder-discuss-s56">
+              <div className="builder-discuss-s57">
+                <span className="builder-discuss-s64">
                   Working Net Balance (31.03.2023)
                 </span>
-                <span style={{ background: '#dff5f1', color: '#196c6c', padding: '2px 6px', borderRadius: 6, fontSize: '0.68rem', fontWeight: 700 }}>
+                <span className="builder-discuss-s65">
                   Surplus
                 </span>
               </div>
-              <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#1d2a24' }}>
+              <div className="builder-discuss-s60">
                 {wingFilter === 'A' ? fmtINR(BUILDER_RECO_DATA.netBalanceWorking.wingA) : wingFilter === 'B' ? fmtINR(BUILDER_RECO_DATA.netBalanceWorking.wingB) : fmtINR(BUILDER_RECO_DATA.netBalanceWorking.total)}
               </div>
-              <div style={{ fontSize: '0.76rem', color: '#5f665f', marginTop: 6 }}>
+              <div className="builder-discuss-s61">
                 Receipts − Net Expenses (Wing A: ₹1.15L | Wing B: ₹4.98L)
               </div>
             </div>
 
-            <div style={{
-              background: '#ffffff', borderRadius: 16, padding: '18px 20px',
-              border: '1.5px solid rgba(196, 155, 79, 0.3)', boxShadow: '0 2px 10px rgba(196, 155, 79, 0.08)'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#92400e', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div className="builder-discuss-s66">
+              <div className="builder-discuss-s57">
+                <span className="builder-discuss-s67">
                   Current Tally Balance (31.03.2026)
                 </span>
-                <span style={{ background: '#fef3c7', color: '#92400e', padding: '2px 6px', borderRadius: 6, fontSize: '0.68rem', fontWeight: 700 }}>
+                <span className="builder-discuss-s68">
                   Available
                 </span>
               </div>
-              <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0b2b26' }}>
+              <div className="builder-discuss-s69">
                 {fmtINR(BUILDER_RECO_DATA.postPeriodLedger.closingBalance)}
               </div>
-              <div style={{ fontSize: '0.76rem', color: '#92400e', marginTop: 6 }}>
+              <div className="builder-discuss-s70">
                 After ₹5,00,000 F&amp;F Transfer &amp; ₹9,270 Refund
               </div>
             </div>
           </div>
 
           {/* ── Table 1: Expenses Breakdown till 26.11.2021 ── */}
-          <div style={{
-            background: 'rgba(255, 250, 242, 0.95)',
-            border: '1px solid rgba(61, 63, 52, 0.1)',
-            borderRadius: 20,
-            overflow: 'hidden',
-            boxShadow: '0 2px 12px rgba(11, 43, 38, 0.05)'
-          }}>
-            <div style={{
-              padding: '14px 20px',
-              borderBottom: '1px solid rgba(61, 63, 52, 0.1)',
-              background: '#fffaf2',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 8
-            }}>
+          <div className="builder-discuss-s71">
+            <div className="builder-discuss-s72">
               <div>
-                <h3 style={{ margin: '0 0 2px', fontSize: '1.05rem', fontWeight: 800, color: '#1d2a24', fontFamily: 'Fraunces, serif' }}>
+                <h3 className="builder-discuss-s73">
                   I. Phase II Maintenance Expenses (Up to 26.11.2021)
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.78rem', color: '#5f665f' }}>
+                <p className="builder-discuss-s74">
                   Audited base expenses prior to common cost shift reallocations
                 </p>
               </div>
               <button
                 onClick={() => setSubTab('wingA')}
-                style={{
-                  background: 'rgba(25, 108, 108, 0.1)', color: '#196c6c',
-                  border: '1px solid rgba(25, 108, 108, 0.25)',
-                  padding: '5px 12px', borderRadius: 12, fontSize: '0.75rem',
-                  fontWeight: 700, cursor: 'pointer'
-                }}
+                className="builder-discuss-s75"
               >
                 📜 View Wing A Itemized CA Audit (₹22,19,896) →
               </button>
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 650 }}>
+            <div className="builder-discuss-s76">
+              <table className="builder-discuss-s77">
                 <thead>
-                  <tr style={{ background: 'rgba(244, 239, 231, 0.95)', borderBottom: '2px solid rgba(61, 63, 52, 0.1)' }}>
-                    <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#5f665f' }}>
+                  <tr className="builder-discuss-s78">
+                    <th className="builder-discuss-s79">
                       Expenditure Head
                     </th>
                     {(wingFilter === 'all' || wingFilter === 'A') && (
-                      <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#196c6c', width: 160 }}>
+                      <th className="builder-discuss-s80">
                         Wing A (Sep 2019)
                       </th>
                     )}
                     {(wingFilter === 'all' || wingFilter === 'B') && (
-                      <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#196c6c', width: 160 }}>
+                      <th className="builder-discuss-s80">
                         Wing B (Jan 2019)
                       </th>
                     )}
                     {wingFilter === 'all' && (
-                      <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#1d2a24', width: 180 }}>
+                      <th className="builder-discuss-s81">
                         Consolidated (A + B)
                       </th>
                     )}
@@ -1245,45 +915,45 @@ const handleExportRecoCSV = () => {
                 </thead>
                 <tbody>
                   {BUILDER_RECO_DATA.expenses.map((e, idx) => (
-                    <tr key={e.id} style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)', borderBottom: '1px solid rgba(61, 63, 52, 0.08)' }}>
-                      <td style={{ padding: '11px 16px', fontSize: '0.85rem', color: '#1d2a24' }}>
-                        <div style={{ fontWeight: 600 }}>{e.label}</div>
-                        <div style={{ fontSize: '0.74rem', color: '#5f665f', marginTop: 2 }}>{e.notes}</div>
+                    <tr key={e.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                      <td className="builder-discuss-s83">
+                        <div className="builder-discuss-s84">{e.label}</div>
+                        <div className="builder-discuss-s85">{e.notes}</div>
                       </td>
                       {(wingFilter === 'all' || wingFilter === 'A') && (
-                        <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.88rem', fontWeight: 600, color: '#1d2a24' }}>
+                        <td className="builder-discuss-s86">
                           {fmtINR(e.wingA)}
                         </td>
                       )}
                       {(wingFilter === 'all' || wingFilter === 'B') && (
-                        <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.88rem', fontWeight: 600, color: '#1d2a24' }}>
+                        <td className="builder-discuss-s86">
                           {fmtINR(e.wingB)}
                         </td>
                       )}
                       {wingFilter === 'all' && (
-                        <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.88rem', fontWeight: 700, color: '#1d2a24' }}>
+                        <td className="builder-discuss-s87">
                           {fmtINR(e.total)}
                         </td>
                       )}
                     </tr>
                   ))}
                   {/* Subtotal I Row */}
-                  <tr style={{ background: 'rgba(25, 108, 108, 0.08)', borderTop: '2px solid rgba(25, 108, 108, 0.2)', fontWeight: 800 }}>
-                    <td style={{ padding: '12px 16px', fontSize: '0.88rem', color: '#0b2b26' }}>
+                  <tr className="builder-discuss-s88">
+                    <td className="builder-discuss-s89">
                       {BUILDER_RECO_DATA.totalExpensesI.label}
                     </td>
                     {(wingFilter === 'all' || wingFilter === 'A') && (
-                      <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '0.95rem', color: '#0b2b26' }}>
+                      <td className="builder-discuss-s90">
                         {fmtINR(BUILDER_RECO_DATA.totalExpensesI.wingA)}
                       </td>
                     )}
                     {(wingFilter === 'all' || wingFilter === 'B') && (
-                      <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '0.95rem', color: '#0b2b26' }}>
+                      <td className="builder-discuss-s90">
                         {fmtINR(BUILDER_RECO_DATA.totalExpensesI.wingB)}
                       </td>
                     )}
                     {wingFilter === 'all' && (
-                      <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '1rem', color: '#0b2b26' }}>
+                      <td className="builder-discuss-s91">
                         {fmtINR(BUILDER_RECO_DATA.totalExpensesI.total)}
                       </td>
                     )}
@@ -1294,55 +964,40 @@ const handleExportRecoCSV = () => {
           </div>
 
           {/* ── Table 2: Cost Shift (From Wing B to Wing A) ── */}
-          <div style={{
-            background: 'rgba(255, 250, 242, 0.95)',
-            border: '1px solid rgba(61, 63, 52, 0.1)',
-            borderRadius: 20,
-            overflow: 'hidden',
-            boxShadow: '0 2px 12px rgba(11, 43, 38, 0.05)'
-          }}>
-            <div style={{
-              padding: '14px 20px',
-              borderBottom: '1px solid rgba(61, 63, 52, 0.1)',
-              background: '#fffaf2',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 8
-            }}>
+          <div className="builder-discuss-s71">
+            <div className="builder-discuss-s72">
               <div>
-                <h3 style={{ margin: '0 0 2px', fontSize: '1.05rem', fontWeight: 800, color: '#1d2a24', fontFamily: 'Fraunces, serif' }}>
+                <h3 className="builder-discuss-s73">
                   II. Common Facility Cost Shifts (Shifted from Wing B to Wing A)
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.78rem', color: '#5f665f' }}>
+                <p className="builder-discuss-s74">
                   Reallocation of common amenities and utility bills originally charged to Wing B
                 </p>
               </div>
-              <span style={{ background: '#fef3c7', color: '#92400e', padding: '4px 10px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 700 }}>
+              <span className="builder-discuss-s92">
                 Total Reallocated: ₹4,68,645.00
               </span>
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 650 }}>
+            <div className="builder-discuss-s76">
+              <table className="builder-discuss-s77">
                 <thead>
-                  <tr style={{ background: 'rgba(244, 239, 231, 0.95)', borderBottom: '2px solid rgba(61, 63, 52, 0.1)' }}>
-                    <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#5f665f' }}>
+                  <tr className="builder-discuss-s78">
+                    <th className="builder-discuss-s79">
                       Reallocated Item &amp; Details
                     </th>
                     {(wingFilter === 'all' || wingFilter === 'A') && (
-                      <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#c2410c', width: 160 }}>
+                      <th className="builder-discuss-s93">
                         Wing A (+ Charge)
                       </th>
                     )}
                     {(wingFilter === 'all' || wingFilter === 'B') && (
-                      <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#16a34a', width: 160 }}>
+                      <th className="builder-discuss-s94">
                         Wing B (− Relief)
                       </th>
                     )}
                     {wingFilter === 'all' && (
-                      <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#1d2a24', width: 180 }}>
+                      <th className="builder-discuss-s81">
                         Net Society Shift
                       </th>
                     )}
@@ -1350,49 +1005,49 @@ const handleExportRecoCSV = () => {
                 </thead>
                 <tbody>
                   {BUILDER_RECO_DATA.costShifts.map((c, idx) => (
-                    <tr key={c.id} style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)', borderBottom: '1px solid rgba(61, 63, 52, 0.08)' }}>
-                      <td style={{ padding: '11px 16px', fontSize: '0.85rem', color: '#1d2a24' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ fontWeight: 700 }}>{c.label}</span>
-                          <span style={{ background: 'rgba(196, 155, 79, 0.15)', color: '#92400e', fontSize: '0.7rem', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>
+                    <tr key={c.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                      <td className="builder-discuss-s83">
+                        <div className="builder-discuss-s95">
+                          <span className="builder-discuss-s96">{c.label}</span>
+                          <span className="builder-discuss-s97">
                             {c.category}
                           </span>
                         </div>
-                        <div style={{ fontSize: '0.74rem', color: '#5f665f', marginTop: 2 }}>{c.notes}</div>
+                        <div className="builder-discuss-s85">{c.notes}</div>
                       </td>
                       {(wingFilter === 'all' || wingFilter === 'A') && (
-                        <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.88rem', fontWeight: 600, color: '#c2410c' }}>
+                        <td className="builder-discuss-s98">
                           +{fmtINR(c.wingA)}
                         </td>
                       )}
                       {(wingFilter === 'all' || wingFilter === 'B') && (
-                        <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.88rem', fontWeight: 600, color: '#16a34a' }}>
+                        <td className="builder-discuss-s99">
                           {fmtINR(c.wingB)}
                         </td>
                       )}
                       {wingFilter === 'all' && (
-                        <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.88rem', color: '#5f665f' }}>
+                        <td className="builder-discuss-s100">
                           ₹0.00
                         </td>
                       )}
                     </tr>
                   ))}
-                  <tr style={{ background: 'rgba(196, 155, 79, 0.12)', borderTop: '2px solid rgba(196, 155, 79, 0.3)', fontWeight: 800 }}>
-                    <td style={{ padding: '12px 16px', fontSize: '0.88rem', color: '#92400e' }}>
+                  <tr className="builder-discuss-s101">
+                    <td className="builder-discuss-s102">
                       {BUILDER_RECO_DATA.totalCostShiftII.label}
                     </td>
                     {(wingFilter === 'all' || wingFilter === 'A') && (
-                      <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '0.95rem', color: '#c2410c' }}>
+                      <td className="builder-discuss-s103">
                         +{fmtINR(BUILDER_RECO_DATA.totalCostShiftII.wingA)}
                       </td>
                     )}
                     {(wingFilter === 'all' || wingFilter === 'B') && (
-                      <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '0.95rem', color: '#16a34a' }}>
+                      <td className="builder-discuss-s104">
                         {fmtINR(BUILDER_RECO_DATA.totalCostShiftII.wingB)}
                       </td>
                     )}
                     {wingFilter === 'all' && (
-                      <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '0.95rem', color: '#5f665f' }}>
+                      <td className="builder-discuss-s105">
                         ₹0.00 (Neutral)
                       </td>
                     )}
@@ -1402,41 +1057,32 @@ const handleExportRecoCSV = () => {
             </div>
 
             {/* Total Expenses (I + II) Callout */}
-            <div style={{
-              background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-              padding: '16px 20px',
-              color: '#ffffff',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 12
-            }}>
+            <div className="builder-discuss-s106">
               <div>
-                <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#C49B4F', fontWeight: 800 }}>
+                <div className="builder-discuss-s107">
                   FINAL NET OPERATING EXPENDITURE
                 </div>
-                <div style={{ fontSize: '1.15rem', fontWeight: 800, fontFamily: 'Fraunces, serif' }}>
+                <div className="builder-discuss-s108">
                   Total Expenses (I + II)
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+              <div className="builder-discuss-s109">
                 {(wingFilter === 'all' || wingFilter === 'A') && (
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase' }}>Wing A Net</div>
-                    <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fef3c7' }}>{fmtINR(BUILDER_RECO_DATA.totalExpensesNet.wingA)}</div>
+                  <div className="builder-discuss-s110">
+                    <div className="builder-discuss-s111">Wing A Net</div>
+                    <div className="builder-discuss-s112">{fmtINR(BUILDER_RECO_DATA.totalExpensesNet.wingA)}</div>
                   </div>
                 )}
                 {(wingFilter === 'all' || wingFilter === 'B') && (
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase' }}>Wing B Net</div>
-                    <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fef3c7' }}>{fmtINR(BUILDER_RECO_DATA.totalExpensesNet.wingB)}</div>
+                  <div className="builder-discuss-s110">
+                    <div className="builder-discuss-s111">Wing B Net</div>
+                    <div className="builder-discuss-s112">{fmtINR(BUILDER_RECO_DATA.totalExpensesNet.wingB)}</div>
                   </div>
                 )}
                 {wingFilter === 'all' && (
-                  <div style={{ textAlign: 'right', borderLeft: '1px solid rgba(255,255,255,0.2)', paddingLeft: 20 }}>
-                    <div style={{ fontSize: '0.68rem', color: '#6ee7b7', textTransform: 'uppercase', fontWeight: 800 }}>Grand Total</div>
-                    <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#6ee7b7' }}>{fmtINR(BUILDER_RECO_DATA.totalExpensesNet.total)}</div>
+                  <div className="builder-discuss-s113">
+                    <div className="builder-discuss-s114">Grand Total</div>
+                    <div className="builder-discuss-s115">{fmtINR(BUILDER_RECO_DATA.totalExpensesNet.total)}</div>
                   </div>
                 )}
               </div>
@@ -1444,55 +1090,40 @@ const handleExportRecoCSV = () => {
           </div>
 
           {/* ── Table 3 & 4: Receipts & Net Working Balance ── */}
-          <div style={{
-            background: 'rgba(255, 250, 242, 0.95)',
-            border: '1px solid rgba(61, 63, 52, 0.1)',
-            borderRadius: 20,
-            overflow: 'hidden',
-            boxShadow: '0 2px 12px rgba(11, 43, 38, 0.05)'
-          }}>
-            <div style={{
-              padding: '14px 20px',
-              borderBottom: '1px solid rgba(61, 63, 52, 0.1)',
-              background: '#fffaf2',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 8
-            }}>
+          <div className="builder-discuss-s71">
+            <div className="builder-discuss-s72">
               <div>
-                <h3 style={{ margin: '0 0 2px', fontSize: '1.05rem', fontWeight: 800, color: '#1d2a24', fontFamily: 'Fraunces, serif' }}>
+                <h3 className="builder-discuss-s73">
                   III. Maintenance Receipts &amp; Net Working Balance
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.78rem', color: '#5f665f' }}>
+                <p className="builder-discuss-s74">
                   Total inflows from account opening, resident collections and vendor rentals
                 </p>
               </div>
-              <span style={{ background: '#dcfce7', color: '#166534', padding: '4px 10px', borderRadius: 12, fontSize: '0.72rem', fontWeight: 700 }}>
+              <span className="builder-discuss-s116">
                 Total Inflows: ₹1,25,89,569.00
               </span>
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 650 }}>
+            <div className="builder-discuss-s76">
+              <table className="builder-discuss-s77">
                 <thead>
-                  <tr style={{ background: 'rgba(244, 239, 231, 0.95)', borderBottom: '2px solid rgba(61, 63, 52, 0.1)' }}>
-                    <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#5f665f' }}>
+                  <tr className="builder-discuss-s78">
+                    <th className="builder-discuss-s79">
                       Receipt Category
                     </th>
                     {(wingFilter === 'all' || wingFilter === 'A') && (
-                      <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#16a34a', width: 160 }}>
+                      <th className="builder-discuss-s94">
                         Wing A
                       </th>
                     )}
                     {(wingFilter === 'all' || wingFilter === 'B') && (
-                      <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#16a34a', width: 160 }}>
+                      <th className="builder-discuss-s94">
                         Wing B
                       </th>
                     )}
                     {wingFilter === 'all' && (
-                      <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#1d2a24', width: 180 }}>
+                      <th className="builder-discuss-s81">
                         Total Receipts
                       </th>
                     )}
@@ -1500,70 +1131,70 @@ const handleExportRecoCSV = () => {
                 </thead>
                 <tbody>
                   {BUILDER_RECO_DATA.receipts.map((r, idx) => (
-                    <tr key={r.id} style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)', borderBottom: '1px solid rgba(61, 63, 52, 0.08)' }}>
-                      <td style={{ padding: '11px 16px', fontSize: '0.85rem', color: '#1d2a24' }}>
-                        <div style={{ fontWeight: 600 }}>{r.label}</div>
-                        <div style={{ fontSize: '0.74rem', color: '#5f665f', marginTop: 2 }}>{r.notes}</div>
+                    <tr key={r.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                      <td className="builder-discuss-s83">
+                        <div className="builder-discuss-s84">{r.label}</div>
+                        <div className="builder-discuss-s85">{r.notes}</div>
                       </td>
                       {(wingFilter === 'all' || wingFilter === 'A') && (
-                        <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.88rem', fontWeight: 600, color: '#1d2a24' }}>
+                        <td className="builder-discuss-s86">
                           {fmtINR(r.wingA)}
                         </td>
                       )}
                       {(wingFilter === 'all' || wingFilter === 'B') && (
-                        <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.88rem', fontWeight: 600, color: '#1d2a24' }}>
+                        <td className="builder-discuss-s86">
                           {fmtINR(r.wingB)}
                         </td>
                       )}
                       {wingFilter === 'all' && (
-                        <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.88rem', fontWeight: 700, color: '#1d2a24' }}>
+                        <td className="builder-discuss-s87">
                           {fmtINR(r.total)}
                         </td>
                       )}
                     </tr>
                   ))}
                   {/* Total Receipts */}
-                  <tr style={{ background: 'rgba(22, 163, 74, 0.08)', borderTop: '2px solid rgba(22, 163, 74, 0.25)', fontWeight: 800 }}>
-                    <td style={{ padding: '12px 16px', fontSize: '0.88rem', color: '#166534' }}>
+                  <tr className="builder-discuss-s117">
+                    <td className="builder-discuss-s118">
                       {BUILDER_RECO_DATA.totalReceipts.label}
                     </td>
                     {(wingFilter === 'all' || wingFilter === 'A') && (
-                      <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '0.95rem', color: '#166534' }}>
+                      <td className="builder-discuss-s119">
                         {fmtINR(BUILDER_RECO_DATA.totalReceipts.wingA)}
                       </td>
                     )}
                     {(wingFilter === 'all' || wingFilter === 'B') && (
-                      <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '0.95rem', color: '#166534' }}>
+                      <td className="builder-discuss-s119">
                         {fmtINR(BUILDER_RECO_DATA.totalReceipts.wingB)}
                       </td>
                     )}
                     {wingFilter === 'all' && (
-                      <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '1rem', color: '#166534' }}>
+                      <td className="builder-discuss-s120">
                         {fmtINR(BUILDER_RECO_DATA.totalReceipts.total)}
                       </td>
                     )}
                   </tr>
 
                   {/* Net Balance as per Working */}
-                  <tr style={{ background: '#ecfdf5', borderTop: '2px solid #10b981', fontWeight: 800 }}>
-                    <td style={{ padding: '14px 16px', fontSize: '0.92rem', color: '#065f46' }}>
+                  <tr className="builder-discuss-s121">
+                    <td className="builder-discuss-s122">
                       <div>{BUILDER_RECO_DATA.netBalanceWorking.label}</div>
-                      <div style={{ fontSize: '0.72rem', color: '#047857', fontWeight: 500, marginTop: 2 }}>
+                      <div className="builder-discuss-s123">
                         Formula: {BUILDER_RECO_DATA.netBalanceWorking.formula}
                       </div>
                     </td>
                     {(wingFilter === 'all' || wingFilter === 'A') && (
-                      <td style={{ padding: '14px 16px', textAlign: 'right', fontSize: '1.05rem', color: '#065f46' }}>
+                      <td className="builder-discuss-s124">
                         {fmtINR(BUILDER_RECO_DATA.netBalanceWorking.wingA)}
                       </td>
                     )}
                     {(wingFilter === 'all' || wingFilter === 'B') && (
-                      <td style={{ padding: '14px 16px', textAlign: 'right', fontSize: '1.05rem', color: '#065f46' }}>
+                      <td className="builder-discuss-s124">
                         {fmtINR(BUILDER_RECO_DATA.netBalanceWorking.wingB)}
                       </td>
                     )}
                     {wingFilter === 'all' && (
-                      <td style={{ padding: '14px 16px', textAlign: 'right', fontSize: '1.15rem', color: '#065f46' }}>
+                      <td className="builder-discuss-s125">
                         {fmtINR(BUILDER_RECO_DATA.netBalanceWorking.total)}
                       </td>
                     )}
@@ -1574,103 +1205,84 @@ const handleExportRecoCSV = () => {
           </div>
 
           {/* ── Table 5 & 6: Audit Reconciliation & Subsequent Movements (2023-2026) ── */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20 }}>
+          <div className="builder-discuss-s126">
             {/* Box A: 31-03-2023 Audit Difference */}
-            <div style={{
-              background: '#ffffff', borderRadius: 20, padding: '20px 24px',
-              border: '1.5px solid rgba(61, 63, 52, 0.12)', boxShadow: '0 2px 12px rgba(11, 43, 38, 0.05)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                <span style={{ fontSize: '1.2rem' }}>⚖️</span>
-                <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#1d2a24', fontFamily: 'Fraunces, serif' }}>
+            <div className="builder-discuss-s127">
+              <div className="builder-discuss-s128">
+                <span className="builder-discuss-s129">⚖️</span>
+                <h4 className="builder-discuss-s130">
                   Audit Reconciliation (as of 31-03-2023)
                 </h4>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: '#f8fafc', borderRadius: 10 }}>
-                  <span style={{ fontSize: '0.85rem', color: '#5f665f' }}>Working Book Balance (31-03-2023):</span>
-                  <span style={{ fontSize: '0.92rem', fontWeight: 700, color: '#1d2a24' }}>{fmtINR(BUILDER_RECO_DATA.auditReconciliation.bookBalance)}</span>
+              <div className="builder-discuss-s131">
+                <div className="builder-discuss-s132">
+                  <span className="builder-discuss-s133">Working Book Balance (31-03-2023):</span>
+                  <span className="builder-discuss-s134">{fmtINR(BUILDER_RECO_DATA.auditReconciliation.bookBalance)}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: '#f8fafc', borderRadius: 10 }}>
-                  <span style={{ fontSize: '0.85rem', color: '#5f665f' }}>Tally Books Balance (31.03.2023):</span>
-                  <span style={{ fontSize: '0.92rem', fontWeight: 700, color: '#0b2b26' }}>{fmtINR(BUILDER_RECO_DATA.auditReconciliation.tallyBooks)}</span>
+                <div className="builder-discuss-s132">
+                  <span className="builder-discuss-s133">Tally Books Balance (31.03.2023):</span>
+                  <span className="builder-discuss-s135">{fmtINR(BUILDER_RECO_DATA.auditReconciliation.tallyBooks)}</span>
                 </div>
-                <div style={{
-                  display: 'flex', justifyContent: 'space-between', padding: '12px 14px',
-                  background: '#fef2f2', border: '1.5px solid #fecaca', borderRadius: 10
-                }}>
+                <div className="builder-discuss-s136">
                   <div>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#991b1b' }}>Audit Discrepancy (Diffn):</div>
-                    <div style={{ fontSize: '0.72rem', color: '#b91c1c' }}>Tally books exceed working balance</div>
+                    <div className="builder-discuss-s137">Audit Discrepancy (Diffn):</div>
+                    <div className="builder-discuss-s138">Tally books exceed working balance</div>
                   </div>
-                  <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#991b1b' }}>
+                  <span className="builder-discuss-s139">
                     +{fmtINR(BUILDER_RECO_DATA.auditReconciliation.difference)}
                   </span>
                 </div>
               </div>
 
-              <div style={{
-                marginTop: 16, padding: '10px 14px', borderRadius: 10,
-                background: 'rgba(196, 155, 79, 0.1)', border: '1px solid rgba(196, 155, 79, 0.25)',
-                fontSize: '0.8rem', color: '#78350f', lineHeight: 1.45
-              }}>
+              <div className="builder-discuss-s140">
                 📌 <strong>Action Point:</strong> Request signed auditor voucher breakdown for the ₹6,954.90 difference before final developer discharge.
               </div>
             </div>
 
             {/* Box B: Post-31.03.2023 Movements till 31.03.2026 */}
-            <div style={{
-              background: '#ffffff', borderRadius: 20, padding: '20px 24px',
-              border: '1.5px solid rgba(61, 63, 52, 0.12)', boxShadow: '0 2px 12px rgba(11, 43, 38, 0.05)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: '1.2rem' }}>🏦</span>
-                  <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#1d2a24', fontFamily: 'Fraunces, serif' }}>
+            <div className="builder-discuss-s127">
+              <div className="builder-discuss-s141">
+                <div className="builder-discuss-s95">
+                  <span className="builder-discuss-s129">🏦</span>
+                  <h4 className="builder-discuss-s130">
                     Subsequent Movements (2023 – 2026)
                   </h4>
                 </div>
-                <span style={{ background: '#dcfce7', color: '#166534', padding: '2px 8px', borderRadius: 10, fontSize: '0.7rem', fontWeight: 700 }}>
+                <span className="builder-discuss-s142">
                   Active Ledger
                 </span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: '#f8fafc', borderRadius: 8, fontSize: '0.82rem' }}>
-                  <span style={{ color: '#5f665f' }}>Opening (Tally Books - 31.03.2023):</span>
-                  <span style={{ fontWeight: 700, color: '#1d2a24' }}>{fmtINR(BUILDER_RECO_DATA.postPeriodLedger.openingBalance)}</span>
+              <div className="builder-discuss-s143">
+                <div className="builder-discuss-s144">
+                  <span className="builder-discuss-s145">Opening (Tally Books - 31.03.2023):</span>
+                  <span className="builder-discuss-s146">{fmtINR(BUILDER_RECO_DATA.postPeriodLedger.openingBalance)}</span>
                 </div>
 
                 {BUILDER_RECO_DATA.postPeriodLedger.transactions.map(t => (
-                  <div key={t.id} style={{
-                    padding: '8px 12px', background: '#fff5f5', border: '1px solid #fed7d7',
-                    borderRadius: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                  }}>
+                  <div key={t.id} className="builder-discuss-s147">
                     <div>
-                      <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#991b1b' }}>
+                      <div className="builder-discuss-s148">
                         {t.date} — {t.particulars}
                       </div>
-                      <div style={{ fontSize: '0.72rem', color: '#7f1d1d' }}>{t.remarks}</div>
+                      <div className="builder-discuss-s149">{t.remarks}</div>
                     </div>
-                    <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#991b1b' }}>
+                    <span className="builder-discuss-s150">
                       {fmtINR(t.amount)}
                     </span>
                   </div>
                 ))}
 
                 {/* Final Closing Tally Balance */}
-                <div style={{
-                  padding: '12px 14px', background: '#ecfdf5', border: '2px solid #10b981',
-                  borderRadius: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4
-                }}>
+                <div className="builder-discuss-s151">
                   <div>
-                    <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#065f46' }}>
+                    <div className="builder-discuss-s152">
                       Tally Book Balance (31.03.2026)
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: '#047857' }}>Net unspent developer Phase II surplus</div>
+                    <div className="builder-discuss-s153">Net unspent developer Phase II surplus</div>
                   </div>
-                  <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#065f46' }}>
+                  <span className="builder-discuss-s154">
                     {fmtINR(BUILDER_RECO_DATA.postPeriodLedger.closingBalance)}
                   </span>
                 </div>
@@ -1684,52 +1296,35 @@ const handleExportRecoCSV = () => {
       {/* ── TAB 2: WING A CERTIFIED AUDIT STATEMENT (09/08/2019 to 30/06/2021) ─ */}
       {/* ═══════════════════════════════════════════════════════════════════════ */}
       {subTab === 'wingA' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div className="builder-discuss-s46">
 
           {/* CA Certification Header Card */}
-          <div style={{
-            background: 'linear-gradient(135deg, #fffaf2 0%, #fef3c7 100%)',
-            borderRadius: 20,
-            padding: '20px 24px',
-            border: '1.5px solid rgba(196, 155, 79, 0.4)',
-            boxShadow: '0 4px 16px rgba(196, 155, 79, 0.08)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: 16
-          }}>
+          <div className="builder-discuss-s155">
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <span style={{ fontSize: '1.2rem' }}>📜</span>
-                <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#92400e', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <div className="builder-discuss-s156">
+                <span className="builder-discuss-s129">📜</span>
+                <span className="builder-discuss-s157">
                   CHARTERED ACCOUNTANTS CERTIFIED STATEMENT
                 </span>
-                <span style={{ background: '#0b2b26', color: '#C49B4F', padding: '2px 8px', borderRadius: 8, fontSize: '0.68rem', fontWeight: 700 }}>
+                <span className="builder-discuss-s158">
                   FRN: {WING_A_AUDITED_STATEMENT.meta.auditor.frn}
                 </span>
               </div>
-              <h3 style={{ margin: '0 0 4px', fontSize: '1.25rem', fontWeight: 800, color: '#1d2a24', fontFamily: 'Fraunces, serif' }}>
+              <h3 className="builder-discuss-s159">
                 {WING_A_AUDITED_STATEMENT.meta.societyName}
               </h3>
-              <p style={{ margin: 0, fontSize: '0.85rem', color: '#78350f' }}>
+              <p className="builder-discuss-s160">
                 {WING_A_AUDITED_STATEMENT.meta.title} for the period from <strong>{WING_A_AUDITED_STATEMENT.meta.period}</strong>
               </p>
-              <div style={{ fontSize: '0.78rem', color: '#5f665f', marginTop: 4 }}>
+              <div className="builder-discuss-s161">
                 Auditor: <strong>{WING_A_AUDITED_STATEMENT.meta.auditor.firm}</strong> • {WING_A_AUDITED_STATEMENT.meta.auditor.proprietor} (M. No. {WING_A_AUDITED_STATEMENT.meta.auditor.membershipNo}, Empanelment No. {WING_A_AUDITED_STATEMENT.meta.auditor.coopDeptEmpanelmentNo})
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <div className="builder-discuss-s162">
               <button
                 onClick={() => { setModalDefaultDoc('wingA'); setShowDocModal(true); }}
-                style={{
-                  padding: '8px 16px', borderRadius: 10,
-                  border: '1.5px solid #C49B4F', background: '#0b2b26', color: '#C49B4F',
-                  fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  boxShadow: '0 2px 8px rgba(11, 43, 38, 0.15)'
-                }}
+                className="builder-discuss-s163"
               >
                 <span>🔍</span>
                 <span>Inspect Scanned CA Certificate</span>
@@ -1737,13 +1332,7 @@ const handleExportRecoCSV = () => {
 
               <button
                 onClick={handleExportWingACSV}
-                style={{
-                  padding: '8px 14px', borderRadius: 10,
-                  border: '1.5px solid rgba(61, 63, 52, 0.18)',
-                  background: '#ffffff', color: '#1d2a24',
-                  fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: 6
-                }}
+                className="builder-discuss-s164"
               >
                 <span>📥</span>
                 <span>Export CSV</span>
@@ -1751,13 +1340,7 @@ const handleExportRecoCSV = () => {
 
               <button
                 onClick={handlePrintWingA}
-                style={{
-                  padding: '8px 14px', borderRadius: 10,
-                  border: '1.5px solid rgba(61, 63, 52, 0.18)',
-                  background: '#ffffff', color: '#1d2a24',
-                  fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: 6
-                }}
+                className="builder-discuss-s164"
               >
                 <span>🖨️</span>
                 <span>Print Statement</span>
@@ -1766,94 +1349,89 @@ const handleExportRecoCSV = () => {
           </div>
 
           {/* Top 4 KPI Metrics */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-            <div style={{ background: '#ffffff', borderRadius: 16, padding: '18px 20px', border: '1.5px solid rgba(61, 63, 52, 0.1)' }}>
-              <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#16a34a', textTransform: 'uppercase', marginBottom: 6 }}>
+          <div className="builder-discuss-s55">
+            <div className="builder-discuss-s165">
+              <div className="builder-discuss-s166">
                 Total Audited Income
               </div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1d2a24' }}>
+              <div className="builder-discuss-s167">
                 {fmtINR(WING_A_AUDITED_STATEMENT.income.totalIncome)}
               </div>
-              <div style={{ fontSize: '0.76rem', color: '#5f665f', marginTop: 4 }}>
+              <div className="builder-discuss-s168">
                 Maintenance: ₹61.73L • Savings Int: ₹3,516
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', borderRadius: 16, padding: '18px 20px', border: '1.5px solid rgba(61, 63, 52, 0.1)' }}>
-              <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#c2410c', textTransform: 'uppercase', marginBottom: 6 }}>
+            <div className="builder-discuss-s165">
+              <div className="builder-discuss-s169">
                 Total Audited Expenditure
               </div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1d2a24' }}>
+              <div className="builder-discuss-s167">
                 {fmtINR(WING_A_AUDITED_STATEMENT.expenditure.totalExpenditure)}
               </div>
-              <div style={{ fontSize: '0.76rem', color: '#5f665f', marginTop: 4 }}>
+              <div className="builder-discuss-s168">
                 15 itemized line heads audited
               </div>
             </div>
 
-            <div style={{ background: '#ecfdf5', borderRadius: 16, padding: '18px 20px', border: '1.5px solid #10b981' }}>
-              <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#065f46', textTransform: 'uppercase', marginBottom: 6 }}>
+            <div className="builder-discuss-s170">
+              <div className="builder-discuss-s171">
                 Surplus Transferred to Society
               </div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#065f46' }}>
+              <div className="builder-discuss-s172">
                 {fmtINR(WING_A_AUDITED_STATEMENT.surplus)}
               </div>
-              <div style={{ fontSize: '0.76rem', color: '#047857', marginTop: 4 }}>
+              <div className="builder-discuss-s173">
                 64.06% surplus ratio retained
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', borderRadius: 16, padding: '18px 20px', border: '1.5px solid rgba(61, 63, 52, 0.1)' }}>
-              <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#196c6c', textTransform: 'uppercase', marginBottom: 6 }}>
+            <div className="builder-discuss-s165">
+              <div className="builder-discuss-s174">
                 Highest Expense Head
               </div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0b2b26' }}>
+              <div className="builder-discuss-s175">
                 Security Charges (₹7.54L)
               </div>
-              <div style={{ fontSize: '0.76rem', color: '#5f665f', marginTop: 4 }}>
+              <div className="builder-discuss-s168">
                 33.95% of total Wing A expenses
               </div>
             </div>
           </div>
 
           {/* Income Table Card */}
-          <div style={{
-            background: 'rgba(255, 250, 242, 0.95)',
-            border: '1px solid rgba(61, 63, 52, 0.1)',
-            borderRadius: 20,
-            overflow: 'hidden'
-          }}>
-            <div style={{ padding: '14px 20px', background: '#fffaf2', borderBottom: '1px solid rgba(61, 63, 52, 0.1)' }}>
-              <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#166534', fontFamily: 'Fraunces, serif' }}>
+          <div className="builder-discuss-s176">
+            <div className="builder-discuss-s177">
+              <h4 className="builder-discuss-s178">
                 Income Particulars
               </h4>
             </div>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table className="builder-discuss-s179">
               <thead>
-                <tr style={{ background: 'rgba(244, 239, 231, 0.95)', borderBottom: '2px solid rgba(61, 63, 52, 0.1)' }}>
-                  <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#5f665f' }}>
+                <tr className="builder-discuss-s78">
+                  <th className="builder-discuss-s79">
                     Particulars
                   </th>
-                  <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#16a34a', width: 220 }}>
+                  <th className="builder-discuss-s180">
                     Amount (Rs.)
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {WING_A_AUDITED_STATEMENT.income.items.map((item, idx) => (
-                  <tr key={item.id} style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)', borderBottom: '1px solid rgba(61, 63, 52, 0.08)' }}>
-                    <td style={{ padding: '11px 16px', fontSize: '0.86rem', color: '#1d2a24', fontWeight: 600 }}>
+                  <tr key={item.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                    <td className="builder-discuss-s181">
                       {item.particular}
-                      <span style={{ fontSize: '0.74rem', color: '#5f665f', marginLeft: 8, fontWeight: 400 }}>({item.notes})</span>
+                      <span className="builder-discuss-s182">({item.notes})</span>
                     </td>
-                    <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '0.92rem', fontWeight: 700, color: '#16a34a' }}>
+                    <td className="builder-discuss-s183">
                       {fmtINR(item.amount)}
                     </td>
                   </tr>
                 ))}
-                <tr style={{ background: 'rgba(22, 163, 74, 0.08)', borderTop: '2px solid rgba(22, 163, 74, 0.25)', fontWeight: 800 }}>
-                  <td style={{ padding: '12px 16px', fontSize: '0.92rem', color: '#166534' }}>Total Income</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '1.05rem', color: '#166534' }}>
+                <tr className="builder-discuss-s117">
+                  <td className="builder-discuss-s184">Total Income</td>
+                  <td className="builder-discuss-s185">
                     {fmtINR(WING_A_AUDITED_STATEMENT.income.totalIncome)}
                   </td>
                 </tr>
@@ -1862,75 +1440,53 @@ const handleExportRecoCSV = () => {
           </div>
 
           {/* Expenditure Table Card */}
-          <div style={{
-            background: 'rgba(255, 250, 242, 0.95)',
-            border: '1px solid rgba(61, 63, 52, 0.1)',
-            borderRadius: 20,
-            overflow: 'hidden'
-          }}>
-            <div style={{
-              padding: '14px 20px',
-              background: '#fffaf2',
-              borderBottom: '1px solid rgba(61, 63, 52, 0.1)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 10
-            }}>
+          <div className="builder-discuss-s176">
+            <div className="builder-discuss-s186">
               <div>
-                <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#1d2a24', fontFamily: 'Fraunces, serif' }}>
+                <h4 className="builder-discuss-s130">
                   Audited Expenditure Schedule (15 Line Items)
                 </h4>
-                <p style={{ margin: 0, fontSize: '0.78rem', color: '#5f665f' }}>
+                <p className="builder-discuss-s74">
                   Exact items extracted from audited books of account
                 </p>
               </div>
 
               {/* Category & Search Filter */}
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+              <div className="builder-discuss-s187">
                 <input
                   type="search"
                   placeholder="Filter expenses…"
                   value={wingASearch}
                   onChange={e => setWingASearch(e.target.value)}
-                  style={{
-                    padding: '6px 12px', borderRadius: 8,
-                    border: '1.5px solid rgba(61, 63, 52, 0.15)',
-                    fontSize: '0.8rem', outline: 'none', background: '#fff'
-                  }}
+                  className="builder-discuss-s188"
                 />
                 <select
                   value={wingACategory}
                   onChange={e => setWingACategory(e.target.value)}
-                  style={{
-                    padding: '6px 10px', borderRadius: 8,
-                    border: '1.5px solid rgba(61, 63, 52, 0.15)',
-                    fontSize: '0.8rem', outline: 'none', background: '#fff', cursor: 'pointer'
-                  }}
+                  className="builder-discuss-s189"
                 >
                   {wingACategoriesList.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 700 }}>
+            <div className="builder-discuss-s76">
+              <table className="builder-discuss-s190">
                 <thead>
-                  <tr style={{ background: 'rgba(244, 239, 231, 0.95)', borderBottom: '2px solid rgba(61, 63, 52, 0.1)' }}>
-                    <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#5f665f', width: 50 }}>
+                  <tr className="builder-discuss-s78">
+                    <th className="builder-discuss-s191">
                       SR
                     </th>
-                    <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#5f665f' }}>
+                    <th className="builder-discuss-s79">
                       Expenditure Particulars
                     </th>
-                    <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#5f665f', width: 170 }}>
+                    <th className="builder-discuss-s192">
                       Category Head
                     </th>
-                    <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#5f665f', width: 140 }}>
+                    <th className="builder-discuss-s193">
                       % Share
                     </th>
-                    <th style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#196c6c', width: 180 }}>
+                    <th className="builder-discuss-s194">
                       Amount (Rs.)
                     </th>
                   </tr>
@@ -1939,24 +1495,21 @@ const handleExportRecoCSV = () => {
                   {filteredWingAExpenses.map((e, idx) => {
                     const pct = ((e.amount / WING_A_AUDITED_STATEMENT.expenditure.totalExpenditure) * 100).toFixed(2);
                     return (
-                      <tr key={e.id} style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)', borderBottom: '1px solid rgba(61, 63, 52, 0.08)' }}>
-                        <td style={{ padding: '10px 16px', fontSize: '0.8rem', color: '#5f665f' }}>{idx + 1}</td>
-                        <td style={{ padding: '10px 16px', fontSize: '0.86rem', color: '#1d2a24' }}>
-                          <div style={{ fontWeight: 700 }}>{highlight(e.particular, wingASearch)}</div>
-                          <div style={{ fontSize: '0.74rem', color: '#5f665f', marginTop: 1 }}>{e.notes}</div>
+                      <tr key={e.id} className="builder-discuss-s82" style={{ background: idx % 2 === 0 ? '#ffffff' : 'rgba(255, 252, 247, 0.7)' }}>
+                        <td className="builder-discuss-s195">{idx + 1}</td>
+                        <td className="builder-discuss-s196">
+                          <div className="builder-discuss-s96">{highlight(e.particular, wingASearch)}</div>
+                          <div className="builder-discuss-s197">{e.notes}</div>
                         </td>
-                        <td style={{ padding: '10px 16px' }}>
-                          <span style={{
-                            background: 'rgba(25, 108, 108, 0.08)', color: '#196c6c',
-                            padding: '2px 8px', borderRadius: 6, fontSize: '0.74rem', fontWeight: 600
-                          }}>
+                        <td className="builder-discuss-s198">
+                          <span className="builder-discuss-s199">
                             {e.category}
                           </span>
                         </td>
-                        <td style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.82rem', color: '#5f665f' }}>
+                        <td className="builder-discuss-s200">
                           {pct}%
                         </td>
-                        <td style={{ padding: '10px 16px', textAlign: 'right', fontSize: '0.9rem', fontWeight: 700, color: '#1d2a24' }}>
+                        <td className="builder-discuss-s201">
                           {fmtINR(e.amount)}
                         </td>
                       </tr>
@@ -1964,21 +1517,21 @@ const handleExportRecoCSV = () => {
                   })}
 
                   {/* Total Expenditure Row */}
-                  <tr style={{ background: 'rgba(194, 100, 74, 0.08)', borderTop: '2px solid rgba(194, 100, 74, 0.25)', fontWeight: 800 }}>
-                    <td colSpan={4} style={{ padding: '12px 16px', fontSize: '0.92rem', color: '#991b1b' }}>
+                  <tr className="builder-discuss-s202">
+                    <td colSpan={4} className="builder-discuss-s203">
                       Total Expenditure
                     </td>
-                    <td style={{ padding: '12px 16px', textAlign: 'right', fontSize: '1.05rem', color: '#991b1b' }}>
+                    <td className="builder-discuss-s204">
                       {fmtINR(WING_A_AUDITED_STATEMENT.expenditure.totalExpenditure)}
                     </td>
                   </tr>
 
                   {/* Surplus Row */}
-                  <tr style={{ background: '#ecfdf5', borderTop: '2px solid #10b981', fontWeight: 900 }}>
-                    <td colSpan={4} style={{ padding: '14px 16px', fontSize: '1rem', color: '#065f46' }}>
+                  <tr className="builder-discuss-s205">
+                    <td colSpan={4} className="builder-discuss-s206">
                       Surplus / Deficit (Net Transferred)
                     </td>
-                    <td style={{ padding: '14px 16px', textAlign: 'right', fontSize: '1.25rem', color: '#065f46' }}>
+                    <td className="builder-discuss-s207">
                       {fmtINR(WING_A_AUDITED_STATEMENT.surplus)}
                     </td>
                   </tr>
@@ -1995,48 +1548,24 @@ const handleExportRecoCSV = () => {
       {/* ── TAB 3: BOM MAINTENANCE PASSBOOK LEDGER (A/c 60305942224) ──────── */}
       {/* ═══════════════════════════════════════════════════════════════════════ */}
       {subTab === 'ledger' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div className="builder-discuss-s46">
 
           {/* Quick-Access Forensic Cross-Audit Banner */}
-          <div style={{
-            background: 'linear-gradient(135deg, #fef2f2 0%, #fff1f2 100%)',
-            border: '1.5px solid rgba(220, 38, 38, 0.25)',
-            borderRadius: 14,
-            padding: '14px 18px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 12,
-            boxShadow: '0 3px 10px rgba(220, 38, 38, 0.05)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontSize: '1.4rem' }}>🔬</span>
+          <div className="builder-discuss-s208">
+            <div className="builder-discuss-s9">
+              <span className="builder-discuss-s209">🔬</span>
               <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#991b1b' }}>
+                <div className="builder-discuss-s137">
                   Forensic Cross-Audit Alert: 23 Missing Invoices & ₹15.31L Wing B Leakage Identified
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#7f1d1d', marginTop: 2 }}>
+                <div className="builder-discuss-s210">
                   We cross-referenced these 135 BOM passbook transactions against CA Hardik Mehta&apos;s Annexure 4 audit exception list.
                 </div>
               </div>
             </div>
             <button
               onClick={() => setSubTab('bomAnalytics')}
-              style={{
-                background: '#991b1b',
-                color: '#ffffff',
-                border: 'none',
-                padding: '7px 14px',
-                borderRadius: 8,
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                boxShadow: '0 2px 8px rgba(153, 27, 27, 0.25)'
-              }}
+              className="builder-discuss-s211"
             >
               <span>📊</span>
               <span>Open Missing Bills Analytics</span>
@@ -2044,61 +1573,31 @@ const handleExportRecoCSV = () => {
           </div>
 
           {/* ── Header Card ── */}
-          <div style={{
-            background: '#ffffff',
-            borderRadius: 20,
-            padding: '22px 24px',
-            border: '1.5px solid rgba(61, 63, 52, 0.1)',
-            boxShadow: '0 4px 20px rgba(11, 43, 38, 0.05)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: 16
-          }}>
+          <div className="builder-discuss-s212">
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                <span style={{
-                  background: 'rgba(11, 43, 38, 0.08)', color: '#0b2b26',
-                  fontSize: '0.72rem', fontWeight: 800, padding: '3px 10px',
-                  borderRadius: 12, letterSpacing: '0.06em'
-                }}>
+              <div className="builder-discuss-s213">
+                <span className="builder-discuss-s214">
                   BANK OF MAHARASHTRA • A/C 60305942224
                 </span>
-                <span style={{
-                  background: '#fef3c7', color: '#92400e',
-                  fontSize: '0.72rem', fontWeight: 700, padding: '3px 10px',
-                  borderRadius: 12
-                }}>
+                <span className="builder-discuss-s215">
                   1-Jul-2021 to 23-Nov-2021 (Settlements till Jan 2023)
                 </span>
-                <span style={{
-                  background: '#ecfdf5', color: '#065f46',
-                  fontSize: '0.72rem', fontWeight: 700, padding: '3px 10px',
-                  borderRadius: 12
-                }}>
+                <span className="builder-discuss-s216">
                   Handwritten Note: Exp Till - 31/03/2023
                 </span>
               </div>
-              <h3 style={{ margin: '4px 0', fontSize: '1.35rem', fontWeight: 800, color: '#0b2b26', fontFamily: 'Fraunces, serif' }}>
+              <h3 className="builder-discuss-s217">
                 Eisha Asset Developers Phase-II — Passbook & Tally Ledger Book
               </h3>
-              <p style={{ margin: 0, fontSize: '0.86rem', color: '#5f665f' }}>
+              <p className="builder-discuss-s218">
                 Full 4-page verified audit trail accounting for ₹50,04,602.50 in disbursements, seed refunds, supervision fees, and ₹24L transfer to Wing A Society.
               </p>
             </div>
 
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <div className="builder-discuss-s162">
               <button
                 onClick={() => { setModalDefaultDoc('ledger1'); setShowDocModal(true); }}
-                style={{
-                  padding: '9px 15px', borderRadius: 10,
-                  border: '1.5px solid #0b2b26',
-                  background: '#ffffff', color: '#0b2b26',
-                  fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  transition: 'all 0.15s ease'
-                }}
+                className="builder-discuss-s219"
               >
                 <span>🔍</span>
                 <span>Inspect Passbook Scans (4 Pgs)</span>
@@ -2106,13 +1605,7 @@ const handleExportRecoCSV = () => {
 
               <button
                 onClick={handleExportBOMCSV}
-                style={{
-                  padding: '9px 15px', borderRadius: 10,
-                  border: '1.5px solid rgba(61, 63, 52, 0.15)',
-                  background: '#ffffff', color: '#1d2a24',
-                  fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: 6
-                }}
+                className="builder-discuss-s220"
               >
                 <span>📥</span>
                 <span>Export CSV ({filteredLedger.length})</span>
@@ -2120,13 +1613,7 @@ const handleExportRecoCSV = () => {
 
               <button
                 onClick={handlePrintBOM}
-                style={{
-                  padding: '9px 15px', borderRadius: 10,
-                  border: 'none',
-                  background: '#0b2b26', color: '#ffffff',
-                  fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: 6
-                }}
+                className="builder-discuss-s221"
               >
                 <span>🖨️</span>
                 <span>Print / PDF Ledger</span>
@@ -2135,178 +1622,127 @@ const handleExportRecoCSV = () => {
           </div>
 
           {/* ── Reconciliation Link Box ── */}
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(11, 43, 38, 0.04) 0%, rgba(25, 108, 108, 0.08) 100%)',
-            border: '1.5px solid rgba(11, 43, 38, 0.15)',
-            borderRadius: 18,
-            padding: '16px 20px',
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: 14
-          }}>
-            <div style={{ fontSize: '1.5rem', lineHeight: 1 }}>🔗</div>
+          <div className="builder-discuss-s222">
+            <div className="builder-discuss-s223">🔗</div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '0.92rem', color: '#0b2b26', marginBottom: 3 }}>
+              <div className="builder-discuss-s224">
                 Evidentiary Backbone for Developer Maintenance Reco Sheet
               </div>
-              <div style={{ fontSize: '0.84rem', color: '#3d3f34', lineHeight: 1.5 }}>
+              <div className="builder-discuss-s225">
                 This 4-page Bank of Maharashtra passbook ledger directly backs up <strong>Row 2: "From 01.07.21 to 26.11.2021 (as working)" (₹49,01,564.50)</strong> and <strong>Row 3: "Refund to EADP II Account opening Amount" (₹1,00,000.00)</strong> in the master Developer Reco Sheet. Total payments match ₹50,04,602.50 against ₹56,24,072.90 in receipts, leaving a certified difference of <strong>₹6,19,470.40</strong>.
               </div>
             </div>
           </div>
 
           {/* ── Key Highlight Cards ── */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: 14
-          }}>
-            <div style={{
-              background: '#ffffff', borderRadius: 16, padding: '16px 18px',
-              border: '1.5px solid #a7f3d0', boxShadow: '0 2px 10px rgba(11, 43, 38, 0.03)'
-            }}>
-              <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#059669', letterSpacing: '0.08em' }}>
+          <div className="builder-discuss-s226">
+            <div className="builder-discuss-s227">
+              <div className="builder-discuss-s228">
                 Major Handover Transfer
               </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#065f46', margin: '4px 0' }}>
+              <div className="builder-discuss-s229">
                 ₹24,00,000.00
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#5f665f' }}>
+              <div className="builder-discuss-s230">
                 Transferred to <strong>Majestique Euriska A Building Sahakari Gruhrachna Sanstha</strong> on <strong>26-11-2021</strong> (Vch #512).
               </div>
             </div>
 
-            <div style={{
-              background: '#ffffff', borderRadius: 16, padding: '16px 18px',
-              border: '1.5px solid #fde68a', boxShadow: '0 2px 10px rgba(11, 43, 38, 0.03)'
-            }}>
-              <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#d97706', letterSpacing: '0.08em' }}>
+            <div className="builder-discuss-s231">
+              <div className="builder-discuss-s232">
                 Developer Supervision Charges
               </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#92400e', margin: '4px 0' }}>
+              <div className="builder-discuss-s233">
                 ₹6,20,000.00
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#5f665f' }}>
+              <div className="builder-discuss-s230">
                 Charged on <strong>23-11-2021</strong>: Wing A debited <strong>₹2,70,000</strong> (Vch #498) &amp; Wing B debited <strong>₹3,50,000</strong> (Vch #499).
               </div>
             </div>
 
-            <div style={{
-              background: '#ffffff', borderRadius: 16, padding: '16px 18px',
-              border: '1.5px solid #fecaca', boxShadow: '0 2px 10px rgba(11, 43, 38, 0.03)'
-            }}>
-              <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#dc2626', letterSpacing: '0.08em' }}>
+            <div className="builder-discuss-s234">
+              <div className="builder-discuss-s235">
                 Account Opening Refund
               </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#991b1b', margin: '4px 0' }}>
+              <div className="builder-discuss-s236">
                 ₹1,00,000.00
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#5f665f' }}>
+              <div className="builder-discuss-s230">
                 Refunded to <strong>BOM C/A No. 60186732081</strong> on <strong>23-11-2021</strong> (Contra Vch #43).
               </div>
             </div>
 
-            <div style={{
-              background: '#ffffff', borderRadius: 16, padding: '16px 18px',
-              border: '1.5px solid #bae6fd', boxShadow: '0 2px 10px rgba(11, 43, 38, 0.03)'
-            }}>
-              <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#0284c7', letterSpacing: '0.08em' }}>
+            <div className="builder-discuss-s237">
+              <div className="builder-discuss-s238">
                 Closing Book Difference
               </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0369a1', margin: '4px 0' }}>
+              <div className="builder-discuss-s239">
                 ₹6,19,470.40
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#5f665f' }}>
+              <div className="builder-discuss-s230">
                 Total Inflow ₹56.24L less Total Outflow ₹50.05L (Handwritten notation: <em>Exp Till - 31/03/2023</em>).
               </div>
             </div>
           </div>
 
           {/* ── KPI Metric Summaries ── */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: 12
-          }}>
-            <div style={{ background: 'rgba(255, 250, 242, 0.8)', padding: '12px 16px', borderRadius: 14, border: '1px solid rgba(61, 63, 52, 0.1)' }}>
-              <div style={{ fontSize: '0.7rem', color: '#5f665f', fontWeight: 700, textTransform: 'uppercase' }}>Total Inflows (Debits)</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1d2a24', marginTop: 2 }}>{fmtINR(BOM_PASSBOOK_LEDGER.meta.totals.totalDebit)}</div>
-              <div style={{ fontSize: '0.72rem', color: '#059669', marginTop: 2 }}>Opening: ₹56.23L + BigBasket: ₹1.5K</div>
+          <div className="builder-discuss-s240">
+            <div className="builder-discuss-s241">
+              <div className="builder-discuss-s242">Total Inflows (Debits)</div>
+              <div className="builder-discuss-s243">{fmtINR(BOM_PASSBOOK_LEDGER.meta.totals.totalDebit)}</div>
+              <div className="builder-discuss-s244">Opening: ₹56.23L + BigBasket: ₹1.5K</div>
             </div>
 
-            <div style={{ background: 'rgba(255, 250, 242, 0.8)', padding: '12px 16px', borderRadius: 14, border: '1px solid rgba(61, 63, 52, 0.1)' }}>
-              <div style={{ fontSize: '0.7rem', color: '#5f665f', fontWeight: 700, textTransform: 'uppercase' }}>Total Outflows (Credits)</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#b91c1c', marginTop: 2 }}>{fmtINR(BOM_PASSBOOK_LEDGER.meta.totals.totalCredit)}</div>
-              <div style={{ fontSize: '0.72rem', color: '#5f665f', marginTop: 2 }}>135 Total Ledger Rows</div>
+            <div className="builder-discuss-s241">
+              <div className="builder-discuss-s242">Total Outflows (Credits)</div>
+              <div className="builder-discuss-s245">{fmtINR(BOM_PASSBOOK_LEDGER.meta.totals.totalCredit)}</div>
+              <div className="builder-discuss-s246">135 Total Ledger Rows</div>
             </div>
 
-            <div style={{ background: '#ecfdf5', padding: '12px 16px', borderRadius: 14, border: '1px solid #a7f3d0' }}>
-              <div style={{ fontSize: '0.7rem', color: '#065f46', fontWeight: 700, textTransform: 'uppercase' }}>Wing A Outflow Share</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#065f46', marginTop: 2 }}>{fmtINR(BOM_PASSBOOK_LEDGER.meta.wingBreakdown.A.credits)}</div>
-              <div style={{ fontSize: '0.72rem', color: '#047857', marginTop: 2 }}>48 items (incl ₹24L trf & ₹2.7L sup)</div>
+            <div className="builder-discuss-s247">
+              <div className="builder-discuss-s248">Wing A Outflow Share</div>
+              <div className="builder-discuss-s249">{fmtINR(BOM_PASSBOOK_LEDGER.meta.wingBreakdown.A.credits)}</div>
+              <div className="builder-discuss-s250">48 items (incl ₹24L trf & ₹2.7L sup)</div>
             </div>
 
-            <div style={{ background: '#fffbeb', padding: '12px 16px', borderRadius: 14, border: '1px solid #fde68a' }}>
-              <div style={{ fontSize: '0.7rem', color: '#92400e', fontWeight: 700, textTransform: 'uppercase' }}>Wing B Outflow Share</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#92400e', marginTop: 2 }}>{fmtINR(BOM_PASSBOOK_LEDGER.meta.wingBreakdown.B.credits)}</div>
-              <div style={{ fontSize: '0.72rem', color: '#b45309', marginTop: 2 }}>77 items (incl ₹3.5L supervision)</div>
+            <div className="builder-discuss-s251">
+              <div className="builder-discuss-s252">Wing B Outflow Share</div>
+              <div className="builder-discuss-s253">{fmtINR(BOM_PASSBOOK_LEDGER.meta.wingBreakdown.B.credits)}</div>
+              <div className="builder-discuss-s254">77 items (incl ₹3.5L supervision)</div>
             </div>
 
-            <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: 14, border: '1px solid #e2e8f0' }}>
-              <div style={{ fontSize: '0.7rem', color: '#475569', fontWeight: 700, textTransform: 'uppercase' }}>Common (C) &amp; Refund</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1e293b', marginTop: 2 }}>₹1,03,038.00</div>
-              <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 2 }}>DG repair (₹3,038) + EADP (₹1L)</div>
+            <div className="builder-discuss-s255">
+              <div className="builder-discuss-s256">Common (C) &amp; Refund</div>
+              <div className="builder-discuss-s257">₹1,03,038.00</div>
+              <div className="builder-discuss-s258">DG repair (₹3,038) + EADP (₹1L)</div>
             </div>
           </div>
 
           {/* ── Interactive Filter & Search Bar ── */}
-          <div style={{
-            background: '#ffffff',
-            borderRadius: 16,
-            padding: '16px 20px',
-            border: '1px solid rgba(61, 63, 52, 0.1)',
-            boxShadow: '0 2px 10px rgba(11, 43, 38, 0.03)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 12
-          }}>
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div className="builder-discuss-s259">
+            <div className="builder-discuss-s260">
               {/* Search Box */}
-              <div style={{ position: 'relative', flex: '1 1 240px', minWidth: 200 }}>
-                <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.45 }}>🔍</span>
+              <div className="builder-discuss-s261">
+                <span className="builder-discuss-s262">🔍</span>
                 <input
                   type="search"
                   placeholder="Search particulars, voucher #, remark, or date…"
                   value={ledgerSearch}
                   onChange={e => setLedgerSearch(e.target.value)}
-                  style={{
-                    width: '100%',
-                    paddingLeft: 34, paddingRight: 12, paddingTop: 8, paddingBottom: 8,
-                    borderRadius: 10,
-                    border: '1.5px solid rgba(61, 63, 52, 0.15)',
-                    fontSize: '0.85rem', color: '#1d2a24', outline: 'none',
-                    boxSizing: 'border-box'
-                  }}
+                  className="builder-discuss-s263"
                 />
               </div>
 
               {/* Wing Filter */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#5f665f' }}>Wing:</span>
+              <div className="builder-discuss-s264">
+                <span className="builder-discuss-s265">Wing:</span>
                 {['All', 'A', 'B', 'C', 'Refund', 'Opening'].map(w => {
                   const active = ledgerWing === w;
                   return (
                     <button
                       key={w}
                       onClick={() => setLedgerWing(w)}
-                      style={{
-                        padding: '5px 11px', borderRadius: 8,
-                        border: active ? '1.5px solid #0b2b26' : '1px solid rgba(61, 63, 52, 0.15)',
-                        background: active ? '#0b2b26' : '#ffffff',
-                        color: active ? '#ffffff' : '#1d2a24',
-                        fontSize: '0.76rem', fontWeight: active ? 700 : 500,
-                        cursor: 'pointer'
-                      }}
+                      className="builder-discuss-s266" style={{ border: active ? '1.5px solid #0b2b26' : '1px solid rgba(61, 63, 52, 0.15)', background: active ? '#0b2b26' : '#ffffff', color: active ? '#ffffff' : '#1d2a24', fontWeight: active ? 700 : 500 }}
                     >
                       {w === 'All' ? 'All Wings' : `Wing ${w}`}
                     </button>
@@ -2315,22 +1751,15 @@ const handleExportRecoCSV = () => {
               </div>
 
               {/* Page Filter */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#5f665f' }}>Page:</span>
+              <div className="builder-discuss-s264">
+                <span className="builder-discuss-s265">Page:</span>
                 {['All', '1', '2', '3', '4'].map(p => {
                   const active = ledgerPage === p;
                   return (
                     <button
                       key={p}
                       onClick={() => setLedgerPage(p)}
-                      style={{
-                        padding: '5px 10px', borderRadius: 8,
-                        border: active ? '1.5px solid #0b2b26' : '1px solid rgba(61, 63, 52, 0.15)',
-                        background: active ? '#0b2b26' : '#ffffff',
-                        color: active ? '#ffffff' : '#1d2a24',
-                        fontSize: '0.76rem', fontWeight: active ? 700 : 500,
-                        cursor: 'pointer'
-                      }}
+                      className="builder-discuss-s267" style={{ border: active ? '1.5px solid #0b2b26' : '1px solid rgba(61, 63, 52, 0.15)', background: active ? '#0b2b26' : '#ffffff', color: active ? '#ffffff' : '#1d2a24', fontWeight: active ? 700 : 500 }}
                     >
                       {p === 'All' ? 'All Pgs' : `Pg ${p}`}
                     </button>
@@ -2348,11 +1777,7 @@ const handleExportRecoCSV = () => {
                     setLedgerRemark('All');
                     setLedgerVchType('All');
                   }}
-                  style={{
-                    padding: '5px 10px', borderRadius: 8,
-                    border: '1px dashed #b91c1c', background: '#fef2f2',
-                    color: '#991b1b', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer'
-                  }}
+                  className="builder-discuss-s268"
                 >
                   Clear Filters
                 </button>
@@ -2360,22 +1785,15 @@ const handleExportRecoCSV = () => {
             </div>
 
             {/* Category / Remark Pills */}
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#5f665f' }}>Head:</span>
+            <div className="builder-discuss-s269">
+              <span className="builder-discuss-s270">Head:</span>
               {['All', 'Security', 'Houskeeping', 'ELECTRICITY', 'WATERMAN', 'Swimming pool', 'Supervision Charges', 'A Bldg Society', 'TDS', 'BPCL', 'DG repairing', 'Audit Fees'].map(r => {
                 const active = ledgerRemark === r;
                 return (
                   <button
                     key={r}
                     onClick={() => setLedgerRemark(r)}
-                    style={{
-                      padding: '3px 8px', borderRadius: 6,
-                      border: active ? '1px solid #0b2b26' : '1px solid rgba(61, 63, 52, 0.12)',
-                      background: active ? '#0b2b26' : 'rgba(255, 250, 242, 0.7)',
-                      color: active ? '#C49B4F' : '#3d3f34',
-                      fontSize: '0.72rem', fontWeight: active ? 700 : 500,
-                      cursor: 'pointer'
-                    }}
+                    className="builder-discuss-s271" style={{ border: active ? '1px solid #0b2b26' : '1px solid rgba(61, 63, 52, 0.12)', background: active ? '#0b2b26' : 'rgba(255, 250, 242, 0.7)', color: active ? '#C49B4F' : '#3d3f34', fontWeight: active ? 700 : 500 }}
                   >
                     {r}
                   </button>
@@ -2385,34 +1803,28 @@ const handleExportRecoCSV = () => {
           </div>
 
           {/* ── Transactions Table ── */}
-          <div style={{
-            background: '#ffffff',
-            borderRadius: 18,
-            overflow: 'hidden',
-            border: '1px solid rgba(61, 63, 52, 0.1)',
-            boxShadow: '0 4px 20px rgba(11, 43, 38, 0.04)'
-          }}>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
+          <div className="builder-discuss-s272">
+            <div className="builder-discuss-s76">
+              <table className="builder-discuss-s273">
                 <thead>
-                  <tr style={{ background: '#f8fafc', borderBottom: '2px solid rgba(61, 63, 52, 0.1)' }}>
-                    <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: '0.74rem', fontWeight: 800, color: '#5f665f', textTransform: 'uppercase', width: 45 }}>#</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: '0.74rem', fontWeight: 800, color: '#5f665f', textTransform: 'uppercase', width: 100 }}>Date</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: '0.74rem', fontWeight: 800, color: '#5f665f', textTransform: 'uppercase', width: 60 }}>Cr/Dr</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: '0.74rem', fontWeight: 800, color: '#5f665f', textTransform: 'uppercase' }}>Particulars</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: '0.74rem', fontWeight: 800, color: '#5f665f', textTransform: 'uppercase', width: 85 }}>Vch Type</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: '0.74rem', fontWeight: 800, color: '#5f665f', textTransform: 'uppercase', width: 75 }}>Vch No</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'left', fontSize: '0.74rem', fontWeight: 800, color: '#5f665f', textTransform: 'uppercase' }}>Remark / Head</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'center', fontSize: '0.74rem', fontWeight: 800, color: '#5f665f', textTransform: 'uppercase', width: 80 }}>Wing</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'right', fontSize: '0.74rem', fontWeight: 800, color: '#065f46', textTransform: 'uppercase', width: 110 }}>Debit (₹)</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'right', fontSize: '0.74rem', fontWeight: 800, color: '#991b1b', textTransform: 'uppercase', width: 110 }}>Credit (₹)</th>
-                    <th style={{ padding: '12px 14px', textAlign: 'center', fontSize: '0.74rem', fontWeight: 800, color: '#5f665f', textTransform: 'uppercase', width: 55 }}>Scan</th>
+                  <tr className="builder-discuss-s274">
+                    <th className="builder-discuss-s275">#</th>
+                    <th className="builder-discuss-s276">Date</th>
+                    <th className="builder-discuss-s277">Cr/Dr</th>
+                    <th className="builder-discuss-s278">Particulars</th>
+                    <th className="builder-discuss-s279">Vch Type</th>
+                    <th className="builder-discuss-s280">Vch No</th>
+                    <th className="builder-discuss-s278">Remark / Head</th>
+                    <th className="builder-discuss-s281">Wing</th>
+                    <th className="builder-discuss-s282">Debit (₹)</th>
+                    <th className="builder-discuss-s283">Credit (₹)</th>
+                    <th className="builder-discuss-s284">Scan</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredLedger.length === 0 ? (
                     <tr>
-                      <td colSpan="11" style={{ padding: '36px', textAlign: 'center', color: '#888' }}>
+                      <td colSpan="11" className="builder-discuss-s285">
                         No transactions match your search / filter criteria.
                       </td>
                     </tr>
@@ -2437,61 +1849,43 @@ const handleExportRecoCSV = () => {
                       return (
                         <tr
                           key={t.id}
-                          style={{
-                            background: isSpecialTransfer ? 'rgba(254, 243, 199, 0.4)' : isEven ? '#ffffff' : '#fafafa',
-                            borderBottom: '1px solid rgba(61, 63, 52, 0.06)',
-                            transition: 'background 0.15s ease'
-                          }}
+                          className="builder-discuss-s286" style={{ background: isSpecialTransfer ? 'rgba(254, 243, 199, 0.4)' : isEven ? '#ffffff' : '#fafafa' }}
                         >
-                          <td style={{ padding: '10px 14px', fontSize: '0.78rem', color: '#888' }}>{t.id}</td>
-                          <td style={{ padding: '10px 14px', fontSize: '0.82rem', fontWeight: 600, color: '#1d2a24', whiteSpace: 'nowrap' }}>{t.date}</td>
-                          <td style={{ padding: '10px 14px', fontSize: '0.78rem', fontWeight: 700, color: t.crdr === 'Cr' || t.crdr === 'CR' ? '#065f46' : '#991b1b' }}>{t.crdr}</td>
-                          <td style={{ padding: '10px 14px', fontSize: '0.84rem', fontWeight: isSpecialTransfer ? 800 : 600, color: isSpecialTransfer ? '#0b2b26' : '#1d2a24' }}>
+                          <td className="builder-discuss-s287">{t.id}</td>
+                          <td className="builder-discuss-s288">{t.date}</td>
+                          <td className="builder-discuss-s289" style={{ color: t.crdr === 'Cr' || t.crdr === 'CR' ? '#065f46' : '#991b1b' }}>{t.crdr}</td>
+                          <td className="builder-discuss-s290" style={{ fontWeight: isSpecialTransfer ? 800 : 600, color: isSpecialTransfer ? '#0b2b26' : '#1d2a24' }}>
                             {t.particulars}
                           </td>
-                          <td style={{ padding: '10px 14px', fontSize: '0.78rem', color: '#5f665f' }}>
-                            <span style={{
-                              background: t.vchType === 'Payment' ? '#fef2f2' : t.vchType === 'Receipt' ? '#ecfdf5' : '#f5f3ff',
-                              color: t.vchType === 'Payment' ? '#991b1b' : t.vchType === 'Receipt' ? '#065f46' : '#5b21b6',
-                              padding: '2px 6px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700
-                            }}>
+                          <td className="builder-discuss-s291">
+                            <span className="builder-discuss-s292" style={{ background: t.vchType === 'Payment' ? '#fef2f2' : t.vchType === 'Receipt' ? '#ecfdf5' : '#f5f3ff', color: t.vchType === 'Payment' ? '#991b1b' : t.vchType === 'Receipt' ? '#065f46' : '#5b21b6' }}>
                               {t.vchType || '—'}
                             </span>
                           </td>
-                          <td style={{ padding: '10px 14px', fontSize: '0.8rem', color: '#5f665f', fontFamily: 'monospace' }}>{t.vchNo || '—'}</td>
-                          <td style={{ padding: '10px 14px', fontSize: '0.82rem', color: '#3d3f34' }}>
-                            <span style={{
-                              background: 'rgba(61, 63, 52, 0.06)',
-                              padding: '2px 8px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 600
-                            }}>
+                          <td className="builder-discuss-s293">{t.vchNo || '—'}</td>
+                          <td className="builder-discuss-s294">
+                            <span className="builder-discuss-s295">
                               {t.remark || '—'}
                             </span>
                           </td>
-                          <td style={{ padding: '10px 14px', textAlign: 'center' }}>
-                            <span style={{
-                              background: wingBg, color: wingColor, border: `1px solid ${wingBorder}`,
-                              padding: '2px 8px', borderRadius: 10, fontSize: '0.72rem', fontWeight: 800
-                            }}>
+                          <td className="builder-discuss-s296">
+                            <span className="builder-discuss-s297" style={{ background: wingBg, color: wingColor, border: `1px solid ${wingBorder}` }}>
                               {t.wing}
                             </span>
                           </td>
-                          <td style={{ padding: '10px 14px', textAlign: 'right', fontSize: '0.84rem', fontWeight: 700, color: t.debit ? '#065f46' : '#cbd5e1' }}>
+                          <td className="builder-discuss-s298" style={{ color: t.debit ? '#065f46' : '#cbd5e1' }}>
                             {t.debit ? fmtINR(t.debit) : '—'}
                           </td>
-                          <td style={{ padding: '10px 14px', textAlign: 'right', fontSize: '0.84rem', fontWeight: 700, color: t.credit ? (isSpecialTransfer ? '#b91c1c' : '#1d2a24') : '#cbd5e1' }}>
+                          <td className="builder-discuss-s298" style={{ color: t.credit ? (isSpecialTransfer ? '#b91c1c' : '#1d2a24') : '#cbd5e1' }}>
                             {t.credit ? fmtINR(t.credit) : '—'}
                           </td>
-                          <td style={{ padding: '10px 14px', textAlign: 'center' }}>
+                          <td className="builder-discuss-s296">
                             <button
                               onClick={() => {
                                 setModalDefaultDoc(`ledger${t.page}`);
                                 setShowDocModal(true);
                               }}
-                              style={{
-                                background: 'none', border: '1px solid rgba(61, 63, 52, 0.2)',
-                                borderRadius: 6, padding: '2px 6px', fontSize: '0.7rem',
-                                color: '#0b2b26', cursor: 'pointer', fontWeight: 700
-                              }}
+                              className="builder-discuss-s299"
                               title={`Inspect original scan of Page ${t.page}`}
                             >
                               P{t.page}
@@ -2503,23 +1897,23 @@ const handleExportRecoCSV = () => {
                   )}
                 </tbody>
                 <tfoot>
-                  <tr style={{ background: '#f8fafc', borderTop: '2px solid rgba(61, 63, 52, 0.15)', fontWeight: 800 }}>
-                    <td colSpan="8" style={{ padding: '12px 14px', fontSize: '0.86rem', color: '#1d2a24' }}>
+                  <tr className="builder-discuss-s300">
+                    <td colSpan="8" className="builder-discuss-s301">
                       TOTALS ({filteredLedger.length} filtered entries)
                     </td>
-                    <td style={{ padding: '12px 14px', textAlign: 'right', fontSize: '0.92rem', color: '#065f46' }}>
+                    <td className="builder-discuss-s302">
                       {fmtINR(ledgerTotals.debit)}
                     </td>
-                    <td style={{ padding: '12px 14px', textAlign: 'right', fontSize: '0.92rem', color: '#b91c1c' }}>
+                    <td className="builder-discuss-s303">
                       {fmtINR(ledgerTotals.credit)}
                     </td>
                     <td></td>
                   </tr>
-                  <tr style={{ background: '#ecfdf5', borderTop: '1px solid #a7f3d0', fontWeight: 800 }}>
-                    <td colSpan="8" style={{ padding: '14px 14px', fontSize: '0.92rem', color: '#065f46' }}>
+                  <tr className="builder-discuss-s304">
+                    <td colSpan="8" className="builder-discuss-s305">
                       Net Passbook Difference (Total Debits − Total Credits)
                     </td>
-                    <td colSpan="2" style={{ padding: '14px 14px', textAlign: 'right', fontSize: '1.15rem', color: '#065f46' }}>
+                    <td colSpan="2" className="builder-discuss-s306">
                       {fmtINR(ledgerTotals.debit - ledgerTotals.credit)}
                     </td>
                     <td></td>

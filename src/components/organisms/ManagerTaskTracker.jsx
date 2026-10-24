@@ -3,6 +3,8 @@ import {
   collection, doc, onSnapshot, setDoc, deleteDoc, serverTimestamp
 } from 'firebase/firestore';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './ManagerTaskTracker.css';
+
 
 // ─── Constants ──────────────────────────────────────────────────────────────────
 const TABS = [
@@ -92,7 +94,7 @@ function highlight(text, query) {
   return (
     <>
       {text.slice(0, idx)}
-      <mark style={{ background: '#fde68a', color: '#92400e', borderRadius: 3, padding: '0 2px' }}>
+      <mark className="manager-task-tracker-s1">
         {text.slice(idx, idx + query.length)}
       </mark>
       {text.slice(idx + query.length)}
@@ -103,27 +105,19 @@ function highlight(text, query) {
 // ─── Mini components ────────────────────────────────────────────────────────────
 function Pill({ text, styleMap }) {
   const s = styleMap?.[text];
-  if (!s || !text) return <span style={{ color: '#c4b99a', fontSize: '0.78rem' }}>—</span>;
+  if (!s || !text) return <span className="manager-task-tracker-s2">—</span>;
   return (
-    <span style={{
-      display: 'inline-block', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.04em',
-      padding: '2px 9px', borderRadius: 20, whiteSpace: 'nowrap',
-      background: s.bg, color: s.color, border: `1px solid ${s.border}`,
-    }}>{text}</span>
+    <span className="manager-task-tracker-s3" style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}>{text}</span>
   );
 }
 
 function DaysChip({ days }) {
-  if (days === null) return <span style={{ color: '#c4b99a', fontSize: '0.78rem' }}>—</span>;
+  if (days === null) return <span className="manager-task-tracker-s2">—</span>;
   const color = days < 0 ? '#991b1b' : days <= 3 ? '#d97706' : '#065f46';
   const bg    = days < 0 ? '#fee2e2' : days <= 3 ? '#fef3c7' : '#d1fae5';
   const label = days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? 'Today!' : `${days}d left`;
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 3,
-      fontSize: '0.72rem', fontWeight: 700, padding: '2px 9px',
-      borderRadius: 20, background: bg, color,
-    }}>
+    <span className="manager-task-tracker-s4" style={{ background: bg, color }}>
       {days < 0 && <span>⚠</span>}
       {label}
     </span>
@@ -131,8 +125,8 @@ function DaysChip({ days }) {
 }
 
 function SortIcon({ dir }) {
-  if (!dir) return <span style={{ opacity: 0.3, fontSize: '0.65rem' }}>⇅</span>;
-  return <span style={{ fontSize: '0.65rem' }}>{dir === 'asc' ? '↑' : '↓'}</span>;
+  if (!dir) return <span className="manager-task-tracker-s5">⇅</span>;
+  return <span className="manager-task-tracker-s6">{dir === 'asc' ? '↑' : '↓'}</span>;
 }
 
 // ─── Task Modal ─────────────────────────────────────────────────────────────────
@@ -149,27 +143,27 @@ function TaskModal({ task, onSave, onClose }) {
   const L = { fontSize: '0.73rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#5f665f', display: 'block', marginBottom: 5 };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+    <div className="manager-task-tracker-s7"
       onClick={onClose}>
-      <div style={{ background: '#fffaf2', borderRadius: 22, padding: '28px 28px 22px', width: '100%', maxWidth: 700, maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 40px 100px rgba(0,0,0,0.28)' }}
+      <div className="manager-task-tracker-s8"
         onClick={e => e.stopPropagation()}>
 
         {/* Modal header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 }}>
+        <div className="manager-task-tracker-s9">
           <div>
-            <p style={{ margin: 0, fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#196c6c' }}>
+            <p className="manager-task-tracker-s10">
               {task?.id ? 'Edit Task' : 'New Task'}
             </p>
-            <h3 style={{ margin: '2px 0 0', fontSize: '1.2rem', fontWeight: 800, color: '#0b2b26' }}>
+            <h3 className="manager-task-tracker-s11">
               {task?.id ? task.taskCategory || 'Edit Task' : '➕ Add New Task'}
             </h3>
           </div>
-          <button onClick={onClose} style={{ background: 'rgba(61,63,52,0.08)', border: 'none', borderRadius: 10, width: 36, height: 36, cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+          <button onClick={onClose} className="manager-task-tracker-s12">✕</button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 18px' }}>
+        <div className="manager-task-tracker-s13">
           {/* Full-width fields */}
-          <label style={{ gridColumn: '1/-1' }}>
+          <label className="manager-task-tracker-s14">
             <span style={L}>Task Category *</span>
             <input style={F} value={form.taskCategory} onChange={e => set('taskCategory', e.target.value)} placeholder="e.g. Fire Safety Works" />
           </label>
@@ -203,41 +197,35 @@ function TaskModal({ task, onSave, onClose }) {
             </select>
           </label>
 
-          <label style={{ gridColumn: '1/-1' }}>
+          <label className="manager-task-tracker-s14">
             <span style={L}>Status</span>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div className="manager-task-tracker-s15">
               {STATUS_OPTIONS.filter(Boolean).map(s => {
                 const st = STATUS_STYLE[s];
                 const active = form.status === s;
                 return (
-                  <button key={s} type="button" onClick={() => set('status', s)} style={{
-                    padding: '6px 14px', borderRadius: 20, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 700,
-                    border: `2px solid ${active ? st.border : 'rgba(61,63,52,0.12)'}`,
-                    background: active ? st.bg : 'transparent',
-                    color: active ? st.color : '#5f665f',
-                    transition: 'all 0.15s',
-                  }}>{s}</button>
+                  <button key={s} type="button" onClick={() => set('status', s)} className="manager-task-tracker-s16" style={{ border: `2px solid ${active ? st.border : 'rgba(61,63,52,0.12)'}`, background: active ? st.bg : 'transparent', color: active ? st.color : '#5f665f' }}>{s}</button>
                 );
               })}
             </div>
           </label>
 
-          <label style={{ gridColumn: '1/-1' }}>
+          <label className="manager-task-tracker-s14">
             <span style={L}>Task Description</span>
-            <textarea rows={3} style={{ ...F, resize: 'vertical' }} value={form.taskDescription} onChange={e => set('taskDescription', e.target.value)} placeholder="Describe the task in detail…" />
+            <textarea rows={3} className="manager-task-tracker-s17" style={{ ...F }} value={form.taskDescription} onChange={e => set('taskDescription', e.target.value)} placeholder="Describe the task in detail…" />
           </label>
 
-          <label style={{ gridColumn: '1/-1' }}>
+          <label className="manager-task-tracker-s14">
             <span style={L}>Remarks</span>
-            <textarea rows={2} style={{ ...F, resize: 'vertical' }} value={form.remarks} onChange={e => set('remarks', e.target.value)} placeholder="Any notes or follow-ups…" />
+            <textarea rows={2} className="manager-task-tracker-s17" style={{ ...F }} value={form.remarks} onChange={e => set('remarks', e.target.value)} placeholder="Any notes or follow-ups…" />
           </label>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 22, paddingTop: 18, borderTop: '1px solid rgba(61,63,52,0.1)' }}>
-          <button onClick={onClose} style={{ padding: '10px 22px', borderRadius: 12, border: '1px solid rgba(61,63,52,0.18)', background: '#fff', cursor: 'pointer', fontWeight: 600, fontSize: '0.88rem', fontFamily: 'inherit' }}>Cancel</button>
+        <div className="manager-task-tracker-s18">
+          <button onClick={onClose} className="manager-task-tracker-s19">Cancel</button>
           <button
             onClick={() => { if (form.taskCategory.trim()) onSave(form); }}
-            style={{ padding: '10px 24px', borderRadius: 12, border: 'none', background: '#0b2b26', color: '#C49B4F', cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', fontFamily: 'inherit' }}
+            className="manager-task-tracker-s20"
           >
             {task?.id ? '💾 Save Changes' : '➕ Add Task'}
           </button>
@@ -638,23 +626,18 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
   const colCount = COLUMNS.length + (isAdmin ? 1 : 0);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div className="manager-task-tracker-s21">
 
       {/* ── Banner ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-        borderRadius: 20, padding: '20px 24px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: 16, boxShadow: '0 6px 28px rgba(11,43,38,0.18)',
-      }}>
+      <div className="manager-task-tracker-s22">
         <div>
-          <p style={{ margin: '0 0 2px', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#C49B4F' }}>Society Manager</p>
-          <h2 style={{ margin: '0 0 2px', fontSize: '1.35rem', fontWeight: 800, color: '#fff' }}>Task &amp; Deadline Tracker</h2>
-          <p style={{ margin: 0, color: 'rgba(255,255,255,0.55)', fontSize: '0.82rem' }}>Managed by Siddu — Majestique Euriska</p>
+          <p className="manager-task-tracker-s23">Society Manager</p>
+          <h2 className="manager-task-tracker-s24">Task &amp; Deadline Tracker</h2>
+          <p className="manager-task-tracker-s25">Managed by Siddu — Majestique Euriska</p>
         </div>
 
         {/* Stats row */}
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="manager-task-tracker-s26">
           {[
             { label: 'Total',       value: stats.total,      bg: 'rgba(255,255,255,0.1)',  color: '#fff'     },
             { label: 'Done',        value: stats.done,       bg: 'rgba(110,231,183,0.2)',  color: '#6ee7b7'  },
@@ -663,15 +646,15 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
             { label: 'On Hold',     value: stats.onHold,     bg: 'rgba(216,180,254,0.2)',  color: '#d8b4fe'  },
             { label: 'Overdue',     value: stats.overdue,    bg: 'rgba(252,165,165,0.2)',  color: '#fca5a5'  },
           ].map(s => (
-            <div key={s.label} style={{ textAlign: 'center', background: s.bg, borderRadius: 10, padding: '8px 14px', minWidth: 52 }}>
-              <div style={{ fontSize: '1.15rem', fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 2 }}>{s.label}</div>
+            <div key={s.label} className="manager-task-tracker-s27" style={{ background: s.bg }}>
+              <div className="manager-task-tracker-s28" style={{ color: s.color }}>{s.value}</div>
+              <div className="manager-task-tracker-s29">{s.label}</div>
             </div>
           ))}
 
           {/* Progress ring area */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '8px 14px' }}>
-            <div style={{ position: 'relative', width: 44, height: 44 }}>
+          <div className="manager-task-tracker-s30">
+            <div className="manager-task-tracker-s31">
               <svg width="44" height="44" viewBox="0 0 44 44">
                 <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="5" />
                 <circle cx="22" cy="22" r="18" fill="none" stroke="#6ee7b7" strokeWidth="5"
@@ -679,40 +662,30 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
                   strokeDashoffset={`${2 * Math.PI * 18 * (1 - donePercent / 100)}`}
                   strokeLinecap="round"
                   transform="rotate(-90 22 22)"
-                  style={{ transition: 'stroke-dashoffset 0.6s ease' }}
+                  className="manager-task-tracker-s32"
                 />
               </svg>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, color: '#6ee7b7' }}>
+              <div className="manager-task-tracker-s33">
                 {donePercent}%
               </div>
             </div>
             <div>
-              <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.2 }}>Completion</div>
-              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>{stats.done}/{stats.total}</div>
+              <div className="manager-task-tracker-s34">Completion</div>
+              <div className="manager-task-tracker-s35">{stats.done}/{stats.total}</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* ── Workflow Engine Promotion Banner ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(13,148,136,0.08) 0%, rgba(5,150,105,0.08) 100%)',
-        border: '1px solid rgba(13,148,136,0.25)',
-        borderRadius: 14,
-        padding: '12px 18px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: 12
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: '1.3rem' }}>⚡</span>
+      <div className="manager-task-tracker-s36">
+        <div className="manager-task-tracker-s37">
+          <span className="manager-task-tracker-s38">⚡</span>
           <div>
-            <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#0f766e' }}>
+            <div className="manager-task-tracker-s39">
               Full Society Project &amp; Approval Workflow Engine Active
             </div>
-            <div style={{ fontSize: '0.78rem', color: '#475569' }}>
+            <div className="manager-task-tracker-s40">
               Includes 10-state lifecycle (Draft → In Review → Approved), Kanban board, milestones, blocker risks &amp; committee approval gates.
             </div>
           </div>
@@ -725,43 +698,21 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
               window.location.href = url.toString();
             }
           }}
-          style={{
-            background: 'linear-gradient(135deg, #0d9488, #059669)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 8,
-            padding: '7px 16px',
-            fontSize: '0.82rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(13,148,136,0.2)'
-          }}
+          className="manager-task-tracker-s41"
         >
           Open Workflow Engine →
         </button>
       </div>
 
       {/* ── Tabs ── */}
-      <div style={{ display: 'flex', gap: 8 }}>
+      <div className="manager-task-tracker-s42">
         {TABS.map(tab => (
           <button key={tab.id}
             onClick={() => { setActiveTab(tab.id); setSearch(''); setFilterStatus('All'); setFilterPriority('All'); }}
-            style={{
-              padding: '9px 18px', borderRadius: 12, border: '2px solid',
-              borderColor: activeTab === tab.id ? '#0b2b26' : 'rgba(61,63,52,0.15)',
-              cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', fontFamily: 'inherit',
-              background: activeTab === tab.id ? '#0b2b26' : 'rgba(255,250,242,0.85)',
-              color: activeTab === tab.id ? '#C49B4F' : '#1d2a24',
-              boxShadow: activeTab === tab.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none',
-              transition: 'all 0.18s', display: 'flex', alignItems: 'center', gap: 7,
-            }}>
+            className="manager-task-tracker-s43" style={{ borderColor: activeTab === tab.id ? '#0b2b26' : 'rgba(61,63,52,0.15)', background: activeTab === tab.id ? '#0b2b26' : 'rgba(255,250,242,0.85)', color: activeTab === tab.id ? '#C49B4F' : '#1d2a24', boxShadow: activeTab === tab.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none' }}>
             <span>{tab.emoji}</span>
             <span>{tab.label}</span>
-            <span style={{
-              background: activeTab === tab.id ? 'rgba(196,155,79,0.3)' : 'rgba(61,63,52,0.1)',
-              color: activeTab === tab.id ? '#C49B4F' : '#5f665f',
-              fontSize: '0.72rem', fontWeight: 700, padding: '1px 8px', borderRadius: 10,
-            }}>
+            <span className="manager-task-tracker-s44" style={{ background: activeTab === tab.id ? 'rgba(196,155,79,0.3)' : 'rgba(61,63,52,0.1)', color: activeTab === tab.id ? '#C49B4F' : '#5f665f' }}>
               {(tasks[tab.id] || []).length}
             </span>
           </button>
@@ -769,160 +720,119 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
       </div>
 
       {/* ── Table Card ── */}
-      <div style={{ background: 'rgba(255,250,242,0.95)', border: '1px solid rgba(61,63,52,0.1)', borderRadius: 20, boxShadow: '0 4px 24px rgba(11,43,38,0.06)', overflow: 'hidden' }}>
+      <div className="manager-task-tracker-s45">
 
         {/* ── Toolbar ── */}
-        <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(61,63,52,0.08)', display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
+        <div className="manager-task-tracker-s46">
 
           {/* Search */}
-          <div style={{ position: 'relative', flex: '1 1 220px', minWidth: 180 }}>
-            <span style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', opacity: 0.4, pointerEvents: 'none', fontSize: '0.9rem' }}>🔍</span>
+          <div className="manager-task-tracker-s47">
+            <span className="manager-task-tracker-s48">🔍</span>
             <input
               type="search"
               placeholder={`Search ${sorted.length} tasks…`}
               value={search}
               onChange={e => setSearch(e.target.value)}
-              style={{
-                width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 7, paddingBottom: 7,
-                borderRadius: 10, border: '1.5px solid rgba(61,63,52,0.15)', background: '#fffefb',
-                fontSize: '0.85rem', fontFamily: 'inherit', color: '#1d2a24', outline: 'none',
-              }}
+              className="manager-task-tracker-s49"
             />
           </div>
 
           {/* Status filter */}
-          <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+          <div className="manager-task-tracker-s50">
             {['All', 'Pending', 'In Progress', 'Done', 'On Hold'].map(s => {
               const st = STATUS_STYLE[s];
               const active = filterStatus === s;
               return (
-                <button key={s} onClick={() => setFilterStatus(s)} style={{
-                  padding: '5px 11px', borderRadius: 20, border: '1.5px solid',
-                  fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-                  background: active ? (st?.bg || '#0b2b26') : 'transparent',
-                  color:      active ? (st?.color || '#fff') : '#5f665f',
-                  borderColor:active ? (st?.border || '#0b2b26') : 'rgba(61,63,52,0.15)',
-                  transition: 'all 0.15s',
-                }}>{s}</button>
+                <button key={s} onClick={() => setFilterStatus(s)} className="manager-task-tracker-s51" style={{ background: active ? (st?.bg || '#0b2b26') : 'transparent', color:      active ? (st?.color || '#fff') : '#5f665f', borderColor:active ? (st?.border || '#0b2b26') : 'rgba(61,63,52,0.15)' }}>{s}</button>
               );
             })}
           </div>
 
           {/* Priority filter */}
-          <select value={filterPriority} onChange={e => setFilterPriority(e.target.value)} style={{
-            padding: '5px 10px', borderRadius: 10, border: '1.5px solid rgba(61,63,52,0.15)',
-            background: '#fffefb', fontSize: '0.78rem', fontFamily: 'inherit', cursor: 'pointer', color: '#1d2a24',
-          }}>
+          <select value={filterPriority} onChange={e => setFilterPriority(e.target.value)} className="manager-task-tracker-s52">
             <option value="All">All Priorities</option>
             {PRIORITY_OPTIONS.filter(Boolean).map(p => <option key={p} value={p}>{p}</option>)}
           </select>
 
           {/* Spacer + right actions */}
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <div className="manager-task-tracker-s53">
             <button
               onClick={handleExportCSV}
-              style={{
-                padding: '7px 14px', borderRadius: 10,
-                border: '1.5px solid rgba(61,63,52,0.18)',
-                background: '#fff', color: '#1d2a24',
-                fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
-                display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
-                transition: 'all 0.15s'
-              }}
+              className="manager-task-tracker-s54"
               title="Export tasks to CSV"
             >
               📥 Export CSV
             </button>
             <button
               onClick={handleExportPDF}
-              style={{
-                padding: '7px 14px', borderRadius: 10,
-                border: '1.5px solid rgba(61,63,52,0.18)',
-                background: '#fff', color: '#1d2a24',
-                fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
-                display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
-                transition: 'all 0.15s'
-              }}
+              className="manager-task-tracker-s54"
               title="Print or export as PDF"
             >
               📄 Print PDF
             </button>
 
-            {saveStatus && <span style={{ fontSize: '0.8rem', color: saveStatus.includes('✓') ? '#065f46' : '#991b1b', fontWeight: 700 }}>{saveStatus}</span>}
+            {saveStatus && <span className="manager-task-tracker-s55" style={{ color: saveStatus.includes('✓') ? '#065f46' : '#991b1b' }}>{saveStatus}</span>}
 
             {/* Page size picker */}
-            <label style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.78rem', color: '#5f665f' }}>
+            <label className="manager-task-tracker-s56">
               Show
-              <select value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }} style={{ padding: '4px 8px', borderRadius: 8, border: '1.5px solid rgba(61,63,52,0.15)', background: '#fffefb', fontFamily: 'inherit', fontSize: '0.78rem', cursor: 'pointer' }}>
+              <select value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }} className="manager-task-tracker-s57">
                 {PAGE_SIZE_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
               </select>
               rows
             </label>
 
             {isAdmin && (
-              <button onClick={() => setModalTask({})} style={{
-                padding: '7px 15px', borderRadius: 10, border: 'none',
-                background: '#0b2b26', color: '#C49B4F', fontWeight: 700, fontSize: '0.82rem',
-                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'inherit',
-              }}>➕ Add Task</button>
+              <button onClick={() => setModalTask({})} className="manager-task-tracker-s58">➕ Add Task</button>
             )}
           </div>
         </div>
 
         {/* ── Results info bar ── */}
         {(search || filterStatus !== 'All' || filterPriority !== 'All') && (
-          <div style={{ padding: '7px 16px', background: 'rgba(196,155,79,0.08)', borderBottom: '1px solid rgba(196,155,79,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-            <span style={{ fontSize: '0.78rem', color: '#92400e', fontWeight: 600 }}>
+          <div className="manager-task-tracker-s59">
+            <span className="manager-task-tracker-s60">
               🔎 {sorted.length} result{sorted.length !== 1 ? 's' : ''} found
               {search && <> for "<strong>{search}</strong>"</>}
             </span>
-            <button onClick={() => { setSearch(''); setFilterStatus('All'); setFilterPriority('All'); }} style={{ fontSize: '0.75rem', color: '#92400e', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}>Clear filters</button>
+            <button onClick={() => { setSearch(''); setFilterStatus('All'); setFilterPriority('All'); }} className="manager-task-tracker-s61">Clear filters</button>
           </div>
         )}
 
         {/* ── Table ── */}
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1000 }}>
+        <div className="manager-task-tracker-s62">
+          <table className="manager-task-tracker-s63">
             <thead>
-              <tr style={{ background: 'rgba(244,239,231,0.95)', position: 'sticky', top: 0, zIndex: 2 }}>
+              <tr className="manager-task-tracker-s64">
                 {COLUMNS.map(col => (
                   <th key={col.key}
                     onClick={col.sortable ? () => handleSort(col.key) : undefined}
-                    style={{
-                      padding: '10px 12px', textAlign: 'left', whiteSpace: 'nowrap',
-                      fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase',
-                      letterSpacing: '0.07em', color: sort.key === col.key ? '#196c6c' : '#5f665f',
-                      borderBottom: '2px solid rgba(61,63,52,0.1)',
-                      cursor: col.sortable ? 'pointer' : 'default',
-                      userSelect: 'none', minWidth: col.w,
-                      background: sort.key === col.key ? 'rgba(25,108,108,0.06)' : undefined,
-                      transition: 'background 0.15s',
-                    }}>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    className="manager-task-tracker-s65" style={{ color: sort.key === col.key ? '#196c6c' : '#5f665f', cursor: col.sortable ? 'pointer' : 'default', minWidth: col.w, background: sort.key === col.key ? 'rgba(25,108,108,0.06)' : undefined }}>
+                    <span className="manager-task-tracker-s66">
                       {col.label}
                       {col.sortable && <SortIcon dir={sort.key === col.key ? sort.dir : null} />}
                     </span>
                   </th>
                 ))}
                 {isAdmin && (
-                  <th style={{ padding: '10px 12px', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#5f665f', borderBottom: '2px solid rgba(61,63,52,0.1)', whiteSpace: 'nowrap', minWidth: 90 }}>Actions</th>
+                  <th className="manager-task-tracker-s67">Actions</th>
                 )}
               </tr>
             </thead>
 
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={colCount} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, color: '#5f665f', opacity: 0.7 }}>
-                    <div style={{ fontSize: '2rem', animation: 'spin 1s linear infinite' }}>⏳</div>
-                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Loading tasks…</span>
+                <tr><td colSpan={colCount} className="manager-task-tracker-s68">
+                  <div className="manager-task-tracker-s69">
+                    <div className="manager-task-tracker-s70">⏳</div>
+                    <span className="manager-task-tracker-s71">Loading tasks…</span>
                   </div>
                 </td></tr>
               ) : paginated.length === 0 ? (
-                <tr><td colSpan={colCount} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, color: '#5f665f', opacity: 0.6 }}>
-                    <div style={{ fontSize: '2.5rem' }}>📭</div>
-                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>No tasks match your filters</span>
+                <tr><td colSpan={colCount} className="manager-task-tracker-s68">
+                  <div className="manager-task-tracker-s72">
+                    <div className="manager-task-tracker-s73">📭</div>
+                    <span className="manager-task-tracker-s71">No tasks match your filters</span>
                   </div>
                 </td></tr>
               ) : (
@@ -935,86 +845,79 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
                   const rowBg = isDone ? 'rgba(209,250,229,0.2)' : isOverdue ? 'rgba(254,226,226,0.28)' : 'transparent';
 
                   return (
-                    <tr key={task.id} style={{ borderBottom: '1px solid rgba(61,63,52,0.06)', background: rowBg, transition: 'background 0.12s' }}
+                    <tr key={task.id} className="manager-task-tracker-s74" style={{ background: rowBg }}
                       onMouseEnter={e => { if (!isDone && !isOverdue) e.currentTarget.style.background = 'rgba(244,239,231,0.55)'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = rowBg; }}>
 
                       {/* # */}
-                      <td style={{ padding: '9px 12px', fontSize: '0.73rem', color: '#c4b99a', fontWeight: 700, textAlign: 'right', paddingRight: 8 }}>
+                      <td className="manager-task-tracker-s75">
                         {globalIdx}
                       </td>
 
                       {/* Task Category */}
-                      <td style={{ padding: '9px 12px', minWidth: 160 }}>
-                        <strong style={{ fontSize: '0.85rem', display: 'block', color: '#1d2a24', lineHeight: 1.35 }}>
+                      <td className="manager-task-tracker-s76">
+                        <strong className="manager-task-tracker-s77">
                           {highlight(task.taskCategory, search) || '—'}
                         </strong>
-                        <span style={{ fontSize: '0.68rem', color: '#c4b99a', marginTop: 1, display: 'block' }}>{task.id}</span>
+                        <span className="manager-task-tracker-s78">{task.id}</span>
                       </td>
 
                       {/* Area */}
-                      <td style={{ padding: '9px 12px', fontSize: '0.8rem', color: '#5f665f', whiteSpace: 'nowrap' }}>
-                        {task.area || <span style={{ color: '#c4b99a' }}>—</span>}
+                      <td className="manager-task-tracker-s79">
+                        {task.area || <span className="manager-task-tracker-s80">—</span>}
                       </td>
 
                       {/* Description */}
-                      <td style={{ padding: '9px 12px', maxWidth: 240 }}>
-                        <span style={{ fontSize: '0.8rem', color: '#3d4534', lineHeight: 1.45,
-                          overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                          {highlight(task.taskDescription, search) || <span style={{ color: '#c4b99a' }}>—</span>}
+                      <td className="manager-task-tracker-s81">
+                        <span className="manager-task-tracker-s82">
+                          {highlight(task.taskDescription, search) || <span className="manager-task-tracker-s80">—</span>}
                         </span>
                       </td>
 
                       {/* Vendor */}
-                      <td style={{ padding: '9px 12px', fontSize: '0.8rem', color: '#5f665f' }}>
-                        {highlight(task.vendorName, search) || <span style={{ color: '#c4b99a' }}>—</span>}
+                      <td className="manager-task-tracker-s83">
+                        {highlight(task.vendorName, search) || <span className="manager-task-tracker-s80">—</span>}
                       </td>
 
                       {/* Assigned To */}
-                      <td style={{ padding: '9px 12px' }}>
+                      <td className="manager-task-tracker-s84">
                         {task.assignedTo
-                          ? <span style={{ display: 'inline-block', fontSize: '0.73rem', fontWeight: 700, background: '#e3efe5', color: '#31553e', padding: '2px 9px', borderRadius: 20 }}>{task.assignedTo}</span>
-                          : <span style={{ color: '#c4b99a', fontSize: '0.78rem' }}>—</span>}
+                          ? <span className="manager-task-tracker-s85">{task.assignedTo}</span>
+                          : <span className="manager-task-tracker-s2">—</span>}
                       </td>
 
                       {/* Start Date */}
-                      <td style={{ padding: '9px 12px', fontSize: '0.78rem', color: '#5f665f', whiteSpace: 'nowrap' }}>{fmtDate(task.startDate)}</td>
+                      <td className="manager-task-tracker-s86">{fmtDate(task.startDate)}</td>
 
                       {/* Deadline */}
-                      <td style={{ padding: '9px 12px', fontSize: '0.78rem', whiteSpace: 'nowrap', fontWeight: isOverdue ? 700 : 400, color: isOverdue ? '#991b1b' : '#5f665f' }}>{fmtDate(task.deadline)}</td>
+                      <td className="manager-task-tracker-s87" style={{ fontWeight: isOverdue ? 700 : 400, color: isOverdue ? '#991b1b' : '#5f665f' }}>{fmtDate(task.deadline)}</td>
 
                       {/* Priority */}
-                      <td style={{ padding: '9px 12px' }}><Pill text={task.priority} styleMap={PRIORITY_STYLE} /></td>
+                      <td className="manager-task-tracker-s84"><Pill text={task.priority} styleMap={PRIORITY_STYLE} /></td>
 
                       {/* Status */}
-                      <td style={{ padding: '9px 12px' }}>
+                      <td className="manager-task-tracker-s84">
                         {isAdmin
-                          ? <select value={task.status || ''} onChange={e => quickStatus(task.id, e.target.value)} style={{
-                              padding: '3px 7px', borderRadius: 8, border: '1.5px solid',
-                              borderColor: STATUS_STYLE[task.status]?.border || 'rgba(61,63,52,0.15)',
-                              background:  STATUS_STYLE[task.status]?.bg    || '#fff',
-                              color:       STATUS_STYLE[task.status]?.color || '#1d2a24',
-                              fontWeight: 600, fontSize: '0.73rem', cursor: 'pointer', fontFamily: 'inherit',
-                            }}>
+                          ? <select value={task.status || ''} onChange={e => quickStatus(task.id, e.target.value)} className="manager-task-tracker-s88" style={{ borderColor: STATUS_STYLE[task.status]?.border || 'rgba(61,63,52,0.15)', background:  STATUS_STYLE[task.status]?.bg    || '#fff', color:       STATUS_STYLE[task.status]?.color || '#1d2a24' }}>
                               {STATUS_OPTIONS.map(o => <option key={o} value={o}>{o || '—'}</option>)}
                             </select>
                           : <Pill text={task.status} styleMap={STATUS_STYLE} />}
                       </td>
 
                       {/* Days Left */}
-                      <td style={{ padding: '9px 12px' }}><DaysChip days={daysLeft} /></td>
+                      <td className="manager-task-tracker-s84"><DaysChip days={daysLeft} /></td>
 
                       {/* Remarks */}
-                      <td style={{ padding: '9px 12px', fontSize: '0.78rem', color: '#5f665f', minWidth: 100 }}>
-                        {task.remarks || <span style={{ color: '#c4b99a' }}>—</span>}
+                      <td className="manager-task-tracker-s89">
+                        {task.remarks || <span className="manager-task-tracker-s80">—</span>}
                       </td>
 
                       {/* Actions */}
                       {isAdmin && (
-                        <td style={{ padding: '9px 12px', whiteSpace: 'nowrap' }}>
-                          <div style={{ display: 'flex', gap: 5 }}>
-                            <button onClick={() => setModalTask(task)} title="Edit" style={{ padding: '3px 8px', borderRadius: 7, border: '1px solid rgba(61,63,52,0.15)', background: '#fff', cursor: 'pointer', fontSize: '0.75rem' }}>✏️</button>
-                            <button onClick={() => deleteTask(task.id)} title="Delete" style={{ padding: '3px 8px', borderRadius: 7, border: '1px solid rgba(220,38,38,0.2)', background: '#fff0f0', color: '#dc2626', cursor: 'pointer', fontSize: '0.75rem' }}>🗑️</button>
+                        <td className="manager-task-tracker-s90">
+                          <div className="manager-task-tracker-s91">
+                            <button onClick={() => setModalTask(task)} title="Edit" className="manager-task-tracker-s92">✏️</button>
+                            <button onClick={() => deleteTask(task.id)} title="Delete" className="manager-task-tracker-s93">🗑️</button>
                           </div>
                         </td>
                       )}
@@ -1027,26 +930,23 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
         </div>
 
         {/* ── Pagination footer ── */}
-        <div style={{
-          padding: '10px 16px', borderTop: '1px solid rgba(61,63,52,0.08)',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10,
-        }}>
+        <div className="manager-task-tracker-s94">
           {/* Info */}
-          <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
+          <span className="manager-task-tracker-s95">
             {sorted.length === 0 ? 'No results' : `Showing ${((page - 1) * pageSize) + 1}–${Math.min(page * pageSize, sorted.length)} of ${sorted.length} tasks`}
             {sorted.length !== currentTasks.length && ` (filtered from ${currentTasks.length})`}
           </span>
 
           {/* Page controls */}
           {totalPages > 1 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <div className="manager-task-tracker-s96">
               <button onClick={() => setPage(1)} disabled={page === 1} style={pgBtn(page === 1)}>«</button>
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={pgBtn(page === 1)}>‹</button>
 
               {/* Page number pills */}
               {getPageRange(page, totalPages).map((p, i) =>
                 p === '…' ? (
-                  <span key={`gap-${i}`} style={{ padding: '0 4px', color: '#9ca3af', fontSize: '0.78rem' }}>…</span>
+                  <span key={`gap-${i}`} className="manager-task-tracker-s97">…</span>
                 ) : (
                   <button key={p} onClick={() => setPage(p)} style={{
                     ...pgBtn(false),
@@ -1060,7 +960,7 @@ export default function ManagerTaskTracker({ isAdmin = false }) {
               <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={pgBtn(page === totalPages)}>›</button>
               <button onClick={() => setPage(totalPages)} disabled={page === totalPages} style={pgBtn(page === totalPages)}>»</button>
 
-              <span style={{ fontSize: '0.73rem', color: '#9ca3af', marginLeft: 4 }}>of {totalPages}</span>
+              <span className="manager-task-tracker-s98">of {totalPages}</span>
             </div>
           )}
         </div>

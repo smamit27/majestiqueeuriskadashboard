@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Check, ChevronDown, X, Search, Plus, Users, UserCheck } from 'lucide-react';
+import './MultiSelectDropdown.css';
+
 
 /**
  * Reusable Multi-Select Dropdown with Checkboxes, Wing/Category Filter, Search & Custom Tagging
@@ -157,15 +159,15 @@ export default function MultiSelectDropdown({
   };
 
   return (
-    <div className={`reusable-multiselect ${className}`} ref={dropdownRef} style={{ position: 'relative', width: '100%' }}>
+    <div className={`reusable-multiselect ${className} multi-select-dropdown-s1`} ref={dropdownRef}>
       {/* Label */}
       {label && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-          <label style={{ fontSize: '0.76rem', fontWeight: 800, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+        <div className="multi-select-dropdown-s2">
+          <label className="multi-select-dropdown-s3">
             {label}
           </label>
           {selectedValues.length > 0 && (
-            <span style={{ fontSize: '0.74rem', color: '#059669', fontWeight: 700 }}>
+            <span className="multi-select-dropdown-s4">
               {selectedValues.length} member{selectedValues.length !== 1 ? 's' : ''} selected
             </span>
           )}
@@ -176,25 +178,11 @@ export default function MultiSelectDropdown({
       <div
         data-testid="multiselect-trigger"
         onClick={() => setIsOpen(!isOpen)}
-        style={{
-          width: '100%',
-          minHeight: '44px',
-          padding: '6px 12px',
-          borderRadius: '10px',
-          border: isOpen ? '1.5px solid #059669' : '1px solid #cbd5e1',
-          background: '#ffffff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          cursor: 'pointer',
-          boxSizing: 'border-box',
-          boxShadow: isOpen ? '0 0 0 3px rgba(5, 150, 105, 0.12)' : 'none',
-          transition: 'all 0.15s ease'
-        }}
+        className="multi-select-dropdown-s5" style={{ border: isOpen ? '1.5px solid #059669' : '1px solid #cbd5e1', boxShadow: isOpen ? '0 0 0 3px rgba(5, 150, 105, 0.12)' : 'none' }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', flex: 1, paddingRight: '8px' }}>
+        <div className="multi-select-dropdown-s6">
           {selectedValues.length === 0 ? (
-            <span style={{ color: '#94a3b8', fontSize: '0.86rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span className="multi-select-dropdown-s7">
               <Users size={15} color="#94a3b8" />
               {placeholder}
             </span>
@@ -205,33 +193,14 @@ export default function MultiSelectDropdown({
               return (
                 <span
                   key={val}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    padding: '3px 8px',
-                    borderRadius: '6px',
-                    fontSize: '0.76rem',
-                    fontWeight: 700,
-                    background: wingStyle.bg,
-                    color: wingStyle.text,
-                    border: `1px solid ${wingStyle.border}`
-                  }}
+                  className="multi-select-dropdown-s8" style={{ background: wingStyle.bg, color: wingStyle.text, border: `1px solid ${wingStyle.border}` }}
                   onClick={e => e.stopPropagation()}
                 >
                   {matchedOpt ? `${matchedOpt.flatNo} (${matchedOpt.name})` : val}
                   <button
                     type="button"
                     onClick={(e) => handleRemoveChip(val, e)}
-                    style={{
-                      border: 'none',
-                      background: 'transparent',
-                      color: wingStyle.text,
-                      cursor: 'pointer',
-                      padding: 0,
-                      display: 'flex',
-                      alignItems: 'center'
-                    }}
+                    className="multi-select-dropdown-s9" style={{ color: wingStyle.text }}
                   >
                     <X size={12} />
                   </button>
@@ -242,35 +211,20 @@ export default function MultiSelectDropdown({
         </div>
 
         {/* Right Actions: Clear button & Chevron */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+        <div className="multi-select-dropdown-s10">
           {selectedValues.length > 0 && (
             <button
               type="button"
               onClick={handleClearAll}
               title="Clear all selected"
-              style={{
-                background: '#f1f5f9',
-                border: 'none',
-                borderRadius: '50%',
-                width: '20px',
-                height: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#64748b',
-                cursor: 'pointer'
-              }}
+              className="multi-select-dropdown-s11"
             >
               <X size={12} />
             </button>
           )}
           <ChevronDown
             size={16}
-            style={{
-              color: '#64748b',
-              transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: 'transform 0.2s ease'
-            }}
+            className="multi-select-dropdown-s12" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         </div>
       </div>
@@ -278,45 +232,25 @@ export default function MultiSelectDropdown({
       {/* Flyout Dropdown Menu */}
       {isOpen && (
         <div
-          style={{
-            position: 'absolute',
-            top: 'calc(100% + 6px)',
-            left: 0,
-            right: 0,
-            background: '#ffffff',
-            borderRadius: '12px',
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 12px 28px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.06)',
-            zIndex: 1000,
-            overflow: 'hidden',
-            animation: 'fadeIn 0.15s ease-out'
-          }}
+          className="multi-select-dropdown-s13"
         >
           {/* Search Box Header */}
-          <div style={{ padding: '10px 12px', borderBottom: '1px solid #f1f5f9', background: '#f8fafc' }}>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <Search size={14} style={{ position: 'absolute', left: '10px', color: '#94a3b8' }} />
+          <div className="multi-select-dropdown-s14">
+            <div className="multi-select-dropdown-s15">
+              <Search size={14} className="multi-select-dropdown-s16" />
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search flat no (e.g. 204, 306) or member name..."
-                style={{
-                  width: '100%',
-                  padding: '7px 28px 7px 32px',
-                  borderRadius: '8px',
-                  border: '1px solid #cbd5e1',
-                  fontSize: '0.82rem',
-                  outline: 'none',
-                  background: '#ffffff'
-                }}
+                className="multi-select-dropdown-s17"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  style={{ position: 'absolute', right: '8px', border: 'none', background: 'transparent', cursor: 'pointer', color: '#94a3b8' }}
+                  className="multi-select-dropdown-s18"
                 >
                   <X size={13} />
                 </button>
@@ -324,7 +258,7 @@ export default function MultiSelectDropdown({
             </div>
 
             {/* Wing / Category Filter Tabs */}
-            <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
+            <div className="multi-select-dropdown-s19">
               {[
                 { id: 'ALL', label: `All (${normalizedOptions.length})` },
                 { id: 'Wing A', label: `Wing A (${normalizedOptions.filter(o => o.wing === 'Wing A').length})` },
@@ -337,18 +271,7 @@ export default function MultiSelectDropdown({
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveWingTab(tab.id)}
-                    style={{
-                      flex: 1,
-                      padding: '4px 6px',
-                      borderRadius: '6px',
-                      border: isActive ? '1px solid #059669' : '1px solid #e2e8f0',
-                      background: isActive ? '#059669' : '#ffffff',
-                      color: isActive ? '#ffffff' : '#475569',
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease'
-                    }}
+                    className="multi-select-dropdown-s20" style={{ border: isActive ? '1px solid #059669' : '1px solid #e2e8f0', background: isActive ? '#059669' : '#ffffff', color: isActive ? '#ffffff' : '#475569' }}
                   >
                     {tab.label}
                   </button>
@@ -358,22 +281,22 @@ export default function MultiSelectDropdown({
           </div>
 
           {/* Quick Batch Actions Row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 12px', background: '#f1f5f9', borderBottom: '1px solid #e2e8f0', fontSize: '0.72rem' }}>
-            <span style={{ color: '#64748b', fontWeight: 600 }}>
+          <div className="multi-select-dropdown-s21">
+            <span className="multi-select-dropdown-s22">
               Showing {filteredOptions.length} of {normalizedOptions.length}
             </span>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className="multi-select-dropdown-s23">
               <button
                 type="button"
                 onClick={handleSelectAllFiltered}
-                style={{ border: 'none', background: 'transparent', color: '#059669', fontWeight: 700, cursor: 'pointer', padding: 0 }}
+                className="multi-select-dropdown-s24"
               >
                 + Select Visible
               </button>
               <button
                 type="button"
                 onClick={handleDeselectFiltered}
-                style={{ border: 'none', background: 'transparent', color: '#dc2626', fontWeight: 700, cursor: 'pointer', padding: 0 }}
+                className="multi-select-dropdown-s25"
               >
                 Deselect Visible
               </button>
@@ -381,9 +304,9 @@ export default function MultiSelectDropdown({
           </div>
 
           {/* Options List with Checkboxes */}
-          <div style={{ maxHeight: '250px', overflowY: 'auto', padding: '4px 0' }}>
+          <div className="multi-select-dropdown-s26">
             {filteredOptions.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '18px', color: '#94a3b8', fontSize: '0.8rem' }}>
+              <div className="multi-select-dropdown-s27">
                 No committee members match "{searchQuery}" in {activeWingTab}.
               </div>
             ) : (
@@ -394,16 +317,7 @@ export default function MultiSelectDropdown({
                   <div
                     key={opt.id}
                     onClick={() => handleToggle(opt.id)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '8px 12px',
-                      cursor: 'pointer',
-                      background: isChecked ? 'rgba(5, 150, 105, 0.05)' : 'transparent',
-                      borderBottom: '1px solid #f8fafc',
-                      transition: 'background 0.15s ease'
-                    }}
+                    className="multi-select-dropdown-s28" style={{ background: isChecked ? 'rgba(5, 150, 105, 0.05)' : 'transparent' }}
                     onMouseEnter={e => {
                       if (!isChecked) e.currentTarget.style.background = '#f8fafc';
                     }}
@@ -411,49 +325,29 @@ export default function MultiSelectDropdown({
                       if (!isChecked) e.currentTarget.style.background = 'transparent';
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="multi-select-dropdown-s29">
                       {/* Checkbox Box */}
                       <div
-                        style={{
-                          width: '18px',
-                          height: '18px',
-                          borderRadius: '4px',
-                          border: isChecked ? '2px solid #059669' : '1.5px solid #cbd5e1',
-                          background: isChecked ? '#059669' : '#ffffff',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                          transition: 'all 0.15s ease'
-                        }}
+                        className="multi-select-dropdown-s30" style={{ border: isChecked ? '2px solid #059669' : '1.5px solid #cbd5e1', background: isChecked ? '#059669' : '#ffffff' }}
                       >
                         {isChecked && <Check size={12} color="#ffffff" strokeWidth={3} />}
                       </div>
 
                       {/* Flat No Pill */}
                       <span
-                        style={{
-                          fontSize: '0.74rem',
-                          fontWeight: 800,
-                          padding: '2px 7px',
-                          borderRadius: '5px',
-                          background: wingBadge.bg,
-                          color: wingBadge.text,
-                          border: `1px solid ${wingBadge.border}`,
-                          fontFamily: 'monospace'
-                        }}
+                        className="multi-select-dropdown-s31" style={{ background: wingBadge.bg, color: wingBadge.text, border: `1px solid ${wingBadge.border}` }}
                       >
                         {opt.flatNo}
                       </span>
 
                       {/* Member Name */}
-                      <span style={{ fontSize: '0.84rem', fontWeight: 700, color: '#0f172a' }}>
+                      <span className="multi-select-dropdown-s32">
                         {opt.name}
                       </span>
                     </div>
 
                     {/* Wing Name Badge */}
-                    <span style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 600 }}>
+                    <span className="multi-select-dropdown-s33">
                       {opt.wing}
                     </span>
                   </div>
@@ -466,46 +360,19 @@ export default function MultiSelectDropdown({
           {allowCustom && (
             <form
               onSubmit={handleAddCustom}
-              style={{
-                display: 'flex',
-                gap: '8px',
-                padding: '8px 12px',
-                background: '#f8fafc',
-                borderTop: '1px solid #e2e8f0'
-              }}
+              className="multi-select-dropdown-s34"
             >
               <input
                 type="text"
                 value={customInput}
                 onChange={e => setCustomInput(e.target.value)}
                 placeholder="Add other attendee (e.g. Estate Manager, Auditor)..."
-                style={{
-                  flex: 1,
-                  padding: '6px 10px',
-                  borderRadius: '6px',
-                  border: '1px solid #cbd5e1',
-                  fontSize: '0.78rem',
-                  outline: 'none',
-                  background: '#ffffff'
-                }}
+                className="multi-select-dropdown-s35"
               />
               <button
                 type="submit"
                 disabled={!customInput.trim()}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '6px 10px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: '#0b2b26',
-                  color: '#ffffff',
-                  fontSize: '0.76rem',
-                  fontWeight: 700,
-                  cursor: customInput.trim() ? 'pointer' : 'not-allowed',
-                  opacity: customInput.trim() ? 1 : 0.6
-                }}
+                className="multi-select-dropdown-s36" style={{ cursor: customInput.trim() ? 'pointer' : 'not-allowed', opacity: customInput.trim() ? 1 : 0.6 }}
               >
                 <Plus size={13} />
                 Add
@@ -514,12 +381,11 @@ export default function MultiSelectDropdown({
           )}
 
           {/* Done Button Bar */}
-          <div style={{ padding: '8px 12px', background: '#ffffff', borderTop: '1px solid #f1f5f9', textAlign: 'right' }}>
+          <div className="multi-select-dropdown-s37">
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="button-primary"
-              style={{ padding: '6px 16px', fontSize: '0.78rem' }}
+              className="button-primary multi-select-dropdown-s38"
             >
               Done ({selectedValues.length} Selected)
             </button>

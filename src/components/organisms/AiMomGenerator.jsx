@@ -48,6 +48,8 @@ import VisualAgendaPoster from './VisualAgendaPoster.jsx';
 import { OFFICIAL_MOM_TEMPLATES } from '../../data/momTemplatesData.js';
 import AiMomSkeletonLoader from '../molecules/AiMomSkeletonLoader.jsx';
 import MonthlyMomStorageVault from './MonthlyMomStorageVault.jsx';
+import './AiMomGenerator.css';
+
 
 const SAMPLE_A_BUILDING_NOTES = `Wing A Managing Committee Monthly Review:
 1. Lift 1 between 4th and 5th floor had reported jerky movement. Otis technician visited on Tuesday, diagnosed sensor calibration issue. Sensor replaced under AMC; lift running smoothly now.
@@ -675,35 +677,22 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
   const activeDoc = editableMom || generatedMom;
 
   return (
-    <div className="section-card ai-mom-container" style={{ padding: '24px', borderRadius: '18px', background: '#ffffff', minHeight: '85vh' }}>
+    <div className="section-card ai-mom-container ai-mom-generator-s1">
       
       {/* ── AI Secretary Agent Feedback Banner ── */}
       {agentFeedback && (
         <div
           data-testid="agent-feedback-toast"
-          style={{
-            marginBottom: '16px',
-            padding: '10px 16px',
-            borderRadius: '10px',
-            fontSize: '0.84rem',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            background: agentFeedback.type === 'success' ? '#ecfdf5' : agentFeedback.type === 'warning' ? '#fffbeb' : '#eff6ff',
-            color: agentFeedback.type === 'success' ? '#065f46' : agentFeedback.type === 'warning' ? '#92400e' : '#1e40af',
-            border: `1px solid ${agentFeedback.type === 'success' ? '#a7f3d0' : agentFeedback.type === 'warning' ? '#fde68a' : '#bfdbfe'}`,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-          }}
+          className="ai-mom-generator-s2" style={{ background: agentFeedback.type === 'success' ? '#ecfdf5' : agentFeedback.type === 'warning' ? '#fffbeb' : '#eff6ff', color: agentFeedback.type === 'success' ? '#065f46' : agentFeedback.type === 'warning' ? '#92400e' : '#1e40af', border: `1px solid ${agentFeedback.type === 'success' ? '#a7f3d0' : agentFeedback.type === 'warning' ? '#fde68a' : '#bfdbfe'}` }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="ai-mom-generator-s3">
             <Bot size={18} />
             <span>{agentFeedback.message}</span>
           </div>
           <button
             type="button"
             onClick={() => setAgentFeedback(null)}
-            style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'inherit', padding: 0, fontWeight: 800 }}
+            className="ai-mom-generator-s4"
           >
             ✕
           </button>
@@ -711,22 +700,22 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
       )}
 
       {/* ── Top Header & Context ── */}
-      <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
+      <div className="no-print ai-mom-generator-s5">
         <div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(16, 185, 129, 0.1)', color: '#047857', padding: '4px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.5px' }}>
+          <div className="ai-mom-generator-s6">
             <Sparkles size={14} color="#10b981" />
             AI Governance Suite
           </div>
-          <h2 style={{ margin: 0, fontSize: '1.6rem', fontWeight: 800, color: '#0b2b26', letterSpacing: '-0.02em' }}>
+          <h2 className="ai-mom-generator-s7">
             AI Minutes of Meeting (MOM) Generator
           </h2>
-          <p style={{ margin: '4px 0 0', fontSize: '0.88rem', color: '#4b5563' }}>
+          <p className="ai-mom-generator-s8">
             Transform raw meeting discussions, voice notes, or bullet points into formal society minutes tailored for <strong>Building 'A'</strong> or <strong>Common Society Infrastructure</strong>.
           </p>
         </div>
 
         {/* Action Buttons: Monthly MOM Vault & Meeting History */}
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="ai-mom-generator-s9">
           <button
             type="button"
             data-testid="header-monthly-mom-vault-btn"
@@ -739,21 +728,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 }
               }, 60);
             }}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '0.84rem',
-              fontWeight: 800,
-              padding: '8px 16px',
-              borderRadius: '10px',
-              background: activeView === 'vault' ? '#1d4ed8' : '#eff6ff',
-              color: activeView === 'vault' ? '#ffffff' : '#1d4ed8',
-              border: activeView === 'vault' ? '1.5px solid #1d4ed8' : '1.5px solid #bfdbfe',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 4px rgba(37, 99, 235, 0.08)'
-            }}
+            className="ai-mom-generator-s10" style={{ background: activeView === 'vault' ? '#1d4ed8' : '#eff6ff', color: activeView === 'vault' ? '#ffffff' : '#1d4ed8', border: activeView === 'vault' ? '1.5px solid #1d4ed8' : '1.5px solid #bfdbfe' }}
           >
             <FolderArchive size={16} />
             📁 Monthly MOM Vault & Upload (PDF / Image)
@@ -771,22 +746,8 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 }
               }, 60);
             }}
-            className="button-secondary"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '0.84rem',
-              fontWeight: 700,
-              padding: '8px 16px',
-              borderRadius: '10px',
-              background: activeView === 'history' ? '#0f172a' : '#f8fafc',
-              color: activeView === 'history' ? '#ffffff' : '#1e293b',
-              border: activeView === 'history' ? '1.5px solid #0f172a' : '1.5px solid #cbd5e1',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
-            }}
+            className="button-secondary ai-mom-generator-s11"
+            style={{ background: activeView === 'history' ? '#0f172a' : '#f8fafc', color: activeView === 'history' ? '#ffffff' : '#1e293b', border: activeView === 'history' ? '1.5px solid #0f172a' : '1.5px solid #cbd5e1' }}
           >
             <History size={15} />
             Meeting History & Templates ({savedMoms.length + OFFICIAL_MOM_TEMPLATES.length})
@@ -795,49 +756,28 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
       </div>
 
       {/* ── Big Scope Switcher: Building 'A' vs Common ── */}
-      <div className="no-print" style={{ marginBottom: '24px' }}>
-        <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 800, color: '#1f2937', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+      <div className="no-print ai-mom-generator-s12">
+        <label className="ai-mom-generator-s13">
           Select Target Meeting Scope:
         </label>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' }}>
+        <div className="ai-mom-generator-s14">
           
           {/* Wing A Option */}
           <div
             onClick={() => handleScopeChange('A_BUILDING')}
-            style={{
-              padding: '16px 20px',
-              borderRadius: '14px',
-              border: scope === 'A_BUILDING' ? '2px solid #059669' : '1.5px solid #e5e7eb',
-              background: scope === 'A_BUILDING' ? 'rgba(5, 150, 105, 0.05)' : '#ffffff',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: scope === 'A_BUILDING' ? '0 4px 14px rgba(5, 150, 105, 0.12)' : 'none',
-              display: 'flex',
-              gap: '14px',
-              alignItems: 'flex-start'
-            }}
+            className="ai-mom-generator-s15" style={{ border: scope === 'A_BUILDING' ? '2px solid #059669' : '1.5px solid #e5e7eb', background: scope === 'A_BUILDING' ? 'rgba(5, 150, 105, 0.05)' : '#ffffff', boxShadow: scope === 'A_BUILDING' ? '0 4px 14px rgba(5, 150, 105, 0.12)' : 'none' }}
           >
-            <div style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '10px',
-              background: scope === 'A_BUILDING' ? '#059669' : '#f3f4f6',
-              color: scope === 'A_BUILDING' ? '#ffffff' : '#6b7280',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0
-            }}>
+            <div className="ai-mom-generator-s16" style={{ background: scope === 'A_BUILDING' ? '#059669' : '#f3f4f6', color: scope === 'A_BUILDING' ? '#ffffff' : '#6b7280' }}>
               <Building2 size={22} />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.02rem', fontWeight: 800, color: '#0b2b26' }}>🏢 Building 'A' (Wing A)</span>
+              <div className="ai-mom-generator-s3">
+                <span className="ai-mom-generator-s17">🏢 Building 'A' (Wing A)</span>
                 {scope === 'A_BUILDING' && (
-                  <span style={{ background: '#059669', color: 'white', fontSize: '0.68rem', fontWeight: 800, padding: '2px 8px', borderRadius: '10px' }}>ACTIVE</span>
+                  <span className="ai-mom-generator-s18">ACTIVE</span>
                 )}
               </div>
-              <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: '#4b5563', lineHeight: '1.4' }}>
+              <p className="ai-mom-generator-s19">
                 Majestique Euriska 'A' Building CHS Ltd. (87 flats, 11 floors). Lifts, Wing A parking allotment, DG battery, terrace, and internal housekeeping.
               </p>
             </div>
@@ -846,40 +786,19 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           {/* Common Infrastructure Option */}
           <div
             onClick={() => handleScopeChange('COMMON')}
-            style={{
-              padding: '16px 20px',
-              borderRadius: '14px',
-              border: scope === 'COMMON' ? '2px solid #2563eb' : '1.5px solid #e5e7eb',
-              background: scope === 'COMMON' ? 'rgba(37, 99, 235, 0.05)' : '#ffffff',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: scope === 'COMMON' ? '0 4px 14px rgba(37, 99, 235, 0.12)' : 'none',
-              display: 'flex',
-              gap: '14px',
-              alignItems: 'flex-start'
-            }}
+            className="ai-mom-generator-s15" style={{ border: scope === 'COMMON' ? '2px solid #2563eb' : '1.5px solid #e5e7eb', background: scope === 'COMMON' ? 'rgba(37, 99, 235, 0.05)' : '#ffffff', boxShadow: scope === 'COMMON' ? '0 4px 14px rgba(37, 99, 235, 0.12)' : 'none' }}
           >
-            <div style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '10px',
-              background: scope === 'COMMON' ? '#2563eb' : '#f3f4f6',
-              color: scope === 'COMMON' ? '#ffffff' : '#6b7280',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0
-            }}>
+            <div className="ai-mom-generator-s16" style={{ background: scope === 'COMMON' ? '#2563eb' : '#f3f4f6', color: scope === 'COMMON' ? '#ffffff' : '#6b7280' }}>
               <Globe2 size={22} />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.02rem', fontWeight: 800, color: '#1e3a8a' }}>🌐 Common Society / All Wings</span>
+              <div className="ai-mom-generator-s3">
+                <span className="ai-mom-generator-s20">🌐 Common Society / All Wings</span>
                 {scope === 'COMMON' && (
-                  <span style={{ background: '#2563eb', color: 'white', fontSize: '0.68rem', fontWeight: 800, padding: '2px 8px', borderRadius: '10px' }}>ACTIVE</span>
+                  <span className="ai-mom-generator-s21">ACTIVE</span>
                 )}
               </div>
-              <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: '#4b5563', lineHeight: '1.4' }}>
+              <p className="ai-mom-generator-s19">
                 Shared Apex Infrastructure across Wings A, B, C & 14 Commercial Shops (231 units). Main Security Gate, STP, 5.39L Water Reservoir, and Eisha Builder handover.
               </p>
             </div>
@@ -889,19 +808,18 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
       </div>
 
       {/* ── Main Input Card: Metadata & Raw Textarea ── */}
-      <div className="no-print" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '20px', marginBottom: '24px' }}>
+      <div className="no-print ai-mom-generator-s22">
         
         {/* Metadata Controls Row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '18px' }}>
+        <div className="ai-mom-generator-s23">
           <div>
-            <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
+            <label className="ai-mom-generator-s24">
               Meeting Type
             </label>
             <select
               value={meetingType}
               onChange={e => setMeetingType(e.target.value)}
-              className="attendance-register-input"
-              style={{ width: '100%', padding: '8px 10px', fontWeight: 700 }}
+              className="attendance-register-input ai-mom-generator-s25"
             >
               <option value="Managing Committee Meeting">Managing Committee Meeting</option>
               <option value="Annual General Body Meeting (AGM)">Annual General Body Meeting (AGM)</option>
@@ -914,20 +832,19 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
+            <label className="ai-mom-generator-s24">
               Meeting Date
             </label>
             <input
               type="date"
               value={meetingDate}
               onChange={e => setMeetingDate(e.target.value)}
-              className="attendance-register-input"
-              style={{ width: '100%', padding: '8px 10px' }}
+              className="attendance-register-input ai-mom-generator-s26"
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
+            <label className="ai-mom-generator-s24">
               Meeting Time
             </label>
             <input
@@ -935,13 +852,12 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               value={meetingTime}
               onChange={e => setMeetingTime(e.target.value)}
               placeholder="e.g. 11:00 AM"
-              className="attendance-register-input"
-              style={{ width: '100%', padding: '8px 10px' }}
+              className="attendance-register-input ai-mom-generator-s26"
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
+            <label className="ai-mom-generator-s24">
               Venue / Location
             </label>
             <input
@@ -949,28 +865,16 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               value={venue}
               onChange={e => setVenue(e.target.value)}
               placeholder="e.g. Society Office / Wing A"
-              className="attendance-register-input"
-              style={{ width: '100%', padding: '8px 10px' }}
+              className="attendance-register-input ai-mom-generator-s26"
             />
           </div>
         </div>
 
         {/* AI Secretary Autonomous Quorum & Scanner Bar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+        <div className="ai-mom-generator-s27">
           <div
             data-testid="quorum-status-pill"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '4px 12px',
-              borderRadius: '20px',
-              background: quorumInfo.isQuorumMet ? 'rgba(5, 150, 105, 0.1)' : 'rgba(217, 119, 6, 0.1)',
-              color: quorumInfo.badgeColor,
-              fontSize: '0.74rem',
-              fontWeight: 800,
-              border: `1px solid ${quorumInfo.isQuorumMet ? '#a7f3d0' : '#fde68a'}`
-            }}
+            className="ai-mom-generator-s28" style={{ background: quorumInfo.isQuorumMet ? 'rgba(5, 150, 105, 0.1)' : 'rgba(217, 119, 6, 0.1)', color: quorumInfo.badgeColor, border: `1px solid ${quorumInfo.isQuorumMet ? '#a7f3d0' : '#fde68a'}` }}
           >
             <Bot size={13} />
             {quorumInfo.statusText}
@@ -980,20 +884,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
             type="button"
             data-testid="agent-autodetect-attendees-btn"
             onClick={handleAgentScanAttendees}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '4px 12px',
-              borderRadius: '8px',
-              border: '1px solid #059669',
-              background: 'linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(16, 185, 129, 0.15) 100%)',
-              color: '#065f46',
-              fontSize: '0.75rem',
-              fontWeight: 800,
-              cursor: 'pointer',
-              transition: 'all 0.15s ease'
-            }}
+            className="ai-mom-generator-s29"
             title="Auto-scan raw notes and select present committee members"
           >
             <Zap size={13} color="#059669" />
@@ -1002,9 +893,9 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
         </div>
 
         {/* Attendees Row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px', marginBottom: '18px' }}>
+        <div className="ai-mom-generator-s30">
           <div>
-            <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
+            <label className="ai-mom-generator-s24">
               Presided By / Chairperson
             </label>
             <input
@@ -1013,8 +904,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               value={chairperson}
               onChange={e => setChairperson(e.target.value)}
               placeholder="e.g. Society Chairman (optional)"
-              className="attendance-register-input"
-              style={{ width: '100%', padding: '8px 10px' }}
+              className="attendance-register-input ai-mom-generator-s26"
             />
           </div>
 
@@ -1031,11 +921,11 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
         </div>
 
         {/* Text Area Header & Action Buttons */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
-          <label style={{ fontSize: '0.82rem', fontWeight: 800, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+        <div className="ai-mom-generator-s27">
+          <label className="ai-mom-generator-s31">
             Enter Raw Notes / Discussions / Bullet Points:
           </label>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="ai-mom-generator-s32">
             <button
               type="button"
               data-testid="quick-wing-a-template-btn"
@@ -1043,16 +933,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 const tmpl = OFFICIAL_MOM_TEMPLATES.find(t => t.id === 'tmpl-wing-a-monthly');
                 if (tmpl) handleLoadTemplateIntoForm(tmpl);
               }}
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: '1px solid #a7f3d0',
-                background: '#ecfdf5',
-                color: '#047857',
-                cursor: 'pointer'
-              }}
+              className="ai-mom-generator-s33"
               title="Load official pre-configured Wing 'A' template into form"
             >
               🏢 Wing 'A' Template
@@ -1064,16 +945,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 const tmpl = OFFICIAL_MOM_TEMPLATES.find(t => t.id === 'tmpl-common-infra-monthly');
                 if (tmpl) handleLoadTemplateIntoForm(tmpl);
               }}
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: '1px solid #bfdbfe',
-                background: '#eff6ff',
-                color: '#1d4ed8',
-                cursor: 'pointer'
-              }}
+              className="ai-mom-generator-s34"
               title="Load official common campus template into form"
             >
               🌐 Common Template
@@ -1084,16 +956,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 setScope('A_BUILDING');
                 setRawNotes(SAMPLE_A_BUILDING_NOTES);
               }}
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                background: '#ffffff',
-                color: '#059669',
-                cursor: 'pointer'
-              }}
+              className="ai-mom-generator-s35"
             >
               📝 Load Building 'A' Notes
             </button>
@@ -1103,32 +966,14 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 setScope('COMMON');
                 setRawNotes(SAMPLE_COMMON_NOTES);
               }}
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                background: '#ffffff',
-                color: '#2563eb',
-                cursor: 'pointer'
-              }}
+              className="ai-mom-generator-s36"
             >
               🌐 Load Common Notes
             </button>
             <button
               type="button"
               onClick={() => setRawNotes('')}
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: '1px solid #fee2e2',
-                background: '#fef2f2',
-                color: '#dc2626',
-                cursor: 'pointer'
-              }}
+              className="ai-mom-generator-s37"
             >
               🧹 Clear
             </button>
@@ -1136,19 +981,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               type="button"
               data-testid="agent-voice-dictate-btn"
               onClick={toggleVoiceDictation}
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 800,
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: isListening ? '1.5px solid #ef4444' : '1px solid #cbd5e1',
-                background: isListening ? '#fef2f2' : '#ffffff',
-                color: isListening ? '#dc2626' : '#334155',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px'
-              }}
+              className="ai-mom-generator-s38" style={{ border: isListening ? '1.5px solid #ef4444' : '1px solid #cbd5e1', background: isListening ? '#fef2f2' : '#ffffff', color: isListening ? '#dc2626' : '#334155' }}
               title="Dictate meeting points with speech-to-text"
             >
               {isListening ? <MicOff size={13} color="#dc2626" /> : <Mic size={13} color="#059669" />}
@@ -1166,19 +999,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                   }
                 }, 60);
               }}
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 800,
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: '1px solid #3b82f6',
-                background: '#eff6ff',
-                color: '#1d4ed8',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px'
-              }}
+              className="ai-mom-generator-s39"
               title="Upload and store scanned monthly MOM (PDF or Image)"
             >
               <UploadCloud size={13} color="#2563eb" />
@@ -1194,25 +1015,12 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           onChange={e => setRawNotes(e.target.value)}
           placeholder="Paste or type meeting discussion points, lift complaints, vendor updates, dues status, decisions taken, or spoken transcript..."
           rows={7}
-          style={{
-            width: '100%',
-            padding: '14px',
-            borderRadius: '10px',
-            border: '1px solid #cbd5e1',
-            fontSize: '0.92rem',
-            lineHeight: '1.5',
-            fontFamily: 'inherit',
-            background: '#ffffff',
-            color: '#0f172a',
-            resize: 'vertical',
-            outline: 'none',
-            boxSizing: 'border-box'
-          }}
+          className="ai-mom-generator-s40"
         />
 
         {/* Textarea Footer: Stats & Generate Button */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', flexWrap: 'wrap', gap: '12px' }}>
-          <div style={{ fontSize: '0.76rem', color: '#64748b' }}>
+        <div className="ai-mom-generator-s41">
+          <div className="ai-mom-generator-s42">
             <span>{stats.words} words</span> • <span>{stats.chars} characters</span> • <span>{stats.lines} lines</span>
           </div>
 
@@ -1221,22 +1029,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
             data-testid="generate-mom-btn"
             onClick={handleGenerate}
             disabled={isGenerating || !rawNotes.trim()}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px 24px',
-              borderRadius: '10px',
-              background: scope === 'A_BUILDING' ? 'linear-gradient(135deg, #059669 0%, #047857 100%)' : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-              color: '#ffffff',
-              fontSize: '0.95rem',
-              fontWeight: 800,
-              border: 'none',
-              cursor: isGenerating || !rawNotes.trim() ? 'not-allowed' : 'pointer',
-              opacity: isGenerating || !rawNotes.trim() ? 0.6 : 1,
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)',
-              transition: 'transform 0.15s ease'
-            }}
+            className="ai-mom-generator-s43" style={{ background: scope === 'A_BUILDING' ? 'linear-gradient(135deg, #059669 0%, #047857 100%)' : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', cursor: isGenerating || !rawNotes.trim() ? 'not-allowed' : 'pointer', opacity: isGenerating || !rawNotes.trim() ? 0.6 : 1 }}
           >
             <Sparkles size={18} />
             {isGenerating ? 'AI Analyzing & Drafting MOM...' : `Generate AI MOM for ${scope === 'A_BUILDING' ? "Building 'A'" : 'Common Infrastructure'}`}
@@ -1251,63 +1044,33 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
 
       {/* ── Generated MOM Workspace or History / Vault View ── */}
       {!isGenerating && (generatedMom || activeView === 'history' || activeView === 'vault') && (
-        <div className="mom-output-workspace" style={{ marginTop: '30px' }}>
+        <div className="mom-output-workspace ai-mom-generator-s44">
           
           {/* Navigation & Action Toolbar */}
-          <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px', paddingBottom: '14px', borderBottom: '1px solid #e2e8f0' }}>
+          <div className="no-print ai-mom-generator-s45">
             
             {/* View Mode Tabs */}
-            <div style={{ display: 'flex', gap: '6px', background: '#f1f5f9', padding: '4px', borderRadius: '10px', flexWrap: 'wrap' }}>
+            <div className="ai-mom-generator-s46">
               {generatedMom && (
                 <>
                   <button
                     type="button"
                     onClick={() => setActiveView('preview')}
-                    style={{
-                      padding: '7px 14px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: activeView === 'preview' ? '#ffffff' : 'transparent',
-                      color: activeView === 'preview' ? '#0f172a' : '#64748b',
-                      fontSize: '0.82rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      boxShadow: activeView === 'preview' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
-                    }}
+                    className="ai-mom-generator-s47" style={{ background: activeView === 'preview' ? '#ffffff' : 'transparent', color: activeView === 'preview' ? '#0f172a' : '#64748b', boxShadow: activeView === 'preview' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
                   >
                     📄 Official Letterhead
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveView('edit')}
-                    style={{
-                      padding: '7px 14px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: activeView === 'edit' ? '#ffffff' : 'transparent',
-                      color: activeView === 'edit' ? '#0f172a' : '#64748b',
-                      fontSize: '0.82rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      boxShadow: activeView === 'edit' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
-                    }}
+                    className="ai-mom-generator-s47" style={{ background: activeView === 'edit' ? '#ffffff' : 'transparent', color: activeView === 'edit' ? '#0f172a' : '#64748b', boxShadow: activeView === 'edit' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
                   >
                     ✏️ Edit & Customize
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveView('actions')}
-                    style={{
-                      padding: '7px 14px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: activeView === 'actions' ? '#ffffff' : 'transparent',
-                      color: activeView === 'actions' ? '#0f172a' : '#64748b',
-                      fontSize: '0.82rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      boxShadow: activeView === 'actions' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
-                    }}
+                    className="ai-mom-generator-s47" style={{ background: activeView === 'actions' ? '#ffffff' : 'transparent', color: activeView === 'actions' ? '#0f172a' : '#64748b', boxShadow: activeView === 'actions' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
                   >
                     📋 Action Register ({activeDoc.actionItems?.length || 0})
                   </button>
@@ -1315,20 +1078,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                     type="button"
                     data-testid="view-poster-tab-btn"
                     onClick={() => setActiveView('poster')}
-                    style={{
-                      padding: '7px 14px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      background: activeView === 'poster' ? '#ffffff' : 'transparent',
-                      color: activeView === 'poster' ? '#d90429' : '#64748b',
-                      fontSize: '0.82rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      boxShadow: activeView === 'poster' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}
+                    className="ai-mom-generator-s48" style={{ background: activeView === 'poster' ? '#ffffff' : 'transparent', color: activeView === 'poster' ? '#d90429' : '#64748b', boxShadow: activeView === 'poster' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
                   >
                     <Sparkles size={14} color="#d90429" />
                     🎨 Graphic Flyer
@@ -1339,20 +1089,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 type="button"
                 data-testid="tab-monthly-mom-vault-btn"
                 onClick={() => setActiveView('vault')}
-                style={{
-                  padding: '7px 14px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: activeView === 'vault' ? '#ffffff' : 'transparent',
-                  color: activeView === 'vault' ? '#1d4ed8' : '#64748b',
-                  fontSize: '0.82rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  boxShadow: activeView === 'vault' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
+                className="ai-mom-generator-s48" style={{ background: activeView === 'vault' ? '#ffffff' : 'transparent', color: activeView === 'vault' ? '#1d4ed8' : '#64748b', boxShadow: activeView === 'vault' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
               >
                 <FolderArchive size={14} color="#2563eb" />
                 📁 Monthly MOM Vault
@@ -1361,17 +1098,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 type="button"
                 data-testid="tab-history-templates-btn"
                 onClick={() => setActiveView('history')}
-                style={{
-                  padding: '7px 14px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: activeView === 'history' ? '#ffffff' : 'transparent',
-                  color: activeView === 'history' ? '#0f172a' : '#64748b',
-                  fontSize: '0.82rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  boxShadow: activeView === 'history' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
-                }}
+                className="ai-mom-generator-s47" style={{ background: activeView === 'history' ? '#ffffff' : 'transparent', color: activeView === 'history' ? '#0f172a' : '#64748b', boxShadow: activeView === 'history' ? '0 2px 6px rgba(0,0,0,0.06)' : 'none' }}
               >
                 🕒 History & Templates ({savedMoms.length + OFFICIAL_MOM_TEMPLATES.length})
               </button>
@@ -1379,13 +1106,12 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
 
             {/* Export & Action Buttons */}
             {generatedMom ? (
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div className="ai-mom-generator-s49">
                 <button
                   type="button"
                   onClick={handlePrint}
-                  className="button-primary"
+                  className="button-primary ai-mom-generator-s50"
                   title="Print clean multi-page document"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
                 >
                   <Printer size={15} />
                   🖨️ Print / PDF
@@ -1394,9 +1120,8 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="button-secondary"
+                  className="button-secondary ai-mom-generator-s50"
                   title="Copy markdown formatted MOM to clipboard"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
                 >
                   {copyFeedback ? <Check size={15} color="#10b981" /> : <Copy size={15} />}
                   {copyFeedback ? 'Copied!' : 'Copy'}
@@ -1405,9 +1130,8 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="button-secondary"
+                  className="button-secondary ai-mom-generator-s50"
                   title="Download formatted text file"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
                 >
                   <Download size={15} />
                   Export Text
@@ -1416,9 +1140,8 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                 <button
                   type="button"
                   onClick={handleSaveToRecords}
-                  className="button-secondary"
+                  className="button-secondary ai-mom-generator-s50"
                   title="Save into persistent society records"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
                 >
                   {saveFeedback ? <Check size={15} color="#10b981" /> : <Save size={15} />}
                   {saveFeedback ? 'Saved!' : 'Save'}
@@ -1428,9 +1151,8 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                   type="button"
                   data-testid="save-as-template-btn"
                   onClick={handleSaveAsTemplate}
-                  className="button-secondary"
+                  className="button-secondary ai-mom-generator-s50"
                   title="Save this MOM structure as a reusable template in Meeting History"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
                 >
                   <BookmarkPlus size={15} color="#2563eb" />
                   Save as Template
@@ -1440,25 +1162,15 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                   type="button"
                   data-testid="agent-whatsapp-broadcast-btn"
                   onClick={handleCopyWhatsAppNotice}
-                  className="button-secondary"
+                  className="button-secondary ai-mom-generator-s51"
                   title="Copy ready-to-share WhatsApp circular with resolutions"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    padding: '8px 14px',
-                    fontSize: '0.82rem',
-                    background: '#ecfdf5',
-                    color: '#047857',
-                    border: '1px solid #a7f3d0'
-                  }}
                 >
                   <Share2 size={15} />
                   WhatsApp Broadcast
                 </button>
               </div>
             ) : (
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <div className="ai-mom-generator-s52">
                 <button
                   type="button"
                   onClick={() => {
@@ -1467,8 +1179,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                   }}
-                  className="button-secondary"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', fontSize: '0.82rem' }}
+                  className="button-secondary ai-mom-generator-s50"
                 >
                   <ArrowLeft size={14} />
                   Back to Notes & Generator
@@ -1479,9 +1190,9 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
 
           {/* AI Model Badge (Only when MOM generated) */}
           {generatedMom && activeDoc.aiModelUsed && (
-            <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', background: '#f8fafc', padding: '8px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.78rem', color: '#64748b' }}>
+            <div className="no-print ai-mom-generator-s53">
               <div>
-                Generated with: <strong style={{ color: '#0f172a' }}>{activeDoc.aiModelUsed}</strong>
+                Generated with: <strong className="ai-mom-generator-s54">{activeDoc.aiModelUsed}</strong>
               </div>
               <div>
                 Timestamp: {new Date(activeDoc.generatedAt).toLocaleString('en-IN')}
@@ -1493,90 +1204,71 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
           {activeView === 'preview' && (
             <div
               id="ai-mom-printable-area"
-              className="report-printable-area"
-              style={{
-                background: '#ffffff',
-                border: '1px solid rgba(0,0,0,0.12)',
-                borderRadius: '12px',
-                padding: '40px',
-                boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
-                color: '#1e293b',
-                fontFamily: 'serif'
-              }}
+              className="report-printable-area ai-mom-generator-s55"
             >
               {/* Official Society Letterhead */}
-              <div style={{ textAlign: 'center', borderBottom: '2.5px solid #0b2b26', paddingBottom: '20px', marginBottom: '24px' }}>
-                <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem', fontWeight: 900, color: '#0b2b26', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              <div className="ai-mom-generator-s56">
+                <h1 className="ai-mom-generator-s57">
                   {activeDoc.headerInfo.societyName}
                 </h1>
-                <p style={{ margin: '3px 0', fontSize: '0.84rem', color: '#334155', fontFamily: 'sans-serif' }}>
+                <p className="ai-mom-generator-s58">
                   {activeDoc.headerInfo.fullLegalHeader}
                 </p>
-                <div style={{ marginTop: '12px', display: 'inline-block' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    background: activeDoc.scope === 'A_BUILDING' ? '#0b2b26' : '#1e3a8a',
-                    color: '#C49B4F',
-                    padding: '6px 20px',
-                    borderRadius: '24px',
-                    fontSize: '0.86rem',
-                    fontWeight: 800,
-                    letterSpacing: '0.5px',
-                    fontFamily: 'sans-serif'
-                  }}>
+                <div className="ai-mom-generator-s59">
+                  <span className="ai-mom-generator-s60" style={{ background: activeDoc.scope === 'A_BUILDING' ? '#0b2b26' : '#1e3a8a' }}>
                     {activeDoc.headerInfo.scopeBadge}
                   </span>
                 </div>
               </div>
 
               {/* Title & Metadata Strip */}
-              <div style={{ background: '#f8fafc', padding: '16px 20px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '24px', fontFamily: 'sans-serif' }}>
-                <div style={{ textAlign: 'center', marginBottom: '12px' }}>
-                  <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0b2b26', textTransform: 'uppercase' }}>
+              <div className="ai-mom-generator-s61">
+                <div className="ai-mom-generator-s62">
+                  <h2 className="ai-mom-generator-s63">
                     MINUTES OF MEETING ({activeDoc.headerInfo.meetingType.toUpperCase()})
                   </h2>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', fontSize: '0.84rem' }}>
+                <div className="ai-mom-generator-s64">
                   <div><strong>Date:</strong> {activeDoc.headerInfo.meetingDate}</div>
                   <div><strong>Time:</strong> {activeDoc.headerInfo.meetingTime}</div>
                   <div><strong>Venue:</strong> {activeDoc.headerInfo.venue}</div>
                   <div><strong>Presided By:</strong> {activeDoc.headerInfo.chairperson}</div>
                 </div>
-                <div style={{ marginTop: '10px', fontSize: '0.82rem', borderTop: '1px solid #e2e8f0', paddingTop: '8px' }}>
+                <div className="ai-mom-generator-s65">
                   <strong>Attendees:</strong> {activeDoc.headerInfo.attendees.join(', ')}
                 </div>
               </div>
 
               {/* Section 1: Executive Summary */}
-              <div style={{ marginBottom: '28px' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0b2b26', borderBottom: '1px solid #cbd5e1', paddingBottom: '6px', marginBottom: '10px', textTransform: 'uppercase', fontFamily: 'sans-serif' }}>
+              <div className="ai-mom-generator-s66">
+                <h3 className="ai-mom-generator-s67">
                   1. Executive Summary & Purpose
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.94rem', lineHeight: '1.7', textAlign: 'justify', color: '#1e293b' }}>
+                <p className="ai-mom-generator-s68">
                   {activeDoc.executiveSummary}
                 </p>
               </div>
 
               {/* Section 2: Agenda Items & Decisions */}
-              <div style={{ marginBottom: '28px' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0b2b26', borderBottom: '1px solid #cbd5e1', paddingBottom: '6px', marginBottom: '14px', textTransform: 'uppercase', fontFamily: 'sans-serif' }}>
+              <div className="ai-mom-generator-s66">
+                <h3 className="ai-mom-generator-s69">
                   2. Agenda Deliberations & Key Decisions
                 </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div className="ai-mom-generator-s70">
                   {activeDoc.agendaItems.map((item, idx) => (
-                    <div key={idx} style={{ padding: '12px 16px', background: '#fafaf9', borderLeft: '4px solid #0b2b26', borderRadius: '4px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                        <span style={{ fontSize: '0.98rem', fontWeight: 800, color: '#0b2b26', fontFamily: 'sans-serif' }}>
+                    <div key={idx} className="ai-mom-generator-s71">
+                      <div className="ai-mom-generator-s72">
+                        <span className="ai-mom-generator-s73">
                           Item {item.itemNo}: {item.title}
                         </span>
-                        <span style={{ fontSize: '0.72rem', background: '#e2e8f0', color: '#475569', padding: '2px 8px', borderRadius: '10px', fontWeight: 700, fontFamily: 'sans-serif' }}>
+                        <span className="ai-mom-generator-s74">
                           {item.category}
                         </span>
                       </div>
-                      <p style={{ margin: '0 0 6px', fontSize: '0.9rem', lineHeight: '1.6', textAlign: 'justify' }}>
+                      <p className="ai-mom-generator-s75">
                         <strong>Discussion:</strong> {item.discussion}
                       </p>
-                      <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: '1.6', color: '#047857' }}>
+                      <p className="ai-mom-generator-s76">
                         <strong>Decision Taken:</strong> {item.decision}
                       </p>
                     </div>
@@ -1585,25 +1277,25 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               </div>
 
               {/* Section 3: Formal Resolutions Passed */}
-              <div style={{ marginBottom: '28px' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0b2b26', borderBottom: '1px solid #cbd5e1', paddingBottom: '6px', marginBottom: '14px', textTransform: 'uppercase', fontFamily: 'sans-serif' }}>
+              <div className="ai-mom-generator-s66">
+                <h3 className="ai-mom-generator-s69">
                   3. Formal Resolutions Passed
                 </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div className="ai-mom-generator-s77">
                   {activeDoc.resolutions.map((res, idx) => (
-                    <div key={idx} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '14px 18px', background: '#ffffff' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
-                        <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0b2b26', fontFamily: 'sans-serif' }}>
+                    <div key={idx} className="ai-mom-generator-s78">
+                      <div className="ai-mom-generator-s79">
+                        <span className="ai-mom-generator-s80">
                           {res.resNo} : {res.subject}
                         </span>
-                        <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.72rem', fontWeight: 800, padding: '3px 10px', borderRadius: '12px', fontFamily: 'sans-serif' }}>
+                        <span className="ai-mom-generator-s81">
                           {res.verdict}
                         </span>
                       </div>
-                      <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '8px', fontFamily: 'sans-serif' }}>
+                      <div className="ai-mom-generator-s82">
                         Proposed by: <strong>{res.proposer}</strong> | Seconded by: <strong>{res.seconder}</strong>
                       </div>
-                      <blockquote style={{ margin: 0, paddingLeft: '14px', borderLeft: '3px solid #10b981', fontStyle: 'italic', fontSize: '0.9rem', lineHeight: '1.6', color: '#1e293b' }}>
+                      <blockquote className="ai-mom-generator-s83">
                         {res.text}
                       </blockquote>
                     </div>
@@ -1612,42 +1304,35 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               </div>
 
               {/* Section 4: Action Items Table */}
-              <div style={{ marginBottom: '28px' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0b2b26', borderBottom: '1px solid #cbd5e1', paddingBottom: '6px', marginBottom: '14px', textTransform: 'uppercase', fontFamily: 'sans-serif' }}>
+              <div className="ai-mom-generator-s66">
+                <h3 className="ai-mom-generator-s69">
                   4. Action Item Accountability Register
                 </h3>
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.86rem', fontFamily: 'sans-serif' }}>
+                <div className="ai-mom-generator-s84">
+                  <table className="ai-mom-generator-s85">
                     <thead>
-                      <tr style={{ background: '#0b2b26', color: '#ffffff', textAlign: 'left' }}>
-                        <th style={{ padding: '8px 12px' }}>#</th>
-                        <th style={{ padding: '8px 12px' }}>Action Item / Task</th>
-                        <th style={{ padding: '8px 12px' }}>Assigned Owner</th>
-                        <th style={{ padding: '8px 12px' }}>Target Due Date</th>
-                        <th style={{ padding: '8px 12px' }}>Priority</th>
-                        <th style={{ padding: '8px 12px' }}>Status</th>
+                      <tr className="ai-mom-generator-s86">
+                        <th className="ai-mom-generator-s87">#</th>
+                        <th className="ai-mom-generator-s87">Action Item / Task</th>
+                        <th className="ai-mom-generator-s87">Assigned Owner</th>
+                        <th className="ai-mom-generator-s87">Target Due Date</th>
+                        <th className="ai-mom-generator-s87">Priority</th>
+                        <th className="ai-mom-generator-s87">Status</th>
                       </tr>
                     </thead>
                     <tbody>
                       {activeDoc.actionItems.map((act, idx) => (
-                        <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', background: idx % 2 === 0 ? '#ffffff' : '#f9fafb' }}>
-                          <td style={{ padding: '8px 12px', fontWeight: 700 }}>{act.id || idx + 1}</td>
-                          <td style={{ padding: '8px 12px' }}>{act.task}</td>
-                          <td style={{ padding: '8px 12px', fontWeight: 700, color: '#0b2b26' }}>{act.assignedTo}</td>
-                          <td style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}>{act.dueDate}</td>
-                          <td style={{ padding: '8px 12px' }}>
-                            <span style={{
-                              padding: '2px 8px',
-                              borderRadius: '10px',
-                              fontSize: '0.7rem',
-                              fontWeight: 800,
-                              background: act.priority === 'HIGH' ? '#fee2e2' : act.priority === 'MEDIUM' ? '#fef3c7' : '#e0f2fe',
-                              color: act.priority === 'HIGH' ? '#dc2626' : act.priority === 'MEDIUM' ? '#d97706' : '#0369a1'
-                            }}>
+                        <tr key={idx} className="ai-mom-generator-s88" style={{ background: idx % 2 === 0 ? '#ffffff' : '#f9fafb' }}>
+                          <td className="ai-mom-generator-s89">{act.id || idx + 1}</td>
+                          <td className="ai-mom-generator-s87">{act.task}</td>
+                          <td className="ai-mom-generator-s90">{act.assignedTo}</td>
+                          <td className="ai-mom-generator-s91">{act.dueDate}</td>
+                          <td className="ai-mom-generator-s87">
+                            <span className="ai-mom-generator-s92" style={{ background: act.priority === 'HIGH' ? '#fee2e2' : act.priority === 'MEDIUM' ? '#fef3c7' : '#e0f2fe', color: act.priority === 'HIGH' ? '#dc2626' : act.priority === 'MEDIUM' ? '#d97706' : '#0369a1' }}>
                               {act.priority}
                             </span>
                           </td>
-                          <td style={{ padding: '8px 12px', fontWeight: 700, color: '#16a34a' }}>{act.status}</td>
+                          <td className="ai-mom-generator-s93">{act.status}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1656,48 +1341,48 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               </div>
 
               {/* Section 5: Financial Notes & Next Meeting */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '40px', fontFamily: 'sans-serif' }}>
-                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ margin: '0 0 6px', fontSize: '0.86rem', color: '#0b2b26', textTransform: 'uppercase', fontWeight: 800 }}>
+              <div className="ai-mom-generator-s94">
+                <div className="ai-mom-generator-s95">
+                  <h4 className="ai-mom-generator-s96">
                     💰 Financial Allocations & Ratios
                   </h4>
-                  <p style={{ margin: 0, fontSize: '0.84rem', lineHeight: '1.6', color: '#334155' }}>
+                  <p className="ai-mom-generator-s97">
                     {activeDoc.financialNotes}
                   </p>
                 </div>
-                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ margin: '0 0 6px', fontSize: '0.86rem', color: '#0b2b26', textTransform: 'uppercase', fontWeight: 800 }}>
+                <div className="ai-mom-generator-s95">
+                  <h4 className="ai-mom-generator-s96">
                     📅 Next Scheduled Session
                   </h4>
-                  <p style={{ margin: 0, fontSize: '0.84rem', lineHeight: '1.6', color: '#334155' }}>
+                  <p className="ai-mom-generator-s97">
                     {activeDoc.nextMeeting}
                   </p>
                 </div>
               </div>
 
               {/* Sign-off & Legal Signatures Block */}
-              <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '2px solid #0b2b26', fontFamily: 'sans-serif' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px', textAlign: 'center' }}>
+              <div className="ai-mom-generator-s98">
+                <div className="ai-mom-generator-s99">
                   <div>
-                    <div style={{ width: '180px', borderBottom: '1px solid #000000', marginBottom: '8px' }}></div>
-                    <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#0b2b26' }}>{activeDoc.headerInfo.chairperson || 'Society Chairman'}</div>
-                    <div style={{ fontSize: '0.74rem', color: '#64748b' }}>Chairman, Majestique Euriska</div>
+                    <div className="ai-mom-generator-s100"></div>
+                    <div className="ai-mom-generator-s101">{activeDoc.headerInfo.chairperson || 'Society Chairman'}</div>
+                    <div className="ai-mom-generator-s102">Chairman, Majestique Euriska</div>
                   </div>
 
                   <div>
-                    <div style={{ width: '180px', borderBottom: '1px solid #000000', marginBottom: '8px' }}></div>
-                    <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#0b2b26' }}>Society Secretary</div>
-                    <div style={{ fontSize: '0.74rem', color: '#64748b' }}>Hon. Secretary, Managing Committee</div>
+                    <div className="ai-mom-generator-s100"></div>
+                    <div className="ai-mom-generator-s101">Society Secretary</div>
+                    <div className="ai-mom-generator-s102">Hon. Secretary, Managing Committee</div>
                   </div>
 
                   <div>
-                    <div style={{ width: '180px', borderBottom: '1px solid #000000', marginBottom: '8px' }}></div>
-                    <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#0b2b26' }}>Society Treasurer</div>
-                    <div style={{ fontSize: '0.74rem', color: '#64748b' }}>Hon. Treasurer / Finance In-Charge</div>
+                    <div className="ai-mom-generator-s100"></div>
+                    <div className="ai-mom-generator-s101">Society Treasurer</div>
+                    <div className="ai-mom-generator-s102">Hon. Treasurer / Finance In-Charge</div>
                   </div>
                 </div>
 
-                <div style={{ textAlign: 'center', marginTop: '30px', fontSize: '0.72rem', color: '#94a3b8' }}>
+                <div className="ai-mom-generator-s103">
                   Document officially generated on {new Date().toLocaleDateString('en-IN')} • Majestique Euriska Governance Portal
                 </div>
               </div>
@@ -1707,67 +1392,65 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
 
           {/* ── VIEW 2: EDIT & CUSTOMIZE ── */}
           {activeView === 'edit' && (
-            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0b2b26' }}>
+            <div className="ai-mom-generator-s104">
+              <div className="ai-mom-generator-s105">
+                <h3 className="ai-mom-generator-s106">
                   ✏️ Customize & Fine-tune Generated Minutes
                 </h3>
-                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>Changes reflect immediately in Letterhead & Exports</span>
+                <span className="ai-mom-generator-s107">Changes reflect immediately in Letterhead & Exports</span>
               </div>
 
               {/* Editable Executive Summary */}
-              <div style={{ marginBottom: '18px' }}>
-                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+              <div className="ai-mom-generator-s108">
+                <label className="ai-mom-generator-s109">
                   Executive Summary
                 </label>
                 <textarea
                   rows={4}
                   value={editableMom?.executiveSummary || ''}
                   onChange={e => setEditableMom(prev => ({ ...prev, executiveSummary: e.target.value }))}
-                  style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.9rem', lineHeight: '1.5', boxSizing: 'border-box' }}
+                  className="ai-mom-generator-s110"
                 />
               </div>
 
               {/* Editable Financial Notes */}
-              <div style={{ marginBottom: '18px' }}>
-                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+              <div className="ai-mom-generator-s108">
+                <label className="ai-mom-generator-s109">
                   Financial Allocations / Cost Sharing Notes
                 </label>
                 <textarea
                   rows={2}
                   value={editableMom?.financialNotes || ''}
                   onChange={e => setEditableMom(prev => ({ ...prev, financialNotes: e.target.value }))}
-                  style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.9rem', lineHeight: '1.5', boxSizing: 'border-box' }}
+                  className="ai-mom-generator-s110"
                 />
               </div>
 
               {/* Editable Next Meeting */}
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+              <div className="ai-mom-generator-s12">
+                <label className="ai-mom-generator-s109">
                   Next Meeting Schedule
                 </label>
                 <input
                   type="text"
                   value={editableMom?.nextMeeting || ''}
                   onChange={e => setEditableMom(prev => ({ ...prev, nextMeeting: e.target.value }))}
-                  style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.9rem', boxSizing: 'border-box' }}
+                  className="ai-mom-generator-s111"
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div className="ai-mom-generator-s112">
                 <button
                   type="button"
                   onClick={() => setActiveView('preview')}
-                  className="button-primary"
-                  style={{ padding: '8px 16px' }}
+                  className="button-primary ai-mom-generator-s113"
                 >
                   Apply & Return to Letterhead
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditableMom(JSON.parse(JSON.stringify(generatedMom)))}
-                  className="button-secondary"
-                  style={{ padding: '8px 16px' }}
+                  className="button-secondary ai-mom-generator-s113"
                 >
                   Reset Edits to Original AI
                 </button>
@@ -1777,55 +1460,37 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
 
           {/* ── VIEW 3: ACTION REGISTER ── */}
           {activeView === 'actions' && (
-            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
-                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0b2b26' }}>
+            <div className="ai-mom-generator-s104">
+              <div className="ai-mom-generator-s114">
+                <h3 className="ai-mom-generator-s106">
                   📋 Action Item Accountability & Follow-up
                 </h3>
                 <button
                   type="button"
                   data-testid="agent-autoassign-actions-btn"
                   onClick={handleSmartAutoAssign}
-                  className="button-secondary"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '0.8rem',
-                    padding: '6px 14px',
-                    background: '#eff6ff',
-                    color: '#1e40af',
-                    border: '1px solid #bfdbfe',
-                    borderRadius: '8px'
-                  }}
+                  className="button-secondary ai-mom-generator-s115"
                   title="Intelligently assign committee members and technicians based on task keywords"
                 >
                   <Zap size={14} color="#2563eb" />
                   🎯 Auto-Assign Owners via AI
                 </button>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' }}>
+              <div className="ai-mom-generator-s14">
                 {activeDoc.actionItems?.map((act, idx) => (
-                  <div key={idx} style={{ background: '#f8fafc', padding: '16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '0.74rem', background: '#0b2b26', color: '#ffffff', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
+                  <div key={idx} className="ai-mom-generator-s116">
+                    <div className="ai-mom-generator-s117">
+                      <span className="ai-mom-generator-s118">
                         {act.id || `ACT-${idx + 1}`}
                       </span>
-                      <span style={{
-                        fontSize: '0.72rem',
-                        fontWeight: 800,
-                        padding: '2px 8px',
-                        borderRadius: '10px',
-                        background: act.priority === 'HIGH' ? '#fee2e2' : '#fef3c7',
-                        color: act.priority === 'HIGH' ? '#dc2626' : '#d97706'
-                      }}>
+                      <span className="ai-mom-generator-s119" style={{ background: act.priority === 'HIGH' ? '#fee2e2' : '#fef3c7', color: act.priority === 'HIGH' ? '#dc2626' : '#d97706' }}>
                         {act.priority} PRIORITY
                       </span>
                     </div>
-                    <h4 style={{ margin: '0 0 8px', fontSize: '0.94rem', fontWeight: 700, color: '#0f172a' }}>
+                    <h4 className="ai-mom-generator-s120">
                       {act.task}
                     </h4>
-                    <div style={{ fontSize: '0.8rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div className="ai-mom-generator-s121">
                       <div>👤 <strong>Assigned:</strong> {act.assignedTo}</div>
                       <div>📅 <strong>Target Date:</strong> {act.dueDate}</div>
                       <div>🏷️ <strong>Category:</strong> {act.category}</div>
@@ -1838,28 +1503,27 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
 
           {/* ── VIEW 4: PAST HISTORY & OFFICIAL SOCIETY TEMPLATES ── */}
           {activeView === 'history' && (
-            <div data-testid="meeting-history-templates-view" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '26px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '22px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
+            <div data-testid="meeting-history-templates-view" className="ai-mom-generator-s122">
+              <div className="ai-mom-generator-s123">
                 <div>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#eff6ff', color: '#1d4ed8', padding: '3px 10px', borderRadius: '12px', fontSize: '0.74rem', fontWeight: 800, marginBottom: '6px', textTransform: 'uppercase' }}>
+                  <div className="ai-mom-generator-s124">
                     <FolderOpen size={12} />
                     Society Repository & Templates
                   </div>
-                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0b2b26' }}>
+                  <h3 className="ai-mom-generator-s125">
                     🕒 Meeting History & Standard Society Templates
                   </h3>
-                  <p style={{ margin: '4px 0 0', fontSize: '0.84rem', color: '#64748b' }}>
+                  <p className="ai-mom-generator-s126">
                     Load standardized society templates or restore previous meeting minutes and drafts.
                   </p>
                 </div>
 
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div className="ai-mom-generator-s49">
                   {generatedMom && (
                     <button
                       type="button"
                       onClick={() => setActiveView('preview')}
-                      className="button-secondary"
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', padding: '8px 14px' }}
+                      className="button-secondary ai-mom-generator-s127"
                     >
                       <ArrowLeft size={14} />
                       Back to Generated Letterhead
@@ -1873,8 +1537,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }
                     }}
-                    className="button-primary"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', padding: '8px 14px' }}
+                    className="button-primary ai-mom-generator-s127"
                   >
                     ✍️ Draft New Minutes
                   </button>
@@ -1882,89 +1545,39 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               </div>
 
               {/* Filter Tabs */}
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
+              <div className="ai-mom-generator-s128">
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('all')}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    border: '1px solid',
-                    borderColor: historyFilter === 'all' ? '#0f172a' : '#cbd5e1',
-                    background: historyFilter === 'all' ? '#0f172a' : '#ffffff',
-                    color: historyFilter === 'all' ? '#ffffff' : '#475569',
-                    cursor: 'pointer'
-                  }}
+                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'all' ? '#0f172a' : '#cbd5e1', background: historyFilter === 'all' ? '#0f172a' : '#ffffff', color: historyFilter === 'all' ? '#ffffff' : '#475569' }}
                 >
                   All ({OFFICIAL_MOM_TEMPLATES.length + savedMoms.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('official')}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    border: '1px solid',
-                    borderColor: historyFilter === 'official' ? '#2563eb' : '#cbd5e1',
-                    background: historyFilter === 'official' ? '#eff6ff' : '#ffffff',
-                    color: historyFilter === 'official' ? '#1d4ed8' : '#475569',
-                    cursor: 'pointer'
-                  }}
+                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'official' ? '#2563eb' : '#cbd5e1', background: historyFilter === 'official' ? '#eff6ff' : '#ffffff', color: historyFilter === 'official' ? '#1d4ed8' : '#475569' }}
                 >
                   🏛️ Standard Society Templates ({OFFICIAL_MOM_TEMPLATES.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('wingA')}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    border: '1px solid',
-                    borderColor: historyFilter === 'wingA' ? '#059669' : '#cbd5e1',
-                    background: historyFilter === 'wingA' ? '#ecfdf5' : '#ffffff',
-                    color: historyFilter === 'wingA' ? '#047857' : '#475569',
-                    cursor: 'pointer'
-                  }}
+                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'wingA' ? '#059669' : '#cbd5e1', background: historyFilter === 'wingA' ? '#ecfdf5' : '#ffffff', color: historyFilter === 'wingA' ? '#047857' : '#475569' }}
                 >
                   🏢 Wing 'A' Templates
                 </button>
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('common')}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    border: '1px solid',
-                    borderColor: historyFilter === 'common' ? '#2563eb' : '#cbd5e1',
-                    background: historyFilter === 'common' ? '#eff6ff' : '#ffffff',
-                    color: historyFilter === 'common' ? '#1d4ed8' : '#475569',
-                    cursor: 'pointer'
-                  }}
+                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'common' ? '#2563eb' : '#cbd5e1', background: historyFilter === 'common' ? '#eff6ff' : '#ffffff', color: historyFilter === 'common' ? '#1d4ed8' : '#475569' }}
                 >
                   🌐 Common Infrastructure
                 </button>
                 <button
                   type="button"
                   onClick={() => setHistoryFilter('saved')}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    border: '1px solid',
-                    borderColor: historyFilter === 'saved' ? '#d97706' : '#cbd5e1',
-                    background: historyFilter === 'saved' ? '#fffbeb' : '#ffffff',
-                    color: historyFilter === 'saved' ? '#b45309' : '#475569',
-                    cursor: 'pointer'
-                  }}
+                  className="ai-mom-generator-s129" style={{ borderColor: historyFilter === 'saved' ? '#d97706' : '#cbd5e1', background: historyFilter === 'saved' ? '#fffbeb' : '#ffffff', color: historyFilter === 'saved' ? '#b45309' : '#475569' }}
                 >
                   💾 Saved History ({savedMoms.length})
                 </button>
@@ -1972,91 +1585,58 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
 
               {/* 1. Official Society Templates Grid */}
               {(historyFilter === 'all' || historyFilter === 'official' || historyFilter === 'wingA' || historyFilter === 'common') && (
-                <div style={{ marginBottom: '32px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                    <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#1e293b' }}>
+                <div className="ai-mom-generator-s130">
+                  <div className="ai-mom-generator-s131">
+                    <h4 className="ai-mom-generator-s132">
                       🏛️ Official Standard Society Templates
                     </h4>
-                    <span style={{ fontSize: '0.72rem', background: '#f1f5f9', color: '#475569', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
+                    <span className="ai-mom-generator-s133">
                       Pre-verified Byelaw Formats
                     </span>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
+                  <div className="ai-mom-generator-s134">
                     {filteredOfficialTemplates.map(tmpl => (
                       <div
                         key={tmpl.id}
                         data-testid={`template-card-${tmpl.id}`}
-                        style={{
-                          borderRadius: '12px',
-                          border: tmpl.scope === 'A_BUILDING' ? '1.5px solid #a7f3d0' : '1.5px solid #bfdbfe',
-                          background: tmpl.scope === 'A_BUILDING' ? '#f0fdf4' : '#eff6ff',
-                          padding: '18px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between',
-                          gap: '14px',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-                          transition: 'transform 0.15s ease, box-shadow 0.15s ease'
-                        }}
+                        className="ai-mom-generator-s135" style={{ border: tmpl.scope === 'A_BUILDING' ? '1.5px solid #a7f3d0' : '1.5px solid #bfdbfe', background: tmpl.scope === 'A_BUILDING' ? '#f0fdf4' : '#eff6ff' }}
                       >
                         <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
-                            <span style={{
-                              fontSize: '0.68rem',
-                              fontWeight: 800,
-                              padding: '3px 8px',
-                              borderRadius: '10px',
-                              background: tmpl.scope === 'A_BUILDING' ? '#059669' : '#2563eb',
-                              color: '#ffffff',
-                              letterSpacing: '0.4px'
-                            }}>
+                          <div className="ai-mom-generator-s136">
+                            <span className="ai-mom-generator-s137" style={{ background: tmpl.scope === 'A_BUILDING' ? '#059669' : '#2563eb' }}>
                               {tmpl.badgeText}
                             </span>
-                            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>
+                            <span className="ai-mom-generator-s138">
                               {tmpl.category}
                             </span>
                           </div>
 
-                          <h5 style={{ margin: '0 0 6px', fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>
+                          <h5 className="ai-mom-generator-s139">
                             {tmpl.title}
                           </h5>
-                          <p style={{ margin: '0 0 12px', fontSize: '0.82rem', color: '#475569', lineHeight: '1.4' }}>
+                          <p className="ai-mom-generator-s140">
                             {tmpl.description}
                           </p>
 
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', fontSize: '0.72rem' }}>
-                            <span style={{ background: '#ffffff', padding: '3px 8px', borderRadius: '6px', border: '1px solid #e2e8f0', color: '#334155', fontWeight: 600 }}>
+                          <div className="ai-mom-generator-s141">
+                            <span className="ai-mom-generator-s142">
                               👥 {tmpl.headerInfo.attendees.length} Attendees
                             </span>
-                            <span style={{ background: '#ffffff', padding: '3px 8px', borderRadius: '6px', border: '1px solid #e2e8f0', color: '#334155', fontWeight: 600 }}>
+                            <span className="ai-mom-generator-s142">
                               📋 {tmpl.sampleMOM.agendaItems.length} Agenda Items
                             </span>
-                            <span style={{ background: '#ffffff', padding: '3px 8px', borderRadius: '6px', border: '1px solid #e2e8f0', color: '#334155', fontWeight: 600 }}>
+                            <span className="ai-mom-generator-s142">
                               ⚖️ {tmpl.sampleMOM.resolutions.length} Resolutions
                             </span>
                           </div>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '8px', paddingTop: '10px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+                        <div className="ai-mom-generator-s143">
                           <button
                             type="button"
                             onClick={() => handleRestoreFromHistory(tmpl)}
-                            style={{
-                              flex: 1,
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '6px',
-                              padding: '8px 12px',
-                              borderRadius: '8px',
-                              background: tmpl.scope === 'A_BUILDING' ? '#059669' : '#2563eb',
-                              color: '#ffffff',
-                              fontWeight: 700,
-                              fontSize: '0.78rem',
-                              border: 'none',
-                              cursor: 'pointer'
-                            }}
+                            className="ai-mom-generator-s144" style={{ background: tmpl.scope === 'A_BUILDING' ? '#059669' : '#2563eb' }}
                           >
                             <ExternalLink size={13} />
                             Load Template ↗
@@ -2065,16 +1645,7 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
                             type="button"
                             onClick={() => handleLoadTemplateIntoForm(tmpl)}
                             title="Load notes & attendees into the editor form"
-                            style={{
-                              padding: '8px 12px',
-                              borderRadius: '8px',
-                              background: '#ffffff',
-                              color: '#334155',
-                              fontWeight: 700,
-                              fontSize: '0.78rem',
-                              border: '1px solid #cbd5e1',
-                              cursor: 'pointer'
-                            }}
+                            className="ai-mom-generator-s145"
                           >
                             Edit in Form
                           </button>
@@ -2088,69 +1659,44 @@ Chairman: ___________________   Secretary: ___________________   Treasurer: ____
               {/* 2. Saved Meeting Minutes & Custom Drafts */}
               {(historyFilter === 'all' || historyFilter === 'saved' || historyFilter === 'wingA' || historyFilter === 'common') && (
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                    <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#1e293b' }}>
+                  <div className="ai-mom-generator-s131">
+                    <h4 className="ai-mom-generator-s132">
                       💾 Previously Saved Meeting Minutes & Records ({filteredSavedMoms.length})
                     </h4>
                   </div>
 
                   {filteredSavedMoms.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '36px', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', color: '#64748b' }}>
-                      <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600 }}>No saved custom meeting drafts match your selection.</p>
-                      <p style={{ margin: '6px 0 0', fontSize: '0.8rem', color: '#94a3b8' }}>Whenever you generate or click "Save into Society Records", your drafts appear here for instant retrieval.</p>
+                    <div className="ai-mom-generator-s146">
+                      <p className="ai-mom-generator-s147">No saved custom meeting drafts match your selection.</p>
+                      <p className="ai-mom-generator-s148">Whenever you generate or click "Save into Society Records", your drafts appear here for instant retrieval.</p>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div className="ai-mom-generator-s149">
                       {filteredSavedMoms.map((m, idx) => (
                         <div
                           key={m.id || idx}
                           onClick={() => handleRestoreFromHistory(m)}
-                          style={{
-                            padding: '16px',
-                            borderRadius: '10px',
-                            border: '1px solid #e2e8f0',
-                            background: '#f8fafc',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            transition: 'all 0.2s ease',
-                            flexWrap: 'wrap',
-                            gap: '12px'
-                          }}
+                          className="ai-mom-generator-s150"
                         >
                           <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                              <span style={{
-                                fontSize: '0.68rem',
-                                fontWeight: 800,
-                                padding: '2px 8px',
-                                borderRadius: '10px',
-                                background: m.scope === 'A_BUILDING' ? '#059669' : '#2563eb',
-                                color: '#ffffff'
-                              }}>
+                            <div className="ai-mom-generator-s151">
+                              <span className="ai-mom-generator-s152" style={{ background: m.scope === 'A_BUILDING' ? '#059669' : '#2563eb' }}>
                                 {m.scope === 'A_BUILDING' ? "BUILDING 'A'" : 'COMMON INFRA'}
                               </span>
-                              <strong style={{ fontSize: '0.94rem', color: '#0f172a' }}>{m.title}</strong>
+                              <strong className="ai-mom-generator-s153">{m.title}</strong>
                             </div>
-                            <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                            <div className="ai-mom-generator-s107">
                               Date: {m.headerInfo?.meetingDate || 'N/A'} • {m.actionItems?.length || 0} Action Items • {m.resolutions?.length || 0} Resolutions
                             </div>
                           </div>
 
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <span style={{ fontSize: '0.8rem', color: '#059669', fontWeight: 700 }}>Restore & View ↗</span>
+                          <div className="ai-mom-generator-s154">
+                            <span className="ai-mom-generator-s155">Restore & View ↗</span>
                             <button
                               type="button"
                               onClick={(e) => handleDeleteHistory(m.id, e)}
                               title="Delete from history"
-                              style={{
-                                background: 'transparent',
-                                border: 'none',
-                                color: '#94a3b8',
-                                cursor: 'pointer',
-                                padding: '4px'
-                              }}
+                              className="ai-mom-generator-s156"
                             >
                               <Trash2 size={16} />
                             </button>

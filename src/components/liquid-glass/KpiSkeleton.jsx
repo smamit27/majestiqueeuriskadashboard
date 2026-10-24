@@ -1,5 +1,7 @@
 import React from 'react';
 import LiquidGlassCard from './LiquidGlassCard.jsx';
+import './KpiSkeleton.css';
+
 
 /**
  * KpiSkeleton
@@ -13,7 +15,7 @@ export default function KpiSkeleton({ count = 1, className = '' }) {
       <LiquidGlassCard className={`kpi-skeleton ${className}`} aria-busy="true" aria-label="Loading metric">
         <div className="liquid-glass-kpi__header">
           <div className="kpi-skeleton__line kpi-skeleton__title" />
-          <div className="kpi-skeleton__line" style={{ width: 36, height: 36, borderRadius: 10 }} />
+          <div className="kpi-skeleton__line kpi-skeleton-s1" />
         </div>
         <div className="kpi-skeleton__line kpi-skeleton__value" />
         <div className="kpi-skeleton__line kpi-skeleton__sub" />
@@ -27,7 +29,7 @@ export default function KpiSkeleton({ count = 1, className = '' }) {
         <LiquidGlassCard key={i} className={`kpi-skeleton ${className}`} aria-busy="true" aria-label="Loading metric">
           <div className="liquid-glass-kpi__header">
             <div className="kpi-skeleton__line kpi-skeleton__title" />
-            <div className="kpi-skeleton__line" style={{ width: 36, height: 36, borderRadius: 10 }} />
+            <div className="kpi-skeleton__line kpi-skeleton-s1" />
           </div>
           <div className="kpi-skeleton__line kpi-skeleton__value" />
           <div className="kpi-skeleton__line kpi-skeleton__sub" />

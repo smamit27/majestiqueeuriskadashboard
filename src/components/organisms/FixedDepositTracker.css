@@ -1,0 +1,1022 @@
+/**
+ * FixedDepositTracker.css
+ * Extracted styles from FixedDepositTracker.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.fixed-deposit-tracker-s1 {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 32px;
+}
+
+.fixed-deposit-tracker-s2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fixed-deposit-tracker-s3 {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+.fixed-deposit-tracker-s4 {
+  margin-bottom: 20px;
+}
+
+.fixed-deposit-tracker-s5 {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.fixed-deposit-tracker-s6 {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.5);
+  outline: none;
+}
+
+.fixed-deposit-tracker-s7 {
+  color: var(--coral);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.fixed-deposit-tracker-s8 {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: var(--teal);
+  color: white;
+}
+
+.fixed-deposit-tracker-s9 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.fixed-deposit-tracker-s10 {
+  background: linear-gradient(135deg, #0b2b26 0%, #196c6c 100%);
+  border-radius: 20px;
+  padding: 22px 26px;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(11,43,38,0.24);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.fixed-deposit-tracker-s11 {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #c49b4f;
+}
+
+.fixed-deposit-tracker-s12 {
+  margin: 6px 0 8px;
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.fixed-deposit-tracker-s13 {
+  margin: 0;
+  color: rgba(255,255,255,0.78);
+  font-size: 0.9rem;
+  max-width: 640px;
+}
+
+.fixed-deposit-tracker-s14 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.fixed-deposit-tracker-s15 {
+  font-size: 0.74rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.fixed-deposit-tracker-s16 {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fixed-deposit-tracker-s17 {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.28);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.84rem;
+  backdrop-filter: blur(6px);
+}
+
+.fixed-deposit-tracker-s18 {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.28);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.84rem;
+}
+
+.fixed-deposit-tracker-s19 {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #c49b4f;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.84rem;
+  box-shadow: 0 4px 12px rgba(196,155,79,0.35);
+}
+
+.fixed-deposit-tracker-s20 {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.fixed-deposit-tracker-s21 {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+}
+
+.fixed-deposit-tracker-s22 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.fixed-deposit-tracker-s23 {
+  background: #fff;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(61,63,52,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.fixed-deposit-tracker-s24 {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+}
+
+.fixed-deposit-tracker-s25 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0b2b26;
+  margin-top: 4px;
+}
+
+.fixed-deposit-tracker-s26 {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.fixed-deposit-tracker-s27 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #b45309;
+  margin-top: 4px;
+}
+
+.fixed-deposit-tracker-s28 {
+  background: #f0fdf4;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.fixed-deposit-tracker-s29 {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #166534;
+}
+
+.fixed-deposit-tracker-s30 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #15803d;
+  margin-top: 4px;
+}
+
+.fixed-deposit-tracker-s31 {
+  font-size: 0.72rem;
+  color: #166534;
+  margin-top: 4px;
+}
+
+.fixed-deposit-tracker-s32 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin-top: 4px;
+}
+
+.fixed-deposit-tracker-s33 {
+  padding: 0 0 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.fixed-deposit-tracker-s34 {
+  margin-left: auto;
+}
+
+.fixed-deposit-tracker-s35 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fixed-deposit-tracker-s36 {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fixed-deposit-tracker-s37 {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #196c6c;
+}
+
+.fixed-deposit-tracker-s38 {
+  margin: 4px 0 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.fixed-deposit-tracker-s39 {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.fixed-deposit-tracker-s40 {
+  padding: 9px 16px;
+  border-radius: 8px;
+  background: #0b2b26;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.84rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(11,43,38,0.18);
+}
+
+.fixed-deposit-tracker-s41 {
+  text-align: center;
+  padding: 48px 20px;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  color: #64748b;
+}
+
+.fixed-deposit-tracker-s42 {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.fixed-deposit-tracker-s43 {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  overflow: hidden;
+}
+
+.fixed-deposit-tracker-s44 {
+  padding: 16px 20px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fixed-deposit-tracker-s45 {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.fixed-deposit-tracker-s46 {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.fixed-deposit-tracker-s47 {
+  font-size: 0.88rem;
+  color: #334155;
+}
+
+.fixed-deposit-tracker-s48 {
+  color: #0f172a;
+}
+
+.fixed-deposit-tracker-s49 {
+  margin: 0;
+}
+
+.fixed-deposit-tracker-s50 {
+  background: #f8fafc;
+}
+
+.fixed-deposit-tracker-s51 {
+  width: 50px;
+  text-align: center;
+}
+
+.fixed-deposit-tracker-s52 {
+  width: 150px;
+}
+
+.fixed-deposit-tracker-s53 {
+  width: 140px;
+  text-align: right;
+}
+
+.fixed-deposit-tracker-s54 {
+  width: 90px;
+  text-align: center;
+}
+
+.fixed-deposit-tracker-s55 {
+  width: 80px;
+  text-align: center;
+}
+
+.fixed-deposit-tracker-s56 {
+  width: 110px;
+  text-align: center;
+}
+
+.fixed-deposit-tracker-s57 {
+  text-align: center;
+  color: #64748b;
+}
+
+.fixed-deposit-tracker-s58 {
+  font-weight: 700;
+  font-family: monospace;
+  color: #0f172a;
+}
+
+.fixed-deposit-tracker-s59 {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.fixed-deposit-tracker-s60 {
+  text-align: right;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.fixed-deposit-tracker-s61 {
+  text-align: center;
+  font-weight: 600;
+  color: #065f46;
+}
+
+.fixed-deposit-tracker-s62 {
+  text-align: center;
+  color: #334155;
+}
+
+.fixed-deposit-tracker-s63 {
+  text-align: right;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.fixed-deposit-tracker-s64 {
+  background: #f8fafc;
+  font-weight: 700;
+}
+
+.fixed-deposit-tracker-s65 {
+  text-align: left;
+  padding: 12px 16px;
+  color: #334155;
+}
+
+.fixed-deposit-tracker-s66 {
+  text-align: right;
+  padding: 12px 16px;
+  color: #0f172a;
+}
+
+.fixed-deposit-tracker-s67 {
+  text-align: center;
+  color: #94a3b8;
+}
+
+.fixed-deposit-tracker-s68 {
+  text-align: right;
+  padding: 12px 16px;
+  color: #15803d;
+}
+
+.fixed-deposit-tracker-s69 {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #cbd5e1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fixed-deposit-tracker-s70 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.fixed-deposit-tracker-s71 {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.fixed-deposit-tracker-s72 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 2px;
+}
+
+.fixed-deposit-tracker-s73 {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fixed-deposit-tracker-s74 {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.fixed-deposit-tracker-s75 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 2px;
+}
+
+.fixed-deposit-tracker-s76 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #d97706;
+  margin-top: 2px;
+}
+
+.fixed-deposit-tracker-s77 {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fixed-deposit-tracker-s78 {
+  font-size: 1.4rem;
+}
+
+.fixed-deposit-tracker-s79 {
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #166534;
+}
+
+.fixed-deposit-tracker-s80 {
+  font-size: 0.82rem;
+  color: #15803d;
+}
+
+.fixed-deposit-tracker-s81 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #15803d;
+}
+
+.fixed-deposit-tracker-s82 {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.fixed-deposit-tracker-s83 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fixed-deposit-tracker-s84 {
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.fixed-deposit-tracker-s85 {
+  flex: 1;
+  min-width: 220px;
+}
+
+.fixed-deposit-tracker-s86 {
+  text-align: left;
+  height: 40px;
+  font-size: 0.9rem;
+  background: #fff;
+}
+
+.fixed-deposit-tracker-s87 {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.fixed-deposit-tracker-s88 {
+  height: 40px;
+  font-size: 0.85rem;
+  width: 140px;
+  background: #fff;
+}
+
+.fixed-deposit-tracker-s89 {
+  height: 40px;
+  font-size: 0.85rem;
+  width: 150px;
+  background: #fff;
+}
+
+.fixed-deposit-tracker-s90 {
+  width: 40px;
+  text-align: center;
+}
+
+.fixed-deposit-tracker-s91 {
+  width: 130px;
+}
+
+.fixed-deposit-tracker-s92 {
+  width: 120px;
+}
+
+.fixed-deposit-tracker-s93 {
+  width: 120px;
+  text-align: right;
+}
+
+.fixed-deposit-tracker-s94 {
+  width: 85px;
+  text-align: center;
+}
+
+.fixed-deposit-tracker-s95 {
+  width: 130px;
+  text-align: right;
+}
+
+.fixed-deposit-tracker-s96 {
+  width: 120px;
+  text-align: center;
+}
+
+.fixed-deposit-tracker-s97 {
+  text-align: center;
+  padding: 40px;
+  color: var(--muted);
+}
+
+.fixed-deposit-tracker-s98 {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.fixed-deposit-tracker-s99 {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.fixed-deposit-tracker-s100 {
+  text-align: right;
+  font-weight: 600;
+}
+
+.fixed-deposit-tracker-s101 {
+  text-align: center;
+  font-weight: 700;
+  color: #065f46;
+}
+
+.fixed-deposit-tracker-s102 {
+  text-align: center;
+}
+
+.fixed-deposit-tracker-s103 {
+  display: block;
+  font-size: 0.65rem;
+  color: #dc2626;
+}
+
+.fixed-deposit-tracker-s104 {
+  width: 100%;
+  background: #e2e8f0;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.fixed-deposit-tracker-s105 {
+  height: 100%;
+}
+
+.fixed-deposit-tracker-s106 {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+.fixed-deposit-tracker-s107 {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.fixed-deposit-tracker-s108 {
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  color: #16a34a;
+}
+
+.fixed-deposit-tracker-s109 {
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  color: #dc2626;
+}
+
+.fixed-deposit-tracker-s110 {
+  width: 100px;
+  text-align: center;
+}
+
+.fixed-deposit-tracker-s111 {
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.fixed-deposit-tracker-s112 {
+  text-align: right;
+}
+
+.fixed-deposit-tracker-s113 {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.fixed-deposit-tracker-s114 {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.fixed-deposit-tracker-s115 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.fixed-deposit-tracker-s116 {
+  padding: 24px;
+  border-radius: 18px;
+}
+
+.fixed-deposit-tracker-s117 {
+  margin: 0 0 16px 0;
+  color: #0b2b26;
+}
+
+.fixed-deposit-tracker-s118 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fixed-deposit-tracker-s119 {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.fixed-deposit-tracker-s120 {
+  text-align: left;
+}
+
+.fixed-deposit-tracker-s121 {
+  padding: 24px;
+  border-radius: 18px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fixed-deposit-tracker-s122 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.fixed-deposit-tracker-s123 {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fixed-deposit-tracker-s124 {
+  background: #fff;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.fixed-deposit-tracker-s125 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0b2b26;
+  margin-top: 2px;
+}
+
+.fixed-deposit-tracker-s126 {
+  background: #f0fdf4;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #86efac;
+}
+
+.fixed-deposit-tracker-s127 {
+  font-size: 0.75rem;
+  color: #166534;
+}
+
+.fixed-deposit-tracker-s128 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #15803d;
+  margin-top: 2px;
+}
+
+.fixed-deposit-tracker-s129 {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.fixed-deposit-tracker-s130 {
+  background: #fffaf2;
+  border-radius: 22px;
+  padding: 28px;
+  width: 100%;
+  max-width: 650px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.28);
+}
+
+.fixed-deposit-tracker-s131 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.fixed-deposit-tracker-s132 {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #196c6c;
+}
+
+.fixed-deposit-tracker-s133 {
+  margin: 2px 0 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0b2b26;
+}
+
+.fixed-deposit-tracker-s134 {
+  background: rgba(61,63,52,0.08);
+  border: none;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fixed-deposit-tracker-s135 {
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.fixed-deposit-tracker-s136 {
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.fixed-deposit-tracker-s137 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.fixed-deposit-tracker-s138 {
+  grid-column: 1 / -1;
+}
+
+.fixed-deposit-tracker-s139 {
+  grid-column: 1 / -1;
+  background: #f0fdf4;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #86efac;
+  display: flex;
+  justify-content: space-between;
+}
+
+.fixed-deposit-tracker-s140 {
+  color: #15803d;
+  font-size: 1rem;
+}
+
+.fixed-deposit-tracker-s141 {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.fixed-deposit-tracker-s142 {
+  padding: 8px 18px;
+}
+
+.fixed-deposit-tracker-s143 {
+  padding: 8px 22px;
+}
+
+.fixed-deposit-tracker-s144 {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+}
+
+.fixed-deposit-tracker-s145 {
+  margin: 0 0 8px 0;
+  color: #dc2626;
+}
+
+.fixed-deposit-tracker-s146 {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin: 0 0 16px 0;
+}
+
+.fixed-deposit-tracker-s147 {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fixed-deposit-tracker-s148 {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.fixed-deposit-tracker-s149 {
+  text-align: left;
+  min-height: 60px;
+}
+
+.fixed-deposit-tracker-s150 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.fixed-deposit-tracker-s151 {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+

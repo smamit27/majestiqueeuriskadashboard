@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
+import './WaterManagement.css';
+
 
 const visuals = [
   // Official Society Rules Posters
@@ -248,50 +250,18 @@ export default function WaterManagement() {
   });
 
   return (
-    <div id="visuals-management-container" style={{ fontFamily: 'Inter, system-ui, sans-serif', maxWidth: '100%', overflow: 'hidden' }}>
+    <div id="visuals-management-container" className="water-management-s1">
 
       {/* Lightbox Modal */}
       {selectedVisual && createPortal(
         <div
           onClick={() => setSelectedVisual(null)}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(0,0,0,0.92)',
-            zIndex: 999999,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '24px',
-            cursor: 'pointer',
-          }}
+          className="water-management-s2"
         >
           {/* Close button at top-right of screen */}
           <button
             onClick={(e) => { e.stopPropagation(); setSelectedVisual(null); }}
-            style={{
-              position: 'fixed',
-              top: '24px',
-              right: '24px',
-              width: '48px',
-              height: '48px',
-              borderRadius: '50%',
-              background: '#ef4444',
-              color: '#ffffff',
-              border: 'none',
-              fontSize: '1.5rem',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
-              zIndex: 1000000,
-            }}
+            className="water-management-s3"
           >
             ✕
           </button>
@@ -299,37 +269,24 @@ export default function WaterManagement() {
           {/* Image Container */}
           <div 
             onClick={(e) => e.stopPropagation()}
-            style={{
-              maxWidth: '90%',
-              maxHeight: '85vh',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              cursor: 'default',
-            }}
+            className="water-management-s4"
           >
             <img
               src={selectedVisual.image}
               alt={selectedVisual.title}
-              style={{
-                maxWidth: '100%',
-                maxHeight: '70vh',
-                borderRadius: '12px',
-                objectFit: 'contain',
-                boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7)',
-              }}
+              className="water-management-s5"
             />
 
             {/* Caption & Actions */}
-            <div style={{ color: '#fff', textAlign: 'center', marginTop: '14px', width: '100%' }}>
-              <h3 style={{ margin: '0 0 4px', fontSize: '1.2rem', fontWeight: 700 }}>
+            <div className="water-management-s6">
+              <h3 className="water-management-s7">
                 {selectedVisual.title}
               </h3>
-              <p style={{ margin: '0 0 12px', fontSize: '0.9rem', opacity: 0.85 }}>
+              <p className="water-management-s8">
                 {selectedVisual.subtitle}
               </p>
 
-              <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <div className="water-management-s9">
                 <button
                   type="button"
                   id="print-visual-btn"
@@ -337,20 +294,7 @@ export default function WaterManagement() {
                     e.stopPropagation();
                     handlePrintVisual(selectedVisual);
                   }}
-                  style={{
-                    background: '#0284c7',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '8px 16px',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 4px 12px rgba(2,132,199,0.4)',
-                  }}
+                  className="water-management-s10"
                 >
                   <span>🖨️ Print / Save PDF</span>
                 </button>
@@ -362,19 +306,7 @@ export default function WaterManagement() {
                     e.stopPropagation();
                     handleDownloadVisual(selectedVisual);
                   }}
-                  style={{
-                    background: '#334155',
-                    color: '#ffffff',
-                    border: '1px solid #64748b',
-                    borderRadius: '8px',
-                    padding: '8px 16px',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
+                  className="water-management-s11"
                 >
                   <span>⬇️ Download Image</span>
                 </button>
@@ -387,20 +319,7 @@ export default function WaterManagement() {
                       setSelectedVisual(null);
                       handleNavigateToRules();
                     }}
-                    style={{
-                      background: '#dc2626',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '8px',
-                      padding: '8px 16px',
-                      fontSize: '0.85rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 12px rgba(220,38,38,0.4)',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                    }}
+                    className="water-management-s12"
                   >
                     <span>📜 View in Society Rules</span>
                     <span>→</span>
@@ -415,48 +334,22 @@ export default function WaterManagement() {
 
       {/* Society Rules Quick Cross-link Banner */}
       <div
-        style={{
-          background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-          color: 'white',
-          padding: '16px 20px',
-          borderRadius: '12px',
-          marginBottom: '20px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '12px',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.06)',
-          border: '1px solid rgba(255,255,255,0.08)',
-        }}
+        className="water-management-s13"
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ fontSize: '1.8rem' }}>📜</span>
+        <div className="water-management-s14">
+          <span className="water-management-s15">📜</span>
           <div>
-            <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#f8fafc' }}>
+            <h4 className="water-management-s16">
               Society Rules, Bylaws & Penalty Schedule
             </h4>
-            <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: '#94a3b8' }}>
+            <p className="water-management-s17">
               Looking for full parking rules (₹500/day fine), clubhouse booking fees (₹1,000/₹2,000), or complaint logging?
             </p>
           </div>
         </div>
         <button
           onClick={handleNavigateToRules}
-          style={{
-            background: '#ef4444',
-            color: 'white',
-            border: 'none',
-            padding: '10px 18px',
-            borderRadius: '8px',
-            fontWeight: 600,
-            fontSize: '0.88rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: '0 4px 12px rgba(239,68,68,0.3)',
-          }}
+          className="water-management-s18"
         >
           <span>Open Society Rules Tab</span>
           <span>→</span>
@@ -465,32 +358,15 @@ export default function WaterManagement() {
 
       {/* Filter and Search Bar */}
       <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '12px',
-          marginBottom: '20px',
-        }}
+        className="water-management-s19"
       >
         {/* Category Pills */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div className="water-management-s20">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              style={{
-                background: activeCategory === cat.id ? '#0f172a' : '#f1f5f9',
-                color: activeCategory === cat.id ? '#ffffff' : '#475569',
-                border: activeCategory === cat.id ? '1px solid #0f172a' : '1px solid #e2e8f0',
-                padding: '6px 14px',
-                borderRadius: '20px',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-              }}
+              className="water-management-s21" style={{ background: activeCategory === cat.id ? '#0f172a' : '#f1f5f9', color: activeCategory === cat.id ? '#ffffff' : '#475569', border: activeCategory === cat.id ? '1px solid #0f172a' : '1px solid #e2e8f0' }}
             >
               {cat.label} ({cat.count})
             </button>
@@ -498,40 +374,19 @@ export default function WaterManagement() {
         </div>
 
         {/* Search Input & Print Catalog */}
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flex: '1', maxWidth: '440px', justifyContent: 'flex-end' }}>
+        <div className="water-management-s22">
           <input
             type="text"
             placeholder="Search plans, rules & visuals..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px 14px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              fontSize: '0.85rem',
-              outline: 'none',
-              background: '#ffffff',
-            }}
+            className="water-management-s23"
           />
           <button
             type="button"
             id="print-visuals-catalog-btn"
             onClick={handlePrintCatalog}
-            style={{
-              background: '#f8fafc',
-              color: '#0f172a',
-              border: '1px solid #cbd5e1',
-              padding: '8px 12px',
-              borderRadius: '8px',
-              fontSize: '0.82rem',
-              fontWeight: 700,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
+            className="water-management-s24"
             title="Print or export current gallery as PDF"
           >
             <span>🖨️ Print</span>
@@ -541,26 +396,13 @@ export default function WaterManagement() {
 
       {/* Gallery Grid */}
       <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '16px',
-          maxWidth: '100%',
-        }}
+        className="water-management-s25"
       >
         {filteredVisuals.map((v) => (
           <div
             key={v.id}
             onClick={() => setSelectedVisual(v)}
-            style={{
-              background: '#fff',
-              borderRadius: '12px',
-              border: '1px solid #e2e8f0',
-              overflow: 'hidden',
-              cursor: 'pointer',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-            }}
+            className="water-management-s26"
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-4px)';
               e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.1)';
@@ -572,60 +414,24 @@ export default function WaterManagement() {
           >
             {/* Image */}
             <div
-              style={{
-                width: '100%',
-                height: '220px',
-                overflow: 'hidden',
-                position: 'relative',
-                background: '#f1f5f9',
-              }}
+              className="water-management-s27"
             >
               <img
                 src={v.image}
                 alt={v.title}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                  display: 'block',
-                  transition: 'transform 0.3s',
-                }}
+                className="water-management-s28"
                 onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
                 onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
               />
               {/* Category Badge */}
               <div
-                style={{
-                  position: 'absolute',
-                  top: '12px',
-                  left: '12px',
-                  background: v.color,
-                  color: '#fff',
-                  fontSize: '0.65rem',
-                  fontWeight: 700,
-                  padding: '4px 10px',
-                  borderRadius: '20px',
-                  letterSpacing: '0.5px',
-                  textTransform: 'uppercase',
-                }}
+                className="water-management-s29" style={{ background: v.color }}
               >
                 {v.category}
               </div>
               {/* Zoom icon */}
               <div
-                style={{
-                  position: 'absolute',
-                  bottom: '12px',
-                  right: '12px',
-                  background: 'rgba(255,255,255,0.9)',
-                  borderRadius: '50%',
-                  width: '32px',
-                  height: '32px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                }}
+                className="water-management-s30"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#334155" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
@@ -637,11 +443,11 @@ export default function WaterManagement() {
             </div>
 
             {/* Text */}
-            <div style={{ padding: '16px' }}>
-              <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem', fontWeight: 700, color: '#0f172a' }}>
+            <div className="water-management-s31">
+              <h3 className="water-management-s32">
                 {v.title}
               </h3>
-              <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748b', lineHeight: 1.4 }}>
+              <p className="water-management-s33">
                 {v.subtitle}
               </p>
             </div>

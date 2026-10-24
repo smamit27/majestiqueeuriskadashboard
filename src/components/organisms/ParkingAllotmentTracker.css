@@ -1,0 +1,970 @@
+/**
+ * ParkingAllotmentTracker.css
+ * Extracted styles from ParkingAllotmentTracker.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.parking-allotment-tracker-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.parking-allotment-tracker-s2 {
+  background: linear-gradient(135deg, rgba(11, 43, 38, 0.94) 0%, rgba(15, 60, 52, 0.88) 50%, rgba(22, 78, 99, 0.94) 100%);
+  border-radius: 24px;
+  padding: 26px 30px;
+  color: #ffffff;
+  box-shadow: 0 16px 40px rgba(11, 43, 38, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.parking-allotment-tracker-s3 {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+}
+
+.parking-allotment-tracker-s4 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(254, 240, 138, 0.14);
+  border: 1px solid rgba(254, 240, 138, 0.35);
+  color: #fef08a;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.73rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  backdrop-filter: blur(8px);
+}
+
+.parking-allotment-tracker-s5 {
+  margin: 0 0 8px;
+  font-size: 1.65rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.parking-allotment-tracker-s6 {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.parking-allotment-tracker-s7 {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  z-index: 1;
+}
+
+.parking-allotment-tracker-s8 {
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  padding: 12px 18px;
+  min-width: 108px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transition: all 0.18s ease;
+}
+
+.parking-allotment-tracker-s9 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  line-height: 1;
+  font-family: monospace;
+}
+
+.parking-allotment-tracker-s10 {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  margin-top: 5px;
+}
+
+.parking-allotment-tracker-s11 {
+  font-size: 0.64rem;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 2px;
+}
+
+.parking-allotment-tracker-s12 {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(248, 250, 252, 0.76) 100%);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 20px;
+  padding: 16px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.parking-allotment-tracker-s13 {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.parking-allotment-tracker-s14 {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.parking-allotment-tracker-s15 {
+  width: 100%;
+  padding-left: 36px;
+  padding-right: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(203, 213, 225, 0.9);
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 0.85rem;
+  color: #0f172a;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+.parking-allotment-tracker-s16 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.parking-allotment-tracker-s17 {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.parking-allotment-tracker-s18 {
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(203, 213, 225, 0.9);
+  background: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+.parking-allotment-tracker-s19 {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.parking-allotment-tracker-s20 {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  backdrop-filter: blur(8px);
+  transition: all 0.15s ease;
+}
+
+.parking-allotment-tracker-s21 {
+  display: flex;
+  background: rgba(226, 232, 240, 0.65);
+  padding: 4px;
+  border-radius: 14px;
+  gap: 3px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(10px);
+}
+
+.parking-allotment-tracker-s22 {
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.parking-allotment-tracker-s23 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+}
+
+.parking-allotment-tracker-s24 {
+  position: relative;
+}
+
+.parking-allotment-tracker-s25 {
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(2, 132, 199, 0.4);
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.28);
+  transition: all 0.15s ease;
+}
+
+.parking-allotment-tracker-s26 {
+  position: absolute;
+  top: 115%;
+  right: 0;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(71, 85, 105, 0.6);
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+  z-index: 70;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.parking-allotment-tracker-s27 {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #f8fafc;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.parking-allotment-tracker-s28 {
+  font-size: 1.1rem;
+}
+
+.parking-allotment-tracker-s29 {
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
+.parking-allotment-tracker-s30 {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #f8fafc;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  border-top: 1px solid #1e293b;
+}
+
+.parking-allotment-tracker-s31 {
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(203, 213, 225, 0.9);
+  background: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
+}
+
+.parking-allotment-tracker-s32 {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.parking-allotment-tracker-s33 {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(248, 250, 252, 0.82) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 22px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  padding: 0;
+}
+
+.parking-allotment-tracker-s34 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(30, 58, 138, 0.08) 100%);
+  border-bottom: 1.5px solid rgba(244, 63, 94, 0.22);
+  backdrop-filter: blur(10px);
+}
+
+.parking-allotment-tracker-s35 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.parking-allotment-tracker-s36 {
+  font-size: 1.35rem;
+}
+
+.parking-allotment-tracker-s37 {
+  font-weight: 900;
+  font-size: 0.94rem;
+  color: #0f2952;
+}
+
+.parking-allotment-tracker-s38 {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.parking-allotment-tracker-s39 {
+  padding: 8px 18px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  transition: transform 0.15s ease;
+}
+
+.parking-allotment-tracker-s40 {
+  overflow-x: auto;
+}
+
+.parking-allotment-tracker-s41 {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+}
+
+.parking-allotment-tracker-s42 {
+  background: linear-gradient(180deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.7) 100%);
+  backdrop-filter: blur(12px);
+}
+
+.parking-allotment-tracker-s43 {
+  padding: 12px 16px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #475569;
+  border-bottom: 1.5px solid rgba(203, 213, 225, 0.8);
+}
+
+.parking-allotment-tracker-s44 {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.parking-allotment-tracker-s45 {
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.parking-allotment-tracker-s46 {
+  color: #64748b;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.parking-allotment-tracker-s47 {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+  transition: background 0.15s ease;
+}
+
+.parking-allotment-tracker-s48 {
+  padding: 11px 16px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.parking-allotment-tracker-s49 {
+  padding: 11px 16px;
+}
+
+.parking-allotment-tracker-s50 {
+  display: inline-block;
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #0f2952;
+  font-family: monospace;
+  letter-spacing: 0.04em;
+}
+
+.parking-allotment-tracker-s51 {
+  padding: 11px 16px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: #475569;
+  font-weight: 700;
+}
+
+.parking-allotment-tracker-s52 {
+  padding: 11px 16px;
+  text-align: center;
+}
+
+.parking-allotment-tracker-s53 {
+  display: inline-block;
+  background: linear-gradient(135deg, #0b2b26 0%, #164e63 100%);
+  color: #fef08a;
+  font-weight: 900;
+  font-size: 0.82rem;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 8px rgba(11, 43, 38, 0.25);
+  border: 1px solid rgba(254, 240, 138, 0.3);
+}
+
+.parking-allotment-tracker-s54 {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.parking-allotment-tracker-s55 {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 14px;
+}
+
+.parking-allotment-tracker-s56 {
+  padding: 11px 16px;
+  font-size: 0.76rem;
+  color: #475569;
+  max-width: 280px;
+}
+
+.parking-allotment-tracker-s57 {
+  padding: 11px 16px;
+  white-space: nowrap;
+}
+
+.parking-allotment-tracker-s58 {
+  padding: 4px 11px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.parking-allotment-tracker-s59 {
+  padding: 14px 22px;
+  border-top: 1.5px solid rgba(226, 232, 240, 0.85);
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.8) 100%);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: #64748b;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.parking-allotment-tracker-s60 {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.parking-allotment-tracker-s61 {
+  color: #065f46;
+  font-family: monospace;
+  font-size: 0.88rem;
+}
+
+.parking-allotment-tracker-s62 {
+  color: #1e40af;
+  font-family: monospace;
+  font-size: 0.88rem;
+}
+
+.parking-allotment-tracker-s63 {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(248, 250, 252, 0.82) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 22px;
+  padding: 24px 28px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.05);
+}
+
+.parking-allotment-tracker-s64 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.parking-allotment-tracker-s65 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #0f2952;
+}
+
+.parking-allotment-tracker-s66 {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.parking-allotment-tracker-s67 {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.parking-allotment-tracker-s68 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.parking-allotment-tracker-s69 {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #0b2b26 0%, #164e63 100%);
+  border: 1px solid #fef08a;
+  box-shadow: 0 2px 6px rgba(11,43,38,0.3);
+}
+
+.parking-allotment-tracker-s70 {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: rgba(241, 245, 249, 0.8);
+  border: 1.5px dashed #94a3b8;
+}
+
+.parking-allotment-tracker-s71 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+  gap: 12px;
+}
+
+.parking-allotment-tracker-s72 {
+  border-radius: 14px;
+  padding: 12px 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  backdrop-filter: blur(8px);
+  position: relative;
+  text-align: center;
+}
+
+.parking-allotment-tracker-s73 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.parking-allotment-tracker-s74 {
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.parking-allotment-tracker-s75 {
+  font-size: 0.8rem;
+}
+
+.parking-allotment-tracker-s76 {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #6ee7b7;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}
+
+.parking-allotment-tracker-s77 {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.parking-allotment-tracker-s78 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.parking-allotment-tracker-s79 {
+  background: #fffefb;
+  border: 1px solid rgba(61,63,52,0.12);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.parking-allotment-tracker-s80 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(61,63,52,0.08);
+  padding-bottom: 8px;
+}
+
+.parking-allotment-tracker-s81 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.parking-allotment-tracker-s82 {
+  background: #0b2b26;
+  color: #C49B4F;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  border-radius: 8px;
+}
+
+.parking-allotment-tracker-s83 {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #1d2a24;
+}
+
+.parking-allotment-tracker-s84 {
+  font-size: 0.78rem;
+  color: #5f665f;
+  display: flex;
+  gap: 12px;
+}
+
+.parking-allotment-tracker-s85 {
+  color: #065f46;
+}
+
+.parking-allotment-tracker-s86 {
+  color: #1e40af;
+}
+
+.parking-allotment-tracker-s87 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.parking-allotment-tracker-s88 {
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.parking-allotment-tracker-s89 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.parking-allotment-tracker-s90 {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #0b2b26;
+  font-family: monospace;
+}
+
+.parking-allotment-tracker-s91 {
+  background: #0b2b26;
+  color: #C49B4F;
+  font-weight: 800;
+  font-size: 0.74rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: monospace;
+}
+
+.parking-allotment-tracker-s92 {
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.parking-allotment-tracker-s93 {
+  margin-top: 8px;
+  text-align: right;
+}
+
+.parking-allotment-tracker-s94 {
+  background: transparent;
+  border: none;
+  color: #164e63;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.parking-allotment-tracker-s95 {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.parking-allotment-tracker-s96 {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.parking-allotment-tracker-s97 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.parking-allotment-tracker-s98 {
+  background: #0b2b26;
+  color: #C49B4F;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 1rem;
+  font-family: monospace;
+}
+
+.parking-allotment-tracker-s99 {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.parking-allotment-tracker-s100 {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+  color: #0b2b26;
+}
+
+.parking-allotment-tracker-s101 {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.parking-allotment-tracker-s102 {
+  font-size: 0.82rem;
+  color: #64748b;
+  background: #f8fafc;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.parking-allotment-tracker-s103 {
+  width: 100%;
+  margin-top: 16px;
+  padding: 8px;
+  background: #0b2b26;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.parking-allotment-tracker-s104 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  color: #10b981;
+}
+
+.parking-allotment-tracker-s105 {
+  margin: 0 0 14px;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.parking-allotment-tracker-s106 {
+  width: 100%;
+  padding: 9px;
+  background: #065f46;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 0.84rem;
+}
+
+.parking-allotment-tracker-s107 {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.parking-allotment-tracker-s108 {
+  background: #fffefb;
+  border-radius: 22px;
+  padding: 24px 28px;
+  max-width: 460px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+}
+
+.parking-allotment-tracker-s109 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.parking-allotment-tracker-s110 {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #164e63;
+}
+
+.parking-allotment-tracker-s111 {
+  margin: 2px 0 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0b2b26;
+}
+
+.parking-allotment-tracker-s112 {
+  background: rgba(0,0,0,0.06);
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.parking-allotment-tracker-s113 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.parking-allotment-tracker-s114 {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.parking-allotment-tracker-s115 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.parking-allotment-tracker-s116 {
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.parking-allotment-tracker-s117 {
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: none;
+  background: #0b2b26;
+  color: #C49B4F;
+  font-weight: 800;
+  cursor: pointer;
+}
+

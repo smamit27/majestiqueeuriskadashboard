@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc, deleteDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './TankerTracker.css';
+
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -537,16 +539,16 @@ export default function TankerTracker({ isAdmin = false }) {
           </div>
           <div className="summary-card">
             <span>Grand Total</span>
-            <strong style={{ color: '#0f3d35' }}>₹{fmt(summary.grandTotal)}</strong>
+            <strong className="tanker-tracker-s1">₹{fmt(summary.grandTotal)}</strong>
           </div>
         </div>
 
         {/* Auto-save status */}
         <div
-          className="attendance-note"
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500, color: statusBadge.color, transition: 'color 0.3s' }}
+          className="attendance-note tanker-tracker-s2"
+          style={{ color: statusBadge.color }}
         >
-          <span style={{ fontSize: '1rem' }}>{statusBadge.icon}</span>
+          <span className="tanker-tracker-s3">{statusBadge.icon}</span>
           <span>
             {isLoading
               ? `Loading ${formatLongMonthLabel(selectedMonth)}…`
@@ -581,7 +583,7 @@ export default function TankerTracker({ isAdmin = false }) {
             <h3>Water Tanker Log — {formatMonthLabel(selectedMonth)}</h3>
           </div>
           <div className="attendance-table-card__actions">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: statusBadge.color, fontWeight: 500, fontSize: '0.85rem' }}>
+            <div className="tanker-tracker-s4" style={{ color: statusBadge.color }}>
               <span>{statusBadge.icon}</span>
               <span>{isLoading ? 'Loading…' : saveMsg || statusBadge.text}</span>
             </div>
@@ -593,10 +595,9 @@ export default function TankerTracker({ isAdmin = false }) {
             </button>
             {isAdmin && (
               <button
-                className="button-secondary"
+                className="button-secondary tanker-tracker-s5"
                 type="button"
                 onClick={handleDeleteMonth}
-                style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
               >
                 🗑️ Delete
               </button>
@@ -609,16 +610,16 @@ export default function TankerTracker({ isAdmin = false }) {
           <table className="attendance-table attendance-table--register">
             <thead>
               <tr>
-                <th style={{ minWidth: 130 }}>Date</th>
-                <th style={{ minWidth: 120, textAlign: 'center' }}>Rate (₹)</th>
-                <th style={{ minWidth: 120, textAlign: 'center' }}>Water Tanker Count</th>
-                <th style={{ minWidth: 130, textAlign: 'right' }}>Total (₹)</th>
+                <th className="tanker-tracker-s6">Date</th>
+                <th className="tanker-tracker-s7">Rate (₹)</th>
+                <th className="tanker-tracker-s7">Water Tanker Count</th>
+                <th className="tanker-tracker-s8">Total (₹)</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={4} style={{ textAlign: 'center', padding: '32px', opacity: 0.6 }}>
+                  <td colSpan={4} className="tanker-tracker-s9">
                     Loading {formatLongMonthLabel(selectedMonth)}…
                   </td>
                 </tr>
@@ -642,38 +643,36 @@ export default function TankerTracker({ isAdmin = false }) {
                       </th>
 
                       {/* Rate input — editable per row */}
-                      <td style={{ textAlign: 'center' }}>
+                      <td className="tanker-tracker-s10">
                         <input
-                          className="attendance-register-input"
+                          className="attendance-register-input tanker-tracker-s11"
                           type="text"
                           inputMode="numeric"
                           value={row.rate}
                           onChange={e => handleCellChange(d.dateKey, 'rate', e.target.value.replace(/[^0-9.]/g, ''))}
                           readOnly={!isAdmin}
-                          style={{ width: 80, textAlign: 'right' }}
                         />
                       </td>
 
                       {/* Tanker count input */}
-                      <td style={{ textAlign: 'center' }}>
+                      <td className="tanker-tracker-s10">
                         <input
-                          className="attendance-register-input"
+                          className="attendance-register-input tanker-tracker-s12"
                           type="text"
                           inputMode="numeric"
                           value={row.count}
                           onChange={e => handleCellChange(d.dateKey, 'count', e.target.value.replace(/[^0-9]/g, ''))}
                           readOnly={!isAdmin}
                           placeholder="0"
-                          style={{ width: 64, textAlign: 'center' }}
                         />
                       </td>
 
                       {/* Auto-calculated total */}
-                      <td className="attendance-register-total" style={{ textAlign: 'right' }}>
+                      <td className="attendance-register-total tanker-tracker-s13">
                         {count > 0 ? (
-                          <strong style={{ color: '#0f3d35' }}>₹{fmt(rowTotal)}</strong>
+                          <strong className="tanker-tracker-s1">₹{fmt(rowTotal)}</strong>
                         ) : (
-                          <span style={{ opacity: 0.3 }}>—</span>
+                          <span className="tanker-tracker-s14">—</span>
                         )}
                       </td>
                     </tr>
@@ -688,8 +687,8 @@ export default function TankerTracker({ isAdmin = false }) {
                 <tr>
                   <th>Total</th>
                   <th />
-                  <th style={{ textAlign: 'center' }}>{summary.totalTankers}</th>
-                  <th style={{ textAlign: 'right', color: '#0f3d35' }}>₹{fmt(summary.grandTotal)}</th>
+                  <th className="tanker-tracker-s10">{summary.totalTankers}</th>
+                  <th className="tanker-tracker-s15">₹{fmt(summary.grandTotal)}</th>
                 </tr>
               </tfoot>
             )}

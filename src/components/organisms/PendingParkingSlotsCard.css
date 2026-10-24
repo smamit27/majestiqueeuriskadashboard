@@ -1,0 +1,442 @@
+/**
+ * PendingParkingSlotsCard.css
+ * Extracted styles from PendingParkingSlotsCard.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.pending-parking-slots-card-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pending-parking-slots-card-s2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.pending-parking-slots-card-s3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pending-parking-slots-card-s4 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pending-parking-slots-card-s5 {
+  font-size: 1.25rem;
+}
+
+.pending-parking-slots-card-s6 {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #0f2952;
+}
+
+.pending-parking-slots-card-s7 {
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.pending-parking-slots-card-s8 {
+  display: inline-flex;
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+}
+
+.pending-parking-slots-card-s9 {
+  padding: 5px 12px;
+  border-radius: 7px;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pending-parking-slots-card-s10 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pending-parking-slots-card-s11 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+}
+
+.pending-parking-slots-card-s12 {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #0f2952;
+}
+
+.pending-parking-slots-card-s13 {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #0284c7;
+  background: #ffffff;
+  color: #0f2952;
+  font-size: 0.80rem;
+  font-weight: 800;
+  cursor: pointer;
+  outline: none;
+}
+
+.pending-parking-slots-card-s14 {
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+
+.pending-parking-slots-card-s15 {
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.pending-parking-slots-card-s16 {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e3a8a;
+  font-size: 0.80rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  transition: all 0.15s ease;
+}
+
+.pending-parking-slots-card-s17 {
+  padding: 8px 18px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+  transition: all 0.15s ease;
+}
+
+.pending-parking-slots-card-s18 {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(235, 244, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(203, 213, 225, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.pending-parking-slots-card-s19 {
+  background: linear-gradient(135deg, #091a32 0%, #0f2952 45%, #1e3a8a 100%);
+  padding: 20px 28px;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.pending-parking-slots-card-s20 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 220px;
+}
+
+.pending-parking-slots-card-s21 {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  padding: 2px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 2.5px solid rgba(255, 255, 255, 0.95);
+}
+
+.pending-parking-slots-card-s22 {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.pending-parking-slots-card-s23 {
+  display: flex;
+  flex-direction: column;
+}
+
+.pending-parking-slots-card-s24 {
+  font-size: 0.90rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.pending-parking-slots-card-s25 {
+  font-size: 0.73rem;
+  color: #93c5fd;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.pending-parking-slots-card-s26 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex: 1 1 auto;
+}
+
+.pending-parking-slots-card-s27 {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.pending-parking-slots-card-s28 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.pending-parking-slots-card-s29 {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.pending-parking-slots-card-s30 {
+  width: 140px;
+  height: 3.5px;
+  background: #e11d48;
+  border-radius: 2px;
+  margin-top: 6px;
+}
+
+.pending-parking-slots-card-s31 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  min-width: 170px;
+}
+
+.pending-parking-slots-card-s32 {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 6px 14px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.80rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pending-parking-slots-card-s33 {
+  color: #fcd34d;
+}
+
+.pending-parking-slots-card-s34 {
+  font-size: 0.70rem;
+  color: #93c5fd;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.pending-parking-slots-card-s35 {
+  padding: 48px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pending-parking-slots-card-s36 {
+  font-size: 3rem;
+}
+
+.pending-parking-slots-card-s37 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #065f46;
+}
+
+.pending-parking-slots-card-s38 {
+  font-size: 0.86rem;
+  color: #64748b;
+  max-width: 420px;
+}
+
+.pending-parking-slots-card-s39 {
+  padding: clamp(14px, 2.5vw, 24px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(12px, 2vw, 20px);
+}
+
+.pending-parking-slots-card-s40 {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.pending-parking-slots-card-s41 {
+  display: grid;
+  grid-template-columns: 34% 66%;
+  background: linear-gradient(180deg, #e0e7ff 0%, #dbeafe 100%);
+  border-bottom: 1.5px solid #cbd5e1;
+  padding: 9px 0;
+  align-items: center;
+  text-align: center;
+}
+
+.pending-parking-slots-card-s42 {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #1e3a8a;
+  border-right: 1px solid #cbd5e1;
+  padding: 0 8px;
+}
+
+.pending-parking-slots-card-s43 {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #0f2952;
+  padding: 0 8px;
+}
+
+.pending-parking-slots-card-s44 {
+  display: grid;
+  grid-template-columns: 34% 66%;
+  transition: background 0.15s ease;
+}
+
+.pending-parking-slots-card-s45 {
+  padding: 8px 10px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+  border-right: 1px solid #e2e8f0;
+}
+
+.pending-parking-slots-card-s46 {
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pending-parking-slots-card-s47 {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #0f2952;
+  letter-spacing: 0.02em;
+}
+
+.pending-parking-slots-card-s48 {
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 0.70rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  transition: all 0.15s ease;
+}
+
+.pending-parking-slots-card-s49 {
+  padding: 10px 24px;
+  background: rgba(241, 245, 249, 0.7);
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+

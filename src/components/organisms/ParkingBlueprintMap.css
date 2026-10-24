@@ -1,0 +1,431 @@
+/**
+ * ParkingBlueprintMap.css
+ * Extracted styles from ParkingBlueprintMap.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.parking-blueprint-map-s1 {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.3);
+  transition: background 0.25s ease;
+}
+
+.parking-blueprint-map-s2 {
+  padding: 14px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.parking-blueprint-map-s3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.parking-blueprint-map-s4 {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  padding: 8px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(2,132,199,0.35);
+}
+
+.parking-blueprint-map-s5 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.parking-blueprint-map-s6 {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.parking-blueprint-map-s7 {
+  background: #0284c7;
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.parking-blueprint-map-s8 {
+  margin: 2px 0 0;
+  font-size: 0.74rem;
+}
+
+.parking-blueprint-map-s9 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.parking-blueprint-map-s10 {
+  display: flex;
+  background: rgba(0,0,0,0.08);
+  padding: 3px;
+  border-radius: 8px;
+}
+
+.parking-blueprint-map-s11 {
+  padding: 4px 9px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.parking-blueprint-map-s12 {
+  position: relative;
+}
+
+.parking-blueprint-map-s13 {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #0284c7;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 6px rgba(2,132,199,0.3);
+}
+
+.parking-blueprint-map-s14 {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+  z-index: 60;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.parking-blueprint-map-s15 {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #f8fafc;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.parking-blueprint-map-s16 {
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
+.parking-blueprint-map-s17 {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #f8fafc;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  border-top: 1px solid #1e293b;
+}
+
+.parking-blueprint-map-s18 {
+  display: flex;
+  background: rgba(0,0,0,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.parking-blueprint-map-s19 {
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.parking-blueprint-map-s20 {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.parking-blueprint-map-s21 {
+  font-size: 0.7rem;
+  font-weight: 800;
+  margin-right: 4px;
+  text-transform: uppercase;
+}
+
+.parking-blueprint-map-s22 {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.parking-blueprint-map-s23 {
+  width: 100%;
+  height: 700px;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+}
+
+.parking-blueprint-map-s24 {
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+}
+
+.parking-blueprint-map-s25 {
+  cursor: pointer;
+}
+
+.parking-blueprint-map-s26 {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  max-width: 430px;
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid #0284c7;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+  z-index: 50;
+  animation: fadeIn 0.2s ease-out;
+  color: #f8fafc;
+}
+
+.parking-blueprint-map-s27 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.parking-blueprint-map-s28 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.parking-blueprint-map-s29 {
+  background: #0284c7;
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.parking-blueprint-map-s30 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.parking-blueprint-map-s31 {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.parking-blueprint-map-s32 {
+  background: rgba(6, 78, 59, 0.4);
+  border: 1px solid #10b981;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.parking-blueprint-map-s33 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.parking-blueprint-map-s34 {
+  font-size: 0.68rem;
+  color: #a7f3d0;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.parking-blueprint-map-s35 {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #34d399;
+}
+
+.parking-blueprint-map-s36 {
+  text-align: right;
+}
+
+.parking-blueprint-map-s37 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.parking-blueprint-map-s38 {
+  margin-top: 8px;
+  font-size: 0.72rem;
+  color: #cbd5e1;
+  border-top: 1px dashed rgba(52,211,153,0.3);
+  padding-top: 6px;
+}
+
+.parking-blueprint-map-s39 {
+  margin-top: 10px;
+  background: rgba(2, 44, 34, 0.6);
+  border: 1px solid #059669;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.parking-blueprint-map-s40 {
+  width: 44px;
+  height: 28px;
+  background: linear-gradient(180deg, #10b981 0%, #047857 100%);
+  border-radius: 5px;
+  border: 1px solid #34d399;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.parking-blueprint-map-s41 {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.parking-blueprint-map-s42 {
+  font-size: 0.64rem;
+  color: #6ee7b7;
+}
+
+.parking-blueprint-map-s43 {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px dashed #475569;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.parking-blueprint-map-s44 {
+  display: flex;
+  gap: 8px;
+}
+
+.parking-blueprint-map-s45 {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.parking-blueprint-map-s46 {
+  padding: 12px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.72rem;
+}
+
+.parking-blueprint-map-s47 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.parking-blueprint-map-s48 {
+  font-weight: 800;
+}
+
+.parking-blueprint-map-s49 {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: #059669;
+  border: 1px solid #34d399;
+}
+
+.parking-blueprint-map-s50 {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.parking-blueprint-map-s51 {
+  color: #d97706;
+  font-weight: 800;
+}
+
+.parking-blueprint-map-s52 {
+  color: #dc2626;
+  font-weight: 800;
+}
+
+.parking-blueprint-map-s53 {
+  font-style: italic;
+}
+

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Inbox } from 'lucide-react';
+import './AtomicEmptyState.css';
+
 
 /**
  * AtomicEmptyState Atom
@@ -13,19 +15,19 @@ export default function AtomicEmptyState({
 }) {
   return (
     <div className="atomic-empty-state">
-      <div style={{ color: '#94a3b8' }}>
+      <div className="atomic-empty-state-s1">
         <Icon size={38} />
       </div>
-      <div style={{ fontWeight: 700, fontSize: '0.96rem', color: '#1e293b' }}>
+      <div className="atomic-empty-state-s2">
         {title}
       </div>
       {description && (
-        <div style={{ fontSize: '0.82rem', color: '#64748b', maxWidth: '320px' }}>
+        <div className="atomic-empty-state-s3">
           {description}
         </div>
       )}
       {action && (
-        <div style={{ marginTop: '8px' }}>
+        <div className="atomic-empty-state-s4">
           {action}
         </div>
       )}

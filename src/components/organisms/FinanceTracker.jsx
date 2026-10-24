@@ -3,6 +3,8 @@ import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 import { financeSeedData } from '../../data/financeSeedData.js';
+import './FinanceTracker.css';
+
 
 const getMonthsForYear = (startYear) => {
   return Array.from({ length: 12 }, (_, i) => {
@@ -918,12 +920,12 @@ export default function FinanceTracker({ isAdmin = false }) {
   };
 
   return (
-    <div className="finance-tracker" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="finance-tracker finance-tracker-s1">
 
       {/* Header & Tabs */}
-      <div className="table-card" style={{ padding: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--line)', paddingRight: '16px', flexWrap: 'wrap', gap: '12px' }}>
-          <div className="attendance-month-tabs" role="tablist" style={{ borderBottom: 'none' }}>
+      <div className="table-card finance-tracker-s2">
+        <div className="finance-tracker-s3">
+          <div className="attendance-month-tabs finance-tracker-s4" role="tablist">
             {months.map(mv => (
               <button
                 key={mv}
@@ -934,8 +936,8 @@ export default function FinanceTracker({ isAdmin = false }) {
               </button>
             ))}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0' }}>
-            <span style={{ marginLeft: 20, fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-muted)' }}>Financial Year:</span>
+          <div className="finance-tracker-s5">
+            <span className="finance-tracker-s6">Financial Year:</span>
             <select
               value={selectedYear}
               onChange={e => {
@@ -943,15 +945,7 @@ export default function FinanceTracker({ isAdmin = false }) {
                 setSelectedYear(yr);
                 setSelectedMonth(`${yr}-04`);
               }}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1px solid var(--line)',
-                background: '#fff',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
+              className="finance-tracker-s7"
             >
               <option value={2025}>FY 2025-26</option>
               <option value={2026}>FY 2026-27</option>
@@ -961,61 +955,59 @@ export default function FinanceTracker({ isAdmin = false }) {
 
       </div>
 
-      <div style={{ margin: '8px 0 16px 0' }}>
-        <h3 style={{ marginBottom: '12px', fontSize: '1.05rem', color: '#334155', fontWeight: 600 }}>Annual Financial Overview — FY {selectedYear}-{String(selectedYear+1).slice(-2)}</h3>
+      <div className="finance-tracker-s8">
+        <h3 className="finance-tracker-s9">Annual Financial Overview — FY {selectedYear}-{String(selectedYear+1).slice(-2)}</h3>
         <div className="attendance-summary-grid">
-          <div className="summary-card" style={{ borderLeft: '4px solid #10b981', background: '#ecfdf5', boxShadow: 'none', border: '1px solid #d1fae5' }}>
-            <span style={{ color: '#065f46', fontSize: '0.85rem' }}>Total Income</span>
-            <strong style={{ color: '#059669', fontSize: '1.25rem' }}>{isYearlyLoading ? '...' : `₹${fmt(yearlyIncome)}`}</strong>
+          <div className="summary-card finance-tracker-s10">
+            <span className="finance-tracker-s11">Total Income</span>
+            <strong className="finance-tracker-s12">{isYearlyLoading ? '...' : `₹${fmt(yearlyIncome)}`}</strong>
           </div>
-          <div className="summary-card" style={{ borderLeft: '4px solid #ef4444', background: '#fef2f2', boxShadow: 'none', border: '1px solid #fee2e2' }}>
-            <span style={{ color: '#991b1b', fontSize: '0.85rem' }}>Total Expenses</span>
-            <strong style={{ color: '#dc2626', fontSize: '1.25rem' }}>{isYearlyLoading ? '...' : `₹${fmt(yearlyExpense)}`}</strong>
+          <div className="summary-card finance-tracker-s13">
+            <span className="finance-tracker-s14">Total Expenses</span>
+            <strong className="finance-tracker-s15">{isYearlyLoading ? '...' : `₹${fmt(yearlyExpense)}`}</strong>
           </div>
-          <div className="summary-card" style={{ borderLeft: `4px solid ${yearlyIncome - yearlyExpense >= 0 ? '#3b82f6' : '#f97316'}`, background: yearlyIncome - yearlyExpense < 0 ? '#fff7ed' : '#eff6ff', boxShadow: 'none', border: `1px solid ${yearlyIncome - yearlyExpense >= 0 ? '#dbeafe' : '#ffedd5'}` }}>
-            <span style={{ color: yearlyIncome - yearlyExpense >= 0 ? '#1e40af' : '#c2410c', fontSize: '0.85rem' }}>Overall Balance</span>
-            <strong style={{ color: yearlyIncome - yearlyExpense >= 0 ? '#2563eb' : '#ea580c', fontSize: '1.25rem' }}>{isYearlyLoading ? '...' : `₹${fmt(yearlyIncome - yearlyExpense)}`}</strong>
+          <div className="summary-card finance-tracker-s16" style={{ borderLeft: `4px solid ${yearlyIncome - yearlyExpense >= 0 ? '#3b82f6' : '#f97316'}`, background: yearlyIncome - yearlyExpense < 0 ? '#fff7ed' : '#eff6ff', border: `1px solid ${yearlyIncome - yearlyExpense >= 0 ? '#dbeafe' : '#ffedd5'}` }}>
+            <span className="finance-tracker-s17" style={{ color: yearlyIncome - yearlyExpense >= 0 ? '#1e40af' : '#c2410c' }}>Overall Balance</span>
+            <strong className="finance-tracker-s18" style={{ color: yearlyIncome - yearlyExpense >= 0 ? '#2563eb' : '#ea580c' }}>{isYearlyLoading ? '...' : `₹${fmt(yearlyIncome - yearlyExpense)}`}</strong>
           </div>
         </div>
       </div>
 
-      <div className="table-card" style={{ padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+      <div className="table-card finance-tracker-s19">
         <div>
-          <p className="eyebrow" style={{ margin: 0, marginBottom: '4px' }}>Monthly Cashflow Tracker</p>
-          <h3 style={{ margin: 0 }}>Income & Expenses — {formatLongMonth(selectedMonth)}</h3>
+          <p className="eyebrow finance-tracker-s20">Monthly Cashflow Tracker</p>
+          <h3 className="finance-tracker-s21">Income & Expenses — {formatLongMonth(selectedMonth)}</h3>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
+        <div className="finance-tracker-s22">
+          <div className="finance-tracker-s23" style={{ color: badge.color }}>
             <span>{badge.icon}</span>
             <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="finance-tracker-s24">
             {isAdmin && selectedYear === 2025 && (
               <button
-                className="button-secondary"
+                className="button-secondary finance-tracker-s25"
                 onClick={seedHistoricalData}
                 disabled={isLoading}
-                style={{ padding: '8px 16px', background: '#ecfdf5', color: '#065f46', borderColor: '#a7f3d0' }}
                 title="Seed historical data for FY 2025-26 from screenshots"
               >
                 🌱 Seed FY 25-26
               </button>
             )}
             {isAdmin && !isLocked && (
-              <button className="button-secondary" onClick={handleManualSave} disabled={isLoading || saveStatus === 'saving'} style={{ padding: '8px 16px' }}>
+              <button className="button-secondary finance-tracker-s26" onClick={handleManualSave} disabled={isLoading || saveStatus === 'saving'}>
                 💾 Save
               </button>
             )}
-            <button className="button-secondary" onClick={() => setIsSearchOpen(!isSearchOpen)} style={{ padding: '8px 16px', background: isSearchOpen ? '#f1f5f9' : 'inherit' }}>
+            <button className="button-secondary finance-tracker-s26" onClick={() => setIsSearchOpen(!isSearchOpen)} style={{ background: isSearchOpen ? '#f1f5f9' : 'inherit' }}>
               🔍 Search
             </button>
-            <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '8px 16px' }}>
+            <button className="button-secondary finance-tracker-s26" onClick={handleDownloadExcel}>
               ⬇ Export Excel
             </button>
             <button
-              className="button-primary"
+              className="button-primary finance-tracker-s27"
               onClick={handlePrintPdf}
-              style={{ padding: '8px 16px', background: '#0284c7', borderColor: '#0284c7', display: 'flex', alignItems: 'center', gap: '6px' }}
               title="Print or Save PDF Statement"
             >
               <span>🖨️</span> Export PDF
@@ -1025,28 +1017,28 @@ export default function FinanceTracker({ isAdmin = false }) {
       </div>
 
       {isSearchOpen && (
-        <div className="table-card" style={{ padding: '24px', background: '#f8fafc', border: '1px solid #e2e8f0', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h4 style={{ margin: 0, color: '#334155', fontSize: '1.1rem' }}>Search Transactions (FY {selectedYear}-{String(selectedYear+1).slice(-2)})</h4>
-            <button onClick={() => setIsSearchOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#94a3b8' }}>✕</button>
+        <div className="table-card finance-tracker-s28">
+          <div className="finance-tracker-s29">
+            <h4 className="finance-tracker-s30">Search Transactions (FY {selectedYear}-{String(selectedYear+1).slice(-2)})</h4>
+            <button onClick={() => setIsSearchOpen(false)} className="finance-tracker-s31">✕</button>
           </div>
           <input
             type="text"
             placeholder="Search by vendor, purpose, amount..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            style={{ width: '100%', padding: '12px 16px', borderRadius: '8px', border: '1px solid #cbd5e1', marginBottom: '16px', fontSize: '0.95rem' }}
+            className="finance-tracker-s32"
             autoFocus
           />
-          <div className="attendance-table-scroll" style={{ maxHeight: '400px', overflowY: 'auto', border: '1px solid var(--line)', borderRadius: '8px' }}>
-            <table className="attendance-table" style={{ width: '100%', margin: 0 }}>
-              <thead style={{ position: 'sticky', top: 0, background: '#f1f5f9', zIndex: 1 }}>
+          <div className="attendance-table-scroll finance-tracker-s33">
+            <table className="attendance-table finance-tracker-s34">
+              <thead className="finance-tracker-s35">
                 <tr>
                   <th>Month</th>
                   <th>Type</th>
                   <th>Entity (Vendor / Source)</th>
                   <th>Details (Purpose / Remark)</th>
-                  <th style={{ textAlign: 'right' }}>Amount</th>
+                  <th className="finance-tracker-s36">Amount</th>
                 </tr>
               </thead>
               <tbody>
@@ -1072,13 +1064,13 @@ export default function FinanceTracker({ isAdmin = false }) {
                   <tr key={idx}>
                     <td>{item.month}</td>
                     <td>
-                       <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, background: item.type === 'Income' ? '#dcfce7' : '#fee2e2', color: item.type === 'Income' ? '#166534' : '#991b1b' }}>
+                       <span className="finance-tracker-s37" style={{ background: item.type === 'Income' ? '#dcfce7' : '#fee2e2', color: item.type === 'Income' ? '#166534' : '#991b1b' }}>
                          {item.type}
                        </span>
                     </td>
                     <td>{item.source || item.vendor || '-'}</td>
                     <td>{item.remark || item.purpose || '-'}</td>
-                    <td style={{ textAlign: 'right', fontWeight: 600 }}>₹{fmt(item.amount)}</td>
+                    <td className="finance-tracker-s38">₹{fmt(item.amount)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1088,7 +1080,7 @@ export default function FinanceTracker({ isAdmin = false }) {
       )}
 
       {isLocked && (
-        <div style={{ background: '#fee2e2', color: '#991b1b', border: '1px solid #fecaca', padding: '16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
+        <div className="finance-tracker-s39">
           <span>🔒</span>
           <span>This month is locked. Expense and income details cannot be edited.</span>
         </div>
@@ -1096,13 +1088,13 @@ export default function FinanceTracker({ isAdmin = false }) {
 
       {/* Summary Cards */}
       <div className="attendance-summary-grid">
-        <div className="summary-card" style={{ borderLeft: '4px solid #10b981' }}>
+        <div className="summary-card finance-tracker-s40">
           <span>Total Income</span>
-          <strong style={{ color: '#059669' }}>₹{fmt(totalIncome)}</strong>
+          <strong className="finance-tracker-s41">₹{fmt(totalIncome)}</strong>
         </div>
-        <div className="summary-card" style={{ borderLeft: '4px solid #ef4444' }}>
+        <div className="summary-card finance-tracker-s42">
           <span>Total Expenses</span>
-          <strong style={{ color: '#dc2626' }}>₹{fmt(totalExpense)}</strong>
+          <strong className="finance-tracker-s43">₹{fmt(totalExpense)}</strong>
         </div>
         <div className="summary-card" style={{ borderLeft: `4px solid ${balance >= 0 ? '#3b82f6' : '#f97316'}`, background: balance < 0 ? '#fff7ed' : 'inherit' }}>
           <span>Closing Balance</span>
@@ -1110,22 +1102,22 @@ export default function FinanceTracker({ isAdmin = false }) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 500px), 1fr))', gap: '24px' }}>
+      <div className="finance-tracker-s44">
 
         {/* Income Table */}
-        <div className="table-card" style={{ height: 'fit-content' }}>
-          <div className="attendance-table-card__header" style={{ padding: '16px 20px' }}>
-            <h4 style={{ margin: 0, color: '#059669' }}>📥 Income Details (₹{fmt(totalIncome)})</h4>
-            {isAdmin && !isLocked && <button className="button-secondary" onClick={addIncomeRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>}
+        <div className="table-card finance-tracker-s45">
+          <div className="attendance-table-card__header finance-tracker-s46">
+            <h4 className="finance-tracker-s47">📥 Income Details (₹{fmt(totalIncome)})</h4>
+            {isAdmin && !isLocked && <button className="button-secondary finance-tracker-s48" onClick={addIncomeRow}>+ Add Row</button>}
           </div>
-          <div className="attendance-table-scroll" style={{ padding: 0, maxHeight: '520px', overflowY: 'auto' }}>
-            <table className="attendance-table attendance-table--bill" style={{ minWidth: '100%' }}>
+          <div className="attendance-table-scroll finance-tracker-s49">
+            <table className="attendance-table attendance-table--bill finance-tracker-s50">
               <thead>
-                <tr style={{ background: '#ecfdf5' }}>
-                  <th style={{ width: '40%', color: '#059669', background: '#ecfdf5' }}>Amount Received</th>
-                  <th style={{ width: '25%', textAlign: 'right', color: '#059669', background: '#ecfdf5' }}>Amount (₹)</th>
-                  <th style={{ width: '35%', color: '#059669', background: '#ecfdf5' }}>Remark</th>
-                  <th style={{ width: '40px', background: '#ecfdf5' }}></th>
+                <tr className="finance-tracker-s51">
+                  <th className="finance-tracker-s52">Amount Received</th>
+                  <th className="finance-tracker-s53">Amount (₹)</th>
+                  <th className="finance-tracker-s54">Remark</th>
+                  <th className="finance-tracker-s55"></th>
                 </tr>
               </thead>
               <tbody>
@@ -1142,8 +1134,7 @@ export default function FinanceTracker({ isAdmin = false }) {
                     </td>
                     <td>
                       <input
-                        className="attendance-register-input"
-                        style={{ textAlign: 'right' }}
+                        className="attendance-register-input finance-tracker-s36"
                         value={row.amount}
                         onChange={e => updateIncome(i, 'amount', e.target.value)}
                         placeholder="0.00"
@@ -1159,8 +1150,8 @@ export default function FinanceTracker({ isAdmin = false }) {
                         readOnly={!isAdmin || isLocked}
                       />
                     </td>
-                    <td style={{ textAlign: 'center' }}>
-                      {isAdmin && !isLocked && <button onClick={() => removeIncome(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.4 }}>✕</button>}
+                    <td className="finance-tracker-s56">
+                      {isAdmin && !isLocked && <button onClick={() => removeIncome(i)} className="finance-tracker-s57">✕</button>}
                     </td>
                   </tr>
                 ))}
@@ -1170,60 +1161,57 @@ export default function FinanceTracker({ isAdmin = false }) {
         </div>
 
         {/* Expenses Table */}
-        <div className="table-card" style={{ height: 'fit-content' }}>
-          <div className="attendance-table-card__header" style={{ padding: '16px 20px' }}>
-            <h4 style={{ margin: 0, color: '#dc2626' }}>📤 Expense Details (₹{fmt(totalExpense)})</h4>
-            {isAdmin && !isLocked && <button className="button-secondary" onClick={addExpenseRow} style={{ padding: '4px 12px', fontSize: '0.85rem' }}>+ Add Row</button>}
+        <div className="table-card finance-tracker-s45">
+          <div className="attendance-table-card__header finance-tracker-s46">
+            <h4 className="finance-tracker-s58">📤 Expense Details (₹{fmt(totalExpense)})</h4>
+            {isAdmin && !isLocked && <button className="button-secondary finance-tracker-s48" onClick={addExpenseRow}>+ Add Row</button>}
           </div>
-          <div className="attendance-table-scroll" style={{ padding: 0, maxHeight: '520px', overflowY: 'auto' }}>
-            <table className="attendance-table attendance-table--bill" style={{ minWidth: '100%' }}>
+          <div className="attendance-table-scroll finance-tracker-s49">
+            <table className="attendance-table attendance-table--bill finance-tracker-s50">
               <thead>
-                <tr style={{ background: '#fff1f2' }}>
-                  {selectedMonth >= '2026-06' && <th style={{ width: '15%', color: '#e11d48', background: '#fff1f2' }}>Cheque No</th>}
-                  <th style={{ width: selectedMonth >= '2026-06' ? '30%' : '40%', color: '#e11d48', background: '#fff1f2' }}>Vendor Name</th>
-                  <th style={{ width: '20%', textAlign: 'right', color: '#e11d48', background: '#fff1f2' }}>Amount (₹)</th>
-                  <th style={{ width: selectedMonth >= '2026-06' ? '30%' : '35%', color: '#e11d48', background: '#fff1f2' }}>Purpose</th>
-                  <th style={{ width: '40px', background: '#fff1f2' }}></th>
+                <tr className="finance-tracker-s59">
+                  {selectedMonth >= '2026-06' && <th className="finance-tracker-s60">Cheque No</th>}
+                  <th className="finance-tracker-s61" style={{ width: selectedMonth >= '2026-06' ? '30%' : '40%' }}>Vendor Name</th>
+                  <th className="finance-tracker-s62">Amount (₹)</th>
+                  <th className="finance-tracker-s61" style={{ width: selectedMonth >= '2026-06' ? '30%' : '35%' }}>Purpose</th>
+                  <th className="finance-tracker-s63"></th>
                 </tr>
               </thead>
               <tbody>
                 {combinedExpenses.map((row) => {
                   if (row.isLinked) {
                     return (
-                      <tr key={row.id} style={{ background: '#fafaf9', opacity: 0.85 }}>
+                      <tr key={row.id} className="finance-tracker-s64">
                         {selectedMonth >= '2026-06' && (
-                          <td style={{ verticalAlign: 'middle', paddingLeft: '12px' }}>
-                            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--muted)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <td className="finance-tracker-s65">
+                            <span className="finance-tracker-s66">
                               🔗 {row.chequeNo}
                             </span>
                           </td>
                         )}
                         <td>
                           <input
-                            className="attendance-register-input"
+                            className="attendance-register-input finance-tracker-s67"
                             value={row.vendor}
                             readOnly
-                            style={{ background: 'transparent', color: '#78716c', fontStyle: 'italic' }}
                           />
                         </td>
                         <td>
                           <input
-                            className="attendance-register-input"
-                            style={{ textAlign: 'right', background: 'transparent', color: '#78716c', fontStyle: 'italic' }}
+                            className="attendance-register-input finance-tracker-s68"
                             value={row.amount}
                             readOnly
                           />
                         </td>
                         <td>
                           <input
-                            className="attendance-register-input"
+                            className="attendance-register-input finance-tracker-s67"
                             value={`${row.purpose} (${row.sourceTab})`}
                             readOnly
-                            style={{ background: 'transparent', color: '#78716c', fontStyle: 'italic' }}
                           />
                         </td>
-                        <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                          <span title="Linked to Cheque Tracker" style={{ cursor: 'default', fontSize: '0.85rem' }}>🔒</span>
+                        <td className="finance-tracker-s69">
+                          <span title="Linked to Cheque Tracker" className="finance-tracker-s70">🔒</span>
                         </td>
                       </tr>
                     );
@@ -1253,8 +1241,7 @@ export default function FinanceTracker({ isAdmin = false }) {
                         </td>
                         <td>
                           <input
-                            className="attendance-register-input"
-                            style={{ textAlign: 'right' }}
+                            className="attendance-register-input finance-tracker-s36"
                             value={row.amount}
                             onChange={e => updateExpense(i, 'amount', e.target.value)}
                             placeholder="0.00"
@@ -1270,8 +1257,8 @@ export default function FinanceTracker({ isAdmin = false }) {
                             readOnly={!isAdmin || isLocked}
                           />
                         </td>
-                        <td style={{ textAlign: 'center' }}>
-                          {isAdmin && !isLocked && <button onClick={() => removeExpense(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', opacity: 0.4 }}>✕</button>}
+                        <td className="finance-tracker-s56">
+                          {isAdmin && !isLocked && <button onClick={() => removeExpense(i)} className="finance-tracker-s57">✕</button>}
                         </td>
                       </tr>
                     );
@@ -1284,10 +1271,10 @@ export default function FinanceTracker({ isAdmin = false }) {
 
       </div>
 
-      <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '16px', border: '1px solid var(--line)', display: 'flex', justifyContent: 'flex-end' }}>
-        <div style={{ textAlign: 'right' }}>
-          <p style={{ margin: 0, fontSize: '0.85rem', opacity: 0.6 }}>Final Balance for {formatMonthLabel(selectedMonth)}</p>
-          <h2 style={{ margin: 0, color: balance >= 0 ? '#10b981' : '#ef4444' }}>₹{fmt(balance)}</h2>
+      <div className="finance-tracker-s71">
+        <div className="finance-tracker-s36">
+          <p className="finance-tracker-s72">Final Balance for {formatMonthLabel(selectedMonth)}</p>
+          <h2 className="finance-tracker-s21" style={{ color: balance >= 0 ? '#10b981' : '#ef4444' }}>₹{fmt(balance)}</h2>
         </div>
       </div>
 

@@ -1,0 +1,2522 @@
+/**
+ * TimesOfIndiaTracker.css
+ * Extracted styles from TimesOfIndiaTracker.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.times-of-india-tracker-s1 {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.times-of-india-tracker-s2 {
+  text-align: center;
+  border-radius: 10px;
+  padding: 8px 14px;
+  min-width: 56px;
+}
+
+.times-of-india-tracker-s3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.times-of-india-tracker-s4 {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.times-of-india-tracker-s5 {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.times-of-india-tracker-s6 {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  background: #065f46;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeIn 0.2s ease;
+}
+
+.times-of-india-tracker-s7 {
+  background: linear-gradient(135deg, #0b2b26 0%, #164e63 100%);
+  border-radius: 20px;
+  padding: 22px 26px;
+  color: #fff;
+  box-shadow: 0 6px 28px rgba(11,43,38,0.22);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.times-of-india-tracker-s8 {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #c49b4f;
+  margin-bottom: 4px;
+}
+
+.times-of-india-tracker-s9 {
+  margin: 0;
+  font-size: 1.38rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: #fff;
+}
+
+.times-of-india-tracker-s10 {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+}
+
+.times-of-india-tracker-s11 {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.times-of-india-tracker-s12 {
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #c49b4f 0%, #b38634 100%);
+  color: #0b2b26;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(196,155,79,0.35);
+  transition: all 0.18s;
+}
+
+.times-of-india-tracker-s13 {
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(37,211,102,0.35);
+  transition: all 0.18s;
+}
+
+.times-of-india-tracker-s14 {
+  padding: 9px 15px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(8px);
+  transition: all 0.18s;
+}
+
+.times-of-india-tracker-s15 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.times-of-india-tracker-s16 {
+  background: rgba(255,250,242,0.98);
+  border: 1px solid rgba(61,63,52,0.12);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 10px rgba(11,43,38,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.times-of-india-tracker-s17 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.times-of-india-tracker-s18 {
+  font-size: 1.25rem;
+}
+
+.times-of-india-tracker-s19 {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5f665f;
+}
+
+.times-of-india-tracker-s20 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0b2b26;
+  line-height: 1.2;
+}
+
+.times-of-india-tracker-s21 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #5f665f;
+}
+
+.times-of-india-tracker-s22 {
+  font-size: 0.7rem;
+  color: #8a9080;
+  margin-top: 4px;
+}
+
+.times-of-india-tracker-s23 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #164e63;
+  line-height: 1.2;
+}
+
+.times-of-india-tracker-s24 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #0b2b26;
+  line-height: 1.1;
+}
+
+.times-of-india-tracker-s25 {
+  background: rgba(240,253,244,0.95);
+  border: 1px solid #86efac;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 10px rgba(22,101,52,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.times-of-india-tracker-s26 {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #166534;
+}
+
+.times-of-india-tracker-s27 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #15803d;
+  line-height: 1.1;
+}
+
+.times-of-india-tracker-s28 {
+  font-size: 0.72rem;
+  color: #166534;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.times-of-india-tracker-s29 {
+  background: rgba(254,242,242,0.98);
+  border: 2px solid #f87171;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 4px 14px rgba(220,38,38,0.12);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.times-of-india-tracker-s30 {
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #991b1b;
+}
+
+.times-of-india-tracker-s31 {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #dc2626;
+  line-height: 1.1;
+}
+
+.times-of-india-tracker-s32 {
+  font-size: 0.72rem;
+  color: #991b1b;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.times-of-india-tracker-s33 {
+  background: rgba(255,250,242,0.98);
+  border-radius: 18px;
+  border: 1px solid rgba(61,63,52,0.12);
+  box-shadow: 0 4px 20px rgba(11,43,38,0.06);
+  overflow: hidden;
+}
+
+.times-of-india-tracker-s34 {
+  padding: 14px 20px;
+  background: #0b2b26;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.times-of-india-tracker-s35 {
+  overflow-x: auto;
+}
+
+.times-of-india-tracker-s36 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.times-of-india-tracker-s37 {
+  background: #f1f5f9;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.times-of-india-tracker-s38 {
+  padding: 10px 12px;
+  text-align: center;
+  width: 45px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.times-of-india-tracker-s39 {
+  padding: 10px 12px;
+  text-align: center;
+  font-weight: 800;
+  color: #334155;
+  min-width: 95px;
+}
+
+.times-of-india-tracker-s40 {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 800;
+  color: #334155;
+}
+
+.times-of-india-tracker-s41 {
+  padding: 10px 12px;
+  text-align: right;
+  font-weight: 800;
+  color: #334155;
+}
+
+.times-of-india-tracker-s42 {
+  padding: 10px 12px;
+  text-align: center;
+  font-weight: 800;
+  color: #334155;
+}
+
+.times-of-india-tracker-s43 {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 800;
+  color: #334155;
+  min-width: 240px;
+}
+
+.times-of-india-tracker-s44 {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.times-of-india-tracker-s45 {
+  padding: 10px 12px;
+  text-align: center;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.times-of-india-tracker-s46 {
+  padding: 10px 12px;
+  text-align: center;
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.times-of-india-tracker-s47 {
+  padding: 10px 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.times-of-india-tracker-s48 {
+  padding: 10px 12px;
+  text-align: right;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.times-of-india-tracker-s49 {
+  padding: 10px 12px;
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.times-of-india-tracker-s50 {
+  padding: 10px 12px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s51 {
+  padding: 10px 12px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.times-of-india-tracker-s52 {
+  padding: 10px 12px;
+  text-align: right;
+  font-weight: 800;
+  color: #0b2b26;
+}
+
+.times-of-india-tracker-s53 {
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.times-of-india-tracker-s54 {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.74rem;
+}
+
+.times-of-india-tracker-s55 {
+  padding: 10px 12px;
+  font-size: 0.73rem;
+  color: #334155;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.times-of-india-tracker-s56 {
+  background: #fefce8;
+  border-bottom: 1px solid #fef08a;
+}
+
+.times-of-india-tracker-s57 {
+  padding: 8px 14px;
+  font-size: 0.72rem;
+  color: #854d0e;
+  font-weight: 600;
+}
+
+.times-of-india-tracker-s58 {
+  padding: 14px 20px;
+  background: #f8fafc;
+  border-top: 2px solid #e2e8f0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  align-items: center;
+}
+
+.times-of-india-tracker-s59 {
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #15803d;
+}
+
+.times-of-india-tracker-s60 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.times-of-india-tracker-s61 {
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.times-of-india-tracker-s62 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.times-of-india-tracker-s63 {
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #166534;
+}
+
+.times-of-india-tracker-s64 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #15803d;
+}
+
+.times-of-india-tracker-s65 {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+.times-of-india-tracker-s66 {
+  padding: 10px 20px;
+  background: #f0fdf4;
+  border-top: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.times-of-india-tracker-s67 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 0;
+}
+
+.times-of-india-tracker-s68 {
+  overflow-x: auto;
+  border-right: 1px solid #e2e8f0;
+}
+
+.times-of-india-tracker-s69 {
+  padding: 9px 10px;
+  text-align: center;
+  width: 40px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.times-of-india-tracker-s70 {
+  padding: 9px 10px;
+  text-align: left;
+  font-weight: 800;
+  color: #334155;
+}
+
+.times-of-india-tracker-s71 {
+  padding: 9px 10px;
+  text-align: center;
+  width: 55px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.times-of-india-tracker-s72 {
+  padding: 9px 10px;
+  text-align: center;
+  font-weight: 800;
+  color: #334155;
+}
+
+.times-of-india-tracker-s73 {
+  padding: 9px 10px;
+  text-align: right;
+  font-weight: 800;
+  color: #334155;
+}
+
+.times-of-india-tracker-s74 {
+  padding: 9px 10px;
+  text-align: center;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.times-of-india-tracker-s75 {
+  padding: 9px 10px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.times-of-india-tracker-s76 {
+  padding: 9px 10px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s77 {
+  padding: 9px 10px;
+  text-align: center;
+  white-space: pre-line;
+  font-size: 0.72rem;
+  color: #475569;
+}
+
+.times-of-india-tracker-s78 {
+  padding: 9px 10px;
+  text-align: right;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.times-of-india-tracker-s79 {
+  padding: 9px 10px;
+  text-align: right;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s80 {
+  padding: 9px 10px;
+  font-size: 0.72rem;
+  color: #475569;
+  white-space: pre-line;
+}
+
+.times-of-india-tracker-s81 {
+  padding: 9px 10px;
+  text-align: center;
+}
+
+.times-of-india-tracker-s82 {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.72rem;
+}
+
+.times-of-india-tracker-s83 {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.68rem;
+}
+
+.times-of-india-tracker-s84 {
+  background: #1e3a34;
+  color: #fff;
+  font-weight: 700;
+  border-top: 2px solid #cbd5e1;
+}
+
+.times-of-india-tracker-s85 {
+  padding: 8px 12px;
+  text-align: right;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #e2e8f0;
+}
+
+.times-of-india-tracker-s86 {
+  padding: 8px 10px;
+  text-align: center;
+  color: #c49b4f;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s87 {
+  padding: 8px 10px;
+}
+
+.times-of-india-tracker-s88 {
+  padding: 8px 10px;
+  text-align: right;
+  color: #c49b4f;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s89 {
+  padding: 8px 10px;
+  text-align: right;
+  color: #86efac;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s90 {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+}
+
+.times-of-india-tracker-s91 {
+  padding: 8px 10px;
+  font-size: 0.68rem;
+  color: #cbd5e1;
+}
+
+.times-of-india-tracker-s92 {
+  padding: 8px 10px;
+  text-align: center;
+  color: #fca5a5;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s93 {
+  padding: 8px 10px;
+  text-align: center;
+  color: #fca5a5;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s94 {
+  background: #0b2b26;
+  color: #fff;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s95 {
+  padding: 12px 14px;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.times-of-india-tracker-s96 {
+  padding: 12px 10px;
+  text-align: center;
+  color: #facc15;
+  font-size: 0.92rem;
+}
+
+.times-of-india-tracker-s97 {
+  padding: 12px 10px;
+}
+
+.times-of-india-tracker-s98 {
+  padding: 12px 10px;
+  text-align: right;
+  color: #facc15;
+  font-size: 0.95rem;
+}
+
+.times-of-india-tracker-s99 {
+  padding: 12px 10px;
+  text-align: right;
+  color: #4ade80;
+  font-size: 0.95rem;
+}
+
+.times-of-india-tracker-s100 {
+  padding: 12px 10px;
+  font-size: 0.7rem;
+  color: #86efac;
+}
+
+.times-of-india-tracker-s101 {
+  padding: 12px 10px;
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+.times-of-india-tracker-s102 {
+  padding: 12px 10px;
+  text-align: center;
+  font-size: 0.74rem;
+}
+
+.times-of-india-tracker-s103 {
+  padding: 16px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.times-of-india-tracker-s104 {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.times-of-india-tracker-s105 {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0b2b26;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 4px;
+}
+
+.times-of-india-tracker-s106 {
+  font-size: 0.72rem;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.times-of-india-tracker-s107 {
+  color: #0f172a;
+}
+
+.times-of-india-tracker-s108 {
+  padding-left: 6px;
+  border-left: 2px solid #0b2b26;
+  font-size: 0.71rem;
+}
+
+.times-of-india-tracker-s109 {
+  margin-top: 4px;
+  font-weight: 700;
+  color: #0b2b26;
+}
+
+.times-of-india-tracker-s110 {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed #cbd5e1;
+  font-size: 0.72rem;
+}
+
+.times-of-india-tracker-s111 {
+  font-weight: 700;
+  color: #15803d;
+}
+
+.times-of-india-tracker-s112 {
+  font-weight: 800;
+  color: #166534;
+  margin-top: 4px;
+}
+
+.times-of-india-tracker-s113 {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.72rem;
+  color: #065f46;
+  line-height: 1.45;
+}
+
+.times-of-india-tracker-s114 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.times-of-india-tracker-s115 {
+  background: rgba(255,250,242,0.98);
+  border: 1px solid #fecaca;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(220,38,38,0.06);
+}
+
+.times-of-india-tracker-s116 {
+  padding: 10px 14px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.times-of-india-tracker-s117 {
+  padding: 12px 14px;
+}
+
+.times-of-india-tracker-s118 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.74rem;
+}
+
+.times-of-india-tracker-s119 {
+  border-bottom: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+.times-of-india-tracker-s120 {
+  text-align: left;
+  padding-bottom: 6px;
+}
+
+.times-of-india-tracker-s121 {
+  text-align: right;
+  padding-bottom: 6px;
+}
+
+.times-of-india-tracker-s122 {
+  border-bottom: 1px dashed #f1f5f9;
+}
+
+.times-of-india-tracker-s123 {
+  padding: 6px 0;
+  color: #334155;
+}
+
+.times-of-india-tracker-s124 {
+  padding: 6px 0;
+  text-align: right;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.times-of-india-tracker-s125 {
+  border-top: 2px solid #f87171;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s126 {
+  padding-top: 8px;
+  color: #991b1b;
+  text-transform: uppercase;
+}
+
+.times-of-india-tracker-s127 {
+  padding-top: 8px;
+  text-align: right;
+  color: #dc2626;
+  font-size: 0.92rem;
+}
+
+.times-of-india-tracker-s128 {
+  background: rgba(255,250,242,0.98);
+  border: 1px solid #bbf7d0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(22,101,52,0.06);
+}
+
+.times-of-india-tracker-s129 {
+  padding: 10px 14px;
+  background: #dcfce7;
+  color: #166534;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.times-of-india-tracker-s130 {
+  padding: 5px 0;
+  color: #334155;
+}
+
+.times-of-india-tracker-s131 {
+  padding: 5px 0;
+  text-align: right;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.times-of-india-tracker-s132 {
+  border-top: 2px solid #86efac;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s133 {
+  padding-top: 8px;
+  color: #166534;
+  text-transform: uppercase;
+}
+
+.times-of-india-tracker-s134 {
+  padding-top: 8px;
+  text-align: right;
+  color: #15803d;
+  font-size: 0.92rem;
+}
+
+.times-of-india-tracker-s135 {
+  background: rgba(255,250,242,0.98);
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(15,23,42,0.06);
+}
+
+.times-of-india-tracker-s136 {
+  padding: 10px 14px;
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.times-of-india-tracker-s137 {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.76rem;
+}
+
+.times-of-india-tracker-s138 {
+  display: flex;
+  justify-content: space-between;
+  color: #475569;
+}
+
+.times-of-india-tracker-s139 {
+  color: #dc2626;
+}
+
+.times-of-india-tracker-s140 {
+  color: #15803d;
+}
+
+.times-of-india-tracker-s141 {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 2px solid #cbd5e1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.times-of-india-tracker-s142 {
+  font-weight: 800;
+  color: #0f172a;
+  text-transform: uppercase;
+}
+
+.times-of-india-tracker-s143 {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #dc2626;
+}
+
+.times-of-india-tracker-s144 {
+  background: rgba(255,250,242,0.98);
+  border: 1px solid #0b2b26;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(11,43,38,0.1);
+}
+
+.times-of-india-tracker-s145 {
+  padding: 10px 14px;
+  background: #0b2b26;
+  color: #c49b4f;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.times-of-india-tracker-s146 {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.76rem;
+}
+
+.times-of-india-tracker-s147 {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #0b2b26;
+  border-radius: 8px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.times-of-india-tracker-s148 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.times-of-india-tracker-s149 {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #fde047;
+}
+
+.times-of-india-tracker-s150 {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.times-of-india-tracker-s151 {
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #0b2b26;
+}
+
+.times-of-india-tracker-s152 {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: #334155;
+}
+
+.times-of-india-tracker-s153 {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.times-of-india-tracker-s154 {
+  color: #15803d;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s155 {
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 10px;
+  font-size: 0.72rem;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.times-of-india-tracker-s156 {
+  color: #b45309;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.times-of-india-tracker-s157 {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.times-of-india-tracker-s158 {
+  background: linear-gradient(135deg, #0b2b26 0%, #196c6c 100%);
+  border-radius: 20px;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 6px 28px rgba(11,43,38,0.22);
+}
+
+.times-of-india-tracker-s159 {
+  margin: 0 0 2px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #C49B4F;
+}
+
+.times-of-india-tracker-s160 {
+  margin: 0 0 2px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.times-of-india-tracker-s161 {
+  margin: 0;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+}
+
+.times-of-india-tracker-s162 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 8px 14px;
+}
+
+.times-of-india-tracker-s163 {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.times-of-india-tracker-s164 {
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.times-of-india-tracker-s165 {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #6ee7b7;
+}
+
+.times-of-india-tracker-s166 {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.2;
+}
+
+.times-of-india-tracker-s167 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.times-of-india-tracker-s168 {
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #c49b4f 0%, #b38634 100%);
+  color: #0b2b26;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(196,155,79,0.35);
+  transition: all 0.2s ease;
+}
+
+.times-of-india-tracker-s169 {
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.times-of-india-tracker-s170 {
+  font-size: 0.75rem;
+  color: #fde047;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s171 {
+  font-size: 0.75rem;
+  color: #6ee7b7;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s172 {
+  font-size: 0.75rem;
+  color: #fca5a5;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s173 {
+  font-size: 0.75rem;
+  color: #93c5fd;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s174 {
+  background: linear-gradient(135deg, #0b2b26 0%, #164e63 100%);
+  border: 2px solid #86efac;
+  border-radius: 16px;
+  padding: 16px 22px;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(11,43,38,0.22);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.times-of-india-tracker-s175 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.times-of-india-tracker-s176 {
+  background: #16a34a;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.times-of-india-tracker-s177 {
+  font-size: 0.8rem;
+  color: #86efac;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s178 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.times-of-india-tracker-s179 {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.85);
+  margin-top: 4px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.times-of-india-tracker-s180 {
+  color: #86efac;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s181 {
+  color: #fde047;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s182 {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.times-of-india-tracker-s183 {
+  text-align: right;
+  background: rgba(255,255,255,0.1);
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.times-of-india-tracker-s184 {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #86efac;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s185 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #4ade80;
+  font-family: monospace;
+}
+
+.times-of-india-tracker-s186 {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #fde047;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s187 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #facc15;
+  font-family: monospace;
+}
+
+.times-of-india-tracker-s188 {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.times-of-india-tracker-s189 {
+  padding: 9px 18px;
+  border-radius: 12px;
+  border: 2px solid;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.88rem;
+  font-family: inherit;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.times-of-india-tracker-s190 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.times-of-india-tracker-s191 {
+  background: rgba(255,250,242,0.97);
+  border: 1px solid rgba(61,63,52,0.1);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 10px rgba(11,43,38,0.06);
+}
+
+.times-of-india-tracker-s192 {
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #5f665f;
+  margin-bottom: 6px;
+}
+
+.times-of-india-tracker-s193 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.times-of-india-tracker-s194 {
+  font-size: 0.7rem;
+  color: #8a9080;
+  margin-top: 5px;
+}
+
+.times-of-india-tracker-s195 {
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(196,155,79,0.07);
+  border: 1px solid rgba(196,155,79,0.2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.times-of-india-tracker-s196 {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #78400e;
+}
+
+.times-of-india-tracker-s197 {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: #5f665f;
+}
+
+.times-of-india-tracker-s198 {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: #C49B4F;
+}
+
+.times-of-india-tracker-s199 {
+  color: rgba(61,63,52,0.25);
+}
+
+.times-of-india-tracker-s200 {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: #93c5fd;
+}
+
+.times-of-india-tracker-s201 {
+  background: rgba(255,250,242,0.97);
+  border-radius: 20px;
+  border: 1px solid rgba(61,63,52,0.1);
+  box-shadow: 0 4px 24px rgba(11,43,38,0.07);
+  overflow: hidden;
+}
+
+.times-of-india-tracker-s202 {
+  padding: 16px 22px;
+  background: linear-gradient(135deg, rgba(244,239,231,0.98), rgba(255,250,242,0.9));
+  border-bottom: 1px solid rgba(61,63,52,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.times-of-india-tracker-s203 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.times-of-india-tracker-s204 {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #0b2b26, #196c6c);
+  color: #C49B4F;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: 0 4px 14px rgba(11,43,38,0.25);
+}
+
+.times-of-india-tracker-s205 {
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #196c6c;
+  margin-bottom: 2px;
+}
+
+.times-of-india-tracker-s206 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0b2b26;
+}
+
+.times-of-india-tracker-s207 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.times-of-india-tracker-s208 {
+  min-width: 120px;
+}
+
+.times-of-india-tracker-s209 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.67rem;
+  color: #5f665f;
+  margin-bottom: 5px;
+}
+
+.times-of-india-tracker-s210 {
+  height: 7px;
+  background: rgba(61,63,52,0.1);
+  border-radius: 99px;
+}
+
+.times-of-india-tracker-s211 {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #196c6c, #34d399);
+  transition: width 0.5s ease;
+}
+
+.times-of-india-tracker-s212 {
+  text-align: right;
+}
+
+.times-of-india-tracker-s213 {
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #991b1b;
+  margin-bottom: 2px;
+}
+
+.times-of-india-tracker-s214 {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s215 {
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #065f46;
+  margin-bottom: 2px;
+}
+
+.times-of-india-tracker-s216 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #065f46;
+}
+
+.times-of-india-tracker-s217 {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.times-of-india-tracker-s218 {
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0b2b26 0%, #196c6c 100%);
+  color: #C49B4F;
+  border: 1px solid #C49B4F;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.times-of-india-tracker-s219 {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.times-of-india-tracker-s220 {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+
+.times-of-india-tracker-s221 {
+  text-align: center;
+  width: 40px;
+}
+
+.times-of-india-tracker-s222 {
+  text-align: left;
+}
+
+.times-of-india-tracker-s223 {
+  text-align: center;
+}
+
+.times-of-india-tracker-s224 {
+  transition: background 0.13s;
+}
+
+.times-of-india-tracker-s225 {
+  text-align: center;
+  color: #c4b99a;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s226 {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 0.71rem;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s227 {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #1d2a24;
+}
+
+.times-of-india-tracker-s228 {
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.83rem;
+  color: #5f665f;
+}
+
+.times-of-india-tracker-s229 {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.83rem;
+}
+
+.times-of-india-tracker-s230 {
+  text-align: right;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #0b2b26;
+  font-variant-numeric: tabular-nums;
+}
+
+.times-of-india-tracker-s231 {
+  padding: 5px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.times-of-india-tracker-s232 {
+  background: rgba(11,43,38,0.04);
+  border-top: 2px solid rgba(61,63,52,0.13);
+}
+
+.times-of-india-tracker-s233 {
+  text-align: right;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: #0b2b26;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.times-of-india-tracker-s234 {
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #196c6c;
+}
+
+.times-of-india-tracker-s235 {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: rgba(25,108,108,0.1);
+  color: #196c6c;
+  font-weight: 800;
+  font-size: 0.82rem;
+}
+
+.times-of-india-tracker-s236 {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #5f665f;
+}
+
+.times-of-india-tracker-s237 {
+  text-align: right;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #0b2b26;
+  font-variant-numeric: tabular-nums;
+}
+
+.times-of-india-tracker-s238 {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s239 {
+  margin: 14px 18px 18px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.times-of-india-tracker-s240 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.times-of-india-tracker-s241 {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.times-of-india-tracker-s242 {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s243 {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.times-of-india-tracker-s244 {
+  font-size: 0.74rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.times-of-india-tracker-s245 {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s246 {
+  font-size: 1.45rem;
+  font-weight: 900;
+  font-family: monospace;
+}
+
+.times-of-india-tracker-s247 {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.times-of-india-tracker-s248 {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 980px;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.times-of-india-tracker-s249 {
+  padding: 18px 24px;
+  background: linear-gradient(135deg, #0b2b26 0%, #196c6c 100%);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.times-of-india-tracker-s250 {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #c49b4f;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s251 {
+  margin: 4px 0 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s252 {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.times-of-india-tracker-s253 {
+  display: grid;
+  grid-template-columns: minmax(320px, 380px) 1fr;
+  overflow: hidden;
+  flex: 1;
+}
+
+.times-of-india-tracker-s254 {
+  padding: 20px;
+  overflow-y: auto;
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.times-of-india-tracker-s255 {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.times-of-india-tracker-s256 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.times-of-india-tracker-s257 {
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.times-of-india-tracker-s258 {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.times-of-india-tracker-s259 {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.times-of-india-tracker-s260 {
+  display: flex;
+  gap: 8px;
+}
+
+.times-of-india-tracker-s261 {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+}
+
+.times-of-india-tracker-s262 {
+  font-size: 0.68rem;
+}
+
+.times-of-india-tracker-s263 {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.times-of-india-tracker-s264 {
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+}
+
+.times-of-india-tracker-s265 {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.times-of-india-tracker-s266 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.times-of-india-tracker-s267 {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #0b2b26;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.times-of-india-tracker-s268 {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.times-of-india-tracker-s269 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.times-of-india-tracker-s270 {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.times-of-india-tracker-s271 {
+  width: 100%;
+  padding: 7px 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s272 {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.times-of-india-tracker-s273 {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+}
+
+.times-of-india-tracker-s274 {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  cursor: pointer;
+}
+
+.times-of-india-tracker-s275 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.times-of-india-tracker-s276 {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.times-of-india-tracker-s277 {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 2px;
+}
+
+.times-of-india-tracker-s278 {
+  width: 100%;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0b2b26;
+}
+
+.times-of-india-tracker-s279 {
+  font-size: 0.66rem;
+  color: #64748b;
+  margin-top: 3px;
+}
+
+.times-of-india-tracker-s280 {
+  background: linear-gradient(135deg, #0b2b26 0%, #196c6c 100%);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.times-of-india-tracker-s281 {
+  font-size: 0.7rem;
+  color: #C49B4F;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.times-of-india-tracker-s282 {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #4ade80;
+  font-family: monospace;
+}
+
+.times-of-india-tracker-s283 {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+.times-of-india-tracker-s284 {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.82rem;
+}
+
+.times-of-india-tracker-s285 {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #b45309;
+  margin-bottom: 4px;
+}
+
+.times-of-india-tracker-s286 {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #fde68a;
+  background: #fffbeb;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.times-of-india-tracker-s287 {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.times-of-india-tracker-s288 {
+  padding: 10px 12px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  color: #065f46;
+}
+
+.times-of-india-tracker-s289 {
+  font-weight: 800;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.times-of-india-tracker-s290 {
+  padding: 24px;
+  overflow-y: auto;
+  background: #eaedf0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.times-of-india-tracker-s291 {
+  background: #ffffff;
+  width: 100%;
+  max-width: 580px;
+  border-radius: 4px;
+  padding: 24px 28px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.times-of-india-tracker-s292 {
+  text-align: center;
+  border-bottom: 2px solid #0b2b26;
+  padding-bottom: 10px;
+}
+
+.times-of-india-tracker-s293 {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #0b2b26;
+}
+
+.times-of-india-tracker-s294 {
+  font-size: 0.68rem;
+  color: #475569;
+  margin-top: 2px;
+}
+
+.times-of-india-tracker-s295 {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #0b2b26;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.times-of-india-tracker-s296 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: #334155;
+  border-bottom: 1px dashed #e2e8f0;
+  padding-bottom: 6px;
+}
+
+.times-of-india-tracker-s297 {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+}
+
+.times-of-india-tracker-s298 {
+  font-size: 0.68rem;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s299 {
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.times-of-india-tracker-s300 {
+  color: #0b2b26;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s301 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.74rem;
+  margin: 4px 0;
+}
+
+.times-of-india-tracker-s302 {
+  background: #0b2b26;
+  color: #fff;
+}
+
+.times-of-india-tracker-s303 {
+  padding: 4px 6px;
+  text-align: left;
+}
+
+.times-of-india-tracker-s304 {
+  padding: 4px 6px;
+  text-align: center;
+}
+
+.times-of-india-tracker-s305 {
+  padding: 4px 6px;
+  text-align: right;
+}
+
+.times-of-india-tracker-s306 {
+  padding: 4px 6px;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s307 {
+  padding: 4px 6px;
+  text-align: right;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.times-of-india-tracker-s308 {
+  background: #f8fafc;
+  font-weight: 700;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.times-of-india-tracker-s309 {
+  padding: 4px 6px;
+  text-align: right;
+  color: #196c6c;
+}
+
+.times-of-india-tracker-s310 {
+  padding: 4px 6px;
+  text-align: center;
+  color: #196c6c;
+}
+
+.times-of-india-tracker-s311 {
+  padding: 4px 6px;
+  text-align: right;
+  color: #196c6c;
+  font-family: monospace;
+}
+
+.times-of-india-tracker-s312 {
+  padding: 6px 8px;
+  text-align: right;
+}
+
+.times-of-india-tracker-s313 {
+  padding: 6px 8px;
+  text-align: right;
+  color: #4ade80;
+  font-size: 0.92rem;
+  font-family: monospace;
+}
+
+.times-of-india-tracker-s314 {
+  padding: 4px 6px;
+}
+
+.times-of-india-tracker-s315 {
+  padding: 4px 6px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.times-of-india-tracker-s316 {
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s317 {
+  background: #f8fafc;
+  font-weight: 700;
+  border-top: 1px solid #cbd5e1;
+}
+
+.times-of-india-tracker-s318 {
+  padding: 5px 6px;
+}
+
+.times-of-india-tracker-s319 {
+  padding: 5px 6px;
+  text-align: right;
+}
+
+.times-of-india-tracker-s320 {
+  background: #f0fdf4;
+  color: #15803d;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s321 {
+  padding: 6px 8px;
+}
+
+.times-of-india-tracker-s322 {
+  padding: 6px 8px;
+  text-align: right;
+  color: #4ade80;
+  font-size: 0.92rem;
+}
+
+.times-of-india-tracker-s323 {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.74rem;
+}
+
+.times-of-india-tracker-s324 {
+  color: #92400e;
+  font-weight: 700;
+}
+
+.times-of-india-tracker-s325 {
+  color: #78350f;
+}
+
+.times-of-india-tracker-s326 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 6px;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+.times-of-india-tracker-s327 {
+  border-top: 1px solid #94a3b8;
+  padding-top: 2px;
+  font-weight: 700;
+  margin-top: 18px;
+}
+
+.times-of-india-tracker-s328 {
+  margin-top: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #0b2b26;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.times-of-india-tracker-s329 {
+  padding: 14px 24px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.times-of-india-tracker-s330 {
+  font-size: 0.82rem;
+  color: #475569;
+}
+
+.times-of-india-tracker-s331 {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.times-of-india-tracker-s332 {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #25D366;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(37,211,102,0.3);
+}
+
+.times-of-india-tracker-s333 {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #0b2b26;
+  color: #C49B4F;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(11,43,38,0.25);
+}
+
+.times-of-india-tracker-s334 {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #64748b;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+

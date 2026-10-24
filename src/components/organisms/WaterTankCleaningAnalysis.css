@@ -1,0 +1,918 @@
+/**
+ * WaterTankCleaningAnalysis.css
+ * Extracted styles from WaterTankCleaningAnalysis.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.water-tank-cleaning-analysis-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.water-tank-cleaning-analysis-s2 {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fde68a;
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.08);
+}
+
+.water-tank-cleaning-analysis-s3 {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f59e0b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.water-tank-cleaning-analysis-s4 {
+  flex: 1;
+}
+
+.water-tank-cleaning-analysis-s5 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #92400e;
+}
+
+.water-tank-cleaning-analysis-s6 {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #78350f;
+  line-height: 1.5;
+}
+
+.water-tank-cleaning-analysis-s7 {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.water-tank-cleaning-analysis-s8 {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d97706;
+  background: #ffffff;
+  color: #b45309;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.water-tank-cleaning-analysis-s9 {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.water-tank-cleaning-analysis-s10 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.water-tank-cleaning-analysis-s11 {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.water-tank-cleaning-analysis-s12 {
+  font-size: 0.75rem;
+  color: #64748b;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.water-tank-cleaning-analysis-s13 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #0284c7;
+}
+
+.water-tank-cleaning-analysis-s14 {
+  font-size: 0.72rem;
+  color: #059669;
+  display: block;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.water-tank-cleaning-analysis-s15 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-s16 {
+  font-size: 0.72rem;
+  color: #64748b;
+  display: block;
+  margin-top: 4px;
+}
+
+.water-tank-cleaning-analysis-s17 {
+  background: #f0fdf4;
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.water-tank-cleaning-analysis-s18 {
+  font-size: 0.75rem;
+  color: #166534;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.water-tank-cleaning-analysis-s19 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #15803d;
+}
+
+.water-tank-cleaning-analysis-s20 {
+  font-size: 0.72rem;
+  color: #16a34a;
+  display: block;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.water-tank-cleaning-analysis-s21 {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+}
+
+.water-tank-cleaning-analysis-s22 {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.water-tank-cleaning-analysis-s23 {
+  overflow-x: auto;
+}
+
+.water-tank-cleaning-analysis-s24 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.water-tank-cleaning-analysis-s25 {
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.water-tank-cleaning-analysis-s26 {
+  padding: 12px;
+  text-align: left;
+  color: #475569;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s27 {
+  padding: 12px;
+  text-align: center;
+  color: #475569;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s28 {
+  padding: 12px;
+  text-align: right;
+  color: #475569;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s29 {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.water-tank-cleaning-analysis-s30 {
+  padding: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.water-tank-cleaning-analysis-s31 {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.water-tank-cleaning-analysis-s32 {
+  padding: 12px;
+  text-align: center;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-s33 {
+  background: #f1f5f9;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+}
+
+.water-tank-cleaning-analysis-s34 {
+  padding: 12px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.water-tank-cleaning-analysis-s35 {
+  padding: 12px;
+  text-align: right;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-s36 {
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.water-tank-cleaning-analysis-s37 {
+  padding: 12px;
+  text-align: right;
+  font-weight: 800;
+}
+
+.water-tank-cleaning-analysis-s38 {
+  padding: 12px;
+  text-align: right;
+  font-weight: 800;
+  color: #0284c7;
+}
+
+.water-tank-cleaning-analysis-s39 {
+  padding: 12px;
+  text-align: right;
+  font-weight: 600;
+  color: #475569;
+}
+
+.water-tank-cleaning-analysis-s40 {
+  padding: 12px;
+  text-align: center;
+}
+
+.water-tank-cleaning-analysis-s41 {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s42 {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s43 {
+  background: #fef3c7;
+  color: #b45309;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s44 {
+  background: #f8fafc;
+  border-top: 2px solid #cbd5e1;
+  font-weight: 800;
+}
+
+.water-tank-cleaning-analysis-s45 {
+  padding: 12px;
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-s46 {
+  padding: 12px;
+  text-align: center;
+  color: #0284c7;
+}
+
+.water-tank-cleaning-analysis-s47 {
+  padding: 12px;
+  text-align: right;
+}
+
+.water-tank-cleaning-analysis-s48 {
+  padding: 12px;
+  text-align: right;
+  color: #0284c7;
+  font-size: 1rem;
+}
+
+.water-tank-cleaning-analysis-s49 {
+  padding: 12px;
+  text-align: right;
+  color: #0284c7;
+  font-size: 0.95rem;
+}
+
+.water-tank-cleaning-analysis-s50 {
+  padding: 12px;
+  text-align: right;
+  color: #475569;
+}
+
+.water-tank-cleaning-analysis-s51 {
+  padding: 12px;
+  text-align: center;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-s52 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.water-tank-cleaning-analysis-s53 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-s54 {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-s55 {
+  display: flex;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.water-tank-cleaning-analysis-s56 {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.water-tank-cleaning-analysis-s57 {
+  border-radius: 14px;
+  border: 1px solid #bfdbfe;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.water-tank-cleaning-analysis-s58 {
+  background: #eff6ff;
+  padding: 14px 20px;
+  border-bottom: 1px solid #bfdbfe;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.water-tank-cleaning-analysis-s59 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.water-tank-cleaning-analysis-s60 {
+  background: #2563eb;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.water-tank-cleaning-analysis-s61 {
+  font-size: 1rem;
+  color: #1e3a8a;
+}
+
+.water-tank-cleaning-analysis-s62 {
+  text-align: right;
+}
+
+.water-tank-cleaning-analysis-s63 {
+  font-size: 1.1rem;
+  color: #2563eb;
+}
+
+.water-tank-cleaning-analysis-s64 {
+  font-size: 0.75rem;
+  color: #64748b;
+  display: block;
+}
+
+.water-tank-cleaning-analysis-s65 {
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.water-tank-cleaning-analysis-s66 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.water-tank-cleaning-analysis-s67 {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.water-tank-cleaning-analysis-s68 {
+  padding: 8px;
+  text-align: center;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-s69 {
+  padding: 8px;
+  text-align: right;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-s70 {
+  padding: 8px;
+  text-align: left;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-s71 {
+  border-bottom: 1px solid #f1f5f9;
+  background: #fff;
+}
+
+.water-tank-cleaning-analysis-s72 {
+  padding: 8px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s73 {
+  padding: 8px;
+  text-align: right;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s74 {
+  padding: 8px;
+  text-align: center;
+}
+
+.water-tank-cleaning-analysis-s75 {
+  padding: 8px;
+}
+
+.water-tank-cleaning-analysis-s76 {
+  padding: 8px;
+  text-align: right;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-s77 {
+  background: #eff6ff;
+  font-weight: 800;
+  border-top: 2px solid #bfdbfe;
+}
+
+.water-tank-cleaning-analysis-s78 {
+  padding: 10px;
+  color: #1e3a8a;
+}
+
+.water-tank-cleaning-analysis-s79 {
+  padding: 10px;
+  text-align: right;
+  color: #1e3a8a;
+}
+
+.water-tank-cleaning-analysis-s80 {
+  padding: 10px;
+  text-align: right;
+  color: #2563eb;
+  font-size: 0.95rem;
+}
+
+.water-tank-cleaning-analysis-s81 {
+  margin-top: 10px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-s82 {
+  border-radius: 14px;
+  border: 1px solid #bae6fd;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.water-tank-cleaning-analysis-s83 {
+  background: #f0f9ff;
+  padding: 14px 20px;
+  border-bottom: 1px solid #bae6fd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.water-tank-cleaning-analysis-s84 {
+  background: #0284c7;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.water-tank-cleaning-analysis-s85 {
+  font-size: 1rem;
+  color: #0369a1;
+}
+
+.water-tank-cleaning-analysis-s86 {
+  font-size: 1.1rem;
+  color: #0284c7;
+}
+
+.water-tank-cleaning-analysis-s87 {
+  font-size: 0.75rem;
+  color: #15803d;
+  display: block;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s88 {
+  background: #f0f9ff;
+  font-weight: 800;
+  border-top: 2px solid #bae6fd;
+}
+
+.water-tank-cleaning-analysis-s89 {
+  padding: 10px;
+  color: #0369a1;
+}
+
+.water-tank-cleaning-analysis-s90 {
+  padding: 10px;
+  text-align: right;
+  color: #0369a1;
+}
+
+.water-tank-cleaning-analysis-s91 {
+  padding: 10px;
+  text-align: right;
+  color: #0284c7;
+  font-size: 0.95rem;
+}
+
+.water-tank-cleaning-analysis-s92 {
+  border-radius: 14px;
+  border: 1px solid #a7f3d0;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.water-tank-cleaning-analysis-s93 {
+  background: #f0fdf4;
+  padding: 14px 20px;
+  border-bottom: 1px solid #a7f3d0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.water-tank-cleaning-analysis-s94 {
+  background: #059669;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.water-tank-cleaning-analysis-s95 {
+  font-size: 1rem;
+  color: #065f46;
+}
+
+.water-tank-cleaning-analysis-s96 {
+  font-size: 1.1rem;
+  color: #059669;
+}
+
+.water-tank-cleaning-analysis-s97 {
+  padding: 8px;
+  color: #64748b;
+}
+
+.water-tank-cleaning-analysis-s98 {
+  background: #f0fdf4;
+  font-weight: 800;
+  border-top: 2px solid #a7f3d0;
+}
+
+.water-tank-cleaning-analysis-s99 {
+  padding: 10px;
+  color: #065f46;
+}
+
+.water-tank-cleaning-analysis-s100 {
+  padding: 10px;
+  text-align: right;
+  color: #065f46;
+}
+
+.water-tank-cleaning-analysis-s101 {
+  padding: 10px;
+  text-align: right;
+  color: #059669;
+  font-size: 0.95rem;
+}
+
+.water-tank-cleaning-analysis-s102 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.water-tank-cleaning-analysis-s103 {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.water-tank-cleaning-analysis-s104 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-s105 {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.water-tank-cleaning-analysis-s106 {
+  padding: 10px;
+  text-align: left;
+  color: #475569;
+}
+
+.water-tank-cleaning-analysis-s107 {
+  padding: 10px;
+  text-align: right;
+  color: #475569;
+}
+
+.water-tank-cleaning-analysis-s108 {
+  padding: 10px;
+  text-align: center;
+  color: #475569;
+}
+
+.water-tank-cleaning-analysis-s109 {
+  padding: 10px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.water-tank-cleaning-analysis-s110 {
+  padding: 10px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.water-tank-cleaning-analysis-s111 {
+  padding: 10px;
+  text-align: right;
+  font-weight: 800;
+  color: #16a34a;
+}
+
+.water-tank-cleaning-analysis-s112 {
+  padding: 10px;
+  font-weight: 600;
+}
+
+.water-tank-cleaning-analysis-s113 {
+  padding: 10px;
+  text-align: center;
+}
+
+.water-tank-cleaning-analysis-s114 {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s115 {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.water-tank-cleaning-analysis-s116 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.water-tank-cleaning-analysis-s117 {
+  background: #f8fafc;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.8rem;
+}
+
+.water-tank-cleaning-analysis-s118 {
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.water-tank-cleaning-analysis-s119 {
+  color: #475569;
+  line-height: 1.4;
+}
+
+.water-tank-cleaning-analysis-s120 {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.water-tank-cleaning-analysis-s121 {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.water-tank-cleaning-analysis-s122 {
+  font-size: 0.82rem;
+  color: #166534;
+  line-height: 1.5;
+}
+
+.water-tank-cleaning-analysis-s123 {
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 4px;
+  color: #14532d;
+}
+
+.water-tank-cleaning-analysis-s124 {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #f5f3ff;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.water-tank-cleaning-analysis-s125 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  align-items: center;
+}
+
+.water-tank-cleaning-analysis-s126 {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.water-tank-cleaning-analysis-s127 {
+  color: #0284c7;
+  font-size: 1rem;
+}
+
+.water-tank-cleaning-analysis-s128 {
+  width: 100%;
+  accent-color: #0284c7;
+  cursor: pointer;
+}
+
+.water-tank-cleaning-analysis-s129 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.water-tank-cleaning-analysis-s130 {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.water-tank-cleaning-analysis-s131 {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.water-tank-cleaning-analysis-s132 {
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.water-tank-cleaning-analysis-s133 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.water-tank-cleaning-analysis-s134 {
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+
+.water-tank-cleaning-analysis-s135 {
+  font-size: 0.8rem;
+  color: #475569;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+

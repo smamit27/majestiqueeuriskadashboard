@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './TankerBillCalculator.css';
+
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -54,23 +56,16 @@ const headingStyle = {
 
 function Field({ label, value, onChange, prefix }) {
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.7 }}>{label}</span>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-        {prefix && <span style={{ opacity: 0.5, fontSize: '0.9rem' }}>{prefix}</span>}
+    <label className="tanker-bill-calculator-s1">
+      <span className="tanker-bill-calculator-s2">{label}</span>
+      <div className="tanker-bill-calculator-s3">
+        {prefix && <span className="tanker-bill-calculator-s4">{prefix}</span>}
         <input
           type="text"
           inputMode="numeric"
           value={value}
           onChange={e => onChange(e.target.value.replace(/[^0-9.]/g, '').replace(/(\.\.*?)\\.+/g, '$1'))}
-          style={{
-            width: '100%',
-            padding: '8px 10px',
-            borderRadius: 8,
-            border: '1px solid rgba(0,0,0,0.15)',
-            fontSize: '0.95rem',
-            background: 'rgba(255,255,255,0.8)',
-          }}
+          className="tanker-bill-calculator-s5"
         />
       </div>
     </label>
@@ -262,10 +257,10 @@ export default function TankerBillCalculator() {
   const ratioC = totalUnits > 0 ? (n(units.c) / totalUnits * 100).toFixed(1) : 0;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div className="tanker-bill-calculator-s6">
 
       {/* ── Month tabs + header ── */}
-      <div className="table-card attendance-table-card attendance-table-card--register" style={{ padding: 0 }}>
+      <div className="table-card attendance-table-card attendance-table-card--register tanker-bill-calculator-s7">
         <div className="attendance-month-tabs" role="tablist">
           {FINANCIAL_YEAR_MONTHS.map(mv => (
             <button
@@ -287,7 +282,7 @@ export default function TankerBillCalculator() {
             <h3>💧 Water Tanker Bill — {formatLongMonth(month)}</h3>
           </div>
           <div className="attendance-table-card__actions">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: badge.c, fontWeight: 500, fontSize: '0.9rem' }}>
+            <div className="tanker-bill-calculator-s8" style={{ color: badge.c }}>
               <span>{badge.i}</span>
               <span>{isLoading ? 'Loading…' : saveMsg || 'Ready'}</span>
             </div>
@@ -306,25 +301,24 @@ export default function TankerBillCalculator() {
       {/* ── Building Distribution Units ── */}
       <div style={sectionStyle}>
         <p style={headingStyle}>🏢 Building Distribution Units</p>
-        <p style={{ margin: 0, fontSize: '0.82rem', opacity: 0.6 }}>
+        <p className="tanker-bill-calculator-s9">
           Number of flats per building — determines cost split ratio
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))', gap: 12 }}>
+        <div className="tanker-bill-calculator-s10">
           <Field label="A Building Units" value={units.a} onChange={v => setUnits(u => ({ ...u, a: v }))} />
           <Field label="B Building Units" value={units.b} onChange={v => setUnits(u => ({ ...u, b: v }))} />
           <Field label="C Building Units" value={units.c} onChange={v => setUnits(u => ({ ...u, c: v }))} />
         </div>
         {totalUnits > 0 && (
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.82rem', opacity: 0.65 }}>
+          <div className="tanker-bill-calculator-s11">
+            <span className="tanker-bill-calculator-s12">
               Ratio — A: <strong>{ratioA}%</strong> · B: <strong>{ratioB}%</strong> · C: <strong>{ratioC}%</strong>
             </span>
             <button
-              className="button-secondary"
+              className="button-secondary tanker-bill-calculator-s13"
               type="button"
               onClick={handleSaveUnits}
               disabled={isSaving}
-              style={{ fontSize: '0.82rem', padding: '6px 14px' }}
             >
               {isSaving ? 'Saving…' : '💾 Save Units'}
             </button>
@@ -334,41 +328,25 @@ export default function TankerBillCalculator() {
 
       {/* ── Summary or empty state ── */}
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '40px', opacity: 0.6 }}>Loading {formatLongMonth(month)}…</div>
+        <div className="tanker-bill-calculator-s14">Loading {formatLongMonth(month)}…</div>
       ) : !bill ? (
-        <div style={{
-          textAlign: 'center',
-          padding: '48px 24px',
-          background: 'rgba(255,255,255,0.5)',
-          borderRadius: 16,
-          border: '1px dashed rgba(0,0,0,0.12)',
-          color: '#6b7280',
-        }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🚛</div>
-          <p style={{ fontWeight: 600, fontSize: '1rem' }}>No tanker entries yet for {formatLongMonth(month)}</p>
-          <p style={{ fontSize: '0.85rem', marginTop: 4 }}>Add entries in the Water Tanker Entry tab to see the bill here.</p>
+        <div className="tanker-bill-calculator-s15">
+          <div className="tanker-bill-calculator-s16">🚛</div>
+          <p className="tanker-bill-calculator-s17">No tanker entries yet for {formatLongMonth(month)}</p>
+          <p className="tanker-bill-calculator-s18">Add entries in the Water Tanker Entry tab to see the bill here.</p>
         </div>
       ) : (
         <>
           {/* ── Grand Total Metric Cards ── */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 16 }}>
+          <div className="tanker-bill-calculator-s19">
             {[
               { label: 'Total Water Tankers', value: bill.totalTankers, icon: '💧', color: '#1e3a8a' },
               { label: 'Grand Total', value: `₹${fmt(bill.grandTotal)}`, icon: '💰', color: '#0f3d35', large: true },
             ].map(card => (
-              <div key={card.label} style={{
-                background: 'rgba(255,255,255,0.7)',
-                borderRadius: 14,
-                padding: '20px 24px',
-                border: '1px solid rgba(0,0,0,0.07)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 6,
-                backdropFilter: 'blur(10px)',
-              }}>
-                <span style={{ fontSize: '1.5rem' }}>{card.icon}</span>
-                <span style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{card.label}</span>
-                <strong style={{ fontSize: card.large ? '1.6rem' : '1.3rem', color: card.color, fontWeight: 800 }}>{card.value}</strong>
+              <div key={card.label} className="tanker-bill-calculator-s20">
+                <span className="tanker-bill-calculator-s21">{card.icon}</span>
+                <span className="tanker-bill-calculator-s22">{card.label}</span>
+                <strong className="tanker-bill-calculator-s23" style={{ fontSize: card.large ? '1.6rem' : '1.3rem', color: card.color }}>{card.value}</strong>
               </div>
             ))}
           </div>
@@ -377,42 +355,33 @@ export default function TankerBillCalculator() {
           {bill.buildingSplit && (
             <div style={sectionStyle}>
               <p style={headingStyle}>🏢 Building-wise Cost Split</p>
-              <p style={{ margin: 0, fontSize: '0.82rem', opacity: 0.6 }}>
+              <p className="tanker-bill-calculator-s9">
                 Grand total of ₹{fmt(bill.grandTotal)} split by flat ratio (A: {ratioA}% · B: {ratioB}% · C: {ratioC}%)
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))', gap: 12 }}>
+              <div className="tanker-bill-calculator-s24">
                 {[
                   { label: 'A Building', value: bill.buildingSplit.amountA, ratio: ratioA, color: '#1e3a8a', bg: 'rgba(30,58,138,0.07)' },
                   { label: 'B Building', value: bill.buildingSplit.amountB, ratio: ratioB, color: '#6d28d9', bg: 'rgba(109,40,217,0.07)' },
                   { label: 'C Building', value: bill.buildingSplit.amountC, ratio: ratioC, color: '#0f3d35', bg: 'rgba(15,61,53,0.07)' },
                 ].map(bld => (
-                  <div key={bld.label} style={{
-                    background: bld.bg,
-                    borderRadius: 12,
-                    padding: '16px 20px',
-                    border: `1px solid ${bld.bg.replace('0.07', '0.2')}`,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 6,
-                    textAlign: 'center',
-                  }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, opacity: 0.7, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{bld.label}</span>
-                    <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>{bld.ratio}% share</span>
-                    <strong style={{ fontSize: '1.25rem', color: bld.color, fontWeight: 800 }}>₹{fmt(bld.value)}</strong>
+                  <div key={bld.label} className="tanker-bill-calculator-s25" style={{ background: bld.bg, border: `1px solid ${bld.bg.replace('0.07', '0.2')}` }}>
+                    <span className="tanker-bill-calculator-s26">{bld.label}</span>
+                    <span className="tanker-bill-calculator-s27">{bld.ratio}% share</span>
+                    <strong className="tanker-bill-calculator-s28" style={{ color: bld.color }}>₹{fmt(bld.value)}</strong>
                   </div>
                 ))}
               </div>
 
               {/* Summary table */}
-              <div className="table-card" style={{ marginTop: 4 }}>
+              <div className="table-card tanker-bill-calculator-s29">
                 <div className="attendance-table-scroll">
                   <table className="attendance-table">
                     <thead>
                       <tr>
-                        <th style={{ textAlign: 'left' }}>Building</th>
-                        <th style={{ textAlign: 'right' }}>Units</th>
-                        <th style={{ textAlign: 'right' }}>Ratio (%)</th>
-                        <th style={{ textAlign: 'right' }}>Amount (₹)</th>
+                        <th className="tanker-bill-calculator-s30">Building</th>
+                        <th className="tanker-bill-calculator-s31">Units</th>
+                        <th className="tanker-bill-calculator-s31">Ratio (%)</th>
+                        <th className="tanker-bill-calculator-s31">Amount (₹)</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -422,19 +391,19 @@ export default function TankerBillCalculator() {
                         { label: 'C Building', u: units.c, ratio: ratioC, amt: bill.buildingSplit.amountC },
                       ].map(r => (
                         <tr key={r.label}>
-                          <td style={{ fontWeight: 700 }}>{r.label}</td>
-                          <td style={{ textAlign: 'right' }}>{r.u}</td>
-                          <td style={{ textAlign: 'right' }}>{r.ratio}%</td>
-                          <td style={{ textAlign: 'right', color: '#0f3d35', fontWeight: 700 }}>₹{fmt(r.amt)}</td>
+                          <td className="tanker-bill-calculator-s32">{r.label}</td>
+                          <td className="tanker-bill-calculator-s31">{r.u}</td>
+                          <td className="tanker-bill-calculator-s31">{r.ratio}%</td>
+                          <td className="tanker-bill-calculator-s33">₹{fmt(r.amt)}</td>
                         </tr>
                       ))}
                     </tbody>
                     <tfoot>
                       <tr>
-                        <th style={{ textAlign: 'left' }}>Grand Total</th>
-                        <th style={{ textAlign: 'right' }}>{totalUnits}</th>
-                        <th style={{ textAlign: 'right' }}>100%</th>
-                        <th style={{ textAlign: 'right', color: '#0f3d35', fontSize: '1.05rem', fontWeight: 800, borderTop: '2px solid #0f3d35' }}>
+                        <th className="tanker-bill-calculator-s30">Grand Total</th>
+                        <th className="tanker-bill-calculator-s31">{totalUnits}</th>
+                        <th className="tanker-bill-calculator-s31">100%</th>
+                        <th className="tanker-bill-calculator-s34">
                           ₹{fmt(bill.grandTotal)}
                         </th>
                       </tr>
@@ -447,35 +416,35 @@ export default function TankerBillCalculator() {
 
           {/* ── Entry Breakdown Table ── */}
           <div className="table-card">
-            <div style={{ padding: '16px 20px 0' }}>
-              <h3 style={{ margin: '4px 0 16px' }}>Entry Breakdown — {formatLongMonth(month)}</h3>
+            <div className="tanker-bill-calculator-s35">
+              <h3 className="tanker-bill-calculator-s36">Entry Breakdown — {formatLongMonth(month)}</h3>
             </div>
             <div className="attendance-table-scroll">
               <table className="attendance-table">
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left' }}>Date</th>
-                    <th style={{ textAlign: 'right' }}>Rate (₹)</th>
-                    <th style={{ textAlign: 'right' }}>Water Tankers</th>
-                    <th style={{ textAlign: 'right' }}>Total (₹)</th>
+                    <th className="tanker-bill-calculator-s30">Date</th>
+                    <th className="tanker-bill-calculator-s31">Rate (₹)</th>
+                    <th className="tanker-bill-calculator-s31">Water Tankers</th>
+                    <th className="tanker-bill-calculator-s31">Total (₹)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bill.rows.map((row, idx) => (
                     <tr key={idx}>
-                      <td style={{ fontWeight: 600 }}>{row.date}</td>
-                      <td style={{ textAlign: 'right' }}>₹{fmt(row.rate)}</td>
-                      <td style={{ textAlign: 'right', fontWeight: 600 }}>{row.quantity}</td>
-                      <td style={{ textAlign: 'right', color: '#0f3d35', fontWeight: 700 }}>₹{fmt(row.total)}</td>
+                      <td className="tanker-bill-calculator-s37">{row.date}</td>
+                      <td className="tanker-bill-calculator-s31">₹{fmt(row.rate)}</td>
+                      <td className="tanker-bill-calculator-s38">{row.quantity}</td>
+                      <td className="tanker-bill-calculator-s33">₹{fmt(row.total)}</td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th style={{ textAlign: 'left' }}>Grand Total</th>
+                    <th className="tanker-bill-calculator-s30">Grand Total</th>
                     <th />
-                    <th style={{ textAlign: 'right' }}>{bill.totalTankers}</th>
-                    <th style={{ textAlign: 'right', color: '#0f3d35', fontSize: '1.05rem', fontWeight: 800, borderTop: '2px solid #0f3d35' }}>
+                    <th className="tanker-bill-calculator-s31">{bill.totalTankers}</th>
+                    <th className="tanker-bill-calculator-s34">
                       ₹{fmt(bill.grandTotal)}
                     </th>
                   </tr>

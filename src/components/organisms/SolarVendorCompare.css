@@ -1,0 +1,152 @@
+/**
+ * SolarVendorCompare.css
+ * Extracted styles from SolarVendorCompare.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.solar-vendor-compare-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.solar-vendor-compare-s2 {
+  padding: 0;
+}
+
+.solar-vendor-compare-s3 {
+  font-size: 0.85rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.solar-vendor-compare-s4 {
+  color: #f59e0b;
+}
+
+.solar-vendor-compare-s5 {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0;
+}
+
+.solar-vendor-compare-s6 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.solar-vendor-compare-s7 {
+  background: #1e3a8a;
+  color: white;
+  padding: 16px;
+  text-align: left;
+  font-weight: 700;
+  width: 250px;
+  letter-spacing: 0.05em;
+}
+
+.solar-vendor-compare-s8 {
+  background: #1d4ed8;
+  color: white;
+  padding: 16px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.solar-vendor-compare-s9 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.solar-vendor-compare-s10 {
+  font-size: 0.75rem;
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.solar-vendor-compare-s11 {
+  color: white;
+  font-weight: 600;
+}
+
+.solar-vendor-compare-s12 {
+  background: #15803d;
+  color: white;
+  padding: 16px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.solar-vendor-compare-s13 {
+  background: #ea580c;
+  color: white;
+  padding: 16px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.solar-vendor-compare-s14 {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.solar-vendor-compare-s15 {
+  padding: 10px 16px;
+  font-weight: 600;
+  color: #334155;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.solar-vendor-compare-s16 {
+  width: 20px;
+  text-align: center;
+  filter: grayscale(0.2);
+}
+
+.solar-vendor-compare-s17 {
+  padding: 10px 16px;
+  text-align: center;
+  color: #1e293b;
+}
+
+.solar-vendor-compare-s18 {
+  padding: 10px 16px;
+  text-align: center;
+  color: #475569;
+}
+
+.solar-vendor-compare-s19 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #eff6ff;
+  border-radius: 8px;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.solar-vendor-compare-s20 {
+  background: #1e3a8a;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+

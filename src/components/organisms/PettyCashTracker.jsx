@@ -3,6 +3,8 @@ import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 import ALL_PETTY_CASH_HISTORY from '../../data/pettyCashAllHistory.json';
+import './PettyCashTracker.css';
+
 
 const PETTY_CASH_DOC_IDS = {
   buildingA: 'buildingA',
@@ -903,124 +905,57 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
   ];
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="petty-cash-tracker-s1">
       {/* Top Search & Filter Bar */}
       <div
-        style={{
-          background: '#F8FAFC',
-          border: '1px solid rgba(61, 63, 52, 0.08)',
-          borderRadius: '20px',
-          padding: '20px',
-          marginBottom: '22px'
-        }}
+        className="petty-cash-tracker-s2"
       >
-        <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ flex: '1 1 320px', position: 'relative' }}>
+        <div className="petty-cash-tracker-s3">
+          <div className="petty-cash-tracker-s4">
             <input
               type="text"
               placeholder="🔍 Search vendor, contractor, or expense type (e.g. Rushi Dhide, Waterman, Drainage)..."
               value={searchQuery}
               onChange={(e) => setSearchFilter(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1px solid rgba(61, 63, 52, 0.16)',
-                fontSize: '0.95rem',
-                outline: 'none',
-                background: '#fff',
-                boxSizing: 'border-box'
-              }}
+              className="petty-cash-tracker-s5"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchFilter('')}
-                style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  color: '#98a2b3',
-                  fontSize: '1.1rem',
-                  cursor: 'pointer'
-                }}
+                className="petty-cash-tracker-s6"
               >
                 ✕
               </button>
             )}
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="petty-cash-tracker-s7">
             <button
               type="button"
               onClick={() => setScope('all')}
-              style={{
-                border: 'none',
-                borderRadius: '999px',
-                padding: '10px 16px',
-                background: scope === 'all' ? '#0B2B26' : '#E5E7EB',
-                color: scope === 'all' ? '#fff' : '#374151',
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                cursor: 'pointer'
-              }}
+              className="petty-cash-tracker-s8" style={{ background: scope === 'all' ? '#0B2B26' : '#E5E7EB', color: scope === 'all' ? '#fff' : '#374151' }}
             >
               🌟 All History (2023–2026)
             </button>
             <button
               type="button"
               onClick={() => setScope('fy2627')}
-              style={{
-                border: 'none',
-                borderRadius: '999px',
-                padding: '10px 16px',
-                background: scope === 'fy2627' ? '#0B2B26' : '#E5E7EB',
-                color: scope === 'fy2627' ? '#fff' : '#374151',
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                cursor: 'pointer'
-              }}
+              className="petty-cash-tracker-s8" style={{ background: scope === 'fy2627' ? '#0B2B26' : '#E5E7EB', color: scope === 'fy2627' ? '#fff' : '#374151' }}
             >
               📅 FY 2026–27 Only
             </button>
             <button
               type="button"
               onClick={handleExportVendorExcel}
-              style={{
-                border: '1px solid #D0D5DD',
-                borderRadius: '12px',
-                padding: '10px 14px',
-                background: '#fff',
-                color: '#344054',
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
+              className="petty-cash-tracker-s9"
             >
               📥 Excel
             </button>
             <button
               type="button"
               onClick={handlePrintVendorPDF}
-              style={{
-                border: '1px solid #D0D5DD',
-                borderRadius: '12px',
-                padding: '10px 14px',
-                background: '#fff',
-                color: '#344054',
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
+              className="petty-cash-tracker-s9"
             >
               📄 Print PDF
             </button>
@@ -1028,8 +963,8 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
         </div>
 
         {/* Quick Vendor Chips */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '14px', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', marginRight: '4px' }}>
+        <div className="petty-cash-tracker-s10">
+          <span className="petty-cash-tracker-s11">
             Popular Payees:
           </span>
           {quickVendors.map((qv) => {
@@ -1039,16 +974,7 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
                 key={qv.label}
                 type="button"
                 onClick={() => setSearchFilter(qv.query)}
-                style={{
-                  border: isSelected ? '1px solid #C49B4F' : '1px solid #E5E7EB',
-                  borderRadius: '999px',
-                  padding: '6px 12px',
-                  background: isSelected ? '#C49B4F' : '#fff',
-                  color: isSelected ? '#0B2B26' : '#475467',
-                  fontSize: '0.82rem',
-                  fontWeight: isSelected ? 800 : 600,
-                  cursor: 'pointer'
-                }}
+                className="petty-cash-tracker-s12" style={{ border: isSelected ? '1px solid #C49B4F' : '1px solid #E5E7EB', background: isSelected ? '#C49B4F' : '#fff', color: isSelected ? '#0B2B26' : '#475467', fontWeight: isSelected ? 800 : 600 }}
               >
                 {qv.label}
               </button>
@@ -1058,53 +984,53 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
       </div>
 
       {/* KPI Metrics Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '22px' }}>
-        <div style={{ background: '#FEF3F2', padding: '18px 20px', borderRadius: '16px', border: '1px solid rgba(180, 35, 24, 0.18)' }}>
-          <div style={{ fontSize: '0.78rem', color: '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <div className="petty-cash-tracker-s13">
+        <div className="petty-cash-tracker-s14">
+          <div className="petty-cash-tracker-s15">
             Total Spent {searchQuery ? `on "${searchQuery}"` : ''}
           </div>
-          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#B42318', marginTop: '6px', fontVariantNumeric: 'tabular-nums' }}>
+          <div className="petty-cash-tracker-s16">
             {formatCurrency(filteredTotal)}
           </div>
-          <div style={{ fontSize: '0.8rem', color: '#667085', marginTop: '4px' }}>
+          <div className="petty-cash-tracker-s17">
             {totalExpenseAcrossAll > 0 ? `${((filteredTotal / totalExpenseAcrossAll) * 100).toFixed(1)}% of total cash outflow` : ''}
           </div>
         </div>
 
-        <div style={{ background: '#F8FAFC', padding: '18px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
-          <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <div className="petty-cash-tracker-s18">
+          <div className="petty-cash-tracker-s19">
             Total Transactions / Jobs
           </div>
-          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#101828', marginTop: '6px' }}>
-            {filteredEntries.length} <span style={{ fontSize: '0.9rem', color: '#667085', fontWeight: 600 }}>Entries</span>
+          <div className="petty-cash-tracker-s20">
+            {filteredEntries.length} <span className="petty-cash-tracker-s21">Entries</span>
           </div>
-          <div style={{ fontSize: '0.8rem', color: '#667085', marginTop: '4px' }}>
+          <div className="petty-cash-tracker-s17">
             Across {fyBreakdown.length} Financial Years
           </div>
         </div>
 
-        <div style={{ background: '#F8FAFC', padding: '18px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
-          <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <div className="petty-cash-tracker-s18">
+          <div className="petty-cash-tracker-s19">
             Average Spent per Job
           </div>
-          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#101828', marginTop: '6px', fontVariantNumeric: 'tabular-nums' }}>
+          <div className="petty-cash-tracker-s22">
             {formatCurrency(averagePerJob)}
           </div>
-          <div style={{ fontSize: '0.8rem', color: '#667085', marginTop: '4px' }}>
+          <div className="petty-cash-tracker-s17">
             Mean transaction value
           </div>
         </div>
 
-        <div style={{ background: '#F8FAFC', padding: '18px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
-          <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <div className="petty-cash-tracker-s18">
+          <div className="petty-cash-tracker-s19">
             Active Timeline
           </div>
-          <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#101828', marginTop: '10px' }}>
+          <div className="petty-cash-tracker-s23">
             {filteredEntries.length > 0
               ? `${formatShortDate(filteredEntries[0].date)} → ${formatShortDate(filteredEntries[filteredEntries.length - 1].date)}`
               : 'No Records'}
           </div>
-          <div style={{ fontSize: '0.8rem', color: '#667085', marginTop: '4px' }}>
+          <div className="petty-cash-tracker-s17">
             Earliest to latest recorded payment
           </div>
         </div>
@@ -1112,29 +1038,21 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
 
       {/* Financial Year Breakdown Chips */}
       {fyBreakdown.length > 0 && (
-        <div style={{ marginBottom: '22px' }}>
-          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#344054', marginBottom: '10px' }}>
+        <div className="petty-cash-tracker-s24">
+          <div className="petty-cash-tracker-s25">
             📅 Year-by-Year Spending Breakdown:
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
+          <div className="petty-cash-tracker-s26">
             {fyBreakdown.map(([fy, data]) => (
               <div
                 key={fy}
-                style={{
-                  background: '#fff',
-                  border: '1px solid rgba(61, 63, 52, 0.1)',
-                  borderRadius: '12px',
-                  padding: '12px 14px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}
+                className="petty-cash-tracker-s27"
               >
                 <div>
-                  <div style={{ fontWeight: 800, fontSize: '0.85rem', color: '#101828' }}>{fy}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#667085' }}>{data.count} Payments</div>
+                  <div className="petty-cash-tracker-s28">{fy}</div>
+                  <div className="petty-cash-tracker-s29">{data.count} Payments</div>
                 </div>
-                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#B42318', fontVariantNumeric: 'tabular-nums' }}>
+                <div className="petty-cash-tracker-s30">
                   {formatCurrency(data.amount)}
                 </div>
               </div>
@@ -1144,17 +1062,17 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
       )}
 
       {/* Transaction Table */}
-      <div style={{ overflowX: 'auto', border: '1px solid rgba(61, 63, 52, 0.08)', borderRadius: '18px', background: '#fff', boxShadow: '0 4px 16px rgba(16, 24, 40, 0.03)', marginBottom: '28px' }}>
-        <table style={{ width: '100%', minWidth: '950px', borderCollapse: 'collapse', textAlign: 'left' }}>
+      <div className="petty-cash-tracker-s31">
+        <table className="petty-cash-tracker-s32">
           <thead>
             <tr>
-              <th style={{ ...headerCellStyle, width: '40px', textAlign: 'center' }}>#</th>
-              <th style={{ ...headerCellStyle, width: '110px' }}>Date</th>
-              <th style={{ ...headerCellStyle, width: '180px' }}>Payee / Vendor</th>
-              <th style={{ ...headerCellStyle, minWidth: '220px' }}>Purpose / Job Details</th>
-              <th style={{ ...headerCellStyle, width: '110px' }}>FY</th>
-              <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right' }}>Amount Paid (₹)</th>
-              <th style={{ ...headerCellStyle, width: '180px' }}>Remarks</th>
+              <th className="petty-cash-tracker-s33" style={{ ...headerCellStyle }}>#</th>
+              <th className="petty-cash-tracker-s34" style={{ ...headerCellStyle }}>Date</th>
+              <th className="petty-cash-tracker-s35" style={{ ...headerCellStyle }}>Payee / Vendor</th>
+              <th className="petty-cash-tracker-s36" style={{ ...headerCellStyle }}>Purpose / Job Details</th>
+              <th className="petty-cash-tracker-s34" style={{ ...headerCellStyle }}>FY</th>
+              <th className="petty-cash-tracker-s37" style={{ ...headerCellStyle }}>Amount Paid (₹)</th>
+              <th className="petty-cash-tracker-s35" style={{ ...headerCellStyle }}>Remarks</th>
             </tr>
           </thead>
           <tbody>
@@ -1167,25 +1085,25 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
             ) : (
               filteredEntries.map((entry, idx) => (
                 <tr key={entry.id || idx} style={{ background: idx % 2 === 1 ? '#fcfdfd' : '#ffffff' }}>
-                  <td style={{ ...bodyCellStyle, textAlign: 'center', color: '#98a2b3', fontSize: '0.82rem' }}>{idx + 1}</td>
-                  <td style={{ ...bodyCellStyle, fontWeight: 600, color: '#344054', whiteSpace: 'nowrap' }}>{formatShortDate(entry.date)}</td>
-                  <td style={{ ...bodyCellStyle, fontWeight: 800, color: '#101828' }}>{entry.vendor || '—'}</td>
-                  <td style={{ ...bodyCellStyle, color: '#1d2939' }}>{entry.purpose || '—'}</td>
-                  <td style={{ ...bodyCellStyle, color: '#667085', fontSize: '0.84rem' }}>{getFYFromDate(entry.date)}</td>
-                  <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                  <td className="petty-cash-tracker-s38" style={{ ...bodyCellStyle }}>{idx + 1}</td>
+                  <td className="petty-cash-tracker-s39" style={{ ...bodyCellStyle }}>{formatShortDate(entry.date)}</td>
+                  <td className="petty-cash-tracker-s40" style={{ ...bodyCellStyle }}>{entry.vendor || '—'}</td>
+                  <td className="petty-cash-tracker-s41" style={{ ...bodyCellStyle }}>{entry.purpose || '—'}</td>
+                  <td className="petty-cash-tracker-s42" style={{ ...bodyCellStyle }}>{getFYFromDate(entry.date)}</td>
+                  <td className="petty-cash-tracker-s43" style={{ ...bodyCellStyle }}>
                     {formatCurrency(toNumber(entry.payment))}
                   </td>
-                  <td style={{ ...bodyCellStyle, color: '#667085', fontSize: '0.88rem' }}>{entry.remarks || <span style={{ color: '#cbd5e1' }}>—</span>}</td>
+                  <td className="petty-cash-tracker-s44" style={{ ...bodyCellStyle }}>{entry.remarks || <span className="petty-cash-tracker-s45">—</span>}</td>
                 </tr>
               ))
             )}
           </tbody>
           <tfoot>
-            <tr style={{ background: '#F8FAFC', borderTop: '2px solid rgba(61, 63, 52, 0.12)' }}>
-              <td colSpan={5} style={{ ...bodyCellStyle, fontWeight: 800, color: '#101828', textAlign: 'right', fontSize: '0.92rem' }}>
+            <tr className="petty-cash-tracker-s46">
+              <td colSpan={5} className="petty-cash-tracker-s47" style={{ ...bodyCellStyle }}>
                 Total Paid ({filteredEntries.length} Transactions):
               </td>
-              <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+              <td className="petty-cash-tracker-s43" style={{ ...bodyCellStyle }}>
                 {formatCurrency(filteredTotal)}
               </td>
               <td style={bodyCellStyle} />
@@ -1195,50 +1113,41 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
       </div>
 
       {/* Top 15 Payees Leaderboard */}
-      <div style={{ background: '#F8FAFC', border: '1px solid rgba(61, 63, 52, 0.08)', borderRadius: '20px', padding: '20px' }}>
-        <h4 style={{ margin: '0 0 14px 0', color: '#101828', fontSize: '1.05rem', fontWeight: 800 }}>
+      <div className="petty-cash-tracker-s48">
+        <h4 className="petty-cash-tracker-s49">
           🏆 Society Top Payees & Contractors Leaderboard
         </h4>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', background: '#fff', borderRadius: '12px', overflow: 'hidden' }}>
+        <div className="petty-cash-tracker-s50">
+          <table className="petty-cash-tracker-s51">
             <thead>
               <tr>
-                <th style={{ ...headerCellStyle, width: '50px', textAlign: 'center' }}>Rank</th>
-                <th style={{ ...headerCellStyle, minWidth: '200px' }}>Vendor / Payee Name</th>
-                <th style={{ ...headerCellStyle, width: '120px', textAlign: 'center' }}>Jobs Count</th>
-                <th style={{ ...headerCellStyle, width: '160px', textAlign: 'right' }}>Total Paid (₹)</th>
-                <th style={{ ...headerCellStyle, width: '140px', textAlign: 'right' }}>% of Total Outflow</th>
-                <th style={{ ...headerCellStyle, width: '100px', textAlign: 'center' }}>Action</th>
+                <th className="petty-cash-tracker-s52" style={{ ...headerCellStyle }}>Rank</th>
+                <th className="petty-cash-tracker-s53" style={{ ...headerCellStyle }}>Vendor / Payee Name</th>
+                <th className="petty-cash-tracker-s54" style={{ ...headerCellStyle }}>Jobs Count</th>
+                <th className="petty-cash-tracker-s55" style={{ ...headerCellStyle }}>Total Paid (₹)</th>
+                <th className="petty-cash-tracker-s56" style={{ ...headerCellStyle }}>% of Total Outflow</th>
+                <th className="petty-cash-tracker-s57" style={{ ...headerCellStyle }}>Action</th>
               </tr>
             </thead>
             <tbody>
               {leaderboard.slice(0, 15).map((item, index) => (
                 <tr key={item.vendor} style={{ background: index % 2 === 1 ? '#fcfdfd' : '#ffffff' }}>
-                  <td style={{ ...bodyCellStyle, textAlign: 'center', fontWeight: 800, color: index < 3 ? '#C49B4F' : '#667085' }}>
+                  <td className="petty-cash-tracker-s58" style={{ ...bodyCellStyle, color: index < 3 ? '#C49B4F' : '#667085' }}>
                     #{index + 1}
                   </td>
-                  <td style={{ ...bodyCellStyle, fontWeight: 700, color: '#101828' }}>{item.vendor}</td>
-                  <td style={{ ...bodyCellStyle, textAlign: 'center', color: '#475467' }}>{item.count} Jobs</td>
-                  <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums' }}>
+                  <td className="petty-cash-tracker-s59" style={{ ...bodyCellStyle }}>{item.vendor}</td>
+                  <td className="petty-cash-tracker-s60" style={{ ...bodyCellStyle }}>{item.count} Jobs</td>
+                  <td className="petty-cash-tracker-s61" style={{ ...bodyCellStyle }}>
                     {formatCurrency(item.totalAmount)}
                   </td>
-                  <td style={{ ...bodyCellStyle, textAlign: 'right', color: '#667085', fontVariantNumeric: 'tabular-nums' }}>
+                  <td className="petty-cash-tracker-s62" style={{ ...bodyCellStyle }}>
                     {totalExpenseAcrossAll > 0 ? `${((item.totalAmount / totalExpenseAcrossAll) * 100).toFixed(1)}%` : '0%'}
                   </td>
-                  <td style={{ ...bodyCellStyle, textAlign: 'center' }}>
+                  <td className="petty-cash-tracker-s63" style={{ ...bodyCellStyle }}>
                     <button
                       type="button"
                       onClick={() => setSearchFilter(item.vendor)}
-                      style={{
-                        border: 'none',
-                        background: '#0B2B26',
-                        color: '#fff',
-                        borderRadius: '6px',
-                        padding: '4px 10px',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        cursor: 'pointer'
-                      }}
+                      className="petty-cash-tracker-s64"
                     >
                       Audit ↗
                     </button>
@@ -1256,36 +1165,18 @@ function VendorAnalyticsView({ allHistory = [], currentEntries = [] }) {
 function SummaryCard({ label, value, accent, caption }) {
   return (
     <div
-      className="accounting-summary-card"
-      style={{
-        padding: '22px',
-        borderRadius: '20px',
-        background: '#fff',
-        border: '1px solid rgba(61, 63, 52, 0.08)'
-      }}
+      className="accounting-summary-card petty-cash-tracker-s65"
     >
       <div
-        style={{
-          width: '48px',
-          height: '48px',
-          borderRadius: '14px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: accent.soft,
-          color: accent.solid,
-          fontWeight: 800,
-          fontSize: '0.88rem',
-          marginBottom: '14px'
-        }}
+        className="petty-cash-tracker-s66" style={{ background: accent.soft, color: accent.solid }}
       >
         {label.slice(0, 2).toUpperCase()}
       </div>
-      <p className="eyebrow" style={{ margin: '0 0 6px 0' }}>
+      <p className="eyebrow petty-cash-tracker-s67">
         {label}
       </p>
-      <p style={{ margin: 0, fontSize: '1.8rem', fontWeight: 800, color: '#101828' }}>{value}</p>
-      <p style={{ margin: '10px 0 0 0', fontSize: '0.9rem', color: '#667085' }}>{caption}</p>
+      <p className="petty-cash-tracker-s68">{value}</p>
+      <p className="petty-cash-tracker-s69">{caption}</p>
     </div>
   );
 }
@@ -2220,53 +2111,31 @@ export default function PettyCashTracker({ isAdmin = false }) {
   return (
     <div className="accounting-shell">
       <div
-        className="dashboard-hero-card"
-        style={{
-          alignItems: 'flex-start',
-          background: 'linear-gradient(135deg, rgb(11, 43, 38) 0%, rgb(25, 108, 108) 100%)'
-        }}
+        className="dashboard-hero-card petty-cash-tracker-s70"
       >
-        <div style={{ flex: '1 1 480px' }}>
-          <p className="eyebrow" style={{ color: 'rgba(255,255,255,0.76)', marginBottom: '8px' }}>
+        <div className="petty-cash-tracker-s71">
+          <p className="eyebrow petty-cash-tracker-s72">
             Petty Cash Workspace
           </p>
-          <h2 style={{ margin: 0, color: '#fff', fontSize: '1.9rem', lineHeight: 1.1 }}>
+          <h2 className="petty-cash-tracker-s73">
             A Building and Common Expense Ledger
           </h2>
-          <p style={{ margin: '14px 0 0 0', color: 'rgba(255,255,255,0.82)', maxWidth: '760px', lineHeight: 1.6 }}>
+          <p className="petty-cash-tracker-s74">
             Fresh month-based petty cash structure for FY 2026-27. Use the A Building Expenses and
             Common Expenses tabs below, then switch across April 2026 through March 2027.
           </p>
         </div>
 
         <div
-          style={{
-            display: 'flex',
-            gap: '12px',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-end'
-          }}
+          className="petty-cash-tracker-s75"
         >
           <div
-            style={{
-              padding: '10px 14px',
-              borderRadius: '999px',
-              background: 'rgba(255,255,255,0.14)',
-              color: '#fff',
-              fontWeight: 700
-            }}
+            className="petty-cash-tracker-s76"
           >
             {subTab === 'vendorAnalytics' ? '🔍 Spending Audit' : 'FY 2026-27'}
           </div>
           <div
-            style={{
-              padding: '10px 14px',
-              borderRadius: '999px',
-              background: 'rgba(255,255,255,0.14)',
-              color: '#fff',
-              fontWeight: 700
-            }}
+            className="petty-cash-tracker-s76"
           >
             {subTab === 'vendorAnalytics' ? 'Multi-Year History' : activeMonthSummary.label}
           </div>
@@ -2275,36 +2144,14 @@ export default function PettyCashTracker({ isAdmin = false }) {
               <button
                 type="button"
                 onClick={handleExport}
-                style={{
-                  border: 'none',
-                  background: '#fff',
-                  color: '#0B2B26',
-                  padding: '12px 18px',
-                  borderRadius: '14px',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
+                className="petty-cash-tracker-s77"
               >
                 📥 Export Excel
               </button>
               <button
                 type="button"
                 onClick={handleExportPDF}
-                style={{
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  background: 'rgba(255,255,255,0.16)',
-                  color: '#fff',
-                  padding: '12px 18px',
-                  borderRadius: '14px',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
+                className="petty-cash-tracker-s78"
                 title="Print or export current month petty cash statement as PDF"
               >
                 📄 Print PDF
@@ -2312,18 +2159,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
               <button
                 type="button"
                 onClick={handlePrintAnnualPDF}
-                style={{
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  background: 'rgba(255,255,255,0.16)',
-                  color: '#fff',
-                  padding: '12px 18px',
-                  borderRadius: '14px',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
+                className="petty-cash-tracker-s78"
                 title="Print or export full FY 2026-27 annual statement as PDF"
               >
                 📑 Full Year PDF
@@ -2344,20 +2180,14 @@ export default function PettyCashTracker({ isAdmin = false }) {
 
         return (
           <div
-            style={{
-              marginTop: '18px',
-              padding: '20px',
-              borderRadius: '20px',
-              background: '#FFF4F4',
-              border: '1px solid rgba(180, 35, 24, 0.15)'
-            }}
+            className="petty-cash-tracker-s79"
           >
-            <p className="eyebrow" style={{ margin: 0, color: '#B42318', marginBottom: '12px' }}>Monthly Ledger Breakdown</p>
+            <p className="eyebrow petty-cash-tracker-s80">Monthly Ledger Breakdown</p>
             
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+            <div className="petty-cash-tracker-s81">
               
-              <div style={{ background: '#fff', padding: '16px', borderRadius: '14px', border: '1px solid rgba(180, 35, 24, 0.2)' }}>
-                <div style={{ fontSize: '0.85rem', color: '#B42318', fontWeight: 600, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <div className="petty-cash-tracker-s82">
+                <div className="petty-cash-tracker-s83">
                   Common Expenses Settlement
                 </div>
                 {monthSummariesByTab.common.map((m, idx) => {
@@ -2371,29 +2201,29 @@ export default function PettyCashTracker({ isAdmin = false }) {
                   return (
                     <div key={idx}>
                       {mShare > 0 && (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                          <span style={{ color: '#667085', fontSize: '0.92rem' }}>Net for {m.label}:</span>
-                          <strong style={{ color: '#101828', fontSize: '0.92rem' }}>{formatSignedCurrency(-mShare)}</strong>
+                        <div className="petty-cash-tracker-s84">
+                          <span className="petty-cash-tracker-s85">Net for {m.label}:</span>
+                          <strong className="petty-cash-tracker-s86">{formatSignedCurrency(-mShare)}</strong>
                         </div>
                       )}
                       {mSettled > 0 && (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                          <span style={{ color: '#667085', fontSize: '0.92rem' }}>Settle for {m.label}:</span>
-                          <strong style={{ color: '#0B6E4F', fontSize: '0.92rem' }}>+{formatCurrency(mSettled)}</strong>
+                        <div className="petty-cash-tracker-s84">
+                          <span className="petty-cash-tracker-s85">Settle for {m.label}:</span>
+                          <strong className="petty-cash-tracker-s87">+{formatCurrency(mSettled)}</strong>
                         </div>
                       )}
                     </div>
                   );
                 })}
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '8px', marginTop: '4px', borderTop: '1px dashed #e4e7ec' }}>
-                  <span style={{ color: '#101828', fontSize: '0.95rem', fontWeight: 600 }}>Remaining Pending:</span>
-                  <strong style={{ color: '#B42318', fontSize: '0.95rem' }}>{formatSignedCurrency(-pendingCumulativeCommonShare)}</strong>
+                <div className="petty-cash-tracker-s88">
+                  <span className="petty-cash-tracker-s89">Remaining Pending:</span>
+                  <strong className="petty-cash-tracker-s90">{formatSignedCurrency(-pendingCumulativeCommonShare)}</strong>
                 </div>
               </div>
 
-              <div style={{ background: '#fff', padding: '16px', borderRadius: '14px', border: '1px solid rgba(180, 35, 24, 0.2)' }}>
-                <div style={{ fontSize: '0.85rem', color: '#B42318', fontWeight: 600, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <div className="petty-cash-tracker-s82">
+                <div className="petty-cash-tracker-s83">
                   A Building Balance
                 </div>
                 
@@ -2402,9 +2232,9 @@ export default function PettyCashTracker({ isAdmin = false }) {
                   .map((m, idx) => {
                     const net = m.receipts - m.payments;
                     return (
-                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                        <span style={{ color: '#667085', fontSize: '0.92rem' }}>Net for {m.label}:</span>
-                        <strong style={{ color: net > 0 ? '#0B6E4F' : (net < 0 ? '#B42318' : '#101828'), fontSize: '0.92rem' }}>
+                      <div key={idx} className="petty-cash-tracker-s84">
+                        <span className="petty-cash-tracker-s85">Net for {m.label}:</span>
+                        <strong className="petty-cash-tracker-s91" style={{ color: net > 0 ? '#0B6E4F' : (net < 0 ? '#B42318' : '#101828') }}>
                           {formatSignedCurrency(net)}
                         </strong>
                       </div>
@@ -2421,38 +2251,32 @@ export default function PettyCashTracker({ isAdmin = false }) {
 
       {subTab === 'common' && (
         <div
-          style={{
-            marginTop: '18px',
-            padding: '20px',
-            borderRadius: '20px',
-            background: '#F8FAFC',
-            border: '1px solid rgba(61, 63, 52, 0.08)'
-          }}
+          className="petty-cash-tracker-s92"
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+          <div className="petty-cash-tracker-s93">
             <div>
-              <p className="eyebrow" style={{ margin: 0, color: '#475467' }}>Building Split (Total Flats: 231)</p>
-              <h3 style={{ margin: '6px 0 0 0', fontSize: '1.2rem', color: '#101828' }}>Shareable Common Expense Balance</h3>
-              <p style={{ margin: '4px 0 0 0', color: '#667085', fontSize: '0.95rem' }}>
+              <p className="eyebrow petty-cash-tracker-s94">Building Split (Total Flats: 231)</p>
+              <h3 className="petty-cash-tracker-s95">Shareable Common Expense Balance</h3>
+              <p className="petty-cash-tracker-s96">
                 Net Balance (Payments - Receipts): <strong>{formatCurrency(activeMonthSummary.payments - activeMonthSummary.receipts)}</strong>
               </p>
             </div>
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-              <div style={{ background: '#fff', padding: '12px 18px', borderRadius: '14px', border: '1px solid rgba(61, 63, 52, 0.06)' }}>
-                <div style={{ fontSize: '0.85rem', color: '#667085', fontWeight: 600, marginBottom: '4px' }}>A Building (87)</div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#101828' }}>
+            <div className="petty-cash-tracker-s97">
+              <div className="petty-cash-tracker-s98">
+                <div className="petty-cash-tracker-s99">A Building (87)</div>
+                <div className="petty-cash-tracker-s100">
                   {formatCurrency(commonSettlementSummary.pendingCumulativeCommonShare)}
                 </div>
               </div>
-              <div style={{ background: '#fff', padding: '12px 18px', borderRadius: '14px', border: '1px solid rgba(61, 63, 52, 0.06)' }}>
-                <div style={{ fontSize: '0.85rem', color: '#667085', fontWeight: 600, marginBottom: '4px' }}>B Building (96)</div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#101828' }}>
+              <div className="petty-cash-tracker-s98">
+                <div className="petty-cash-tracker-s99">B Building (96)</div>
+                <div className="petty-cash-tracker-s100">
                   {formatCurrency((activeMonthSummary.payments - activeMonthSummary.receipts) * (96 / 231))}
                 </div>
               </div>
-              <div style={{ background: '#fff', padding: '12px 18px', borderRadius: '14px', border: '1px solid rgba(61, 63, 52, 0.06)' }}>
-                <div style={{ fontSize: '0.85rem', color: '#667085', fontWeight: 600, marginBottom: '4px' }}>C Building (48)</div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#101828' }}>
+              <div className="petty-cash-tracker-s98">
+                <div className="petty-cash-tracker-s99">C Building (48)</div>
+                <div className="petty-cash-tracker-s100">
                   {formatCurrency((activeMonthSummary.payments - activeMonthSummary.receipts) * (48 / 231))}
                 </div>
               </div>
@@ -2462,42 +2286,35 @@ export default function PettyCashTracker({ isAdmin = false }) {
       )}
 
       <div
-        className="table-card"
-        style={{
-          background: '#fff',
-          borderRadius: '22px',
-          border: '1px solid rgba(61, 63, 52, 0.08)',
-          boxShadow: '0 12px 28px rgba(16, 24, 40, 0.06)',
-          overflow: 'hidden'
-        }}
+        className="table-card petty-cash-tracker-s101"
       >
-        <div style={{ padding: '24px 24px 18px', borderBottom: '1px solid rgba(61, 63, 52, 0.08)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+        <div className="petty-cash-tracker-s102">
+          <div className="petty-cash-tracker-s103">
             <div>
-              <p className="eyebrow" style={{ margin: 0 }}>
+              <p className="eyebrow petty-cash-tracker-s104">
                 {activeSubTabMeta.eyebrow}
               </p>
-              <h3 style={{ margin: '6px 0 0 0', fontSize: '1.35rem', color: '#101828' }}>
+              <h3 className="petty-cash-tracker-s105">
                 {activeSubTabMeta.label}
               </h3>
-              <p style={{ margin: '10px 0 0 0', color: '#667085', maxWidth: '680px' }}>
+              <p className="petty-cash-tracker-s106">
                 {activeSubTabMeta.description}
               </p>
             </div>
-            <div style={{ textAlign: 'right', minWidth: '220px' }}>
-              <p className="eyebrow" style={{ margin: 0 }}>
+            <div className="petty-cash-tracker-s107">
+              <p className="eyebrow petty-cash-tracker-s104">
                 Save Status
               </p>
-              <p style={{ margin: '6px 0 0 0', fontWeight: 800, color: activeSaveTone }}>
+              <p className="petty-cash-tracker-s108" style={{ color: activeSaveTone }}>
                 {saveStatus === 'idle' ? 'Ready' : saveMessage}
               </p>
-              <p style={{ margin: '10px 0 0 0', color: '#667085', fontSize: '0.9rem' }}>
+              <p className="petty-cash-tracker-s109">
                 {isAdmin ? 'Admin editing enabled' : 'Read only mode'}
               </p>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '12px', marginTop: '20px', flexWrap: 'wrap' }}>
+          <div className="petty-cash-tracker-s110">
             {SUB_TABS.map((tab) => {
               const isActive = tab.id === subTab;
 
@@ -2506,15 +2323,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                   key={tab.id}
                   type="button"
                   onClick={() => handleSelectSubTab(tab.id)}
-                  style={{
-                    border: 'none',
-                    borderRadius: '999px',
-                    padding: '12px 18px',
-                    background: isActive ? '#0B2B26' : '#F3F4F6',
-                    color: isActive ? '#fff' : '#344054',
-                    fontWeight: 800,
-                    cursor: 'pointer'
-                  }}
+                  className="petty-cash-tracker-s111" style={{ background: isActive ? '#0B2B26' : '#F3F4F6', color: isActive ? '#fff' : '#344054' }}
                 >
                   {tab.label}
                 </button>
@@ -2524,14 +2333,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
 
           {subTab !== 'vendorAnalytics' && (
             <div
-              style={{
-                display: 'flex',
-                gap: '10px',
-                overflowX: 'auto',
-                paddingTop: '18px',
-                marginTop: '18px',
-                borderTop: '1px solid rgba(61, 63, 52, 0.08)'
-              }}
+              className="petty-cash-tracker-s112"
             >
               {getFiscalMonths(subTab).map((month) => {
                 const isActive = month.id === activeMonthId;
@@ -2546,16 +2348,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                         [subTab]: month.id
                       }))
                     }
-                    style={{
-                      flex: '0 0 auto',
-                      border: 'none',
-                      borderRadius: '999px',
-                      padding: '10px 16px',
-                      background: isActive ? '#C49B4F' : '#F8FAFC',
-                      color: isActive ? '#0B2B26' : '#475467',
-                      fontWeight: 700,
-                      cursor: 'pointer'
-                    }}
+                    className="petty-cash-tracker-s113" style={{ background: isActive ? '#C49B4F' : '#F8FAFC', color: isActive ? '#0B2B26' : '#475467' }}
                   >
                     {month.label}
                   </button>
@@ -2572,96 +2365,63 @@ export default function PettyCashTracker({ isAdmin = false }) {
           />
         ) : (
           <div
-            style={{
-              padding: '24px'
-            }}
+            className="petty-cash-tracker-s1"
           >
-            <div style={{ minWidth: 0 }}>
+            <div className="petty-cash-tracker-s114">
               {/* Month Balance KPI Summary Cards */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '22px' }}>
-                <div style={{ background: '#F8FAFC', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(61, 63, 52, 0.08)' }}>
-                  <div style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Opening Balance</div>
-                  <div style={{ fontSize: '1.35rem', fontWeight: 800, color: activeMonthSummary.openingBalance >= 0 ? '#101828' : '#B42318', marginTop: '6px' }}>
+              <div className="petty-cash-tracker-s13">
+                <div className="petty-cash-tracker-s115">
+                  <div className="petty-cash-tracker-s19">Opening Balance</div>
+                  <div className="petty-cash-tracker-s116" style={{ color: activeMonthSummary.openingBalance >= 0 ? '#101828' : '#B42318' }}>
                     {formatCurrency(activeMonthSummary.openingBalance)}
                   </div>
                 </div>
-                <div style={{ background: '#F0FDF4', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(11, 110, 79, 0.18)' }}>
-                  <div style={{ fontSize: '0.78rem', color: '#0B6E4F', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Month Receipts (Inflow)</div>
-                  <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0B6E4F', marginTop: '6px' }}>
+                <div className="petty-cash-tracker-s117">
+                  <div className="petty-cash-tracker-s118">Month Receipts (Inflow)</div>
+                  <div className="petty-cash-tracker-s119">
                     +{formatCurrency(activeMonthSummary.receipts)}
                   </div>
                 </div>
-                <div style={{ background: '#FEF3F2', padding: '16px 20px', borderRadius: '16px', border: '1px solid rgba(180, 35, 24, 0.18)' }}>
-                  <div style={{ fontSize: '0.78rem', color: '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Month Payments (Expenses)</div>
-                  <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#B42318', marginTop: '6px' }}>
+                <div className="petty-cash-tracker-s120">
+                  <div className="petty-cash-tracker-s15">Month Payments (Expenses)</div>
+                  <div className="petty-cash-tracker-s121">
                     -{formatCurrency(activeMonthSummary.payments)}
                   </div>
                 </div>
-                <div style={{ background: activeMonthSummary.closingBalance >= 0 ? '#F0FDF4' : '#FFF4F4', padding: '16px 20px', borderRadius: '16px', border: `1px solid ${activeMonthSummary.closingBalance >= 0 ? 'rgba(11, 110, 79, 0.25)' : 'rgba(180, 35, 24, 0.25)'}` }}>
-                  <div style={{ fontSize: '0.78rem', color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Closing Balance ({activeMonthSummary.label})</div>
-                  <div style={{ fontSize: '1.35rem', fontWeight: 800, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', marginTop: '6px' }}>
+                <div className="petty-cash-tracker-s122" style={{ background: activeMonthSummary.closingBalance >= 0 ? '#F0FDF4' : '#FFF4F4', border: `1px solid ${activeMonthSummary.closingBalance >= 0 ? 'rgba(11, 110, 79, 0.25)' : 'rgba(180, 35, 24, 0.25)'}` }}>
+                  <div className="petty-cash-tracker-s123" style={{ color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318' }}>Closing Balance ({activeMonthSummary.label})</div>
+                  <div className="petty-cash-tracker-s116" style={{ color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318' }}>
                     {formatCurrency(activeMonthSummary.closingBalance)}
                   </div>
                 </div>
               </div>
 
               {/* In-table Search Bar & Export Action Toolbar */}
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                <div style={{ flex: '1 1 280px', position: 'relative' }}>
+              <div className="petty-cash-tracker-s124">
+                <div className="petty-cash-tracker-s125">
                   <input
                     type="text"
                     placeholder={`🔍 Search in ${activeMonthSummary.label} (e.g. Rushi, Waterman, Stationery, Cable)...`}
                     value={tableSearch}
                     onChange={(e) => setTableSearch(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(61, 63, 52, 0.14)',
-                      fontSize: '0.9rem',
-                      outline: 'none',
-                      background: '#fff',
-                      boxSizing: 'border-box'
-                    }}
+                    className="petty-cash-tracker-s126"
                   />
                   {tableSearch && (
                     <button
                       type="button"
                       onClick={() => setTableSearch('')}
-                      style={{
-                        position: 'absolute',
-                        right: '10px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        background: 'none',
-                        border: 'none',
-                        color: '#98a2b3',
-                        cursor: 'pointer'
-                      }}
+                      className="petty-cash-tracker-s127"
                     >
                       ✕
                     </button>
                   )}
                 </div>
 
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div className="petty-cash-tracker-s7">
                   <button
                     type="button"
                     onClick={handleExportPDF}
-                    style={{
-                      padding: '9px 15px',
-                      background: '#0B6E4F',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '10px',
-                      fontWeight: 700,
-                      fontSize: '0.88rem',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      boxShadow: '0 2px 6px rgba(11,110,79,0.2)'
-                    }}
+                    className="petty-cash-tracker-s128"
                     title={`Print or Save PDF Statement for ${activeMonthSummary.label}`}
                   >
                     <span>🖨️</span> Export {activeMonthSummary.label} PDF
@@ -2669,20 +2429,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                   <button
                     type="button"
                     onClick={handlePrintAnnualPDF}
-                    style={{
-                      padding: '9px 15px',
-                      background: '#0B2B26',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '10px',
-                      fontWeight: 700,
-                      fontSize: '0.88rem',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      boxShadow: '0 2px 6px rgba(11,43,38,0.2)'
-                    }}
+                    className="petty-cash-tracker-s129"
                     title="Print or Save Complete FY 2026-27 Master Statement as PDF"
                   >
                     <span>📑</span> Annual FY PDF
@@ -2690,19 +2437,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                   <button
                     type="button"
                     onClick={handleExport}
-                    style={{
-                      padding: '9px 14px',
-                      background: '#fff',
-                      color: '#344054',
-                      border: '1px solid #cbd5e1',
-                      borderRadius: '10px',
-                      fontWeight: 700,
-                      fontSize: '0.88rem',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}
+                    className="petty-cash-tracker-s130"
                     title="Export to Excel"
                   >
                     <span>⬇</span> Excel
@@ -2712,19 +2447,13 @@ export default function PettyCashTracker({ isAdmin = false }) {
 
               {isAdmin && (
                 <div
-                  style={{
-                    background: '#F8FAFC',
-                    border: '1px solid rgba(61, 63, 52, 0.08)',
-                    borderRadius: '18px',
-                    padding: '18px',
-                    marginBottom: '18px'
-                  }}
+                  className="petty-cash-tracker-s131"
                 >
-                  <h4 style={{ margin: 0, color: '#101828', fontSize: '1rem', marginBottom: '14px' }}>
+                  <h4 className="petty-cash-tracker-s132">
                     Add Entry to {activeMonthSummary.label}
                   </h4>
-                  <form onSubmit={handleAddEntry} style={{ marginTop: '14px', display: 'grid', gap: '12px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1.4fr 1.8fr', gap: '12px' }}>
+                  <form onSubmit={handleAddEntry} className="petty-cash-tracker-s133">
+                    <div className="petty-cash-tracker-s134">
                       <input
                         style={fieldStyle}
                         type="date"
@@ -2757,7 +2486,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                         onChange={(event) => handleFieldChange('purpose', event.target.value)}
                       />
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '12px' }}>
+                    <div className="petty-cash-tracker-s135">
                       {(formData.vendor === 'Petty cash' || formData.vendor === 'Event') && (
                         <input
                           style={fieldStyle}
@@ -2777,7 +2506,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                         />
                       )}
                       {!formData.vendor && (
-                        <div style={{ ...fieldStyle, background: '#f8fafc', color: '#94a3b8', display: 'flex', alignItems: 'center' }}>
+                        <div className="petty-cash-tracker-s136" style={{ ...fieldStyle }}>
                           Select category
                         </div>
                       )}
@@ -2789,15 +2518,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                       />
                       <button
                         type="submit"
-                        style={{
-                          border: 'none',
-                          borderRadius: '12px',
-                          padding: '0 18px',
-                          background: '#0B6E4F',
-                          color: '#fff',
-                          fontWeight: 800,
-                          cursor: 'pointer'
-                        }}
+                        className="petty-cash-tracker-s137"
                       >
                         Add
                       </button>
@@ -2806,18 +2527,18 @@ export default function PettyCashTracker({ isAdmin = false }) {
                 </div>
               )}
 
-              <div style={{ overflowX: 'auto', border: '1px solid rgba(61, 63, 52, 0.08)', borderRadius: '18px', background: '#fff', boxShadow: '0 4px 16px rgba(16, 24, 40, 0.03)' }}>
-                <table style={{ width: '100%', minWidth: '1020px', borderCollapse: 'collapse', textAlign: 'left' }}>
+              <div className="petty-cash-tracker-s138">
+                <table className="petty-cash-tracker-s139">
                   <thead>
                     <tr>
-                      <th style={{ ...headerCellStyle, width: '125px', whiteSpace: 'nowrap' }}>Date</th>
-                      <th style={{ ...headerCellStyle, width: '200px' }}>Particulars</th>
-                      <th style={{ ...headerCellStyle, minWidth: '220px' }}>Description</th>
-                      <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right', whiteSpace: 'nowrap' }}>Receipt (₹)</th>
-                      <th style={{ ...headerCellStyle, width: '135px', textAlign: 'right', whiteSpace: 'nowrap' }}>Payment (₹)</th>
-                      <th style={{ ...headerCellStyle, width: '145px', textAlign: 'right', whiteSpace: 'nowrap' }}>Balance (₹)</th>
-                      <th style={{ ...headerCellStyle, width: '190px' }}>Remarks</th>
-                      <th style={{ ...headerCellStyle, width: '130px', textAlign: 'center', whiteSpace: 'nowrap' }}>Voucher / Action</th>
+                      <th className="petty-cash-tracker-s140" style={{ ...headerCellStyle }}>Date</th>
+                      <th className="petty-cash-tracker-s141" style={{ ...headerCellStyle }}>Particulars</th>
+                      <th className="petty-cash-tracker-s36" style={{ ...headerCellStyle }}>Description</th>
+                      <th className="petty-cash-tracker-s142" style={{ ...headerCellStyle }}>Receipt (₹)</th>
+                      <th className="petty-cash-tracker-s142" style={{ ...headerCellStyle }}>Payment (₹)</th>
+                      <th className="petty-cash-tracker-s143" style={{ ...headerCellStyle }}>Balance (₹)</th>
+                      <th className="petty-cash-tracker-s144" style={{ ...headerCellStyle }}>Remarks</th>
+                      <th className="petty-cash-tracker-s145" style={{ ...headerCellStyle }}>Voucher / Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2849,12 +2570,9 @@ export default function PettyCashTracker({ isAdmin = false }) {
                         .map((entry, index) => (
                         <tr
                           key={entry.id || `${activeMonthSummary.id}-${index}`}
-                          style={{
-                            background: index % 2 === 1 ? '#fcfdfd' : '#ffffff',
-                            transition: 'background 0.15s ease'
-                          }}
+                          className="petty-cash-tracker-s146" style={{ background: index % 2 === 1 ? '#fcfdfd' : '#ffffff' }}
                         >
-                          <td style={{ ...bodyCellStyle, fontWeight: 600, color: '#344054', whiteSpace: 'nowrap' }}>
+                          <td className="petty-cash-tracker-s39" style={{ ...bodyCellStyle }}>
                             {isAdmin && editingEntryId === entry.id ? (
                               <input
                                 type="date"
@@ -2866,7 +2584,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                               formatShortDate(entry.date)
                             )}
                           </td>
-                          <td style={{ ...bodyCellStyle, fontWeight: 700, color: '#101828' }}>
+                          <td className="petty-cash-tracker-s59" style={{ ...bodyCellStyle }}>
                             {isAdmin && editingEntryId === entry.id ? (
                               <input
                                 value={entry.vendor}
@@ -2877,7 +2595,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                               entry.vendor
                             )}
                           </td>
-                          <td style={{ ...bodyCellStyle, color: '#1d2939' }}>
+                          <td className="petty-cash-tracker-s41" style={{ ...bodyCellStyle }}>
                             {isAdmin && editingEntryId === entry.id ? (
                               <input
                                 value={entry.purpose}
@@ -2888,38 +2606,38 @@ export default function PettyCashTracker({ isAdmin = false }) {
                               entry.purpose
                             )}
                           </td>
-                          <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 700, color: '#0B6E4F', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                          <td className="petty-cash-tracker-s147" style={{ ...bodyCellStyle }}>
                             {isAdmin && editingEntryId === entry.id ? (
                               <input
                                 type="number"
                                 value={entry.receipt || ''}
                                 onChange={(event) => updateEntry(entry.id, 'receipt', event.target.value)}
-                                style={{ ...inlineInputStyle, textAlign: 'right' }}
+                                className="petty-cash-tracker-s148" style={{ ...inlineInputStyle }}
                               />
                             ) : toNumber(entry.receipt) > 0 ? (
                               formatCurrency(toNumber(entry.receipt))
                             ) : (
-                              <span style={{ color: '#98a2b3' }}>—</span>
+                              <span className="petty-cash-tracker-s149">—</span>
                             )}
                           </td>
-                          <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 700, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                          <td className="petty-cash-tracker-s150" style={{ ...bodyCellStyle }}>
                             {isAdmin && editingEntryId === entry.id ? (
                               <input
                                 type="number"
                                 value={entry.payment || ''}
                                 onChange={(event) => updateEntry(entry.id, 'payment', event.target.value)}
-                                style={{ ...inlineInputStyle, textAlign: 'right' }}
+                                className="petty-cash-tracker-s148" style={{ ...inlineInputStyle }}
                               />
                             ) : toNumber(entry.payment) > 0 ? (
                               formatCurrency(toNumber(entry.payment))
                             ) : (
-                              <span style={{ color: '#98a2b3' }}>—</span>
+                              <span className="petty-cash-tracker-s149">—</span>
                             )}
                           </td>
-                          <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: entry.balance >= 0 ? '#0B6E4F' : '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                          <td className="petty-cash-tracker-s151" style={{ ...bodyCellStyle, color: entry.balance >= 0 ? '#0B6E4F' : '#B42318' }}>
                             {formatCurrency(entry.balance)}
                           </td>
-                          <td style={{ ...bodyCellStyle, color: '#667085', fontSize: '0.88rem' }}>
+                          <td className="petty-cash-tracker-s44" style={{ ...bodyCellStyle }}>
                             {isAdmin && editingEntryId === entry.id ? (
                               <input
                                 value={entry.remarks || ''}
@@ -2927,28 +2645,15 @@ export default function PettyCashTracker({ isAdmin = false }) {
                                 style={inlineInputStyle}
                               />
                             ) : (
-                              entry.remarks || <span style={{ color: '#cbd5e1' }}>—</span>
+                              entry.remarks || <span className="petty-cash-tracker-s45">—</span>
                             )}
                           </td>
-                          <td style={{ ...bodyCellStyle, textAlign: 'center' }}>
-                            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                          <td className="petty-cash-tracker-s63" style={{ ...bodyCellStyle }}>
+                            <div className="petty-cash-tracker-s152">
                               <button
                                 type="button"
                                 onClick={() => handlePrintVoucher(entry)}
-                                style={{
-                                  border: '1px solid #cbd5e1',
-                                  background: '#f8fafc',
-                                  color: '#0B2B26',
-                                  borderRadius: '8px',
-                                  padding: '5px 9px',
-                                  fontSize: '0.78rem',
-                                  fontWeight: 700,
-                                  cursor: 'pointer',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '4px',
-                                  whiteSpace: 'nowrap'
-                                }}
+                                className="petty-cash-tracker-s153"
                                 title="Print Cash Voucher (PDF)"
                               >
                                 📄 Voucher
@@ -2959,7 +2664,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                                     <button
                                       type="button"
                                       onClick={() => setEditingEntryId(null)}
-                                      style={{ border: 'none', background: 'transparent', color: '#0B6E4F', cursor: 'pointer', padding: '4px' }}
+                                      className="petty-cash-tracker-s154"
                                       title="Done Editing"
                                     >
                                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -2968,7 +2673,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                                     <button
                                       type="button"
                                       onClick={() => setEditingEntryId(entry.id)}
-                                      style={{ border: 'none', background: 'transparent', color: '#667085', cursor: 'pointer', padding: '4px' }}
+                                      className="petty-cash-tracker-s155"
                                       title="Edit Entry"
                                     >
                                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
@@ -2977,7 +2682,7 @@ export default function PettyCashTracker({ isAdmin = false }) {
                                   <button
                                     type="button"
                                     onClick={() => removeEntry(entry.id)}
-                                    style={{ border: 'none', background: 'transparent', color: '#B42318', cursor: 'pointer', padding: '4px' }}
+                                    className="petty-cash-tracker-s156"
                                     title="Delete Entry"
                                   >
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
@@ -2991,17 +2696,17 @@ export default function PettyCashTracker({ isAdmin = false }) {
                     )}
                   </tbody>
                   <tfoot>
-                    <tr style={{ background: '#F8FAFC', borderTop: '2px solid rgba(61, 63, 52, 0.12)' }}>
-                      <td colSpan={3} style={{ ...bodyCellStyle, fontWeight: 800, color: '#101828', textAlign: 'right', fontSize: '0.92rem' }}>
+                    <tr className="petty-cash-tracker-s46">
+                      <td colSpan={3} className="petty-cash-tracker-s47" style={{ ...bodyCellStyle }}>
                         {activeMonthSummary.label} Total:
                       </td>
-                      <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#0B6E4F', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                      <td className="petty-cash-tracker-s157" style={{ ...bodyCellStyle }}>
                         {formatCurrency(activeMonthSummary.receipts)}
                       </td>
-                      <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                      <td className="petty-cash-tracker-s43" style={{ ...bodyCellStyle }}>
                         {formatCurrency(activeMonthSummary.payments)}
                       </td>
-                      <td style={{ ...bodyCellStyle, textAlign: 'right', fontWeight: 800, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                      <td className="petty-cash-tracker-s151" style={{ ...bodyCellStyle, color: activeMonthSummary.closingBalance >= 0 ? '#0B6E4F' : '#B42318' }}>
                         {formatCurrency(activeMonthSummary.closingBalance)}
                       </td>
                       <td style={bodyCellStyle} />

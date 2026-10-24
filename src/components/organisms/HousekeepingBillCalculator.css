@@ -1,0 +1,308 @@
+/**
+ * HousekeepingBillCalculator.css
+ * Extracted styles from HousekeepingBillCalculator.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.housekeeping-bill-calculator-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.housekeeping-bill-calculator-s2 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.housekeeping-bill-calculator-s3 {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.housekeeping-bill-calculator-s4 {
+  opacity: 0.5;
+  font-size: 0.9rem;
+}
+
+.housekeeping-bill-calculator-s5 {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.15);
+  font-size: 0.95rem;
+  background: rgba(255,255,255,0.8);
+}
+
+.housekeeping-bill-calculator-s6 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.housekeeping-bill-calculator-s7 {
+  padding: 0;
+}
+
+.housekeeping-bill-calculator-s8 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.housekeeping-bill-calculator-s9 {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.housekeeping-bill-calculator-s10 {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.housekeeping-bill-calculator-s11 {
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.2);
+  font-weight: 700;
+}
+
+.housekeeping-bill-calculator-s12 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+}
+
+.housekeeping-bill-calculator-s13 {
+  margin: 0;
+  font-size: 0.82rem;
+  opacity: 0.6;
+}
+
+.housekeeping-bill-calculator-s14 {
+  font-size: 0.8rem;
+  opacity: 0.65;
+}
+
+.housekeeping-bill-calculator-s15 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  gap: 10px;
+}
+
+.housekeeping-bill-calculator-s16 {
+  font-size: 0.83rem;
+  padding: 10px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.housekeeping-bill-calculator-s17 {
+  font-weight: 600;
+}
+
+.housekeeping-bill-calculator-s18 {
+  font-size: 0.83rem;
+  padding: 10px;
+  background: rgba(255,247,237,0.8);
+  border: 1px solid rgba(255,237,213,1);
+  color: #c2410c;
+  border-radius: 8px;
+}
+
+.housekeeping-bill-calculator-s19 {
+  font-size: 0.83rem;
+  padding: 10px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 8px;
+}
+
+.housekeeping-bill-calculator-s20 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 90px), 1fr));
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.housekeeping-bill-calculator-s21 {
+  text-align: center;
+  padding: 8px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 8px;
+}
+
+.housekeeping-bill-calculator-s22 {
+  opacity: 0.6;
+  font-size: 0.75rem;
+}
+
+.housekeeping-bill-calculator-s23 {
+  font-size: 0.83rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 8px;
+}
+
+.housekeeping-bill-calculator-s24 {
+  color: #276749;
+}
+
+.housekeeping-bill-calculator-s25 {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.05);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.housekeeping-bill-calculator-s26 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.housekeeping-bill-calculator-s27 {
+  font-size: 0.83rem;
+  padding: 8px 10px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 8px;
+}
+
+.housekeeping-bill-calculator-s28 {
+  padding: 16px 20px 0;
+}
+
+.housekeeping-bill-calculator-s29 {
+  margin: 4px 0 16px;
+}
+
+.housekeeping-bill-calculator-s30 {
+  background: #fff7ed;
+  border: 1px solid #ffedd5;
+  color: #9a3412;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.housekeeping-bill-calculator-s31 {
+  text-align: left;
+}
+
+.housekeeping-bill-calculator-s32 {
+  text-align: right;
+}
+
+.housekeeping-bill-calculator-s33 {
+  text-align: right;
+  min-width: 120px;
+}
+
+.housekeeping-bill-calculator-s34 {
+  font-weight: 700;
+  text-align: left;
+}
+
+.housekeeping-bill-calculator-s35 {
+  text-align: right;
+  font-weight: 600;
+  color: #0F3D35;
+}
+
+.housekeeping-bill-calculator-s36 {
+  text-align: right;
+  color: #1a6b3c;
+  font-weight: 700;
+}
+
+.housekeeping-bill-calculator-s37 {
+  text-align: right;
+  color: #1a6b3c;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border-top: 2px solid #1a6b3c;
+}
+
+.housekeeping-bill-calculator-s38 {
+  display: none;
+}
+
+.housekeeping-bill-calculator-s39 {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.housekeeping-bill-calculator-s40 {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #196c6c;
+}
+
+.housekeeping-bill-calculator-s41 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+  font-size: 0.85rem;
+}
+
+.housekeeping-bill-calculator-s42 {
+  display: flex;
+  justify-content: space-between;
+}
+
+.housekeeping-bill-calculator-s43 {
+  opacity: 0.6;
+}
+
+.housekeeping-bill-calculator-s44 {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+
+.housekeeping-bill-calculator-s45 {
+  font-weight: 700;
+}
+
+.housekeeping-bill-calculator-s46 {
+  color: #1a6b3c;
+}
+
+.housekeeping-bill-calculator-s47 {
+  padding: 16px;
+  background: rgba(0,0,0,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0 0 14px 14px;
+}
+
+.housekeeping-bill-calculator-s48 {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.housekeeping-bill-calculator-s49 {
+  color: #1a6b3c;
+  font-size: 1.2rem;
+}
+

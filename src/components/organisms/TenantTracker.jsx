@@ -4,6 +4,8 @@ import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.
 import { initialTenantData } from '../../data/tenantSeedData.js';
 import MetricCard from '../molecules/MetricCard.jsx';
 import StatusPill from '../atoms/StatusPill.jsx';
+import './TenantTracker.css';
+
 
 const TENANT_TRACKING_COLLECTION = 'tenantTracking';
 const TENANT_TRACKING_DOC_ID = 'a_wing_flats_v3'; // Bump version for new schema: tenantName, remarks, live expiry calculation
@@ -688,42 +690,34 @@ export default function TenantTracker({ isAdmin = false }) {
   return (
     <section className="section-card" id="tenant-tracking-system">
       {/* ── Section Header ── */}
-      <div className="section-card__header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
+      <div className="section-card__header tenant-tracker-s1">
         <div>
-          <p className="eyebrow" style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 4px 0' }}>
+          <p className="eyebrow tenant-tracker-s2">
             <span>🏢 WING A DIRECTORY</span>
             <span
-              style={{
-                fontSize: '0.72rem',
-                padding: '2px 8px',
-                borderRadius: '6px',
-                background: saveStatus === 'saved' || saveStatus === 'idle' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)',
-                color: saveStatus === 'saved' || saveStatus === 'idle' ? '#10b981' : '#f59e0b',
-                fontWeight: 600
-              }}
+              className="tenant-tracker-s3" style={{ background: saveStatus === 'saved' || saveStatus === 'idle' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(245, 158, 11, 0.12)', color: saveStatus === 'saved' || saveStatus === 'idle' ? '#10b981' : '#f59e0b' }}
             >
               ● {saveMessage}
             </span>
           </p>
-          <h2 style={{ margin: 0 }}>Tenant & Occupant Tracking</h2>
+          <h2 className="tenant-tracker-s4">Tenant & Occupant Tracking</h2>
         </div>
 
         {/* ── Action Toolbar ── */}
-        <div className="section-toolbar" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <button className="button-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} onClick={handleExportCSV}>
+        <div className="section-toolbar tenant-tracker-s5">
+          <button className="button-secondary tenant-tracker-s6" onClick={handleExportCSV}>
             📥 Export CSV
           </button>
-          <button className="button-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} onClick={handleExportPDF}>
+          <button className="button-secondary tenant-tracker-s6" onClick={handleExportPDF}>
             📄 Print PDF
           </button>
           {isAdmin && (
             <>
-              <button className="button-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} onClick={handleOpenAddModal}>
+              <button className="button-primary tenant-tracker-s6" onClick={handleOpenAddModal}>
                 <PlusIcon size={16} /> Add Flat
               </button>
               <button
-                className="button-secondary"
-                style={{ border: '1px solid rgba(220,38,38,0.2)', color: '#dc2626', background: 'rgba(220,38,38,0.04)' }}
+                className="button-secondary tenant-tracker-s7"
                 onClick={handleResetToDefaults}
                 title="Reset local changes and sync default CSV data"
               >
@@ -736,7 +730,7 @@ export default function TenantTracker({ isAdmin = false }) {
 
       <div className="section-card__body">
         {/* ── Metric Cards Grid ── */}
-        <div className="metrics-grid" style={{ marginBottom: 20 }}>
+        <div className="metrics-grid tenant-tracker-s8">
           <MetricCard
             label="Total Flats Tracked"
             value={isLoading ? '...' : metrics.total}
@@ -765,26 +759,13 @@ export default function TenantTracker({ isAdmin = false }) {
 
         {/* ── Add / Edit Inline Card ── */}
         {isModalOpen && (
-          <div className="inline-form-card" style={{
-            background: 'linear-gradient(135deg, rgba(25, 108, 108, 0.03) 0%, rgba(49, 82, 113, 0.05) 100%)',
-            border: '1.5px dashed rgba(25, 108, 108, 0.25)',
-            borderRadius: 16,
-            padding: '24px 28px',
-            marginBottom: 20,
-            boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.8), 0 4px 20px rgba(0,0,0,0.03)',
-            animation: 'fadeIn 0.2s ease-out'
-          }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: '1.05rem', fontWeight: 700, color: '#1e293b' }}>
+          <div className="inline-form-card tenant-tracker-s9">
+            <h3 className="tenant-tracker-s10">
               {editingFlat ? `Edit Flat A ${editingFlat.flat}` : 'Add Wing A Flat'}
             </h3>
             
             <form onSubmit={handleSaveFlat}>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: 16,
-                marginBottom: 20
-              }}>
+              <div className="tenant-tracker-s11">
                 {/* Flat number */}
                 <div className="ann-form-field">
                   <label htmlFor="flatNoInput">Flat Number</label>
@@ -795,14 +776,7 @@ export default function TenantTracker({ isAdmin = false }) {
                     placeholder="e.g. A 1006"
                     value={formFlatNo}
                     onChange={(e) => setFormFlatNo(e.target.value)}
-                    style={{
-                      background: editingFlat ? 'rgba(0,0,0,0.03)' : '#fff',
-                      height: 40,
-                      borderRadius: 10,
-                      border: '1px solid rgba(0,0,0,0.1)',
-                      padding: '0 12px',
-                      fontSize: '0.88rem'
-                    }}
+                    className="tenant-tracker-s12" style={{ background: editingFlat ? 'rgba(0,0,0,0.03)' : '#fff' }}
                     required
                   />
                 </div>
@@ -816,14 +790,7 @@ export default function TenantTracker({ isAdmin = false }) {
                     placeholder="e.g. Mrs. Pamela Chandra"
                     value={formTenantName}
                     onChange={(e) => setFormTenantName(e.target.value)}
-                    style={{
-                      height: 40,
-                      borderRadius: 10,
-                      border: '1px solid rgba(0,0,0,0.1)',
-                      padding: '0 12px',
-                      fontSize: '0.88rem',
-                      background: '#fff'
-                    }}
+                    className="tenant-tracker-s13"
                   />
                 </div>
 
@@ -844,14 +811,7 @@ export default function TenantTracker({ isAdmin = false }) {
                         setFormStatus('Active');
                       }
                     }}
-                    style={{
-                      height: 40,
-                      borderRadius: 10,
-                      border: '1px solid rgba(0,0,0,0.1)',
-                      padding: '0 12px',
-                      fontSize: '0.88rem',
-                      background: '#fff'
-                    }}
+                    className="tenant-tracker-s13"
                   >
                     <option value="Owner">Owner</option>
                     <option value="Tenant">Tenant</option>
@@ -867,14 +827,7 @@ export default function TenantTracker({ isAdmin = false }) {
                     id="flatTypeInput"
                     value={formFlatType}
                     onChange={(e) => setFormFlatType(e.target.value)}
-                    style={{
-                      height: 40,
-                      borderRadius: 10,
-                      border: '1px solid rgba(0,0,0,0.1)',
-                      padding: '0 12px',
-                      fontSize: '0.88rem',
-                      background: '#fff'
-                    }}
+                    className="tenant-tracker-s13"
                   >
                     <option value="Residential">Residential</option>
                     <option value="Commercial">Commercial</option>
@@ -889,14 +842,7 @@ export default function TenantTracker({ isAdmin = false }) {
                     id="statusInput"
                     value={formStatus}
                     onChange={(e) => setFormStatus(e.target.value)}
-                    style={{
-                      height: 40,
-                      borderRadius: 10,
-                      border: '1px solid rgba(0,0,0,0.1)',
-                      padding: '0 12px',
-                      fontSize: '0.88rem',
-                      background: '#fff'
-                    }}
+                    className="tenant-tracker-s13"
                   >
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
@@ -911,14 +857,7 @@ export default function TenantTracker({ isAdmin = false }) {
                     type="date"
                     value={formStartDate}
                     onChange={(e) => setFormStartDate(e.target.value)}
-                    style={{
-                      height: 40,
-                      borderRadius: 10,
-                      border: '1px solid rgba(0,0,0,0.1)',
-                      padding: '0 12px',
-                      fontSize: '0.88rem',
-                      background: '#fff'
-                    }}
+                    className="tenant-tracker-s13"
                   />
                 </div>
 
@@ -930,14 +869,7 @@ export default function TenantTracker({ isAdmin = false }) {
                     type="date"
                     value={formEndDate}
                     onChange={(e) => setFormEndDate(e.target.value)}
-                    style={{
-                      height: 40,
-                      borderRadius: 10,
-                      border: '1px solid rgba(0,0,0,0.1)',
-                      padding: '0 12px',
-                      fontSize: '0.88rem',
-                      background: '#fff'
-                    }}
+                    className="tenant-tracker-s13"
                   />
                 </div>
 
@@ -950,31 +882,22 @@ export default function TenantTracker({ isAdmin = false }) {
                     placeholder="e.g. Brother Flat, Vacant Saturday"
                     value={formRemarks}
                     onChange={(e) => setFormRemarks(e.target.value)}
-                    style={{
-                      height: 40,
-                      borderRadius: 10,
-                      border: '1px solid rgba(0,0,0,0.1)',
-                      padding: '0 12px',
-                      fontSize: '0.88rem',
-                      background: '#fff'
-                    }}
+                    className="tenant-tracker-s13"
                   />
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+              <div className="tenant-tracker-s14">
                 <button
                   type="button"
-                  className="button-secondary"
-                  style={{ minHeight: 'auto', padding: '8px 16px', borderRadius: 8, fontSize: '0.85rem' }}
+                  className="button-secondary tenant-tracker-s15"
                   onClick={() => setIsModalOpen(false)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="button-primary"
-                  style={{ minHeight: 'auto', padding: '8px 18px', borderRadius: 8, fontSize: '0.85rem' }}
+                  className="button-primary tenant-tracker-s16"
                 >
                   {editingFlat ? 'Save Changes' : 'Add Flat'}
                 </button>
@@ -984,18 +907,10 @@ export default function TenantTracker({ isAdmin = false }) {
         )}
 
         {/* ── Search & Filter Row ── */}
-        <div className="search-card" style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 12,
-          flexWrap: 'wrap',
-          marginBottom: 20,
-          padding: '14px 18px'
-        }}>
+        <div className="search-card tenant-tracker-s17">
           {/* Search input */}
-          <div style={{ flex: '1 1 240px', position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', opacity: 0.5, fontSize: '0.9rem' }}>
+          <div className="tenant-tracker-s18">
+            <span className="tenant-tracker-s19">
               🔍
             </span>
             <input
@@ -1003,20 +918,12 @@ export default function TenantTracker({ isAdmin = false }) {
               placeholder="Search Flat No, Tenant Name (e.g. Pamela), or Remarks..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              style={{
-                width: '100%',
-                paddingLeft: 40,
-                height: 40,
-                borderRadius: 10,
-                border: '1px solid rgba(0,0,0,0.1)',
-                background: '#fff',
-                fontSize: '0.86rem'
-              }}
+              className="tenant-tracker-s20"
             />
           </div>
 
           {/* Center: Occupant Filter Pills */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <div className="tenant-tracker-s21">
             {[
               { id: 'All', label: 'All Units', count: metrics.total },
               { id: 'Tenant', label: 'Tenants', count: metrics.tenants },
@@ -1028,30 +935,10 @@ export default function TenantTracker({ isAdmin = false }) {
                   key={tab.id}
                   type="button"
                   onClick={() => setOccupantFilter(tab.id)}
-                  style={{
-                    height: 40,
-                    padding: '0 12px',
-                    borderRadius: 10,
-                    fontSize: '0.84rem',
-                    fontWeight: isSelected ? 700 : 500,
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    border: isSelected ? '1px solid #196c6c' : '1px solid rgba(0,0,0,0.1)',
-                    background: isSelected ? '#196c6c' : '#ffffff',
-                    color: isSelected ? '#ffffff' : '#475569',
-                    transition: 'all 0.15s ease'
-                  }}
+                  className="tenant-tracker-s22" style={{ fontWeight: isSelected ? 700 : 500, border: isSelected ? '1px solid #196c6c' : '1px solid rgba(0,0,0,0.1)', background: isSelected ? '#196c6c' : '#ffffff', color: isSelected ? '#ffffff' : '#475569' }}
                 >
                   <span>{tab.label}</span>
-                  <span style={{
-                    fontSize: '0.72rem',
-                    padding: '1px 6px',
-                    borderRadius: 8,
-                    background: isSelected ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.06)',
-                    color: isSelected ? '#ffffff' : '#64748b'
-                  }}>
+                  <span className="tenant-tracker-s23" style={{ background: isSelected ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.06)', color: isSelected ? '#ffffff' : '#64748b' }}>
                     {tab.count}
                   </span>
                 </button>
@@ -1060,20 +947,12 @@ export default function TenantTracker({ isAdmin = false }) {
           </div>
 
           {/* Right: Expiry Filter + Sort selector */}
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="tenant-tracker-s24">
             <select
               aria-label="Occupant Type Filter"
               value={occupantFilter}
               onChange={(e) => setOccupantFilter(e.target.value)}
-              style={{
-                height: 40,
-                borderRadius: 10,
-                border: '1px solid rgba(0,0,0,0.1)',
-                padding: '0 10px',
-                background: '#fff',
-                fontSize: '0.84rem',
-                color: '#334155'
-              }}
+              className="tenant-tracker-s25"
             >
               <option value="All">All Types</option>
               <option value="Tenant">Tenants Only</option>
@@ -1085,16 +964,7 @@ export default function TenantTracker({ isAdmin = false }) {
               aria-label="Expiry Filter"
               value={expiryFilter}
               onChange={(e) => setExpiryFilter(e.target.value)}
-              style={{
-                height: 40,
-                borderRadius: 10,
-                border: '1px solid rgba(0,0,0,0.1)',
-                padding: '0 10px',
-                background: '#fff',
-                fontSize: '0.84rem',
-                color: '#334155',
-                fontWeight: expiryFilter !== 'All' ? 600 : 400
-              }}
+              className="tenant-tracker-s25" style={{ fontWeight: expiryFilter !== 'All' ? 600 : 400 }}
             >
               <option value="All">All Expiries</option>
               <option value="ExpiringSoon">⚠️ Expiring Soon (≤60d)</option>
@@ -1106,15 +976,7 @@ export default function TenantTracker({ isAdmin = false }) {
               aria-label="Sorting Selector"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              style={{
-                height: 40,
-                borderRadius: 10,
-                border: '1px solid rgba(0,0,0,0.1)',
-                padding: '0 10px',
-                background: '#fff',
-                fontSize: '0.84rem',
-                color: '#334155'
-              }}
+              className="tenant-tracker-s25"
             >
               <option value="flatAsc">Flat No (Asc)</option>
               <option value="flatDesc">Flat No (Desc)</option>
@@ -1126,28 +988,28 @@ export default function TenantTracker({ isAdmin = false }) {
         </div>
 
         {/* ── Inventory List Table ── */}
-        <div className="table-card" style={{ overflowX: 'auto', borderRadius: 16, border: '1px solid rgba(0,0,0,0.06)', background: '#ffffff', boxShadow: '0 2px 12px rgba(0,0,0,0.02)' }}>
+        <div className="table-card tenant-tracker-s26">
           {isLoading ? (
-            <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>
-              <span className="spinner" style={{ display: 'inline-block', width: 24, height: 24, border: '3px solid rgba(0,0,0,0.1)', borderTopColor: '#196c6c', borderRadius: '50%', animation: 'spin 1s linear infinite', marginRight: 10 }} />
+            <div className="tenant-tracker-s27">
+              <span className="spinner tenant-tracker-s28" />
               Loading flat occupancy data...
             </div>
           ) : processedFlats.length === 0 ? (
-            <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>
+            <div className="tenant-tracker-s27">
               No flats match your filter criteria. Try resetting the filters.
             </div>
           ) : (
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <table className="tenant-tracker-s29">
               <thead>
                 <tr>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 100 }}>Flat No</th>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>Tenant / Resident Name</th>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 120 }}>Occupancy</th>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 120 }}>Start Date</th>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 120 }}>End Date</th>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', width: 170 }}>Days Remaining</th>
-                  <th style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>Remarks</th>
-                  {isAdmin && <th className="no-print" style={{ padding: '14px 18px', background: '#f8fafc', fontWeight: 700, color: '#334155', borderBottom: '1px solid rgba(0,0,0,0.06)', textAlign: 'center', width: 90 }}>Actions</th>}
+                  <th className="tenant-tracker-s30">Flat No</th>
+                  <th className="tenant-tracker-s31">Tenant / Resident Name</th>
+                  <th className="tenant-tracker-s32">Occupancy</th>
+                  <th className="tenant-tracker-s32">Start Date</th>
+                  <th className="tenant-tracker-s32">End Date</th>
+                  <th className="tenant-tracker-s33">Days Remaining</th>
+                  <th className="tenant-tracker-s31">Remarks</th>
+                  {isAdmin && <th className="no-print tenant-tracker-s34">Actions</th>}
                 </tr>
               </thead>
               <tbody>
@@ -1166,40 +1028,36 @@ export default function TenantTracker({ isAdmin = false }) {
                   return (
                     <tr
                       key={flat.flat}
-                      className={rowClass}
-                      style={{
-                        background: rowClass ? undefined : (idx % 2 === 0 ? '#fff' : '#fcfcfa'),
-                        borderBottom: '1px solid rgba(0,0,0,0.04)',
-                        transition: 'background 0.15s ease'
-                      }}
+                      className={`${rowClass} tenant-tracker-s35`}
+                      style={{ background: rowClass ? undefined : (idx % 2 === 0 ? '#fff' : '#fcfcfa') }}
                     >
                       {/* Flat No */}
-                      <td style={{ padding: '14px 18px', fontWeight: 700, color: '#1e293b' }}>
+                      <td className="tenant-tracker-s36">
                         {flat.flat}
                       </td>
 
                       {/* Tenant / Resident Name */}
-                      <td style={{ padding: '14px 18px', fontWeight: flat.tenantName ? 600 : 400, color: flat.tenantName ? '#0f172a' : '#94a3b8' }}>
+                      <td className="tenant-tracker-s37" style={{ fontWeight: flat.tenantName ? 600 : 400, color: flat.tenantName ? '#0f172a' : '#94a3b8' }}>
                         {flat.tenantName || (flat.occupantType === 'Owner' ? 'Owner Occupied' : '—')}
                       </td>
 
                       {/* Occupancy Type Badge */}
-                      <td style={{ padding: '14px 18px' }}>
+                      <td className="tenant-tracker-s37">
                         <StatusPill value={flat.occupantType} />
                       </td>
 
                       {/* Start Date */}
-                      <td style={{ padding: '14px 18px', color: '#334155', fontSize: '0.84rem', fontWeight: 500 }}>
+                      <td className="tenant-tracker-s38">
                         {formatDateLabel(flat.startDate)}
                       </td>
 
                       {/* End Date */}
-                      <td style={{ padding: '14px 18px', color: '#334155', fontSize: '0.84rem', fontWeight: 500 }}>
+                      <td className="tenant-tracker-s38">
                         {formatDateLabel(flat.endDate)}
                       </td>
 
                       {/* Days Remaining / Expiry Badge */}
-                      <td style={{ padding: '14px 18px' }}>
+                      <td className="tenant-tracker-s37">
                         {flat.endDate ? (
                           <span className={expiry.badgeClass} title={`Agreement ends: ${flat.endDate}`}>
                             {expiry.isExpired && '🚨 '}
@@ -1208,23 +1066,14 @@ export default function TenantTracker({ isAdmin = false }) {
                             {expiry.daysText}
                           </span>
                         ) : (
-                          <span style={{ color: '#94a3b8', fontSize: '0.82rem' }}>—</span>
+                          <span className="tenant-tracker-s39">—</span>
                         )}
                       </td>
 
                       {/* Remarks */}
-                      <td style={{ padding: '14px 18px', color: '#475569', fontSize: '0.84rem' }}>
+                      <td className="tenant-tracker-s40">
                         {flat.remarks ? (
-                          <span style={{
-                            display: 'inline-block',
-                            background: 'rgba(241, 245, 249, 0.9)',
-                            padding: '2px 8px',
-                            borderRadius: '6px',
-                            border: '1px solid rgba(203, 213, 225, 0.6)',
-                            fontWeight: 500,
-                            fontSize: '0.8rem',
-                            color: '#334155'
-                          }}>
+                          <span className="tenant-tracker-s41">
                             {flat.remarks}
                           </span>
                         ) : '—'}
@@ -1232,19 +1081,17 @@ export default function TenantTracker({ isAdmin = false }) {
 
                       {/* Actions */}
                       {isAdmin && (
-                        <td className="no-print" style={{ padding: '14px 18px', textAlign: 'center' }}>
-                          <div style={{ display: 'inline-flex', gap: 6 }}>
+                        <td className="no-print tenant-tracker-s42">
+                          <div className="tenant-tracker-s43">
                             <button
-                              className="button-secondary"
-                              style={{ padding: 6, minHeight: 'auto', display: 'flex', alignItems: 'center', borderRadius: 8, border: '1px solid rgba(0,0,0,0.06)', color: '#475569' }}
+                              className="button-secondary tenant-tracker-s44"
                               onClick={() => handleOpenEditModal(flat)}
                               title="Edit flat & tenant details"
                             >
                               <PencilIcon size={14} />
                             </button>
                             <button
-                              className="button-secondary"
-                              style={{ padding: 6, minHeight: 'auto', display: 'flex', alignItems: 'center', borderRadius: 8, border: '1px solid rgba(220,38,38,0.1)', color: '#dc2626', background: 'rgba(220,38,38,0.02)' }}
+                              className="button-secondary tenant-tracker-s45"
                               onClick={() => handleDeleteFlat(flat.flat)}
                               title="Delete flat"
                             >

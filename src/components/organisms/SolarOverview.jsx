@@ -1,5 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
+import './SolarOverview.css';
+
 
 const costData = [
   { name: 'SolarSquare', cost: 11.5, fill: '#0B2B26' },
@@ -17,46 +19,46 @@ const generationData = [
 
 export default function SolarOverview() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', minWidth: 0 }}>
+    <div className="solar-overview-s1">
       {/* Header */}
-      <div className="table-card" style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="table-card solar-overview-s2">
         <div>
-          <h2 style={{ margin: 0, color: '#0B2B26', fontSize: '1.5rem', letterSpacing: '0.02em' }}>SOLAR VENDOR COMPARISON DASHBOARD</h2>
+          <h2 className="solar-overview-s3">SOLAR VENDOR COMPARISON DASHBOARD</h2>
         </div>
         <div>
-          <img src="/favicon.png" alt="Majestique Euriska" style={{ height: '48px' }} />
+          <img src="/favicon.png" alt="Majestique Euriska" className="solar-overview-s4" />
         </div>
       </div>
 
       {/* Top 4 Metrics */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-        <div className="table-card" style={{ padding: '24px', textAlign: 'center' }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>System Size</p>
-          <p style={{ margin: 0, fontSize: '2rem', fontWeight: 800, color: '#0B2B26' }}>20 kW</p>
+      <div className="solar-overview-s5">
+        <div className="table-card solar-overview-s6">
+          <p className="solar-overview-s7">System Size</p>
+          <p className="solar-overview-s8">20 kW</p>
         </div>
-        <div className="table-card" style={{ padding: '24px', textAlign: 'center' }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Est. Annual Generation</p>
-          <p style={{ margin: 0, fontSize: '2rem', fontWeight: 800, color: '#0B2B26' }}>30,000+</p>
-          <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>UNITS</p>
+        <div className="table-card solar-overview-s6">
+          <p className="solar-overview-s7">Est. Annual Generation</p>
+          <p className="solar-overview-s8">30,000+</p>
+          <p className="solar-overview-s9">UNITS</p>
         </div>
-        <div className="table-card" style={{ padding: '24px', textAlign: 'center' }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Est. Savings / Year</p>
-          <p style={{ margin: 0, fontSize: '2rem', fontWeight: 800, color: '#0B2B26' }}>₹2.5 - 3.0</p>
-          <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>LAKHS</p>
+        <div className="table-card solar-overview-s6">
+          <p className="solar-overview-s7">Est. Savings / Year</p>
+          <p className="solar-overview-s8">₹2.5 - 3.0</p>
+          <p className="solar-overview-s9">LAKHS</p>
         </div>
-        <div className="table-card" style={{ padding: '24px', textAlign: 'center' }}>
-          <p style={{ margin: '0 0 8px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Payback Period</p>
-          <p style={{ margin: 0, fontSize: '2rem', fontWeight: 800, color: '#0B2B26' }}>3.5 - 4.5</p>
-          <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>YEARS</p>
+        <div className="table-card solar-overview-s6">
+          <p className="solar-overview-s7">Payback Period</p>
+          <p className="solar-overview-s8">3.5 - 4.5</p>
+          <p className="solar-overview-s9">YEARS</p>
         </div>
       </div>
 
       {/* Charts Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '20px' }}>
+      <div className="solar-overview-s10">
         {/* Cost Chart */}
-        <div className="table-card" style={{ padding: '24px' }}>
-          <h3 style={{ margin: '0 0 20px 0', fontSize: '0.9rem', color: '#334155', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Cost Comparison (₹ Lakhs)</h3>
-          <div style={{ height: '300px', width: '100%' }}>
+        <div className="table-card solar-overview-s11">
+          <h3 className="solar-overview-s12">Cost Comparison (₹ Lakhs)</h3>
+          <div className="solar-overview-s13">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={costData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
@@ -74,9 +76,9 @@ export default function SolarOverview() {
         </div>
 
         {/* Generation Chart */}
-        <div className="table-card" style={{ padding: '24px' }}>
-          <h3 style={{ margin: '0 0 20px 0', fontSize: '0.9rem', color: '#334155', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Annual Generation (Units)</h3>
-          <div style={{ height: '300px', width: '100%' }}>
+        <div className="table-card solar-overview-s11">
+          <h3 className="solar-overview-s12">Annual Generation (Units)</h3>
+          <div className="solar-overview-s13">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={generationData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
@@ -94,26 +96,26 @@ export default function SolarOverview() {
       </div>
 
       {/* Bottom 3 Metrics */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-        <div className="table-card" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <div style={{ width: '60px', height: '60px', borderRadius: '50%', border: '6px solid #0B2B26', borderRightColor: '#C49B4F', transform: 'rotate(-45deg)' }}></div>
+      <div className="solar-overview-s14">
+        <div className="table-card solar-overview-s15">
+          <div className="solar-overview-s16"></div>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Performance Ratio (PR)</p>
-            <p style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: '#0B2B26' }}>75%+ <span style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 500 }}>Target</span></p>
+            <p className="solar-overview-s17">Performance Ratio (PR)</p>
+            <p className="solar-overview-s18">75%+ <span className="solar-overview-s19">Target</span></p>
           </div>
         </div>
-        <div className="table-card" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>🛡️</div>
+        <div className="table-card solar-overview-s15">
+          <div className="solar-overview-s20">🛡️</div>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Warranty Coverage</p>
-            <p style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: '#0B2B26' }}>25 <span style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 500 }}>YEARS (Panels)</span></p>
+            <p className="solar-overview-s17">Warranty Coverage</p>
+            <p className="solar-overview-s18">25 <span className="solar-overview-s19">YEARS (Panels)</span></p>
           </div>
         </div>
-        <div className="table-card" style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>💰</div>
+        <div className="table-card solar-overview-s15">
+          <div className="solar-overview-s20">💰</div>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>ROI Over 25 Years</p>
-            <p style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: '#0B2B26' }}>2.5x - 3x <span style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 500, display: 'block' }}>Return on Investment</span></p>
+            <p className="solar-overview-s17">ROI Over 25 Years</p>
+            <p className="solar-overview-s18">2.5x - 3x <span className="solar-overview-s21">Return on Investment</span></p>
           </div>
         </div>
       </div>

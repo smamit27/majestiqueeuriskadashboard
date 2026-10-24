@@ -1,0 +1,911 @@
+/**
+ * ChequeManagement.css
+ * Extracted styles from ChequeManagement.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.cheque-management-s1 {
+  width: 50px;
+}
+
+.cheque-management-s2 {
+  width: 130px;
+}
+
+.cheque-management-s3 {
+  width: 135px;
+}
+
+.cheque-management-s4 {
+  width: 110px;
+}
+
+.cheque-management-s5 {
+  width: 200px;
+}
+
+.cheque-management-s6 {
+  width: 150px;
+}
+
+.cheque-management-s7 {
+  width: 130px;
+  text-align: right;
+}
+
+.cheque-management-s8 {
+  width: 120px;
+  text-align: right;
+  background: #f0fdf4;
+}
+
+.cheque-management-s9 {
+  text-align: right;
+  background: #f0f9ff;
+}
+
+.cheque-management-s10 {
+  width: 155px;
+  text-align: center;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.cheque-management-s11 {
+  text-align: right;
+  background: #fff7ed;
+}
+
+.cheque-management-s12 {
+  width: 155px;
+  text-align: center;
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.cheque-management-s13 {
+  width: 120px;
+}
+
+.cheque-management-s14 {
+  width: 70px;
+  text-align: center;
+}
+
+.cheque-management-s15 {
+  width: 85px;
+  text-align: center;
+}
+
+.cheque-management-s16 {
+  text-align: center;
+  padding: 40px;
+  opacity: 0.5;
+}
+
+.cheque-management-s17 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cheque-management-s18 {
+  font-size: 0.65rem;
+  background: #fee2e2;
+  color: #dc2626;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.cheque-management-s19 {
+  font-weight: 600;
+}
+
+.cheque-management-s20 {
+  text-align: right;
+  font-weight: 700;
+}
+
+.cheque-management-s21 {
+  text-align: right;
+  font-weight: 500;
+}
+
+.cheque-management-s22 {
+  text-align: center;
+  background: #f8faff;
+  border-left: 1px solid #dbeafe;
+  vertical-align: middle;
+  padding: 6px 8px;
+}
+
+.cheque-management-s23 {
+  color: #9ca3af;
+}
+
+.cheque-management-s24 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cheque-management-s25 {
+  text-align: center;
+  font-size: 0.82rem;
+  padding: 4px;
+}
+
+.cheque-management-s26 {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.cheque-management-s27 {
+  background: none;
+  border: none;
+  color: #166534;
+  cursor: pointer;
+  padding: 0;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.cheque-management-s28 {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 4px;
+  padding: 2px 6px;
+  text-align: center;
+}
+
+.cheque-management-s29 {
+  text-align: center;
+  background: #fffdfa;
+  border-left: 1px solid #fef3c7;
+  vertical-align: middle;
+  padding: 6px 8px;
+}
+
+.cheque-management-s30 {
+  text-align: center;
+}
+
+.cheque-management-s31 {
+  transform: scale(1.2);
+}
+
+.cheque-management-s32 {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cheque-management-s33 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cheque-management-s34 {
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  height: auto;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cheque-management-s35 {
+  opacity: 0.3;
+}
+
+.cheque-management-s36 {
+  background: #f8fafc;
+  font-weight: 700;
+}
+
+.cheque-management-s37 {
+  text-align: right;
+}
+
+.cheque-management-s38 {
+  text-align: right;
+  color: #2563eb;
+}
+
+.cheque-management-s39 {
+  text-align: right;
+  color: #16a34a;
+}
+
+.cheque-management-s40 {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #1e40af;
+  background: #eff6ff;
+}
+
+.cheque-management-s41 {
+  text-align: right;
+  color: #ea580c;
+}
+
+.cheque-management-s42 {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #b45309;
+  background: #fffbeb;
+}
+
+.cheque-management-s43 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cheque-management-s44 {
+  padding: 0;
+}
+
+.cheque-management-s45 {
+  position: relative;
+}
+
+.cheque-management-s46 {
+  margin-left: 5px;
+  font-size: 0.8em;
+}
+
+.cheque-management-s47 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cheque-management-s48 {
+  margin: 0;
+}
+
+.cheque-management-s49 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.cheque-management-s50 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.cheque-management-s51 {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cheque-management-s52 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cheque-management-s53 {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.cheque-management-s54 {
+  margin: 0 0 3px 0;
+  color: #92400e;
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.cheque-management-s55 {
+  margin: 0;
+  color: #b45309;
+  font-size: 0.86rem;
+}
+
+.cheque-management-s56 {
+  background: #d97706;
+  border-color: #b45309;
+  padding: 9px 18px;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(217, 119, 6, 0.2);
+}
+
+.cheque-management-s57 {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-radius: 14px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cheque-management-s58 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cheque-management-s59 {
+  font-size: 1.4rem;
+}
+
+.cheque-management-s60 {
+  font-weight: 700;
+  color: #166534;
+  font-size: 0.92rem;
+}
+
+.cheque-management-s61 {
+  margin: 2px 0 0 0;
+  color: #15803d;
+  font-size: 0.84rem;
+}
+
+.cheque-management-s62 {
+  padding: 7px 16px;
+  font-size: 0.84rem;
+  border-color: #86efac;
+  color: #166534;
+  background: white;
+}
+
+.cheque-management-s63 {
+  background: #fef2f2;
+  border: 1.5px solid #fca5a5;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cheque-management-s64 {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.cheque-management-s65 {
+  margin: 0 0 4px 0;
+  font-weight: 700;
+  color: #dc2626;
+  font-size: 0.95rem;
+}
+
+.cheque-management-s66 {
+  margin: 0;
+  color: #991b1b;
+  font-size: 0.88rem;
+}
+
+.cheque-management-s67 {
+  padding: 16px 24px;
+  background: #f8fafc;
+  border: 1px solid var(--line);
+}
+
+.cheque-management-s68 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cheque-management-s69 {
+  flex: 1;
+  min-width: 280px;
+  margin: 0;
+}
+
+.cheque-management-s70 {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.cheque-management-s71 {
+  text-align: left;
+  height: 44px;
+  font-size: 1rem;
+  background: white;
+}
+
+.cheque-management-s72 {
+  padding: 10px 20px;
+  height: 44px;
+  margin-top: auto;
+}
+
+.cheque-management-s73 {
+  padding: 22px 24px;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.cheque-management-s74 {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.cheque-management-s75 {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.cheque-management-s76 {
+  margin: 0 0 6px 0;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.cheque-management-s77 {
+  margin: 0 0 14px 0;
+  color: #64748b;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.cheque-management-s78 {
+  padding: 8px 18px;
+  font-size: 0.86rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cheque-management-s79 {
+  padding: 24px;
+}
+
+.cheque-management-s80 {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.cheque-management-s81 {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: all 0.15s;
+  border-color: #1e3a8a;
+}
+
+.cheque-management-s82 {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: all 0.15s;
+  border-color: #065f46;
+}
+
+.cheque-management-s83 {
+  margin-left: 8px;
+  align-self: center;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.cheque-management-s84 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.cheque-management-s85 {
+  color: #ef4444;
+}
+
+.cheque-management-s86 {
+  text-align: left;
+}
+
+.cheque-management-s87 {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.cheque-management-s88 {
+  padding: 8px 24px;
+  width: auto;
+}
+
+.cheque-management-s89 {
+  border-top: 4px solid #1e3a8a;
+}
+
+.cheque-management-s90 {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #eff6ff;
+  border-radius: 12px 12px 0 0;
+}
+
+.cheque-management-s91 {
+  margin: 0;
+  color: #1e40af;
+}
+
+.cheque-management-s92 {
+  margin: 2px 0 0 0;
+  color: #1e3a8a;
+  font-size: 1rem;
+}
+
+.cheque-management-s93 {
+  font-size: 0.78rem;
+  color: #3b82f6;
+  font-weight: 600;
+  background: #dbeafe;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.cheque-management-s94 {
+  border-top: 4px solid #059669;
+}
+
+.cheque-management-s95 {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f0fdf4;
+  border-radius: 12px 12px 0 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cheque-management-s96 {
+  margin: 0;
+  color: #166534;
+}
+
+.cheque-management-s97 {
+  margin: 2px 0 0 0;
+  color: #065f46;
+  font-size: 1rem;
+}
+
+.cheque-management-s98 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+
+.cheque-management-s99 {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  background: #f0f9ff;
+  border-bottom: 1px solid #bae6fd;
+}
+
+.cheque-management-s100 {
+  background: white;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.cheque-management-s101 {
+  margin: 0 0 4px 0;
+  color: #15803d;
+}
+
+.cheque-management-s102 {
+  color: #16a34a;
+  margin: 0;
+}
+
+.cheque-management-s103 {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cheque-management-s104 {
+  margin: 0 0 4px 0;
+  color: #1d4ed8;
+}
+
+.cheque-management-s105 {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.cheque-management-s106 {
+  color: #2563eb;
+  margin: 0 0 4px 0;
+}
+
+.cheque-management-s107 {
+  font-size: 0.75rem;
+  color: #15803d;
+}
+
+.cheque-management-s108 {
+  color: #b45309;
+}
+
+.cheque-management-s109 {
+  margin: 0 0 4px 0;
+  color: #c2410c;
+}
+
+.cheque-management-s110 {
+  color: #ea580c;
+  margin: 0 0 4px 0;
+}
+
+.cheque-management-s111 {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+}
+
+.cheque-management-s112 {
+  margin: 0 0 4px 0;
+  color: #475569;
+}
+
+.cheque-management-s113 {
+  margin: 0 0 4px 0;
+}
+
+.cheque-management-s114 {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cheque-management-s115 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.cheque-management-s116 {
+  max-width: 620px;
+  width: 100%;
+  padding: 26px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e2e8f0;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.cheque-management-s117 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.cheque-management-s118 {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.cheque-management-s119 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--ink);
+}
+
+.cheque-management-s120 {
+  margin: 2px 0 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.cheque-management-s121 {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.cheque-management-s122 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.cheque-management-s123 {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.cheque-management-s124 {
+  text-align: left;
+  width: 100%;
+}
+
+.cheque-management-s125 {
+  text-align: left;
+  width: 100%;
+  font-weight: 700;
+}
+
+.cheque-management-s126 {
+  grid-column: 1 / -1;
+}
+
+.cheque-management-s127 {
+  text-align: left;
+  width: 100%;
+  font-weight: 600;
+}
+
+.cheque-management-s128 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 24px;
+}
+
+.cheque-management-s129 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.cheque-management-s130 {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 16px;
+}
+
+.cheque-management-s131 {
+  padding: 9px 18px;
+}
+
+.cheque-management-s132 {
+  padding: 9px 24px;
+}
+
+.cheque-management-s133 {
+  max-width: 460px;
+  width: 100%;
+  padding: 28px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e2e8f0;
+}
+
+.cheque-management-s134 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.cheque-management-s135 {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.cheque-management-s136 {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.cheque-management-s137 {
+  margin-bottom: 18px;
+}
+
+.cheque-management-s138 {
+  text-align: left;
+  width: 100%;
+  height: 44px;
+  font-size: 0.95rem;
+  background: #f8fafc;
+}
+
+.cheque-management-s139 {
+  color: #dc2626;
+  font-size: 0.84rem;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.cheque-management-s140 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cheque-management-s141 {
+  padding: 9px 22px;
+  background: #d97706;
+  border-color: #b45309;
+}
+

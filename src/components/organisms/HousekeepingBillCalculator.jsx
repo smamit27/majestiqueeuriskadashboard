@@ -3,6 +3,8 @@ import { doc, getDoc, serverTimestamp, setDoc, deleteDoc, onSnapshot } from 'fir
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
 import { calcBill, daysInMonth } from '../../utils/housekeepingUtils.js';
+import './HousekeepingBillCalculator.css';
+
 
 const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(2026, 3 + i, 1);
@@ -50,10 +52,10 @@ const DEFAULT_FORM = {
 // ─── Field component (defined OUTSIDE main component so it never remounts) ────
 function Field({ label, value, onChange, prefix }) {
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.7 }}>{label}</span>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-        {prefix && <span style={{ opacity: 0.5, fontSize: '0.9rem' }}>{prefix}</span>}
+    <label className="housekeeping-bill-calculator-s1">
+      <span className="housekeeping-bill-calculator-s2">{label}</span>
+      <div className="housekeeping-bill-calculator-s3">
+        {prefix && <span className="housekeeping-bill-calculator-s4">{prefix}</span>}
         <input
           type="text"
           inputMode="numeric"
@@ -64,7 +66,7 @@ function Field({ label, value, onChange, prefix }) {
               .replace(/(\..*?)\.+/g, '$1');
             onChange(cleaned);
           }}
-          style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.15)', fontSize: '0.95rem', background: 'rgba(255,255,255,0.8)' }}
+          className="housekeeping-bill-calculator-s5"
         />
       </div>
     </label>
@@ -575,10 +577,10 @@ export default function HousekeepingBillCalculator() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div className="housekeeping-bill-calculator-s6">
 
       {/* Month tabs + header */}
-      <div className="table-card attendance-table-card attendance-table-card--register" style={{ padding: 0 }}>
+      <div className="table-card attendance-table-card attendance-table-card--register housekeeping-bill-calculator-s7">
         <div className="attendance-month-tabs" role="tablist">
           {FINANCIAL_YEAR_MONTHS.map(mv => (
             <button key={mv} type="button" role="tab" aria-selected={month === mv}
@@ -592,11 +594,11 @@ export default function HousekeepingBillCalculator() {
             <h3>Bill — {formatLongMonth(month)}</h3>
           </div>
           <div className="attendance-table-card__actions">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: badge.c, fontWeight: 500, fontSize: '0.9rem' }}>
+            <div className="housekeeping-bill-calculator-s8" style={{ color: badge.c }}>
               <span>{badge.i}</span>
               <span>{isLoading ? 'Loading…' : saveMsg || 'Ready'}</span>
             </div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <div className="housekeeping-bill-calculator-s9">
               <button
                 className="button-secondary"
                 type="button"
@@ -606,11 +608,10 @@ export default function HousekeepingBillCalculator() {
                 {isSaving ? 'Saving…' : '💾 Save'}
               </button>
               <button
-                className="button-secondary"
+                className="button-secondary housekeeping-bill-calculator-s10"
                 type="button"
                 onClick={handlePrintPDF}
                 disabled={!bill}
-                style={{ background: '#f8fafc', fontWeight: 600 }}
               >
                 🖨️ Print Bill (PDF)
               </button>
@@ -618,10 +619,9 @@ export default function HousekeepingBillCalculator() {
                 ⬇ Excel
               </button>
               <button
-                className="button-secondary"
+                className="button-secondary housekeeping-bill-calculator-s11"
                 type="button"
                 onClick={handleDeleteBill}
-                style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)', fontWeight: 700 }}
               >
                 🗑️ Clear
               </button>
@@ -631,19 +631,19 @@ export default function HousekeepingBillCalculator() {
       </div>
 
       {/* Input sections */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 16 }}>
+      <div className="housekeeping-bill-calculator-s12">
 
         {/* Distribution */}
         <div style={sectionStyle}>
           <p style={headingStyle}>🏢 Building Distribution Units</p>
-          <p style={{ margin: 0, fontSize: '0.82rem', opacity: 0.6 }}>Number of flats per building — determines cost split ratio</p>
+          <p className="housekeeping-bill-calculator-s13">Number of flats per building — determines cost split ratio</p>
           <div style={gridStyle}>
             <Field label="A Building Units" value={form.unitsA} onChange={v => handleChange('unitsA', v)} />
             <Field label="B Building Units" value={form.unitsB} onChange={v => handleChange('unitsB', v)} />
             <Field label="C Building Units" value={form.unitsC} onChange={v => handleChange('unitsC', v)} />
           </div>
           {bill && (
-            <div style={{ fontSize: '0.8rem', opacity: 0.65 }}>
+            <div className="housekeeping-bill-calculator-s14">
               Ratio — A: {(bill.ratioA * 100).toFixed(1)}% · B: {(bill.ratioB * 100).toFixed(1)}% · C: {(bill.ratioC * 100).toFixed(1)}%
             </div>
           )}
@@ -652,7 +652,7 @@ export default function HousekeepingBillCalculator() {
         {/* Building Manpower */}
         <div style={sectionStyle}>
           <p style={headingStyle}>👷 Building Manpower Wages</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 10 }}>
+          <div className="housekeeping-bill-calculator-s15">
             <Field label="A Building Wage (₹)" value={form.aWage} onChange={v => handleChange('aWage', v)} prefix="₹" />
             {!attendance && <Field label="A Building Days" value={form.aDays} onChange={v => handleChange('aDays', v)} />}
 
@@ -663,14 +663,14 @@ export default function HousekeepingBillCalculator() {
             {!attendance && <Field label="C Building Days" value={form.cDays} onChange={v => handleChange('cDays', v)} />}
           </div>
           {attendance ? (
-            <div style={{ fontSize: '0.83rem', padding: '10px', background: 'rgba(0,0,0,0.04)', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <div style={{ fontWeight: 600 }}>Days present from attendance:</div>
+            <div className="housekeeping-bill-calculator-s16">
+              <div className="housekeeping-bill-calculator-s17">Days present from attendance:</div>
               <div>A: <strong>{attendance.a.toFixed(1)} days</strong> (₹{fmt(bill ? bill.rows[0].wage : 0)})</div>
               <div>B: <strong>{attendance.b.toFixed(1)} days</strong> (₹{fmt(bill ? bill.rows[1].wage : 0)})</div>
               <div>C: <strong>{attendance.c.toFixed(1)} days</strong> (₹{fmt(bill ? bill.rows[2].wage : 0)})</div>
             </div>
           ) : (
-            <div style={{ fontSize: '0.83rem', padding: '10px', background: 'rgba(255,247,237,0.8)', border: '1px solid rgba(255,237,213,1)', color: '#c2410c', borderRadius: 8 }}>
+            <div className="housekeeping-bill-calculator-s18">
               ⚠️ Attendance register missing. Using manual days entry.
             </div>
           )}
@@ -679,18 +679,18 @@ export default function HousekeepingBillCalculator() {
         {/* Supervisor */}
         <div style={sectionStyle}>
           <p style={headingStyle}>🧑‍💼 Supervisor</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 10 }}>
+          <div className="housekeeping-bill-calculator-s15">
             <Field label="Monthly Wage (₹)" value={form.supervisorSalary} onChange={v => handleChange('supervisorSalary', v)} prefix="₹" />
             {!attendance && <Field label="Supervisor Days Present" value={form.supervisorDays} onChange={v => handleChange('supervisorDays', v)} />}
           </div>
           {bill && n(form.supervisorSalary) > 0 && (
-            <div style={{ fontSize: '0.83rem', padding: '10px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}>
+            <div className="housekeeping-bill-calculator-s19">
               Actual Cost: (₹{form.supervisorSalary} / {daysInMonth(month)}) × {attendance ? attendance.supervisor : (form.supervisorDays !== '' ? n(form.supervisorDays) : daysInMonth(month))} days = <strong>₹{fmt((n(form.supervisorSalary) / daysInMonth(month)) * (attendance ? attendance.supervisor : (form.supervisorDays !== '' ? n(form.supervisorDays) : daysInMonth(month))))}</strong>
             </div>
           )}
           {bill && n(form.supervisorSalary) > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 90px), 1fr))', gap: 8, fontSize: '0.85rem' }}>
-              {bill.rows.map(r => <div key={r.label} style={{ textAlign: 'center', padding: '8px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}><div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{r.label}</div><strong>₹{fmt(r.sup)}</strong></div>)}
+            <div className="housekeeping-bill-calculator-s20">
+              {bill.rows.map(r => <div key={r.label} className="housekeeping-bill-calculator-s21"><div className="housekeeping-bill-calculator-s22">{r.label}</div><strong>₹{fmt(r.sup)}</strong></div>)}
             </div>
           )}
         </div>
@@ -698,7 +698,7 @@ export default function HousekeepingBillCalculator() {
         {/* Common Staff */}
         <div style={sectionStyle}>
           <p style={headingStyle}>👥 Common Staff</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 10 }}>
+          <div className="housekeeping-bill-calculator-s15">
             <Field label="Total Salary (₹)" value={form.commonSalary} onChange={v => handleChange('commonSalary', v)} prefix="₹" />
             {!attendance && (
               <>
@@ -708,22 +708,22 @@ export default function HousekeepingBillCalculator() {
             )}
           </div>
           {bill && n(form.commonSalary) > 0 && (
-            <div style={{ fontSize: '0.83rem', display: 'flex', flexDirection: 'column', gap: 4, padding: '10px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}>
+            <div className="housekeeping-bill-calculator-s23">
               {attendance ? (
                 <>
                   <div>Days present from attendance: <strong>{attendance.common.toFixed(1)} days</strong></div>
-                  <div>Net Payable: <strong style={{ color: '#276749' }}>₹{fmt(bill.comNet)}</strong></div>
+                  <div>Net Payable: <strong className="housekeeping-bill-calculator-s24">₹{fmt(bill.comNet)}</strong></div>
                 </>
               ) : (
                 <>
-                  <div>Net Payable (manual): <strong style={{ color: '#276749' }}>₹{fmt(bill.comNet)}</strong></div>
+                  <div>Net Payable (manual): <strong className="housekeeping-bill-calculator-s24">₹{fmt(bill.comNet)}</strong></div>
                 </>
               )}
             </div>
           )}
           {bill && n(form.commonSalary) > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 90px), 1fr))', gap: 8, fontSize: '0.85rem' }}>
-              {bill.rows.map(r => <div key={r.label} style={{ textAlign: 'center', padding: '8px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}><div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{r.label}</div><strong>₹{fmt(r.com)}</strong></div>)}
+            <div className="housekeeping-bill-calculator-s20">
+              {bill.rows.map(r => <div key={r.label} className="housekeeping-bill-calculator-s21"><div className="housekeeping-bill-calculator-s22">{r.label}</div><strong>₹{fmt(r.com)}</strong></div>)}
             </div>
           )}
         </div>
@@ -733,8 +733,8 @@ export default function HousekeepingBillCalculator() {
           <p style={headingStyle}>🗑️ Garbage</p>
           <Field label="Monthly Garbage Amount (₹)" value={form.garbageTotal} onChange={v => handleChange('garbageTotal', v)} prefix="₹" />
           {bill && n(form.garbageTotal) > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 90px), 1fr))', gap: 8, fontSize: '0.85rem' }}>
-              {bill.rows.map(r => <div key={r.label} style={{ textAlign: 'center', padding: '8px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}><div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{r.label}</div><strong>₹{fmt(r.garb)}</strong></div>)}
+            <div className="housekeeping-bill-calculator-s20">
+              {bill.rows.map(r => <div key={r.label} className="housekeeping-bill-calculator-s21"><div className="housekeeping-bill-calculator-s22">{r.label}</div><strong>₹{fmt(r.garb)}</strong></div>)}
             </div>
           )}
         </div>
@@ -742,21 +742,21 @@ export default function HousekeepingBillCalculator() {
         {/* Tractor */}
         <div style={sectionStyle}>
           <p style={headingStyle}>🚜 Tractor</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 10 }}>
+          <div className="housekeeping-bill-calculator-s15">
             <Field label="Rate per Trip (₹)" value={form.tractorRate} onChange={v => handleChange('tractorRate', v)} prefix="₹" />
             {(form.overrideTractorTrips || !attendance) ? (
               <Field label="No. of Trips" value={form.tractorTrips} onChange={v => handleChange('tractorTrips', v)} />
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.7 }}>No. of Trips (Auto)</span>
-                <div style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.15)', background: 'rgba(0,0,0,0.05)', fontSize: '0.95rem', fontWeight: 600 }}>
+              <div className="housekeeping-bill-calculator-s1">
+                <span className="housekeeping-bill-calculator-s2">No. of Trips (Auto)</span>
+                <div className="housekeeping-bill-calculator-s25">
                   {attendance.tractorTrip} trips (from Attendance)
                 </div>
               </div>
             )}
           </div>
           {attendance && (
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.85rem', cursor: 'pointer', marginTop: 4 }}>
+            <label className="housekeeping-bill-calculator-s26">
               <input
                 type="checkbox"
                 checked={!!form.overrideTractorTrips}
@@ -767,12 +767,12 @@ export default function HousekeepingBillCalculator() {
           )}
           {bill && (
             <>
-              <div style={{ fontSize: '0.83rem', padding: '8px 10px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}>
+              <div className="housekeeping-bill-calculator-s27">
                 Total: ₹{form.tractorRate} × {attendance && !form.overrideTractorTrips ? attendance.tractorTrip : (form.tractorTrips !== '' ? n(form.tractorTrips) : 0)} trips = <strong>₹{fmt(bill.tractTotal)}</strong>
               </div>
               {bill.tractTotal > 0 && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 90px), 1fr))', gap: 8, fontSize: '0.85rem' }}>
-                  {bill.rows.map(r => <div key={r.label} style={{ textAlign: 'center', padding: '8px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}><div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{r.label}</div><strong>₹{fmt(r.tract)}</strong></div>)}
+                <div className="housekeeping-bill-calculator-s20">
+                  {bill.rows.map(r => <div key={r.label} className="housekeeping-bill-calculator-s21"><div className="housekeeping-bill-calculator-s22">{r.label}</div><strong>₹{fmt(r.tract)}</strong></div>)}
                 </div>
               )}
             </>
@@ -784,8 +784,8 @@ export default function HousekeepingBillCalculator() {
           <p style={headingStyle}>💧 STP Operator</p>
           <Field label="STP Operator Monthly Salary (₹)" value={form.stpSalary} onChange={v => handleChange('stpSalary', v)} prefix="₹" />
           {bill && n(form.stpSalary) > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 90px), 1fr))', gap: 8, fontSize: '0.85rem' }}>
-              {bill.rows.map(r => <div key={r.label} style={{ textAlign: 'center', padding: '8px', background: 'rgba(0,0,0,0.04)', borderRadius: 8 }}><div style={{ opacity: 0.6, fontSize: '0.75rem' }}>{r.label}</div><strong>₹{fmt(r.stp)}</strong></div>)}
+            <div className="housekeeping-bill-calculator-s20">
+              {bill.rows.map(r => <div key={r.label} className="housekeeping-bill-calculator-s21"><div className="housekeeping-bill-calculator-s22">{r.label}</div><strong>₹{fmt(r.stp)}</strong></div>)}
             </div>
           )}
         </div>
@@ -794,10 +794,10 @@ export default function HousekeepingBillCalculator() {
       {/* Summary table */}
       {bill && (
         <div className="table-card">
-          <div style={{ padding: '16px 20px 0' }}>
-            <h3 style={{ margin: '4px 0 16px' }}>Total per Building — {formatLongMonth(month)}</h3>
+          <div className="housekeeping-bill-calculator-s28">
+            <h3 className="housekeeping-bill-calculator-s29">Total per Building — {formatLongMonth(month)}</h3>
             {!attendance && (
-              <div style={{ background: '#fff7ed', border: '1px solid #ffedd5', color: '#9a3412', padding: '12px 16px', borderRadius: 10, marginBottom: 16, fontSize: '0.9rem' }}>
+              <div className="housekeeping-bill-calculator-s30">
                 ⚠️ <strong>Attendance Data Missing:</strong> Please save the Attendance Register for {formatLongMonth(month)} first to get accurate pro-rated wages.
               </div>
             )}
@@ -808,25 +808,25 @@ export default function HousekeepingBillCalculator() {
             <table className="attendance-table attendance-table--bill">
               <thead>
                 <tr>
-                  <th style={{ textAlign: 'left' }}>Building</th>
-                  <th style={{ textAlign: 'right' }}>Days Present</th>
+                  <th className="housekeeping-bill-calculator-s31">Building</th>
+                  <th className="housekeeping-bill-calculator-s32">Days Present</th>
                   {['Wage', 'Supervisor', 'Common', 'Garbage', 'Tractor', 'STP'].map(h => (
-                    <th key={h} style={{ textAlign: 'right' }}>{h}</th>
+                    <th key={h} className="housekeeping-bill-calculator-s32">{h}</th>
                   ))}
-                  <th style={{ textAlign: 'right', minWidth: '120px' }}>Total (₹)</th>
+                  <th className="housekeeping-bill-calculator-s33">Total (₹)</th>
                 </tr>
               </thead>
               <tbody>
                 {bill.rows.map((r, i) => (
                   <tr key={r.label}>
-                    <td style={{ fontWeight: 700, textAlign: 'left' }}>{r.label}</td>
-                    <td style={{ textAlign: 'right', fontWeight: 600, color: '#0F3D35' }}>{r.days.toFixed(1)} days</td>
+                    <td className="housekeeping-bill-calculator-s34">{r.label}</td>
+                    <td className="housekeeping-bill-calculator-s35">{r.days.toFixed(1)} days</td>
                     {[r.wage, r.sup, r.com, r.garb, r.tract, r.stp].map((v, j) => (
-                      <td key={j} style={{ textAlign: 'right' }}>
+                      <td key={j} className="housekeeping-bill-calculator-s32">
                         ₹{fmt(v)}
                       </td>
                     ))}
-                    <td style={{ textAlign: 'right', color: '#1a6b3c', fontWeight: 700 }}>
+                    <td className="housekeeping-bill-calculator-s36">
                       ₹{fmt(r.total)}
                     </td>
                   </tr>
@@ -834,36 +834,36 @@ export default function HousekeepingBillCalculator() {
               </tbody>
               <tfoot>
                 <tr>
-                  <th style={{ textAlign: 'left' }}>Grand Total</th>
+                  <th className="housekeeping-bill-calculator-s31">Grand Total</th>
                   <th colSpan={7} />
-                  <th style={{ textAlign: 'right', color: '#1a6b3c', fontSize: '1.1rem', fontWeight: 800, borderTop: '2px solid #1a6b3c' }}>₹{fmt(bill.grandTotal)}</th>
+                  <th className="housekeeping-bill-calculator-s37">₹{fmt(bill.grandTotal)}</th>
                 </tr>
               </tfoot>
             </table>
           </div>
 
           {/* Mobile: stacked card view */}
-          <div className="hk-bill-cards-mobile" style={{ display: 'none' }}>
+          <div className="hk-bill-cards-mobile housekeeping-bill-calculator-s38">
             {bill.rows.map(r => (
-              <div key={r.label} style={{ padding: '14px 16px', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-                <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: 10, color: '#196c6c' }}>{r.label}</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 16px', fontSize: '0.85rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Wage</span><strong>₹{fmt(r.wage)}</strong></div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Supervisor</span><strong>₹{fmt(r.sup)}</strong></div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Common</span><strong>₹{fmt(r.com)}</strong></div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Garbage</span><strong>₹{fmt(r.garb)}</strong></div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>Tractor</span><strong>₹{fmt(r.tract)}</strong></div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ opacity: 0.6 }}>STP</span><strong>₹{fmt(r.stp)}</strong></div>
+              <div key={r.label} className="housekeeping-bill-calculator-s39">
+                <div className="housekeeping-bill-calculator-s40">{r.label}</div>
+                <div className="housekeeping-bill-calculator-s41">
+                  <div className="housekeeping-bill-calculator-s42"><span className="housekeeping-bill-calculator-s43">Wage</span><strong>₹{fmt(r.wage)}</strong></div>
+                  <div className="housekeeping-bill-calculator-s42"><span className="housekeeping-bill-calculator-s43">Supervisor</span><strong>₹{fmt(r.sup)}</strong></div>
+                  <div className="housekeeping-bill-calculator-s42"><span className="housekeeping-bill-calculator-s43">Common</span><strong>₹{fmt(r.com)}</strong></div>
+                  <div className="housekeeping-bill-calculator-s42"><span className="housekeeping-bill-calculator-s43">Garbage</span><strong>₹{fmt(r.garb)}</strong></div>
+                  <div className="housekeeping-bill-calculator-s42"><span className="housekeeping-bill-calculator-s43">Tractor</span><strong>₹{fmt(r.tract)}</strong></div>
+                  <div className="housekeeping-bill-calculator-s42"><span className="housekeeping-bill-calculator-s43">STP</span><strong>₹{fmt(r.stp)}</strong></div>
                 </div>
-                <div style={{ marginTop: 10, paddingTop: 8, borderTop: '1px dashed rgba(0,0,0,0.1)', display: 'flex', justifyContent: 'space-between', fontSize: '1rem' }}>
-                  <span style={{ fontWeight: 700 }}>Total</span>
-                  <strong style={{ color: '#1a6b3c' }}>₹{fmt(r.total)}</strong>
+                <div className="housekeeping-bill-calculator-s44">
+                  <span className="housekeeping-bill-calculator-s45">Total</span>
+                  <strong className="housekeeping-bill-calculator-s46">₹{fmt(r.total)}</strong>
                 </div>
               </div>
             ))}
-            <div style={{ padding: '16px', background: 'rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '0 0 14px 14px' }}>
-              <span style={{ fontWeight: 700, fontSize: '1.05rem' }}>Grand Total</span>
-              <strong style={{ color: '#1a6b3c', fontSize: '1.2rem' }}>₹{fmt(bill.grandTotal)}</strong>
+            <div className="housekeeping-bill-calculator-s47">
+              <span className="housekeeping-bill-calculator-s48">Grand Total</span>
+              <strong className="housekeeping-bill-calculator-s49">₹{fmt(bill.grandTotal)}</strong>
             </div>
           </div>
         </div>

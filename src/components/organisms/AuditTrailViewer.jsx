@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { fetchAuditLogs, AUDIT_ACTIONS } from '../../services/auditService.js';
 import { ROLES } from '../../services/rbacService.js';
+import './AuditTrailViewer.css';
+
 
 export default function AuditTrailViewer({ user, userRole = ROLES.ADMIN }) {
   const [logs, setLogs] = useState([]);
@@ -67,14 +69,14 @@ export default function AuditTrailViewer({ user, userRole = ROLES.ADMIN }) {
   };
 
   return (
-    <div className="section-card" style={{ padding: '24px', borderRadius: '16px', background: 'white' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
+    <div className="section-card audit-trail-viewer-s1">
+      <div className="audit-trail-viewer-s2">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '1.8rem' }}>🛡️</span>
+          <div className="audit-trail-viewer-s3">
+            <span className="audit-trail-viewer-s4">🛡️</span>
             <div>
-              <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0b2b26' }}>Society Security & Audit Trail</h2>
-              <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#5f665f' }}>
+              <h2 className="audit-trail-viewer-s5">Society Security & Audit Trail</h2>
+              <p className="audit-trail-viewer-s6">
                 Immutable ledger of all society actions, modifications, financial transactions, and user logins
               </p>
             </div>
@@ -84,30 +86,27 @@ export default function AuditTrailViewer({ user, userRole = ROLES.ADMIN }) {
         <button
           onClick={loadLogs}
           disabled={isLoading}
-          className="button-secondary"
-          style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '8px' }}
+          className="button-secondary audit-trail-viewer-s7"
         >
           <span>🔄</span> {isLoading ? 'Refreshing...' : 'Refresh Logs'}
         </button>
       </div>
 
       {/* Filter Bar */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px', background: '#f8fafc', padding: '16px', borderRadius: '12px' }}>
-        <div style={{ flex: '1 1 200px' }}>
+      <div className="audit-trail-viewer-s8">
+        <div className="audit-trail-viewer-s9">
           <input
             type="text"
-            className="attendance-register-input"
-            style={{ width: '100%', textAlign: 'left', padding: '8px 12px' }}
+            className="attendance-register-input audit-trail-viewer-s10"
             placeholder="Search by user, module, or record ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        <div style={{ flex: '0 1 180px' }}>
+        <div className="audit-trail-viewer-s11">
           <select
-            className="attendance-register-input"
-            style={{ width: '100%', padding: '8px 12px' }}
+            className="attendance-register-input audit-trail-viewer-s12"
             value={selectedAction}
             onChange={(e) => setSelectedAction(e.target.value)}
           >
@@ -118,10 +117,9 @@ export default function AuditTrailViewer({ user, userRole = ROLES.ADMIN }) {
           </select>
         </div>
 
-        <div style={{ flex: '0 1 180px' }}>
+        <div className="audit-trail-viewer-s11">
           <select
-            className="attendance-register-input"
-            style={{ width: '100%', padding: '8px 12px' }}
+            className="attendance-register-input audit-trail-viewer-s12"
             value={selectedModule}
             onChange={(e) => setSelectedModule(e.target.value)}
           >
@@ -134,24 +132,24 @@ export default function AuditTrailViewer({ user, userRole = ROLES.ADMIN }) {
 
       {/* Logs Table */}
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>Querying audit entries...</div>
+        <div className="audit-trail-viewer-s13">Querying audit entries...</div>
       ) : filteredLogs.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px', background: '#f1f5f9', borderRadius: '12px', color: '#64748b' }}>
-          <span style={{ fontSize: '2rem', display: 'block', marginBottom: '8px' }}>📜</span>
+        <div className="audit-trail-viewer-s14">
+          <span className="audit-trail-viewer-s15">📜</span>
           <strong>No audit records found matching your filters.</strong>
         </div>
       ) : (
-        <div style={{ overflowX: 'auto', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '12px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+        <div className="audit-trail-viewer-s16">
+          <table className="audit-trail-viewer-s17">
             <thead>
-              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid rgba(0,0,0,0.06)' }}>
-                <th style={{ padding: '12px 14px' }}>Timestamp</th>
-                <th style={{ padding: '12px 14px' }}>User / Role</th>
-                <th style={{ padding: '12px 14px' }}>Module</th>
-                <th style={{ padding: '12px 14px' }}>Action</th>
-                <th style={{ padding: '12px 14px' }}>Record ID</th>
-                <th style={{ padding: '12px 14px' }}>Notes / Changes</th>
-                <th style={{ padding: '12px 14px', textAlign: 'right' }}>Details</th>
+              <tr className="audit-trail-viewer-s18">
+                <th className="audit-trail-viewer-s19">Timestamp</th>
+                <th className="audit-trail-viewer-s19">User / Role</th>
+                <th className="audit-trail-viewer-s19">Module</th>
+                <th className="audit-trail-viewer-s19">Action</th>
+                <th className="audit-trail-viewer-s19">Record ID</th>
+                <th className="audit-trail-viewer-s19">Notes / Changes</th>
+                <th className="audit-trail-viewer-s20">Details</th>
               </tr>
             </thead>
             <tbody>
@@ -162,62 +160,48 @@ export default function AuditTrailViewer({ user, userRole = ROLES.ADMIN }) {
 
                 return (
                   <React.Fragment key={log.id}>
-                    <tr style={{ borderBottom: '1px solid rgba(0,0,0,0.05)', background: isExpanded ? '#f8fafc' : 'transparent' }}>
-                      <td style={{ padding: '12px 14px', color: '#64748b', whiteSpace: 'nowrap' }}>{dateStr}</td>
-                      <td style={{ padding: '12px 14px', fontWeight: 600 }}>
-                        <div style={{ color: '#0f172a' }}>{log.userEmail || 'System'}</div>
-                        <div style={{ fontSize: '0.72rem', color: '#0369a1', fontWeight: 700 }}>{log.userRole}</div>
+                    <tr className="audit-trail-viewer-s21" style={{ background: isExpanded ? '#f8fafc' : 'transparent' }}>
+                      <td className="audit-trail-viewer-s22">{dateStr}</td>
+                      <td className="audit-trail-viewer-s23">
+                        <div className="audit-trail-viewer-s24">{log.userEmail || 'System'}</div>
+                        <div className="audit-trail-viewer-s25">{log.userRole}</div>
                       </td>
-                      <td style={{ padding: '12px 14px', fontWeight: 600 }}>{log.module}</td>
-                      <td style={{ padding: '12px 14px' }}>
-                        <span style={{
-                          padding: '3px 8px',
-                          borderRadius: '6px',
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          background: badge.bg,
-                          color: badge.text
-                        }}>
+                      <td className="audit-trail-viewer-s23">{log.module}</td>
+                      <td className="audit-trail-viewer-s19">
+                        <span className="audit-trail-viewer-s26" style={{ background: badge.bg, color: badge.text }}>
                           {log.action}
                         </span>
                       </td>
-                      <td style={{ padding: '12px 14px', fontFamily: 'monospace', color: '#475569' }}>{log.recordId || '-'}</td>
-                      <td style={{ padding: '12px 14px', color: '#334155' }}>{log.notes || '-'}</td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right' }}>
+                      <td className="audit-trail-viewer-s27">{log.recordId || '-'}</td>
+                      <td className="audit-trail-viewer-s28">{log.notes || '-'}</td>
+                      <td className="audit-trail-viewer-s20">
                         {(log.previousValue || log.newValue) ? (
                           <button
                             onClick={() => setExpandedLogId(isExpanded ? null : log.id)}
-                            style={{
-                              background: 'none',
-                              border: '1px solid #cbd5e1',
-                              padding: '4px 8px',
-                              borderRadius: '6px',
-                              fontSize: '0.75rem',
-                              cursor: 'pointer'
-                            }}
+                            className="audit-trail-viewer-s29"
                           >
                             {isExpanded ? 'Hide Diff' : 'View Diff'}
                           </button>
                         ) : (
-                          <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>-</span>
+                          <span className="audit-trail-viewer-s30">-</span>
                         )}
                       </td>
                     </tr>
 
                     {/* Diff viewer row */}
                     {isExpanded && (
-                      <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                        <td colSpan={7} style={{ padding: '16px 20px' }}>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                            <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', padding: '12px' }}>
-                              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#991b1b', marginBottom: '6px' }}>PREVIOUS STATE</div>
-                              <pre style={{ margin: 0, fontSize: '0.75rem', overflowX: 'auto', color: '#7f1d1d' }}>
+                      <tr className="audit-trail-viewer-s31">
+                        <td colSpan={7} className="audit-trail-viewer-s32">
+                          <div className="audit-trail-viewer-s33">
+                            <div className="audit-trail-viewer-s34">
+                              <div className="audit-trail-viewer-s35">PREVIOUS STATE</div>
+                              <pre className="audit-trail-viewer-s36">
                                 {JSON.stringify(log.previousValue, null, 2) || 'None'}
                               </pre>
                             </div>
-                            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '12px' }}>
-                              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#166534', marginBottom: '6px' }}>NEW STATE</div>
-                              <pre style={{ margin: 0, fontSize: '0.75rem', overflowX: 'auto', color: '#14532d' }}>
+                            <div className="audit-trail-viewer-s37">
+                              <div className="audit-trail-viewer-s38">NEW STATE</div>
+                              <pre className="audit-trail-viewer-s39">
                                 {JSON.stringify(log.newValue, null, 2) || 'None'}
                               </pre>
                             </div>

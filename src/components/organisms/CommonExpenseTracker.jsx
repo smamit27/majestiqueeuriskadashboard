@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import './CommonExpenseTracker.css';
+
 
 const COMMON_EXPENSE_DOC_ID = 'dashboard';
 
@@ -213,36 +215,18 @@ function buildDonutGradient(items) {
 function SummaryCard({ label, value, accent, caption }) {
   return (
     <div
-      className="accounting-summary-card"
-      style={{
-        padding: '22px',
-        borderRadius: '20px',
-        background: '#fff',
-        border: '1px solid rgba(61, 63, 52, 0.08)'
-      }}
+      className="accounting-summary-card common-expense-tracker-s1"
     >
       <div
-        style={{
-          width: '48px',
-          height: '48px',
-          borderRadius: '14px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: accent.soft,
-          color: accent.solid,
-          fontWeight: 800,
-          fontSize: '0.88rem',
-          marginBottom: '14px'
-        }}
+        className="common-expense-tracker-s2" style={{ background: accent.soft, color: accent.solid }}
       >
         {label.slice(0, 2).toUpperCase()}
       </div>
-      <p className="eyebrow" style={{ margin: '0 0 6px 0' }}>
+      <p className="eyebrow common-expense-tracker-s3">
         {label}
       </p>
-      <p style={{ margin: 0, fontSize: '1.8rem', fontWeight: 800, color: '#101828' }}>{value}</p>
-      <p style={{ margin: '10px 0 0 0', fontSize: '0.9rem', color: '#667085' }}>{caption}</p>
+      <p className="common-expense-tracker-s4">{value}</p>
+      <p className="common-expense-tracker-s5">{caption}</p>
     </div>
   );
 }
@@ -411,20 +395,16 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
   return (
     <div className="accounting-shell">
       <div
-        className="dashboard-hero-card"
-        style={{
-          alignItems: 'flex-start',
-          background: 'linear-gradient(135deg, #0B2B26 0%, #196C6C 58%, #C49B4F 100%)'
-        }}
+        className="dashboard-hero-card common-expense-tracker-s6"
       >
-        <div style={{ flex: '1 1 480px' }}>
-          <p className="eyebrow" style={{ color: 'rgba(255,255,255,0.76)', marginBottom: '8px' }}>
+        <div className="common-expense-tracker-s7">
+          <p className="eyebrow common-expense-tracker-s8">
             Shared Society Ledger
           </p>
-          <h2 style={{ margin: 0, color: '#fff', fontSize: '1.9rem', lineHeight: 1.1 }}>
+          <h2 className="common-expense-tracker-s9">
             Common Expense Tracker
           </h2>
-          <p style={{ margin: '14px 0 0 0', color: 'rgba(255,255,255,0.82)', maxWidth: '760px', lineHeight: 1.6 }}>
+          <p className="common-expense-tracker-s10">
             April to June 2026 common-expense view with monthly collections, running balances, and
             shared vendor payments. The ledger opening balances are preserved so every closing figure
             matches the source entries.
@@ -432,55 +412,27 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
         </div>
 
         <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '12px',
-            alignItems: 'center',
-            justifyContent: 'flex-end'
-          }}
+          className="common-expense-tracker-s11"
         >
           <div
-            style={{
-              padding: '10px 14px',
-              borderRadius: '999px',
-              background: 'rgba(255,255,255,0.16)',
-              color: '#fff',
-              fontSize: '0.88rem',
-              fontWeight: 700
-            }}
+            className="common-expense-tracker-s12"
           >
             {isAdmin ? 'Admin view' : 'Read only'}
           </div>
 
           <label
             htmlFor="expense-focus-month"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '10px 14px',
-              borderRadius: '14px',
-              background: 'rgba(255,255,255,0.12)',
-              color: '#fff'
-            }}
+            className="common-expense-tracker-s13"
           >
-            <span style={{ fontSize: '0.85rem', fontWeight: 700 }}>Focus month</span>
+            <span className="common-expense-tracker-s14">Focus month</span>
             <select
               id="expense-focus-month"
               value={activeMonthId}
               onChange={(event) => setActiveMonthId(event.target.value)}
-              style={{
-                background: 'transparent',
-                color: '#fff',
-                border: 'none',
-                outline: 'none',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
+              className="common-expense-tracker-s15"
             >
               {monthlySummaries.map((month) => (
-                <option key={month.id} value={month.id} style={{ color: '#101828' }}>
+                <option key={month.id} value={month.id} className="common-expense-tracker-s16">
                   {month.label}
                 </option>
               ))}
@@ -490,15 +442,7 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
           <button
             type="button"
             onClick={handleExport}
-            style={{
-              border: 'none',
-              background: '#fff',
-              color: '#0B2B26',
-              padding: '12px 18px',
-              borderRadius: '14px',
-              fontWeight: 800,
-              cursor: 'pointer'
-            }}
+            className="common-expense-tracker-s17"
           >
             Export Excel
           </button>
@@ -506,11 +450,7 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
       </div>
 
       <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-          gap: '18px'
-        }}
+        className="common-expense-tracker-s18"
       >
         <SummaryCard
           label="Total Collection"
@@ -539,140 +479,88 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
       </div>
 
       <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.8fr) minmax(300px, 1fr)',
-          gap: '22px',
-          alignItems: 'start'
-        }}
+        className="common-expense-tracker-s19"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+        <div className="common-expense-tracker-s20">
           {monthlySummaries.map((month) => {
             const monthBalanceTone = getBalanceTone(month.closingBalance);
 
             return (
               <div
                 key={month.id}
-                className="table-card"
-                style={{
-                  background: '#fff',
-                  borderRadius: '22px',
-                  border:
+                className="table-card common-expense-tracker-s21"
+                style={{ border:
                     month.id === activeMonthId
                       ? '2px solid rgba(25, 108, 108, 0.25)'
-                      : '1px solid rgba(61, 63, 52, 0.08)',
-                  boxShadow:
+                      : '1px solid rgba(61, 63, 52, 0.08)', boxShadow:
                     month.id === activeMonthId
                       ? '0 16px 38px rgba(25, 108, 108, 0.12)'
-                      : '0 12px 28px rgba(16, 24, 40, 0.06)'
-                }}
+                      : '0 12px 28px rgba(16, 24, 40, 0.06)' }}
               >
                 <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    gap: '18px',
-                    flexWrap: 'wrap',
-                    padding: '22px 24px 18px',
-                    borderBottom: '1px solid rgba(61, 63, 52, 0.08)'
-                  }}
+                  className="common-expense-tracker-s22"
                 >
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                      <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#101828' }}>{month.label}</h3>
+                    <div className="common-expense-tracker-s23">
+                      <h3 className="common-expense-tracker-s24">{month.label}</h3>
                       <button
                         type="button"
                         onClick={() => setActiveMonthId(month.id)}
-                        style={{
-                          border: 'none',
-                          background: month.id === activeMonthId ? '#0B2B26' : '#F2F4F7',
-                          color: month.id === activeMonthId ? '#fff' : '#344054',
-                          padding: '6px 12px',
-                          borderRadius: '999px',
-                          cursor: 'pointer',
-                          fontWeight: 700,
-                          fontSize: '0.8rem'
-                        }}
+                        className="common-expense-tracker-s25" style={{ background: month.id === activeMonthId ? '#0B2B26' : '#F2F4F7', color: month.id === activeMonthId ? '#fff' : '#344054' }}
                       >
                         {month.id === activeMonthId ? 'Focused' : 'Focus'}
                       </button>
                     </div>
-                    <p style={{ margin: '10px 0 0 0', fontSize: '0.92rem', color: '#667085' }}>{month.note}</p>
+                    <p className="common-expense-tracker-s26">{month.note}</p>
                   </div>
 
                   <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                      gap: '12px',
-                      flex: '1 1 360px'
-                    }}
+                    className="common-expense-tracker-s27"
                   >
                     <div
-                      style={{
-                        background: '#F9FAFB',
-                        borderRadius: '16px',
-                        padding: '14px 16px'
-                      }}
+                      className="common-expense-tracker-s28"
                     >
-                      <p className="eyebrow" style={{ margin: 0 }}>
+                      <p className="eyebrow common-expense-tracker-s29">
                         Collection received
                       </p>
-                      <p style={{ margin: '8px 0 0 0', fontWeight: 800, fontSize: '1.1rem' }}>
+                      <p className="common-expense-tracker-s30">
                         {formatCurrency(month.collectionAmount ?? month.freshCollection ?? 0)}
                       </p>
-                      <p style={{ margin: '6px 0 0 0', fontSize: '0.82rem', color: '#667085' }}>
+                      <p className="common-expense-tracker-s31">
                         {formatDate(month.collectionDate || month.openingDate)}
                       </p>
                     </div>
                     <div
-                      style={{
-                        background: '#F9FAFB',
-                        borderRadius: '16px',
-                        padding: '14px 16px'
-                      }}
+                      className="common-expense-tracker-s28"
                     >
-                      <p className="eyebrow" style={{ margin: 0 }}>
+                      <p className="eyebrow common-expense-tracker-s29">
                         Opening balance
                       </p>
-                      <p style={{ margin: '8px 0 0 0', fontWeight: 800, fontSize: '1.1rem' }}>
+                      <p className="common-expense-tracker-s30">
                         {formatCurrency(month.openingBalance)}
                       </p>
-                      <p style={{ margin: '6px 0 0 0', fontSize: '0.82rem', color: '#667085' }}>
+                      <p className="common-expense-tracker-s31">
                         Available after carry forward
                       </p>
                     </div>
                     <div
-                      style={{
-                        background: '#F9FAFB',
-                        borderRadius: '16px',
-                        padding: '14px 16px'
-                      }}
+                      className="common-expense-tracker-s28"
                     >
-                      <p className="eyebrow" style={{ margin: 0 }}>
+                      <p className="eyebrow common-expense-tracker-s29">
                         Total spent
                       </p>
-                      <p style={{ margin: '8px 0 0 0', fontWeight: 800, fontSize: '1.1rem', color: '#B42318' }}>
+                      <p className="common-expense-tracker-s32">
                         {formatCurrency(month.totalExpense)}
                       </p>
                     </div>
                     <div
-                      style={{
-                        background: monthBalanceTone.background,
-                        borderRadius: '16px',
-                        padding: '14px 16px'
-                      }}
+                      className="common-expense-tracker-s33" style={{ background: monthBalanceTone.background }}
                     >
-                      <p className="eyebrow" style={{ margin: 0 }}>
+                      <p className="eyebrow common-expense-tracker-s29">
                         Closing balance
                       </p>
                       <p
-                        style={{
-                          margin: '8px 0 0 0',
-                          fontWeight: 800,
-                          fontSize: '1.1rem',
-                          color: monthBalanceTone.color
-                        }}
+                        className="common-expense-tracker-s30" style={{ color: monthBalanceTone.color }}
                       >
                         {formatCurrency(month.closingBalance)}
                       </p>
@@ -680,75 +568,67 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
                   </div>
                 </div>
 
-                <div style={{ padding: '16px 24px', borderBottom: '1px solid rgba(61, 63, 52, 0.04)' }}>
+                <div className="common-expense-tracker-s34">
                   {isAdmin && (
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <div className="common-expense-tracker-s35">
                       <button
                         type="button"
                         onClick={() => setAddingFor(month.id === addingFor ? null : month.id)}
-                        style={{
-                          border: 'none',
-                          background: '#0B2B26',
-                          color: '#fff',
-                          padding: '8px 12px',
-                          borderRadius: '12px',
-                          cursor: 'pointer',
-                          fontWeight: 700
-                        }}
+                        className="common-expense-tracker-s36"
                       >
                         {addingFor === month.id ? 'Cancel' : 'Add Expense'}
                       </button>
                     </div>
                   )}
                   {addingFor === month.id && (
-                    <div style={{ marginTop: '12px', display: 'grid', gap: '8px' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                    <div className="common-expense-tracker-s37">
+                      <div className="common-expense-tracker-s38">
                         <input
                           type="date"
                           value={newExpense.date}
                           onChange={(e) => setNewExpense((s) => ({ ...s, date: e.target.value }))}
-                          style={{ padding: '8px', borderRadius: '8px', border: '1px solid #E6E9EE', flex: 1 }}
+                          className="common-expense-tracker-s39"
                         />
                         <input
                           placeholder="Vendor"
                           value={newExpense.vendor}
                           onChange={(e) => setNewExpense((s) => ({ ...s, vendor: e.target.value }))}
-                          style={{ padding: '8px', borderRadius: '8px', border: '1px solid #E6E9EE', flex: 1 }}
+                          className="common-expense-tracker-s39"
                         />
                       </div>
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                      <div className="common-expense-tracker-s38">
                         <input
                           placeholder="Remark"
                           value={newExpense.remark}
                           onChange={(e) => setNewExpense((s) => ({ ...s, remark: e.target.value }))}
-                          style={{ padding: '8px', borderRadius: '8px', border: '1px solid #E6E9EE', flex: 2 }}
+                          className="common-expense-tracker-s40"
                         />
                         <input
                           placeholder="Category"
                           value={newExpense.category}
                           onChange={(e) => setNewExpense((s) => ({ ...s, category: e.target.value }))}
-                          style={{ padding: '8px', borderRadius: '8px', border: '1px solid #E6E9EE', flex: 1 }}
+                          className="common-expense-tracker-s39"
                         />
                         <input
                           placeholder="Amount"
                           type="number"
                           value={newExpense.amount}
                           onChange={(e) => setNewExpense((s) => ({ ...s, amount: e.target.value }))}
-                          style={{ padding: '8px', borderRadius: '8px', border: '1px solid #E6E9EE', width: '140px' }}
+                          className="common-expense-tracker-s41"
                         />
                       </div>
-                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                      <div className="common-expense-tracker-s42">
                         <button
                           type="button"
                           onClick={() => setAddingFor(null)}
-                          style={{ padding: '8px 12px', borderRadius: '10px', border: '1px solid #E6E9EE', background: '#fff' }}
+                          className="common-expense-tracker-s43"
                         >
                           Cancel
                         </button>
                         <button
                           type="button"
                           onClick={() => handleAddExpense(month.id)}
-                          style={{ padding: '8px 12px', borderRadius: '10px', background: '#0B6E4F', color: '#fff', border: 'none' }}
+                          className="common-expense-tracker-s44"
                         >
                           Save
                         </button>
@@ -757,7 +637,7 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
                   )}
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
+                <div className="common-expense-tracker-s45">
                   <table>
                     <thead>
                       <tr>
@@ -765,8 +645,8 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
                         <th>Vendor</th>
                         <th>Remark</th>
                         <th>Category</th>
-                        <th style={{ textAlign: 'right' }}>Expense</th>
-                        <th style={{ textAlign: 'right' }}>Balance After</th>
+                        <th className="common-expense-tracker-s46">Expense</th>
+                        <th className="common-expense-tracker-s46">Balance After</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -783,36 +663,17 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
                             <td>{expense.remark}</td>
                             <td>
                               <span
-                                style={{
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  padding: '6px 10px',
-                                  borderRadius: '999px',
-                                  background: chip.soft,
-                                  color: chip.solid,
-                                  fontWeight: 700,
-                                  marginTop: 0
-                                }}
+                                className="common-expense-tracker-s47" style={{ background: chip.soft, color: chip.solid }}
                               >
                                 {expense.category}
                               </span>
                             </td>
-                            <td style={{ textAlign: 'right', fontWeight: 700, color: '#101828' }}>
+                            <td className="common-expense-tracker-s48">
                               {formatCurrency(expense.amount)}
                             </td>
-                            <td style={{ textAlign: 'right' }}>
+                            <td className="common-expense-tracker-s46">
                               <span
-                                style={{
-                                  display: 'inline-flex',
-                                  justifyContent: 'center',
-                                  minWidth: '110px',
-                                  padding: '6px 10px',
-                                  borderRadius: '999px',
-                                  background: balanceTone.background,
-                                  color: balanceTone.color,
-                                  fontWeight: 800,
-                                  marginTop: 0
-                                }}
+                                className="common-expense-tracker-s49" style={{ background: balanceTone.background, color: balanceTone.color }}
                               >
                                 {formatCurrency(expense.balanceAfter)}
                               </span>
@@ -824,8 +685,8 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
                     <tfoot className="accounting-table-footer">
                       <tr>
                         <td colSpan={4}>Monthly total</td>
-                        <td style={{ textAlign: 'right' }}>{formatCurrency(month.totalExpense)}</td>
-                        <td style={{ textAlign: 'right' }}>{formatCurrency(month.closingBalance)}</td>
+                        <td className="common-expense-tracker-s46">{formatCurrency(month.totalExpense)}</td>
+                        <td className="common-expense-tracker-s46">{formatCurrency(month.closingBalance)}</td>
                       </tr>
                     </tfoot>
                   </table>
@@ -835,75 +696,59 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
           })}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+        <div className="common-expense-tracker-s20">
           <div
-            className="accounting-summary-card"
-            style={{ borderRadius: '22px', padding: '24px', background: '#fff' }}
+            className="accounting-summary-card common-expense-tracker-s50"
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', alignItems: 'flex-start' }}>
+            <div className="common-expense-tracker-s51">
               <div>
-                <p className="eyebrow" style={{ margin: 0 }}>
+                <p className="eyebrow common-expense-tracker-s29">
                   Overall Summary (3 Months)
                 </p>
-                <h3 style={{ margin: '6px 0 0 0', fontSize: '1.35rem', color: '#101828' }}>
+                <h3 className="common-expense-tracker-s52">
                   Focus: {activeMonth.label}
                 </h3>
               </div>
               <div
-                style={{
-                  padding: '8px 12px',
-                  borderRadius: '999px',
-                  background: activeBalanceTone.background,
-                  color: activeBalanceTone.color,
-                  fontWeight: 800
-                }}
+                className="common-expense-tracker-s53" style={{ background: activeBalanceTone.background, color: activeBalanceTone.color }}
               >
                 {formatCurrency(activeMonth.closingBalance)}
               </div>
             </div>
 
-            <div style={{ display: 'grid', gap: '14px', marginTop: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475467' }}>
+            <div className="common-expense-tracker-s54">
+              <div className="common-expense-tracker-s55">
                 <span>Total collection</span>
-                <strong style={{ color: '#101828' }}>{formatCurrency(overallSummary.totalCollection)}</strong>
+                <strong className="common-expense-tracker-s16">{formatCurrency(overallSummary.totalCollection)}</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475467' }}>
+              <div className="common-expense-tracker-s55">
                 <span>Total expense</span>
-                <strong style={{ color: '#101828' }}>{formatCurrency(overallSummary.totalExpense)}</strong>
+                <strong className="common-expense-tracker-s16">{formatCurrency(overallSummary.totalExpense)}</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475467' }}>
+              <div className="common-expense-tracker-s55">
                 <span>Ledger balance</span>
                 <strong style={{ color: activeBalanceTone.color }}>{formatCurrency(overallSummary.closingBalance)}</strong>
               </div>
             </div>
 
             <div
-              style={{
-                marginTop: '18px',
-                padding: '14px 16px',
-                borderRadius: '16px',
-                background: '#F9FAFB',
-                color: '#475467',
-                fontSize: '0.92rem',
-                lineHeight: 1.5
-              }}
+              className="common-expense-tracker-s56"
             >
               Carry-forward before April already reflected in the ledger opening balance:
               {' '}
-              <strong style={{ color: '#101828' }}>{formatSignedCurrency(-overallSummary.openingAdjustment)}</strong>
+              <strong className="common-expense-tracker-s16">{formatSignedCurrency(-overallSummary.openingAdjustment)}</strong>
             </div>
           </div>
 
           <div
-            className="accounting-summary-card"
-            style={{ borderRadius: '22px', padding: '24px', background: '#fff' }}
+            className="accounting-summary-card common-expense-tracker-s50"
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '12px' }}>
-              <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#101828' }}>Monthly Expense Overview</h3>
-              <span style={{ fontSize: '0.86rem', color: '#667085' }}>Tap a bar to focus</span>
+            <div className="common-expense-tracker-s57">
+              <h3 className="common-expense-tracker-s58">Monthly Expense Overview</h3>
+              <span className="common-expense-tracker-s59">Tap a bar to focus</span>
             </div>
 
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-end', minHeight: '220px', marginTop: '18px' }}>
+            <div className="common-expense-tracker-s60">
               {monthlySummaries.map((month) => {
                 const height = maxMonthlyExpense ? (month.totalExpense / maxMonthlyExpense) * 150 : 0;
                 const isActive = month.id === activeMonthId;
@@ -914,34 +759,17 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
                     type="button"
                     onClick={() => setActiveMonthId(month.id)}
                     aria-label={`Focus ${month.label}`}
-                    style={{
-                      flex: 1,
-                      border: 'none',
-                      background: 'transparent',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '10px',
-                      padding: 0
-                    }}
+                    className="common-expense-tracker-s61"
                   >
-                    <span style={{ fontWeight: 800, color: '#101828', fontSize: '0.9rem' }}>
+                    <span className="common-expense-tracker-s62">
                       {formatCurrency(month.totalExpense)}
                     </span>
                     <div
-                      style={{
-                        width: '100%',
-                        maxWidth: '78px',
-                        height: `${Math.max(height, 28)}px`,
-                        borderRadius: '18px 18px 6px 6px',
-                        background: isActive
+                      className="common-expense-tracker-s63" style={{ height: `${Math.max(height, 28)}px`, background: isActive
                           ? 'linear-gradient(180deg, #196C6C 0%, #0B2B26 100%)'
-                          : 'linear-gradient(180deg, #CFE3E0 0%, #7AA8A1 100%)',
-                        boxShadow: isActive ? '0 18px 26px rgba(11, 43, 38, 0.18)' : 'none'
-                      }}
+                          : 'linear-gradient(180deg, #CFE3E0 0%, #7AA8A1 100%)', boxShadow: isActive ? '0 18px 26px rgba(11, 43, 38, 0.18)' : 'none' }}
                     />
-                    <span style={{ fontWeight: 700, color: isActive ? '#0B2B26' : '#667085' }}>
+                    <span className="common-expense-tracker-s64" style={{ color: isActive ? '#0B2B26' : '#667085' }}>
                       {month.label.split(' ')[0]}
                     </span>
                   </button>
@@ -951,79 +779,45 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
           </div>
 
           <div
-            className="accounting-summary-card"
-            style={{ borderRadius: '22px', padding: '24px', background: '#fff' }}
+            className="accounting-summary-card common-expense-tracker-s50"
           >
-            <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#101828' }}>Expense by Category</h3>
+            <h3 className="common-expense-tracker-s58">Expense by Category</h3>
             <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '150px minmax(0, 1fr)',
-                gap: '18px',
-                alignItems: 'center',
-                marginTop: '20px'
-              }}
+              className="common-expense-tracker-s65"
             >
               <div
-                style={{
-                  width: '150px',
-                  height: '150px',
-                  borderRadius: '50%',
-                  background: donutGradient,
-                  display: 'grid',
-                  placeItems: 'center',
-                  margin: '0 auto'
-                }}
+                className="common-expense-tracker-s66" style={{ background: donutGradient }}
               >
                 <div
-                  style={{
-                    width: '88px',
-                    height: '88px',
-                    borderRadius: '50%',
-                    background: '#fff',
-                    display: 'grid',
-                    placeItems: 'center',
-                    textAlign: 'center',
-                    boxShadow: 'inset 0 0 0 1px rgba(61, 63, 52, 0.08)'
-                  }}
+                  className="common-expense-tracker-s67"
                 >
                   <div>
-                    <p className="eyebrow" style={{ margin: 0 }}>
+                    <p className="eyebrow common-expense-tracker-s29">
                       Total
                     </p>
-                    <strong style={{ color: '#101828', fontSize: '0.96rem' }}>
+                    <strong className="common-expense-tracker-s68">
                       {formatCurrency(overallSummary.totalExpense)}
                     </strong>
                   </div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="common-expense-tracker-s69">
                 {categoryBreakdown.map((item) => (
                   <div
                     key={item.category}
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'auto 1fr auto',
-                      gap: '12px',
-                      alignItems: 'center'
-                    }}
+                    className="common-expense-tracker-s70"
                   >
                     <span
-                      style={{
-                        width: '12px',
-                        height: '12px',
-                        borderRadius: '999px',
-                        background: item.solid
-                      }}
+                      className="common-expense-tracker-s71" style={{ background: item.solid }}
                     />
                     <div>
-                      <strong style={{ display: 'block', color: '#101828' }}>{item.category}</strong>
-                      <span style={{ marginTop: '2px', color: '#667085' }}>
+                      <strong className="common-expense-tracker-s72">{item.category}</strong>
+                      <span className="common-expense-tracker-s73">
                         {item.percent.toFixed(1)}% of total spend
                       </span>
                     </div>
-                    <strong style={{ color: '#101828' }}>{formatCurrency(item.amount)}</strong>
+                    <strong className="common-expense-tracker-s16">{formatCurrency(item.amount)}</strong>
                   </div>
                 ))}
               </div>
@@ -1031,40 +825,39 @@ export default function CommonExpenseTracker({ isAdmin = false }) {
           </div>
 
           <div
-            className="accounting-summary-card"
-            style={{ borderRadius: '22px', padding: '24px', background: '#fff' }}
+            className="accounting-summary-card common-expense-tracker-s50"
           >
-            <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#101828' }}>Tracker Notes</h3>
-            <div style={{ display: 'grid', gap: '14px', marginTop: '18px' }}>
-              <div style={{ padding: '16px', borderRadius: '16px', background: '#F9FAFB' }}>
-                <p className="eyebrow" style={{ margin: 0 }}>
+            <h3 className="common-expense-tracker-s58">Tracker Notes</h3>
+            <div className="common-expense-tracker-s74">
+              <div className="common-expense-tracker-s75">
+                <p className="eyebrow common-expense-tracker-s29">
                   Highest spend month
                 </p>
-                <strong style={{ display: 'block', marginTop: '6px', color: '#101828' }}>
+                <strong className="common-expense-tracker-s76">
                   {overallSummary.highestMonth.label} at {formatCurrency(overallSummary.highestMonth.totalExpense)}
                 </strong>
               </div>
-              <div style={{ padding: '16px', borderRadius: '16px', background: '#F9FAFB' }}>
-                <p className="eyebrow" style={{ margin: 0 }}>
+              <div className="common-expense-tracker-s75">
+                <p className="eyebrow common-expense-tracker-s29">
                   Largest cost head
                 </p>
-                <strong style={{ display: 'block', marginTop: '6px', color: '#101828' }}>
+                <strong className="common-expense-tracker-s76">
                   Waterman salary totals {formatCurrency(overallSummary.salarySpend)}
                 </strong>
               </div>
-              <div style={{ padding: '16px', borderRadius: '16px', background: '#F9FAFB' }}>
-                <p className="eyebrow" style={{ margin: 0 }}>
+              <div className="common-expense-tracker-s75">
+                <p className="eyebrow common-expense-tracker-s29">
                   Average monthly spend
                 </p>
-                <strong style={{ display: 'block', marginTop: '6px', color: '#101828' }}>
+                <strong className="common-expense-tracker-s76">
                   {formatCurrency(overallSummary.averageMonthlyExpense)} across 3 months
                 </strong>
               </div>
-              <div style={{ padding: '16px', borderRadius: '16px', background: '#F9FAFB' }}>
-                <p className="eyebrow" style={{ margin: 0 }}>
+              <div className="common-expense-tracker-s75">
+                <p className="eyebrow common-expense-tracker-s29">
                   Balance logic
                 </p>
-                <strong style={{ display: 'block', marginTop: '6px', color: '#101828' }}>
+                <strong className="common-expense-tracker-s76">
                   Each month shows the Rs 10,000 collection date and the exact opening balance written in the ledger.
                 </strong>
               </div>

@@ -1,6 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { SOCIETY_INFO } from '../../data/societyConfig.js';
 import { initialParkingData, OFFICIAL_PENDING_PARKING_FLATS, isParkingSlotPending } from '../../data/parkingAllotmentData.js';
+import './GeneralParkingNoticeDocument.css';
+
 
 /**
  * GeneralParkingNoticeDocument Component
@@ -473,39 +475,16 @@ Hon. Secretary | Hon. Chairman`;
   }, [flatDetailsList, items, noticeRef, todayFormatted, deadlineFormatted]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div className="general-parking-notice-document-s1">
       {/* ── Toolbar ── */}
-      <div className="no-print" style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: 12,
-        padding: '12px 18px',
-        background: '#ffffff',
-        borderRadius: 14,
-        border: '1px solid #cbd5e1',
-        boxShadow: '0 2px 8px rgba(15, 23, 42, 0.05)'
-      }}>
+      <div className="no-print general-parking-notice-document-s2">
         {/* Left: Navigation Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <div className="general-parking-notice-document-s3">
           {onBackToRegister && (
             <button
               type="button"
               onClick={onBackToRegister}
-              style={{
-                padding: '6px 12px',
-                borderRadius: 8,
-                border: '1px solid #cbd5e1',
-                background: '#ffffff',
-                color: '#334155',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 5
-              }}
+              className="general-parking-notice-document-s4"
             >
               <span>◀</span>
               <span>All Flats Register</span>
@@ -516,59 +495,25 @@ Hon. Secretary | Hon. Chairman`;
             <button
               type="button"
               onClick={onSwitchToIndividual}
-              style={{
-                padding: '6px 12px',
-                borderRadius: 8,
-                border: '1.5px solid #0284c7',
-                background: '#f0f9ff',
-                color: '#0369a1',
-                fontSize: '0.78rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 5
-              }}
+              className="general-parking-notice-document-s5"
             >
               <span>✉️</span>
               <span>Individual Flat Notice Letter</span>
             </button>
           )}
 
-          <div style={{
-            fontSize: '0.78rem',
-            color: '#64748b',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            background: '#f8fafc',
-            padding: '5px 10px',
-            borderRadius: 8,
-            border: '1px solid #e2e8f0'
-          }}>
-            <span style={{ color: '#dc2626', fontWeight: 800 }}>● OFFICIAL CIRCULAR</span>
+          <div className="general-parking-notice-document-s6">
+            <span className="general-parking-notice-document-s7">● OFFICIAL CIRCULAR</span>
             <span>Covering <strong>{items.length} Covered Flats</strong></span>
           </div>
         </div>
 
         {/* Right: Actions */}
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="general-parking-notice-document-s8">
           <button
             type="button"
             onClick={handleCopyText}
-            style={{
-              padding: '7px 12px',
-              borderRadius: 8,
-              border: '1px solid #cbd5e1',
-              background: '#ffffff',
-              color: '#334155',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 5
-            }}
+            className="general-parking-notice-document-s9"
           >
             {copied ? '✓ Copied Text!' : '📋 Copy Circular Text'}
           </button>
@@ -576,20 +521,7 @@ Hon. Secretary | Hon. Chairman`;
           <button
             type="button"
             onClick={handleWhatsAppShare}
-            style={{
-              padding: '7px 13px',
-              borderRadius: 8,
-              border: 'none',
-              background: '#25d366',
-              color: '#ffffff',
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              boxShadow: '0 2px 6px rgba(37, 211, 102, 0.25)'
-            }}
+            className="general-parking-notice-document-s10"
           >
             <span>💬</span>
             <span>Broadcast on WhatsApp</span>
@@ -598,19 +530,7 @@ Hon. Secretary | Hon. Chairman`;
           <button
             type="button"
             onClick={handlePrint}
-            style={{
-              padding: '7px 13px',
-              borderRadius: 8,
-              border: '1px solid #cbd5e1',
-              background: '#ffffff',
-              color: '#0f2952',
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 5
-            }}
+            className="general-parking-notice-document-s11"
           >
             <span>🖨️</span>
             <span>Print / Save PDF</span>
@@ -620,20 +540,7 @@ Hon. Secretary | Hon. Chairman`;
             type="button"
             onClick={handleDownloadPNG}
             disabled={downloading}
-            style={{
-              padding: '7px 15px',
-              borderRadius: 8,
-              border: 'none',
-              background: 'linear-gradient(135deg, #0f2952 0%, #1e3a8a 100%)',
-              color: '#ffffff',
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              cursor: downloading ? 'wait' : 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              boxShadow: '0 2px 8px rgba(15, 41, 82, 0.25)'
-            }}
+            className="general-parking-notice-document-s12" style={{ cursor: downloading ? 'wait' : 'pointer' }}
           >
             <span>📸</span>
             <span>{downloading ? 'Rendering Image...' : 'Download Notice (PNG)'}</span>
@@ -644,62 +551,17 @@ Hon. Secretary | Hon. Chairman`;
       {/* ── Real Physical Paper Letterhead Document Sheet ── */}
       <div
         id="official-society-general-notice"
-        style={{
-          background: '#ffffff',
-          border: '1.5px solid #cbd5e1',
-          borderRadius: 4,
-          boxShadow: '0 20px 45px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05)',
-          padding: 'clamp(24px, 4vw, 48px)',
-          fontFamily: '"Times New Roman", Times, Georgia, serif',
-          color: '#1e293b',
-          lineHeight: 1.5,
-          position: 'relative',
-          maxWidth: '960px',
-          margin: '0 auto',
-          width: '100%',
-          boxSizing: 'border-box'
-        }}
+        className="general-parking-notice-document-s13"
       >
         {/* Subtle Official Watermark in Document Center */}
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%) rotate(-25deg)',
-          fontSize: 'clamp(3rem, 7vw, 5.5rem)',
-          fontWeight: 900,
-          color: 'rgba(15, 41, 82, 0.03)',
-          letterSpacing: '0.15em',
-          pointerEvents: 'none',
-          userSelect: 'none',
-          whiteSpace: 'nowrap',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-        }}>
+        <div className="general-parking-notice-document-s14">
           OFFICIAL NOTICE
         </div>
 
         {/* ── Official Letterhead ── */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 20,
-          paddingBottom: 16,
-          borderBottom: '3px double #0f2952',
-          position: 'relative'
-        }}>
+        <div className="general-parking-notice-document-s15">
           {/* Authentic Crest / Logo */}
-          <div style={{
-            width: 78,
-            height: 78,
-            borderRadius: '50%',
-            border: '2px solid #0f2952',
-            padding: 3,
-            flexShrink: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#ffffff'
-          }}>
+          <div className="general-parking-notice-document-s16">
             <img
               src="/euriska_logo.png"
               alt="Majestique Euriska Official Logo"
@@ -707,79 +569,37 @@ Hon. Secretary | Hon. Chairman`;
                 e.currentTarget.onerror = null;
                 e.currentTarget.src = '/logo.png';
               }}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-                borderRadius: '50%'
-              }}
+              className="general-parking-notice-document-s17"
             />
           </div>
 
           {/* Letterhead Identity */}
-          <div style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <div style={{
-              fontSize: '0.88rem',
-              fontWeight: 700,
-              color: '#991b1b',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            }}>
+          <div className="general-parking-notice-document-s18">
+            <div className="general-parking-notice-document-s19">
               {SOCIETY_INFO.marathiName}
             </div>
-            <h1 style={{
-              margin: '2px 0 0',
-              fontSize: 'clamp(1.15rem, 2.3vw, 1.48rem)',
-              fontWeight: 800,
-              color: '#0f2952',
-              letterSpacing: '0.01em',
-              lineHeight: 1.2
-            }}>
+            <h1 className="general-parking-notice-document-s20">
               MAJESTIQUE EURISKA 'A' BUILDING CO-OPERATIVE HOUSING SOCIETY LTD.
             </h1>
-            <div style={{
-              fontSize: '0.78rem',
-              color: '#334155',
-              fontWeight: 600,
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            }}>
+            <div className="general-parking-notice-document-s21">
               Regn. No. {SOCIETY_INFO.regNoShort} • Date of Regn: 09/08/2019
             </div>
-            <div style={{
-              fontSize: '0.74rem',
-              color: '#475569',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            }}>
+            <div className="general-parking-notice-document-s22">
               Address: {SOCIETY_INFO.address}
             </div>
-            <div style={{
-              fontSize: '0.74rem',
-              color: '#0369a1',
-              fontWeight: 600,
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            }}>
+            <div className="general-parking-notice-document-s23">
               Email: <u>{SOCIETY_INFO.email}</u> • Wing A (87 Flats)
             </div>
           </div>
         </div>
 
         {/* Gold Accent Divider */}
-        <div style={{ height: 2, background: '#d97706', margin: '4px 0 16px' }} />
+        <div className="general-parking-notice-document-s24" />
 
         {/* ── Reference Number & Date Bar ── */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 10,
-          fontSize: '0.84rem',
-          fontWeight: 700,
-          color: '#0f2952',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-          marginBottom: 16
-        }}>
+        <div className="general-parking-notice-document-s25">
           <div>
-            Ref. No.: <span style={{ fontFamily: 'monospace', fontWeight: 800 }}>{noticeRef}</span>
+            Ref. No.: <span className="general-parking-notice-document-s26">{noticeRef}</span>
           </div>
           <div>
             Date of Issue: <span>{todayFormatted}</span>
@@ -787,106 +607,57 @@ Hon. Secretary | Hon. Chairman`;
         </div>
 
         {/* ── Centered Notice Banner ── */}
-        <div style={{
-          textAlign: 'center',
-          margin: '14px 0 20px',
-          padding: '8px 16px',
-          borderTop: '1px solid #cbd5e1',
-          borderBottom: '1px solid #cbd5e1',
-          background: '#f8fafc'
-        }}>
-          <div style={{
-            fontSize: '1.25rem',
-            fontWeight: 800,
-            color: '#0f2952',
-            letterSpacing: '0.05em'
-          }}>
+        <div className="general-parking-notice-document-s27">
+          <div className="general-parking-notice-document-s28">
             CIRCULAR / OFFICIAL NOTICE
           </div>
-          <div style={{
-            fontSize: '0.76rem',
-            fontWeight: 700,
-            color: '#b45309',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-            marginTop: 2
-          }}>
+          <div className="general-parking-notice-document-s29">
             (Issued under Maharashtra Co-operative Societies Act 1960 & Society Bye-Laws Nos. 78 to 84)
           </div>
         </div>
 
         {/* ── Recipient & Subject Block ── */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 8,
-          marginBottom: 18,
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-        }}>
-          <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#0f2952' }}>
+        <div className="general-parking-notice-document-s30">
+          <div className="general-parking-notice-document-s31">
             TO: ALL MEMBERS & RESIDENTS OF 'A' BUILDING (HAVING PENDING COVERED PARKING DETAILS)
           </div>
-          <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#0f2952', lineHeight: 1.35 }}>
+          <div className="general-parking-notice-document-s32">
             SUBJECT: URGENT SUBMISSION & VERIFICATION OF COVERED PARKING PARTICULARS (PENDING SLOT NO.)
-            <div style={{ height: 2, background: '#b91c1c', marginTop: 4, width: '100%' }} />
+            <div className="general-parking-notice-document-s33" />
           </div>
         </div>
 
         {/* ── Notice Body Content ── */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, fontSize: '0.94rem' }}>
+        <div className="general-parking-notice-document-s34">
           <div>
             <strong>Dear Members / Residents,</strong>
           </div>
 
-          <p style={{ margin: 0, textIndent: '24px', textAlign: 'justify' }}>
+          <p className="general-parking-notice-document-s35">
             1. All members of Majestique Euriska 'A' Building Co-operative Housing Society Ltd. are hereby notified that the Managing Committee is executing a comprehensive parking allocation audit and regularization drive across 'A' Building, in accordance with the <strong>Maharashtra Co-operative Societies (MCS) Act 1960</strong> and <strong>Model Bye-Laws 78 to 84</strong> (Allotment of Parking Spaces).
           </p>
 
-          <p style={{ margin: 0, textIndent: '24px', textAlign: 'justify' }}>
+          <p className="general-parking-notice-document-s35">
             2. As per the physical records, agreement registers, and developer handover documentation, the undermentioned <strong>{items.length} Flats</strong> are registered with entitlement for <strong>Covered Parking</strong>; however, their exact designated <strong>Physical Slot Numbers</strong> (Stilt / Basement Slot Identification) are currently <strong>PENDING / UNCONFIRMED</strong> in the society master records:
           </p>
 
           {/* ── The Roster Table of All Pending Flats ── */}
-          <div style={{
-            margin: '8px 0',
-            border: '1px solid #94a3b8',
-            borderRadius: 4,
-            overflow: 'hidden'
-          }}>
-            <div style={{
-              background: '#f1f5f9',
-              padding: '8px 12px',
-              borderBottom: '1px solid #cbd5e1',
-              fontWeight: 800,
-              fontSize: '0.82rem',
-              color: '#0f2952',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-            }}>
+          <div className="general-parking-notice-document-s36">
+            <div className="general-parking-notice-document-s37">
               <span>REGISTER OF FLATS REQUIRING COVERED PARKING SLOT REGULARIZATION</span>
-              <span style={{ color: '#b91c1c' }}>Total: {items.length} Units</span>
+              <span className="general-parking-notice-document-s38">Total: {items.length} Units</span>
             </div>
 
-            <div style={{
-              maxHeight: '420px',
-              overflowY: 'auto',
-              background: '#ffffff'
-            }}>
-              <table style={{
-                width: '100%',
-                borderCollapse: 'collapse',
-                fontSize: '0.80rem',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-              }}>
+            <div className="general-parking-notice-document-s39">
+              <table className="general-parking-notice-document-s40">
                 <thead>
-                  <tr style={{ background: '#f8fafc', borderBottom: '1.5px solid #cbd5e1', color: '#0f2952' }}>
-                    <th style={{ padding: '7px 8px', textAlign: 'center', width: '50px' }}>Sr.</th>
-                    <th style={{ padding: '7px 10px', textAlign: 'center', width: '90px' }}>Flat No.</th>
-                    <th style={{ padding: '7px 8px', textAlign: 'center', width: '60px' }}>Floor</th>
-                    <th style={{ padding: '7px 12px', textAlign: 'left' }}>Registered Owner / Resident</th>
-                    <th style={{ padding: '7px 10px', textAlign: 'left', width: '130px' }}>Entitlement</th>
-                    <th style={{ padding: '7px 10px', textAlign: 'center', width: '130px' }}>Action Required</th>
+                  <tr className="general-parking-notice-document-s41">
+                    <th className="general-parking-notice-document-s42">Sr.</th>
+                    <th className="general-parking-notice-document-s43">Flat No.</th>
+                    <th className="general-parking-notice-document-s44">Floor</th>
+                    <th className="general-parking-notice-document-s45">Registered Owner / Resident</th>
+                    <th className="general-parking-notice-document-s46">Entitlement</th>
+                    <th className="general-parking-notice-document-s47">Action Required</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -894,28 +665,15 @@ Hon. Secretary | Hon. Chairman`;
                     <tr
                       key={row.flat}
                       onClick={() => onSelectFlat && onSelectFlat(row.flat)}
-                      style={{
-                        borderBottom: '1px solid #e2e8f0',
-                        background: idx % 2 === 1 ? '#f8fafc' : '#ffffff',
-                        cursor: onSelectFlat ? 'pointer' : 'default'
-                      }}
+                      className="general-parking-notice-document-s48" style={{ background: idx % 2 === 1 ? '#f8fafc' : '#ffffff', cursor: onSelectFlat ? 'pointer' : 'default' }}
                     >
-                      <td style={{ padding: '6px 8px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>{row.srNo}</td>
-                      <td style={{ padding: '6px 10px', textAlign: 'center', fontWeight: 800, color: '#0f2952' }}>{row.flat}</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'center', color: '#475569' }}>{row.floor}</td>
-                      <td style={{ padding: '6px 12px', color: '#1e293b', fontWeight: 600 }}>{row.residentName}</td>
-                      <td style={{ padding: '6px 10px', color: '#0369a1', fontWeight: 700 }}>{row.parkingType}</td>
-                      <td style={{ padding: '6px 10px', textAlign: 'center' }}>
-                        <span style={{
-                          background: '#fee2e2',
-                          color: '#991b1b',
-                          padding: '2px 8px',
-                          borderRadius: 4,
-                          fontSize: '0.72rem',
-                          fontWeight: 800,
-                          border: '1px solid #fecaca',
-                          display: 'inline-block'
-                        }}>
+                      <td className="general-parking-notice-document-s49">{row.srNo}</td>
+                      <td className="general-parking-notice-document-s50">{row.flat}</td>
+                      <td className="general-parking-notice-document-s51">{row.floor}</td>
+                      <td className="general-parking-notice-document-s52">{row.residentName}</td>
+                      <td className="general-parking-notice-document-s53">{row.parkingType}</td>
+                      <td className="general-parking-notice-document-s54">
+                        <span className="general-parking-notice-document-s55">
                           Submit Slot Proof
                         </span>
                       </td>
@@ -927,127 +685,70 @@ Hon. Secretary | Hon. Chairman`;
           </div>
 
           {/* ── Mandatory Checklist Box ── */}
-          <div style={{
-            background: '#fffbeb',
-            border: '1.5px solid #f59e0b',
-            borderRadius: 6,
-            padding: '14px 18px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 6,
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-          }}>
-            <div style={{ fontWeight: 800, color: '#92400e', fontSize: '0.86rem' }}>
+          <div className="general-parking-notice-document-s56">
+            <div className="general-parking-notice-document-s57">
               📋 MANDATORY DOCUMENTARY PROOF TO BE SUBMITTED WITHIN 7 DAYS (ON OR BEFORE {deadlineFormatted}):
             </div>
-            <div style={{ fontSize: '0.84rem', color: '#1e293b', lineHeight: 1.5, marginLeft: 6 }}>
+            <div className="general-parking-notice-document-s58">
               <div><strong>1. Copy of Agreement / Builder Allotment Letter</strong> confirming Covered Parking entitlement.</div>
               <div><strong>2. Exact Slot Identification Number</strong> (Basement / Stilt slot number as per builder documents).</div>
             </div>
           </div>
 
-          <p style={{ margin: 0, textIndent: '24px', textAlign: 'justify' }}>
-            3. <strong>Submission Modes:</strong> Members may submit clear scanned copies via email to <strong style={{ color: '#0369a1' }}>{SOCIETY_INFO.email}</strong> with subject line <em>"Parking Regularization - Flat [Flat No.]"</em> or submit physical photocopies at the Society Office (Clubhouse) between 7:00 PM and 9:00 PM (Monday to Saturday) to the Society Manager.
+          <p className="general-parking-notice-document-s35">
+            3. <strong>Submission Modes:</strong> Members may submit clear scanned copies via email to <strong className="general-parking-notice-document-s59">{SOCIETY_INFO.email}</strong> with subject line <em>"Parking Regularization - Flat [Flat No.]"</em> or submit physical photocopies at the Society Office (Clubhouse) between 7:00 PM and 9:00 PM (Monday to Saturday) to the Society Manager.
           </p>
 
-          <p style={{ margin: 0, textIndent: '24px', textAlign: 'justify' }}>
+          <p className="general-parking-notice-document-s35">
             4. <strong>Statutory Advisory:</strong> Please note that in the absence of verified builder documentation within the stipulated period, the society will be unable to regularize or mark the slot on the official architectural parking site plan. The Managing Committee reserves the right to review allotment as per Society Bye-Laws to ensure orderly and transparent parking.
           </p>
         </div>
 
         {/* ── Sign-off & Authentic Rubber Stamp Block ── */}
-        <div style={{
-          marginTop: 28,
-          paddingTop: 18,
-          borderTop: '1px solid #cbd5e1',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
-          flexWrap: 'wrap',
-          gap: 20,
-          position: 'relative',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-        }}>
+        <div className="general-parking-notice-document-s60">
           {/* Left: Authority & Signatures */}
           <div>
-            <div style={{ fontSize: '0.84rem', color: '#475569' }}>
+            <div className="general-parking-notice-document-s61">
               By Order of the Managing Committee,
             </div>
-            <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#0f2952', marginTop: 2 }}>
+            <div className="general-parking-notice-document-s62">
               Majestique Euriska 'A' Building Co-operative Housing Society Ltd.
             </div>
 
             {/* Signature Titles */}
-            <div style={{ display: 'flex', gap: 36, marginTop: 40, alignItems: 'flex-end' }}>
+            <div className="general-parking-notice-document-s63">
               <div>
-                <div style={{ width: 130, height: 1, background: '#64748b', marginBottom: 4 }} />
-                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#0f2952' }}>Hon. Secretary</div>
-                <div style={{ fontSize: '0.70rem', color: '#64748b' }}>Managing Committee</div>
+                <div className="general-parking-notice-document-s64" />
+                <div className="general-parking-notice-document-s65">Hon. Secretary</div>
+                <div className="general-parking-notice-document-s66">Managing Committee</div>
               </div>
 
               <div>
-                <div style={{ width: 130, height: 1, background: '#64748b', marginBottom: 4 }} />
-                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#0f2952' }}>Hon. Chairman</div>
-                <div style={{ fontSize: '0.70rem', color: '#64748b' }}>Managing Committee</div>
+                <div className="general-parking-notice-document-s64" />
+                <div className="general-parking-notice-document-s65">Hon. Chairman</div>
+                <div className="general-parking-notice-document-s66">Managing Committee</div>
               </div>
             </div>
           </div>
 
           {/* Right: Realistic Circular Violet Rubber Stamp */}
-          <div style={{
-            width: 104,
-            height: 104,
-            borderRadius: '50%',
-            border: '2.5px solid #4338ca',
-            padding: 3,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            textAlign: 'center',
-            color: '#4338ca',
-            transform: 'rotate(-4deg)',
-            boxShadow: 'inset 0 0 4px rgba(67, 56, 202, 0.15)',
-            userSelect: 'none'
-          }}>
-            <div style={{
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              border: '1px solid #4338ca',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 2
-            }}>
-              <span style={{ fontSize: '0.50rem', fontWeight: 800, letterSpacing: '0.04em' }}>MAJESTIQUE EURISKA</span>
-              <span style={{ fontSize: '0.44rem', fontWeight: 700 }}>'A' BLDG CHS LTD.</span>
-              <span style={{ color: '#b91c1c', fontSize: '0.54rem', margin: '2px 0', fontWeight: 800 }}>★ OFFICIAL SEAL ★</span>
-              <span style={{ fontSize: '0.44rem', fontWeight: 700 }}>REG. NO. 21207/2019-20</span>
-              <span style={{ fontSize: '0.42rem', color: '#4338ca' }}>PUNE - 411060</span>
+          <div className="general-parking-notice-document-s67">
+            <div className="general-parking-notice-document-s68">
+              <span className="general-parking-notice-document-s69">MAJESTIQUE EURISKA</span>
+              <span className="general-parking-notice-document-s70">'A' BLDG CHS LTD.</span>
+              <span className="general-parking-notice-document-s71">★ OFFICIAL SEAL ★</span>
+              <span className="general-parking-notice-document-s70">REG. NO. 21207/2019-20</span>
+              <span className="general-parking-notice-document-s72">PUNE - 411060</span>
             </div>
           </div>
         </div>
 
         {/* ── Document Footer Distribution ── */}
-        <div style={{
-          marginTop: 20,
-          paddingTop: 10,
-          borderTop: '1px dashed #cbd5e1',
-          fontSize: '0.72rem',
-          color: '#64748b',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 6,
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-        }}>
+        <div className="general-parking-notice-document-s73">
           <div>
             Copy to: 1. Society Notice Board • 2. Lift Lobbies • 3. Residents WhatsApp Broadcast • 4. Office Files
           </div>
-          <div style={{ fontStyle: 'italic' }}>
+          <div className="general-parking-notice-document-s74">
             सोसायटी सूचना फलक व सर्व सभासदांच्या माहितीसाठी
           </div>
         </div>

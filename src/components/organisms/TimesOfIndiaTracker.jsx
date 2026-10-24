@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './TimesOfIndiaTracker.css';
+
 
 const fmt = (v) => Number(v).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
 const formatValue = (v) => Number(v || 0).toLocaleString('en-IN');
@@ -230,14 +232,7 @@ const TD_BASE = { padding: '13px 16px', verticalAlign: 'middle' };
 function StatusBadge({ status }) {
   const ok = status === 'Paid';
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 4,
-      padding: '4px 11px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 700,
-      background: ok ? 'rgba(209,250,229,0.7)' : 'rgba(253,224,71,0.28)',
-      color: ok ? '#065f46' : '#92400e',
-      border: `1px solid ${ok ? '#34d399' : '#fbbf24'}`,
-      whiteSpace: 'nowrap',
-    }}>
+    <span className="times-of-india-tracker-s1" style={{ background: ok ? 'rgba(209,250,229,0.7)' : 'rgba(253,224,71,0.28)', color: ok ? '#065f46' : '#92400e', border: `1px solid ${ok ? '#34d399' : '#fbbf24'}` }}>
       {ok ? '✓ Paid' : '⏳ Pending'}
     </span>
   );
@@ -245,9 +240,9 @@ function StatusBadge({ status }) {
 
 function StatChip({ label, value, bg, color }) {
   return (
-    <div style={{ textAlign: 'center', background: bg, borderRadius: 10, padding: '8px 14px', minWidth: 56 }}>
-      <div style={{ fontSize: '1.15rem', fontWeight: 800, color, lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 2 }}>{label}</div>
+    <div className="times-of-india-tracker-s2" style={{ background: bg }}>
+      <div className="times-of-india-tracker-s3" style={{ color }}>{value}</div>
+      <div className="times-of-india-tracker-s4">{label}</div>
     </div>
   );
 }
@@ -483,54 +478,35 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
   }, [d.periodWiseReconciliation]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div className="times-of-india-tracker-s5">
       
       {/* Toast Notification */}
       {toast && (
-        <div style={{
-          position: 'fixed', bottom: 24, right: 24, zIndex: 99999,
-          background: '#065f46', color: '#fff', padding: '12px 20px', borderRadius: 10,
-          boxShadow: '0 10px 25px rgba(0,0,0,0.2)', fontSize: '0.85rem', fontWeight: 700,
-          display: 'flex', alignItems: 'center', gap: 8, animation: 'fadeIn 0.2s ease'
-        }}>
+        <div className="times-of-india-tracker-s6">
           {toast}
         </div>
       )}
 
       {/* ── Main Reconciliation Header Card ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #164e63 100%)',
-        borderRadius: 20, padding: '22px 26px', color: '#fff',
-        boxShadow: '0 6px 28px rgba(11,43,38,0.22)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16
-      }}>
+      <div className="times-of-india-tracker-s7">
         <div>
-          <div style={{
-            fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em',
-            color: '#c49b4f', marginBottom: 4
-          }}>
+          <div className="times-of-india-tracker-s8">
             Official Society Statement
           </div>
-          <h2 style={{ margin: 0, fontSize: '1.38rem', fontWeight: 800, letterSpacing: '0.01em', color: '#fff' }}>
+          <h2 className="times-of-india-tracker-s9">
             {d.title}
           </h2>
-          <p style={{ margin: '4px 0 0', fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
+          <p className="times-of-india-tracker-s10">
             {d.subtitle}
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="times-of-india-tracker-s11">
           <button
             type="button"
             onClick={onPrint}
-            style={{
-              padding: '9px 16px', borderRadius: 999,
-              background: 'linear-gradient(135deg, #c49b4f 0%, #b38634 100%)',
-              color: '#0b2b26', border: 'none', fontWeight: 800, cursor: 'pointer',
-              fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6,
-              boxShadow: '0 4px 14px rgba(196,155,79,0.35)', transition: 'all 0.18s'
-            }}
+            className="times-of-india-tracker-s12"
           >
             🖨️ Print Statement / PDF
           </button>
@@ -538,12 +514,7 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
           <button
             type="button"
             onClick={onWhatsApp}
-            style={{
-              padding: '9px 16px', borderRadius: 999,
-              background: '#25D366', color: '#fff', border: 'none', fontWeight: 800,
-              cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6,
-              boxShadow: '0 4px 14px rgba(37,211,102,0.35)', transition: 'all 0.18s'
-            }}
+            className="times-of-india-tracker-s13"
           >
             📱 Share on WhatsApp
           </button>
@@ -551,13 +522,7 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
           <button
             type="button"
             onClick={onCopy}
-            style={{
-              padding: '9px 15px', borderRadius: 999,
-              background: 'rgba(255,255,255,0.12)', color: '#fff',
-              border: '1px solid rgba(255,255,255,0.25)', fontWeight: 700,
-              cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6,
-              backdropFilter: 'blur(8px)', transition: 'all 0.18s'
-            }}
+            className="times-of-india-tracker-s14"
           >
             📋 Copy Summary
           </button>
@@ -565,13 +530,7 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
           <button
             type="button"
             onClick={() => onOpenInvoiceModal && onOpenInvoiceModal()}
-            style={{
-              padding: '9px 15px', borderRadius: 999,
-              background: 'rgba(255,255,255,0.12)', color: '#fff',
-              border: '1px solid rgba(255,255,255,0.25)', fontWeight: 700,
-              cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6,
-              backdropFilter: 'blur(8px)', transition: 'all 0.18s'
-            }}
+            className="times-of-india-tracker-s14"
           >
             🧾 New Invoice
           </button>
@@ -579,104 +538,84 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
       </div>
 
       {/* ── Top 5 KPI Cards ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
+      <div className="times-of-india-tracker-s15">
         
         {/* Card 1: Rate till June 2025 */}
-        <div style={{
-          background: 'rgba(255,250,242,0.98)', border: '1px solid rgba(61,63,52,0.12)',
-          borderRadius: 14, padding: '16px 18px', boxShadow: '0 2px 10px rgba(11,43,38,0.05)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: '1.25rem' }}>📅</span>
-            <span style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#5f665f' }}>
+        <div className="times-of-india-tracker-s16">
+          <div className="times-of-india-tracker-s17">
+            <span className="times-of-india-tracker-s18">📅</span>
+            <span className="times-of-india-tracker-s19">
               Rate till June 2025
             </span>
           </div>
-          <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0b2b26', lineHeight: 1.2 }}>
-            ₹2,200 <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#5f665f' }}>/ mo / flat</span>
+          <div className="times-of-india-tracker-s20">
+            ₹2,200 <span className="times-of-india-tracker-s21">/ mo / flat</span>
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#8a9080', marginTop: 4 }}>
+          <div className="times-of-india-tracker-s22">
             Period: Oct 2021 – Jun 2025 (45 mos)
           </div>
         </div>
 
         {/* Card 2: Rate from July 2025 */}
-        <div style={{
-          background: 'rgba(255,250,242,0.98)', border: '1px solid rgba(61,63,52,0.12)',
-          borderRadius: 14, padding: '16px 18px', boxShadow: '0 2px 10px rgba(11,43,38,0.05)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: '1.25rem' }}>📈</span>
-            <span style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#5f665f' }}>
+        <div className="times-of-india-tracker-s16">
+          <div className="times-of-india-tracker-s17">
+            <span className="times-of-india-tracker-s18">📈</span>
+            <span className="times-of-india-tracker-s19">
               Rate from July 2025
             </span>
           </div>
-          <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#164e63', lineHeight: 1.2 }}>
-            ₹3,000 <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#5f665f' }}>/ mo / flat</span>
+          <div className="times-of-india-tracker-s23">
+            ₹3,000 <span className="times-of-india-tracker-s21">/ mo / flat</span>
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#8a9080', marginTop: 4 }}>
+          <div className="times-of-india-tracker-s22">
             Period: Jul 2025 – Mar 2027 (21 mos)
           </div>
         </div>
 
         {/* Card 3: Total Amount Due */}
-        <div style={{
-          background: 'rgba(255,250,242,0.98)', border: '1px solid rgba(61,63,52,0.12)',
-          borderRadius: 14, padding: '16px 18px', boxShadow: '0 2px 10px rgba(11,43,38,0.05)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: '1.25rem' }}>📑</span>
-            <span style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#5f665f' }}>
+        <div className="times-of-india-tracker-s16">
+          <div className="times-of-india-tracker-s17">
+            <span className="times-of-india-tracker-s18">📑</span>
+            <span className="times-of-india-tracker-s19">
               Total Amount Due ({reconGrandTotals.months} Mos)
             </span>
           </div>
-          <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0b2b26', lineHeight: 1.1 }}>
+          <div className="times-of-india-tracker-s24">
             ₹{reconGrandTotals.expected.toLocaleString('en-IN')}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#8a9080', marginTop: 4 }}>
+          <div className="times-of-india-tracker-s22">
             {reconGrandTotals.months} Mos × 3 Flats • 60-Mo: ₹4,32,000
           </div>
         </div>
 
         {/* Card 4: Total Amount Paid */}
-        <div style={{
-          background: 'rgba(240,253,244,0.95)', border: '1px solid #86efac',
-          borderRadius: 14, padding: '16px 18px', boxShadow: '0 2px 10px rgba(22,101,52,0.06)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: '1.25rem' }}>💵</span>
-            <span style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#166534' }}>
+        <div className="times-of-india-tracker-s25">
+          <div className="times-of-india-tracker-s17">
+            <span className="times-of-india-tracker-s18">💵</span>
+            <span className="times-of-india-tracker-s26">
               Total Amount Paid (Till Date)
             </span>
           </div>
-          <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#15803d', lineHeight: 1.1 }}>
+          <div className="times-of-india-tracker-s27">
             ₹{reconGrandTotals.paid.toLocaleString('en-IN')}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#166534', fontWeight: 600, marginTop: 4 }}>
+          <div className="times-of-india-tracker-s28">
             (₹3,43,500 + ₹81,600 + ₹36,000) • 60-Mo: ₹4,25,100
           </div>
         </div>
 
         {/* Card 5: Net Outstanding Balance */}
-        <div style={{
-          background: 'rgba(254,242,242,0.98)', border: '2px solid #f87171',
-          borderRadius: 14, padding: '16px 18px', boxShadow: '0 4px 14px rgba(220,38,38,0.12)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: '1.25rem' }}>⚠️</span>
-            <span style={{ fontSize: '0.68rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#991b1b' }}>
+        <div className="times-of-india-tracker-s29">
+          <div className="times-of-india-tracker-s17">
+            <span className="times-of-india-tracker-s18">⚠️</span>
+            <span className="times-of-india-tracker-s30">
               NET OUTSTANDING BALANCE
             </span>
           </div>
-          <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#dc2626', lineHeight: 1.1 }}>
+          <div className="times-of-india-tracker-s31">
             ₹{Math.abs(reconGrandTotals.diff).toLocaleString('en-IN')}
           </div>
-          <div style={{ fontSize: '0.72rem', color: '#991b1b', fontWeight: 700, marginTop: 4 }}>
+          <div className="times-of-india-tracker-s32">
             Flat 1002 Arrears: ₹31,200 − ₹6,300 extra • 60-Mo: ₹6,900
           </div>
         </div>
@@ -684,68 +623,53 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
       </div>
 
       {/* ── SECTION A: Chronological Payment Timeline ── */}
-      <div style={{
-        background: 'rgba(255,250,242,0.98)', borderRadius: 18,
-        border: '1px solid rgba(61,63,52,0.12)', boxShadow: '0 4px 20px rgba(11,43,38,0.06)',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          padding: '14px 20px', background: '#0b2b26', color: '#fff',
-          fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em',
-          display: 'flex', alignItems: 'center', gap: 8
-        }}>
+      <div className="times-of-india-tracker-s33">
+        <div className="times-of-india-tracker-s34">
           <span>A. CHRONOLOGICAL PAYMENT TIMELINE (All Payments Received)</span>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+        <div className="times-of-india-tracker-s35">
+          <table className="times-of-india-tracker-s36">
             <thead>
-              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                <th style={{ padding: '10px 12px', textAlign: 'center', width: 45, fontWeight: 800, color: '#334155' }}>Sr. No.</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 800, color: '#334155', minWidth: 95 }}>Payment Date</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 800, color: '#334155' }}>Payment Mode / Bank</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#334155' }}>Amount Paid (₹)</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 800, color: '#334155' }}>For Which Flats</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 800, color: '#334155' }}>Maintenance Period Covered</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 800, color: '#334155' }}>No. of Mos</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#334155' }}>Rate / Flat</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#334155' }}>Applicable (3 Flats)</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 800, color: '#334155' }}>Diff (Paid - Exp)</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 800, color: '#334155', minWidth: 240 }}>Remarks</th>
+              <tr className="times-of-india-tracker-s37">
+                <th className="times-of-india-tracker-s38">Sr. No.</th>
+                <th className="times-of-india-tracker-s39">Payment Date</th>
+                <th className="times-of-india-tracker-s40">Payment Mode / Bank</th>
+                <th className="times-of-india-tracker-s41">Amount Paid (₹)</th>
+                <th className="times-of-india-tracker-s40">For Which Flats</th>
+                <th className="times-of-india-tracker-s40">Maintenance Period Covered</th>
+                <th className="times-of-india-tracker-s42">No. of Mos</th>
+                <th className="times-of-india-tracker-s41">Rate / Flat</th>
+                <th className="times-of-india-tracker-s41">Applicable (3 Flats)</th>
+                <th className="times-of-india-tracker-s42">Diff (Paid - Exp)</th>
+                <th className="times-of-india-tracker-s43">Remarks</th>
               </tr>
             </thead>
             <tbody>
               {d.chronologicalTimeline.map((item, idx) => (
                 <React.Fragment key={item.srNo}>
-                  <tr style={{
-                    borderBottom: '1px solid #e2e8f0',
-                    background: idx % 2 === 0 ? '#fff' : 'rgba(248,250,252,0.7)'
-                  }}>
-                    <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700, color: '#64748b' }}>{item.srNo}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700, color: '#b91c1c' }}>{item.paymentDate}</td>
-                    <td style={{ padding: '10px 12px', fontWeight: 700, color: '#0f172a' }}>{item.paymentMode}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#0f172a' }}>{Number(item.amountPaid).toLocaleString('en-IN')}</td>
-                    <td style={{ padding: '10px 12px', fontWeight: 700, color: '#b91c1c' }}>{item.forFlats}</td>
-                    <td style={{ padding: '10px 12px', fontWeight: 700, color: '#b91c1c' }}>{item.periodCovered}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700 }}>{item.months}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>{Number(item.ratePerFlat).toLocaleString('en-IN')}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 800, color: '#0b2b26' }}>{Number(item.amountFor3Flats).toLocaleString('en-IN')}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'center' }}>
-                      <span style={{
-                        display: 'inline-block', padding: '3px 8px', borderRadius: 6, fontWeight: 800, fontSize: '0.74rem',
-                        background: item.diff > 0 ? '#dcfce7' : '#f1f5f9',
-                        color: item.diff > 0 ? '#15803d' : '#475569'
-                      }}>
+                  <tr className="times-of-india-tracker-s44" style={{ background: idx % 2 === 0 ? '#fff' : 'rgba(248,250,252,0.7)' }}>
+                    <td className="times-of-india-tracker-s45">{item.srNo}</td>
+                    <td className="times-of-india-tracker-s46">{item.paymentDate}</td>
+                    <td className="times-of-india-tracker-s47">{item.paymentMode}</td>
+                    <td className="times-of-india-tracker-s48">{Number(item.amountPaid).toLocaleString('en-IN')}</td>
+                    <td className="times-of-india-tracker-s49">{item.forFlats}</td>
+                    <td className="times-of-india-tracker-s49">{item.periodCovered}</td>
+                    <td className="times-of-india-tracker-s50">{item.months}</td>
+                    <td className="times-of-india-tracker-s51">{Number(item.ratePerFlat).toLocaleString('en-IN')}</td>
+                    <td className="times-of-india-tracker-s52">{Number(item.amountFor3Flats).toLocaleString('en-IN')}</td>
+                    <td className="times-of-india-tracker-s53">
+                      <span className="times-of-india-tracker-s54" style={{ background: item.diff > 0 ? '#dcfce7' : '#f1f5f9', color: item.diff > 0 ? '#15803d' : '#475569' }}>
                         {item.diffLabel}
                       </span>
                     </td>
-                    <td style={{ padding: '10px 12px', fontSize: '0.73rem', color: '#334155', lineHeight: 1.4, whiteSpace: 'pre-line' }}>
+                    <td className="times-of-india-tracker-s55">
                       {item.remarks}
                     </td>
                   </tr>
                   {item.breakup && (
-                    <tr style={{ background: '#fefce8', borderBottom: '1px solid #fef08a' }}>
-                      <td colSpan={11} style={{ padding: '8px 14px', fontSize: '0.72rem', color: '#854d0e', fontWeight: 600 }}>
+                    <tr className="times-of-india-tracker-s56">
+                      <td colSpan={11} className="times-of-india-tracker-s57">
                         📌 <strong>Detail:</strong> {item.breakup}
                       </td>
                     </tr>
@@ -757,41 +681,32 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
         </div>
 
         {/* Section A Summary Box */}
-        <div style={{
-          padding: '14px 20px', background: '#f8fafc', borderTop: '2px solid #e2e8f0',
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, alignItems: 'center'
-        }}>
+        <div className="times-of-india-tracker-s58">
           <div>
-            <div style={{ fontSize: '0.66rem', fontWeight: 800, textTransform: 'uppercase', color: '#15803d' }}>Summary Period</div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0f172a' }}>{d.sectionASummary.period}</div>
+            <div className="times-of-india-tracker-s59">Summary Period</div>
+            <div className="times-of-india-tracker-s60">{d.sectionASummary.period}</div>
           </div>
           <div>
-            <div style={{ fontSize: '0.66rem', fontWeight: 800, textTransform: 'uppercase', color: '#64748b' }}>Total Expected (3 Flats)</div>
-            <div style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>₹{Number(d.sectionASummary.expectedFor3Flats).toLocaleString('en-IN')}</div>
+            <div className="times-of-india-tracker-s61">Total Expected (3 Flats)</div>
+            <div className="times-of-india-tracker-s62">₹{Number(d.sectionASummary.expectedFor3Flats).toLocaleString('en-IN')}</div>
           </div>
           <div>
-            <div style={{ fontSize: '0.66rem', fontWeight: 800, textTransform: 'uppercase', color: '#166534' }}>Total Paid</div>
-            <div style={{ fontSize: '1rem', fontWeight: 800, color: '#15803d' }}>₹{Number(d.sectionASummary.totalPaid).toLocaleString('en-IN')}</div>
+            <div className="times-of-india-tracker-s63">Total Paid</div>
+            <div className="times-of-india-tracker-s64">₹{Number(d.sectionASummary.totalPaid).toLocaleString('en-IN')}</div>
           </div>
           <div>
-            <div style={{ fontSize: '0.66rem', fontWeight: 800, textTransform: 'uppercase', color: '#15803d' }}>Difference (Paid - Exp)</div>
-            <div style={{ fontSize: '1rem', fontWeight: 800, color: '#15803d' }}>{d.sectionASummary.diff}</div>
+            <div className="times-of-india-tracker-s59">Difference (Paid - Exp)</div>
+            <div className="times-of-india-tracker-s64">{d.sectionASummary.diff}</div>
           </div>
           <div>
-            <span style={{
-              display: 'inline-block', padding: '5px 12px', borderRadius: 999,
-              background: '#dcfce7', color: '#166534', fontWeight: 800, fontSize: '0.75rem'
-            }}>
+            <span className="times-of-india-tracker-s65">
               ✓ {d.sectionASummary.status}
             </span>
           </div>
         </div>
 
         {/* Section A Conclusion Banner */}
-        <div style={{
-          padding: '10px 20px', background: '#f0fdf4', borderTop: '1px solid #bbf7d0',
-          color: '#166534', fontSize: '0.78rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8
-        }}>
+        <div className="times-of-india-tracker-s66">
           <span>✓</span>
           <span>{d.sectionASummary.conclusion}</span>
         </div>
@@ -799,35 +714,27 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
       </div>
 
       {/* ── SECTION B: Period-Wise Reconciliation Statement ── */}
-      <div style={{
-        background: 'rgba(255,250,242,0.98)', borderRadius: 18,
-        border: '1px solid rgba(61,63,52,0.12)', boxShadow: '0 4px 20px rgba(11,43,38,0.06)',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          padding: '14px 20px', background: '#0b2b26', color: '#fff',
-          fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em',
-          display: 'flex', alignItems: 'center', gap: 8
-        }}>
+      <div className="times-of-india-tracker-s33">
+        <div className="times-of-india-tracker-s34">
           <span>B. PERIOD-WISE RECONCILIATION STATEMENT</span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 280px', gap: 0 }}>
+        <div className="times-of-india-tracker-s67">
           
           {/* Main Reconciliation Table */}
-          <div style={{ overflowX: 'auto', borderRight: '1px solid #e2e8f0' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+          <div className="times-of-india-tracker-s68">
+            <table className="times-of-india-tracker-s36">
               <thead>
-                <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                  <th style={{ padding: '9px 10px', textAlign: 'center', width: 40, fontWeight: 800, color: '#334155' }}>Sr. No.</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'left', fontWeight: 800, color: '#334155' }}>Period</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'center', width: 55, fontWeight: 800, color: '#334155' }}>Mos</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'center', fontWeight: 800, color: '#334155' }}>Rate / Flat</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#334155' }}>Expected (3 Flats)</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: '#334155' }}>Amount Paid (₹)</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'left', fontWeight: 800, color: '#334155' }}>Payment Date / Bank</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'center', fontWeight: 800, color: '#334155' }}>Difference</th>
-                  <th style={{ padding: '9px 10px', textAlign: 'center', fontWeight: 800, color: '#334155' }}>Status / Remarks</th>
+                <tr className="times-of-india-tracker-s37">
+                  <th className="times-of-india-tracker-s69">Sr. No.</th>
+                  <th className="times-of-india-tracker-s70">Period</th>
+                  <th className="times-of-india-tracker-s71">Mos</th>
+                  <th className="times-of-india-tracker-s72">Rate / Flat</th>
+                  <th className="times-of-india-tracker-s73">Expected (3 Flats)</th>
+                  <th className="times-of-india-tracker-s73">Amount Paid (₹)</th>
+                  <th className="times-of-india-tracker-s70">Payment Date / Bank</th>
+                  <th className="times-of-india-tracker-s72">Difference</th>
+                  <th className="times-of-india-tracker-s72">Status / Remarks</th>
                 </tr>
               </thead>
               <tbody>
@@ -835,42 +742,29 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
                   const isExtra = row.diff > 0;
                   const isShort = row.diff < 0;
                   return (
-                    <tr key={row.srNo} style={{
-                      borderBottom: '1px solid #e2e8f0',
-                      background: isShort ? '#fef2f2' : (idx % 2 === 0 ? '#fff' : '#f8fafc')
-                    }}>
-                      <td style={{ padding: '9px 10px', textAlign: 'center', fontWeight: 700, color: '#64748b' }}>{row.srNo}</td>
-                      <td style={{ padding: '9px 10px', fontWeight: 700, color: '#0f172a' }}>{row.period}</td>
-                      <td style={{ padding: '9px 10px', textAlign: 'center', fontWeight: 700 }}>{row.months}</td>
-                      <td style={{ padding: '9px 10px', textAlign: 'center', whiteSpace: 'pre-line', fontSize: '0.72rem', color: '#475569' }}>
+                    <tr key={row.srNo} className="times-of-india-tracker-s44" style={{ background: isShort ? '#fef2f2' : (idx % 2 === 0 ? '#fff' : '#f8fafc') }}>
+                      <td className="times-of-india-tracker-s74">{row.srNo}</td>
+                      <td className="times-of-india-tracker-s75">{row.period}</td>
+                      <td className="times-of-india-tracker-s76">{row.months}</td>
+                      <td className="times-of-india-tracker-s77">
                         {row.rate}
                       </td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                      <td className="times-of-india-tracker-s78">
                         ₹{Number(row.expected).toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 800, color: isShort ? '#b91c1c' : '#15803d' }}>
+                      <td className="times-of-india-tracker-s79" style={{ color: isShort ? '#b91c1c' : '#15803d' }}>
                         ₹{Number(row.paid).toLocaleString('en-IN')}
                       </td>
-                      <td style={{ padding: '9px 10px', fontSize: '0.72rem', color: '#475569', whiteSpace: 'pre-line' }}>
+                      <td className="times-of-india-tracker-s80">
                         {row.paymentDetails}
                       </td>
-                      <td style={{ padding: '9px 10px', textAlign: 'center' }}>
-                        <span style={{
-                          display: 'inline-block', padding: '2px 7px', borderRadius: 6,
-                          fontWeight: 800, fontSize: '0.72rem',
-                          background: isExtra ? '#dcfce7' : (isShort ? '#fee2e2' : '#f1f5f9'),
-                          color: isExtra ? '#15803d' : (isShort ? '#b91c1c' : '#475569')
-                        }}>
+                      <td className="times-of-india-tracker-s81">
+                        <span className="times-of-india-tracker-s82" style={{ background: isExtra ? '#dcfce7' : (isShort ? '#fee2e2' : '#f1f5f9'), color: isExtra ? '#15803d' : (isShort ? '#b91c1c' : '#475569') }}>
                           {row.diffLabel}
                         </span>
                       </td>
-                      <td style={{ padding: '9px 10px', textAlign: 'center' }}>
-                        <span style={{
-                          display: 'inline-block', padding: '3px 8px', borderRadius: 999,
-                          fontWeight: 800, fontSize: '0.68rem',
-                          background: isShort ? '#fee2e2' : (isExtra ? '#dcfce7' : '#e0f2fe'),
-                          color: isShort ? '#991b1b' : (isExtra ? '#166534' : '#0369a1')
-                        }}>
+                      <td className="times-of-india-tracker-s81">
+                        <span className="times-of-india-tracker-s83" style={{ background: isShort ? '#fee2e2' : (isExtra ? '#dcfce7' : '#e0f2fe'), color: isShort ? '#991b1b' : (isExtra ? '#166534' : '#0369a1') }}>
                           {row.status}
                         </span>
                       </td>
@@ -880,55 +774,55 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
               </tbody>
               <tfoot>
                 {/* Subtotal for Phase 1 & 2 (Oct 2021 – Sept 2026, 60 Months) */}
-                <tr style={{ background: '#1e3a34', color: '#fff', fontWeight: 700, borderTop: '2px solid #cbd5e1' }}>
-                  <td colSpan={2} style={{ padding: '8px 12px', textAlign: 'right', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#e2e8f0' }}>
+                <tr className="times-of-india-tracker-s84">
+                  <td colSpan={2} className="times-of-india-tracker-s85">
                     Subtotal (Oct 2021 – Sept 2026)
                   </td>
-                  <td style={{ padding: '8px 10px', textAlign: 'center', color: '#c49b4f', fontWeight: 800 }}>
+                  <td className="times-of-india-tracker-s86">
                     {recon60Totals.months}
                   </td>
-                  <td style={{ padding: '8px 10px' }} />
-                  <td style={{ padding: '8px 10px', textAlign: 'right', color: '#c49b4f', fontWeight: 800 }}>
+                  <td className="times-of-india-tracker-s87" />
+                  <td className="times-of-india-tracker-s88">
                     ₹{recon60Totals.expected.toLocaleString('en-IN')}
                   </td>
-                  <td style={{ padding: '8px 10px', textAlign: 'right', color: '#86efac', fontWeight: 800 }}>
+                  <td className="times-of-india-tracker-s89">
                     <div>₹{recon60Totals.paid.toLocaleString('en-IN')}</div>
-                    <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>(3,43,500 + 81,600)</div>
+                    <div className="times-of-india-tracker-s90">(3,43,500 + 81,600)</div>
                   </td>
-                  <td style={{ padding: '8px 10px', fontSize: '0.68rem', color: '#cbd5e1' }}>60 Mos Phase</td>
-                  <td style={{ padding: '8px 10px', textAlign: 'center', color: '#fca5a5', fontWeight: 800 }}>
+                  <td className="times-of-india-tracker-s91">60 Mos Phase</td>
+                  <td className="times-of-india-tracker-s92">
                     -6,900
                   </td>
-                  <td style={{ padding: '8px 10px', textAlign: 'center', color: '#fca5a5', fontSize: '0.7rem', fontWeight: 800 }}>
+                  <td className="times-of-india-tracker-s93">
                     60-MO SHORTFALL
                   </td>
                 </tr>
 
                 {/* Grand Total (Oct 2021 – Mar 2027, 66 Months) */}
-                <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 800 }}>
-                  <td colSpan={2} style={{ padding: '12px 14px', textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                <tr className="times-of-india-tracker-s94">
+                  <td colSpan={2} className="times-of-india-tracker-s95">
                     TOTAL ({reconGrandTotals.months} MONTHS)
                   </td>
-                  <td style={{ padding: '12px 10px', textAlign: 'center', color: '#facc15', fontSize: '0.92rem' }}>
+                  <td className="times-of-india-tracker-s96">
                     {reconGrandTotals.months}
                   </td>
-                  <td style={{ padding: '12px 10px' }} />
-                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#facc15', fontSize: '0.95rem' }}>
+                  <td className="times-of-india-tracker-s97" />
+                  <td className="times-of-india-tracker-s98">
                     ₹{reconGrandTotals.expected.toLocaleString('en-IN')}
                   </td>
-                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#4ade80', fontSize: '0.95rem' }}>
+                  <td className="times-of-india-tracker-s99">
                     <div>₹{reconGrandTotals.paid.toLocaleString('en-IN')}</div>
-                    <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
+                    <div className="times-of-india-tracker-s90">
                       (3,43,500 + 81,600 + 36,000)
                     </div>
                   </td>
-                  <td style={{ padding: '12px 10px', fontSize: '0.7rem', color: '#86efac' }}>
+                  <td className="times-of-india-tracker-s100">
                     Flats 302 & 904 paid till Mar 2027
                   </td>
-                  <td style={{ padding: '12px 10px', textAlign: 'center', color: reconGrandTotals.diff < 0 ? '#fca5a5' : '#86efac', fontSize: '0.92rem' }}>
+                  <td className="times-of-india-tracker-s101" style={{ color: reconGrandTotals.diff < 0 ? '#fca5a5' : '#86efac' }}>
                     {reconGrandTotals.diff < 0 ? `-${Math.abs(reconGrandTotals.diff).toLocaleString('en-IN')}` : `+${reconGrandTotals.diff.toLocaleString('en-IN')}`}
                   </td>
-                  <td style={{ padding: '12px 10px', textAlign: 'center', color: reconGrandTotals.diff < 0 ? '#fca5a5' : '#86efac', fontSize: '0.74rem' }}>
+                  <td className="times-of-india-tracker-s102" style={{ color: reconGrandTotals.diff < 0 ? '#fca5a5' : '#86efac' }}>
                     {reconGrandTotals.diff < 0 ? 'NET SHORTFALL' : 'FULLY SETTLED'}
                   </td>
                 </tr>
@@ -937,47 +831,36 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
           </div>
 
           {/* Right Column: April-Sept 2025 Breakdown Card */}
-          <div style={{
-            padding: '16px', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: 12
-          }}>
-            <div style={{
-              background: '#fff', border: '1px solid #cbd5e1', borderRadius: 12, padding: '14px',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
-            }}>
-              <div style={{
-                fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em',
-                color: '#0b2b26', marginBottom: 8, borderBottom: '1px solid #e2e8f0', paddingBottom: 4
-              }}>
+          <div className="times-of-india-tracker-s103">
+            <div className="times-of-india-tracker-s104">
+              <div className="times-of-india-tracker-s105">
                 {d.aprSep2025Details.title}
               </div>
 
-              <div style={{ fontSize: '0.72rem', color: '#334155', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <strong style={{ color: '#0f172a' }}>Expected Break-up for 3 Flats:</strong>
+              <div className="times-of-india-tracker-s106">
+                <strong className="times-of-india-tracker-s107">Expected Break-up for 3 Flats:</strong>
                 {d.aprSep2025Details.breakup.map((bLine, i) => (
-                  <div key={i} style={{ paddingLeft: 6, borderLeft: '2px solid #0b2b26', fontSize: '0.71rem' }}>
+                  <div key={i} className="times-of-india-tracker-s108">
                     • {bLine}
                   </div>
                 ))}
-                <div style={{ marginTop: 4, fontWeight: 700, color: '#0b2b26' }}>
+                <div className="times-of-india-tracker-s109">
                   Total Expected = ₹{Number(d.aprSep2025Details.totalExpected).toLocaleString('en-IN')}
                 </div>
               </div>
 
-              <div style={{ marginTop: 10, paddingTop: 8, borderTop: '1px dashed #cbd5e1', fontSize: '0.72rem' }}>
-                <div style={{ fontWeight: 700, color: '#15803d' }}>
+              <div className="times-of-india-tracker-s110">
+                <div className="times-of-india-tracker-s111">
                   {d.aprSep2025Details.paidText}
                 </div>
-                <div style={{ fontWeight: 800, color: '#166534', marginTop: 4 }}>
+                <div className="times-of-india-tracker-s112">
                   Difference: {d.aprSep2025Details.diffText}
                 </div>
               </div>
             </div>
 
             {/* Quick Helper / Reminder */}
-            <div style={{
-              background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 10,
-              padding: '12px', fontSize: '0.72rem', color: '#065f46', lineHeight: 1.45
-            }}>
+            <div className="times-of-india-tracker-s113">
               💡 <strong>Reconciliation Rule:</strong><br />
               All extra payments (+₹6,300) are mapped and adjusted against the pending amount of Flat 1002 (Oct 24–Mar 25: ₹13,200), resulting in exactly <strong>₹6,900 net pending</strong>.
             </div>
@@ -987,38 +870,35 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
       </div>
 
       {/* ── BOTTOM 4 ANALYSIS CARDS (C, D, E, F) + KEY TAKEAWAYS ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
+      <div className="times-of-india-tracker-s114">
         
         {/* C. Where They Pay Short */}
-        <div style={{
-          background: 'rgba(255,250,242,0.98)', border: '1px solid #fecaca',
-          borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 10px rgba(220,38,38,0.06)'
-        }}>
-          <div style={{ padding: '10px 14px', background: '#fee2e2', color: '#991b1b', fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}>
+        <div className="times-of-india-tracker-s115">
+          <div className="times-of-india-tracker-s116">
             C. WHERE THEY PAY SHORT
           </div>
-          <div style={{ padding: '12px 14px' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem' }}>
+          <div className="times-of-india-tracker-s117">
+            <table className="times-of-india-tracker-s118">
               <thead>
-                <tr style={{ borderBottom: '1px solid #e2e8f0', color: '#64748b' }}>
-                  <th style={{ textAlign: 'left', paddingBottom: 6 }}>Particulars</th>
-                  <th style={{ textAlign: 'right', paddingBottom: 6 }}>Amount (₹)</th>
+                <tr className="times-of-india-tracker-s119">
+                  <th className="times-of-india-tracker-s120">Particulars</th>
+                  <th className="times-of-india-tracker-s121">Amount (₹)</th>
                 </tr>
               </thead>
               <tbody>
                 {d.shortfallItems.map((item, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px dashed #f1f5f9' }}>
-                    <td style={{ padding: '6px 0', color: '#334155' }}>{item.period}</td>
-                    <td style={{ padding: '6px 0', textAlign: 'right', fontWeight: 700, color: '#dc2626' }}>
+                  <tr key={idx} className="times-of-india-tracker-s122">
+                    <td className="times-of-india-tracker-s123">{item.period}</td>
+                    <td className="times-of-india-tracker-s124">
                       {Number(item.amount).toLocaleString('en-IN')}
                     </td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
-                <tr style={{ borderTop: '2px solid #f87171', fontWeight: 800 }}>
-                  <td style={{ paddingTop: 8, color: '#991b1b', textTransform: 'uppercase' }}>TOTAL SHORTFALL</td>
-                  <td style={{ paddingTop: 8, textAlign: 'right', color: '#dc2626', fontSize: '0.92rem' }}>
+                <tr className="times-of-india-tracker-s125">
+                  <td className="times-of-india-tracker-s126">TOTAL SHORTFALL</td>
+                  <td className="times-of-india-tracker-s127">
                     ₹{Number(d.totalShortfall).toLocaleString('en-IN')}
                   </td>
                 </tr>
@@ -1028,35 +908,32 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
         </div>
 
         {/* D. Where They Pay Extra */}
-        <div style={{
-          background: 'rgba(255,250,242,0.98)', border: '1px solid #bbf7d0',
-          borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 10px rgba(22,101,52,0.06)'
-        }}>
-          <div style={{ padding: '10px 14px', background: '#dcfce7', color: '#166534', fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}>
+        <div className="times-of-india-tracker-s128">
+          <div className="times-of-india-tracker-s129">
             D. WHERE THEY PAY EXTRA
           </div>
-          <div style={{ padding: '12px 14px' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem' }}>
+          <div className="times-of-india-tracker-s117">
+            <table className="times-of-india-tracker-s118">
               <thead>
-                <tr style={{ borderBottom: '1px solid #e2e8f0', color: '#64748b' }}>
-                  <th style={{ textAlign: 'left', paddingBottom: 6 }}>Particulars</th>
-                  <th style={{ textAlign: 'right', paddingBottom: 6 }}>Amount (₹)</th>
+                <tr className="times-of-india-tracker-s119">
+                  <th className="times-of-india-tracker-s120">Particulars</th>
+                  <th className="times-of-india-tracker-s121">Amount (₹)</th>
                 </tr>
               </thead>
               <tbody>
                 {d.extraPaidItems.map((item, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px dashed #f1f5f9' }}>
-                    <td style={{ padding: '5px 0', color: '#334155' }}>{item.period}</td>
-                    <td style={{ padding: '5px 0', textAlign: 'right', fontWeight: 700, color: '#15803d' }}>
+                  <tr key={idx} className="times-of-india-tracker-s122">
+                    <td className="times-of-india-tracker-s130">{item.period}</td>
+                    <td className="times-of-india-tracker-s131">
                       {Number(item.amount).toLocaleString('en-IN')}
                     </td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
-                <tr style={{ borderTop: '2px solid #86efac', fontWeight: 800 }}>
-                  <td style={{ paddingTop: 8, color: '#166534', textTransform: 'uppercase' }}>TOTAL EXTRA PAID</td>
-                  <td style={{ paddingTop: 8, textAlign: 'right', color: '#15803d', fontSize: '0.92rem' }}>
+                <tr className="times-of-india-tracker-s132">
+                  <td className="times-of-india-tracker-s133">TOTAL EXTRA PAID</td>
+                  <td className="times-of-india-tracker-s134">
                     ₹{Number(d.totalExtraPaid).toLocaleString('en-IN')}
                   </td>
                 </tr>
@@ -1066,28 +943,22 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
         </div>
 
         {/* E. Net Outstanding Calculation */}
-        <div style={{
-          background: 'rgba(255,250,242,0.98)', border: '1px solid #cbd5e1',
-          borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 10px rgba(15,23,42,0.06)'
-        }}>
-          <div style={{ padding: '10px 14px', background: '#f1f5f9', color: '#0f172a', fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}>
+        <div className="times-of-india-tracker-s135">
+          <div className="times-of-india-tracker-s136">
             E. NET OUTSTANDING CALCULATION
           </div>
-          <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: 8, fontSize: '0.76rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475569' }}>
+          <div className="times-of-india-tracker-s137">
+            <div className="times-of-india-tracker-s138">
               <span>Total Shortfall (C)</span>
-              <strong style={{ color: '#dc2626' }}>₹{Number(d.totalShortfall).toLocaleString('en-IN')}</strong>
+              <strong className="times-of-india-tracker-s139">₹{Number(d.totalShortfall).toLocaleString('en-IN')}</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475569' }}>
+            <div className="times-of-india-tracker-s138">
               <span>Less: Total Extra Paid (D)</span>
-              <strong style={{ color: '#15803d' }}>- ₹{Number(d.totalExtraPaid).toLocaleString('en-IN')}</strong>
+              <strong className="times-of-india-tracker-s140">- ₹{Number(d.totalExtraPaid).toLocaleString('en-IN')}</strong>
             </div>
-            <div style={{
-              marginTop: 6, paddingTop: 10, borderTop: '2px solid #cbd5e1',
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-            }}>
-              <span style={{ fontWeight: 800, color: '#0f172a', textTransform: 'uppercase' }}>NET OUTSTANDING BALANCE</span>
-              <span style={{ fontSize: '1.2rem', fontWeight: 900, color: '#dc2626' }}>
+            <div className="times-of-india-tracker-s141">
+              <span className="times-of-india-tracker-s142">NET OUTSTANDING BALANCE</span>
+              <span className="times-of-india-tracker-s143">
                 ₹{Number(d.netOutstanding).toLocaleString('en-IN')}
               </span>
             </div>
@@ -1095,30 +966,24 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
         </div>
 
         {/* F. Overall Summary */}
-        <div style={{
-          background: 'rgba(255,250,242,0.98)', border: '1px solid #0b2b26',
-          borderRadius: 14, overflow: 'hidden', boxShadow: '0 4px 14px rgba(11,43,38,0.1)'
-        }}>
-          <div style={{ padding: '10px 14px', background: '#0b2b26', color: '#c49b4f', fontWeight: 800, fontSize: '0.75rem', textTransform: 'uppercase' }}>
+        <div className="times-of-india-tracker-s144">
+          <div className="times-of-india-tracker-s145">
             F. OVERALL SUMMARY
           </div>
-          <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: 6, fontSize: '0.76rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475569' }}>
+          <div className="times-of-india-tracker-s146">
+            <div className="times-of-india-tracker-s138">
               <span>Total Amount Due ({d.kpi.totalDuePeriod})</span>
-              <strong style={{ color: '#0f172a' }}>₹{Number(d.kpi.totalDue).toLocaleString('en-IN')}</strong>
+              <strong className="times-of-india-tracker-s107">₹{Number(d.kpi.totalDue).toLocaleString('en-IN')}</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475569' }}>
+            <div className="times-of-india-tracker-s138">
               <span>Total Amount Paid (Till Date)</span>
-              <strong style={{ color: '#15803d' }}>₹{Number(d.kpi.totalPaid).toLocaleString('en-IN')}</strong>
+              <strong className="times-of-india-tracker-s140">₹{Number(d.kpi.totalPaid).toLocaleString('en-IN')}</strong>
             </div>
-            <div style={{
-              marginTop: 8, padding: '10px 12px', background: '#0b2b26', borderRadius: 8,
-              color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-            }}>
-              <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div className="times-of-india-tracker-s147">
+              <span className="times-of-india-tracker-s148">
                 NET OUTSTANDING TO BE RECEIVED
               </span>
-              <span style={{ fontSize: '1.15rem', fontWeight: 900, color: '#fde047' }}>
+              <span className="times-of-india-tracker-s149">
                 ₹{Number(d.netOutstanding).toLocaleString('en-IN')}
               </span>
             </div>
@@ -1128,27 +993,24 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
       </div>
 
       {/* ── Key Takeaways & Footnotes ── */}
-      <div style={{
-        background: '#fff', borderRadius: 14, border: '1px solid #cbd5e1',
-        padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 10
-      }}>
-        <div style={{ fontSize: '0.76rem', fontWeight: 800, textTransform: 'uppercase', color: '#0b2b26' }}>
+      <div className="times-of-india-tracker-s150">
+        <div className="times-of-india-tracker-s151">
           📌 KEY TAKEAWAYS
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: '0.76rem', color: '#334155' }}>
+        <div className="times-of-india-tracker-s152">
           {d.takeaways.map((takeaway, idx) => (
-            <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-              <span style={{ color: '#15803d', fontWeight: 800 }}>✓</span>
+            <div key={idx} className="times-of-india-tracker-s153">
+              <span className="times-of-india-tracker-s154">✓</span>
               <span>{takeaway}</span>
             </div>
           ))}
         </div>
         
-        <div style={{ borderTop: '1px dashed #cbd5e1', paddingTop: 10, fontSize: '0.72rem', color: '#64748b', display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <div className="times-of-india-tracker-s155">
           {d.notes.map((note, idx) => (
             <div key={idx}>• {note}</div>
           ))}
-          <div style={{ color: '#b45309', fontWeight: 700, marginTop: 2 }}>
+          <div className="times-of-india-tracker-s156">
             ⭐ Extra payments of ₹6,300 have been adjusted against the shortfall to arrive at the Net Outstanding Balance of ₹6,900.
           </div>
         </div>
@@ -2178,52 +2040,46 @@ Majestique Euriska 'A' Building CHS Ltd.`;
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 18, fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div className="times-of-india-tracker-s157">
 
       {/* ── Dark Banner ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-        borderRadius: 20, padding: '20px 24px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: 16,
-        boxShadow: '0 6px 28px rgba(11,43,38,0.22)',
-      }}>
+      <div className="times-of-india-tracker-s158">
         <div>
-          <p style={{ margin: '0 0 2px', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#C49B4F' }}>
+          <p className="times-of-india-tracker-s159">
             Corporate Member Flats (Times Horizon Private Limited)
           </p>
-          <h2 style={{ margin: '0 0 2px', fontSize: '1.35rem', fontWeight: 800, color: '#fff' }}>
+          <h2 className="times-of-india-tracker-s160">
             📰 Times of India Tracker
           </h2>
-          <p style={{ margin: 0, color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>
+          <p className="times-of-india-tracker-s161">
             Flats A-302 · A-904 · A-1002 &nbsp;|&nbsp; Majestique Euriska
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="times-of-india-tracker-s11">
           <StatChip label="Total"   value={totalBills}   bg="rgba(255,255,255,0.1)"  color="#fff"    />
           <StatChip label="Paid"    value={totalPaid}    bg="rgba(110,231,183,0.2)"  color="#6ee7b7" />
           <StatChip label="Pending" value={totalPending} bg="rgba(253,224,71,0.18)"  color="#fde047" />
 
           {/* Progress ring */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '8px 14px' }}>
-            <div style={{ position: 'relative', width: 44, height: 44 }}>
+          <div className="times-of-india-tracker-s162">
+            <div className="times-of-india-tracker-s163">
               <svg width="44" height="44" viewBox="0 0 44 44">
                 <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="5" />
                 <circle cx="22" cy="22" r="18" fill="none" stroke="#6ee7b7" strokeWidth="5"
                   strokeDasharray={`${2 * Math.PI * 18}`}
                   strokeDashoffset={`${2 * Math.PI * 18 * (1 - donePercent / 100)}`}
                   strokeLinecap="round" transform="rotate(-90 22 22)"
-                  style={{ transition: 'stroke-dashoffset 0.6s ease' }}
+                  className="times-of-india-tracker-s164"
                 />
               </svg>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800, color: '#6ee7b7' }}>
+              <div className="times-of-india-tracker-s165">
                 {donePercent}%
               </div>
             </div>
             <div>
-              <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.2 }}>Completion</div>
-              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>{totalPaid}/{totalBills}</div>
+              <div className="times-of-india-tracker-s166">Completion</div>
+              <div className="times-of-india-tracker-s167">{totalPaid}/{totalBills}</div>
             </div>
           </div>
 
@@ -2233,21 +2089,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               setInvoiceScope('all_pending');
               setIsInvoiceModalOpen(true);
             }}
-            style={{
-              padding: '9px 16px',
-              borderRadius: 999,
-              background: 'linear-gradient(135deg, #c49b4f 0%, #b38634 100%)',
-              color: '#0b2b26',
-              border: 'none',
-              fontWeight: 800,
-              cursor: 'pointer',
-              fontSize: '0.82rem',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              boxShadow: '0 4px 14px rgba(196,155,79,0.35)',
-              transition: 'all 0.2s ease'
-            }}
+            className="times-of-india-tracker-s168"
           >
             🧾 Generate TOI Invoices
           </button>
@@ -2258,81 +2100,52 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               setInvoiceScope('all');
               handlePrintToiInvoices();
             }}
-            style={{
-              padding: '9px 16px',
-              borderRadius: 999,
-              background: 'rgba(255,255,255,0.14)',
-              color: '#fff',
-              border: '1px solid rgba(255,255,255,0.25)',
-              fontWeight: 700,
-              cursor: 'pointer',
-              fontSize: '0.82rem',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              backdropFilter: 'blur(8px)',
-              transition: 'all 0.2s ease'
-            }}
+            className="times-of-india-tracker-s169"
           >
             🖨️ Print All 3 Flats
           </button>
 
-          {saveStatus === 'saving' && <span style={{ fontSize: '0.75rem', color: '#fde047', fontWeight: 700 }}>Saving…</span>}
-          {saveStatus === 'saved'  && <span style={{ fontSize: '0.75rem', color: '#6ee7b7', fontWeight: 700 }}>{saveMsg}</span>}
-          {saveStatus === 'error'  && <span style={{ fontSize: '0.75rem', color: '#fca5a5', fontWeight: 700 }}>{saveMsg}</span>}
-          {isLoading               && <span style={{ fontSize: '0.75rem', color: '#93c5fd', fontWeight: 700 }}>Loading…</span>}
+          {saveStatus === 'saving' && <span className="times-of-india-tracker-s170">Saving…</span>}
+          {saveStatus === 'saved'  && <span className="times-of-india-tracker-s171">{saveMsg}</span>}
+          {saveStatus === 'error'  && <span className="times-of-india-tracker-s172">{saveMsg}</span>}
+          {isLoading               && <span className="times-of-india-tracker-s173">Loading…</span>}
         </div>
       </div>
 
       {/* ── Prominent Banner: Payment Received Today (23-Oct-2026) ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #164e63 100%)',
-        border: '2px solid #86efac',
-        borderRadius: 16,
-        padding: '16px 22px',
-        color: '#fff',
-        boxShadow: '0 6px 20px rgba(11,43,38,0.22)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: 14
-      }}>
+      <div className="times-of-india-tracker-s174">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-            <span style={{
-              background: '#16a34a', color: '#fff', fontSize: '0.72rem', fontWeight: 800,
-              padding: '3px 10px', borderRadius: 999, textTransform: 'uppercase', letterSpacing: '0.06em'
-            }}>
+          <div className="times-of-india-tracker-s175">
+            <span className="times-of-india-tracker-s176">
               ✓ PAYMENT RECEIVED TODAY (23-OCT-2026)
             </span>
-            <span style={{ fontSize: '0.8rem', color: '#86efac', fontWeight: 700 }}>
+            <span className="times-of-india-tracker-s177">
               Period: Oct 2026 – Mar 2027 (6 Months @ ₹3,000/mo)
             </span>
           </div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff' }}>
+          <div className="times-of-india-tracker-s178">
             Flats A-302 &amp; A-904 Cleared: ₹18,000 each (Total ₹36,000 Received)
           </div>
-          <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.85)', marginTop: 4, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <span>• <strong>Flat A-302:</strong> ₹18,000 <span style={{ color: '#86efac', fontWeight: 700 }}>(PAID IN FULL - Bal: ₹0)</span></span>
-            <span>• <strong>Flat A-904:</strong> ₹18,000 <span style={{ color: '#86efac', fontWeight: 700 }}>(PAID IN FULL - Bal: ₹0)</span></span>
-            <span>• <strong>Flat A-1002:</strong> <span style={{ color: '#fde047', fontWeight: 800 }}>₹31,200 PENDING</span> (Arrears ₹13,200 + Current ₹18,000)</span>
+          <div className="times-of-india-tracker-s179">
+            <span>• <strong>Flat A-302:</strong> ₹18,000 <span className="times-of-india-tracker-s180">(PAID IN FULL - Bal: ₹0)</span></span>
+            <span>• <strong>Flat A-904:</strong> ₹18,000 <span className="times-of-india-tracker-s180">(PAID IN FULL - Bal: ₹0)</span></span>
+            <span>• <strong>Flat A-1002:</strong> <span className="times-of-india-tracker-s181">₹31,200 PENDING</span> (Arrears ₹13,200 + Current ₹18,000)</span>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <div style={{ textAlign: 'right', background: 'rgba(255,255,255,0.1)', padding: '8px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.2)' }}>
-            <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#86efac', fontWeight: 800 }}>Received Today</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#4ade80', fontFamily: 'monospace' }}>₹36,000</div>
+        <div className="times-of-india-tracker-s182">
+          <div className="times-of-india-tracker-s183">
+            <div className="times-of-india-tracker-s184">Received Today</div>
+            <div className="times-of-india-tracker-s185">₹36,000</div>
           </div>
-          <div style={{ textAlign: 'right', background: 'rgba(255,255,255,0.1)', padding: '8px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.2)' }}>
-            <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#fde047', fontWeight: 800 }}>A-1002 Balance</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#facc15', fontFamily: 'monospace' }}>₹31,200</div>
+          <div className="times-of-india-tracker-s183">
+            <div className="times-of-india-tracker-s186">A-1002 Balance</div>
+            <div className="times-of-india-tracker-s187">₹31,200</div>
           </div>
         </div>
       </div>
 
       {/* ── Main Tab Switcher: Payment Reconciliation vs Flats Ledger ── */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div className="times-of-india-tracker-s188">
         {[
           { id: 'reconciliation', label: '📊 Payment Reconciliation (Paid vs Pending: ₹6,900)', emoji: '⚖️' },
           { id: null, label: '🏢 All Flats Ledger (A-302, A-904, A-1002)', emoji: '📑' },
@@ -2341,23 +2154,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
           <button
             key={String(tab.id)}
             onClick={() => setActiveFlat(tab.id)}
-            style={{
-              padding: '9px 18px',
-              borderRadius: 12,
-              border: '2px solid',
-              borderColor: activeFlat === tab.id ? '#0b2b26' : 'rgba(61,63,52,0.15)',
-              cursor: 'pointer',
-              fontWeight: 700,
-              fontSize: '0.88rem',
-              fontFamily: 'inherit',
-              background: activeFlat === tab.id ? '#0b2b26' : 'rgba(255,250,242,0.85)',
-              color: activeFlat === tab.id ? '#C49B4F' : '#1d2a24',
-              boxShadow: activeFlat === tab.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none',
-              transition: 'all 0.18s',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 7,
-            }}
+            className="times-of-india-tracker-s189" style={{ borderColor: activeFlat === tab.id ? '#0b2b26' : 'rgba(61,63,52,0.15)', background: activeFlat === tab.id ? '#0b2b26' : 'rgba(255,250,242,0.85)', color: activeFlat === tab.id ? '#C49B4F' : '#1d2a24', boxShadow: activeFlat === tab.id ? '0 4px 14px rgba(11,43,38,0.2)' : 'none' }}
           >
             <span>{tab.emoji}</span> <span>{tab.label}</span>
           </button>
@@ -2381,39 +2178,31 @@ Majestique Euriska 'A' Building CHS Ltd.`;
       ) : (
         <>
           {/* ── Summary Cards ── */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
+          <div className="times-of-india-tracker-s190">
             {[
               { label: 'Grand Total (3 Flats)', value: fmt(TOTAL_PER_FLAT * 3), sub: `${fmt(TOTAL_PER_FLAT)} per flat`, accent: '#0b2b26' },
               { label: 'Amount Pending',        value: fmt(amtPending),          sub: 'Across all 3 flats',             accent: '#991b1b' },
               { label: 'Amount Paid',           value: fmt(amtPaid),             sub: 'Across all 3 flats',             accent: '#065f46' },
               { label: 'Per Flat Total',        value: fmt(TOTAL_PER_FLAT),      sub: '45 mos + 12 mos',                accent: '#196c6c' },
             ].map(c => (
-              <div key={c.label} style={{
-                background: 'rgba(255,250,242,0.97)', border: '1px solid rgba(61,63,52,0.1)',
-                borderRadius: 14, padding: '16px 18px',
-                boxShadow: '0 2px 10px rgba(11,43,38,0.06)',
-              }}>
-                <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#5f665f', marginBottom: 6 }}>{c.label}</div>
-                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: c.accent, lineHeight: 1 }}>{c.value}</div>
-                <div style={{ fontSize: '0.7rem', color: '#8a9080', marginTop: 5 }}>{c.sub}</div>
+              <div key={c.label} className="times-of-india-tracker-s191">
+                <div className="times-of-india-tracker-s192">{c.label}</div>
+                <div className="times-of-india-tracker-s193" style={{ color: c.accent }}>{c.value}</div>
+                <div className="times-of-india-tracker-s194">{c.sub}</div>
               </div>
             ))}
           </div>
 
           {/* ── Rate Slab Banner ── */}
-          <div style={{
-            padding: '12px 18px', borderRadius: 12,
-            background: 'rgba(196,155,79,0.07)', border: '1px solid rgba(196,155,79,0.2)',
-            display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center',
-          }}>
-            <span style={{ fontSize: '0.76rem', fontWeight: 800, color: '#78400e' }}>📋 Rate Slabs:</span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.76rem', color: '#5f665f' }}>
-              <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 3, background: '#C49B4F' }} />
+          <div className="times-of-india-tracker-s195">
+            <span className="times-of-india-tracker-s196">📋 Rate Slabs:</span>
+            <span className="times-of-india-tracker-s197">
+              <span className="times-of-india-tracker-s198" />
               <b>Oct 2021 – Jun 2025</b>: ₹2,200 / year (₹183.33/mo)
             </span>
-            <span style={{ color: 'rgba(61,63,52,0.25)' }}>|</span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.76rem', color: '#5f665f' }}>
-              <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 3, background: '#93c5fd' }} />
+            <span className="times-of-india-tracker-s199">|</span>
+            <span className="times-of-india-tracker-s197">
+              <span className="times-of-india-tracker-s200" />
               <b>Jul 2025 – Sept 2026</b>: ₹3,000 / year (₹250.00/mo)
             </span>
           </div>
@@ -2426,62 +2215,41 @@ Majestique Euriska 'A' Building CHS Ltd.`;
         const pct       = Math.round((paidAmt / TOTAL_PER_FLAT) * 100);
 
         return (
-          <div key={flat.id} style={{
-            background: 'rgba(255,250,242,0.97)', borderRadius: 20,
-            border: '1px solid rgba(61,63,52,0.1)',
-            boxShadow: '0 4px 24px rgba(11,43,38,0.07)', overflow: 'hidden',
-          }}>
+          <div key={flat.id} className="times-of-india-tracker-s201">
 
             {/* Card Header */}
-            <div style={{
-              padding: '16px 22px',
-              background: 'linear-gradient(135deg, rgba(244,239,231,0.98), rgba(255,250,242,0.9))',
-              borderBottom: '1px solid rgba(61,63,52,0.08)',
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14,
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{
-                  width: 50, height: 50,
-                  background: 'linear-gradient(135deg, #0b2b26, #196c6c)',
-                  color: '#C49B4F', borderRadius: 13,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontWeight: 800, fontSize: '1rem',
-                  boxShadow: '0 4px 14px rgba(11,43,38,0.25)',
-                }}>
+            <div className="times-of-india-tracker-s202">
+              <div className="times-of-india-tracker-s203">
+                <div className="times-of-india-tracker-s204">
                   {flat.flatNo.split('-')[1]}
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: '#196c6c', marginBottom: 2 }}>Flat Member</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0b2b26' }}>{flat.flatNo}</div>
+                  <div className="times-of-india-tracker-s205">Flat Member</div>
+                  <div className="times-of-india-tracker-s206">{flat.flatNo}</div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-                <div style={{ minWidth: 120 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.67rem', color: '#5f665f', marginBottom: 5 }}>
+              <div className="times-of-india-tracker-s207">
+                <div className="times-of-india-tracker-s208">
+                  <div className="times-of-india-tracker-s209">
                     <span>{paidCount}/{flat.bills.length} paid</span>
                     <b style={{ color: pct > 0 ? '#065f46' : '#5f665f' }}>{pct}%</b>
                   </div>
-                  <div style={{ height: 7, background: 'rgba(61,63,52,0.1)', borderRadius: 99 }}>
-                    <div style={{
-                      height: '100%', borderRadius: 99,
-                      width: `${pct}%`, minWidth: pct > 0 ? 4 : 0,
-                      background: 'linear-gradient(90deg, #196c6c, #34d399)',
-                      transition: 'width 0.5s ease',
-                    }} />
+                  <div className="times-of-india-tracker-s210">
+                    <div className="times-of-india-tracker-s211" style={{ width: `${pct}%`, minWidth: pct > 0 ? 4 : 0 }} />
                   </div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#991b1b', marginBottom: 2 }}>Pending</div>
-                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: pendAmt > 0 ? '#991b1b' : '#065f46' }}>{fmt(pendAmt)}</div>
+                <div className="times-of-india-tracker-s212">
+                  <div className="times-of-india-tracker-s213">Pending</div>
+                  <div className="times-of-india-tracker-s214" style={{ color: pendAmt > 0 ? '#991b1b' : '#065f46' }}>{fmt(pendAmt)}</div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.63rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#065f46', marginBottom: 2 }}>Paid</div>
-                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#065f46' }}>{fmt(paidAmt)}</div>
+                <div className="times-of-india-tracker-s212">
+                  <div className="times-of-india-tracker-s215">Paid</div>
+                  <div className="times-of-india-tracker-s216">{fmt(paidAmt)}</div>
                 </div>
                 
                 {/* Flat Action Buttons */}
-                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <div className="times-of-india-tracker-s217">
                   <button
                     type="button"
                     onClick={() => {
@@ -2489,38 +2257,14 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       setInvoiceScope('single');
                       setIsInvoiceModalOpen(true);
                     }}
-                    style={{
-                      padding: '6px 12px',
-                      borderRadius: 8,
-                      background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-                      color: '#C49B4F',
-                      border: '1px solid #C49B4F',
-                      fontWeight: 700,
-                      fontSize: '0.78rem',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 4
-                    }}
+                    className="times-of-india-tracker-s218"
                   >
                     🧾 Invoice
                   </button>
                   <button
                     type="button"
                     onClick={() => handleShareToiWhatsApp(flat)}
-                    style={{
-                      padding: '6px 10px',
-                      borderRadius: 8,
-                      background: '#25D366',
-                      color: '#fff',
-                      border: 'none',
-                      fontWeight: 700,
-                      fontSize: '0.78rem',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 4
-                    }}
+                    className="times-of-india-tracker-s219"
                     title="Share invoice summary on WhatsApp"
                   >
                     📱
@@ -2530,18 +2274,18 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             </div>
 
             {/* Table */}
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 560 }}>
+            <div className="times-of-india-tracker-s35">
+              <table className="times-of-india-tracker-s220">
                 <thead>
                   <tr>
-                    <th style={{ ...TH_BASE, textAlign: 'center', width: 40 }}>#</th>
-                    <th style={{ ...TH_BASE, textAlign: 'left' }}>Financial Year</th>
-                    <th style={{ ...TH_BASE, textAlign: 'left' }}>Period</th>
-                    <th style={{ ...TH_BASE, textAlign: 'center' }}>Months</th>
-                    <th style={{ ...TH_BASE, textAlign: 'center' }}>Rate / Year</th>
-                    <th style={{ ...TH_BASE, textAlign: 'right' }}>Amount</th>
-                    <th style={{ ...TH_BASE, textAlign: 'center' }}>Status</th>
-                    {isAdmin && <th style={{ ...TH_BASE, textAlign: 'center' }}>Action</th>}
+                    <th className="times-of-india-tracker-s221" style={{ ...TH_BASE }}>#</th>
+                    <th className="times-of-india-tracker-s222" style={{ ...TH_BASE }}>Financial Year</th>
+                    <th className="times-of-india-tracker-s222" style={{ ...TH_BASE }}>Period</th>
+                    <th className="times-of-india-tracker-s223" style={{ ...TH_BASE }}>Months</th>
+                    <th className="times-of-india-tracker-s223" style={{ ...TH_BASE }}>Rate / Year</th>
+                    <th className="times-of-india-tracker-s212" style={{ ...TH_BASE }}>Amount</th>
+                    <th className="times-of-india-tracker-s223" style={{ ...TH_BASE }}>Status</th>
+                    {isAdmin && <th className="times-of-india-tracker-s223" style={{ ...TH_BASE }}>Action</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -2552,46 +2296,30 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                     return (
                       <tr
                         key={bill.id}
-                        style={{
-                          borderBottom: idx < flat.bills.length - 1 ? '1px solid rgba(61,63,52,0.055)' : 'none',
-                          background: rowBg, transition: 'background 0.13s',
-                        }}
+                        className="times-of-india-tracker-s224" style={{ borderBottom: idx < flat.bills.length - 1 ? '1px solid rgba(61,63,52,0.055)' : 'none', background: rowBg }}
                         onMouseEnter={e => { if (!isPaid) e.currentTarget.style.background = 'rgba(244,239,231,0.5)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = rowBg; }}
                       >
-                        <td style={{ ...TD_BASE, textAlign: 'center', color: '#c4b99a', fontSize: '0.72rem', fontWeight: 700 }}>{idx + 1}</td>
+                        <td className="times-of-india-tracker-s225" style={{ ...TD_BASE }}>{idx + 1}</td>
                         <td style={TD_BASE}>
-                          <span style={{
-                            display: 'inline-block', padding: '3px 10px', borderRadius: 8,
-                            fontSize: '0.71rem', fontWeight: 700,
-                            background: isNewRate ? 'rgba(147,197,253,0.22)' : 'rgba(196,155,79,0.13)',
-                            color: isNewRate ? '#1e40af' : '#78400e',
-                          }}>
+                          <span className="times-of-india-tracker-s226" style={{ background: isNewRate ? 'rgba(147,197,253,0.22)' : 'rgba(196,155,79,0.13)', color: isNewRate ? '#1e40af' : '#78400e' }}>
                             {bill.year}
                           </span>
                         </td>
-                        <td style={{ ...TD_BASE, fontWeight: 600, fontSize: '0.85rem', color: '#1d2a24' }}>{bill.period}</td>
-                        <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 600, fontSize: '0.83rem', color: '#5f665f' }}>{bill.months}</td>
-                        <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 700, fontSize: '0.83rem', color: isNewRate ? '#1e40af' : '#78400e' }}>
+                        <td className="times-of-india-tracker-s227" style={{ ...TD_BASE }}>{bill.period}</td>
+                        <td className="times-of-india-tracker-s228" style={{ ...TD_BASE }}>{bill.months}</td>
+                        <td className="times-of-india-tracker-s229" style={{ ...TD_BASE, color: isNewRate ? '#1e40af' : '#78400e' }}>
                           {fmt(bill.rate)}/yr
                         </td>
-                        <td style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.92rem', color: '#0b2b26', fontVariantNumeric: 'tabular-nums' }}>
+                        <td className="times-of-india-tracker-s230" style={{ ...TD_BASE }}>
                           {fmt(bill.amount)}
                         </td>
-                        <td style={{ ...TD_BASE, textAlign: 'center' }}>
+                        <td className="times-of-india-tracker-s223" style={{ ...TD_BASE }}>
                           <StatusBadge status={bill.status} />
                         </td>
                         {isAdmin && (
-                          <td style={{ ...TD_BASE, textAlign: 'center' }}>
-                            <button onClick={() => toggleBill(flat.id, bill.id)} style={{
-                              padding: '5px 14px',
-                              background: isPaid ? 'rgba(61,63,52,0.07)' : '#0b2b26',
-                              color: isPaid ? '#5f665f' : '#C49B4F',
-                              border: isPaid ? '1px solid rgba(61,63,52,0.15)' : 'none',
-                              borderRadius: 10, cursor: 'pointer',
-                              fontSize: '0.75rem', fontWeight: 700,
-                              fontFamily: 'inherit', transition: 'all 0.15s', whiteSpace: 'nowrap',
-                            }}>
+                          <td className="times-of-india-tracker-s223" style={{ ...TD_BASE }}>
+                            <button onClick={() => toggleBill(flat.id, bill.id)} className="times-of-india-tracker-s231" style={{ background: isPaid ? 'rgba(61,63,52,0.07)' : '#0b2b26', color: isPaid ? '#5f665f' : '#C49B4F', border: isPaid ? '1px solid rgba(61,63,52,0.15)' : 'none' }}>
                               {isPaid ? 'Unmark' : '✓ Mark Paid'}
                             </button>
                           </td>
@@ -2603,29 +2331,23 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
                 {/* Grand Total Footer */}
                 <tfoot>
-                  <tr style={{ background: 'rgba(11,43,38,0.04)', borderTop: '2px solid rgba(61,63,52,0.13)' }}>
-                    <td colSpan={3} style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.82rem', color: '#0b2b26', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <tr className="times-of-india-tracker-s232">
+                    <td colSpan={3} className="times-of-india-tracker-s233" style={{ ...TD_BASE }}>
                       Grand Total ({TOTAL_MONTHS} Months)
                     </td>
-                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 800, fontSize: '0.92rem', color: '#196c6c' }}>
-                      <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 8, background: 'rgba(25,108,108,0.1)', color: '#196c6c', fontWeight: 800, fontSize: '0.82rem' }}>
+                    <td className="times-of-india-tracker-s234" style={{ ...TD_BASE }}>
+                      <span className="times-of-india-tracker-s235">
                         {TOTAL_MONTHS} mos
                       </span>
                     </td>
-                    <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 700, fontSize: '0.8rem', color: '#5f665f' }}>
+                    <td className="times-of-india-tracker-s236" style={{ ...TD_BASE }}>
                       45 × ₹2,200<br />21 × ₹3,000
                     </td>
-                    <td style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '1rem', color: '#0b2b26', fontVariantNumeric: 'tabular-nums' }}>
+                    <td className="times-of-india-tracker-s237" style={{ ...TD_BASE }}>
                       {fmt(TOTAL_PER_FLAT)}
                     </td>
-                    <td style={{ ...TD_BASE, textAlign: 'center' }}>
-                      <span style={{
-                        display: 'inline-block', padding: '4px 10px', borderRadius: 20,
-                        fontSize: '0.72rem', fontWeight: 700,
-                        background: pendAmt === 0 ? 'rgba(209,250,229,0.7)' : 'rgba(254,226,226,0.6)',
-                        color: pendAmt === 0 ? '#065f46' : '#991b1b',
-                        border: `1px solid ${pendAmt === 0 ? '#34d399' : '#fca5a5'}`,
-                      }}>
+                    <td className="times-of-india-tracker-s223" style={{ ...TD_BASE }}>
+                      <span className="times-of-india-tracker-s238" style={{ background: pendAmt === 0 ? 'rgba(209,250,229,0.7)' : 'rgba(254,226,226,0.6)', color: pendAmt === 0 ? '#065f46' : '#991b1b', border: `1px solid ${pendAmt === 0 ? '#34d399' : '#fca5a5'}` }}>
                         {pendAmt === 0 ? '✓ Fully Paid' : `${fmt(pendAmt)} due`}
                       </span>
                     </td>
@@ -2636,46 +2358,30 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             </div>
 
             {/* Current Cycle (Oct 2026 – Mar 2027) Settlement Snapshot */}
-            <div style={{
-              margin: '14px 18px 18px',
-              padding: '14px 18px',
-              borderRadius: 14,
-              border: (flat.id === 'A-302' || flat.id === 'A-904') ? '1.5px solid #86efac' : '1.5px solid #fde68a',
-              background: (flat.id === 'A-302' || flat.id === 'A-904') ? '#f0fdf4' : '#fffbeb',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 12
-            }}>
+            <div className="times-of-india-tracker-s239" style={{ border: (flat.id === 'A-302' || flat.id === 'A-904') ? '1.5px solid #86efac' : '1.5px solid #fde68a', background: (flat.id === 'A-302' || flat.id === 'A-904') ? '#f0fdf4' : '#fffbeb' }}>
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
-                  <span style={{
-                    fontSize: '0.68rem', fontWeight: 800, padding: '3px 8px', borderRadius: 6, textTransform: 'uppercase',
-                    background: (flat.id === 'A-302' || flat.id === 'A-904') ? '#dcfce7' : '#fef3c7',
-                    color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#92400e',
-                    border: (flat.id === 'A-302' || flat.id === 'A-904') ? '1px solid #86efac' : '1px solid #fde68a'
-                  }}>
+                <div className="times-of-india-tracker-s240">
+                  <span className="times-of-india-tracker-s241" style={{ background: (flat.id === 'A-302' || flat.id === 'A-904') ? '#dcfce7' : '#fef3c7', color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#92400e', border: (flat.id === 'A-302' || flat.id === 'A-904') ? '1px solid #86efac' : '1px solid #fde68a' }}>
                     {(flat.id === 'A-302' || flat.id === 'A-904') ? '✓ Current Cycle: PAID' : '⏳ Current Cycle: PENDING'}
                   </span>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#166534' : '#92400e' }}>
+                  <span className="times-of-india-tracker-s242" style={{ color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#166534' : '#92400e' }}>
                     Oct 2026 – Mar 2027 (6 Mos @ ₹3,000/mo = ₹18,000)
                   </span>
                 </div>
-                <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#0f172a' }}>
+                <div className="times-of-india-tracker-s243">
                   {(flat.id === 'A-302' || flat.id === 'A-904')
                     ? `Payment Received Today (23-10-2026): ₹18,000 • Net Balance Due: ₹0 (Paid in Full)`
                     : `Flat A-1002 Balance Due: ₹31,200 (Arrears Oct 24–Mar 25: ₹13,200 + Current Oct 26–Mar 27: ₹18,000)`}
                 </div>
-                <div style={{ fontSize: '0.74rem', color: '#64748b', marginTop: 2 }}>
+                <div className="times-of-india-tracker-s244">
                   Maint: ₹2,850 × 6 = ₹17,100 | Sinking: ₹150 × 6 = ₹900 | Ref: {flat.id === 'A-302' ? 'ME/A/18/Oct26' : (flat.id === 'A-904' ? 'ME/A/16/Oct-26' : 'ME/A/17/Oct-26')}
                 </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.66rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#b45309', fontWeight: 800 }}>
+              <div className="times-of-india-tracker-s212">
+                <div className="times-of-india-tracker-s245" style={{ color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#b45309' }}>
                   {(flat.id === 'A-302' || flat.id === 'A-904') ? 'Paid Today' : 'Total Pending'}
                 </div>
-                <div style={{ fontSize: '1.45rem', fontWeight: 900, color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#b45309', fontFamily: 'monospace' }}>
+                <div className="times-of-india-tracker-s246" style={{ color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#b45309' }}>
                   {(flat.id === 'A-302' || flat.id === 'A-904') ? '₹18,000' : '₹31,200'}
                 </div>
               </div>
@@ -2688,65 +2394,47 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
       {/* ── TOI INVOICE GENERATOR MODAL ── */}
       {isInvoiceModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div style={{ background: '#fff', borderRadius: 16, width: '100%', maxWidth: 980, maxHeight: '92vh', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', overflow: 'hidden' }}>
+        <div className="times-of-india-tracker-s247">
+          <div className="times-of-india-tracker-s248">
             
             {/* Modal Header */}
-            <div style={{ padding: '18px 24px', background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)' }}>
+            <div className="times-of-india-tracker-s249">
               <div>
-                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#c49b4f', fontWeight: 800 }}>Society Subscription Billing</span>
-                <h3 style={{ margin: '4px 0 0', fontSize: '1.25rem', fontWeight: 800 }}>🧾 Times of India Subscription Invoice Generator</h3>
+                <span className="times-of-india-tracker-s250">Society Subscription Billing</span>
+                <h3 className="times-of-india-tracker-s251">🧾 Times of India Subscription Invoice Generator</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsInvoiceModalOpen(false)}
-                style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                className="times-of-india-tracker-s252"
               >
                 ✕
               </button>
             </div>
 
             {/* Modal Body: Split view */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', overflow: 'hidden', flex: 1 }}>
+            <div className="times-of-india-tracker-s253">
               
               {/* Left Column: Form & Configuration */}
-              <div style={{ padding: '20px', overflowY: 'auto', background: '#f8fafc', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div className="times-of-india-tracker-s254">
                 
                 {/* Target Scope Selection */}
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#334155', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <label className="times-of-india-tracker-s255">
                     1. Select Target Flat(s)
                   </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 8 }}>
+                  <div className="times-of-india-tracker-s256">
                     <button
                       type="button"
                       onClick={() => setInvoiceScope('single')}
-                      style={{
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        border: invoiceScope === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: invoiceScope === 'single' ? '#0b2b26' : '#fff',
-                        color: invoiceScope === 'single' ? '#C49B4F' : '#334155',
-                        cursor: 'pointer'
-                      }}
+                      className="times-of-india-tracker-s257" style={{ border: invoiceScope === 'single' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: invoiceScope === 'single' ? '#0b2b26' : '#fff', color: invoiceScope === 'single' ? '#C49B4F' : '#334155' }}
                     >
                       Single Flat
                     </button>
                     <button
                       type="button"
                       onClick={() => setInvoiceScope('all_pending')}
-                      style={{
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        border: invoiceScope === 'all_pending' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: invoiceScope === 'all_pending' ? '#0b2b26' : '#fff',
-                        color: invoiceScope === 'all_pending' ? '#C49B4F' : '#334155',
-                        cursor: 'pointer'
-                      }}
+                      className="times-of-india-tracker-s257" style={{ border: invoiceScope === 'all_pending' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: invoiceScope === 'all_pending' ? '#0b2b26' : '#fff', color: invoiceScope === 'all_pending' ? '#C49B4F' : '#334155' }}
                     >
                       Pending Flats ({flats.filter(f => getFlatInvoiceData(f).pendingAmount > 0).length})
                     </button>
@@ -2754,17 +2442,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   <button
                     type="button"
                     onClick={() => setInvoiceScope('all')}
-                    style={{
-                      width: '100%',
-                      padding: '6px 10px',
-                      borderRadius: 8,
-                      fontSize: '0.78rem',
-                      fontWeight: 600,
-                      border: invoiceScope === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                      background: invoiceScope === 'all' ? '#0b2b26' : '#fff',
-                      color: invoiceScope === 'all' ? '#C49B4F' : '#475569',
-                      cursor: 'pointer'
-                    }}
+                    className="times-of-india-tracker-s258" style={{ border: invoiceScope === 'all' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: invoiceScope === 'all' ? '#0b2b26' : '#fff', color: invoiceScope === 'all' ? '#C49B4F' : '#475569' }}
                   >
                     All 3 Flats (A-302, A-904, A-1002 Batch)
                   </button>
@@ -2773,10 +2451,10 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 {/* Single Flat Selector Pills */}
                 {invoiceScope === 'single' && (
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#64748b', marginBottom: 6 }}>
+                    <label className="times-of-india-tracker-s259">
                       Choose Specific Flat:
                     </label>
-                    <div style={{ display: 'flex', gap: 8 }}>
+                    <div className="times-of-india-tracker-s260">
                       {flats.map(f => {
                         const sData = getFlatInvoiceData(f);
                         const isSelected = invoiceFlatId === f.id;
@@ -2785,21 +2463,10 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                             key={f.id}
                             type="button"
                             onClick={() => setInvoiceFlatId(f.id)}
-                            style={{
-                              flex: 1,
-                              padding: '7px 10px',
-                              borderRadius: 8,
-                              fontSize: '0.82rem',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              border: isSelected ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                              background: isSelected ? '#0b2b26' : '#fff',
-                              color: isSelected ? '#C49B4F' : '#1e293b',
-                              textAlign: 'center'
-                            }}
+                            className="times-of-india-tracker-s261" style={{ border: isSelected ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: isSelected ? '#0b2b26' : '#fff', color: isSelected ? '#C49B4F' : '#1e293b' }}
                           >
                             <div>{f.flatNo}</div>
-                            <div style={{ fontSize: '0.68rem', opacity: isSelected ? 0.9 : 0.65 }}>
+                            <div className="times-of-india-tracker-s262" style={{ opacity: isSelected ? 0.9 : 0.65 }}>
                               ₹{formatValue(sData.pendingAmount)} due
                             </div>
                           </button>
@@ -2811,41 +2478,21 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
                 {/* 2. Choose Invoice Mode */}
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#334155', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <label className="times-of-india-tracker-s263">
                     2. Invoice Billing Structure
                   </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 8 }}>
+                  <div className="times-of-india-tracker-s256">
                     <button
                       type="button"
                       onClick={() => setModalMode('month_range')}
-                      style={{
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        fontSize: '0.78rem',
-                        fontWeight: 700,
-                        border: modalMode === 'month_range' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: modalMode === 'month_range' ? '#0b2b26' : '#fff',
-                        color: modalMode === 'month_range' ? '#C49B4F' : '#334155',
-                        cursor: 'pointer',
-                        textAlign: 'center'
-                      }}
+                      className="times-of-india-tracker-s264" style={{ border: modalMode === 'month_range' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: modalMode === 'month_range' ? '#0b2b26' : '#fff', color: modalMode === 'month_range' ? '#C49B4F' : '#334155' }}
                     >
                       📅 Month-Range Combined
                     </button>
                     <button
                       type="button"
                       onClick={() => setModalMode('historical')}
-                      style={{
-                        padding: '8px 10px',
-                        borderRadius: 8,
-                        fontSize: '0.78rem',
-                        fontWeight: 700,
-                        border: modalMode === 'historical' ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: modalMode === 'historical' ? '#0b2b26' : '#fff',
-                        color: modalMode === 'historical' ? '#C49B4F' : '#334155',
-                        cursor: 'pointer',
-                        textAlign: 'center'
-                      }}
+                      className="times-of-india-tracker-s264" style={{ border: modalMode === 'historical' ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: modalMode === 'historical' ? '#0b2b26' : '#fff', color: modalMode === 'historical' ? '#C49B4F' : '#334155' }}
                     >
                       📑 60-Mo TOI Ledger
                     </button>
@@ -2854,96 +2501,96 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
                 {/* If Month-Range Mode: Select start month, end month, sinking fund 150, maintenance 2850 */}
                 {modalMode === 'month_range' && (
-                  <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 10, padding: '14px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0b2b26', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <div className="times-of-india-tracker-s265">
+                    <div className="times-of-india-tracker-s266">
+                      <span className="times-of-india-tracker-s267">
                         📅 Billing Month Range
                       </span>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#16a34a', background: '#dcfce7', padding: '2px 8px', borderRadius: 999 }}>
+                      <span className="times-of-india-tracker-s268">
                         {rangeMonthsCount} Months Counted
                       </span>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div className="times-of-india-tracker-s269">
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>
+                        <label className="times-of-india-tracker-s270">
                           Start Month
                         </label>
                         <input
                           type="month"
                           value={rangeStartMonth}
                           onChange={(e) => setRangeStartMonth(e.target.value)}
-                          style={{ width: '100%', padding: '7px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 700 }}
+                          className="times-of-india-tracker-s271"
                         />
                       </div>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>
+                        <label className="times-of-india-tracker-s270">
                           End Month
                         </label>
                         <input
                           type="month"
                           value={rangeEndMonth}
                           onChange={(e) => setRangeEndMonth(e.target.value)}
-                          style={{ width: '100%', padding: '7px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 700 }}
+                          className="times-of-india-tracker-s271"
                         />
                       </div>
                     </div>
 
                     {/* Presets */}
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      <button type="button" onClick={() => { setRangeStartMonth('2024-04'); setRangeEndMonth('2025-03'); }} style={{ padding: '3px 8px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 600, background: '#f8fafc', border: '1px solid #cbd5e1', cursor: 'pointer' }}>
+                    <div className="times-of-india-tracker-s272">
+                      <button type="button" onClick={() => { setRangeStartMonth('2024-04'); setRangeEndMonth('2025-03'); }} className="times-of-india-tracker-s273">
                         FY 24-25 (12m)
                       </button>
-                      <button type="button" onClick={() => { setRangeStartMonth('2025-04'); setRangeEndMonth('2026-03'); }} style={{ padding: '3px 8px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 600, background: '#f8fafc', border: '1px solid #cbd5e1', cursor: 'pointer' }}>
+                      <button type="button" onClick={() => { setRangeStartMonth('2025-04'); setRangeEndMonth('2026-03'); }} className="times-of-india-tracker-s273">
                         FY 25-26 (12m)
                       </button>
-                      <button type="button" onClick={() => { setRangeStartMonth('2026-04'); setRangeEndMonth('2026-09'); }} style={{ padding: '3px 8px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 600, background: '#f8fafc', border: '1px solid #cbd5e1', cursor: 'pointer' }}>
+                      <button type="button" onClick={() => { setRangeStartMonth('2026-04'); setRangeEndMonth('2026-09'); }} className="times-of-india-tracker-s273">
                         Last 6 Mos
                       </button>
-                      <button type="button" onClick={() => { setRangeStartMonth('2021-10'); setRangeEndMonth('2026-09'); }} style={{ padding: '3px 8px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 700, background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', cursor: 'pointer' }}>
+                      <button type="button" onClick={() => { setRangeStartMonth('2021-10'); setRangeEndMonth('2026-09'); }} className="times-of-india-tracker-s274">
                         Full 60 Mos
                       </button>
                     </div>
 
                     {/* Rates & Calculations */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 4 }}>
-                      <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px' }}>
-                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#475569', marginBottom: 2 }}>
+                    <div className="times-of-india-tracker-s275">
+                      <div className="times-of-india-tracker-s276">
+                        <label className="times-of-india-tracker-s277">
                           Maintenance (₹/mo)
                         </label>
                         <input
                           type="number"
                           value={maintenanceRate}
                           onChange={(e) => setMaintenanceRate(Number(e.target.value) || 0)}
-                          style={{ width: '100%', padding: '4px 6px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem', fontWeight: 800, color: '#0b2b26' }}
+                          className="times-of-india-tracker-s278"
                         />
-                        <div style={{ fontSize: '0.66rem', color: '#64748b', marginTop: 3 }}>
+                        <div className="times-of-india-tracker-s279">
                           {rangeMonthsCount} mos × ₹{formatValue(maintenanceRate)} = <strong>₹{formatValue(rangeMaintenanceTotal)}</strong>
                         </div>
                       </div>
 
-                      <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px' }}>
-                        <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#475569', marginBottom: 2 }}>
+                      <div className="times-of-india-tracker-s276">
+                        <label className="times-of-india-tracker-s277">
                           Sinking Fund (₹/mo)
                         </label>
                         <input
                           type="number"
                           value={sinkingFundRate}
                           onChange={(e) => setSinkingFundRate(Number(e.target.value) || 0)}
-                          style={{ width: '100%', padding: '4px 6px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.85rem', fontWeight: 800, color: '#0b2b26' }}
+                          className="times-of-india-tracker-s278"
                         />
-                        <div style={{ fontSize: '0.66rem', color: '#64748b', marginTop: 3 }}>
+                        <div className="times-of-india-tracker-s279">
                           {rangeMonthsCount} mos × ₹{formatValue(sinkingFundRate)} = <strong>₹{formatValue(rangeSinkingFundTotal)}</strong>
                         </div>
                       </div>
                     </div>
 
                     {/* Grand Total Bar */}
-                    <div style={{ background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', borderRadius: 8, padding: '10px 12px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ fontSize: '0.7rem', color: '#C49B4F', fontWeight: 700, textTransform: 'uppercase' }}>
+                    <div className="times-of-india-tracker-s280">
+                      <div className="times-of-india-tracker-s281">
                         Payable ({rangeMonthsCount} Mos):
                       </div>
-                      <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#4ade80', fontFamily: 'monospace' }}>
+                      <div className="times-of-india-tracker-s282">
                         ₹{formatValue(rangeGrandTotal)}
                       </div>
                     </div>
@@ -2951,59 +2598,59 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 )}
 
                 {/* Dates & Reference Configuration */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="times-of-india-tracker-s269">
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                    <label className="times-of-india-tracker-s283">
                       Invoice Date
                     </label>
                     <input
                       type="date"
                       value={invoiceDate}
                       onChange={(e) => setInvoiceDate(e.target.value)}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                      className="times-of-india-tracker-s284"
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#b45309', marginBottom: 4 }}>
+                    <label className="times-of-india-tracker-s285">
                       Payment Due Date
                     </label>
                     <input
                       type="date"
                       value={invoiceDueDate}
                       onChange={(e) => setInvoiceDueDate(e.target.value)}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #fde68a', background: '#fffbeb', fontSize: '0.82rem', fontWeight: 700, color: '#92400e' }}
+                      className="times-of-india-tracker-s286"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                  <label className="times-of-india-tracker-s283">
                     Invoice Number Prefix
                   </label>
                   <input
                     type="text"
                     value={invoiceRefPrefix}
                     onChange={(e) => setInvoiceRefPrefix(e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                    className="times-of-india-tracker-s284"
                   />
                 </div>
 
                 {/* Custom Resolution / Note */}
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                  <label className="times-of-india-tracker-s283">
                     Society Resolution &amp; Terms
                   </label>
                   <textarea
                     rows={3}
                     value={invoiceCustomNote}
                     onChange={(e) => setInvoiceCustomNote(e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.76rem', lineHeight: 1.4, resize: 'vertical' }}
+                    className="times-of-india-tracker-s287"
                   />
                 </div>
 
                 {/* Society Bank Details Quick Preview */}
-                <div style={{ padding: '10px 12px', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 8, fontSize: '0.76rem', color: '#065f46' }}>
-                  <div style={{ fontWeight: 800, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div className="times-of-india-tracker-s288">
+                  <div className="times-of-india-tracker-s289">
                     <span>🏦 Society Bank Remittance Info</span>
                   </div>
                   <div><strong>Bank:</strong> HDFC Bank • CA-INSTITUTION</div>
@@ -3013,48 +2660,34 @@ Majestique Euriska 'A' Building CHS Ltd.`;
               </div>
 
               {/* Right Column: Live Letterhead Preview */}
-              <div style={{ padding: '24px', overflowY: 'auto', background: '#eaedf0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div className="times-of-india-tracker-s290">
                 
                 {/* Simulated Paper Document */}
-                <div style={{
-                  background: '#ffffff',
-                  width: '100%',
-                  maxWidth: 580,
-                  borderRadius: 4,
-                  padding: '24px 28px',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
-                  border: '1px solid #cbd5e1',
-                  color: '#0f172a',
-                  fontSize: '0.82rem',
-                  lineHeight: 1.45,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 10
-                }}>
+                <div className="times-of-india-tracker-s291">
                   {/* Letterhead */}
-                  <div style={{ textAlign: 'center', borderBottom: '2px solid #0b2b26', paddingBottom: 10 }}>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 900, color: '#0b2b26' }}>
+                  <div className="times-of-india-tracker-s292">
+                    <div className="times-of-india-tracker-s293">
                       MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.
                     </div>
-                    <div style={{ fontSize: '0.68rem', color: '#475569', marginTop: 2 }}>
+                    <div className="times-of-india-tracker-s294">
                       Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • Mohammed Wadi, Pune - 411060
                     </div>
-                    <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 8px', borderRadius: 999, background: '#0b2b26', color: '#fff', fontSize: '0.65rem', fontWeight: 800 }}>
+                    <span className="times-of-india-tracker-s295">
                       {modalMode === 'month_range' ? 'MAINTENANCE, SINKING FUND & TOI • TAX INVOICE' : 'TIMES OF INDIA SUBSCRIPTION • TAX INVOICE'}
                     </span>
                   </div>
 
                   {/* Ref & Date */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', color: '#334155', borderBottom: '1px dashed #e2e8f0', paddingBottom: 6 }}>
+                  <div className="times-of-india-tracker-s296">
                     <div><strong>Invoice No:</strong> {invoiceRefPrefix}{activeInvoiceFlat.flatNo.replace('-', '')}</div>
                     <div><strong>Invoice Date:</strong> {formatDisplayDate(invoiceDate)}</div>
                   </div>
 
                   {/* Recipient */}
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px 12px', fontSize: '0.78rem' }}>
-                    <div style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: 700 }}>BILLED TO:</div>
-                    <div style={{ fontWeight: 800, fontSize: '0.88rem' }}>Flat {activeInvoiceFlat.flatNo} Member / Resident</div>
-                    <div style={{ color: '#0b2b26', fontWeight: 700 }}>
+                  <div className="times-of-india-tracker-s297">
+                    <div className="times-of-india-tracker-s298">BILLED TO:</div>
+                    <div className="times-of-india-tracker-s299">Flat {activeInvoiceFlat.flatNo} Member / Resident</div>
+                    <div className="times-of-india-tracker-s300">
                       {modalMode === 'month_range'
                         ? `Billing Period: ${formatMonthYearLabel(rangeStartMonth)} to ${formatMonthYearLabel(rangeEndMonth)} (${rangeMonthsCount} Months)`
                         : 'Facility: Times of India Newspaper Subscription (60 Months)'}
@@ -3063,81 +2696,81 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 
                   {/* Dues Table: Month-Range mode vs Historical mode */}
                   {modalMode === 'month_range' ? (
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem', margin: '4px 0' }}>
+                    <table className="times-of-india-tracker-s301">
                       <thead>
-                        <tr style={{ background: '#0b2b26', color: '#fff' }}>
-                          <th style={{ padding: '4px 6px', textAlign: 'left' }}>#</th>
-                          <th style={{ padding: '4px 6px', textAlign: 'left' }}>Particulars</th>
-                          <th style={{ padding: '4px 6px', textAlign: 'center' }}>Months</th>
-                          <th style={{ padding: '4px 6px', textAlign: 'center' }}>Rate / Mo</th>
-                          <th style={{ padding: '4px 6px', textAlign: 'right' }}>Amount</th>
+                        <tr className="times-of-india-tracker-s302">
+                          <th className="times-of-india-tracker-s303">#</th>
+                          <th className="times-of-india-tracker-s303">Particulars</th>
+                          <th className="times-of-india-tracker-s304">Months</th>
+                          <th className="times-of-india-tracker-s304">Rate / Mo</th>
+                          <th className="times-of-india-tracker-s305">Amount</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                          <td style={{ padding: '4px 6px', textAlign: 'center' }}>1</td>
-                          <td style={{ padding: '4px 6px', fontWeight: 700 }}>Maintenance Charges</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center' }}>{rangeMonthsCount}m</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center' }}>₹{formatValue(maintenanceRate)}</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹{formatValue(rangeMaintenanceTotal)}</td>
+                        <tr className="times-of-india-tracker-s44">
+                          <td className="times-of-india-tracker-s304">1</td>
+                          <td className="times-of-india-tracker-s306">Maintenance Charges</td>
+                          <td className="times-of-india-tracker-s304">{rangeMonthsCount}m</td>
+                          <td className="times-of-india-tracker-s304">₹{formatValue(maintenanceRate)}</td>
+                          <td className="times-of-india-tracker-s307">₹{formatValue(rangeMaintenanceTotal)}</td>
                         </tr>
-                        <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                          <td style={{ padding: '4px 6px', textAlign: 'center' }}>2</td>
-                          <td style={{ padding: '4px 6px', fontWeight: 700 }}>Sinking Fund</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center' }}>{rangeMonthsCount}m</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center' }}>₹{formatValue(sinkingFundRate)}</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹{formatValue(rangeSinkingFundTotal)}</td>
+                        <tr className="times-of-india-tracker-s44">
+                          <td className="times-of-india-tracker-s304">2</td>
+                          <td className="times-of-india-tracker-s306">Sinking Fund</td>
+                          <td className="times-of-india-tracker-s304">{rangeMonthsCount}m</td>
+                          <td className="times-of-india-tracker-s304">₹{formatValue(sinkingFundRate)}</td>
+                          <td className="times-of-india-tracker-s307">₹{formatValue(rangeSinkingFundTotal)}</td>
                         </tr>
-                        <tr style={{ background: '#f8fafc', fontWeight: 700, borderBottom: '1px solid #e2e8f0' }}>
-                          <td colSpan={2} style={{ padding: '4px 6px', textAlign: 'right', color: '#196c6c' }}>Base Society Subtotal:</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center', color: '#196c6c' }}>{rangeMonthsCount}m</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center', color: '#196c6c' }}>₹{formatValue(Number(maintenanceRate) + Number(sinkingFundRate))}</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'right', color: '#196c6c', fontFamily: 'monospace' }}>₹{formatValue(rangeBaseTotal)}</td>
+                        <tr className="times-of-india-tracker-s308">
+                          <td colSpan={2} className="times-of-india-tracker-s309">Base Society Subtotal:</td>
+                          <td className="times-of-india-tracker-s310">{rangeMonthsCount}m</td>
+                          <td className="times-of-india-tracker-s310">₹{formatValue(Number(maintenanceRate) + Number(sinkingFundRate))}</td>
+                          <td className="times-of-india-tracker-s311">₹{formatValue(rangeBaseTotal)}</td>
                         </tr>
-                        <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 800 }}>
-                          <td colSpan={4} style={{ padding: '6px 8px', textAlign: 'right' }}>NET AMOUNT PAYABLE:</td>
-                          <td style={{ padding: '6px 8px', textAlign: 'right', color: '#4ade80', fontSize: '0.92rem', fontFamily: 'monospace' }}>
+                        <tr className="times-of-india-tracker-s94">
+                          <td colSpan={4} className="times-of-india-tracker-s312">NET AMOUNT PAYABLE:</td>
+                          <td className="times-of-india-tracker-s313">
                             ₹{formatValue(rangeGrandTotal)}
                           </td>
                         </tr>
                       </tbody>
                     </table>
                   ) : (
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem', margin: '4px 0' }}>
+                    <table className="times-of-india-tracker-s301">
                       <thead>
-                        <tr style={{ background: '#0b2b26', color: '#fff' }}>
-                          <th style={{ padding: '4px 6px', textAlign: 'left' }}>Period / Financial Year</th>
-                          <th style={{ padding: '4px 6px', textAlign: 'center' }}>Months</th>
-                          <th style={{ padding: '4px 6px', textAlign: 'right' }}>Amount</th>
-                          <th style={{ padding: '4px 6px', textAlign: 'center' }}>Status</th>
+                        <tr className="times-of-india-tracker-s302">
+                          <th className="times-of-india-tracker-s303">Period / Financial Year</th>
+                          <th className="times-of-india-tracker-s304">Months</th>
+                          <th className="times-of-india-tracker-s305">Amount</th>
+                          <th className="times-of-india-tracker-s304">Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {activeInvoiceFlat.bills.map((b) => (
-                          <tr key={b.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                            <td style={{ padding: '4px 6px' }}>{b.year} ({b.period})</td>
-                            <td style={{ padding: '4px 6px', textAlign: 'center' }}>{b.months}m</td>
-                            <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 600 }}>₹{formatValue(b.amount)}</td>
-                            <td style={{ padding: '4px 6px', textAlign: 'center' }}>
-                              <span style={{ fontSize: '0.68rem', fontWeight: 700, color: b.status === 'Paid' ? '#065f46' : '#92400e' }}>
+                          <tr key={b.id} className="times-of-india-tracker-s44">
+                            <td className="times-of-india-tracker-s314">{b.year} ({b.period})</td>
+                            <td className="times-of-india-tracker-s304">{b.months}m</td>
+                            <td className="times-of-india-tracker-s315">₹{formatValue(b.amount)}</td>
+                            <td className="times-of-india-tracker-s304">
+                              <span className="times-of-india-tracker-s316" style={{ color: b.status === 'Paid' ? '#065f46' : '#92400e' }}>
                                 {b.status}
                               </span>
                             </td>
                           </tr>
                         ))}
-                        <tr style={{ background: '#f8fafc', fontWeight: 700, borderTop: '1px solid #cbd5e1' }}>
-                          <td colSpan={2} style={{ padding: '5px 6px' }}>Total 60-Month Subscription:</td>
-                          <td style={{ padding: '5px 6px', textAlign: 'right' }}>₹{formatValue(activeInvoiceData.totalBilled)}</td>
+                        <tr className="times-of-india-tracker-s317">
+                          <td colSpan={2} className="times-of-india-tracker-s318">Total 60-Month Subscription:</td>
+                          <td className="times-of-india-tracker-s319">₹{formatValue(activeInvoiceData.totalBilled)}</td>
                           <td></td>
                         </tr>
-                        <tr style={{ background: '#f0fdf4', color: '#15803d', fontWeight: 700 }}>
-                          <td colSpan={2} style={{ padding: '5px 6px' }}>Total Payments Received:</td>
-                          <td style={{ padding: '5px 6px', textAlign: 'right' }}>(-) ₹{formatValue(activeInvoiceData.paidAmount)}</td>
+                        <tr className="times-of-india-tracker-s320">
+                          <td colSpan={2} className="times-of-india-tracker-s318">Total Payments Received:</td>
+                          <td className="times-of-india-tracker-s319">(-) ₹{formatValue(activeInvoiceData.paidAmount)}</td>
                           <td></td>
                         </tr>
-                        <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 800 }}>
-                          <td colSpan={2} style={{ padding: '6px 8px' }}>NET AMOUNT PAYABLE:</td>
-                          <td style={{ padding: '6px 8px', textAlign: 'right', color: '#4ade80', fontSize: '0.92rem' }}>
+                        <tr className="times-of-india-tracker-s94">
+                          <td colSpan={2} className="times-of-india-tracker-s321">NET AMOUNT PAYABLE:</td>
+                          <td className="times-of-india-tracker-s322">
                             ₹{formatValue(activeInvoiceData.pendingAmount)}
                           </td>
                           <td></td>
@@ -3147,24 +2780,24 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   )}
 
                   {/* Due banner */}
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 6, padding: '6px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.74rem' }}>
+                  <div className="times-of-india-tracker-s323">
                     <div>
-                      <span style={{ color: '#92400e', fontWeight: 700 }}>Payment Due Date: </span>
-                      <strong style={{ color: '#78350f' }}>{formatDisplayDate(invoiceDueDate)}</strong>
+                      <span className="times-of-india-tracker-s324">Payment Due Date: </span>
+                      <strong className="times-of-india-tracker-s325">{formatDisplayDate(invoiceDueDate)}</strong>
                     </div>
-                    <span style={{ color: '#92400e', fontWeight: 700 }}>HDFC A/C: 50200075533530</span>
+                    <span className="times-of-india-tracker-s324">HDFC A/C: 50200075533530</span>
                   </div>
 
                   {/* Signatures */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginTop: 10, paddingTop: 6, borderTop: '1px solid #e2e8f0', textAlign: 'center', fontSize: '0.68rem', color: '#64748b' }}>
-                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 18 }}>Society Manager</div></div>
-                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 18 }}>Hon. Secretary</div></div>
-                    <div><div style={{ borderTop: '1px solid #94a3b8', paddingTop: 2, fontWeight: 700, marginTop: 18 }}>Hon. Treasurer</div></div>
+                  <div className="times-of-india-tracker-s326">
+                    <div><div className="times-of-india-tracker-s327">Society Manager</div></div>
+                    <div><div className="times-of-india-tracker-s327">Hon. Secretary</div></div>
+                    <div><div className="times-of-india-tracker-s327">Hon. Treasurer</div></div>
                   </div>
                 </div>
 
                 {invoiceToast && (
-                  <div style={{ marginTop: 12, padding: '8px 16px', borderRadius: 8, background: '#0b2b26', color: '#fff', fontSize: '0.8rem', fontWeight: 700, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+                  <div className="times-of-india-tracker-s328">
                     {invoiceToast}
                   </div>
                 )}
@@ -3172,25 +2805,25 @@ Majestique Euriska 'A' Building CHS Ltd.`;
             </div>
 
             {/* Modal Footer Toolbar */}
-            <div style={{ padding: '14px 24px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-              <div style={{ fontSize: '0.82rem', color: '#475569' }}>
+            <div className="times-of-india-tracker-s329">
+              <div className="times-of-india-tracker-s330">
                 Selected Flat(s): <strong>{invoiceScope === 'single' ? activeInvoiceFlat.flatNo : invoiceScope === 'all_pending' ? `Pending Flats (${flatsForInvoice.length})` : 'All 3 Flats'}</strong>
               </div>
 
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+              <div className="times-of-india-tracker-s11">
                 {invoiceScope === 'single' && (
                   <>
                     <button
                       type="button"
                       onClick={() => handleCopyFlatInvoiceText(activeInvoiceFlat)}
-                      style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#334155', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                      className="times-of-india-tracker-s331"
                     >
                       📋 Copy Text
                     </button>
                     <button
                       type="button"
                       onClick={() => handleShareToiWhatsApp(activeInvoiceFlat)}
-                      style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: '#25D366', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(37,211,102,0.3)' }}
+                      className="times-of-india-tracker-s332"
                     >
                       📱 Send WhatsApp
                     </button>
@@ -3200,20 +2833,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <button
                   type="button"
                   onClick={handlePrintToiInvoices}
-                  style={{
-                    padding: '8px 18px',
-                    borderRadius: 8,
-                    border: 'none',
-                    background: '#0b2b26',
-                    color: '#C49B4F',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    boxShadow: '0 4px 14px rgba(11,43,38,0.25)'
-                  }}
+                  className="times-of-india-tracker-s333"
                 >
                   🖨️ Print / Download PDF ({flatsForInvoice.length} Invoice{flatsForInvoice.length > 1 ? 's' : ''})
                 </button>
@@ -3221,7 +2841,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <button
                   type="button"
                   onClick={() => setIsInvoiceModalOpen(false)}
-                  style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff', color: '#64748b', fontWeight: 600, cursor: 'pointer', fontSize: '0.82rem' }}
+                  className="times-of-india-tracker-s334"
                 >
                   Close
                 </button>

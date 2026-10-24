@@ -1,0 +1,11 @@
+/**
+ * WorkDistributionListExtracted.css
+ * Extracted styles from WorkDistributionList.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.work-distribution-list-s1 {
+  transform-origin: top center;
+  transition: transform 0.2s ease-out;
+}
+

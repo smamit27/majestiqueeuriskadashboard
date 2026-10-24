@@ -2,56 +2,26 @@ import React, { useState } from 'react';
 import HousekeepingAttendanceManager from './HousekeepingAttendanceManager.jsx';
 import HousekeepingBillCalculator from './HousekeepingBillCalculator.jsx';
 import SectionCard from '../molecules/SectionCard.jsx';
+import './HousekeepingModule.css';
+
 
 export default function HousekeepingModule({ isAdmin = false, staffMembers, staffPresentCount, totalStaffCount }) {
   const [subTab, setSubTab] = useState('tracking');
 
   return (
     <div className="housekeeping-module">
-      <div className="tab-navigation" style={{
-        display: 'flex',
-        gap: '12px',
-        marginBottom: '24px',
-        background: 'rgba(255, 255, 255, 0.5)',
-        padding: '8px',
-        borderRadius: '12px',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(0,0,0,0.05)',
-        position: 'sticky',
-        top: '0',
-        zIndex: 10
-      }}>
+      <div className="tab-navigation housekeeping-module-s1">
         <button
           onClick={() => setSubTab('tracking')}
-          className={`sub-tab-button ${subTab === 'tracking' ? 'active' : ''}`}
-          style={{
-            padding: '10px 20px',
-            borderRadius: '8px',
-            border: 'none',
-            background: subTab === 'tracking' ? '#1e3a8a' : 'transparent',
-            color: subTab === 'tracking' ? 'white' : '#64748b',
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            fontSize: '0.9rem'
-          }}
+          className={`sub-tab-button ${subTab === 'tracking' ? 'active' : ''} housekeeping-module-s2`}
+          style={{ background: subTab === 'tracking' ? '#1e3a8a' : 'transparent', color: subTab === 'tracking' ? 'white' : '#64748b' }}
         >
           📋 Housekeeping Deployment
         </button>
         <button
           onClick={() => setSubTab('billing')}
-          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''}`}
-          style={{
-            padding: '10px 20px',
-            borderRadius: '8px',
-            border: 'none',
-            background: subTab === 'billing' ? '#1e3a8a' : 'transparent',
-            color: subTab === 'billing' ? 'white' : '#64748b',
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            fontSize: '0.9rem'
-          }}
+          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''} housekeeping-module-s2`}
+          style={{ background: subTab === 'billing' ? '#1e3a8a' : 'transparent', color: subTab === 'billing' ? 'white' : '#64748b' }}
         >
           💰 Bill Calculator
         </button>

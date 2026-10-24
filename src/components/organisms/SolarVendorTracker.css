@@ -1,0 +1,221 @@
+/**
+ * SolarVendorTracker.css
+ * Extracted styles from SolarVendorTracker.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.solar-vendor-tracker-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.solar-vendor-tracker-s2 {
+  padding: 0;
+}
+
+.solar-vendor-tracker-s3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.solar-vendor-tracker-s4 {
+  display: flex;
+  gap: 10px;
+}
+
+.solar-vendor-tracker-s5 {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.solar-vendor-tracker-s6 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.solar-vendor-tracker-s7 {
+  background: #1e3a8a;
+  color: white;
+}
+
+.solar-vendor-tracker-s8 {
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  width: 120px;
+}
+
+.solar-vendor-tracker-s9 {
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  min-width: 220px;
+}
+
+.solar-vendor-tracker-s10 {
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  min-width: 180px;
+  background: #172554;
+}
+
+.solar-vendor-tracker-s11 {
+  padding: 8px;
+  min-width: 200px;
+}
+
+.solar-vendor-tracker-s12 {
+  text-align: center;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.solar-vendor-tracker-s13 {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: none;
+  text-align: center;
+  font-weight: bold;
+}
+
+.solar-vendor-tracker-s14 {
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.solar-vendor-tracker-s15 {
+  padding: 10px 14px;
+  font-weight: 700;
+  vertical-align: top;
+  background: rgba(0,0,0,0.02);
+  color: #334155;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.solar-vendor-tracker-s16 {
+  padding: 8px 14px;
+  color: #1e293b;
+}
+
+.solar-vendor-tracker-s17 {
+  padding: 8px 14px;
+  font-weight: 600;
+  color: #334155;
+  background: rgba(0,0,0,0.02);
+}
+
+.solar-vendor-tracker-s18 {
+  padding: 4px 8px;
+}
+
+.solar-vendor-tracker-s19 {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: white;
+}
+
+.solar-vendor-tracker-s20 {
+  border-top: 2px solid rgba(0,0,0,0.1);
+}
+
+.solar-vendor-tracker-s21 {
+  padding: 12px 14px;
+  text-align: right;
+  font-weight: 700;
+}
+
+.solar-vendor-tracker-s22 {
+  padding: 8px;
+}
+
+.solar-vendor-tracker-s23 {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.15);
+  font-weight: bold;
+  text-align: center;
+}
+
+.solar-vendor-tracker-s24 {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.15);
+  resize: vertical;
+}
+
+.solar-vendor-tracker-s25 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.solar-vendor-tracker-s26 {
+  padding: 20px;
+}
+
+.solar-vendor-tracker-s27 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+.solar-vendor-tracker-s28 {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.solar-vendor-tracker-s29 {
+  background: #1e293b;
+  color: white;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.solar-vendor-tracker-s30 {
+  background: #334155;
+  color: white;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.solar-vendor-tracker-s31 {
+  background: #475569;
+  color: white;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.solar-vendor-tracker-s32 {
+  background: #64748b;
+  color: white;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.solar-vendor-tracker-s33 {
+  background: #94a3b8;
+  color: white;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+

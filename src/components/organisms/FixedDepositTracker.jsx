@@ -3,6 +3,8 @@ import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from '../../firebase.js';
 import { useCollection } from '../../hooks/useCollection.js';
 import { fixedDeposits as mockFixedDeposits } from '../../data/mockData.js';
+import './FixedDepositTracker.css';
+
 
 const SUMMARY_BANK_ORDER = ['HDFC Bank', 'ICICI Bank'];
 
@@ -655,16 +657,16 @@ export default function FixedDepositTracker({ isAdmin }) {
   // ── Lock Screen Guard ───────────────────────────────────────────────
   if (!isUnlocked) {
     return (
-      <div className="section-card" style={{ maxWidth: '480px', margin: '40px auto', padding: '32px' }}>
-        <h3 className="section-card__title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div className="section-card fixed-deposit-tracker-s1">
+        <h3 className="section-card__title fixed-deposit-tracker-s2">
           <span>🔒</span> Confidential Fixed Deposits
         </h3>
-        <p style={{ color: 'var(--muted)', fontSize: '0.95rem', marginBottom: '24px' }}>
+        <p className="fixed-deposit-tracker-s3">
           This section contains confidential Fixed Deposit records and FD management tools. Please enter the authorization password to proceed.
         </p>
         <form onSubmit={handleFdUnlock}>
-          <div style={{ marginBottom: '20px' }}>
-            <label htmlFor="fd-password-input" style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
+          <div className="fixed-deposit-tracker-s4">
+            <label htmlFor="fd-password-input" className="fixed-deposit-tracker-s5">
               Authorization Password
             </label>
             <input
@@ -673,25 +675,17 @@ export default function FixedDepositTracker({ isAdmin }) {
               placeholder="Enter password..."
               value={fdPassword}
               onChange={(e) => setFdPassword(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '8px',
-                border: '1px solid var(--line)',
-                background: 'rgba(255,255,255,0.5)',
-                outline: 'none'
-              }}
+              className="fixed-deposit-tracker-s6"
             />
           </div>
           {fdErrorMsg && (
-            <p style={{ color: 'var(--coral)', fontSize: '0.85rem', marginBottom: '16px', fontWeight: '500' }}>
+            <p className="fixed-deposit-tracker-s7">
               ⚠️ {fdErrorMsg}
             </p>
           )}
           <button
             type="submit"
-            className="action-btn"
-            style={{ width: '100%', display: 'flex', justifyContent: 'center', background: 'var(--teal)', color: 'white' }}
+            className="action-btn fixed-deposit-tracker-s8"
           >
             Unlock FD Workspace
           </button>
@@ -703,103 +697,51 @@ export default function FixedDepositTracker({ isAdmin }) {
   let fdSummarySerial = 0;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div className="fixed-deposit-tracker-s9">
       
       {/* HERO BANNER (matching ManagerTaskTracker) */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)',
-        borderRadius: 20,
-        padding: '22px 26px',
-        color: '#fff',
-        boxShadow: '0 8px 32px rgba(11,43,38,0.24)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16
-      }}>
+      <div className="fixed-deposit-tracker-s10">
         <div>
-          <p style={{ margin: 0, fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#c49b4f' }}>
+          <p className="fixed-deposit-tracker-s11">
             🏦 Society Assets & Treasury
           </p>
-          <h2 style={{ margin: '6px 0 8px', fontSize: '1.45rem', fontWeight: 800 }}>
+          <h2 className="fixed-deposit-tracker-s12">
             Fixed Deposit Portfolio & Sinking Funds
           </h2>
-          <p style={{ margin: 0, color: 'rgba(255,255,255,0.78)', fontSize: '0.9rem', maxWidth: 640 }}>
+          <p className="fixed-deposit-tracker-s13">
             Monitor and manage residential society reserves, statutory sinking funds, and long-term interest-bearing accounts across Scheduled Commercial Banks.
           </p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10 }}>
-          <div style={{
-            fontSize: '0.74rem',
-            padding: '4px 10px',
-            borderRadius: 999,
-            fontWeight: 800,
-            background: source === 'firebase' ? 'rgba(52, 211, 153, 0.18)' : 'rgba(251, 191, 36, 0.18)',
-            color: source === 'firebase' ? '#34d399' : '#fde047',
-            border: '1px solid rgba(255,255,255,0.2)'
-          }}>
+        <div className="fixed-deposit-tracker-s14">
+          <div className="fixed-deposit-tracker-s15" style={{ background: source === 'firebase' ? 'rgba(52, 211, 153, 0.18)' : 'rgba(251, 191, 36, 0.18)', color: source === 'firebase' ? '#34d399' : '#fde047' }}>
             {source === 'firebase' ? '⚡ Live Sync Active' : '📋 Demo Mode'}
           </div>
 
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div className="fixed-deposit-tracker-s16">
             <button
               onClick={handlePrintPDF}
-              style={{
-                padding: '8px 14px',
-                borderRadius: 8,
-                background: 'rgba(255,255,255,0.14)',
-                color: '#fff',
-                border: '1px solid rgba(255,255,255,0.28)',
-                fontWeight: 700,
-                cursor: 'pointer',
-                fontSize: '0.84rem',
-                backdropFilter: 'blur(6px)'
-              }}
+              className="fixed-deposit-tracker-s17"
             >
               🖨️ Print Portfolio (PDF)
             </button>
             <button
               onClick={handleExportCSV}
-              style={{
-                padding: '8px 14px',
-                borderRadius: 8,
-                background: 'rgba(255,255,255,0.14)',
-                color: '#fff',
-                border: '1px solid rgba(255,255,255,0.28)',
-                fontWeight: 700,
-                cursor: 'pointer',
-                fontSize: '0.84rem'
-              }}
+              className="fixed-deposit-tracker-s18"
             >
               ⬇ Export CSV
             </button>
             {isAdmin && (
               <button
                 onClick={() => setIsCreateModalOpen(true)}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: 8,
-                  background: '#c49b4f',
-                  color: '#fff',
-                  border: 'none',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  fontSize: '0.84rem',
-                  boxShadow: '0 4px 12px rgba(196,155,79,0.35)'
-                }}
+                className="fixed-deposit-tracker-s19"
               >
                 + Open New FD
               </button>
             )}
             <button
               onClick={() => setIsUnlocked(false)}
-              style={{
-                padding: '8px 12px',
-                borderRadius: 8,
-                background: 'transparent',
-                color: 'rgba(255,255,255,0.6)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                cursor: 'pointer',
-                fontSize: '0.8rem'
-              }}
+              className="fixed-deposit-tracker-s20"
               title="Lock Workspace"
             >
               🔒 Lock
@@ -810,37 +752,37 @@ export default function FixedDepositTracker({ isAdmin }) {
 
       {/* Sync warnings */}
       {syncError && (
-        <div style={{ background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5', borderRadius: 12, padding: '10px 16px', fontSize: '0.88rem' }}>
+        <div className="fixed-deposit-tracker-s21">
           ⚠️ {syncError}
         </div>
       )}
 
       {/* Primary KPI Metrics Ribbon */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
-        <div style={{ background: '#fff', padding: '16px 18px', borderRadius: 14, border: '1px solid rgba(61,63,52,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
-          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748b' }}>Total Active Principal</div>
-          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0b2b26', marginTop: 4 }}>{fmtAmt(stats.activePrincipal)}</div>
-          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 4 }}>Across <strong>{stats.activeCount}</strong> active deposits</div>
+      <div className="fixed-deposit-tracker-s22">
+        <div className="fixed-deposit-tracker-s23">
+          <div className="fixed-deposit-tracker-s24">Total Active Principal</div>
+          <div className="fixed-deposit-tracker-s25">{fmtAmt(stats.activePrincipal)}</div>
+          <div className="fixed-deposit-tracker-s26">Across <strong>{stats.activeCount}</strong> active deposits</div>
         </div>
-        <div style={{ background: '#fff', padding: '16px 18px', borderRadius: 14, border: '1px solid rgba(61,63,52,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
-          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748b' }}>Expected Maturity Value</div>
-          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#b45309', marginTop: 4 }}>{fmtAmt(stats.activeMaturityValue)}</div>
-          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 4 }}>Projected future value</div>
+        <div className="fixed-deposit-tracker-s23">
+          <div className="fixed-deposit-tracker-s24">Expected Maturity Value</div>
+          <div className="fixed-deposit-tracker-s27">{fmtAmt(stats.activeMaturityValue)}</div>
+          <div className="fixed-deposit-tracker-s26">Projected future value</div>
         </div>
-        <div style={{ background: '#f0fdf4', padding: '16px 18px', borderRadius: 14, border: '1px solid #bbf7d0', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
-          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#166534' }}>Projected Interest Gain</div>
-          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#15803d', marginTop: 4 }}>{fmtAmt(stats.activeMaturityValue - stats.activePrincipal)}</div>
-          <div style={{ fontSize: '0.72rem', color: '#166534', marginTop: 4 }}>Estimated net yield</div>
+        <div className="fixed-deposit-tracker-s28">
+          <div className="fixed-deposit-tracker-s29">Projected Interest Gain</div>
+          <div className="fixed-deposit-tracker-s30">{fmtAmt(stats.activeMaturityValue - stats.activePrincipal)}</div>
+          <div className="fixed-deposit-tracker-s31">Estimated net yield</div>
         </div>
-        <div style={{ background: '#fff', padding: '16px 18px', borderRadius: 14, border: '1px solid rgba(61,63,52,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
-          <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#64748b' }}>Realized Interest (Past)</div>
-          <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#1e3a8a', marginTop: 4 }}>{fmtAmt(stats.realizedInterest)}</div>
-          <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 4 }}>From <strong>{stats.historyCount}</strong> closed accounts</div>
+        <div className="fixed-deposit-tracker-s23">
+          <div className="fixed-deposit-tracker-s24">Realized Interest (Past)</div>
+          <div className="fixed-deposit-tracker-s32">{fmtAmt(stats.realizedInterest)}</div>
+          <div className="fixed-deposit-tracker-s26">From <strong>{stats.historyCount}</strong> closed accounts</div>
         </div>
       </div>
 
       {/* SUB-TAB BAR */}
-      <div className="attendance-month-tabs" role="tablist" style={{ padding: '0 0 10px 0', borderBottom: '1px solid var(--line)' }}>
+      <div className="attendance-month-tabs fixed-deposit-tracker-s33" role="tablist">
         <button
           className={`attendance-month-tab ${activeSubTab === 'summary' ? 'attendance-month-tab--active' : ''}`}
           onClick={() => setActiveSubTab('summary')}
@@ -860,9 +802,8 @@ export default function FixedDepositTracker({ isAdmin }) {
           📋 Deposit History ({stats.historyCount})
         </button>
         <button
-          className={`attendance-month-tab ${activeSubTab === 'calculator' ? 'attendance-month-tab--active' : ''}`}
+          className={`attendance-month-tab ${activeSubTab === 'calculator' ? 'attendance-month-tab--active' : ''} fixed-deposit-tracker-s34`}
           onClick={() => setActiveSubTab('calculator')}
-          style={{ marginLeft: 'auto' }}
         >
           🧮 Returns Simulator
         </button>
@@ -872,105 +813,69 @@ export default function FixedDepositTracker({ isAdmin }) {
       {activeSubTab === 'summary' && (() => {
         fdSummarySerial = 0;
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div className="fixed-deposit-tracker-s35">
             {/* Clean Section Header */}
-            <div style={{ background: '#ffffff', borderRadius: 16, padding: '20px 24px', border: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+            <div className="fixed-deposit-tracker-s36">
               <div>
-                <p style={{ margin: 0, fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#196c6c' }}>
+                <p className="fixed-deposit-tracker-s37">
                   Treasury Balance Sheet
                 </p>
-                <h2 style={{ margin: '4px 0 0', fontSize: '1.3rem', fontWeight: 800, color: '#0f172a' }}>
+                <h2 className="fixed-deposit-tracker-s38">
                   {summaryData.title}
                 </h2>
-                <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: '0.88rem' }}>
+                <p className="fixed-deposit-tracker-s39">
                   Consolidated statutory reserve &amp; sinking fund portfolio across Scheduled Commercial Banks.
                 </p>
               </div>
               <button
                 onClick={handlePrintPDF}
-                style={{
-                  padding: '9px 16px',
-                  borderRadius: 8,
-                  background: '#0b2b26',
-                  color: '#fff',
-                  border: 'none',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  fontSize: '0.84rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  boxShadow: '0 4px 12px rgba(11,43,38,0.18)'
-                }}
+                className="fixed-deposit-tracker-s40"
               >
                 🖨️ Print Statement (PDF)
               </button>
             </div>
 
             {summaryData.banks.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '48px 20px', background: '#fff', borderRadius: 16, border: '1px solid var(--line)', color: '#64748b' }}>
-                <span style={{ fontSize: '2rem', display: 'block', marginBottom: 8 }}>📭</span>
+              <div className="fixed-deposit-tracker-s41">
+                <span className="fixed-deposit-tracker-s42">📭</span>
                 <strong>No active Fixed Deposits found for summary statement.</strong>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <div className="fixed-deposit-tracker-s35">
                 {summaryData.banks.map((bank) => (
                   <div
                     key={bank.bankName}
-                    style={{
-                      background: '#ffffff',
-                      borderRadius: 16,
-                      border: '1px solid #e2e8f0',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-                      overflow: 'hidden'
-                    }}
+                    className="fixed-deposit-tracker-s43"
                   >
                     {/* Plain, clean bank bar */}
-                    <div style={{
-                      padding: '16px 20px',
-                      background: '#f8fafc',
-                      borderBottom: '1px solid #e2e8f0',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: 12
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <span style={{
-                          padding: '6px 12px',
-                          borderRadius: 8,
-                          fontSize: '0.85rem',
-                          fontWeight: 800,
-                          background: bank.bankName.includes('HDFC') ? '#eff6ff' : bank.bankName.includes('ICICI') ? '#fff7ed' : '#f1f5f9',
-                          color: bank.bankName.includes('HDFC') ? '#1e40af' : bank.bankName.includes('ICICI') ? '#c2410c' : '#334155',
-                          border: `1px solid ${bank.bankName.includes('HDFC') ? '#bfdbfe' : bank.bankName.includes('ICICI') ? '#fed7aa' : '#cbd5e1'}`
-                        }}>
+                    <div className="fixed-deposit-tracker-s44">
+                      <div className="fixed-deposit-tracker-s2">
+                        <span className="fixed-deposit-tracker-s45" style={{ background: bank.bankName.includes('HDFC') ? '#eff6ff' : bank.bankName.includes('ICICI') ? '#fff7ed' : '#f1f5f9', color: bank.bankName.includes('HDFC') ? '#1e40af' : bank.bankName.includes('ICICI') ? '#c2410c' : '#334155', border: `1px solid ${bank.bankName.includes('HDFC') ? '#bfdbfe' : bank.bankName.includes('ICICI') ? '#fed7aa' : '#cbd5e1'}` }}>
                           🏛️ {bank.bankName}
                         </span>
-                        <span style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: 600 }}>
+                        <span className="fixed-deposit-tracker-s46">
                           {bank.deposits.length} Active {bank.deposits.length === 1 ? 'Deposit' : 'Deposits'}
                         </span>
                       </div>
 
-                      <div style={{ fontSize: '0.88rem', color: '#334155' }}>
-                        Total Principal: <strong style={{ color: '#0f172a' }}>₹{formatSummaryAmount(bank.principalTotal)}</strong>
+                      <div className="fixed-deposit-tracker-s47">
+                        Total Principal: <strong className="fixed-deposit-tracker-s48">₹{formatSummaryAmount(bank.principalTotal)}</strong>
                       </div>
                     </div>
 
                     {/* Clean Table */}
                     <div className="attendance-table-scroll">
-                      <table className="attendance-table" style={{ margin: 0 }}>
+                      <table className="attendance-table fixed-deposit-tracker-s49">
                         <thead>
-                          <tr style={{ background: '#f8fafc' }}>
-                            <th style={{ width: 50, textAlign: 'center' }}>Sr No.</th>
-                            <th style={{ width: 150 }}>{bank.theme.accountLabel || 'FD No.'}</th>
+                          <tr className="fixed-deposit-tracker-s50">
+                            <th className="fixed-deposit-tracker-s51">Sr No.</th>
+                            <th className="fixed-deposit-tracker-s52">{bank.theme.accountLabel || 'FD No.'}</th>
                             <th>Name of Deposit</th>
-                            <th style={{ width: 140, textAlign: 'right' }}>Principal Amount (₹)</th>
-                            <th style={{ width: 90, textAlign: 'center' }}>Rate (% p.a.)</th>
-                            <th style={{ width: 80, textAlign: 'center' }}>Tenure</th>
-                            <th style={{ width: 110, textAlign: 'center' }}>Maturity Date</th>
-                            <th style={{ width: 140, textAlign: 'right' }}>Maturity Amount (₹)</th>
+                            <th className="fixed-deposit-tracker-s53">Principal Amount (₹)</th>
+                            <th className="fixed-deposit-tracker-s54">Rate (% p.a.)</th>
+                            <th className="fixed-deposit-tracker-s55">Tenure</th>
+                            <th className="fixed-deposit-tracker-s56">Maturity Date</th>
+                            <th className="fixed-deposit-tracker-s53">Maturity Amount (₹)</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -978,47 +883,47 @@ export default function FixedDepositTracker({ isAdmin }) {
                             const serial = ++fdSummarySerial;
                             return (
                               <tr key={deposit.id || deposit.fdNumber}>
-                                <td style={{ textAlign: 'center', color: '#64748b' }}>{serial}</td>
-                                <td style={{ fontWeight: 700, fontFamily: 'monospace', color: '#0f172a' }}>
+                                <td className="fixed-deposit-tracker-s57">{serial}</td>
+                                <td className="fixed-deposit-tracker-s58">
                                   {deposit.fdNumber}
                                 </td>
                                 <td>
-                                  <strong style={{ color: '#0f172a' }}>
+                                  <strong className="fixed-deposit-tracker-s48">
                                     {deposit.depositLine1 || deposit.depositName || deposit.bankName}
                                   </strong>
                                   {deposit.depositLine2 && (
-                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 2 }}>
+                                    <div className="fixed-deposit-tracker-s59">
                                       {deposit.depositLine2}
                                     </div>
                                   )}
                                 </td>
-                                <td style={{ textAlign: 'right', fontWeight: 600, color: '#0f172a' }}>
+                                <td className="fixed-deposit-tracker-s60">
                                   {formatSummaryAmount(deposit.principal)}
                                 </td>
-                                <td style={{ textAlign: 'center', fontWeight: 600, color: '#065f46' }}>
+                                <td className="fixed-deposit-tracker-s61">
                                   {deposit.interestRate}%
                                 </td>
-                                <td style={{ textAlign: 'center', color: '#64748b' }}>
+                                <td className="fixed-deposit-tracker-s57">
                                   {deposit.tenureMonths ? `${deposit.tenureMonths} M` : '-'}
                                 </td>
-                                <td style={{ textAlign: 'center', color: '#334155' }}>
+                                <td className="fixed-deposit-tracker-s62">
                                   {fmtDate(deposit.maturityDate)}
                                 </td>
-                                <td style={{ textAlign: 'right', fontWeight: 700, color: '#15803d' }}>
+                                <td className="fixed-deposit-tracker-s63">
                                   {formatSummaryAmount(deposit.maturityValue)}
                                 </td>
                               </tr>
                             );
                           })}
-                          <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
-                            <td colSpan={3} style={{ textAlign: 'left', padding: '12px 16px', color: '#334155' }}>
+                          <tr className="fixed-deposit-tracker-s64">
+                            <td colSpan={3} className="fixed-deposit-tracker-s65">
                               {bank.totalLabel}
                             </td>
-                            <td style={{ textAlign: 'right', padding: '12px 16px', color: '#0f172a' }}>
+                            <td className="fixed-deposit-tracker-s66">
                               {formatSummaryAmount(bank.principalTotal)}
                             </td>
-                            <td colSpan={3} style={{ textAlign: 'center', color: '#94a3b8' }}>—</td>
-                            <td style={{ textAlign: 'right', padding: '12px 16px', color: '#15803d' }}>
+                            <td colSpan={3} className="fixed-deposit-tracker-s67">—</td>
+                            <td className="fixed-deposit-tracker-s68">
                               {formatSummaryAmount(bank.maturityTotal)}
                             </td>
                           </tr>
@@ -1032,27 +937,27 @@ export default function FixedDepositTracker({ isAdmin }) {
 
             {/* Clean Consolidated Grand Total & Expected Interest Card */}
             {summaryData.banks.length > 0 && (
-              <div style={{ background: '#ffffff', borderRadius: 16, border: '1px solid #cbd5e1', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14, paddingBottom: 16, borderBottom: '1px solid #e2e8f0' }}>
+              <div className="fixed-deposit-tracker-s69">
+                <div className="fixed-deposit-tracker-s70">
                   <div>
-                    <div style={{ fontSize: '0.74rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 800, color: '#64748b' }}>
+                    <div className="fixed-deposit-tracker-s71">
                       Consolidated Portfolio
                     </div>
-                    <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginTop: 2 }}>
+                    <div className="fixed-deposit-tracker-s72">
                       GRAND TOTAL ({summaryData.grandLabel})
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div className="fixed-deposit-tracker-s73">
                     <div>
-                      <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 700 }}>Total Principal Invested</div>
-                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginTop: 2 }}>
+                      <div className="fixed-deposit-tracker-s74">Total Principal Invested</div>
+                      <div className="fixed-deposit-tracker-s75">
                         <span>₹</span><span>{formatSummaryAmount(summaryData.grandPrincipal)}</span>
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 700 }}>Total Expected Maturity</div>
-                      <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#d97706', marginTop: 2 }}>
+                      <div className="fixed-deposit-tracker-s74">Total Expected Maturity</div>
+                      <div className="fixed-deposit-tracker-s76">
                         <span>₹</span><span>{formatSummaryAmount(summaryData.grandMaturity)}</span>
                       </div>
                     </div>
@@ -1060,35 +965,25 @@ export default function FixedDepositTracker({ isAdmin }) {
                 </div>
 
                 {/* Total Expected Interest Highlight Banner */}
-                <div style={{
-                  background: '#f0fdf4',
-                  border: '1px solid #86efac',
-                  borderRadius: 12,
-                  padding: '16px 20px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: 12
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{ fontSize: '1.4rem' }}>💰</span>
+                <div className="fixed-deposit-tracker-s77">
+                  <div className="fixed-deposit-tracker-s2">
+                    <span className="fixed-deposit-tracker-s78">💰</span>
                     <div>
-                      <div style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#166534' }}>
+                      <div className="fixed-deposit-tracker-s79">
                         TOTAL EXPECTED INTEREST EARNINGS
                       </div>
-                      <div style={{ fontSize: '0.82rem', color: '#15803d' }}>
+                      <div className="fixed-deposit-tracker-s80">
                         Net accumulated interest proceeds upon maturity of active deposits
                       </div>
                     </div>
                   </div>
 
-                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#15803d' }}>
+                  <div className="fixed-deposit-tracker-s81">
                     ₹{formatSummaryAmount(summaryData.grandInterest)}
                   </div>
                 </div>
 
-                <p style={{ margin: 0, fontSize: '0.78rem', color: '#94a3b8', fontStyle: 'italic' }}>
+                <p className="fixed-deposit-tracker-s82">
                   * Society Fixed Deposits are maintained with Scheduled Commercial Banks under approved society statutory reserves and sinking fund resolutions.
                 </p>
               </div>
@@ -1099,27 +994,25 @@ export default function FixedDepositTracker({ isAdmin }) {
 
       {/* SUB-TAB 2: ACTIVE FIXED DEPOSITS TABLE */}
       {activeSubTab === 'active' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="fixed-deposit-tracker-s83">
           
           {/* Filter Bar */}
-          <div style={{ background: '#f8fafc', border: '1px solid var(--line)', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-            <div style={{ flex: 1, minWidth: 220 }}>
+          <div className="fixed-deposit-tracker-s84">
+            <div className="fixed-deposit-tracker-s85">
               <input
                 type="search"
                 placeholder="🔍 Search FD number, bank, deposit purpose..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="attendance-register-input"
-                style={{ textAlign: 'left', height: 40, fontSize: '0.9rem', background: '#fff' }}
+                className="attendance-register-input fixed-deposit-tracker-s86"
               />
             </div>
 
-            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <div className="fixed-deposit-tracker-s87">
               <select
                 value={bankFilter}
                 onChange={e => setBankFilter(e.target.value)}
-                className="attendance-register-input"
-                style={{ height: 40, fontSize: '0.85rem', width: 140, background: '#fff' }}
+                className="attendance-register-input fixed-deposit-tracker-s88"
               >
                 <option value="All">All Banks</option>
                 <option value="HDFC Bank">HDFC Bank</option>
@@ -1129,8 +1022,7 @@ export default function FixedDepositTracker({ isAdmin }) {
               <select
                 value={fundFilter}
                 onChange={e => setFundFilter(e.target.value)}
-                className="attendance-register-input"
-                style={{ height: 40, fontSize: '0.85rem', width: 150, background: '#fff' }}
+                className="attendance-register-input fixed-deposit-tracker-s89"
               >
                 <option value="All">All Fund Types</option>
                 <option value="Sinking Fund">Sinking Fund</option>
@@ -1145,23 +1037,23 @@ export default function FixedDepositTracker({ isAdmin }) {
             <div className="attendance-table-scroll">
               <table className="attendance-table">
                 <thead>
-                  <tr style={{ background: '#f8fafc' }}>
-                    <th style={{ width: 40, textAlign: 'center' }}>#</th>
-                    <th style={{ width: 130 }}>FD / Account #</th>
-                    <th style={{ width: 120 }}>Bank</th>
+                  <tr className="fixed-deposit-tracker-s50">
+                    <th className="fixed-deposit-tracker-s90">#</th>
+                    <th className="fixed-deposit-tracker-s91">FD / Account #</th>
+                    <th className="fixed-deposit-tracker-s92">Bank</th>
                     <th>Deposit Name / Purpose</th>
-                    <th style={{ width: 120, textAlign: 'right' }}>Principal (₹)</th>
-                    <th style={{ width: 85, textAlign: 'center' }}>ROI</th>
-                    <th style={{ width: 110, textAlign: 'center' }}>Maturity Date</th>
-                    <th style={{ width: 130, textAlign: 'right' }}>Maturity Value (₹)</th>
-                    <th style={{ width: 110, textAlign: 'center' }}>Progress</th>
-                    {isAdmin && <th style={{ width: 120, textAlign: 'center' }}>Actions</th>}
+                    <th className="fixed-deposit-tracker-s93">Principal (₹)</th>
+                    <th className="fixed-deposit-tracker-s94">ROI</th>
+                    <th className="fixed-deposit-tracker-s56">Maturity Date</th>
+                    <th className="fixed-deposit-tracker-s95">Maturity Value (₹)</th>
+                    <th className="fixed-deposit-tracker-s56">Progress</th>
+                    {isAdmin && <th className="fixed-deposit-tracker-s96">Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {filteredActiveFds.length === 0 ? (
                     <tr>
-                      <td colSpan={isAdmin ? 10 : 9} style={{ textAlign: 'center', padding: '40px', color: 'var(--muted)' }}>
+                      <td colSpan={isAdmin ? 10 : 9} className="fixed-deposit-tracker-s97">
                         {searchQuery ? `No deposits matching "${searchQuery}"` : 'No active deposits found.'}
                       </td>
                     </tr>
@@ -1172,49 +1064,43 @@ export default function FixedDepositTracker({ isAdmin }) {
 
                       return (
                         <tr key={fd.id || fd.fdNumber}>
-                          <td style={{ textAlign: 'center', color: '#64748b' }}>{i + 1}</td>
-                          <td style={{ fontWeight: 700, fontFamily: 'monospace', color: '#0f172a' }}>{fd.fdNumber}</td>
+                          <td className="fixed-deposit-tracker-s57">{i + 1}</td>
+                          <td className="fixed-deposit-tracker-s58">{fd.fdNumber}</td>
                           <td>
-                            <span style={{
-                              display: 'inline-block', padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
-                              background: fd.bankName?.includes('HDFC') ? '#eff6ff' : fd.bankName?.includes('ICICI') ? '#fff7ed' : '#f1f5f9',
-                              color: fd.bankName?.includes('HDFC') ? '#1e40af' : fd.bankName?.includes('ICICI') ? '#c2410c' : '#334155'
-                            }}>
+                            <span className="fixed-deposit-tracker-s98" style={{ background: fd.bankName?.includes('HDFC') ? '#eff6ff' : fd.bankName?.includes('ICICI') ? '#fff7ed' : '#f1f5f9', color: fd.bankName?.includes('HDFC') ? '#1e40af' : fd.bankName?.includes('ICICI') ? '#c2410c' : '#334155' }}>
                               {fd.bankName}
                             </span>
                           </td>
                           <td>
                             <strong>{fd.depositName || fd.depositLine1 || 'Fixed Deposit'}</strong>
-                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{fd.fundType || 'Sinking Fund'}</div>
+                            <div className="fixed-deposit-tracker-s99">{fd.fundType || 'Sinking Fund'}</div>
                           </td>
-                          <td style={{ textAlign: 'right', fontWeight: 600 }}>{formatSummaryAmount(fd.principal)}</td>
-                          <td style={{ textAlign: 'center', fontWeight: 700, color: '#065f46' }}>{fd.interestRate}%</td>
-                          <td style={{ textAlign: 'center', color: isMature ? '#dc2626' : 'inherit', fontWeight: isMature ? 700 : 'normal' }}>
+                          <td className="fixed-deposit-tracker-s100">{formatSummaryAmount(fd.principal)}</td>
+                          <td className="fixed-deposit-tracker-s101">{fd.interestRate}%</td>
+                          <td className="fixed-deposit-tracker-s102" style={{ color: isMature ? '#dc2626' : 'inherit', fontWeight: isMature ? 700 : 'normal' }}>
                             {fmtDate(fd.maturityDate)}
-                            {isMature && <span style={{ display: 'block', fontSize: '0.65rem', color: '#dc2626' }}>Matured!</span>}
+                            {isMature && <span className="fixed-deposit-tracker-s103">Matured!</span>}
                           </td>
-                          <td style={{ textAlign: 'right', fontWeight: 700, color: '#15803d' }}>{formatSummaryAmount(fd.maturityValue)}</td>
-                          <td style={{ textAlign: 'center' }}>
-                            <div style={{ width: '100%', background: '#e2e8f0', height: 6, borderRadius: 3, overflow: 'hidden' }}>
-                              <div style={{ width: `${elapsed}%`, background: isMature ? '#16a34a' : '#3b82f6', height: '100%' }}></div>
+                          <td className="fixed-deposit-tracker-s63">{formatSummaryAmount(fd.maturityValue)}</td>
+                          <td className="fixed-deposit-tracker-s102">
+                            <div className="fixed-deposit-tracker-s104">
+                              <div className="fixed-deposit-tracker-s105" style={{ width: `${elapsed}%`, background: isMature ? '#16a34a' : '#3b82f6' }}></div>
                             </div>
-                            <span style={{ fontSize: '0.7rem', color: '#64748b' }}>{elapsed}%</span>
+                            <span className="fixed-deposit-tracker-s106">{elapsed}%</span>
                           </td>
                           {isAdmin && (
-                            <td style={{ textAlign: 'center' }}>
-                              <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                            <td className="fixed-deposit-tracker-s102">
+                              <div className="fixed-deposit-tracker-s107">
                                 <button
                                   onClick={() => handleMarkMatured(fd)}
-                                  className="button-secondary"
-                                  style={{ padding: '3px 8px', fontSize: '0.72rem', color: '#16a34a' }}
+                                  className="button-secondary fixed-deposit-tracker-s108"
                                   title="Mark Matured"
                                 >
                                   ✓ Matured
                                 </button>
                                 <button
                                   onClick={() => setBreakingFd(fd)}
-                                  className="button-secondary"
-                                  style={{ padding: '3px 8px', fontSize: '0.72rem', color: '#dc2626' }}
+                                  className="button-secondary fixed-deposit-tracker-s109"
                                   title="Break FD Prematurely"
                                 >
                                   ✕ Break
@@ -1235,27 +1121,27 @@ export default function FixedDepositTracker({ isAdmin }) {
 
       {/* SUB-TAB 3: DEPOSIT HISTORY & CLOSED AUDIT */}
       {activeSubTab === 'history' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="fixed-deposit-tracker-s83">
           <div className="table-card">
             <div className="attendance-table-scroll">
               <table className="attendance-table">
                 <thead>
-                  <tr style={{ background: '#f8fafc' }}>
-                    <th style={{ width: 40, textAlign: 'center' }}>#</th>
-                    <th style={{ width: 130 }}>FD #</th>
-                    <th style={{ width: 120 }}>Bank</th>
+                  <tr className="fixed-deposit-tracker-s50">
+                    <th className="fixed-deposit-tracker-s90">#</th>
+                    <th className="fixed-deposit-tracker-s91">FD #</th>
+                    <th className="fixed-deposit-tracker-s92">Bank</th>
                     <th>Deposit Name</th>
-                    <th style={{ width: 120, textAlign: 'right' }}>Principal (₹)</th>
-                    <th style={{ width: 120, textAlign: 'right' }}>Proceeds Realized (₹)</th>
-                    <th style={{ width: 120, textAlign: 'right' }}>Net Gain (₹)</th>
-                    <th style={{ width: 100, textAlign: 'center' }}>Status</th>
+                    <th className="fixed-deposit-tracker-s93">Principal (₹)</th>
+                    <th className="fixed-deposit-tracker-s93">Proceeds Realized (₹)</th>
+                    <th className="fixed-deposit-tracker-s93">Net Gain (₹)</th>
+                    <th className="fixed-deposit-tracker-s110">Status</th>
                     <th>Notes &amp; Audit Trail</th>
                   </tr>
                 </thead>
                 <tbody>
                   {historyFds.length === 0 ? (
                     <tr>
-                      <td colSpan={9} style={{ textAlign: 'center', padding: 40, color: 'var(--muted)' }}>
+                      <td colSpan={9} className="fixed-deposit-tracker-s97">
                         No closed, broken, or matured Fixed Deposits on record.
                       </td>
                     </tr>
@@ -1266,23 +1152,19 @@ export default function FixedDepositTracker({ isAdmin }) {
 
                       return (
                         <tr key={fd.id || i}>
-                          <td style={{ textAlign: 'center', color: '#64748b' }}>{i + 1}</td>
-                          <td style={{ fontWeight: 700, fontFamily: 'monospace' }}>{fd.fdNumber}</td>
+                          <td className="fixed-deposit-tracker-s57">{i + 1}</td>
+                          <td className="fixed-deposit-tracker-s111">{fd.fdNumber}</td>
                           <td>{fd.bankName}</td>
                           <td>{fd.depositName || fd.depositLine1 || 'Fixed Deposit'}</td>
-                          <td style={{ textAlign: 'right' }}>{formatSummaryAmount(fd.principal)}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 600 }}>{formatSummaryAmount(proceeds)}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 700, color: '#15803d' }}>+₹{formatSummaryAmount(gain)}</td>
-                          <td style={{ textAlign: 'center' }}>
-                            <span style={{
-                              display: 'inline-block', padding: '2px 8px', borderRadius: 999, fontSize: '0.72rem', fontWeight: 700,
-                              background: fd.status === 'Broken' ? '#fee2e2' : '#d1fae5',
-                              color: fd.status === 'Broken' ? '#991b1b' : '#065f46'
-                            }}>
+                          <td className="fixed-deposit-tracker-s112">{formatSummaryAmount(fd.principal)}</td>
+                          <td className="fixed-deposit-tracker-s100">{formatSummaryAmount(proceeds)}</td>
+                          <td className="fixed-deposit-tracker-s63">+₹{formatSummaryAmount(gain)}</td>
+                          <td className="fixed-deposit-tracker-s102">
+                            <span className="fixed-deposit-tracker-s113" style={{ background: fd.status === 'Broken' ? '#fee2e2' : '#d1fae5', color: fd.status === 'Broken' ? '#991b1b' : '#065f46' }}>
                               {fd.status}
                             </span>
                           </td>
-                          <td style={{ fontSize: '0.78rem', color: '#64748b' }}>{fd.notes || '—'}</td>
+                          <td className="fixed-deposit-tracker-s114">{fd.notes || '—'}</td>
                         </tr>
                       );
                     })
@@ -1296,46 +1178,42 @@ export default function FixedDepositTracker({ isAdmin }) {
 
       {/* SUB-TAB 4: ACCRUED INTEREST RETURNS SIMULATOR */}
       {activeSubTab === 'calculator' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
-          <div className="section-card" style={{ padding: 24, borderRadius: 18 }}>
-            <h4 style={{ margin: '0 0 16px 0', color: '#0b2b26' }}>🧮 Fixed Deposit Yield Simulator</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div className="fixed-deposit-tracker-s115">
+          <div className="section-card fixed-deposit-tracker-s116">
+            <h4 className="fixed-deposit-tracker-s117">🧮 Fixed Deposit Yield Simulator</h4>
+            <div className="fixed-deposit-tracker-s118">
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Principal Amount (₹)</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Principal Amount (₹)</label>
                 <input
                   type="number"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   value={calcPrincipal}
                   onChange={e => setCalcPrincipal(e.target.value)}
                 />
               </div>
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Annual Interest Rate (% p.a.)</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Annual Interest Rate (% p.a.)</label>
                 <input
                   type="number"
                   step="0.05"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   value={calcRate}
                   onChange={e => setCalcRate(e.target.value)}
                 />
               </div>
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Tenure (Months)</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Tenure (Months)</label>
                 <input
                   type="number"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   value={calcTenure}
                   onChange={e => setCalcTenure(e.target.value)}
                 />
               </div>
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Compounding Frequency</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Compounding Frequency</label>
                 <select
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   value={calcCompounding}
                   onChange={e => setCalcCompounding(e.target.value)}
                 >
@@ -1347,16 +1225,16 @@ export default function FixedDepositTracker({ isAdmin }) {
             </div>
           </div>
 
-          <div className="section-card" style={{ padding: 24, borderRadius: 18, background: '#f8fafc', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', fontWeight: 700 }}>Simulation Summary</div>
-            <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div style={{ background: '#fff', padding: '14px 16px', borderRadius: 12, border: '1px solid var(--line)' }}>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Estimated Maturity Value</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0b2b26', marginTop: 2 }}>₹{formatSummaryAmount(calculatedSimValue.maturity)}</div>
+          <div className="section-card fixed-deposit-tracker-s121">
+            <div className="fixed-deposit-tracker-s122">Simulation Summary</div>
+            <div className="fixed-deposit-tracker-s123">
+              <div className="fixed-deposit-tracker-s124">
+                <div className="fixed-deposit-tracker-s99">Estimated Maturity Value</div>
+                <div className="fixed-deposit-tracker-s125">₹{formatSummaryAmount(calculatedSimValue.maturity)}</div>
               </div>
-              <div style={{ background: '#f0fdf4', padding: '14px 16px', borderRadius: 12, border: '1px solid #86efac' }}>
-                <div style={{ fontSize: '0.75rem', color: '#166534' }}>Total Projected Interest Gain</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#15803d', marginTop: 2 }}>+₹{formatSummaryAmount(calculatedSimValue.interest)}</div>
+              <div className="fixed-deposit-tracker-s126">
+                <div className="fixed-deposit-tracker-s127">Total Projected Interest Gain</div>
+                <div className="fixed-deposit-tracker-s128">+₹{formatSummaryAmount(calculatedSimValue.interest)}</div>
               </div>
             </div>
           </div>
@@ -1365,33 +1243,32 @@ export default function FixedDepositTracker({ isAdmin }) {
 
       {/* CREATE FD MODAL (matching TaskModal) */}
       {isCreateModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+        <div className="fixed-deposit-tracker-s129"
           onClick={() => setIsCreateModalOpen(false)}>
-          <div style={{ background: '#fffaf2', borderRadius: 22, padding: '28px', width: '100%', maxWidth: 650, maxHeight: '92vh', overflowY: 'auto', boxShadow: '0 40px 100px rgba(0,0,0,0.28)' }}
+          <div className="fixed-deposit-tracker-s130"
             onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <div className="fixed-deposit-tracker-s131">
               <div>
-                <p style={{ margin: 0, fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#196c6c' }}>
+                <p className="fixed-deposit-tracker-s132">
                   Treasury Investment
                 </p>
-                <h3 style={{ margin: '2px 0 0', fontSize: '1.25rem', fontWeight: 800, color: '#0b2b26' }}>
+                <h3 className="fixed-deposit-tracker-s133">
                   ➕ Open New Fixed Deposit
                 </h3>
               </div>
-              <button onClick={() => setIsCreateModalOpen(false)} style={{ background: 'rgba(61,63,52,0.08)', border: 'none', borderRadius: 10, width: 36, height: 36, cursor: 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+              <button onClick={() => setIsCreateModalOpen(false)} className="fixed-deposit-tracker-s134">✕</button>
             </div>
 
-            {formError && <div style={{ color: '#dc2626', background: '#fee2e2', padding: '8px 12px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 12 }}>⚠️ {formError}</div>}
-            {formSuccess && <div style={{ color: '#16a34a', background: '#dcfce7', padding: '8px 12px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 12 }}>✓ {formSuccess}</div>}
+            {formError && <div className="fixed-deposit-tracker-s135">⚠️ {formError}</div>}
+            {formSuccess && <div className="fixed-deposit-tracker-s136">✓ {formSuccess}</div>}
 
-            <form onSubmit={handleMakeFdSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <form onSubmit={handleMakeFdSubmit} className="fixed-deposit-tracker-s137">
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Bank Name *</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Bank Name *</label>
                 <select
                   value={bankName}
                   onChange={e => setBankName(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   required
                 >
                   <option value="HDFC Bank">HDFC Bank</option>
@@ -1402,12 +1279,11 @@ export default function FixedDepositTracker({ isAdmin }) {
 
               {bankName === 'Other' && (
                 <div>
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Custom Bank Name *</label>
+                  <label className="eyebrow fixed-deposit-tracker-s119">Custom Bank Name *</label>
                   <input
                     value={customBankName}
                     onChange={e => setCustomBankName(e.target.value)}
-                    className="attendance-register-input"
-                    style={{ textAlign: 'left' }}
+                    className="attendance-register-input fixed-deposit-tracker-s120"
                     placeholder="e.g. State Bank of India"
                     required
                   />
@@ -1415,76 +1291,70 @@ export default function FixedDepositTracker({ isAdmin }) {
               )}
 
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>FD / Account Number *</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">FD / Account Number *</label>
                 <input
                   value={fdNumber}
                   onChange={e => setFdNumber(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   placeholder="e.g. 50300123456789"
                   required
                 />
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Principal Amount (₹) *</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Principal Amount (₹) *</label>
                 <input
                   type="number"
                   value={principal}
                   onChange={e => setPrincipal(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   placeholder="0.00"
                   required
                 />
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Interest Rate (% p.a.) *</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Interest Rate (% p.a.) *</label>
                 <input
                   type="number"
                   step="0.01"
                   value={interestRate}
                   onChange={e => setInterestRate(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   placeholder="e.g. 7.25"
                   required
                 />
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Tenure (Months) *</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Tenure (Months) *</label>
                 <input
                   type="number"
                   value={tenureMonths}
                   onChange={e => setTenureMonths(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   placeholder="e.g. 12"
                   required
                 />
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Start Date *</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Start Date *</label>
                 <input
                   type="date"
                   value={startDate}
                   onChange={e => setStartDate(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   required
                 />
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Fund Classification</label>
+                <label className="eyebrow fixed-deposit-tracker-s119">Fund Classification</label>
                 <select
                   value={fundType}
                   onChange={e => setFundType(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                 >
                   <option value="Sinking Fund">Sinking Fund</option>
                   <option value="General Fund">General Fund</option>
@@ -1493,35 +1363,34 @@ export default function FixedDepositTracker({ isAdmin }) {
                 </select>
               </div>
 
-              <div style={{ gridColumn: '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 6 }}>Deposit Name / Purpose</label>
+              <div className="fixed-deposit-tracker-s138">
+                <label className="eyebrow fixed-deposit-tracker-s119">Deposit Name / Purpose</label>
                 <input
                   value={depositName}
                   onChange={e => setDepositName(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   placeholder="e.g. MAJESTIQUE EURISKA A BLDG SINKING FUND"
                 />
               </div>
 
               {computedMaturityValue > 0 && (
-                <div style={{ gridColumn: '1 / -1', background: '#f0fdf4', padding: '12px 16px', borderRadius: 10, border: '1px solid #86efac', display: 'flex', justifyContent: 'space-between' }}>
+                <div className="fixed-deposit-tracker-s139">
                   <div>
-                    <span style={{ fontSize: '0.75rem', color: '#166534' }}>Estimated Maturity:</span>{' '}
+                    <span className="fixed-deposit-tracker-s127">Estimated Maturity:</span>{' '}
                     <strong>{fmtDate(computedMaturityDate)}</strong>
                   </div>
                   <div>
-                    <span style={{ fontSize: '0.75rem', color: '#166534' }}>Projected Amount:</span>{' '}
-                    <strong style={{ color: '#15803d', fontSize: '1rem' }}>₹{formatSummaryAmount(computedMaturityValue)}</strong>
+                    <span className="fixed-deposit-tracker-s127">Projected Amount:</span>{' '}
+                    <strong className="fixed-deposit-tracker-s140">₹{formatSummaryAmount(computedMaturityValue)}</strong>
                   </div>
                 </div>
               )}
 
-              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 10 }}>
-                <button type="button" onClick={() => setIsCreateModalOpen(false)} className="button-secondary" style={{ padding: '8px 18px' }}>
+              <div className="fixed-deposit-tracker-s141">
+                <button type="button" onClick={() => setIsCreateModalOpen(false)} className="button-secondary fixed-deposit-tracker-s142">
                   Cancel
                 </button>
-                <button type="submit" className="button-primary" style={{ padding: '8px 22px' }} disabled={isSubmitting}>
+                <button type="submit" className="button-primary fixed-deposit-tracker-s143" disabled={isSubmitting}>
                   {isSubmitting ? 'Creating...' : 'Confirm & Save FD'}
                 </button>
               </div>
@@ -1532,57 +1401,54 @@ export default function FixedDepositTracker({ isAdmin }) {
 
       {/* PREMATURE BREAK MODAL */}
       {breakingFd && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+        <div className="fixed-deposit-tracker-s129"
           onClick={() => setBreakingFd(null)}>
-          <div style={{ background: '#fff', borderRadius: 20, padding: 24, width: '100%', maxWidth: 480, boxShadow: '0 30px 80px rgba(0,0,0,0.3)' }}
+          <div className="fixed-deposit-tracker-s144"
             onClick={e => e.stopPropagation()}>
-            <h3 style={{ margin: '0 0 8px 0', color: '#dc2626' }}>Premature Deposit Liquidation</h3>
-            <p style={{ fontSize: '0.88rem', color: '#64748b', margin: '0 0 16px 0' }}>
+            <h3 className="fixed-deposit-tracker-s145">Premature Deposit Liquidation</h3>
+            <p className="fixed-deposit-tracker-s146">
               Break FD <strong>{breakingFd.fdNumber}</strong> ({fmtAmt(breakingFd.principal)}) before maturity.
             </p>
 
-            <form onSubmit={handleBreakSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <form onSubmit={handleBreakSubmit} className="fixed-deposit-tracker-s147">
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 4 }}>Liquidation Date</label>
+                <label className="eyebrow fixed-deposit-tracker-s148">Liquidation Date</label>
                 <input
                   type="date"
                   value={brokenDate}
                   onChange={e => setBrokenDate(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   required
                 />
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 4 }}>Total Proceeds Received (₹)</label>
+                <label className="eyebrow fixed-deposit-tracker-s148">Total Proceeds Received (₹)</label>
                 <input
                   type="number"
                   value={brokenAmount}
                   onChange={e => setBrokenAmount(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left' }}
+                  className="attendance-register-input fixed-deposit-tracker-s120"
                   placeholder="Principal + penalty-adjusted interest"
                   required
                 />
               </div>
 
               <div>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: 4 }}>Reason / Cancellation Notes</label>
+                <label className="eyebrow fixed-deposit-tracker-s148">Reason / Cancellation Notes</label>
                 <textarea
                   value={breakNotes}
                   onChange={e => setBreakNotes(e.target.value)}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', minHeight: 60 }}
+                  className="attendance-register-input fixed-deposit-tracker-s149"
                   placeholder="Reason for premature liquidation..."
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 10 }}>
+              <div className="fixed-deposit-tracker-s150">
                 <button type="button" onClick={() => setBreakingFd(null)} className="button-secondary">
                   Cancel
                 </button>
-                <button type="submit" className="button-primary" style={{ background: '#dc2626', borderColor: '#dc2626' }}>
+                <button type="submit" className="button-primary fixed-deposit-tracker-s151">
                   Confirm Liquidation
                 </button>
               </div>

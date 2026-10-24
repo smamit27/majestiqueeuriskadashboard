@@ -1,0 +1,768 @@
+/**
+ * ManagerTaskTracker.css
+ * Extracted styles from ManagerTaskTracker.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.manager-task-tracker-s1 {
+  background: #fde68a;
+  color: #92400e;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.manager-task-tracker-s2 {
+  color: #c4b99a;
+  font-size: 0.78rem;
+}
+
+.manager-task-tracker-s3 {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.manager-task-tracker-s4 {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 20px;
+}
+
+.manager-task-tracker-s5 {
+  opacity: 0.3;
+  font-size: 0.65rem;
+}
+
+.manager-task-tracker-s6 {
+  font-size: 0.65rem;
+}
+
+.manager-task-tracker-s7 {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.manager-task-tracker-s8 {
+  background: #fffaf2;
+  border-radius: 22px;
+  padding: 28px 28px 22px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.28);
+}
+
+.manager-task-tracker-s9 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.manager-task-tracker-s10 {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #196c6c;
+}
+
+.manager-task-tracker-s11 {
+  margin: 2px 0 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0b2b26;
+}
+
+.manager-task-tracker-s12 {
+  background: rgba(61,63,52,0.08);
+  border: none;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.manager-task-tracker-s13 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+}
+
+.manager-task-tracker-s14 {
+  grid-column: 1/-1;
+}
+
+.manager-task-tracker-s15 {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.manager-task-tracker-s16 {
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+
+.manager-task-tracker-s17 {
+  resize: vertical;
+}
+
+.manager-task-tracker-s18 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(61,63,52,0.1);
+}
+
+.manager-task-tracker-s19 {
+  padding: 10px 22px;
+  border-radius: 12px;
+  border: 1px solid rgba(61,63,52,0.18);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.88rem;
+  font-family: inherit;
+}
+
+.manager-task-tracker-s20 {
+  padding: 10px 24px;
+  border-radius: 12px;
+  border: none;
+  background: #0b2b26;
+  color: #C49B4F;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.88rem;
+  font-family: inherit;
+}
+
+.manager-task-tracker-s21 {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.manager-task-tracker-s22 {
+  background: linear-gradient(135deg, #0b2b26 0%, #196c6c 100%);
+  border-radius: 20px;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 6px 28px rgba(11,43,38,0.18);
+}
+
+.manager-task-tracker-s23 {
+  margin: 0 0 2px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #C49B4F;
+}
+
+.manager-task-tracker-s24 {
+  margin: 0 0 2px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.manager-task-tracker-s25 {
+  margin: 0;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.82rem;
+}
+
+.manager-task-tracker-s26 {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.manager-task-tracker-s27 {
+  text-align: center;
+  border-radius: 10px;
+  padding: 8px 14px;
+  min-width: 52px;
+}
+
+.manager-task-tracker-s28 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.manager-task-tracker-s29 {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.manager-task-tracker-s30 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 8px 14px;
+}
+
+.manager-task-tracker-s31 {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.manager-task-tracker-s32 {
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.manager-task-tracker-s33 {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #6ee7b7;
+}
+
+.manager-task-tracker-s34 {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.2;
+}
+
+.manager-task-tracker-s35 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.manager-task-tracker-s36 {
+  background: linear-gradient(135deg, rgba(13,148,136,0.08) 0%, rgba(5,150,105,0.08) 100%);
+  border: 1px solid rgba(13,148,136,0.25);
+  border-radius: 14px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.manager-task-tracker-s37 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.manager-task-tracker-s38 {
+  font-size: 1.3rem;
+}
+
+.manager-task-tracker-s39 {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #0f766e;
+}
+
+.manager-task-tracker-s40 {
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+.manager-task-tracker-s41 {
+  background: linear-gradient(135deg, #0d9488, #059669);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(13,148,136,0.2);
+}
+
+.manager-task-tracker-s42 {
+  display: flex;
+  gap: 8px;
+}
+
+.manager-task-tracker-s43 {
+  padding: 9px 18px;
+  border-radius: 12px;
+  border: 2px solid;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.88rem;
+  font-family: inherit;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.manager-task-tracker-s44 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 10px;
+}
+
+.manager-task-tracker-s45 {
+  background: rgba(255,250,242,0.95);
+  border: 1px solid rgba(61,63,52,0.1);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(11,43,38,0.06);
+  overflow: hidden;
+}
+
+.manager-task-tracker-s46 {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(61,63,52,0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.manager-task-tracker-s47 {
+  position: relative;
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+.manager-task-tracker-s48 {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.4;
+  pointer-events: none;
+  font-size: 0.9rem;
+}
+
+.manager-task-tracker-s49 {
+  width: 100%;
+  padding-left: 32px;
+  padding-right: 12px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(61,63,52,0.15);
+  background: #fffefb;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: #1d2a24;
+  outline: none;
+}
+
+.manager-task-tracker-s50 {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.manager-task-tracker-s51 {
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1.5px solid;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.manager-task-tracker-s52 {
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(61,63,52,0.15);
+  background: #fffefb;
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  color: #1d2a24;
+}
+
+.manager-task-tracker-s53 {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.manager-task-tracker-s54 {
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(61,63,52,0.18);
+  background: #fff;
+  color: #1d2a24;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.manager-task-tracker-s55 {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.manager-task-tracker-s56 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: #5f665f;
+}
+
+.manager-task-tracker-s57 {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(61,63,52,0.15);
+  background: #fffefb;
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.manager-task-tracker-s58 {
+  padding: 7px 15px;
+  border-radius: 10px;
+  border: none;
+  background: #0b2b26;
+  color: #C49B4F;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+}
+
+.manager-task-tracker-s59 {
+  padding: 7px 16px;
+  background: rgba(196,155,79,0.08);
+  border-bottom: 1px solid rgba(196,155,79,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.manager-task-tracker-s60 {
+  font-size: 0.78rem;
+  color: #92400e;
+  font-weight: 600;
+}
+
+.manager-task-tracker-s61 {
+  font-size: 0.75rem;
+  color: #92400e;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.manager-task-tracker-s62 {
+  overflow-x: auto;
+}
+
+.manager-task-tracker-s63 {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+.manager-task-tracker-s64 {
+  background: rgba(244,239,231,0.95);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.manager-task-tracker-s65 {
+  padding: 10px 12px;
+  text-align: left;
+  white-space: nowrap;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border-bottom: 2px solid rgba(61,63,52,0.1);
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.manager-task-tracker-s66 {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.manager-task-tracker-s67 {
+  padding: 10px 12px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #5f665f;
+  border-bottom: 2px solid rgba(61,63,52,0.1);
+  white-space: nowrap;
+  min-width: 90px;
+}
+
+.manager-task-tracker-s68 {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.manager-task-tracker-s69 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #5f665f;
+  opacity: 0.7;
+}
+
+.manager-task-tracker-s70 {
+  font-size: 2rem;
+  animation: spin 1s linear infinite;
+}
+
+.manager-task-tracker-s71 {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.manager-task-tracker-s72 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #5f665f;
+  opacity: 0.6;
+}
+
+.manager-task-tracker-s73 {
+  font-size: 2.5rem;
+}
+
+.manager-task-tracker-s74 {
+  border-bottom: 1px solid rgba(61,63,52,0.06);
+  transition: background 0.12s;
+}
+
+.manager-task-tracker-s75 {
+  padding: 9px 12px;
+  font-size: 0.73rem;
+  color: #c4b99a;
+  font-weight: 700;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.manager-task-tracker-s76 {
+  padding: 9px 12px;
+  min-width: 160px;
+}
+
+.manager-task-tracker-s77 {
+  font-size: 0.85rem;
+  display: block;
+  color: #1d2a24;
+  line-height: 1.35;
+}
+
+.manager-task-tracker-s78 {
+  font-size: 0.68rem;
+  color: #c4b99a;
+  margin-top: 1px;
+  display: block;
+}
+
+.manager-task-tracker-s79 {
+  padding: 9px 12px;
+  font-size: 0.8rem;
+  color: #5f665f;
+  white-space: nowrap;
+}
+
+.manager-task-tracker-s80 {
+  color: #c4b99a;
+}
+
+.manager-task-tracker-s81 {
+  padding: 9px 12px;
+  max-width: 240px;
+}
+
+.manager-task-tracker-s82 {
+  font-size: 0.8rem;
+  color: #3d4534;
+  line-height: 1.45;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2px;
+  -webkit-box-orient: vertical;
+}
+
+.manager-task-tracker-s83 {
+  padding: 9px 12px;
+  font-size: 0.8rem;
+  color: #5f665f;
+}
+
+.manager-task-tracker-s84 {
+  padding: 9px 12px;
+}
+
+.manager-task-tracker-s85 {
+  display: inline-block;
+  font-size: 0.73rem;
+  font-weight: 700;
+  background: #e3efe5;
+  color: #31553e;
+  padding: 2px 9px;
+  border-radius: 20px;
+}
+
+.manager-task-tracker-s86 {
+  padding: 9px 12px;
+  font-size: 0.78rem;
+  color: #5f665f;
+  white-space: nowrap;
+}
+
+.manager-task-tracker-s87 {
+  padding: 9px 12px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.manager-task-tracker-s88 {
+  padding: 3px 7px;
+  border-radius: 8px;
+  border: 1.5px solid;
+  font-weight: 600;
+  font-size: 0.73rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.manager-task-tracker-s89 {
+  padding: 9px 12px;
+  font-size: 0.78rem;
+  color: #5f665f;
+  min-width: 100px;
+}
+
+.manager-task-tracker-s90 {
+  padding: 9px 12px;
+  white-space: nowrap;
+}
+
+.manager-task-tracker-s91 {
+  display: flex;
+  gap: 5px;
+}
+
+.manager-task-tracker-s92 {
+  padding: 3px 8px;
+  border-radius: 7px;
+  border: 1px solid rgba(61,63,52,0.15);
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.manager-task-tracker-s93 {
+  padding: 3px 8px;
+  border-radius: 7px;
+  border: 1px solid rgba(220,38,38,0.2);
+  background: #fff0f0;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.manager-task-tracker-s94 {
+  padding: 10px 16px;
+  border-top: 1px solid rgba(61,63,52,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.manager-task-tracker-s95 {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.manager-task-tracker-s96 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.manager-task-tracker-s97 {
+  padding: 0 4px;
+  color: #9ca3af;
+  font-size: 0.78rem;
+}
+
+.manager-task-tracker-s98 {
+  font-size: 0.73rem;
+  color: #9ca3af;
+  margin-left: 4px;
+}
+

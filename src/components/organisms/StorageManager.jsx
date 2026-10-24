@@ -3,6 +3,8 @@ import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, or
 import { db, isFirebaseConfigured, ensureFirebaseSession } from '../../firebase.js';
 import { logAuditEvent, AUDIT_ACTIONS } from '../../services/auditService.js';
 import './StorageManager.css';
+import './StorageManagerExtracted.css';
+
 
 // ── Standard Firebase Spark Plan (Free Tier) Quotas ───────────────────────
 export const FIREBASE_QUOTAS = {
@@ -505,8 +507,7 @@ export default function StorageManager({ user, userRole, isAdmin }) {
           </div>
           <div className="storage-progress-bar">
             <div
-              className="storage-progress-fill"
-              style={{ width: '0.28%' }}
+              className="storage-progress-fill storage-manager-s1"
             />
           </div>
           <div className="storage-kpi-card__footer">
@@ -533,8 +534,7 @@ export default function StorageManager({ user, userRole, isAdmin }) {
           </div>
           <div className="storage-progress-bar">
             <div
-              className="storage-progress-fill"
-              style={{ width: '100%' }}
+              className="storage-progress-fill storage-manager-s2"
             />
           </div>
           <div className="storage-kpi-card__footer">
@@ -563,8 +563,7 @@ export default function StorageManager({ user, userRole, isAdmin }) {
           </div>
           <div className="storage-progress-bar">
             <div
-              className="storage-progress-fill"
-              style={{ width: '22%' }}
+              className="storage-progress-fill storage-manager-s3"
             />
           </div>
           <div className="storage-kpi-card__footer">
@@ -646,19 +645,13 @@ export default function StorageManager({ user, userRole, isAdmin }) {
               </p>
             </div>
 
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className="storage-manager-s4">
               <input
                 type="text"
                 placeholder="Filter collections..."
                 value={collectionFilter}
                 onChange={e => setCollectionFilter(e.target.value)}
-                style={{
-                  padding: '8px 14px',
-                  borderRadius: '10px',
-                  border: '1px solid #cbd5e1',
-                  fontSize: '13px',
-                  outline: 'none',
-                }}
+                className="storage-manager-s5"
               />
             </div>
           </div>
@@ -686,10 +679,10 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                       <td>
                         <strong>{col.name}</strong>
                         <br />
-                        <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>db.collection('{col.id}')</span>
+                        <span className="storage-manager-s6">db.collection('{col.id}')</span>
                       </td>
                       <td>
-                        <span style={{ fontSize: '11px', background: '#f1f5f9', padding: '3px 8px', borderRadius: '6px', fontWeight: 600 }}>
+                        <span className="storage-manager-s7">
                           {col.category}
                         </span>
                       </td>
@@ -697,16 +690,16 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                       <td>{(col.avgDocBytes / 1024).toFixed(1)} KB</td>
                       <td><strong>{col.totalKb} KB</strong> ({col.totalMb} MB)</td>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <div style={{ width: '60px', height: '6px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
-                            <div style={{ width: `${Math.min(100, shareOfTotal)}%`, height: '100%', background: '#3b82f6' }} />
+                        <div className="storage-manager-s8">
+                          <div className="storage-manager-s9">
+                            <div className="storage-manager-s10" style={{ width: `${Math.min(100, shareOfTotal)}%` }} />
                           </div>
                           <span>{shareOfTotal}%</span>
                         </div>
                       </td>
                       <td>
-                        <span style={{ color: '#059669', fontSize: '11.5px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }} />
+                        <span className="storage-manager-s11">
+                          <span className="storage-manager-s12" />
                           Optimal
                         </span>
                       </td>
@@ -717,11 +710,11 @@ export default function StorageManager({ user, userRole, isAdmin }) {
             </table>
           </div>
 
-          <div style={{ marginTop: '20px', padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-            <div style={{ fontSize: '13px', color: '#475569' }}>
+          <div className="storage-manager-s13">
+            <div className="storage-manager-s14">
               <strong>Total Live Records:</strong> {storageMetrics.totalDocs} documents across database &bull; <strong>Average Sizing:</strong> ~{storageMetrics.avgDocKb} KB/doc
             </div>
-            <div style={{ fontSize: '13px', color: '#0f172a' }}>
+            <div className="storage-manager-s15">
               <strong>Total Stored:</strong> {storageMetrics.totalMb} MB / 1,024 MB ({storageMetrics.percentUsed}% utilized)
             </div>
           </div>
@@ -770,10 +763,10 @@ export default function StorageManager({ user, userRole, isAdmin }) {
 
           {/* Interactive Link Transformer Playground */}
           <div className="link-transformer-box">
-            <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', fontWeight: 700, color: '#0f172a' }}>
+            <h3 className="storage-manager-s16">
               Instant Link Converter & Validator
             </h3>
-            <p style={{ margin: '0 0 16px 0', fontSize: '13px', color: '#64748b' }}>
+            <p className="storage-manager-s17">
               Paste any Google Drive share link (e.g. <code>https://drive.google.com/file/d/.../view?usp=sharing</code> or <code>open?id=...</code>):
             </p>
 
@@ -848,36 +841,36 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                     }}
                   />
                   <div className="image-preview-meta">
-                    <strong style={{ color: '#0f172a' }}>Live Render Verification:</strong>
+                    <strong className="storage-manager-s18">Live Render Verification:</strong>
                     <span>
                       The link was successfully transformed! In browser &lt;img&gt; tags, this loads instantly from Google's global CDN with zero impact on your Firebase bandwidth quota.
                     </span>
-                    <span style={{ fontSize: '11.5px', color: '#64748b' }}>
+                    <span className="storage-manager-s19">
                       <strong>Important Note:</strong> Ensure the file in Google Drive has sharing set to <em>"Anyone with the link can view"</em>.
                     </span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div style={{ padding: '12px', background: '#fee2e2', color: '#b91c1c', borderRadius: '10px', fontSize: '13px' }}>
+              <div className="storage-manager-s20">
                 {testTransform.error}
               </div>
             )}
           </div>
 
           {/* New Image Archive Form */}
-          <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', marginBottom: '28px' }}>
-            <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
+          <div className="storage-manager-s21">
+            <h3 className="storage-manager-s22">
               Archive a New Image Record
             </h3>
-            <p style={{ margin: '0 0 16px 0', fontSize: '13px', color: '#64748b' }}>
+            <p className="storage-manager-s17">
               Fill in the details below to log the image record in the society vault.
             </p>
 
             <form onSubmit={handleSaveDriveImage}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+              <div className="storage-manager-s23">
                 <div>
-                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                  <label className="storage-manager-s24">
                     Document / Image Name *
                   </label>
                   <input
@@ -886,18 +879,18 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                     placeholder="e.g. Tanker Receipt #1049, Lift AMC Slip"
                     value={imageTitle}
                     onChange={e => setImageTitle(e.target.value)}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '13px', outline: 'none' }}
+                    className="storage-manager-s25"
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                  <label className="storage-manager-s24">
                     Category
                   </label>
                   <select
                     value={imageCategory}
                     onChange={e => setImageCategory(e.target.value)}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '13px', outline: 'none', background: '#fff' }}
+                    className="storage-manager-s26"
                   >
                     <option value="Water Tanks">Water Tanks</option>
                     <option value="Tankers">Tanker Slips</option>
@@ -912,7 +905,7 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+                  <label className="storage-manager-s24">
                     Google Drive Link or File ID *
                   </label>
                   <input
@@ -921,13 +914,13 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                     placeholder="https://drive.google.com/file/d/..."
                     value={imageDriveUrl}
                     onChange={e => setImageDriveUrl(e.target.value)}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '13px', outline: 'none' }}
+                    className="storage-manager-s25"
                   />
                 </div>
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
+              <div className="storage-manager-s27">
+                <label className="storage-manager-s24">
                   Inspection Notes & Description
                 </label>
                 <input
@@ -935,20 +928,12 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                   placeholder="Additional context, vendor name, flat number, or verification status..."
                   value={imageNotes}
                   onChange={e => setImageNotes(e.target.value)}
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '13px', outline: 'none' }}
+                  className="storage-manager-s25"
                 />
               </div>
 
               {imageSaveMessage.text && (
-                <div style={{
-                  padding: '10px 14px',
-                  borderRadius: '10px',
-                  marginBottom: '16px',
-                  fontSize: '13px',
-                  background: imageSaveMessage.type === 'success' ? '#ecfdf5' : '#fee2e2',
-                  color: imageSaveMessage.type === 'success' ? '#065f46' : '#b91c1c',
-                  border: `1px solid ${imageSaveMessage.type === 'success' ? '#a7f3d0' : '#fecaca'}`,
-                }}>
+                <div className="storage-manager-s28" style={{ background: imageSaveMessage.type === 'success' ? '#ecfdf5' : '#fee2e2', color: imageSaveMessage.type === 'success' ? '#065f46' : '#b91c1c', border: `1px solid ${imageSaveMessage.type === 'success' ? '#a7f3d0' : '#fecaca'}` }}>
                   {imageSaveMessage.text}
                 </div>
               )}
@@ -965,27 +950,18 @@ export default function StorageManager({ user, userRole, isAdmin }) {
 
           {/* Saved Images Gallery */}
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
+            <div className="storage-manager-s29">
+              <h3 className="storage-manager-s30">
                 Society Google Drive Image Vault ({filteredGallery.length} Items)
               </h3>
 
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="storage-manager-s31">
                 {['ALL', 'Water Tanks', 'Tankers', 'AMC & Lifts', 'Maintenance'].map(cat => (
                   <button
                     key={cat}
                     type="button"
                     onClick={() => setGalleryCategoryFilter(cat)}
-                    style={{
-                      padding: '6px 12px',
-                      borderRadius: '8px',
-                      fontSize: '12px',
-                      fontWeight: 600,
-                      border: '1px solid #cbd5e1',
-                      background: galleryCategoryFilter === cat ? '#0f172a' : '#fff',
-                      color: galleryCategoryFilter === cat ? '#fff' : '#475569',
-                      cursor: 'pointer',
-                    }}
+                    className="storage-manager-s32" style={{ background: galleryCategoryFilter === cat ? '#0f172a' : '#fff', color: galleryCategoryFilter === cat ? '#fff' : '#475569' }}
                   >
                     {cat}
                   </button>
@@ -1007,8 +983,8 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                   <div className="drive-image-card__content">
                     <span className="drive-image-card__tag">{item.category}</span>
                     <h4 className="drive-image-card__title">{item.title}</h4>
-                    <p style={{ margin: 0, fontSize: '12px', color: '#64748b', lineClamp: 2 }}>{item.notes}</p>
-                    <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
+                    <p className="storage-manager-s33">{item.notes}</p>
+                    <div className="storage-manager-s34">
                       Date: {item.uploadDate} &bull; {item.fileSize}
                     </div>
 
@@ -1017,33 +993,14 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                         href={item.originalDriveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{
-                          flex: 1,
-                          textAlign: 'center',
-                          padding: '6px 10px',
-                          background: '#eff6ff',
-                          color: '#1d4ed8',
-                          borderRadius: '8px',
-                          fontSize: '11.5px',
-                          fontWeight: 600,
-                          textDecoration: 'none'
-                        }}
+                        className="storage-manager-s35"
                       >
                         Open in Drive
                       </a>
                       <button
                         type="button"
                         onClick={() => copyToClipboard(item.directImageUrl, item.id)}
-                        style={{
-                          padding: '6px 10px',
-                          background: '#f1f5f9',
-                          color: '#334155',
-                          borderRadius: '8px',
-                          fontSize: '11.5px',
-                          fontWeight: 600,
-                          border: 'none',
-                          cursor: 'pointer'
-                        }}
+                        className="storage-manager-s36"
                       >
                         {copyFeedback === item.id ? 'Copied!' : 'Copy Direct Link'}
                       </button>
@@ -1122,7 +1079,7 @@ export default function StorageManager({ user, userRole, isAdmin }) {
               <div className="sim-control-group">
                 <div className="sim-control-label">
                   <span>Photos Stored in Google Drive (Recommended):</span>
-                  <strong style={{ color: '#10b981' }}>+{simImagesInDrive} images</strong>
+                  <strong className="storage-manager-s37">+{simImagesInDrive} images</strong>
                 </div>
                 <input
                   type="range"
@@ -1138,7 +1095,7 @@ export default function StorageManager({ user, userRole, isAdmin }) {
               <div className="sim-control-group">
                 <div className="sim-control-label">
                   <span>Photos Stored in Firebase Storage (Heavy):</span>
-                  <strong style={{ color: '#f59e0b' }}>+{simImagesInFirebase} images</strong>
+                  <strong className="storage-manager-s38">+{simImagesInFirebase} images</strong>
                 </div>
                 <input
                   type="range"
@@ -1155,37 +1112,37 @@ export default function StorageManager({ user, userRole, isAdmin }) {
             {/* Results Card */}
             <div className="sim-results-card">
               <div>
-                <span style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#fbbf24', fontWeight: 700 }}>
+                <span className="storage-manager-s39">
                   Projected Resource Impact
                 </span>
-                <h3 style={{ fontSize: '24px', fontWeight: 800, margin: '8px 0 16px 0' }}>
+                <h3 className="storage-manager-s40">
                   {simResults.projectedFirestoreTotalMb} MB Projected Firestore
                 </h3>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                    <span style={{ color: '#94a3b8' }}>Firestore Spark Limit (1 GiB):</span>
+                <div className="storage-manager-s41">
+                  <div className="storage-manager-s42">
+                    <span className="storage-manager-s43">Firestore Spark Limit (1 GiB):</span>
                     <strong>{simResults.projectedFirestorePercent}% Used</strong>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                    <span style={{ color: '#94a3b8' }}>Firebase Storage Bucket (5 GB):</span>
+                  <div className="storage-manager-s42">
+                    <span className="storage-manager-s43">Firebase Storage Bucket (5 GB):</span>
                     <strong>{simResults.projectedFirebaseCloudStorageMb} MB ({simResults.projectedCloudStoragePercent}%)</strong>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                    <span style={{ color: '#94a3b8' }}>Google Drive 15 GB Quota:</span>
-                    <strong style={{ color: '#34d399' }}>{simResults.googleDriveUsedMb} MB ({simResults.googleDrivePercent}%)</strong>
+                  <div className="storage-manager-s42">
+                    <span className="storage-manager-s43">Google Drive 15 GB Quota:</span>
+                    <strong className="storage-manager-s44">{simResults.googleDriveUsedMb} MB ({simResults.googleDrivePercent}%)</strong>
                   </div>
                 </div>
               </div>
 
-              <div style={{ marginTop: '20px', padding: '14px', background: 'rgba(255,255,255,0.06)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <strong style={{ color: '#34d399', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+              <div className="storage-manager-s45">
+                <strong className="storage-manager-s46">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                   Architecture Recommendation
                 </strong>
-                <p style={{ margin: 0, fontSize: '12px', color: '#cbd5e1', lineHeight: '1.5' }}>
+                <p className="storage-manager-s47">
                   By keeping high-res photos in Google Drive and saving transformed links in Firestore, you can comfortably operate for <strong>decades on Firebase 100% Free Spark Tier</strong> with zero billing risk!
                 </p>
               </div>
@@ -1206,17 +1163,17 @@ export default function StorageManager({ user, userRole, isAdmin }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ background: '#f8fafc', padding: '18px', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', fontWeight: 700, color: '#0f172a' }}>
+          <div className="storage-manager-s48">
+            <div className="storage-manager-s49">
+              <h3 className="storage-manager-s16">
                 Why does Google Drive give a different link?
               </h3>
-              <p style={{ margin: '0 0 10px 0', fontSize: '13px', color: '#475569', lineHeight: '1.6' }}>
+              <p className="storage-manager-s50">
                 When you click "Share" or "Copy Link" in Google Drive, Google creates an HTML document link designed for their web interface:
                 <br />
                 <code>https://drive.google.com/file/d/<strong>1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs</strong>/view?usp=sharing</code>
               </p>
-              <p style={{ margin: 0, fontSize: '13px', color: '#475569', lineHeight: '1.6' }}>
+              <p className="storage-manager-s51">
                 If you put that in an HTML <code>&lt;img src="..."&gt;</code> tag, it will break because Google sends back an interactive HTML webpage rather than the image data.
                 Our bridge extracts the <strong>File ID</strong> (highlighted in bold) and converts it to:
                 <br />
@@ -1263,7 +1220,7 @@ export default function StorageManager({ user, userRole, isAdmin }) {
                     {copyFeedback === 'AppsScript' ? 'Copied Code!' : 'Copy Script Code'}
                   </button>
                 </div>
-                <pre style={{ margin: 0 }}>
+                <pre className="storage-manager-s52">
 {`// 1. Open Google Drive -> Click New -> More -> Google Apps Script
 // 2. Paste this code and replace YOUR_GOOGLE_DRIVE_FOLDER_ID with your folder ID:
 

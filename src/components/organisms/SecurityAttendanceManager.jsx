@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc, deleteDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './SecurityAttendanceManager.css';
+
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -622,13 +624,10 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
 
         {/* Auto-save status */}
         <div
-          className="attendance-note"
-          style={{
-            display: 'flex', alignItems: 'center', gap: '8px',
-            fontWeight: 500, color: badge.color, transition: 'color 0.3s',
-          }}
+          className="attendance-note security-attendance-manager-s1"
+          style={{ color: badge.color }}
         >
-          <span style={{ fontSize: '1rem' }}>{badge.icon}</span>
+          <span className="security-attendance-manager-s2">{badge.icon}</span>
           <span>
             {isLoading
               ? `Loading ${formatLongMonthLabel(selectedMonth)}…`
@@ -663,11 +662,11 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
             <h3>Sec. Attendance — {formatMonthLabel(selectedMonth)}</h3>
           </div>
           <div className="attendance-table-card__actions">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
+            <div className="security-attendance-manager-s3" style={{ color: badge.color }}>
               <span>{badge.icon}</span>
               <span>{isLoading ? `Loading ${formatLongMonthLabel(selectedMonth)}…` : saveMsg || badge.text}</span>
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className="security-attendance-manager-s4">
               {isAdmin && (
                 <button className="button-secondary" type="button" onClick={handleSave}
                   disabled={!isDirty || saveStatus === 'saving'}
@@ -683,10 +682,9 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
               </button>
               {isAdmin && (
                 <button
-                  className="button-secondary"
+                  className="button-secondary security-attendance-manager-s5"
                   type="button"
                   onClick={(e) => handleDeleteMonthData(e)}
-                  style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.2)' }}
                 >
                   🗑️ Delete
                 </button>
@@ -700,7 +698,7 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
           <table className="attendance-table attendance-table--register">
             <thead>
               <tr>
-                <th style={{ minWidth: 110 }}>Date</th>
+                <th className="security-attendance-manager-s6">Date</th>
                 {displayColumns.map(col => (
                   <th key={col.key} style={col.isChauhan ? { background: '#fef3c7', color: '#92400e', minWidth: 120 } : { minWidth: 90 }}>
                     {col.label}
@@ -714,7 +712,7 @@ export default function SecurityAttendanceManager({ isAdmin = false }) {
               {isLoading ? (
                 <tr>
                   <td colSpan={ALL_COLUMNS.length + 2}
-                    style={{ textAlign: 'center', padding: '24px', opacity: 0.6 }}>
+                    className="security-attendance-manager-s7">
                     Loading {formatLongMonthLabel(selectedMonth)}…
                   </td>
                 </tr>

@@ -1,5 +1,7 @@
 import React from 'react';
 import LiquidGlassCard from './LiquidGlassCard.jsx';
+import './KpiErrorState.css';
+
 
 /**
  * KpiErrorState
@@ -20,17 +22,7 @@ export default function KpiErrorState({
         <button
           type="button"
           onClick={onRetry}
-          style={{
-            marginTop: 8,
-            padding: '4px 12px',
-            fontSize: '0.74rem',
-            fontWeight: 700,
-            borderRadius: 8,
-            border: '1px solid rgba(220, 38, 38, 0.3)',
-            background: 'rgba(255, 255, 255, 0.8)',
-            color: '#dc2626',
-            cursor: 'pointer'
-          }}
+          className="kpi-error-state-s1"
         >
           Retry Sync
         </button>

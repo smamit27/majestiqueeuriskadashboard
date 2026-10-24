@@ -8,6 +8,8 @@ import {
 } from '../../data/workDistributionData';
 import { SOCIETY_INFO } from '../../data/societyConfig';
 import './WorkDistributionList.css';
+import './WorkDistributionListExtracted.css';
+
 
 // SVG Icon renderer matching the icons from the image
 function PortfolioIcon({ type }) {
@@ -646,8 +648,8 @@ export default function WorkDistributionList() {
 
           <div className="image-scan-viewer-box">
             <div
-              className="image-scan-inner"
-              style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center', transition: 'transform 0.2s ease-out' }}
+              className="image-scan-inner work-distribution-list-s1"
+              style={{ transform: `scale(${zoomLevel})` }}
             >
               <img
                 src={OFFICIAL_WORK_DISTRIBUTION_IMAGE.src}

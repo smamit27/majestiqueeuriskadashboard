@@ -6,6 +6,8 @@ import {
 
 import { APRIL_2026_DATA, MAY_2026_DATA, JUNE_2026_DATA, JULY_2026_DATA, AUGUST_2026_DATA, SEPTEMBER_2026_DATA, ALL_TIME_DATA, FY2025_26_DATA, FY2024_25_DATA, FY2023_24_DATA, FY2022_23_DATA, parseRawBankStatement } from './bankStatementData';
 import FixedDepositTracker from './FixedDepositTracker';
+import './BankStatementTracker.css';
+
 
 // Helper: check if transaction description corresponds to an inter-building transfer (B Building or C Building)
 export const isInterBuildingTx = (desc = '') => {
@@ -747,16 +749,16 @@ export default function BankStatementTracker({ isAdmin }) {
 
   if (!isUnlocked) {
     return (
-      <div className="section-card" style={{ maxWidth: '480px', margin: '40px auto', padding: '32px' }}>
-        <h3 className="section-card__title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div className="section-card bank-statement-tracker-s1">
+        <h3 className="section-card__title bank-statement-tracker-s2">
           <span>🔒</span> Confidential Statement Auditor
         </h3>
-        <p style={{ color: 'var(--muted)', fontSize: '0.95rem', marginBottom: '24px' }}>
+        <p className="bank-statement-tracker-s3">
           This area contains highly confidential forensic audit insights. Please enter the treasurer authorization password to proceed.
         </p>
         <form onSubmit={handleUnlock}>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
+          <div className="bank-statement-tracker-s4">
+            <label className="bank-statement-tracker-s5">
               Authorization Password
             </label>
             <input
@@ -764,25 +766,17 @@ export default function BankStatementTracker({ isAdmin }) {
               placeholder="Enter password..."
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: '8px',
-                border: '1px solid var(--line)',
-                background: 'rgba(255,255,255,0.5)',
-                outline: 'none'
-              }}
+              className="bank-statement-tracker-s6"
             />
           </div>
           {errorMsg && (
-            <p style={{ color: 'var(--coral)', fontSize: '0.85rem', marginBottom: '16px', fontWeight: '500' }}>
+            <p className="bank-statement-tracker-s7">
               ⚠️ {errorMsg}
             </p>
           )}
           <button
             type="submit"
-            className="action-btn"
-            style={{ width: '100%', display: 'flex', justifyContent: 'center', background: 'var(--teal)', color: 'white' }}
+            className="action-btn bank-statement-tracker-s8"
           >
             Unlock Auditor Workspace
           </button>
@@ -847,143 +841,102 @@ export default function BankStatementTracker({ isAdmin }) {
     const txCount = transactions.length;
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <div style={{
-          display: 'flex', flexDirection: 'column', gap: '10px',
-          padding: '12px 16px',
-          background: 'var(--bg-strong)',
-          borderRadius: '10px',
-          border: '1px solid var(--line)'
-        }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.72rem', fontWeight: '700', color: 'var(--muted)', letterSpacing: '0.05em', marginRight: '2px' }}>FILTER:</span>
+      <div className="bank-statement-tracker-s9">
+        <div className="bank-statement-tracker-s10">
+          <div className="bank-statement-tracker-s11">
+            <span className="bank-statement-tracker-s12">FILTER:</span>
             {SOURCE_FILTERS.map(f => {
               const active = sourceFilter === f.key;
               return (
                 <button
                   key={f.key}
                   onClick={() => setSourceFilter(f.key)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '5px',
-                    padding: '4px 10px',
-                    borderRadius: '20px',
-                    border: `1px solid ${active ? f.dot : f.dot + '55'}`,
-                    background: active ? `${f.dot}22` : 'transparent',
-                    cursor: 'pointer',
-                    fontSize: '0.75rem',
-                    fontWeight: active ? '700' : '500',
-                    color: active ? f.dot : 'var(--muted)',
-                    transition: 'all 0.15s ease',
-                    outline: 'none',
-                  }}
+                  className="bank-statement-tracker-s13" style={{ border: `1px solid ${active ? f.dot : f.dot + '55'}`, background: active ? `${f.dot}22` : 'transparent', fontWeight: active ? '700' : '500', color: active ? f.dot : 'var(--muted)' }}
                 >
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: f.dot, display: 'inline-block', flexShrink: 0 }} />
+                  <span className="bank-statement-tracker-s14" style={{ background: f.dot }} />
                   {f.label}
                 </button>
               );
             })}
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', borderTop: '1px solid var(--line)', paddingTop: '10px' }}>
-            <span style={{ fontSize: '0.72rem', fontWeight: '700', color: 'var(--muted)', letterSpacing: '0.05em', marginRight: '2px' }}>COLOUR KEY:</span>
+          <div className="bank-statement-tracker-s15">
+            <span className="bank-statement-tracker-s12">COLOUR KEY:</span>
             {COLOR_LEGEND.map((item, i) => (
-              <div key={i} title={item.desc} style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'default' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: item.dot, display: 'inline-block', flexShrink: 0 }} />
-                <span style={{ fontSize: '0.72rem', color: item.dot, fontWeight: '600' }}>{item.label}</span>
+              <div key={i} title={item.desc} className="bank-statement-tracker-s16">
+                <span className="bank-statement-tracker-s14" style={{ background: item.dot }} />
+                <span className="bank-statement-tracker-s17" style={{ color: item.dot }}>{item.label}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table className="task-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="bank-statement-tracker-s18">
+          <table className="task-table bank-statement-tracker-s19">
             <thead>
-              <tr style={{ background: 'var(--bg-strong)', textAlign: 'left' }}>
-                <th style={{ padding: '12px' }}>Date</th>
-                <th style={{ padding: '12px' }}>Narration</th>
-                <th style={{ padding: '12px' }}>Chq / Ref No.</th>
-                <th style={{ padding: '12px', textAlign: 'right' }}>Outflow (DR)</th>
-                <th style={{ padding: '12px', textAlign: 'right' }}>Inflow (CR)</th>
-                <th style={{ padding: '12px', textAlign: 'right' }}>Running Balance</th>
+              <tr className="bank-statement-tracker-s20">
+                <th className="bank-statement-tracker-s21">Date</th>
+                <th className="bank-statement-tracker-s21">Narration</th>
+                <th className="bank-statement-tracker-s21">Chq / Ref No.</th>
+                <th className="bank-statement-tracker-s22">Outflow (DR)</th>
+                <th className="bank-statement-tracker-s22">Inflow (CR)</th>
+                <th className="bank-statement-tracker-s22">Running Balance</th>
               </tr>
             </thead>
             <tbody>
               {transactions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: '32px', textAlign: 'center', color: 'var(--muted)', fontSize: '0.9rem' }}>
+                  <td colSpan={6} className="bank-statement-tracker-s23">
                     No transactions match the selected filter.
                   </td>
                 </tr>
               ) : transactions.map((tx, idx) => {
                 const txStyle = getTxStyle(tx);
                 return (
-                  <tr key={idx} style={{
-                    borderBottom: '1px solid var(--line)',
-                    fontSize: '0.85rem',
-                    borderLeft: `3px solid ${txStyle.border}`,
-                  }}>
-                    <td style={{ padding: '12px', whiteSpace: 'nowrap', color: 'var(--muted)', fontSize: '0.8rem' }}>{tx.date}</td>
-                    <td style={{ padding: '12px' }}>
-                      <span className={`badge ${tx.type === 'CR' ? 'badge--green' : 'badge--coral'}`} style={{ marginRight: '8px', padding: '2px 6px', fontSize: '0.7rem' }}>
+                  <tr key={idx} className="bank-statement-tracker-s24" style={{ borderLeft: `3px solid ${txStyle.border}` }}>
+                    <td className="bank-statement-tracker-s25">{tx.date}</td>
+                    <td className="bank-statement-tracker-s21">
+                      <span className={`badge ${tx.type === 'CR' ? 'badge--green' : 'badge--coral'} bank-statement-tracker-s26`}>
                         {tx.type}
                       </span>
                       {txStyle.buildingTag && (
                         <span
-                          className="inter-building-badge"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '3px',
-                            marginRight: '6px',
-                            padding: '1px 7px',
-                            borderRadius: '4px',
-                            fontSize: '0.70rem',
-                            fontWeight: '700',
-                            background: txStyle.buildingTag === 'B Building' ? 'rgba(13, 148, 136, 0.15)' : 'rgba(2, 132, 199, 0.15)',
-                            color: txStyle.buildingTag === 'B Building' ? '#0d9488' : '#0284c7',
-                            border: `1px solid ${txStyle.buildingTag === 'B Building' ? 'rgba(13, 148, 136, 0.35)' : 'rgba(2, 132, 199, 0.35)'}`,
-                            letterSpacing: '0.02em',
-                            verticalAlign: 'middle'
-                          }}
+                          className="inter-building-badge bank-statement-tracker-s27"
+                          style={{ background: txStyle.buildingTag === 'B Building' ? 'rgba(13, 148, 136, 0.15)' : 'rgba(2, 132, 199, 0.15)', color: txStyle.buildingTag === 'B Building' ? '#0d9488' : '#0284c7', border: `1px solid ${txStyle.buildingTag === 'B Building' ? 'rgba(13, 148, 136, 0.35)' : 'rgba(2, 132, 199, 0.35)'}` }}
                         >
                           🏢 {txStyle.buildingTag} FT
                         </span>
                       )}
-                      <span style={{ fontWeight: '500', color: txStyle.border !== 'transparent' ? txStyle.border : 'inherit' }}>
+                      <span className="bank-statement-tracker-s28" style={{ color: txStyle.border !== 'transparent' ? txStyle.border : 'inherit' }}>
                         {tx.desc}
                       </span>
                     </td>
-                    <td style={{ padding: '12px', color: 'var(--muted)', fontFamily: 'monospace', fontSize: '0.78rem' }}>{tx.ref}</td>
-                    <td style={{ padding: '12px', textAlign: 'right', color: 'var(--coral)', fontWeight: '600' }}>
+                    <td className="bank-statement-tracker-s29">{tx.ref}</td>
+                    <td className="bank-statement-tracker-s30">
                       {tx.type === 'DR' ? fmtAmt(tx.amount) : ''}
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right', color: 'var(--pine)', fontWeight: '600' }}>
+                    <td className="bank-statement-tracker-s31">
                       {tx.type === 'CR' ? fmtAmt(tx.amount) : ''}
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right', fontWeight: '500' }}>{fmtAmt(tx.bal)}</td>
+                    <td className="bank-statement-tracker-s32">{fmtAmt(tx.bal)}</td>
                   </tr>
                 );
               })}
             </tbody>
             <tfoot>
-              <tr style={{
-                background: 'var(--bg-strong)',
-                borderTop: '2px solid var(--line)',
-                fontWeight: '700',
-                fontSize: '0.9rem'
-              }}>
-                <td style={{ padding: '14px 12px' }} colSpan={3}>
-                  <span style={{ color: 'var(--muted)', fontSize: '0.8rem', fontWeight: '500' }}>
+              <tr className="bank-statement-tracker-s33">
+                <td className="bank-statement-tracker-s34" colSpan={3}>
+                  <span className="bank-statement-tracker-s35">
                     TOTAL — {txCount} transaction{txCount !== 1 ? 's' : ''}
                   </span>
                 </td>
-                <td style={{ padding: '14px 12px', textAlign: 'right', color: totalDR > 0 ? 'var(--coral)' : 'var(--muted)' }}>
+                <td className="bank-statement-tracker-s36" style={{ color: totalDR > 0 ? 'var(--coral)' : 'var(--muted)' }}>
                   {totalDR > 0 ? fmtAmt(totalDR) : '—'}
                 </td>
-                <td style={{ padding: '14px 12px', textAlign: 'right', color: totalCR > 0 ? 'var(--pine)' : 'var(--muted)' }}>
+                <td className="bank-statement-tracker-s36" style={{ color: totalCR > 0 ? 'var(--pine)' : 'var(--muted)' }}>
                   {totalCR > 0 ? fmtAmt(totalCR) : '—'}
                 </td>
-                <td style={{ padding: '14px 12px', textAlign: 'right', color: 'var(--muted)', fontSize: '0.8rem' }}>
-                  Net: <span style={{ color: (totalCR - totalDR) >= 0 ? 'var(--pine)' : 'var(--coral)', fontWeight: '700' }}>
+                <td className="bank-statement-tracker-s37">
+                  Net: <span className="bank-statement-tracker-s38" style={{ color: (totalCR - totalDR) >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
                     {fmtAmt(totalCR - totalDR)}
                   </span>
                 </td>
@@ -996,23 +949,23 @@ export default function BankStatementTracker({ isAdmin }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="bank-statement-tracker-s39">
       
       {/* Statement Period Switcher & Header Bar */}
-      <div className="section-card" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', padding: '20px 24px', borderLeft: '4px solid var(--teal)' }}>
+      <div className="section-card bank-statement-tracker-s40">
         <div>
-          <span className="badge badge--teal" style={{ marginBottom: '6px' }}>HDFC BANK ACCOUNT #50200075533530</span>
-          <h2 style={{ margin: '4px 0', fontSize: '1.4rem', color: 'var(--text-strong)' }}>
+          <span className="badge badge--teal bank-statement-tracker-s41">HDFC BANK ACCOUNT #50200075533530</span>
+          <h2 className="bank-statement-tracker-s42">
             Statement Auditor & Forensic Explorer
           </h2>
-          <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>
+          <p className="bank-statement-tracker-s43">
             Active Period: <strong>{STATEMENT_PERIOD}</strong> ({TRANSACTIONS_LIST.length} Total Transactions)
           </p>
         </div>
 
         {/* Period Selector Pills */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--muted)', marginRight: '4px' }}>PERIOD:</span>
+        <div className="bank-statement-tracker-s44">
+          <span className="bank-statement-tracker-s45">PERIOD:</span>
           
           <button
             className={`action-btn ${selectedPeriod === 'ALL_TIME' ? 'action-btn--primary' : ''}`}
@@ -1113,9 +1066,8 @@ export default function BankStatementTracker({ isAdmin }) {
           )}
 
           <button
-            className="action-btn"
+            className="action-btn bank-statement-tracker-s46"
             onClick={() => setActiveSubTab('live_auditor')}
-            style={{ borderColor: '#8b5cf6', color: '#8b5cf6', fontWeight: '600' }}
           >
             ⚡ Live Text Auditor Tool
           </button>
@@ -1123,9 +1075,9 @@ export default function BankStatementTracker({ isAdmin }) {
       </div>
 
       {/* Trend Comparison Bar — dynamic per selected period */}
-      <div className="section-card" style={{ background: 'var(--bg-strong)', padding: '16px 20px', borderRadius: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '10px' }}>
-          <h4 style={{ margin: 0, fontSize: '0.92rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div className="section-card bank-statement-tracker-s47">
+        <div className="bank-statement-tracker-s48">
+          <h4 className="bank-statement-tracker-s49">
             <span>📈</span>
             {selectedPeriod === 'FY2025_26'
               ? 'FY 2025-26 Monthly Financial Breakdown (Apr 2025 – Mar 2026)'
@@ -1137,26 +1089,13 @@ export default function BankStatementTracker({ isAdmin }) {
               ? 'FY 2022-23 Monthly Financial Breakdown (Dec 2022 – Mar 2023)'
               : '6-Month Financial Trend Comparison: April, May, June, July, August & September 2026'}
           </h4>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.78rem', color: 'var(--muted)' }}>
+          <div className="bank-statement-tracker-s50">
+            <span className="bank-statement-tracker-s51">
               Calculated from HDFC Bank Verified Statements
             </span>
             <button
-              className="action-btn"
+              className="action-btn bank-statement-tracker-s52"
               onClick={handlePrint5MonthTrendReport}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: 'var(--pine)',
-                color: 'white',
-                fontSize: '0.8rem',
-                padding: '6px 14px',
-                fontWeight: '600',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer'
-              }}
               title="Print / Save PDF for 6-Month Financial Trend Comparison & Overall Profit/Loss"
             >
               🖨️ Print 6-Month Trend (PDF)
@@ -1166,40 +1105,40 @@ export default function BankStatementTracker({ isAdmin }) {
 
         {selectedPeriod === 'FY2025_26' || selectedPeriod === 'FY2024_25' || selectedPeriod === 'FY2023_24' || selectedPeriod === 'FY2022_23' ? (
           /* monthly grid from timelineData */
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px' }}>
+          <div className="bank-statement-tracker-s53">
             {TIMELINE_DATA.map((m, idx) => {
               const net = m.credit - m.debit;
               const isPos = net >= 0;
               return (
-                <div key={idx} style={{ padding: '11px 12px', background: 'var(--bg-card)', borderRadius: '8px', border: `1px solid ${isPos ? 'var(--line)' : '#c2644a44'}` }}>
-                  <span style={{ fontSize: '0.73rem', color: 'var(--muted)', display: 'block', fontWeight: '600' }}>{m.date}</span>
-                  <strong style={{ fontSize: '0.98rem', color: isPos ? 'var(--pine)' : 'var(--coral)' }}>
+                <div key={idx} className="bank-statement-tracker-s54" style={{ border: `1px solid ${isPos ? 'var(--line)' : '#c2644a44'}` }}>
+                  <span className="bank-statement-tracker-s55">{m.date}</span>
+                  <strong className="bank-statement-tracker-s56" style={{ color: isPos ? 'var(--pine)' : 'var(--coral)' }}>
                     {isPos ? '+ ' : '- '}₹ {Math.abs(net).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                   </strong>
-                  <span style={{ fontSize: '0.68rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>
+                  <span className="bank-statement-tracker-s57">
                     CR: ₹{(m.credit/100000).toFixed(1)}L | DR: ₹{(m.debit/100000).toFixed(1)}L
                   </span>
-                  <span style={{ fontSize: '0.65rem', display: 'block', color: 'var(--muted)' }}>
+                  <span className="bank-statement-tracker-s58">
                     Bal: ₹{(m.balance/100000).toFixed(2)}L
                   </span>
                 </div>
               );
             })}
-            <div style={{ padding: '11px 12px', background: 'var(--bg-card)', borderRadius: '8px', border: `2px solid ${NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)'}` }}>
-              <span style={{ fontSize: '0.73rem', color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)', fontWeight: '700', display: 'block' }}>
+            <div className="bank-statement-tracker-s54" style={{ border: `2px solid ${NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)'}` }}>
+              <span className="bank-statement-tracker-s59" style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
                 {NET_CASH_FLOW >= 0 ? '🌟 Overall Profit' : '⚠️ Overall Deficit'}
               </span>
-              <strong style={{ fontSize: '0.98rem', color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
+              <strong className="bank-statement-tracker-s56" style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
                 {NET_CASH_FLOW >= 0 ? '+ ' : '- '}₹ {Math.abs(NET_CASH_FLOW).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
               </strong>
-              <span style={{ fontSize: '0.68rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>
+              <span className="bank-statement-tracker-s57">
                 CR: ₹{(TOTAL_CREDITS/100000).toFixed(1)}L | DR: ₹{(TOTAL_DEBITS/100000).toFixed(1)}L
               </span>
-              <span style={{ fontSize: '0.65rem', display: 'block', color: 'var(--muted)' }}>
+              <span className="bank-statement-tracker-s58">
                 Bal: ₹{OPENING_BALANCE.toLocaleString('en-IN', { maximumFractionDigits: 0 })} → ₹{CLOSING_BALANCE.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
               </span>
               {fdPrincipalFlow !== 0 && (
-                <span style={{ fontSize: '0.63rem', display: 'block', color: 'var(--muted)', marginTop: '4px', borderTop: '1px dashed var(--line)', paddingTop: '4px' }}>
+                <span className="bank-statement-tracker-s60">
                   Ops Net: <strong style={{ color: (NET_CASH_FLOW - fdPrincipalFlow) >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
                     {fmtAmt(NET_CASH_FLOW - fdPrincipalFlow)}
                   </strong> (Excl. FD)
@@ -1209,49 +1148,49 @@ export default function BankStatementTracker({ isAdmin }) {
           </div>
         ) : (
           /* Standard 6-month 2026 view */
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
-            <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--line)' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>April 2026 Net Flow</span>
-              <strong style={{ fontSize: '1.02rem', color: 'var(--pine)' }}>+ ₹ 15,697.50</strong>
-              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Inflow: ₹2.79L | Outflow: ₹2.63L</span>
+          <div className="bank-statement-tracker-s61">
+            <div className="bank-statement-tracker-s62">
+              <span className="bank-statement-tracker-s63">April 2026 Net Flow</span>
+              <strong className="bank-statement-tracker-s64">+ ₹ 15,697.50</strong>
+              <span className="bank-statement-tracker-s65">Inflow: ₹2.79L | Outflow: ₹2.63L</span>
             </div>
-            <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--line)' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>May 2026 Net Flow</span>
-              <strong style={{ fontSize: '1.02rem', color: 'var(--pine)' }}>+ ₹ 1,68,517.31</strong>
-              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Inflow: ₹3.92L | Outflow: ₹2.24L</span>
+            <div className="bank-statement-tracker-s62">
+              <span className="bank-statement-tracker-s63">May 2026 Net Flow</span>
+              <strong className="bank-statement-tracker-s64">+ ₹ 1,68,517.31</strong>
+              <span className="bank-statement-tracker-s65">Inflow: ₹3.92L | Outflow: ₹2.24L</span>
             </div>
-            <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--line)' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>June 2026 Net Flow</span>
-              <strong style={{ fontSize: '1.02rem', color: 'var(--pine)' }}>+ ₹ 1,31,890.01</strong>
-              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Inflow: ₹3.69L | Outflow: ₹2.37L</span>
+            <div className="bank-statement-tracker-s62">
+              <span className="bank-statement-tracker-s63">June 2026 Net Flow</span>
+              <strong className="bank-statement-tracker-s64">+ ₹ 1,31,890.01</strong>
+              <span className="bank-statement-tracker-s65">Inflow: ₹3.69L | Outflow: ₹2.37L</span>
             </div>
-            <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--line)' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>July 2026 Net Flow</span>
-              <strong style={{ fontSize: '1.02rem', color: 'var(--coral)' }}>- ₹ 40,854.28</strong>
-              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Inflow: ₹2.96L | Outflow: ₹3.37L</span>
+            <div className="bank-statement-tracker-s62">
+              <span className="bank-statement-tracker-s63">July 2026 Net Flow</span>
+              <strong className="bank-statement-tracker-s66">- ₹ 40,854.28</strong>
+              <span className="bank-statement-tracker-s65">Inflow: ₹2.96L | Outflow: ₹3.37L</span>
             </div>
-            <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--line)' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>August 2026 Net Flow</span>
-              <strong style={{ fontSize: '1.02rem', color: 'var(--pine)' }}>+ ₹ 38,586.60</strong>
-              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Inflow: ₹2.49L | Outflow: ₹2.10L</span>
+            <div className="bank-statement-tracker-s62">
+              <span className="bank-statement-tracker-s63">August 2026 Net Flow</span>
+              <strong className="bank-statement-tracker-s64">+ ₹ 38,586.60</strong>
+              <span className="bank-statement-tracker-s65">Inflow: ₹2.49L | Outflow: ₹2.10L</span>
             </div>
-            <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--line)' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>September 2026 Net Flow</span>
-              <strong style={{ fontSize: '1.02rem', color: 'var(--pine)' }}>+ ₹ 1,01,165.08</strong>
-              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Inflow: ₹3.39L | Outflow: ₹2.38L</span>
+            <div className="bank-statement-tracker-s62">
+              <span className="bank-statement-tracker-s63">September 2026 Net Flow</span>
+              <strong className="bank-statement-tracker-s64">+ ₹ 1,01,165.08</strong>
+              <span className="bank-statement-tracker-s65">Inflow: ₹3.39L | Outflow: ₹2.38L</span>
             </div>
-            <div style={{ padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '2px solid var(--pine)' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--pine)', fontWeight: '700', display: 'block' }}>🌟 Overall Profit (6 Months)</span>
-              <strong style={{ fontSize: '1.05rem', color: 'var(--pine)' }}>+ ₹ 4,15,002.22</strong>
-              <span style={{ fontSize: '0.7rem', display: 'block', color: 'var(--muted)', marginTop: '2px' }}>Bal: ₹1.49L → ₹5.64L (+278.3%)</span>
+            <div className="bank-statement-tracker-s67">
+              <span className="bank-statement-tracker-s68">🌟 Overall Profit (6 Months)</span>
+              <strong className="bank-statement-tracker-s69">+ ₹ 4,15,002.22</strong>
+              <span className="bank-statement-tracker-s65">Bal: ₹1.49L → ₹5.64L (+278.3%)</span>
             </div>
           </div>
         )}
       </div>
 
       {/* Sub-Tab Navigation Bar */}
-      <div className="section-card" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '14px' }}>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div className="section-card bank-statement-tracker-s70">
+        <div className="bank-statement-tracker-s71">
           <button 
             className={`action-btn ${activeSubTab === 'dashboard' ? 'action-btn--primary' : ''}`}
             onClick={() => setActiveSubTab('dashboard')}
@@ -1315,40 +1254,40 @@ export default function BankStatementTracker({ isAdmin }) {
       {/* Primary KPI Metrics */}
       <div className="metrics-grid">
         <div className="metric-card metric-card--teal">
-          <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Starting / Opening Balance</p>
-          <h3 style={{ color: 'var(--teal)' }}>{fmtAmt(OPENING_BALANCE)}</h3>
-          <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>
+          <p className="bank-statement-tracker-s43">Starting / Opening Balance</p>
+          <h3 className="bank-statement-tracker-s72">{fmtAmt(OPENING_BALANCE)}</h3>
+          <p className="bank-statement-tracker-s73">
             {selectedPeriod === 'ALL_TIME' ? 'As on 01 April 2026' : selectedPeriod === 'FY2025_26' ? 'As on 02 April 2025' : selectedPeriod === 'FY2024_25' ? 'As on 02 April 2024' : selectedPeriod === 'FY2023_24' ? 'As on 01 April 2023' : selectedPeriod === 'FY2022_23' ? 'As on 01 December 2022' : 'Verified starting limit'}
           </p>
         </div>
         <div className="metric-card metric-card--pine">
-          <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Total Collections (CR)</p>
-          <h3 style={{ color: 'var(--pine)' }}>{fmtAmt(TOTAL_CREDITS)}</h3>
-          <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>
+          <p className="bank-statement-tracker-s43">Total Collections (CR)</p>
+          <h3 className="bank-statement-tracker-s74">{fmtAmt(TOTAL_CREDITS)}</h3>
+          <p className="bank-statement-tracker-s73">
             {TRANSACTIONS_LIST.filter(t => t.type === 'CR').length} Cleared Credits
           </p>
         </div>
         <div className="metric-card metric-card--coral">
-          <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Total Expenses (DR)</p>
-          <h3 style={{ color: 'var(--coral)' }}>{fmtAmt(TOTAL_DEBITS)}</h3>
-          <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>
+          <p className="bank-statement-tracker-s43">Total Expenses (DR)</p>
+          <h3 className="bank-statement-tracker-s75">{fmtAmt(TOTAL_DEBITS)}</h3>
+          <p className="bank-statement-tracker-s73">
             {TRANSACTIONS_LIST.filter(t => t.type === 'DR').length} Approved Debits
           </p>
         </div>
         <div className="metric-card metric-card--sand">
-          <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Overall Profit / Net Flow</p>
+          <p className="bank-statement-tracker-s43">Overall Profit / Net Flow</p>
           <h3 style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
             {fmtAmt(NET_CASH_FLOW)}
           </h3>
-          <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>
+          <p className="bank-statement-tracker-s73">
             Closing Reserve: <strong>{fmtAmt(CLOSING_BALANCE)}</strong>
           </p>
           {fdPrincipalFlow !== 0 && (
-            <p style={{ margin: '4px 0 0', fontSize: '0.68rem', color: 'var(--muted)', borderTop: '1px solid var(--line)', paddingTop: '4px' }}>
+            <p className="bank-statement-tracker-s76">
               Operational Net: <strong style={{ color: (NET_CASH_FLOW - fdPrincipalFlow) >= 0 ? 'var(--pine)' : 'var(--coral)' }}>
                 {fmtAmt(NET_CASH_FLOW - fdPrincipalFlow)}
               </strong>
-              <span style={{ display: 'block', fontSize: '0.62rem', opacity: 0.8 }}>(Excl. FD Principal movements)</span>
+              <span className="bank-statement-tracker-s77">(Excl. FD Principal movements)</span>
             </p>
           )}
         </div>
@@ -1356,13 +1295,13 @@ export default function BankStatementTracker({ isAdmin }) {
 
       {/* Content Render based on Sub-Tab */}
       {activeSubTab === 'dashboard' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="bank-statement-tracker-s39">
           {/* Main Trend Chart */}
           <div className="section-card">
             <h3 className="section-card__title">
               Account Balance & Monthly Cash Flow ({STATEMENT_PERIOD})
             </h3>
-            <div style={{ height: '350px', width: '100%' }}>
+            <div className="bank-statement-tracker-s78">
               <ResponsiveContainer width="100%" height="100%">
                 {selectedPeriod === 'ALL_TIME' || selectedPeriod === 'FY2025_26' || selectedPeriod === 'FY2024_25' || selectedPeriod === 'FY2023_24' || selectedPeriod === 'FY2022_23' ? (
                   <BarChart data={TIMELINE_DATA}>
@@ -1398,11 +1337,11 @@ export default function BankStatementTracker({ isAdmin }) {
           </div>
 
           {/* Breakdown Pie Charts */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '20px' }}>
+          <div className="bank-statement-tracker-s79">
             <div className="section-card">
               <h3 className="section-card__title">Income Categories Breakdown</h3>
-              <div style={{ height: '240px', display: 'flex', alignItems: 'center' }}>
-                <div style={{ width: '50%', height: '100%' }}>
+              <div className="bank-statement-tracker-s80">
+                <div className="bank-statement-tracker-s81">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -1422,12 +1361,12 @@ export default function BankStatementTracker({ isAdmin }) {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div style={{ width: '50%', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.8rem' }}>
+                <div className="bank-statement-tracker-s82">
                   {INCOME_CATEGORIES.map((cat, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: cat.color }} />
-                      <span style={{ color: 'var(--muted)', flex: 1 }}>{cat.name}</span>
-                      <strong style={{ color: 'var(--text-strong)' }}>{fmtAmt(cat.value)}</strong>
+                    <div key={idx} className="bank-statement-tracker-s83">
+                      <span className="bank-statement-tracker-s84" style={{ background: cat.color }} />
+                      <span className="bank-statement-tracker-s85">{cat.name}</span>
+                      <strong className="bank-statement-tracker-s86">{fmtAmt(cat.value)}</strong>
                     </div>
                   ))}
                 </div>
@@ -1436,8 +1375,8 @@ export default function BankStatementTracker({ isAdmin }) {
 
             <div className="section-card">
               <h3 className="section-card__title">Expense Outflow Categories</h3>
-              <div style={{ height: '240px', display: 'flex', alignItems: 'center' }}>
-                <div style={{ width: '50%', height: '100%' }}>
+              <div className="bank-statement-tracker-s80">
+                <div className="bank-statement-tracker-s81">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -1457,12 +1396,12 @@ export default function BankStatementTracker({ isAdmin }) {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div style={{ width: '50%', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.8rem' }}>
+                <div className="bank-statement-tracker-s82">
                   {EXPENSE_CATEGORIES.map((cat, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: cat.color }} />
-                      <span style={{ color: 'var(--muted)', flex: 1 }}>{cat.name}</span>
-                      <strong style={{ color: 'var(--text-strong)' }}>{fmtAmt(cat.value)}</strong>
+                    <div key={idx} className="bank-statement-tracker-s83">
+                      <span className="bank-statement-tracker-s84" style={{ background: cat.color }} />
+                      <span className="bank-statement-tracker-s85">{cat.name}</span>
+                      <strong className="bank-statement-tracker-s86">{fmtAmt(cat.value)}</strong>
                     </div>
                   ))}
                 </div>
@@ -1474,38 +1413,25 @@ export default function BankStatementTracker({ isAdmin }) {
 
       {(activeSubTab === 'ledger' || activeSubTab === 'inflow' || activeSubTab === 'outflow') && (
         <div className="section-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-            <h3 className="section-card__title" style={{ margin: 0 }}>
+          <div className="bank-statement-tracker-s87">
+            <h3 className="section-card__title bank-statement-tracker-s88">
               {activeSubTab === 'ledger' && "🧾 Full Ledger Entries"}
               {activeSubTab === 'inflow' && "📥 Inflow (CR) Logs"}
               {activeSubTab === 'outflow' && "📤 Outflow (DR) Logs"}
             </h3>
 
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div className="bank-statement-tracker-s89">
               <input
                 type="text"
                 placeholder="Search narration, ref #, date..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  padding: '8px 14px',
-                  borderRadius: '6px',
-                  border: '1px solid var(--line)',
-                  background: 'var(--bg-card)',
-                  fontSize: '0.85rem',
-                  width: '240px'
-                }}
+                className="bank-statement-tracker-s90"
               />
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                style={{
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  border: '1px solid var(--line)',
-                  background: 'var(--bg-card)',
-                  fontSize: '0.85rem'
-                }}
+                className="bank-statement-tracker-s91"
               >
                 <option value="DATE_DESC">Sort: Newest First</option>
                 <option value="DATE_ASC">Sort: Oldest First</option>
@@ -1526,43 +1452,34 @@ export default function BankStatementTracker({ isAdmin }) {
       )}
 
       {activeSubTab === 'vendors' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="bank-statement-tracker-s39">
           <div className="section-card">
             <h3 className="section-card__title">Vendor Payment Rankings ({STATEMENT_PERIOD})</h3>
-            <div style={{ overflowX: 'auto' }}>
-              <table className="task-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="bank-statement-tracker-s18">
+              <table className="task-table bank-statement-tracker-s19">
                 <thead>
-                  <tr style={{ background: 'var(--bg-strong)', textAlign: 'left' }}>
-                    <th style={{ padding: '12px', width: '60px' }}>Rank</th>
-                    <th style={{ padding: '12px' }}>Vendor / Contractor Name</th>
-                    <th style={{ padding: '12px' }}>Category</th>
-                    <th style={{ padding: '12px' }}>Cheque / Ref No.</th>
-                    <th style={{ padding: '12px', textAlign: 'center' }}>Payments</th>
-                    <th style={{ padding: '12px', textAlign: 'right' }}>Total Paid</th>
-                    <th style={{ padding: '12px', textAlign: 'right' }}>% of Expenses</th>
+                  <tr className="bank-statement-tracker-s20">
+                    <th className="bank-statement-tracker-s92">Rank</th>
+                    <th className="bank-statement-tracker-s21">Vendor / Contractor Name</th>
+                    <th className="bank-statement-tracker-s21">Category</th>
+                    <th className="bank-statement-tracker-s21">Cheque / Ref No.</th>
+                    <th className="bank-statement-tracker-s93">Payments</th>
+                    <th className="bank-statement-tracker-s22">Total Paid</th>
+                    <th className="bank-statement-tracker-s22">% of Expenses</th>
                   </tr>
                 </thead>
                 <tbody>
                   {VENDORS_DATA.map((vendor, idx) => (
-                    <tr key={idx} style={{ borderBottom: '1px solid var(--line)', fontSize: '0.85rem' }}>
-                      <td style={{ padding: '12px', fontWeight: '700', color: 'var(--teal)' }}>#{vendor.rank}</td>
-                      <td style={{ padding: '12px', fontWeight: '600' }}>{vendor.name}</td>
-                      <td style={{ padding: '12px', color: 'var(--muted)' }}>{vendor.type}</td>
-                      <td style={{ padding: '12px' }}>
-                        <span style={{
-                          fontFamily: 'monospace',
-                          fontSize: '0.8rem',
-                          background: 'var(--bg-strong)',
-                          border: '1px solid var(--line)',
-                          borderRadius: '5px',
-                          padding: '2px 8px',
-                          color: 'var(--muted)',
-                          whiteSpace: 'nowrap'
-                        }}>{vendor.cheque}</span>
+                    <tr key={idx} className="bank-statement-tracker-s24">
+                      <td className="bank-statement-tracker-s94">#{vendor.rank}</td>
+                      <td className="bank-statement-tracker-s95">{vendor.name}</td>
+                      <td className="bank-statement-tracker-s96">{vendor.type}</td>
+                      <td className="bank-statement-tracker-s21">
+                        <span className="bank-statement-tracker-s97">{vendor.cheque}</span>
                       </td>
-                      <td style={{ padding: '12px', textAlign: 'center' }}>{vendor.count}</td>
-                      <td style={{ padding: '12px', textAlign: 'right', fontWeight: '600', color: 'var(--coral)' }}>{fmtAmt(vendor.total)}</td>
-                      <td style={{ padding: '12px', textAlign: 'right', fontWeight: '500' }}>
+                      <td className="bank-statement-tracker-s93">{vendor.count}</td>
+                      <td className="bank-statement-tracker-s98">{fmtAmt(vendor.total)}</td>
+                      <td className="bank-statement-tracker-s32">
                         {TOTAL_DEBITS > 0 ? ((vendor.total / TOTAL_DEBITS) * 100).toFixed(2) : 0}%
                       </td>
                     </tr>
@@ -1575,31 +1492,31 @@ export default function BankStatementTracker({ isAdmin }) {
       )}
 
       {activeSubTab === 'audit' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="bank-statement-tracker-s39">
           <div className="section-card">
             <h3 className="section-card__title">Forensic Audit & Internal Control Risks ({STATEMENT_PERIOD})</h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
-              <div style={{ borderLeft: '4px solid #ef4444', padding: '12px 16px', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '0 8px 8px 0' }}>
-                <span className="badge badge--coral" style={{ marginBottom: '6px', display: 'inline-block' }}>🔴 HIGH RISK</span>
-                <strong style={{ display: 'block', margin: '4px 0' }}>Self Cheque Cash Withdrawals</strong>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>
+            <div className="bank-statement-tracker-s99">
+              <div className="bank-statement-tracker-s100">
+                <span className="badge badge--coral bank-statement-tracker-s101">🔴 HIGH RISK</span>
+                <strong className="bank-statement-tracker-s102">Self Cheque Cash Withdrawals</strong>
+                <p className="bank-statement-tracker-s43">
                   Self cheque paid in cash at Mohammedwadi branch. Co-operative housing societies must enforce digital payouts or direct bank transfers. Cash withdrawals have zero traceability and represent high operational fraud risks.
                 </p>
               </div>
 
-              <div style={{ borderLeft: '4px solid #ef4444', padding: '12px 16px', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '0 8px 8px 0' }}>
-                <span className="badge badge--coral" style={{ marginBottom: '6px', display: 'inline-block' }}>🔴 HIGH RISK</span>
-                <strong style={{ display: 'block', margin: '4px 0' }}>Electricity Utility Bills (MSEDCL) Analysis</strong>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>
+              <div className="bank-statement-tracker-s100">
+                <span className="badge badge--coral bank-statement-tracker-s101">🔴 HIGH RISK</span>
+                <strong className="bank-statement-tracker-s102">Electricity Utility Bills (MSEDCL) Analysis</strong>
+                <p className="bank-statement-tracker-s43">
                   MSEDCL payments represent one of the largest single operational outflows. Verify common meter billing & explore solar offset ROI.
                 </p>
               </div>
 
-              <div style={{ borderLeft: '4px solid var(--amber)', padding: '12px 16px', background: 'rgba(185, 130, 22, 0.05)', borderRadius: '0 8px 8px 0' }}>
-                <span className="badge badge--amber" style={{ marginBottom: '6px', display: 'inline-block' }}>🟠 MEDIUM RISK</span>
-                <strong style={{ display: 'block', margin: '4px 0' }}>Personal Contractor Payments</strong>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>
+              <div className="bank-statement-tracker-s103">
+                <span className="badge badge--amber bank-statement-tracker-s101">🟠 MEDIUM RISK</span>
+                <strong className="bank-statement-tracker-s102">Personal Contractor Payments</strong>
+                <p className="bank-statement-tracker-s43">
                   Direct cheques issued to individual names instead of verified firm/agency accounts. Requires validation of vendor registration and verification of TDS deduction compliances.
                 </p>
               </div>
@@ -1607,98 +1524,95 @@ export default function BankStatementTracker({ isAdmin }) {
           </div>
 
           {/* Inter-Building Reconciliation Section */}
-          <div className="section-card" style={{ border: '2px solid #196c6c', background: 'rgba(25, 108, 108, 0.03)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
+          <div className="section-card bank-statement-tracker-s104">
+            <div className="bank-statement-tracker-s105">
               <div>
-                <span className="badge" style={{ background: '#196c6c', color: 'white', marginBottom: '6px', display: 'inline-block' }}>
+                <span className="badge bank-statement-tracker-s106">
                   🏢 INTER-BUILDING AUDIT & RECONCILIATION
                 </span>
-                <h3 className="section-card__title" style={{ margin: '4px 0', color: '#196c6c' }}>
+                <h3 className="section-card__title bank-statement-tracker-s107">
                   Inter-Building Fund Transfers (Building A ↔ B ↔ C)
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>
+                <p className="bank-statement-tracker-s43">
                   Detailed tracking of fund transfers between Majestique Euriska A Building and sister societies (B & C Buildings).
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <div className="bank-statement-tracker-s108">
                 <button
-                  className="action-btn"
+                  className="action-btn bank-statement-tracker-s109"
                   onClick={() => { setActiveSubTab('ledger'); setSourceFilter('INTER_B'); }}
-                  style={{ fontSize: '0.78rem', padding: '6px 12px', background: '#0d9488', color: 'white' }}
                 >
                   View B Building FT ({interBuildingStats ? interBuildingStats.bInCount + interBuildingStats.bOutCount : 0})
                 </button>
                 <button
-                  className="action-btn"
+                  className="action-btn bank-statement-tracker-s110"
                   onClick={() => { setActiveSubTab('ledger'); setSourceFilter('INTER_C'); }}
-                  style={{ fontSize: '0.78rem', padding: '6px 12px', background: '#0284c7', color: 'white' }}
                 >
                   View C Building FT ({interBuildingStats ? interBuildingStats.cInCount + interBuildingStats.cOutCount : 0})
                 </button>
                 <button
-                  className="action-btn"
+                  className="action-btn bank-statement-tracker-s111"
                   onClick={() => { setActiveSubTab('ledger'); setSourceFilter('INTER_FT'); }}
-                  style={{ fontSize: '0.78rem', padding: '6px 12px', background: 'var(--teal)', color: 'white' }}
                 >
                   View All Inter-FT
                 </button>
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginTop: '12px' }}>
+            <div className="bank-statement-tracker-s112">
               {/* B Building Card */}
-              <div style={{ padding: '16px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid rgba(13, 148, 136, 0.3)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <strong style={{ color: '#0d9488', fontSize: '0.92rem' }}>🏢 B Building Transfers</strong>
-                  <span className="badge" style={{ background: 'rgba(13, 148, 136, 0.15)', color: '#0d9488' }}>
+              <div className="bank-statement-tracker-s113">
+                <div className="bank-statement-tracker-s114">
+                  <strong className="bank-statement-tracker-s115">🏢 B Building Transfers</strong>
+                  <span className="badge bank-statement-tracker-s116">
                     Union Bank CTS
                   </span>
                 </div>
-                <p style={{ fontSize: '0.78rem', color: 'var(--muted)', margin: '0 0 12px 0' }}>
+                <p className="bank-statement-tracker-s117">
                   Transfers received via physical clearing cheques from Union Bank of India (Model Colony / CTS).
                 </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.84rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="bank-statement-tracker-s118">
+                  <div className="bank-statement-tracker-s119">
                     <span>Inflows Received (CR):</span>
-                    <strong style={{ color: 'var(--pine)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.bIn : 0)}</strong>
+                    <strong className="bank-statement-tracker-s74">{fmtAmt(interBuildingStats ? interBuildingStats.bIn : 0)}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div className="bank-statement-tracker-s119">
                     <span>Transactions Count:</span>
                     <span>{interBuildingStats ? interBuildingStats.bInCount : 0} CR cheques</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--line)', paddingTop: '6px' }}>
+                  <div className="bank-statement-tracker-s120">
                     <span>Net Transfer from B:</span>
-                    <strong style={{ color: 'var(--pine)' }}>+{fmtAmt(interBuildingStats ? interBuildingStats.bIn : 0)}</strong>
+                    <strong className="bank-statement-tracker-s74">+{fmtAmt(interBuildingStats ? interBuildingStats.bIn : 0)}</strong>
                   </div>
                 </div>
               </div>
 
               {/* C Building Card */}
-              <div style={{ padding: '16px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid rgba(2, 132, 199, 0.3)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <strong style={{ color: '#0284c7', fontSize: '0.92rem' }}>🏢 C Building Transfers</strong>
-                  <span className="badge" style={{ background: 'rgba(2, 132, 199, 0.15)', color: '#0284c7' }}>
+              <div className="bank-statement-tracker-s121">
+                <div className="bank-statement-tracker-s114">
+                  <strong className="bank-statement-tracker-s122">🏢 C Building Transfers</strong>
+                  <span className="badge bank-statement-tracker-s123">
                     HDFC 50200065450992
                   </span>
                 </div>
-                <p style={{ fontSize: '0.78rem', color: 'var(--muted)', margin: '0 0 12px 0' }}>
+                <p className="bank-statement-tracker-s117">
                   Direct internal fund transfers (FT CR/DR) through shared society account 50200065450992.
                 </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.84rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="bank-statement-tracker-s118">
+                  <div className="bank-statement-tracker-s119">
                     <span>Inflows Received (CR):</span>
-                    <strong style={{ color: 'var(--pine)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.cIn : 0)}</strong>
+                    <strong className="bank-statement-tracker-s74">{fmtAmt(interBuildingStats ? interBuildingStats.cIn : 0)}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div className="bank-statement-tracker-s119">
                     <span>Outflows Paid (DR):</span>
-                    <strong style={{ color: 'var(--coral)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.cOut : 0)}</strong>
+                    <strong className="bank-statement-tracker-s75">{fmtAmt(interBuildingStats ? interBuildingStats.cOut : 0)}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div className="bank-statement-tracker-s119">
                     <span>Transactions Count:</span>
                     <span>{interBuildingStats ? interBuildingStats.cInCount : 0} CR / {interBuildingStats ? interBuildingStats.cOutCount : 0} DR</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--line)', paddingTop: '6px' }}>
+                  <div className="bank-statement-tracker-s120">
                     <span>Net Balance with C:</span>
                     <strong style={{ color: (interBuildingStats && (interBuildingStats.cIn - interBuildingStats.cOut) >= 0) ? 'var(--pine)' : 'var(--coral)' }}>
                       {interBuildingStats ? fmtAmt(interBuildingStats.cIn - interBuildingStats.cOut) : '₹0.00'}
@@ -1708,24 +1622,24 @@ export default function BankStatementTracker({ isAdmin }) {
               </div>
 
               {/* Combined Inter-Building Net */}
-              <div style={{ padding: '16px', borderRadius: '8px', background: 'var(--bg-strong)', border: '1px solid rgba(25, 108, 108, 0.3)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <strong style={{ color: '#196c6c', fontSize: '0.92rem' }}>📊 Inter-Building Net Position</strong>
+              <div className="bank-statement-tracker-s124">
+                <div className="bank-statement-tracker-s114">
+                  <strong className="bank-statement-tracker-s125">📊 Inter-Building Net Position</strong>
                   <span className="badge badge--teal">Total Shared</span>
                 </div>
-                <p style={{ fontSize: '0.78rem', color: 'var(--muted)', margin: '0 0 12px 0' }}>
+                <p className="bank-statement-tracker-s117">
                   Consolidated shared amenities and maintenance fund transfers with B and C Buildings.
                 </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.84rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="bank-statement-tracker-s118">
+                  <div className="bank-statement-tracker-s119">
                     <span>Total Inflows (CR):</span>
-                    <strong style={{ color: 'var(--pine)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.totalIn : 0)}</strong>
+                    <strong className="bank-statement-tracker-s74">{fmtAmt(interBuildingStats ? interBuildingStats.totalIn : 0)}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div className="bank-statement-tracker-s119">
                     <span>Total Outflows (DR):</span>
-                    <strong style={{ color: 'var(--coral)' }}>{fmtAmt(interBuildingStats ? interBuildingStats.totalOut : 0)}</strong>
+                    <strong className="bank-statement-tracker-s75">{fmtAmt(interBuildingStats ? interBuildingStats.totalOut : 0)}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--line)', paddingTop: '6px' }}>
+                  <div className="bank-statement-tracker-s120">
                     <span>Net Inter-Building Surplus:</span>
                     <strong style={{ color: (interBuildingStats && (interBuildingStats.totalIn - interBuildingStats.totalOut) >= 0) ? 'var(--pine)' : 'var(--coral)' }}>
                       {interBuildingStats ? fmtAmt(interBuildingStats.totalIn - interBuildingStats.totalOut) : '₹0.00'}
@@ -1736,10 +1650,10 @@ export default function BankStatementTracker({ isAdmin }) {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '20px' }}>
+          <div className="bank-statement-tracker-s79">
             <div className="section-card">
               <h3 className="section-card__title">Top Management Action Items</h3>
-              <ul style={{ paddingLeft: '20px', fontSize: '0.85rem', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <ul className="bank-statement-tracker-s126">
                 <li><strong>Enforce Cashless Petty Cash:</strong> Transition immediately from cash self-withdrawals to corporate prepaid debit cards with receipt tracking.</li>
                 <li><strong>Reconcile MSEDCL Bills:</strong> Verify all electricity vouchers against physical bill copies for Mohammedwadi meters.</li>
                 <li><strong>Common Area Solar Audit:</strong> With electricity bills at high totals, explore Solar panel ROI to reduce common load utility costs.</li>
@@ -1749,26 +1663,26 @@ export default function BankStatementTracker({ isAdmin }) {
 
             <div className="section-card">
               <h3 className="section-card__title">Treasurer's MIS Report Summarized</h3>
-              <div style={{ fontSize: '0.85rem', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ display: 'flex', justify: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '6px' }}>
+              <div className="bank-statement-tracker-s127">
+                <div className="bank-statement-tracker-s128">
                   <span>Period Collections:</span>
-                  <strong style={{ color: 'var(--pine)' }}>{fmtAmt(TOTAL_CREDITS)}</strong>
+                  <strong className="bank-statement-tracker-s74">{fmtAmt(TOTAL_CREDITS)}</strong>
                 </div>
-                <div style={{ display: 'flex', justify: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '6px' }}>
+                <div className="bank-statement-tracker-s128">
                   <span>Period Expenses:</span>
-                  <strong style={{ color: 'var(--coral)' }}>{fmtAmt(TOTAL_DEBITS)}</strong>
+                  <strong className="bank-statement-tracker-s75">{fmtAmt(TOTAL_DEBITS)}</strong>
                 </div>
-                <div style={{ display: 'flex', justify: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '6px' }}>
+                <div className="bank-statement-tracker-s128">
                   <span>Period Cash Flow:</span>
                   <strong style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--coral)' }}>{fmtAmt(NET_CASH_FLOW)}</strong>
                 </div>
-                <div style={{ display: 'flex', justify: 'space-between', borderBottom: '1px solid var(--line)', paddingBottom: '6px' }}>
+                <div className="bank-statement-tracker-s128">
                   <span>Closing Reserve Balance:</span>
                   <strong>{fmtAmt(CLOSING_BALANCE)}</strong>
                 </div>
-                <div style={{ display: 'flex', justify: 'space-between', paddingBottom: '6px' }}>
+                <div className="bank-statement-tracker-s129">
                   <span>Financial Health Score:</span>
-                  <span style={{ fontWeight: '700', color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--amber)' }}>
+                  <span className="bank-statement-tracker-s38" style={{ color: NET_CASH_FLOW >= 0 ? 'var(--pine)' : 'var(--amber)' }}>
                     {NET_CASH_FLOW >= 0 ? '92 / 100 (Exceptional)' : '76 / 100 (Average)'}
                   </span>
                 </div>
@@ -1780,24 +1694,23 @@ export default function BankStatementTracker({ isAdmin }) {
 
       {/* Live Text Auditor Subtab */}
       {activeSubTab === 'live_auditor' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <div className="section-card" style={{ border: '2px solid #8b5cf6', background: 'rgba(139, 92, 246, 0.03)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+        <div className="bank-statement-tracker-s39">
+          <div className="section-card bank-statement-tracker-s130">
+            <div className="bank-statement-tracker-s131">
               <div>
-                <span className="badge" style={{ background: '#8b5cf6', color: 'white', marginBottom: '6px' }}>⚡ LIVE PARSER & AUDIT ENGINE</span>
-                <h3 className="section-card__title" style={{ margin: '4px 0', color: '#8b5cf6' }}>
+                <span className="badge bank-statement-tracker-s132">⚡ LIVE PARSER & AUDIT ENGINE</span>
+                <h3 className="section-card__title bank-statement-tracker-s133">
                   Paste & Parse Bank Statement Text
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--muted)' }}>
+                <p className="bank-statement-tracker-s134">
                   Paste raw text copied from HDFC/ICICI/SBI bank statement PDFs or NetBanking tables to parse, audit, and analyze instantly.
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="bank-statement-tracker-s135">
                 <button
                   type="button"
-                  className="action-btn"
-                  style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                  className="action-btn bank-statement-tracker-s136"
                   onClick={() => {
                     const txt = `Statement From : 01/04/2025 To : 31/03/2026
 02/04/25 MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR DR - 50200065450992 - MAJESTIQUE EURISKA C BLDG SA GRU SAN MAR 0000000000000254 02/04/25 2504 203660.9
@@ -1815,8 +1728,7 @@ export default function BankStatementTracker({ isAdmin }) {
 
                 <button
                   type="button"
-                  className="action-btn"
-                  style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                  className="action-btn bank-statement-tracker-s136"
                   onClick={() => setRawTextInput('')}
                 >
                   🗑️ Clear
@@ -1824,41 +1736,30 @@ export default function BankStatementTracker({ isAdmin }) {
               </div>
             </div>
 
-            <form onSubmit={handleParseSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleParseSubmit} className="bank-statement-tracker-s9">
               <textarea
                 rows={8}
                 placeholder="Paste raw bank statement text here (e.g. copied from HDFC PDF/netbanking)..."
                 value={rawTextInput}
                 onChange={(e) => setRawTextInput(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '14px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--line)',
-                  background: 'var(--bg-card)',
-                  fontFamily: 'monospace',
-                  fontSize: '0.85rem',
-                  lineHeight: '1.5',
-                  outline: 'none'
-                }}
+                className="bank-statement-tracker-s137"
               />
 
               {parseError && (
-                <div style={{ color: 'var(--coral)', fontSize: '0.88rem', fontWeight: '500' }}>
+                <div className="bank-statement-tracker-s138">
                   ⚠️ {parseError}
                 </div>
               )}
 
               {parseSuccessMsg && (
-                <div style={{ color: 'var(--pine)', fontSize: '0.88rem', fontWeight: '600' }}>
+                <div className="bank-statement-tracker-s139">
                   ✅ {parseSuccessMsg}
                 </div>
               )}
 
               <button
                 type="submit"
-                className="action-btn"
-                style={{ background: '#8b5cf6', color: 'white', fontWeight: '600', padding: '12px 24px', fontSize: '0.95rem', alignSelf: 'flex-start' }}
+                className="action-btn bank-statement-tracker-s140"
               >
                 ⚡ Parse & Audit Statement Now
               </button>
@@ -1866,34 +1767,33 @@ export default function BankStatementTracker({ isAdmin }) {
           </div>
 
           {customParsedData && (
-            <div className="section-card" style={{ borderLeft: '4px solid #8b5cf6' }}>
-              <h3 className="section-card__title" style={{ color: '#8b5cf6' }}>
+            <div className="section-card bank-statement-tracker-s141">
+              <h3 className="section-card__title bank-statement-tracker-s142">
                 Parsed Statement Summary ({customParsedData.period})
               </h3>
 
-              <div className="metrics-grid" style={{ marginTop: '16px' }}>
+              <div className="metrics-grid bank-statement-tracker-s143">
                 <div className="metric-card metric-card--teal">
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Stated Opening Bal</p>
-                  <h3 style={{ color: 'var(--teal)' }}>{fmtAmt(customParsedData.openingBalance)}</h3>
+                  <p className="bank-statement-tracker-s43">Stated Opening Bal</p>
+                  <h3 className="bank-statement-tracker-s72">{fmtAmt(customParsedData.openingBalance)}</h3>
                 </div>
                 <div className="metric-card metric-card--pine">
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Total Credits (Inflow)</p>
-                  <h3 style={{ color: 'var(--pine)' }}>{fmtAmt(customParsedData.totalCredits)}</h3>
+                  <p className="bank-statement-tracker-s43">Total Credits (Inflow)</p>
+                  <h3 className="bank-statement-tracker-s74">{fmtAmt(customParsedData.totalCredits)}</h3>
                 </div>
                 <div className="metric-card metric-card--coral">
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Total Debits (Outflow)</p>
-                  <h3 style={{ color: 'var(--coral)' }}>{fmtAmt(customParsedData.totalDebits)}</h3>
+                  <p className="bank-statement-tracker-s43">Total Debits (Outflow)</p>
+                  <h3 className="bank-statement-tracker-s75">{fmtAmt(customParsedData.totalDebits)}</h3>
                 </div>
                 <div className="metric-card metric-card--sand">
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>Closing Balance</p>
-                  <h3 style={{ color: 'var(--teal)' }}>{fmtAmt(customParsedData.closingBalance)}</h3>
+                  <p className="bank-statement-tracker-s43">Closing Balance</p>
+                  <h3 className="bank-statement-tracker-s72">{fmtAmt(customParsedData.closingBalance)}</h3>
                 </div>
               </div>
 
-              <div style={{ marginTop: '20px', display: 'flex', gap: '12px' }}>
+              <div className="bank-statement-tracker-s144">
                 <button
-                  className="action-btn action-btn--primary"
-                  style={{ background: '#8b5cf6', borderColor: '#8b5cf6' }}
+                  className="action-btn action-btn--primary bank-statement-tracker-s145"
                   onClick={() => {
                     setSelectedPeriod('CUSTOM');
                     setActiveSubTab('dashboard');
@@ -1908,43 +1808,31 @@ export default function BankStatementTracker({ isAdmin }) {
       )}
 
       {activeSubTab === 'reports' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="bank-statement-tracker-s146">
 
           {/* 6-Month Executive Financial Trend PDF Report Card */}
-          <div className="section-card" style={{ border: '2px solid var(--pine)', background: 'linear-gradient(135deg, rgba(49,85,62,0.08), rgba(25,108,108,0.05))', padding: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+          <div className="section-card bank-statement-tracker-s147">
+            <div className="bank-statement-tracker-s148">
               <div>
-                <h3 className="section-card__title" style={{ color: 'var(--pine)', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 6px 0' }}>
+                <h3 className="section-card__title bank-statement-tracker-s149">
                   <span>📊</span> 6-Month Financial Trend & Profit/Loss Comparison (April – September 2026)
                 </h3>
-                <p style={{ color: 'var(--muted)', fontSize: '0.88rem', margin: '0 0 10px 0', maxWidth: '750px' }}>
+                <p className="bank-statement-tracker-s150">
                   Generate and print the official 6-Month Comparative Audit Statement with full breakdown of monthly receipts, vendor expenditures, overall profit of <strong>+₹4,15,002.22</strong>, operating margins, and society reserve growth from ₹1.49L to ₹5.64L (+278.3%).
                 </p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', fontSize: '0.75rem', color: 'var(--muted)' }}>
-                  <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>✅ Apr: +₹15.7k</span>
-                  <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>🌟 May: +₹1.69L</span>
-                  <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>🌟 Jun: +₹1.32L</span>
-                  <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>⚠️ Jul: -₹40.9k</span>
-                  <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>✅ Aug: +₹38.6k</span>
-                  <span style={{ background: 'var(--bg-card)', padding: '3px 8px', borderRadius: '4px', border: '1px solid var(--line)' }}>🌟 Sep: +₹1.01L</span>
-                  <span style={{ background: '#dcfce7', color: '#166534', padding: '3px 8px', borderRadius: '4px', fontWeight: '700' }}>Overall Profit: +₹4.15 Lakhs</span>
+                <div className="bank-statement-tracker-s151">
+                  <span className="bank-statement-tracker-s152">✅ Apr: +₹15.7k</span>
+                  <span className="bank-statement-tracker-s152">🌟 May: +₹1.69L</span>
+                  <span className="bank-statement-tracker-s152">🌟 Jun: +₹1.32L</span>
+                  <span className="bank-statement-tracker-s152">⚠️ Jul: -₹40.9k</span>
+                  <span className="bank-statement-tracker-s152">✅ Aug: +₹38.6k</span>
+                  <span className="bank-statement-tracker-s152">🌟 Sep: +₹1.01L</span>
+                  <span className="bank-statement-tracker-s153">Overall Profit: +₹4.15 Lakhs</span>
                 </div>
               </div>
 
               <button
-                className="action-btn action-btn--primary"
-                style={{
-                  background: 'var(--pine)',
-                  borderColor: 'var(--pine)',
-                  fontWeight: '700',
-                  padding: '12px 22px',
-                  fontSize: '0.95rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  boxShadow: '0 4px 12px rgba(49,85,62,0.25)',
-                  cursor: 'pointer'
-                }}
+                className="action-btn action-btn--primary bank-statement-tracker-s154"
                 onClick={handlePrint5MonthTrendReport}
               >
                 🖨️ Print 6-Month Trend Report (PDF)
@@ -1952,18 +1840,17 @@ export default function BankStatementTracker({ isAdmin }) {
             </div>
           </div>
 
-          <div className="section-card" style={{ border: '2px solid var(--pine)', background: 'rgba(49,85,62,0.04)' }}>
-            <h3 className="section-card__title" style={{ color: 'var(--pine)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="section-card bank-statement-tracker-s155">
+            <h3 className="section-card__title bank-statement-tracker-s156">
               <span>⚖️</span> Income & Expense Financial Statements (PDF / Print)
             </h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.88rem', marginBottom: '20px' }}>
+            <p className="bank-statement-tracker-s157">
               Generate formal audit statements for <strong>{STATEMENT_PERIOD}</strong> with itemized collections and expenses breakdown.
             </p>
             
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+            <div className="bank-statement-tracker-s158">
               <button
-                className="action-btn action-btn--primary"
-                style={{ background: 'var(--pine)', borderColor: 'var(--pine)', fontWeight: '600', padding: '10px 18px', fontSize: '0.92rem' }}
+                className="action-btn action-btn--primary bank-statement-tracker-s159"
                 onClick={() => {
                   const fmt = (v) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(v);
                   
@@ -2134,10 +2021,10 @@ export default function BankStatementTracker({ isAdmin }) {
 
           <div className="section-card">
             <h3 className="section-card__title">📥 Download Transaction Data (CSV)</h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.88rem', marginBottom: '20px' }}>
+            <p className="bank-statement-tracker-s157">
               Export <strong>{STATEMENT_PERIOD}</strong> transactions data as a CSV file for Excel / Google Sheets.
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+            <div className="bank-statement-tracker-s158">
               {[
                 { label: '📋 All Transactions', type: 'ALL', color: 'var(--teal)' },
                 { label: '📥 Inflow (CR) Only', type: 'CR',  color: 'var(--pine)' },
@@ -2145,8 +2032,8 @@ export default function BankStatementTracker({ isAdmin }) {
               ].map(({ label, type, color }) => (
                 <button
                   key={type}
-                  className="action-btn"
-                  style={{ borderColor: color, color: color, fontWeight: '600' }}
+                  className="action-btn bank-statement-tracker-s160"
+                  style={{ borderColor: color, color: color }}
                   onClick={() => {
                     const rows = TRANSACTIONS_LIST.filter(t => type === 'ALL' || t.type === type);
                     const header = ['Date', 'Type', 'Narration', 'Ref / Chq No', 'Withdrawal (DR)', 'Deposit (CR)', 'Closing Balance'];

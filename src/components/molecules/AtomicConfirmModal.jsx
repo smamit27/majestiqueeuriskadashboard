@@ -2,6 +2,8 @@ import React from 'react';
 import AtomicModal from './AtomicModal.jsx';
 import AtomicButton from '../atoms/AtomicButton.jsx';
 import { AlertTriangle } from 'lucide-react';
+import './AtomicConfirmModal.css';
+
 
 /**
  * AtomicConfirmModal Molecule
@@ -44,18 +46,11 @@ export default function AtomicConfirmModal({
         </>
       }
     >
-      <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-        <div style={{
-          background: confirmVariant === 'danger' ? '#fee2e2' : '#fef3c7',
-          color: confirmVariant === 'danger' ? '#dc2626' : '#d97706',
-          padding: '10px',
-          borderRadius: '12px',
-          display: 'flex',
-          flexShrink: 0
-        }}>
+      <div className="atomic-confirm-modal-s1">
+        <div className="atomic-confirm-modal-s2" style={{ background: confirmVariant === 'danger' ? '#fee2e2' : '#fef3c7', color: confirmVariant === 'danger' ? '#dc2626' : '#d97706' }}>
           <AlertTriangle size={24} />
         </div>
-        <div style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.5, marginTop: '2px' }}>
+        <div className="atomic-confirm-modal-s3">
           {message}
         </div>
       </div>

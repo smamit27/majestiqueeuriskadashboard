@@ -2,6 +2,8 @@ import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './SolarVendorTracker.css';
+
 
 const CATEGORIES = [
   {
@@ -225,19 +227,19 @@ export default function SolarVendorTracker({ isAdmin = false }) {
   const badge = { idle: { c: '#6b7280', i: '●' }, pending: { c: '#f59e0b', i: '⏳' }, saving: { c: '#3b82f6', i: '↑' }, saved: { c: '#10b981', i: '✓' }, error: { c: '#ef4444', i: '✗' } }[saveStatus];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, minWidth: 0 }}>
-      <div className="table-card attendance-table-card" style={{ padding: 0 }}>
+    <div className="solar-vendor-tracker-s1">
+      <div className="table-card attendance-table-card solar-vendor-tracker-s2">
         <div className="attendance-table-card__header">
           <div>
             <p className="eyebrow">Project Evaluation</p>
             <h3>Vendor Question Checklist (20 kW Solar)</h3>
           </div>
           <div className="attendance-table-card__actions">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: badge.c, fontWeight: 500, fontSize: '0.9rem' }}>
+            <div className="solar-vendor-tracker-s3" style={{ color: badge.c }}>
               <span>{badge.i}</span>
               <span>{isLoading ? 'Loading…' : saveMsg || 'Ready'}</span>
             </div>
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div className="solar-vendor-tracker-s4">
               {isAdmin && (
                 <button
                   className="button-secondary"
@@ -256,22 +258,22 @@ export default function SolarVendorTracker({ isAdmin = false }) {
         </div>
       </div>
 
-      <div className="table-card" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+      <div className="table-card solar-vendor-tracker-s5">
+        <table className="solar-vendor-tracker-s6">
           <thead>
-            <tr style={{ background: '#1e3a8a', color: 'white' }}>
-              <th style={{ padding: '12px 14px', textAlign: 'left', fontWeight: 600, width: '120px' }}>Category</th>
-              <th style={{ padding: '12px 14px', textAlign: 'left', fontWeight: 600, minWidth: '220px' }}>Question to Vendor</th>
-              <th style={{ padding: '12px 14px', textAlign: 'left', fontWeight: 600, minWidth: '180px', background: '#172554' }}>Expected Answer (Benchmark)</th>
+            <tr className="solar-vendor-tracker-s7">
+              <th className="solar-vendor-tracker-s8">Category</th>
+              <th className="solar-vendor-tracker-s9">Question to Vendor</th>
+              <th className="solar-vendor-tracker-s10">Expected Answer (Benchmark)</th>
               {['vendor1', 'vendor2', 'vendor3'].map((vKey, i) => (
-                <th key={vKey} style={{ padding: '8px', minWidth: '200px', background: ['#2563eb', '#16a34a', '#7e22ce'][i] }}>
-                  <div style={{ textAlign: 'center', marginBottom: '6px', fontSize: '0.8rem', opacity: 0.9 }}>VENDOR {i + 1}</div>
+                <th key={vKey} className="solar-vendor-tracker-s11" style={{ background: ['#2563eb', '#16a34a', '#7e22ce'][i] }}>
+                  <div className="solar-vendor-tracker-s12">VENDOR {i + 1}</div>
                   <input
                     type="text"
                     value={form[vKey].name}
                     onChange={(e) => handleVendorNameChange(vKey, e.target.value)}
                     placeholder="Enter Vendor Name"
-                    style={{ width: '100%', padding: '6px 8px', borderRadius: '4px', border: 'none', textAlign: 'center', fontWeight: 'bold' }}
+                    className="solar-vendor-tracker-s13"
                     readOnly={!isAdmin}
                   />
                 </th>
@@ -282,22 +284,22 @@ export default function SolarVendorTracker({ isAdmin = false }) {
             {CATEGORIES.map((cat, cIdx) => (
               <Fragment key={cat.name}>
                 {cat.questions.map((q, qIdx) => (
-                  <tr key={q.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+                  <tr key={q.id} className="solar-vendor-tracker-s14">
                     {qIdx === 0 && (
-                      <td rowSpan={cat.questions.length} style={{ padding: '10px 14px', fontWeight: 700, verticalAlign: 'top', background: 'rgba(0,0,0,0.02)', color: '#334155', fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+                      <td rowSpan={cat.questions.length} className="solar-vendor-tracker-s15">
                         {cat.name}
                       </td>
                     )}
-                    <td style={{ padding: '8px 14px', color: '#1e293b' }}>{q.label}</td>
-                    <td style={{ padding: '8px 14px', fontWeight: 600, color: '#334155', background: 'rgba(0,0,0,0.02)' }}>{q.benchmark}</td>
+                    <td className="solar-vendor-tracker-s16">{q.label}</td>
+                    <td className="solar-vendor-tracker-s17">{q.benchmark}</td>
                     {['vendor1', 'vendor2', 'vendor3'].map((vKey, vIdx) => (
-                      <td key={vKey} style={{ padding: '4px 8px', background: ['rgba(37, 99, 235, 0.05)', 'rgba(22, 163, 74, 0.05)', 'rgba(126, 34, 206, 0.05)'][vIdx] }}>
+                      <td key={vKey} className="solar-vendor-tracker-s18" style={{ background: ['rgba(37, 99, 235, 0.05)', 'rgba(22, 163, 74, 0.05)', 'rgba(126, 34, 206, 0.05)'][vIdx] }}>
                         <input
                           type="text"
                           value={form[vKey].answers[q.id] || ''}
                           onChange={(e) => handleAnswerChange(vKey, q.id, e.target.value)}
                           placeholder="Your Answer"
-                          style={{ width: '100%', padding: '6px 8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.1)', background: 'white' }}
+                          className="solar-vendor-tracker-s19"
                           readOnly={!isAdmin}
                         />
                       </td>
@@ -308,32 +310,32 @@ export default function SolarVendorTracker({ isAdmin = false }) {
             ))}
           </tbody>
           <tfoot>
-            <tr style={{ borderTop: '2px solid rgba(0,0,0,0.1)' }}>
-              <td colSpan={3} style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700 }}>Overall Score (1-5)</td>
+            <tr className="solar-vendor-tracker-s20">
+              <td colSpan={3} className="solar-vendor-tracker-s21">Overall Score (1-5)</td>
               {['vendor1', 'vendor2', 'vendor3'].map((vKey, vIdx) => (
-                <td key={vKey} style={{ padding: '8px', background: ['rgba(37, 99, 235, 0.1)', 'rgba(22, 163, 74, 0.1)', 'rgba(126, 34, 206, 0.1)'][vIdx] }}>
+                <td key={vKey} className="solar-vendor-tracker-s22" style={{ background: ['rgba(37, 99, 235, 0.1)', 'rgba(22, 163, 74, 0.1)', 'rgba(126, 34, 206, 0.1)'][vIdx] }}>
                   <input
                     type="number"
                     min="1" max="5"
                     value={form[vKey].score || ''}
                     onChange={(e) => handleScoreChange(vKey, 'score', e.target.value)}
                     placeholder="Score"
-                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.15)', fontWeight: 'bold', textAlign: 'center' }}
+                    className="solar-vendor-tracker-s23"
                     readOnly={!isAdmin}
                   />
                 </td>
               ))}
             </tr>
             <tr>
-              <td colSpan={3} style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700 }}>Remarks / Recommendation</td>
+              <td colSpan={3} className="solar-vendor-tracker-s21">Remarks / Recommendation</td>
               {['vendor1', 'vendor2', 'vendor3'].map((vKey, vIdx) => (
-                <td key={vKey} style={{ padding: '8px', background: ['rgba(37, 99, 235, 0.1)', 'rgba(22, 163, 74, 0.1)', 'rgba(126, 34, 206, 0.1)'][vIdx] }}>
+                <td key={vKey} className="solar-vendor-tracker-s22" style={{ background: ['rgba(37, 99, 235, 0.1)', 'rgba(22, 163, 74, 0.1)', 'rgba(126, 34, 206, 0.1)'][vIdx] }}>
                   <textarea
                     value={form[vKey].remarks || ''}
                     onChange={(e) => handleScoreChange(vKey, 'remarks', e.target.value)}
                     placeholder="Remarks"
                     rows={2}
-                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.15)', resize: 'vertical' }}
+                    className="solar-vendor-tracker-s24"
                     readOnly={!isAdmin}
                   />
                 </td>
@@ -343,15 +345,15 @@ export default function SolarVendorTracker({ isAdmin = false }) {
         </table>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-        <div className="table-card" style={{ padding: '20px' }}>
-          <h4 style={{ marginTop: 0, marginBottom: '12px', opacity: 0.8 }}>Scoring Guide (Internal Use)</h4>
-          <div style={{ display: 'grid', gridTemplateColumns: '50px 1fr', gap: '8px', fontSize: '0.85rem' }}>
-            <strong style={{ background: '#1e293b', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>5</strong> <span>Excellent (Exceeds Benchmark)</span>
-            <strong style={{ background: '#334155', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>4</strong> <span>Good (Meets Benchmark)</span>
-            <strong style={{ background: '#475569', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>3</strong> <span>Average (Partially Meets Benchmark)</span>
-            <strong style={{ background: '#64748b', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>2</strong> <span>Below Average (Below Benchmark)</span>
-            <strong style={{ background: '#94a3b8', color: 'white', textAlign: 'center', padding: '4px', borderRadius: '4px' }}>1</strong> <span>Poor (Does Not Meet Benchmark)</span>
+      <div className="solar-vendor-tracker-s25">
+        <div className="table-card solar-vendor-tracker-s26">
+          <h4 className="solar-vendor-tracker-s27">Scoring Guide (Internal Use)</h4>
+          <div className="solar-vendor-tracker-s28">
+            <strong className="solar-vendor-tracker-s29">5</strong> <span>Excellent (Exceeds Benchmark)</span>
+            <strong className="solar-vendor-tracker-s30">4</strong> <span>Good (Meets Benchmark)</span>
+            <strong className="solar-vendor-tracker-s31">3</strong> <span>Average (Partially Meets Benchmark)</span>
+            <strong className="solar-vendor-tracker-s32">2</strong> <span>Below Average (Below Benchmark)</span>
+            <strong className="solar-vendor-tracker-s33">1</strong> <span>Poor (Does Not Meet Benchmark)</span>
           </div>
         </div>
       </div>

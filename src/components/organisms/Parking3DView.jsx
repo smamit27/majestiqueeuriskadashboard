@@ -20,6 +20,8 @@ import {
   Printer
 } from 'lucide-react';
 import { LAYOUT_61_SLOTS, normalizeOpKey } from './ParkingBlueprintMap.jsx';
+import './Parking3DView.css';
+
 
 export default function Parking3DView({
   parkingRecords = [],
@@ -699,127 +701,57 @@ export default function Parking3DView({
   const selectedFlatRecord = selectedSlotKey ? slotToFlatMap[selectedSlotKey] : null;
 
   return (
-    <div style={{
-      background: '#030a0f',
-      borderRadius: 16,
-      border: '1px solid #1e3a4d',
-      overflow: 'hidden',
-      color: '#f8fafc',
-      boxShadow: '0 20px 50px rgba(0,0,0,0.6)'
-    }}>
+    <div className="parking3-d-view-s1">
       {/* ── Top Header Toolbar ── */}
-      <div style={{
-        padding: '14px 20px',
-        background: 'linear-gradient(180deg, #0d2331 0%, #081722 100%)',
-        borderBottom: '1px solid #1e455d',
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 12
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-            padding: 8,
-            borderRadius: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 4px 12px rgba(2,132,199,0.35)'
-          }}>
+      <div className="parking3-d-view-s2">
+        <div className="parking3-d-view-s3">
+          <div className="parking3-d-view-s4">
             <Camera size={20} color="#ffffff" />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h3 style={{ margin: 0, fontSize: '1.08rem', fontWeight: 800, color: '#f0f9ff' }}>
+            <div className="parking3-d-view-s5">
+              <h3 className="parking3-d-view-s6">
                 3D ISOMETRIC SITE MODEL — 61 OPEN SPACES
               </h3>
-              <span style={{
-                background: '#0284c7',
-                color: '#ffffff',
-                padding: '2px 8px',
-                borderRadius: 12,
-                fontSize: '0.68rem',
-                fontWeight: 700
-              }}>
+              <span className="parking3-d-view-s7">
                 Architectural 3D Camera
               </span>
             </div>
-            <p style={{ margin: '2px 0 0', fontSize: '0.74rem', color: '#94a3b8' }}>
+            <p className="parking3-d-view-s8">
               Extruded 3D towers, 3D vehicles with flat numbers, pitch/yaw camera controls & lighting modes
             </p>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+        <div className="parking3-d-view-s9">
           {/* Lighting Mode Selector */}
-          <div style={{
-            display: 'flex',
-            background: '#081722',
-            padding: 3,
-            borderRadius: 8,
-            border: '1px solid #1e3a4d'
-          }}>
+          <div className="parking3-d-view-s10">
             <button
               type="button"
               onClick={() => setLightingMode('dusk')}
-              style={{
-                padding: '4px 8px',
-                borderRadius: 6,
-                border: 'none',
-                background: lightingMode === 'dusk' ? '#0284c7' : 'transparent',
-                color: lightingMode === 'dusk' ? '#ffffff' : '#94a3b8',
-                fontSize: '0.7rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
+              className="parking3-d-view-s11" style={{ background: lightingMode === 'dusk' ? '#0284c7' : 'transparent', color: lightingMode === 'dusk' ? '#ffffff' : '#94a3b8' }}
             >
               🌙 Dusk
             </button>
             <button
               type="button"
               onClick={() => setLightingMode('daylight')}
-              style={{
-                padding: '4px 8px',
-                borderRadius: 6,
-                border: 'none',
-                background: lightingMode === 'daylight' ? '#0284c7' : 'transparent',
-                color: lightingMode === 'daylight' ? '#ffffff' : '#94a3b8',
-                fontSize: '0.7rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
+              className="parking3-d-view-s11" style={{ background: lightingMode === 'daylight' ? '#0284c7' : 'transparent', color: lightingMode === 'daylight' ? '#ffffff' : '#94a3b8' }}
             >
               ☀️ Daylight
             </button>
             <button
               type="button"
               onClick={() => setLightingMode('cyberpunk')}
-              style={{
-                padding: '4px 8px',
-                borderRadius: 6,
-                border: 'none',
-                background: lightingMode === 'cyberpunk' ? '#ec4899' : 'transparent',
-                color: lightingMode === 'cyberpunk' ? '#ffffff' : '#94a3b8',
-                fontSize: '0.7rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
+              className="parking3-d-view-s11" style={{ background: lightingMode === 'cyberpunk' ? '#ec4899' : 'transparent', color: lightingMode === 'cyberpunk' ? '#ffffff' : '#94a3b8' }}
             >
               ⚡ Cyber
             </button>
           </div>
 
           {/* Camera Angles */}
-          <div style={{
-            display: 'flex',
-            background: '#081722',
-            padding: 3,
-            borderRadius: 8,
-            border: '1px solid #1e3a4d'
-          }}>
+          <div className="parking3-d-view-s10">
             {[
               { id: 'iso', label: '📐 Isometric' },
               { id: 'top', label: '🗺️ Top Down' },
@@ -832,16 +764,7 @@ export default function Parking3DView({
                 key={p.id}
                 type="button"
                 onClick={() => setPreset(p.id)}
-                style={{
-                  padding: '4px 8px',
-                  borderRadius: 6,
-                  border: 'none',
-                  background: 'transparent',
-                  color: '#94a3b8',
-                  fontSize: '0.68rem',
-                  fontWeight: 700,
-                  cursor: 'pointer'
-                }}
+                className="parking3-d-view-s12"
                 onMouseEnter={e => { e.currentTarget.style.color = '#38bdf8'; }}
                 onMouseLeave={e => { e.currentTarget.style.color = '#94a3b8'; }}
               >
@@ -851,153 +774,71 @@ export default function Parking3DView({
           </div>
 
           {/* Download 3D Dropdown */}
-          <div style={{ position: 'relative' }}>
+          <div className="parking3-d-view-s13">
             <button
               type="button"
               onClick={() => setIsDownloadOpen(!isDownloadOpen)}
-              style={{
-                padding: '6px 12px',
-                borderRadius: 8,
-                border: '1px solid #0284c7',
-                background: '#0284c7',
-                color: '#ffffff',
-                fontSize: '0.74rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
-                boxShadow: '0 2px 6px rgba(2,132,199,0.3)'
-              }}
+              className="parking3-d-view-s14"
             >
               <Download size={14} />
               <span>Download 3D</span>
             </button>
 
             {isDownloadOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '110%',
-                right: 0,
-                background: '#0f172a',
-                border: '1px solid #334155',
-                borderRadius: 10,
-                padding: 6,
-                boxShadow: '0 10px 25px rgba(0,0,0,0.7)',
-                zIndex: 60,
-                minWidth: '240px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 4
-              }}>
+              <div className="parking3-d-view-s15">
                 <button
                   type="button"
                   onClick={handleDownload3DPNG}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left'
-                  }}
+                  className="parking3-d-view-s16"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
                   <FileImage size={16} color="#38bdf8" />
                   <div>
-                    <div style={{ color: '#38bdf8' }}>High-Res 3D Image (PNG)</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>1600 × 2200 3D Isometric Snapshot</div>
+                    <div className="parking3-d-view-s17">High-Res 3D Image (PNG)</div>
+                    <div className="parking3-d-view-s18">1600 × 2200 3D Isometric Snapshot</div>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleDownloadPoster}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left',
-                    borderTop: '1px solid #1e293b'
-                  }}
+                  className="parking3-d-view-s19"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
                   <Printer size={15} color="#4ade80" />
                   <div>
                     <div>3D Presentation Sheet (HTML)</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Printable Architectural Report</div>
+                    <div className="parking3-d-view-s18">Printable Architectural Report</div>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleDownloadOriginalLayout}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left',
-                    borderTop: '1px solid #1e293b'
-                  }}
+                  className="parking3-d-view-s19"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
                   <FileText size={15} color="#fbbf24" />
                   <div>
                     <div>Original Layout (JPG)</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Builder Master Reference</div>
+                    <div className="parking3-d-view-s18">Builder Master Reference</div>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleDownloadJSON}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left',
-                    borderTop: '1px solid #1e293b'
-                  }}
+                  className="parking3-d-view-s19"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
                   <FileCode size={15} color="#a855f7" />
                   <div>
                     <div>3D Model JSON Spec</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Slot Coordinates & Metadata</div>
+                    <div className="parking3-d-view-s18">Slot Coordinates & Metadata</div>
                   </div>
                 </button>
               </div>
@@ -1005,11 +846,11 @@ export default function Parking3DView({
           </div>
 
           {/* Zoom Buttons */}
-          <div style={{ display: 'flex', background: '#081722', borderRadius: 8, border: '1px solid #1e3a4d', overflow: 'hidden' }}>
+          <div className="parking3-d-view-s20">
             <button
               type="button"
               onClick={() => setZoomLevel(prev => Math.min(2.5, Number((prev + 0.2).toFixed(2))))}
-              style={{ padding: '6px 10px', border: 'none', background: 'transparent', color: '#f8fafc', cursor: 'pointer' }}
+              className="parking3-d-view-s21"
               title="Zoom In"
             >
               <ZoomIn size={15} />
@@ -1017,7 +858,7 @@ export default function Parking3DView({
             <button
               type="button"
               onClick={() => setZoomLevel(prev => Math.max(0.6, Number((prev - 0.2).toFixed(2))))}
-              style={{ padding: '6px 10px', border: 'none', background: 'transparent', color: '#f8fafc', cursor: 'pointer' }}
+              className="parking3-d-view-s21"
               title="Zoom Out"
             >
               <ZoomOut size={15} />
@@ -1025,7 +866,7 @@ export default function Parking3DView({
             <button
               type="button"
               onClick={() => setPreset('iso')}
-              style={{ padding: '6px 10px', border: 'none', background: 'transparent', color: '#f8fafc', cursor: 'pointer' }}
+              className="parking3-d-view-s21"
               title="Reset View"
             >
               <RotateCcw size={14} />
@@ -1040,216 +881,62 @@ export default function Parking3DView({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        style={{
-          width: '100%',
-          height: '720px',
-          overflow: 'hidden',
-          position: 'relative',
-          background: themes.sceneBg,
-          cursor: isDragging ? 'grabbing' : 'grab',
-          perspective: 1200,
-          perspectiveOrigin: '50% 50%',
-          userSelect: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
+        className="parking3-d-view-s22" style={{ background: themes.sceneBg, cursor: isDragging ? 'grabbing' : 'grab' }}
       >
         {/* 3D World Transform Wrapper */}
         <div
-          style={{
-            position: 'relative',
-            width: '750px',
-            height: '1050px',
-            transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel}) rotateX(${cameraPitch}deg) rotateZ(${cameraYaw}deg)`,
-            transformStyle: 'preserve-3d',
-            transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
-          }}
+          className="parking3-d-view-s23" style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel}) rotateX(${cameraPitch}deg) rotateZ(${cameraYaw}deg)`, transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)' }}
         >
           {/* Ground Base Plate */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: themes.groundPlate,
-            border: `2.5px solid ${themes.groundBorder}`,
-            borderRadius: 12,
-            boxShadow: '0 40px 80px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.5)',
-            transformStyle: 'preserve-3d'
-          }}>
+          <div className="parking3-d-view-s24" style={{ background: themes.groundPlate, border: `2.5px solid ${themes.groundBorder}` }}>
             {/* Main Driveway Road Strip */}
-            <div style={{
-              position: 'absolute',
-              left: 45,
-              top: 25,
-              width: 140,
-              height: 1000,
-              background: themes.roadColor,
-              borderRadius: 6,
-              border: `1px solid ${themes.groundBorder}`,
-              opacity: 0.85
-            }}>
+            <div className="parking3-d-view-s25" style={{ background: themes.roadColor, border: `1px solid ${themes.groundBorder}` }}>
               {/* Center Line Dashes */}
-              <div style={{
-                position: 'absolute',
-                left: '50%',
-                top: 50,
-                bottom: 50,
-                width: 2,
-                borderLeft: `2px dashed ${themes.roadLine}`,
-                opacity: 0.5
-              }} />
+              <div className="parking3-d-view-s26" style={{ borderLeft: `2px dashed ${themes.roadLine}` }} />
             </div>
 
             {/* ══════════════════════════════════════════════════════════════════
                 1. 3D "A" BUILDING (TOP TOWER) & SHOPS
                ══════════════════════════════════════════════════════════════════ */}
             {/* Outside Shops */}
-            <div style={{
-              position: 'absolute',
-              left: 195,
-              top: 35,
-              width: 350,
-              height: 52,
-              background: 'rgba(99, 102, 241, 0.25)',
-              border: '1.5px solid #818cf8',
-              borderRadius: 6,
-              transform: 'translateZ(15px)',
-              boxShadow: '0 10px 20px rgba(0,0,0,0.4)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#c7d2fe',
-              fontWeight: 800,
-              fontSize: '0.72rem'
-            }}>
+            <div className="parking3-d-view-s27">
               🏪 OUTSIDE SHOPS (SH-1 TO SH-8)
             </div>
 
             {/* A Building Extruded 3D Tower */}
-            <div style={{
-              position: 'absolute',
-              left: 305,
-              top: 110,
-              width: 235,
-              height: 175,
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(2px)'
-            }}>
+            <div className="parking3-d-view-s28">
               {/* Podium Stilt Base */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'rgba(217, 119, 6, 0.2)',
-                border: `2px solid ${themes.bldgABorder}`,
-                borderRadius: 8,
-                transform: 'translateZ(2px)'
-              }}>
-                <div style={{ padding: 6, fontSize: '0.65rem', fontWeight: 800, color: '#f59e0b' }}>
+              <div className="parking3-d-view-s29" style={{ border: `2px solid ${themes.bldgABorder}` }}>
+                <div className="parking3-d-view-s30">
                   🏢 A-BUILDING (A-101 TO A-1108)
                 </div>
               </div>
 
               {/* Extruded Tower Roof Block */}
-              <div style={{
-                position: 'absolute',
-                inset: '12px 18px',
-                background: themes.bldgA,
-                borderRadius: 6,
-                border: `1.5px solid ${themes.bldgABorder}`,
-                boxShadow: '0 25px 45px rgba(0,0,0,0.65)',
-                transform: 'translateZ(55px)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                color: '#fef3c7',
-                fontWeight: 900,
-                fontSize: '1rem'
-              }}>
+              <div className="parking3-d-view-s31" style={{ background: themes.bldgA, border: `1.5px solid ${themes.bldgABorder}` }}>
                 <div>A BUILDING</div>
-                <div style={{ fontSize: '0.65rem', color: '#fde68a', marginTop: 2 }}>88 Residential Flats</div>
+                <div className="parking3-d-view-s32">88 Residential Flats</div>
               </div>
             </div>
 
             {/* ══════════════════════════════════════════════════════════════════
                 2. 3D KIDS PLAY AREA, GAJIBO & MP THEATER
                ══════════════════════════════════════════════════════════════════ */}
-            <div style={{
-              position: 'absolute',
-              left: 260,
-              top: 365,
-              width: 440,
-              height: 70,
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(3px)'
-            }}>
+            <div className="parking3-d-view-s33">
               {/* Gajibo 3D Pavilion */}
-              <div style={{
-                position: 'absolute',
-                left: 10,
-                top: 5,
-                width: 50,
-                height: 50,
-                background: 'linear-gradient(180deg, #d97706 0%, #b45309 100%)',
-                borderRadius: '50%',
-                border: '1.5px solid #fde68a',
-                transform: 'translateZ(20px)',
-                boxShadow: '0 8px 15px rgba(0,0,0,0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-                fontSize: '0.58rem',
-                fontWeight: 800
-              }}>
+              <div className="parking3-d-view-s34">
                 GAJIBO
               </div>
 
               {/* Lawn Area */}
-              <div style={{
-                position: 'absolute',
-                left: 75,
-                top: 5,
-                width: 220,
-                height: 60,
-                background: themes.playArea,
-                borderRadius: 8,
-                border: '1.5px solid #22c55e',
-                transform: 'translateZ(6px)',
-                boxShadow: '0 6px 16px rgba(0,0,0,0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#dcfce7',
-                fontWeight: 800,
-                fontSize: '0.72rem',
-                gap: 8
-              }}>
+              <div className="parking3-d-view-s35" style={{ background: themes.playArea }}>
                 <span>🌳 KIDS PLAY AREA</span>
                 <span>🎪 SWINGS</span>
               </div>
 
               {/* MP Theater */}
-              <div style={{
-                position: 'absolute',
-                left: 310,
-                top: 0,
-                width: 80,
-                height: 70,
-                background: 'linear-gradient(180deg, #f59e0b 0%, #d97706 100%)',
-                borderRadius: 6,
-                border: '1.5px solid #fef3c7',
-                transform: 'translateZ(25px)',
-                boxShadow: '0 10px 20px rgba(0,0,0,0.5)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#ffffff',
-                fontSize: '0.62rem',
-                fontWeight: 800
-              }}>
-                <div style={{ fontSize: '1rem' }}>🎭</div>
+              <div className="parking3-d-view-s36">
+                <div className="parking3-d-view-s37">🎭</div>
                 <div>MP THEATER</div>
               </div>
             </div>
@@ -1257,185 +944,53 @@ export default function Parking3DView({
             {/* ══════════════════════════════════════════════════════════════════
                 3. 3D "B" BUILDING (MIDDLE TOWER)
                ══════════════════════════════════════════════════════════════════ */}
-            <div style={{
-              position: 'absolute',
-              left: 280,
-              top: 500,
-              width: 330,
-              height: 125,
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(2px)'
-            }}>
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'rgba(30, 58, 138, 0.25)',
-                border: `2px solid ${themes.bldgBBorder}`,
-                borderRadius: 8,
-                transform: 'translateZ(2px)'
-              }}>
-                <div style={{ padding: 6, fontSize: '0.65rem', fontWeight: 800, color: '#93c5fd' }}>
+            <div className="parking3-d-view-s38">
+              <div className="parking3-d-view-s39" style={{ border: `2px solid ${themes.bldgBBorder}` }}>
+                <div className="parking3-d-view-s40">
                   🏢 B-BUILDING
                 </div>
               </div>
-              <div style={{
-                position: 'absolute',
-                inset: '10px 18px',
-                background: themes.bldgB,
-                borderRadius: 6,
-                border: `1.5px solid ${themes.bldgBBorder}`,
-                boxShadow: '0 25px 45px rgba(0,0,0,0.65)',
-                transform: 'translateZ(50px)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                color: '#dbeafe',
-                fontWeight: 900,
-                fontSize: '1rem'
-              }}>
+              <div className="parking3-d-view-s41" style={{ background: themes.bldgB, border: `1.5px solid ${themes.bldgBBorder}` }}>
                 <div>B BUILDING</div>
-                <div style={{ fontSize: '0.65rem', color: '#93c5fd', marginTop: 2 }}>Residential Tower</div>
+                <div className="parking3-d-view-s42">Residential Tower</div>
               </div>
             </div>
 
             {/* ══════════════════════════════════════════════════════════════════
                 4. 3D CLUB HOUSE
                ══════════════════════════════════════════════════════════════════ */}
-            <div style={{
-              position: 'absolute',
-              left: 325,
-              top: 705,
-              width: 265,
-              height: 90,
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(2px)'
-            }}>
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: themes.clubhouse,
-                borderRadius: 8,
-                border: `2px solid ${themes.clubhouseBorder}`,
-                boxShadow: '0 20px 35px rgba(0,0,0,0.6)',
-                transform: 'translateZ(30px)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#ffedd5',
-                fontWeight: 900,
-                fontSize: '0.88rem'
-              }}>
+            <div className="parking3-d-view-s43">
+              <div className="parking3-d-view-s44" style={{ background: themes.clubhouse, border: `2px solid ${themes.clubhouseBorder}` }}>
                 <div>🏊 CLUB HOUSE</div>
-                <div style={{ fontSize: '0.6rem', color: '#fed7aa', marginTop: 2 }}>Pool & Community Hall</div>
+                <div className="parking3-d-view-s45">Pool & Community Hall</div>
               </div>
             </div>
 
             {/* ══════════════════════════════════════════════════════════════════
                 5. 3D "C" BUILDING & DG ROOM (BOTTOM)
                ══════════════════════════════════════════════════════════════════ */}
-            <div style={{
-              position: 'absolute',
-              left: 330,
-              top: 850,
-              width: 260,
-              height: 120,
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(2px)'
-            }}>
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'rgba(153, 27, 27, 0.25)',
-                border: `2px solid ${themes.bldgCBorder}`,
-                borderRadius: 8,
-                transform: 'translateZ(2px)'
-              }}>
-                <div style={{ padding: 6, fontSize: '0.65rem', fontWeight: 800, color: '#fca5a5' }}>
+            <div className="parking3-d-view-s46">
+              <div className="parking3-d-view-s47" style={{ border: `2px solid ${themes.bldgCBorder}` }}>
+                <div className="parking3-d-view-s48">
                   🏢 C-BUILDING
                 </div>
               </div>
-              <div style={{
-                position: 'absolute',
-                inset: '10px 18px',
-                background: themes.bldgC,
-                borderRadius: 6,
-                border: `1.5px solid ${themes.bldgCBorder}`,
-                boxShadow: '0 25px 45px rgba(0,0,0,0.65)',
-                transform: 'translateZ(45px)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                color: '#fee2e2',
-                fontWeight: 900,
-                fontSize: '1rem'
-              }}>
+              <div className="parking3-d-view-s49" style={{ background: themes.bldgC, border: `1.5px solid ${themes.bldgCBorder}` }}>
                 <div>C BUILDING</div>
-                <div style={{ fontSize: '0.65rem', color: '#fca5a5', marginTop: 2 }}>Near DG Room</div>
+                <div className="parking3-d-view-s50">Near DG Room</div>
               </div>
             </div>
 
             {/* DG Room (Bottom Right 3D Block) */}
-            <div style={{
-              position: 'absolute',
-              left: 640,
-              top: 990,
-              width: 58,
-              height: 34,
-              background: 'linear-gradient(180deg, #334155 0%, #1e293b 100%)',
-              border: '1.5px solid #eab308',
-              borderRadius: 4,
-              transform: 'translateZ(22px)',
-              boxShadow: '0 10px 20px rgba(0,0,0,0.6)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#fef08a',
-              fontSize: '0.68rem',
-              fontWeight: 800
-            }}>
+            <div className="parking3-d-view-s51">
               ⚡ DG
             </div>
 
             {/* STP / OWC Blocks */}
-            <div style={{
-              position: 'absolute',
-              left: 210,
-              top: 745,
-              width: 65,
-              height: 22,
-              background: '#1e293b',
-              border: '1px solid #10b981',
-              borderRadius: 3,
-              transform: 'translateZ(12px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#6ee7b7',
-              fontSize: '0.58rem',
-              fontWeight: 800
-            }}>
+            <div className="parking3-d-view-s52">
               🌱 OWC
             </div>
-            <div style={{
-              position: 'absolute',
-              left: 278,
-              top: 965,
-              width: 40,
-              height: 26,
-              background: '#1e293b',
-              border: '1px solid #0284c7',
-              borderRadius: 3,
-              transform: 'translateZ(12px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#38bdf8',
-              fontSize: '0.58rem',
-              fontWeight: 800
-            }}>
+            <div className="parking3-d-view-s53">
               ♻️ STP
             </div>
 
@@ -1451,7 +1006,7 @@ export default function Parking3DView({
               return (
                 <div
                   key={slotKey}
-                  className="slot-3d-card"
+                  className="slot-3d-card parking3-d-view-s54"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedSlotKey(slotKey);
@@ -1459,94 +1014,40 @@ export default function Parking3DView({
                       onSelectSlot(flatItem || { parkingNo: slotKey, parkingType: 'Open Parking' });
                     }
                   }}
-                  style={{
-                    position: 'absolute',
-                    left: slot.x,
-                    top: slot.y,
-                    width: slot.w,
-                    height: slot.h,
-                    background: isAllotted ? 'rgba(5, 150, 105, 0.4)' : themes.slotVacant,
-                    border: `1.5px solid ${isSelected ? '#38bdf8' : isHighlighted ? '#fbbf24' : isAllotted ? '#10b981' : '#334155'}`,
-                    borderRadius: 4,
-                    transform: 'translateZ(4px)',
-                    transformStyle: 'preserve-3d',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: isHighlighted ? '0 0 16px #fbbf24' : '0 4px 8px rgba(0,0,0,0.4)',
-                    transition: 'all 0.15s ease'
-                  }}
+                  style={{ left: slot.x, top: slot.y, width: slot.w, height: slot.h, background: isAllotted ? 'rgba(5, 150, 105, 0.4)' : themes.slotVacant, border: `1.5px solid ${isSelected ? '#38bdf8' : isHighlighted ? '#fbbf24' : isAllotted ? '#10b981' : '#334155'}`, boxShadow: isHighlighted ? '0 0 16px #fbbf24' : '0 4px 8px rgba(0,0,0,0.4)' }}
                 >
                   {/* Slot Number Label */}
-                  <span style={{
-                    position: 'absolute',
-                    top: 2,
-                    left: 3,
-                    fontSize: '0.52rem',
-                    fontWeight: 800,
-                    color: isAllotted ? '#a7f3d0' : '#94a3b8',
-                    zIndex: 20
-                  }}>
+                  <span className="parking3-d-view-s55" style={{ color: isAllotted ? '#a7f3d0' : '#94a3b8' }}>
                     {slot.num}
                   </span>
 
                   {/* 3D Realistic Extruded Car Model if Allotted */}
                   {isAllotted ? (
-                    <div style={{
-                      position: 'absolute',
-                      inset: slot.orient === 'V' ? '4px 3px' : '3px 4px',
-                      transformStyle: 'preserve-3d',
-                      transform: 'translateZ(10px)'
-                    }}>
+                    <div className="parking3-d-view-s56" style={{ inset: slot.orient === 'V' ? '4px 3px' : '3px 4px' }}>
                       {/* 3D Car Chassis Body */}
-                      <div style={{
-                        position: 'absolute',
-                        inset: 0,
-                        background: 'linear-gradient(180deg, #10b981 0%, #047857 100%)',
-                        borderRadius: 4,
-                        border: '1px solid #34d399',
-                        boxShadow: '0 8px 16px rgba(0,0,0,0.7)',
-                        transformStyle: 'preserve-3d'
-                      }}>
+                      <div className="parking3-d-view-s57">
                         {/* 4 Wheels (Black 3D Tires) */}
-                        <div style={{ position: 'absolute', left: -1.5, top: 3, width: 2, height: 5, background: '#090d16', borderRadius: 1 }} />
-                        <div style={{ position: 'absolute', right: -1.5, top: 3, width: 2, height: 5, background: '#090d16', borderRadius: 1 }} />
-                        <div style={{ position: 'absolute', left: -1.5, bottom: 3, width: 2, height: 5, background: '#090d16', borderRadius: 1 }} />
-                        <div style={{ position: 'absolute', right: -1.5, bottom: 3, width: 2, height: 5, background: '#090d16', borderRadius: 1 }} />
+                        <div className="parking3-d-view-s58" />
+                        <div className="parking3-d-view-s59" />
+                        <div className="parking3-d-view-s60" />
+                        <div className="parking3-d-view-s61" />
 
                         {/* Headlights (Warm Yellow) */}
-                        <div style={{ position: 'absolute', left: 2, top: 1, width: 2.5, height: 1.5, background: '#fef08a', borderRadius: 1, boxShadow: '0 0 4px #fde047' }} />
-                        <div style={{ position: 'absolute', right: 2, top: 1, width: 2.5, height: 1.5, background: '#fef08a', borderRadius: 1, boxShadow: '0 0 4px #fde047' }} />
+                        <div className="parking3-d-view-s62" />
+                        <div className="parking3-d-view-s63" />
 
                         {/* Taillights (Red) */}
-                        <div style={{ position: 'absolute', left: 2, bottom: 0, width: 2.5, height: 1, background: '#ef4444', borderRadius: 0.5 }} />
-                        <div style={{ position: 'absolute', right: 2, bottom: 0, width: 2.5, height: 1, background: '#ef4444', borderRadius: 0.5 }} />
+                        <div className="parking3-d-view-s64" />
+                        <div className="parking3-d-view-s65" />
 
                         {/* 3D Extruded Car Cabin & Roof */}
-                        <div style={{
-                          position: 'absolute',
-                          inset: slot.orient === 'V' ? '6px 2px' : '2px 6px',
-                          background: 'linear-gradient(180deg, #065f46 0%, #022c22 100%)',
-                          border: '0.8px solid #6ee7b7',
-                          borderRadius: 3,
-                          transform: 'translateZ(7px)',
-                          boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: '#ffffff',
-                          fontWeight: 900,
-                          fontSize: slot.orient === 'V' ? '0.58rem' : '0.64rem',
-                          letterSpacing: '-0.02em'
-                        }}>
+                        <div className="parking3-d-view-s66" style={{ inset: slot.orient === 'V' ? '6px 2px' : '2px 6px', fontSize: slot.orient === 'V' ? '0.58rem' : '0.64rem' }}>
                           <span>{flatItem.flat}</span>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <span style={{ fontSize: '0.5rem', color: '#64748b', fontWeight: 700 }}>FREE</span>
+                    <span className="parking3-d-view-s67">FREE</span>
                   )}
                 </div>
               );
@@ -1556,35 +1057,14 @@ export default function Parking3DView({
 
         {/* ── Selected Slot Detail Card Popup ── */}
         {selectedSlotKey && selectedSlotData && (
-          <div style={{
-            position: 'absolute',
-            bottom: 20,
-            left: 20,
-            right: 20,
-            maxWidth: '420px',
-            background: 'rgba(15, 23, 42, 0.95)',
-            backdropFilter: 'blur(14px)',
-            border: '1.5px solid #0284c7',
-            borderRadius: 14,
-            padding: '16px',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.8)',
-            zIndex: 50,
-            animation: 'fadeIn 0.2s ease-out'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+          <div className="parking3-d-view-s68">
+            <div className="parking3-d-view-s69">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{
-                    background: '#0284c7',
-                    color: '#ffffff',
-                    padding: '3px 8px',
-                    borderRadius: 6,
-                    fontSize: '0.75rem',
-                    fontWeight: 800
-                  }}>
+                <div className="parking3-d-view-s70">
+                  <span className="parking3-d-view-s71">
                     {selectedSlotData.label} ({selectedSlotData.id})
                   </span>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#94a3b8' }}>
+                  <span className="parking3-d-view-s72">
                     {selectedSlotData.zone}
                   </span>
                 </div>
@@ -1592,104 +1072,63 @@ export default function Parking3DView({
               <button
                 type="button"
                 onClick={() => setSelectedSlotKey(null)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#94a3b8',
-                  fontSize: '1.2rem',
-                  cursor: 'pointer',
-                  padding: 2
-                }}
+                className="parking3-d-view-s73"
               >
                 ✕
               </button>
             </div>
 
             {selectedFlatRecord ? (
-              <div style={{
-                background: 'rgba(6, 78, 59, 0.4)',
-                border: '1px solid #10b981',
-                borderRadius: 10,
-                padding: '10px 12px',
-                marginBottom: 12
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="parking3-d-view-s74">
+                <div className="parking3-d-view-s75">
                   <div>
-                    <div style={{ fontSize: '0.68rem', color: '#a7f3d0', fontWeight: 800, textTransform: 'uppercase' }}>
+                    <div className="parking3-d-view-s76">
                       Allotted Flat
                     </div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#34d399' }}>
+                    <div className="parking3-d-view-s77">
                       Flat {selectedFlatRecord.flat}
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.68rem', color: '#a7f3d0', fontWeight: 800, textTransform: 'uppercase' }}>
+                  <div className="parking3-d-view-s78">
+                    <div className="parking3-d-view-s76">
                       Floor
                     </div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#f8fafc' }}>
+                    <div className="parking3-d-view-s79">
                       {selectedFlatRecord.floor}th Floor
                     </div>
                   </div>
                 </div>
 
                 {selectedFlatRecord.remarks && (
-                  <div style={{ marginTop: 8, fontSize: '0.72rem', color: '#cbd5e1', borderTop: '1px dashed rgba(52,211,153,0.3)', paddingTop: 6 }}>
+                  <div className="parking3-d-view-s80">
                     <strong>Reference:</strong> {selectedFlatRecord.remarks}
                   </div>
                 )}
 
                 {/* Parked Vehicle Visual Preview */}
-                <div style={{
-                  marginTop: 10,
-                  background: 'rgba(2, 44, 34, 0.6)',
-                  border: '1px solid #059669',
-                  borderRadius: 8,
-                  padding: '8px 12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10
-                }}>
-                  <div style={{
-                    width: 44,
-                    height: 28,
-                    background: 'linear-gradient(180deg, #10b981 0%, #047857 100%)',
-                    borderRadius: 5,
-                    border: '1px solid #34d399',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.1rem',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.4)'
-                  }}>
+                <div className="parking3-d-view-s81">
+                  <div className="parking3-d-view-s82">
                     🚗
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#f8fafc' }}>
+                    <div className="parking3-d-view-s83">
                       Designated Parking Bay • {selectedSlotData.label}
                     </div>
-                    <div style={{ fontSize: '0.64rem', color: '#6ee7b7' }}>
+                    <div className="parking3-d-view-s84">
                       Allocated to Flat {selectedFlatRecord.flat} (Floor {selectedFlatRecord.floor})
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div style={{
-                background: 'rgba(30, 41, 59, 0.6)',
-                border: '1px dashed #475569',
-                borderRadius: 10,
-                padding: '12px',
-                marginBottom: 12,
-                color: '#94a3b8',
-                fontSize: '0.8rem'
-              }}>
+              <div className="parking3-d-view-s85">
                 🅿️ This open parking space is currently unallocated.
               </div>
             )}
 
             {/* Action Buttons */}
             {isAdmin && (
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="parking3-d-view-s86">
                 <button
                   type="button"
                   onClick={() => {
@@ -1699,21 +1138,7 @@ export default function Parking3DView({
                       onSelectSlot(selectedFlatRecord || { parkingNo: selectedSlotKey, parkingType: 'Open Parking' });
                     }
                   }}
-                  style={{
-                    flex: 1,
-                    padding: '8px 12px',
-                    borderRadius: 8,
-                    border: 'none',
-                    background: '#0284c7',
-                    color: '#ffffff',
-                    fontSize: '0.78rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 6
-                  }}
+                  className="parking3-d-view-s87"
                 >
                   <Edit3 size={14} />
                   {selectedFlatRecord ? 'Edit Slot / Flat Assignment' : 'Assign this Bay to Flat'}
@@ -1725,19 +1150,8 @@ export default function Parking3DView({
       </div>
 
       {/* ── Footer Info ── */}
-      <div style={{
-        padding: '12px 20px',
-        background: '#071620',
-        borderTop: '1px solid #1e3a4d',
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 12,
-        fontSize: '0.72rem',
-        color: '#94a3b8'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div className="parking3-d-view-s88">
+        <div className="parking3-d-view-s89">
           <span>🎮 Camera: Drag to Pan • Pitch & Yaw Presets above</span>
         </div>
         <div>

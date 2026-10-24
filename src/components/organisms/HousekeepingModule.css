@@ -1,0 +1,30 @@
+/**
+ * HousekeepingModule.css
+ * Extracted styles from HousekeepingModule.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.housekeeping-module-s1 {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 8px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.housekeeping-module-s2 {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+

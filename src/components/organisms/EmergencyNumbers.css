@@ -1,0 +1,634 @@
+/**
+ * EmergencyNumbers.css
+ * Extracted styles from EmergencyNumbers.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.emergency-numbers-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.emergency-numbers-s2 {
+  padding: 24px 28px;
+}
+
+.emergency-numbers-s3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0;
+}
+
+.emergency-numbers-s4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px 0;
+  color: #b91c1c;
+}
+
+.emergency-numbers-s5 {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.emergency-numbers-s6 {
+  margin: 0;
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.emergency-numbers-s7 {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.emergency-numbers-s8 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.emergency-numbers-s9 {
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.92rem;
+  padding: 10px 18px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+.emergency-numbers-s10 {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+  border-radius: 20px;
+  padding: 28px 32px;
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(185, 28, 28, 0.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.emergency-numbers-s11 {
+  flex: 1 1 300px;
+}
+
+.emergency-numbers-s12 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.emergency-numbers-s13 {
+  font-size: clamp(1.3rem, 2.5vw, 1.85rem);
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+}
+
+.emergency-numbers-s14 {
+  margin: 0;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 55ch;
+  line-height: 1.5;
+}
+
+.emergency-numbers-s15 {
+  flex: 0 0 auto;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 20px 24px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.emergency-numbers-s16 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.emergency-numbers-s17 {
+  display: block;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 4px 0;
+  text-decoration: none;
+  letter-spacing: -0.03em;
+}
+
+.emergency-numbers-s18 {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.emergency-numbers-s19 {
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.emergency-numbers-s20 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.emergency-numbers-s21 {
+  margin: 3px 0 0;
+  color: #64748b;
+  font-size: 0.84rem;
+}
+
+.emergency-numbers-s22 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.emergency-numbers-s23 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.emergency-numbers-s24 {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.emergency-numbers-s25 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.emergency-numbers-s26 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emergency-numbers-s27 {
+  font-size: 1.8rem;
+  background: #f8fafc;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+
+.emergency-numbers-s28 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.emergency-numbers-s29 {
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.emergency-numbers-s30 {
+  margin: 12px 0 6px;
+}
+
+.emergency-numbers-s31 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #b91c1c;
+  letter-spacing: -0.02em;
+}
+
+.emergency-numbers-s32 {
+  font-size: 1.1rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.emergency-numbers-s33 {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.emergency-numbers-s34 {
+  display: flex;
+  gap: 8px;
+}
+
+.emergency-numbers-s35 {
+  flex: 1;
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.emergency-numbers-s36 {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.84rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.emergency-numbers-s37 {
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.emergency-numbers-s38 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #f0fdf4;
+  color: #16a34a;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.emergency-numbers-s39 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.emergency-numbers-s40 {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.emergency-numbers-s41 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.emergency-numbers-s42 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.emergency-numbers-s43 {
+  font-size: 1.6rem;
+  background: #f8fafc;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+
+.emergency-numbers-s44 {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.emergency-numbers-s45 {
+  font-size: 0.82rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.emergency-numbers-s46 {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: #2563eb;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.emergency-numbers-s47 {
+  background: #f8fafc;
+  padding: 10px 14px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.emergency-numbers-s48 {
+  display: block;
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.emergency-numbers-s49 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.emergency-numbers-s50 {
+  font-size: 0.72rem;
+  color: #64748b;
+  max-width: 120px;
+  text-align: right;
+}
+
+.emergency-numbers-s51 {
+  width: 100%;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.86rem;
+  padding: 9px;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.emergency-numbers-s52 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.emergency-numbers-s53 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.emergency-numbers-s54 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.emergency-numbers-s55 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-transform: uppercase;
+}
+
+.emergency-numbers-s56 {
+  margin: 2px 0 0;
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.emergency-numbers-s57 {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.emergency-numbers-s58 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.emergency-numbers-s59 {
+  color: #16a34a;
+}
+
+.emergency-numbers-s60 {
+  flex: 1;
+  background: #3b82f6;
+  border-color: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.84rem;
+  padding: 9px;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.emergency-numbers-s61 {
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.84rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+}
+
+.emergency-numbers-s62 {
+  padding: 22px 28px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.emergency-numbers-s63 {
+  margin-bottom: 16px;
+}
+
+.emergency-numbers-s64 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.emergency-numbers-s65 {
+  margin: 2px 0 0;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.emergency-numbers-s66 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.emergency-numbers-s67 {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.emergency-numbers-s68 {
+  font-size: 1.4rem;
+}
+
+.emergency-numbers-s69 {
+  margin: 0 0 4px 0;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.emergency-numbers-s70 {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.emergency-numbers-s71 {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.emergency-numbers-s72 {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 480px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.emergency-numbers-s73 {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.emergency-numbers-s74 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.emergency-numbers-s75 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.emergency-numbers-s76 {
+  height: 38px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  padding: 0 10px;
+}
+
+.emergency-numbers-s77 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+

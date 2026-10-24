@@ -1,0 +1,345 @@
+/**
+ * TenantTracker.css
+ * Extracted styles from TenantTracker.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.tenant-tracker-s1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.tenant-tracker-s2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px 0;
+}
+
+.tenant-tracker-s3 {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.tenant-tracker-s4 {
+  margin: 0;
+}
+
+.tenant-tracker-s5 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tenant-tracker-s6 {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tenant-tracker-s7 {
+  border: 1px solid rgba(220,38,38,0.2);
+  color: #dc2626;
+  background: rgba(220,38,38,0.04);
+}
+
+.tenant-tracker-s8 {
+  margin-bottom: 20px;
+}
+
+.tenant-tracker-s9 {
+  background: linear-gradient(135deg, rgba(25, 108, 108, 0.03) 0%, rgba(49, 82, 113, 0.05) 100%);
+  border: 1.5px dashed rgba(25, 108, 108, 0.25);
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), 0 4px 20px rgba(0,0,0,0.03);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.tenant-tracker-s10 {
+  margin: 0 0 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.tenant-tracker-s11 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.tenant-tracker-s12 {
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 0 12px;
+  font-size: 0.88rem;
+}
+
+.tenant-tracker-s13 {
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 0 12px;
+  font-size: 0.88rem;
+  background: #fff;
+}
+
+.tenant-tracker-s14 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.tenant-tracker-s15 {
+  min-height: auto;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.tenant-tracker-s16 {
+  min-height: auto;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.tenant-tracker-s17 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 14px 18px;
+}
+
+.tenant-tracker-s18 {
+  flex: 1 1 240px;
+  position: relative;
+}
+
+.tenant-tracker-s19 {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  font-size: 0.9rem;
+}
+
+.tenant-tracker-s20 {
+  width: 100%;
+  padding-left: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: #fff;
+  font-size: 0.86rem;
+}
+
+.tenant-tracker-s21 {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tenant-tracker-s22 {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.tenant-tracker-s23 {
+  font-size: 0.72rem;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+.tenant-tracker-s24 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tenant-tracker-s25 {
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 0 10px;
+  background: #fff;
+  font-size: 0.84rem;
+  color: #334155;
+}
+
+.tenant-tracker-s26 {
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+}
+
+.tenant-tracker-s27 {
+  padding: 40px;
+  text-align: center;
+  color: #64748b;
+}
+
+.tenant-tracker-s28 {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-top-color: #196c6c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+
+.tenant-tracker-s29 {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tenant-tracker-s30 {
+  padding: 14px 18px;
+  background: #f8fafc;
+  font-weight: 700;
+  color: #334155;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  width: 100px;
+}
+
+.tenant-tracker-s31 {
+  padding: 14px 18px;
+  background: #f8fafc;
+  font-weight: 700;
+  color: #334155;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.tenant-tracker-s32 {
+  padding: 14px 18px;
+  background: #f8fafc;
+  font-weight: 700;
+  color: #334155;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  width: 120px;
+}
+
+.tenant-tracker-s33 {
+  padding: 14px 18px;
+  background: #f8fafc;
+  font-weight: 700;
+  color: #334155;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  width: 170px;
+}
+
+.tenant-tracker-s34 {
+  padding: 14px 18px;
+  background: #f8fafc;
+  font-weight: 700;
+  color: #334155;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  text-align: center;
+  width: 90px;
+}
+
+.tenant-tracker-s35 {
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  transition: background 0.15s ease;
+}
+
+.tenant-tracker-s36 {
+  padding: 14px 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.tenant-tracker-s37 {
+  padding: 14px 18px;
+}
+
+.tenant-tracker-s38 {
+  padding: 14px 18px;
+  color: #334155;
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.tenant-tracker-s39 {
+  color: #94a3b8;
+  font-size: 0.82rem;
+}
+
+.tenant-tracker-s40 {
+  padding: 14px 18px;
+  color: #475569;
+  font-size: 0.84rem;
+}
+
+.tenant-tracker-s41 {
+  display: inline-block;
+  background: rgba(241, 245, 249, 0.9);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: #334155;
+}
+
+.tenant-tracker-s42 {
+  padding: 14px 18px;
+  text-align: center;
+}
+
+.tenant-tracker-s43 {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.tenant-tracker-s44 {
+  padding: 6px;
+  min-height: auto;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: #475569;
+}
+
+.tenant-tracker-s45 {
+  padding: 6px;
+  min-height: auto;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid rgba(220,38,38,0.1);
+  color: #dc2626;
+  background: rgba(220,38,38,0.02);
+}
+

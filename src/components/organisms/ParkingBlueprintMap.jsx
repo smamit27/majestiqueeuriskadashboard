@@ -20,6 +20,8 @@ import {
   FileCode,
   FileText
 } from 'lucide-react';
+import './ParkingBlueprintMap.css';
+
 
 // Helper to normalize OP slot keys (e.g. 'OP-01', 'OP-1', 'OP 1', '1' -> 'OP-01')
 export function normalizeOpKey(slot) {
@@ -374,72 +376,34 @@ export default function ParkingBlueprintMap({
   const selectedFlatRecord = selectedSlotKey ? slotToFlatMap[selectedSlotKey] : null;
 
   return (
-    <div style={{
-      background: colors.bg,
-      borderRadius: 16,
-      border: `1px solid ${colors.roadBorder}`,
-      overflow: 'hidden',
-      color: colors.textPrimary,
-      boxShadow: '0 20px 45px rgba(0,0,0,0.3)',
-      transition: 'background 0.25s ease'
-    }}>
+    <div className="parking-blueprint-map-s1" style={{ background: colors.bg, border: `1px solid ${colors.roadBorder}`, color: colors.textPrimary }}>
       {/* ── Top Header Toolbar ── */}
-      <div style={{
-        padding: '14px 20px',
-        background: themeMode === 'architectural' 
+      <div className="parking-blueprint-map-s2" style={{ background: themeMode === 'architectural' 
           ? 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' 
-          : 'linear-gradient(180deg, #0d2636 0%, #081a24 100%)',
-        borderBottom: `1px solid ${colors.roadBorder}`,
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 12
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-            padding: 8,
-            borderRadius: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 4px 12px rgba(2,132,199,0.35)'
-          }}>
+          : 'linear-gradient(180deg, #0d2636 0%, #081a24 100%)', borderBottom: `1px solid ${colors.roadBorder}` }}>
+        <div className="parking-blueprint-map-s3">
+          <div className="parking-blueprint-map-s4">
             <Building size={20} color="#ffffff" />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <h3 style={{ margin: 0, fontSize: '1.08rem', fontWeight: 800, letterSpacing: '-0.01em' }}>
+            <div className="parking-blueprint-map-s5">
+              <h3 className="parking-blueprint-map-s6">
                 OPEN PARKING LAYOUT — 61 SPACES
               </h3>
-              <span style={{
-                background: '#0284c7',
-                color: '#ffffff',
-                padding: '2px 8px',
-                borderRadius: 12,
-                fontSize: '0.68rem',
-                fontWeight: 700
-              }}>
+              <span className="parking-blueprint-map-s7">
                 Master 2D Blueprint Plan
               </span>
             </div>
-            <p style={{ margin: '2px 0 0', fontSize: '0.74rem', color: colors.textSecondary }}>
+            <p className="parking-blueprint-map-s8" style={{ color: colors.textSecondary }}>
               Interactive site blueprint with live flat allocation numbers (OP 1 to OP 61) & landmark zoning
             </p>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+        <div className="parking-blueprint-map-s9">
           {/* Theme Switcher */}
-          <div style={{
-            display: 'flex',
-            background: 'rgba(0,0,0,0.08)',
-            padding: 3,
-            borderRadius: 8,
-            border: `1px solid ${colors.roadBorder}`
-          }}>
+          <div className="parking-blueprint-map-s10" style={{ border: `1px solid ${colors.roadBorder}` }}>
             {[
               { id: 'architectural', label: '📐 Color Master' },
               { id: 'cad', label: '⚡ CAD Dark' },
@@ -449,17 +413,7 @@ export default function ParkingBlueprintMap({
                 key={t.id}
                 type="button"
                 onClick={() => setThemeMode(t.id)}
-                style={{
-                  padding: '4px 9px',
-                  borderRadius: 6,
-                  border: 'none',
-                  background: themeMode === t.id ? '#0284c7' : 'transparent',
-                  color: themeMode === t.id ? '#ffffff' : colors.textSecondary,
-                  fontSize: '0.7rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s'
-                }}
+                className="parking-blueprint-map-s11" style={{ background: themeMode === t.id ? '#0284c7' : 'transparent', color: themeMode === t.id ? '#ffffff' : colors.textSecondary }}
               >
                 {t.label}
               </button>
@@ -467,124 +421,57 @@ export default function ParkingBlueprintMap({
           </div>
 
           {/* Download Dropdown */}
-          <div style={{ position: 'relative' }}>
+          <div className="parking-blueprint-map-s12">
             <button
               type="button"
               onClick={() => setIsDownloadOpen(!isDownloadOpen)}
-              style={{
-                padding: '6px 12px',
-                borderRadius: 8,
-                border: '1px solid #0284c7',
-                background: '#0284c7',
-                color: '#ffffff',
-                fontSize: '0.74rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
-                boxShadow: '0 2px 6px rgba(2,132,199,0.3)'
-              }}
+              className="parking-blueprint-map-s13"
             >
               <Download size={14} />
               <span>Download 2D</span>
             </button>
 
             {isDownloadOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '110%',
-                right: 0,
-                background: '#0f172a',
-                border: '1px solid #334155',
-                borderRadius: 10,
-                padding: 6,
-                boxShadow: '0 10px 25px rgba(0,0,0,0.7)',
-                zIndex: 60,
-                minWidth: '220px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 4
-              }}>
+              <div className="parking-blueprint-map-s14">
                 <button
                   type="button"
                   onClick={handleDownloadPNG}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left'
-                  }}
+                  className="parking-blueprint-map-s15"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
                   <FileImage size={15} color="#38bdf8" />
                   <div>
                     <div>High-Res PNG Image</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>1500 × 2200 Master Blueprint</div>
+                    <div className="parking-blueprint-map-s16">1500 × 2200 Master Blueprint</div>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleDownloadSVG}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left'
-                  }}
+                  className="parking-blueprint-map-s15"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
                   <FileCode size={15} color="#4ade80" />
                   <div>
                     <div>Vector SVG Graphic</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Scalable CAD Vector File</div>
+                    <div className="parking-blueprint-map-s16">Scalable CAD Vector File</div>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleDownloadOriginalLayout}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left',
-                    borderTop: '1px solid #1e293b'
-                  }}
+                  className="parking-blueprint-map-s17"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
                   <FileText size={15} color="#fbbf24" />
                   <div>
                     <div>Original Layout (JPG)</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Builder Master Reference</div>
+                    <div className="parking-blueprint-map-s16">Builder Master Reference</div>
                   </div>
                 </button>
               </div>
@@ -592,11 +479,11 @@ export default function ParkingBlueprintMap({
           </div>
 
           {/* Zoom Controls */}
-          <div style={{ display: 'flex', background: 'rgba(0,0,0,0.08)', borderRadius: 8, border: `1px solid ${colors.roadBorder}`, overflow: 'hidden' }}>
+          <div className="parking-blueprint-map-s18" style={{ border: `1px solid ${colors.roadBorder}` }}>
             <button
               type="button"
               onClick={() => handleZoom(0.25)}
-              style={{ padding: '6px 10px', border: 'none', background: 'transparent', color: colors.textPrimary, cursor: 'pointer' }}
+              className="parking-blueprint-map-s19" style={{ color: colors.textPrimary }}
               title="Zoom In"
             >
               <ZoomIn size={15} />
@@ -604,7 +491,7 @@ export default function ParkingBlueprintMap({
             <button
               type="button"
               onClick={() => handleZoom(-0.25)}
-              style={{ padding: '6px 10px', border: 'none', background: 'transparent', color: colors.textPrimary, cursor: 'pointer' }}
+              className="parking-blueprint-map-s19" style={{ color: colors.textPrimary }}
               title="Zoom Out"
             >
               <ZoomOut size={15} />
@@ -612,7 +499,7 @@ export default function ParkingBlueprintMap({
             <button
               type="button"
               onClick={resetView}
-              style={{ padding: '6px 10px', border: 'none', background: 'transparent', color: colors.textPrimary, cursor: 'pointer' }}
+              className="parking-blueprint-map-s19" style={{ color: colors.textPrimary }}
               title="Reset View"
             >
               <RotateCcw size={14} />
@@ -622,16 +509,8 @@ export default function ParkingBlueprintMap({
       </div>
 
       {/* ── Quick Zone Focus Bar ── */}
-      <div style={{
-        padding: '8px 16px',
-        background: themeMode === 'architectural' ? '#e2e8f0' : '#06131c',
-        borderBottom: `1px solid ${colors.roadBorder}`,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 6,
-        overflowX: 'auto'
-      }}>
-        <span style={{ fontSize: '0.7rem', fontWeight: 800, color: colors.textSecondary, marginRight: 4, textTransform: 'uppercase' }}>
+      <div className="parking-blueprint-map-s20" style={{ background: themeMode === 'architectural' ? '#e2e8f0' : '#06131c', borderBottom: `1px solid ${colors.roadBorder}` }}>
+        <span className="parking-blueprint-map-s21" style={{ color: colors.textSecondary }}>
           Navigate Zone:
         </span>
         {[
@@ -648,18 +527,7 @@ export default function ParkingBlueprintMap({
               key={z.key}
               type="button"
               onClick={() => focusZone(z.key)}
-              style={{
-                padding: '4px 10px',
-                borderRadius: 20,
-                border: isActive ? `1.5px solid ${z.color || '#0284c7'}` : `1px solid ${colors.roadBorder}`,
-                background: isActive ? '#0284c7' : 'transparent',
-                color: isActive ? '#ffffff' : colors.textSecondary,
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.15s'
-              }}
+              className="parking-blueprint-map-s22" style={{ border: isActive ? `1.5px solid ${z.color || '#0284c7'}` : `1px solid ${colors.roadBorder}`, background: isActive ? '#0284c7' : 'transparent', color: isActive ? '#ffffff' : colors.textSecondary }}
             >
               {z.label}
             </button>
@@ -674,26 +542,12 @@ export default function ParkingBlueprintMap({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        style={{
-          width: '100%',
-          height: '700px',
-          overflow: 'hidden',
-          position: 'relative',
-          background: colors.paperBg,
-          cursor: isDragging ? 'grabbing' : 'grab',
-          userSelect: 'none'
-        }}
+        className="parking-blueprint-map-s23" style={{ background: colors.paperBg, cursor: isDragging ? 'grabbing' : 'grab' }}
       >
         <svg
           ref={svgRef}
           viewBox="0 0 750 1100"
-          style={{
-            width: '100%',
-            height: '100%',
-            transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
-            transformOrigin: 'center center',
-            transition: isDragging ? 'none' : 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)'
-          }}
+          className="parking-blueprint-map-s24" style={{ transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`, transition: isDragging ? 'none' : 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)' }}
         >
           <defs>
             {/* Fine CAD Grid */}
@@ -806,7 +660,7 @@ export default function ParkingBlueprintMap({
           </text>
 
           {/* A Building Footprint */}
-          <g transform="translate(305, 110)" style={{ cursor: 'pointer' }} onClick={() => focusZone('A_BUILDING')}>
+          <g transform="translate(305, 110)" className="parking-blueprint-map-s25" onClick={() => focusZone('A_BUILDING')}>
             <rect x="0" y="0" width="235" height="175" rx="8" fill={colors.buildingA} stroke={colors.buildingABorder} strokeWidth="2" />
             <rect x="15" y="15" width="205" height="145" rx="6" fill="rgba(0,0,0,0.03)" />
             <text x="117" y="85" fill="#92400e" fontSize="18" fontWeight="900" textAnchor="middle">
@@ -833,7 +687,7 @@ export default function ParkingBlueprintMap({
           {/* ══════════════════════════════════════════════════════════════════════
               4. KIDS PLAY AREA, GAJIBO & MP THEATER
              ══════════════════════════════════════════════════════════════════════ */}
-          <g transform="translate(260, 365)" style={{ cursor: 'pointer' }} onClick={() => focusZone('PLAYGROUND')}>
+          <g transform="translate(260, 365)" className="parking-blueprint-map-s25" onClick={() => focusZone('PLAYGROUND')}>
             {/* Gajibo */}
             <g transform="translate(10, 5)">
               <polygon points="25,0 45,15 45,45 25,60 5,45 5,15" fill="#b45309" stroke="#78350f" strokeWidth="1.5" />
@@ -882,7 +736,7 @@ export default function ParkingBlueprintMap({
           </text>
 
           {/* B Building Footprint */}
-          <g transform="translate(280, 500)" style={{ cursor: 'pointer' }} onClick={() => focusZone('B_BUILDING')}>
+          <g transform="translate(280, 500)" className="parking-blueprint-map-s25" onClick={() => focusZone('B_BUILDING')}>
             <rect x="0" y="0" width="330" height="125" rx="8" fill={colors.buildingB} stroke={colors.buildingBBorder} strokeWidth="2" />
             <text x="165" y="65" fill="#92400e" fontSize="18" fontWeight="900" textAnchor="middle">
               B Building
@@ -903,7 +757,7 @@ export default function ParkingBlueprintMap({
           </text>
 
           {/* Club House Footprint */}
-          <g transform="translate(325, 705)" style={{ cursor: 'pointer' }} onClick={() => focusZone('CLUBHOUSE')}>
+          <g transform="translate(325, 705)" className="parking-blueprint-map-s25" onClick={() => focusZone('CLUBHOUSE')}>
             <rect x="0" y="0" width="265" height="90" rx="8" fill={colors.clubhouse} stroke={colors.clubhouseBorder} strokeWidth="2" />
             <text x="132" y="45" fill="#c2410c" fontSize="14" fontWeight="900" textAnchor="middle" letterSpacing="0.06em">
               🏊 CLUB HOUSE
@@ -929,7 +783,7 @@ export default function ParkingBlueprintMap({
           </g>
 
           {/* C Building Footprint */}
-          <g transform="translate(330, 850)" style={{ cursor: 'pointer' }} onClick={() => focusZone('C_BUILDING')}>
+          <g transform="translate(330, 850)" className="parking-blueprint-map-s25" onClick={() => focusZone('C_BUILDING')}>
             <rect x="0" y="0" width="260" height="120" rx="8" fill={colors.buildingC} stroke={colors.buildingCBorder} strokeWidth="2" />
             <text x="130" y="60" fill="#92400e" fontSize="18" fontWeight="900" textAnchor="middle">
               C
@@ -966,7 +820,7 @@ export default function ParkingBlueprintMap({
             return (
               <g
                 key={slotKey}
-                className="interactive-slot-bay"
+                className="interactive-slot-bay parking-blueprint-map-s25"
                 transform={`translate(${slot.x}, ${slot.y})`}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -975,7 +829,6 @@ export default function ParkingBlueprintMap({
                     onSelectSlot(flatItem || { parkingNo: slotKey, parkingType: 'Open Parking (OP)' });
                   }
                 }}
-                style={{ cursor: 'pointer' }}
                 filter={isHighlighted && searchQuery ? 'url(#slotGlow)' : undefined}
               >
                 {/* Bay Floor Plate */}
@@ -1117,36 +970,14 @@ export default function ParkingBlueprintMap({
 
         {/* ── Selected Slot Detail Card Popup ── */}
         {selectedSlotKey && selectedSlotData && (
-          <div style={{
-            position: 'absolute',
-            bottom: 20,
-            left: 20,
-            right: 20,
-            maxWidth: '430px',
-            background: 'rgba(15, 23, 42, 0.96)',
-            backdropFilter: 'blur(14px)',
-            border: '1.5px solid #0284c7',
-            borderRadius: 14,
-            padding: '16px',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.8)',
-            zIndex: 50,
-            animation: 'fadeIn 0.2s ease-out',
-            color: '#f8fafc'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+          <div className="parking-blueprint-map-s26">
+            <div className="parking-blueprint-map-s27">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{
-                    background: '#0284c7',
-                    color: '#ffffff',
-                    padding: '3px 8px',
-                    borderRadius: 6,
-                    fontSize: '0.75rem',
-                    fontWeight: 800
-                  }}>
+                <div className="parking-blueprint-map-s28">
+                  <span className="parking-blueprint-map-s29">
                     {selectedSlotData.label} ({selectedSlotData.id})
                   </span>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#94a3b8' }}>
+                  <span className="parking-blueprint-map-s30">
                     {selectedSlotData.zone}
                   </span>
                 </div>
@@ -1154,104 +985,63 @@ export default function ParkingBlueprintMap({
               <button
                 type="button"
                 onClick={() => setSelectedSlotKey(null)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#94a3b8',
-                  fontSize: '1.2rem',
-                  cursor: 'pointer',
-                  padding: 2
-                }}
+                className="parking-blueprint-map-s31"
               >
                 ✕
               </button>
             </div>
 
             {selectedFlatRecord ? (
-              <div style={{
-                background: 'rgba(6, 78, 59, 0.4)',
-                border: '1px solid #10b981',
-                borderRadius: 10,
-                padding: '10px 12px',
-                marginBottom: 12
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="parking-blueprint-map-s32">
+                <div className="parking-blueprint-map-s33">
                   <div>
-                    <div style={{ fontSize: '0.68rem', color: '#a7f3d0', fontWeight: 800, textTransform: 'uppercase' }}>
+                    <div className="parking-blueprint-map-s34">
                       Allotted Flat
                     </div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#34d399' }}>
+                    <div className="parking-blueprint-map-s35">
                       Flat {selectedFlatRecord.flat}
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.68rem', color: '#a7f3d0', fontWeight: 800, textTransform: 'uppercase' }}>
+                  <div className="parking-blueprint-map-s36">
+                    <div className="parking-blueprint-map-s34">
                       Floor
                     </div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#f8fafc' }}>
+                    <div className="parking-blueprint-map-s37">
                       {selectedFlatRecord.floor}th Floor
                     </div>
                   </div>
                 </div>
 
                 {selectedFlatRecord.remarks && (
-                  <div style={{ marginTop: 8, fontSize: '0.72rem', color: '#cbd5e1', borderTop: '1px dashed rgba(52,211,153,0.3)', paddingTop: 6 }}>
+                  <div className="parking-blueprint-map-s38">
                     <strong>Reference:</strong> {selectedFlatRecord.remarks}
                   </div>
                 )}
 
                 {/* Parked Vehicle Visual Preview */}
-                <div style={{
-                  marginTop: 10,
-                  background: 'rgba(2, 44, 34, 0.6)',
-                  border: '1px solid #059669',
-                  borderRadius: 8,
-                  padding: '8px 12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10
-                }}>
-                  <div style={{
-                    width: 44,
-                    height: 28,
-                    background: 'linear-gradient(180deg, #10b981 0%, #047857 100%)',
-                    borderRadius: 5,
-                    border: '1px solid #34d399',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.1rem',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.4)'
-                  }}>
+                <div className="parking-blueprint-map-s39">
+                  <div className="parking-blueprint-map-s40">
                     🚗
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.74rem', fontWeight: 800, color: '#f8fafc' }}>
+                    <div className="parking-blueprint-map-s41">
                       Designated Parking Bay • {selectedSlotData.label}
                     </div>
-                    <div style={{ fontSize: '0.64rem', color: '#6ee7b7' }}>
+                    <div className="parking-blueprint-map-s42">
                       Allocated to Flat {selectedFlatRecord.flat} (Floor {selectedFlatRecord.floor})
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div style={{
-                background: 'rgba(30, 41, 59, 0.6)',
-                border: '1px dashed #475569',
-                borderRadius: 10,
-                padding: '12px',
-                marginBottom: 12,
-                color: '#94a3b8',
-                fontSize: '0.8rem'
-              }}>
+              <div className="parking-blueprint-map-s43">
                 🅿️ This open parking space is currently unallocated in society records.
               </div>
             )}
 
             {/* Action Buttons */}
             {isAdmin && (
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="parking-blueprint-map-s44">
                 <button
                   type="button"
                   onClick={() => {
@@ -1261,21 +1051,7 @@ export default function ParkingBlueprintMap({
                       onSelectSlot(selectedFlatRecord || { parkingNo: selectedSlotKey, parkingType: 'Open Parking' });
                     }
                   }}
-                  style={{
-                    flex: 1,
-                    padding: '8px 12px',
-                    borderRadius: 8,
-                    border: 'none',
-                    background: '#0284c7',
-                    color: '#ffffff',
-                    fontSize: '0.78rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 6
-                  }}
+                  className="parking-blueprint-map-s45"
                 >
                   <Edit3 size={14} />
                   {selectedFlatRecord ? 'Edit Slot / Flat Assignment' : 'Assign this Bay to Flat'}
@@ -1287,37 +1063,27 @@ export default function ParkingBlueprintMap({
       </div>
 
       {/* ── Footer Legend Bar ── */}
-      <div style={{
-        padding: '12px 20px',
-        background: themeMode === 'architectural' ? '#ffffff' : '#071620',
-        borderTop: `1px solid ${colors.roadBorder}`,
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 12,
-        fontSize: '0.72rem'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <span style={{ fontWeight: 800, color: colors.textSecondary }}>LEGEND:</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ width: 12, height: 12, borderRadius: 3, background: '#059669', border: '1px solid #34d399' }} />
+      <div className="parking-blueprint-map-s46" style={{ background: themeMode === 'architectural' ? '#ffffff' : '#071620', borderTop: `1px solid ${colors.roadBorder}` }}>
+        <div className="parking-blueprint-map-s47">
+          <span className="parking-blueprint-map-s48" style={{ color: colors.textSecondary }}>LEGEND:</span>
+          <div className="parking-blueprint-map-s28">
+            <span className="parking-blueprint-map-s49" />
             <span>Allotted Space (Flat Assigned)</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ width: 12, height: 12, borderRadius: 3, background: colors.slotVacant, border: `1px dashed ${colors.roadBorder}` }} />
+          <div className="parking-blueprint-map-s28">
+            <span className="parking-blueprint-map-s50" style={{ background: colors.slotVacant, border: `1px dashed ${colors.roadBorder}` }} />
             <span>Available Open Bay</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ color: '#d97706', fontWeight: 800 }}>SH-1 to SH-8:</span>
+          <div className="parking-blueprint-map-s28">
+            <span className="parking-blueprint-map-s51">SH-1 to SH-8:</span>
             <span style={{ color: colors.textSecondary }}>Outside Shops</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ color: '#dc2626', fontWeight: 800 }}>⚡ DG:</span>
+          <div className="parking-blueprint-map-s28">
+            <span className="parking-blueprint-map-s52">⚡ DG:</span>
             <span style={{ color: colors.textSecondary }}>Bottom-Right Corner</span>
           </div>
         </div>
-        <div style={{ color: colors.textSecondary, fontStyle: 'italic' }}>
+        <div className="parking-blueprint-map-s53" style={{ color: colors.textSecondary }}>
           Drag to Pan • Click any Bay (OP 1–61) to View Flat
         </div>
       </div>

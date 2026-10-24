@@ -16,6 +16,7 @@ export default [
       '*.json',
       '*.mjs',
       '*.cjs',
+      'scripts/**',
       'functions/**',
       'check_*.js',
       'find_both.js',

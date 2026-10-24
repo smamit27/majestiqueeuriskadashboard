@@ -1,0 +1,13 @@
+/**
+ * AtomicSearchBar.css
+ * Extracted styles from AtomicSearchBar.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.atomic-search-bar-s1 {
+  margin-left: 12px;
+  font-size: 0.78rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+

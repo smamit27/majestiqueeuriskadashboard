@@ -1,4 +1,6 @@
 import React from 'react';
+import './AtomicFilterPills.css';
+
 
 /**
  * AtomicFilterPills Molecule
@@ -30,14 +32,7 @@ export default function AtomicFilterPills({
           >
             <span>{label}</span>
             {count !== undefined && (
-              <span style={{
-                fontSize: '0.7rem',
-                padding: '1px 6px',
-                borderRadius: '10px',
-                background: isSelected ? 'rgba(13,148,136,0.18)' : '#e2e8f0',
-                color: isSelected ? '#0f766e' : '#64748b',
-                fontWeight: 700
-              }}>
+              <span className="atomic-filter-pills-s1" style={{ background: isSelected ? 'rgba(13,148,136,0.18)' : '#e2e8f0', color: isSelected ? '#0f766e' : '#64748b' }}>
                 {count}
               </span>
             )}

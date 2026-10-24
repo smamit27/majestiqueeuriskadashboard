@@ -6,6 +6,8 @@ import LiquidGlassCard from '../liquid-glass/LiquidGlassCard.jsx';
 import ParkingBlueprintMap from './ParkingBlueprintMap.jsx';
 import Parking3DView from './Parking3DView.jsx';
 import PendingParkingSlotsCard from './PendingParkingSlotsCard.jsx';
+import './ParkingAllotmentTracker.css';
+
 
 const PARKING_DOC_ID = 'a_wing_parking_v3';
 const PARKING_COLLECTION = 'parkingAllotments';
@@ -367,60 +369,26 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
   }, [parkingRecords]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div className="parking-allotment-tracker-s1">
       {/* ── Top Liquid Glass Hero Banner ── */}
       <LiquidGlassCard
         variant="operations"
-        style={{
-          background: 'linear-gradient(135deg, rgba(11, 43, 38, 0.94) 0%, rgba(15, 60, 52, 0.88) 50%, rgba(22, 78, 99, 0.94) 100%)',
-          borderRadius: 24,
-          padding: '26px 30px',
-          color: '#ffffff',
-          boxShadow: '0 16px 40px rgba(11, 43, 38, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.12) inset',
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: 20,
-          position: 'relative',
-          overflow: 'hidden'
-        }}
+        className="parking-allotment-tracker-s2"
       >
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 520 }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            background: 'rgba(254, 240, 138, 0.14)',
-            border: '1px solid rgba(254, 240, 138, 0.35)',
-            color: '#fef08a',
-            padding: '5px 12px',
-            borderRadius: 20,
-            fontSize: '0.73rem',
-            fontWeight: 800,
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            marginBottom: 10,
-            backdropFilter: 'blur(8px)'
-          }}>
+        <div className="parking-allotment-tracker-s3">
+          <div className="parking-allotment-tracker-s4">
             🏢 Building "A" • Parking Allotment
           </div>
-          <h2 style={{
-            margin: '0 0 8px',
-            fontSize: '1.65rem',
-            fontWeight: 900,
-            letterSpacing: '-0.025em',
-            textShadow: '0 2px 10px rgba(0,0,0,0.3)'
-          }}>
+          <h2 className="parking-allotment-tracker-s5">
             Parking Allotment Roster
           </h2>
-          <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.82)', fontSize: '0.88rem', lineHeight: 1.5 }}>
+          <p className="parking-allotment-tracker-s6">
             Official records for flats <strong>A-101 to A-1108</strong> (88 units), with Open Parking allocations (OP-01 to OP-60) and Covered Parking.
           </p>
         </div>
 
         {/* ── KPI Metric Cards in Banner ── */}
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', zIndex: 1 }}>
+        <div className="parking-allotment-tracker-s7">
           {[
             { label: 'Total Flats', value: stats.totalFlats, sub: 'Flats A-101 to A-1108', bg: 'rgba(255, 255, 255, 0.10)', color: '#ffffff' },
             { label: 'Pending Details', value: stats.pendingCount, sub: `${stats.pendingCount} Covered Flats Pending`, bg: 'rgba(244, 63, 94, 0.22)', color: '#fda4af', action: () => { setStatusFilter('Pending'); setViewMode('pending-card'); } },
@@ -431,18 +399,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
             <div
               key={stat.label}
               onClick={stat.action || undefined}
-              style={{
-                background: stat.bg,
-                backdropFilter: 'blur(14px)',
-                border: '1px solid rgba(255, 255, 255, 0.22)',
-                borderRadius: 16,
-                padding: '12px 18px',
-                minWidth: 108,
-                textAlign: 'center',
-                cursor: stat.action ? 'pointer' : 'default',
-                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)',
-                transition: 'all 0.18s ease'
-              }}
+              className="parking-allotment-tracker-s8" style={{ background: stat.bg, cursor: stat.action ? 'pointer' : 'default' }}
               onMouseEnter={e => {
                 if (stat.action) {
                   e.currentTarget.style.transform = 'translateY(-3px)';
@@ -456,13 +413,13 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                 }
               }}
             >
-              <div style={{ fontSize: '1.4rem', fontWeight: 900, color: stat.color, lineHeight: 1, fontFamily: 'monospace' }}>
+              <div className="parking-allotment-tracker-s9" style={{ color: stat.color }}>
                 {stat.value}
               </div>
-              <div style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#ffffff', marginTop: 5 }}>
+              <div className="parking-allotment-tracker-s10">
                 {stat.label}
               </div>
-              <div style={{ fontSize: '0.64rem', color: 'rgba(255, 255, 255, 0.72)', marginTop: 2 }}>
+              <div className="parking-allotment-tracker-s11">
                 {stat.sub}
               </div>
             </div>
@@ -473,68 +430,29 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
       {/* ── Frosted Controls & Filter Toolbar ── */}
       <LiquidGlassCard
         variant="default"
-        style={{
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(248, 250, 252, 0.76) 100%)',
-          backdropFilter: 'blur(18px) saturate(180%)',
-          border: '1px solid rgba(226, 232, 240, 0.85)',
-          borderRadius: 20,
-          padding: '16px 22px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 12,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.04)'
-        }}
+        className="parking-allotment-tracker-s12"
       >
         {/* Search */}
-        <div style={{ position: 'relative', flex: '1 1 240px', minWidth: 200 }}>
-          <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', opacity: 0.5, fontSize: '0.95rem', pointerEvents: 'none' }}>🔍</span>
+        <div className="parking-allotment-tracker-s13">
+          <span className="parking-allotment-tracker-s14">🔍</span>
           <input
             type="search"
             placeholder="Search flat (e.g. A-102, 501), slot (OP-39)..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            style={{
-              width: '100%',
-              paddingLeft: 36,
-              paddingRight: 12,
-              paddingTop: 8,
-              paddingBottom: 8,
-              borderRadius: 12,
-              border: '1.5px solid rgba(203, 213, 225, 0.9)',
-              background: 'rgba(255, 255, 255, 0.9)',
-              fontSize: '0.85rem',
-              color: '#0f172a',
-              outline: 'none',
-              boxSizing: 'border-box',
-              fontFamily: 'inherit',
-              backdropFilter: 'blur(8px)',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.02)'
-            }}
+            className="parking-allotment-tracker-s15"
           />
         </div>
 
         {/* Floor selector */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <div className="parking-allotment-tracker-s16">
+          <span className="parking-allotment-tracker-s17">
             Floor:
           </span>
           <select
             value={floorFilter}
             onChange={e => setFloorFilter(e.target.value)}
-            style={{
-              padding: '7px 12px',
-              borderRadius: 10,
-              border: '1.5px solid rgba(203, 213, 225, 0.9)',
-              background: '#ffffff',
-              fontSize: '0.82rem',
-              fontWeight: 700,
-              color: '#0f172a',
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.02)'
-            }}
+            className="parking-allotment-tracker-s18"
           >
             <option value="All">All Floors (1 to 11)</option>
             {Array.from({ length: 11 }, (_, i) => i + 1).map(f => (
@@ -544,7 +462,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
         </div>
 
         {/* Status / Slot filter chips */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="parking-allotment-tracker-s19">
           {[
             { id: 'All', label: 'All Flats' },
             { id: 'Pending', label: `🚗 Pending Slot Details (${stats.pendingCount})`, isSpecial: true },
@@ -557,29 +475,15 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
               <button
                 key={s.id}
                 onClick={() => setStatusFilter(s.id)}
-                style={{
-                  padding: '6px 14px',
-                  borderRadius: 20,
-                  border: s.isSpecial ? '2px solid' : '1.5px solid',
-                  fontSize: '0.75rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  background: active 
+                className="parking-allotment-tracker-s20" style={{ border: s.isSpecial ? '2px solid' : '1.5px solid', background: active 
                     ? (s.isSpecial ? 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)' : 'linear-gradient(135deg, #0b2b26 0%, #164e63 100%)') 
-                    : (s.isSpecial ? 'rgba(225, 29, 72, 0.08)' : 'rgba(255, 255, 255, 0.6)'),
-                  color: active 
+                    : (s.isSpecial ? 'rgba(225, 29, 72, 0.08)' : 'rgba(255, 255, 255, 0.6)'), color: active 
                     ? '#ffffff' 
-                    : (s.isSpecial ? '#be123c' : '#475569'),
-                  borderColor: active 
+                    : (s.isSpecial ? '#be123c' : '#475569'), borderColor: active 
                     ? 'transparent' 
-                    : (s.isSpecial ? 'rgba(225, 29, 72, 0.4)' : 'rgba(203, 213, 225, 0.9)'),
-                  boxShadow: active 
+                    : (s.isSpecial ? 'rgba(225, 29, 72, 0.4)' : 'rgba(203, 213, 225, 0.9)'), boxShadow: active 
                     ? (s.isSpecial ? '0 4px 12px rgba(225, 29, 72, 0.35)' : '0 4px 12px rgba(11, 43, 38, 0.25)') 
-                    : 'none',
-                  backdropFilter: 'blur(8px)',
-                  transition: 'all 0.15s ease'
-                }}
+                    : 'none' }}
               >
                 {s.label}
               </button>
@@ -588,15 +492,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
         </div>
 
         {/* View mode switcher */}
-        <div style={{
-          display: 'flex',
-          background: 'rgba(226, 232, 240, 0.65)',
-          padding: 4,
-          borderRadius: 14,
-          gap: 3,
-          flexWrap: 'wrap',
-          backdropFilter: 'blur(10px)'
-        }}>
+        <div className="parking-allotment-tracker-s21">
           {[
             { mode: 'table', icon: '📋', label: 'Table' },
             { mode: 'pending-card', icon: '📜', label: 'Pending Slots Card & Notice' },
@@ -608,19 +504,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
             <button
               key={v.mode}
               onClick={() => setViewMode(v.mode)}
-              style={{
-                padding: '6px 12px',
-                borderRadius: 10,
-                border: 'none',
-                fontSize: '0.76rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                background: viewMode === v.mode ? '#ffffff' : 'transparent',
-                color: viewMode === v.mode ? '#0b2b26' : '#64748b',
-                boxShadow: viewMode === v.mode ? '0 2px 8px rgba(0, 0, 0, 0.1)' : 'none',
-                transition: 'all 0.15s ease'
-              }}
+              className="parking-allotment-tracker-s22" style={{ background: viewMode === v.mode ? '#ffffff' : 'transparent', color: viewMode === v.mode ? '#0b2b26' : '#64748b', boxShadow: viewMode === v.mode ? '0 2px 8px rgba(0, 0, 0, 0.1)' : 'none' }}
             >
               {v.icon} {v.label}
             </button>
@@ -628,76 +512,33 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
         </div>
 
         {/* Action Buttons: Export CSV & Print PDF & Download Layouts */}
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', position: 'relative' }}>
+        <div className="parking-allotment-tracker-s23">
           {/* Download Layouts Dropdown */}
-          <div style={{ position: 'relative' }}>
+          <div className="parking-allotment-tracker-s24">
             <button
               onClick={() => setIsGlobalDownloadOpen(!isGlobalDownloadOpen)}
-              style={{
-                padding: '7px 14px',
-                borderRadius: 10,
-                border: '1.5px solid rgba(2, 132, 199, 0.4)',
-                background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-                color: '#ffffff',
-                fontWeight: 800,
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                fontFamily: 'inherit',
-                boxShadow: '0 4px 12px rgba(2, 132, 199, 0.28)',
-                transition: 'all 0.15s ease'
-              }}
+              className="parking-allotment-tracker-s25"
               title="Download 2D and 3D Parking Layouts"
             >
               📥 Download Layouts ▾
             </button>
 
             {isGlobalDownloadOpen && (
-              <div style={{
-                position: 'absolute',
-                top: '115%',
-                right: 0,
-                background: 'rgba(15, 23, 42, 0.95)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(71, 85, 105, 0.6)',
-                borderRadius: 14,
-                padding: 6,
-                boxShadow: '0 16px 36px rgba(0, 0, 0, 0.5)',
-                zIndex: 70,
-                minWidth: '250px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 4
-              }}>
+              <div className="parking-allotment-tracker-s26">
                 <button
                   type="button"
                   onClick={() => {
                     setViewMode('pending-card');
                     setIsGlobalDownloadOpen(false);
                   }}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 8,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.76rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left'
-                  }}
+                  className="parking-allotment-tracker-s27"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <span style={{ fontSize: '1.1rem' }}>🚗</span>
+                  <span className="parking-allotment-tracker-s28">🚗</span>
                   <div>
                     <div>Pending Slots Card (PNG Image)</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>3-Column High-Res Graphic</div>
+                    <div className="parking-allotment-tracker-s29">3-Column High-Res Graphic</div>
                   </div>
                 </button>
 
@@ -707,27 +548,14 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                     setViewMode('2d');
                     setIsGlobalDownloadOpen(false);
                   }}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 8,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.76rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left'
-                  }}
+                  className="parking-allotment-tracker-s27"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <span style={{ fontSize: '1.1rem' }}>🗺️</span>
+                  <span className="parking-allotment-tracker-s28">🗺️</span>
                   <div>
                     <div>2D Layout (PNG / SVG)</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Vector CAD & High-Res Image</div>
+                    <div className="parking-allotment-tracker-s29">Vector CAD & High-Res Image</div>
                   </div>
                 </button>
 
@@ -737,27 +565,14 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                     setViewMode('3d');
                     setIsGlobalDownloadOpen(false);
                   }}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 8,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.76rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left'
-                  }}
+                  className="parking-allotment-tracker-s27"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <span style={{ fontSize: '1.1rem' }}>🏙️</span>
+                  <span className="parking-allotment-tracker-s28">🏙️</span>
                   <div>
                     <div>3D Layout Poster & JSON</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Architectural 3D Presentation</div>
+                    <div className="parking-allotment-tracker-s29">Architectural 3D Presentation</div>
                   </div>
                 </button>
 
@@ -770,28 +585,14 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                     link.click();
                     setIsGlobalDownloadOpen(false);
                   }}
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: 8,
-                    border: 'none',
-                    background: 'transparent',
-                    color: '#f8fafc',
-                    fontSize: '0.76rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    textAlign: 'left',
-                    borderTop: '1px solid #1e293b'
-                  }}
+                  className="parking-allotment-tracker-s30"
                   onMouseEnter={e => { e.currentTarget.style.background = '#1e293b'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <span style={{ fontSize: '1.1rem' }}>📄</span>
+                  <span className="parking-allotment-tracker-s28">📄</span>
                   <div>
                     <div>Master Builder Blueprint (JPG)</div>
-                    <div style={{ fontSize: '0.62rem', color: '#94a3b8' }}>Official Reference Image</div>
+                    <div className="parking-allotment-tracker-s29">Official Reference Image</div>
                   </div>
                 </button>
               </div>
@@ -800,52 +601,20 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
 
           <button
             onClick={handleExportCSV}
-            style={{
-              padding: '7px 14px',
-              borderRadius: 10,
-              border: '1.5px solid rgba(203, 213, 225, 0.9)',
-              background: 'rgba(255, 255, 255, 0.9)',
-              color: '#0f172a',
-              fontWeight: 800,
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              fontFamily: 'inherit',
-              backdropFilter: 'blur(8px)',
-              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
-              transition: 'all 0.15s ease'
-            }}
+            className="parking-allotment-tracker-s31"
             title="Export full roster to CSV"
           >
             📥 Export CSV
           </button>
           <button
             onClick={handleExportPDF}
-            style={{
-              padding: '7px 14px',
-              borderRadius: 10,
-              border: '1.5px solid rgba(203, 213, 225, 0.9)',
-              background: 'rgba(255, 255, 255, 0.9)',
-              color: '#0f172a',
-              fontWeight: 800,
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              fontFamily: 'inherit',
-              backdropFilter: 'blur(8px)',
-              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
-              transition: 'all 0.15s ease'
-            }}
+            className="parking-allotment-tracker-s31"
             title="Print or export formatted PDF"
           >
             📄 Print PDF
           </button>
           {saveStatus && (
-            <span style={{ fontSize: '0.78rem', color: saveStatus.includes('✓') ? '#065f46' : '#991b1b', fontWeight: 700 }}>
+            <span className="parking-allotment-tracker-s32" style={{ color: saveStatus.includes('✓') ? '#065f46' : '#991b1b' }}>
               {saveStatus}
             </span>
           )}
@@ -856,35 +625,17 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
       {viewMode === 'table' && (
         <LiquidGlassCard
           variant="default"
-          style={{
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(248, 250, 252, 0.82) 100%)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-            border: '1px solid rgba(226, 232, 240, 0.85)',
-            borderRadius: 22,
-            boxShadow: '0 12px 36px rgba(0, 0, 0, 0.05)',
-            overflow: 'hidden',
-            padding: 0
-          }}
+          className="parking-allotment-tracker-s33"
         >
           {statusFilter === 'Pending' && (
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 12,
-              padding: '14px 24px',
-              background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(30, 58, 138, 0.08) 100%)',
-              borderBottom: '1.5px solid rgba(244, 63, 94, 0.22)',
-              backdropFilter: 'blur(10px)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ fontSize: '1.35rem' }}>🚗</span>
+            <div className="parking-allotment-tracker-s34">
+              <div className="parking-allotment-tracker-s35">
+                <span className="parking-allotment-tracker-s36">🚗</span>
                 <div>
-                  <div style={{ fontWeight: 900, fontSize: '0.94rem', color: '#0f2952' }}>
+                  <div className="parking-allotment-tracker-s37">
                     Flats with Pending Parking Slot Details ({filteredRecords.length} Flats)
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                  <div className="parking-allotment-tracker-s38">
                     Flats awaiting covered/open parking allocation records
                   </div>
                 </div>
@@ -892,22 +643,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
               <button
                 type="button"
                 onClick={() => setViewMode('pending-card')}
-                style={{
-                  padding: '8px 18px',
-                  borderRadius: 12,
-                  border: 'none',
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%)',
-                  color: '#ffffff',
-                  fontWeight: 800,
-                  fontSize: '0.82rem',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  fontFamily: 'inherit',
-                  boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)',
-                  transition: 'transform 0.15s ease'
-                }}
+                className="parking-allotment-tracker-s39"
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
               >
@@ -916,13 +652,10 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
             </div>
           )}
 
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 650 }}>
+          <div className="parking-allotment-tracker-s40">
+            <table className="parking-allotment-tracker-s41">
               <thead>
-                <tr style={{
-                  background: 'linear-gradient(180deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.7) 100%)',
-                  backdropFilter: 'blur(12px)'
-                }}>
+                <tr className="parking-allotment-tracker-s42">
                   {[
                     { label: '#', w: 40 },
                     { label: 'Flat No', w: 110 },
@@ -932,17 +665,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                     { label: 'Remarks / Record Reference', w: 280 },
                     ...(isAdmin ? [{ label: 'Actions', w: 80 }] : []),
                   ].map(col => (
-                    <th key={col.label} style={{
-                      padding: '12px 16px',
-                      textAlign: col.label === '#' || col.label === 'Floor' || col.label === 'Parking Slot' ? 'center' : 'left',
-                      fontSize: '0.72rem',
-                      fontWeight: 800,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.07em',
-                      color: '#475569',
-                      borderBottom: '1.5px solid rgba(203, 213, 225, 0.8)',
-                      minWidth: col.w
-                    }}>
+                    <th key={col.label} className="parking-allotment-tracker-s43" style={{ textAlign: col.label === '#' || col.label === 'Floor' || col.label === 'Parking Slot' ? 'center' : 'left', minWidth: col.w }}>
                       {col.label}
                     </th>
                   ))}
@@ -952,16 +675,16 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                      <div style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 600 }}>
+                    <td colSpan={isAdmin ? 7 : 6} className="parking-allotment-tracker-s44">
+                      <div className="parking-allotment-tracker-s45">
                         ⏳ Loading parking allotments...
                       </div>
                     </td>
                   </tr>
                 ) : filteredRecords.length === 0 ? (
                   <tr>
-                    <td colSpan={isAdmin ? 7 : 6} style={{ textAlign: 'center', padding: '60px 20px' }}>
-                      <div style={{ color: '#64748b', fontSize: '0.92rem', fontWeight: 600 }}>
+                    <td colSpan={isAdmin ? 7 : 6} className="parking-allotment-tracker-s44">
+                      <div className="parking-allotment-tracker-s46">
                         🔍 No matching flats or parking records found.
                       </div>
                     </td>
@@ -979,96 +702,52 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                     return (
                       <tr
                         key={item.flat}
-                        style={{
-                          borderBottom: '1px solid rgba(226, 232, 240, 0.7)',
-                          background: rowBg,
-                          transition: 'background 0.15s ease'
-                        }}
+                        className="parking-allotment-tracker-s47" style={{ background: rowBg }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(241, 245, 249, 0.85)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = rowBg; }}
                       >
-                        <td style={{ padding: '11px 16px', textAlign: 'center', fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700 }}>
+                        <td className="parking-allotment-tracker-s48">
                           {idx + 1}
                         </td>
 
-                        <td style={{ padding: '11px 16px' }}>
-                          <span style={{
-                            display: 'inline-block',
-                            fontSize: '0.88rem',
-                            fontWeight: 900,
-                            color: '#0f2952',
-                            fontFamily: 'monospace',
-                            letterSpacing: '0.04em'
-                          }}>
+                        <td className="parking-allotment-tracker-s49">
+                          <span className="parking-allotment-tracker-s50">
                             {item.flat}
                           </span>
                         </td>
 
-                        <td style={{ padding: '11px 16px', textAlign: 'center', fontSize: '0.82rem', color: '#475569', fontWeight: 700 }}>
+                        <td className="parking-allotment-tracker-s51">
                           {item.floor}
                         </td>
 
-                        <td style={{ padding: '11px 16px', textAlign: 'center' }}>
+                        <td className="parking-allotment-tracker-s52">
                           {item.parkingNo ? (
-                            <span style={{
-                              display: 'inline-block',
-                              background: 'linear-gradient(135deg, #0b2b26 0%, #164e63 100%)',
-                              color: '#fef08a',
-                              fontWeight: 900,
-                              fontSize: '0.82rem',
-                              padding: '4px 12px',
-                              borderRadius: 8,
-                              fontFamily: 'monospace',
-                              letterSpacing: '0.05em',
-                              boxShadow: '0 2px 8px rgba(11, 43, 38, 0.25)',
-                              border: '1px solid rgba(254, 240, 138, 0.3)'
-                            }}>
+                            <span className="parking-allotment-tracker-s53">
                               {item.parkingNo}
                             </span>
                           ) : (
-                            <span style={{ color: '#94a3b8', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                            <span className="parking-allotment-tracker-s54">
                               —
                             </span>
                           )}
                         </td>
 
-                        <td style={{ padding: '11px 16px' }}>
-                          <span style={{
-                            display: 'inline-block',
-                            fontSize: '0.74rem',
-                            fontWeight: 800,
-                            padding: '3px 10px',
-                            borderRadius: 14,
-                            background: STATUS_CONFIG[item.status]?.bg || '#f1f5f9',
-                            color: STATUS_CONFIG[item.status]?.color || '#475569',
-                            border: `1px solid ${STATUS_CONFIG[item.status]?.border || '#cbd5e1'}`
-                          }}>
+                        <td className="parking-allotment-tracker-s49">
+                          <span className="parking-allotment-tracker-s55" style={{ background: STATUS_CONFIG[item.status]?.bg || '#f1f5f9', color: STATUS_CONFIG[item.status]?.color || '#475569', border: `1px solid ${STATUS_CONFIG[item.status]?.border || '#cbd5e1'}` }}>
                             {item.parkingType || (item.status === 'Covered' ? 'Covered Parking' : item.status)}
                           </span>
                         </td>
 
-                        <td style={{ padding: '11px 16px', fontSize: '0.76rem', color: '#475569', maxWidth: 280 }}>
+                        <td className="parking-allotment-tracker-s56">
                           {item.remarks || '—'}
                         </td>
 
                         {isAdmin && (
-                          <td style={{ padding: '11px 16px', whiteSpace: 'nowrap' }}>
+                          <td className="parking-allotment-tracker-s57">
                             <button
                               onClick={() => setEditingFlat(item)}
                               title="Edit Allotment"
-                              style={{
-                                padding: '4px 11px',
-                                borderRadius: 8,
-                                border: '1px solid #cbd5e1',
-                                background: '#ffffff',
-                                cursor: 'pointer',
-                                fontSize: '0.76rem',
-                                fontWeight: 700,
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 4,
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
-                              }}
+                              className="parking-allotment-tracker-s58"
                             >
                               ✏️ Edit
                             </button>
@@ -1083,25 +762,13 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
           </div>
 
           {/* Table summary footer */}
-          <div style={{
-            padding: '14px 22px',
-            borderTop: '1.5px solid rgba(226, 232, 240, 0.85)',
-            background: 'linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 0.8) 100%)',
-            backdropFilter: 'blur(10px)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: '0.78rem',
-            color: '#64748b',
-            flexWrap: 'wrap',
-            gap: 12
-          }}>
+          <div className="parking-allotment-tracker-s59">
             <div>
               Showing <strong>{filteredRecords.length}</strong> of <strong>{parkingRecords.length}</strong> flats in Wing A (A-101 to A-1108)
             </div>
-            <div style={{ display: 'flex', gap: 18, alignItems: 'center' }}>
-              <span>Open Parking: <strong style={{ color: '#065f46', fontFamily: 'monospace', fontSize: '0.88rem' }}>{filteredRecords.filter(p => p.status === 'Allotted').length}</strong></span>
-              <span>Covered Parking: <strong style={{ color: '#1e40af', fontFamily: 'monospace', fontSize: '0.88rem' }}>{filteredRecords.filter(p => p.status === 'Covered').length}</strong></span>
+            <div className="parking-allotment-tracker-s60">
+              <span>Open Parking: <strong className="parking-allotment-tracker-s61">{filteredRecords.filter(p => p.status === 'Allotted').length}</strong></span>
+              <span>Covered Parking: <strong className="parking-allotment-tracker-s62">{filteredRecords.filter(p => p.status === 'Covered').length}</strong></span>
             </div>
           </div>
         </LiquidGlassCard>
@@ -1170,41 +837,30 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
       {viewMode === 'grid' && (
         <LiquidGlassCard
           variant="default"
-          style={{
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(248, 250, 252, 0.82) 100%)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-            border: '1px solid rgba(226, 232, 240, 0.85)',
-            borderRadius: 22,
-            padding: '24px 28px',
-            boxShadow: '0 12px 36px rgba(0, 0, 0, 0.05)'
-          }}
+          className="parking-allotment-tracker-s63"
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+          <div className="parking-allotment-tracker-s64">
             <div>
-              <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900, color: '#0f2952' }}>
+              <h3 className="parking-allotment-tracker-s65">
                 🚗 Open Parking Layout Matrix (OP-01 to OP-60)
               </h3>
-              <p style={{ margin: '4px 0 0', fontSize: '0.82rem', color: '#64748b' }}>
+              <p className="parking-allotment-tracker-s66">
                 Interactive visual bays. Green bays are officially allotted to A-Wing flats; grey bays are available/unallocated.
               </p>
             </div>
-            <div style={{ display: 'flex', gap: 14, alignItems: 'center', fontSize: '0.78rem', fontWeight: 800 }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 14, height: 14, borderRadius: 4, background: 'linear-gradient(135deg, #0b2b26 0%, #164e63 100%)', border: '1px solid #fef08a', boxShadow: '0 2px 6px rgba(11,43,38,0.3)' }} />
+            <div className="parking-allotment-tracker-s67">
+              <span className="parking-allotment-tracker-s68">
+                <span className="parking-allotment-tracker-s69" />
                 Occupied ({stats.occupiedOpSlots})
               </span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 14, height: 14, borderRadius: 4, background: 'rgba(241, 245, 249, 0.8)', border: '1.5px dashed #94a3b8' }} />
+              <span className="parking-allotment-tracker-s68">
+                <span className="parking-allotment-tracker-s70" />
                 Available ({stats.vacantOpSlots})
               </span>
             </div>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(115px, 1fr))',
-            gap: 12
-          }}>
+          <div className="parking-allotment-tracker-s71">
             {OPEN_PARKING_SLOTS.map(slotId => {
               const flatItem = stats.occupiedSlotMap[slotId];
               const isOccupied = Boolean(flatItem);
@@ -1213,21 +869,9 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                 <div
                   key={slotId}
                   onClick={() => setSelectedSlotForDetail({ slotId, flatItem })}
-                  style={{
-                    borderRadius: 14,
-                    padding: '12px 10px',
-                    border: isOccupied ? '1.5px solid rgba(16, 185, 129, 0.4)' : '1.5px dashed rgba(203, 213, 225, 0.9)',
-                    background: isOccupied
+                  className="parking-allotment-tracker-s72" style={{ border: isOccupied ? '1.5px solid rgba(16, 185, 129, 0.4)' : '1.5px dashed rgba(203, 213, 225, 0.9)', background: isOccupied
                       ? 'linear-gradient(135deg, rgba(11, 43, 38, 0.95) 0%, rgba(22, 78, 99, 0.95) 100%)'
-                      : 'rgba(255, 255, 255, 0.65)',
-                    color: isOccupied ? '#ffffff' : '#64748b',
-                    cursor: 'pointer',
-                    transition: 'all 0.18s ease',
-                    boxShadow: isOccupied ? '0 6px 18px rgba(11, 43, 38, 0.22)' : 'none',
-                    backdropFilter: 'blur(8px)',
-                    position: 'relative',
-                    textAlign: 'center'
-                  }}
+                      : 'rgba(255, 255, 255, 0.65)', color: isOccupied ? '#ffffff' : '#64748b', boxShadow: isOccupied ? '0 6px 18px rgba(11, 43, 38, 0.22)' : 'none' }}
                   onMouseEnter={e => {
                     e.currentTarget.style.transform = 'translateY(-3px)';
                     if (isOccupied) e.currentTarget.style.boxShadow = '0 10px 24px rgba(11, 43, 38, 0.35)';
@@ -1237,40 +881,24 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                     if (isOccupied) e.currentTarget.style.boxShadow = '0 6px 18px rgba(11, 43, 38, 0.22)';
                   }}
                 >
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: 6
-                  }}>
-                    <span style={{
-                      fontFamily: 'monospace',
-                      fontWeight: 800,
-                      fontSize: '0.88rem',
-                      color: isOccupied ? '#fef08a' : '#475569'
-                    }}>
+                  <div className="parking-allotment-tracker-s73">
+                    <span className="parking-allotment-tracker-s74" style={{ color: isOccupied ? '#fef08a' : '#475569' }}>
                       {slotId}
                     </span>
-                    <span style={{ fontSize: '0.8rem' }}>
+                    <span className="parking-allotment-tracker-s75">
                       {isOccupied ? '🚘' : '🅿️'}
                     </span>
                   </div>
 
                   {isOccupied ? (
                     <div>
-                      <div style={{
-                        fontSize: '0.92rem',
-                        fontWeight: 800,
-                        color: '#6ee7b7',
-                        letterSpacing: '0.02em',
-                        marginTop: 4
-                      }}>
+                      <div className="parking-allotment-tracker-s76">
                         {flatItem.flat}
                       </div>
                     </div>
                   ) : (
                     <div>
-                      <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#94a3b8' }}>
+                      <div className="parking-allotment-tracker-s77">
                         Available
                       </div>
                     </div>
@@ -1284,7 +912,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
 
       {/* ── Floor-by-Floor Matrix View ── */}
       {viewMode === 'floors' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="parking-allotment-tracker-s78">
           {Array.from({ length: 11 }, (_, i) => 11 - i).map(floorNum => {
             const flatsOnFloor = floorGroups[floorNum] || [];
             const floorAllotted = flatsOnFloor.filter(p => p.status === 'Allotted').length;
@@ -1293,48 +921,24 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
             return (
               <div
                 key={floorNum}
-                style={{
-                  background: '#fffefb',
-                  border: '1px solid rgba(61,63,52,0.12)',
-                  borderRadius: 16,
-                  padding: '16px 20px',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
-                }}
+                className="parking-allotment-tracker-s79"
               >
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: 12,
-                  borderBottom: '1px solid rgba(61,63,52,0.08)',
-                  paddingBottom: 8
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{
-                      background: '#0b2b26',
-                      color: '#C49B4F',
-                      fontWeight: 800,
-                      fontSize: '0.8rem',
-                      padding: '3px 10px',
-                      borderRadius: 8
-                    }}>
+                <div className="parking-allotment-tracker-s80">
+                  <div className="parking-allotment-tracker-s81">
+                    <span className="parking-allotment-tracker-s82">
                       Floor {floorNum}
                     </span>
-                    <span style={{ fontWeight: 700, fontSize: '0.92rem', color: '#1d2a24' }}>
+                    <span className="parking-allotment-tracker-s83">
                       Flats A-{floorNum}01 to A-{floorNum}08
                     </span>
                   </div>
-                  <div style={{ fontSize: '0.78rem', color: '#5f665f', display: 'flex', gap: 12 }}>
-                    <span>Open: <strong style={{ color: '#065f46' }}>{floorAllotted}</strong></span>
-                    <span>Covered: <strong style={{ color: '#1e40af' }}>{floorCovered}</strong></span>
+                  <div className="parking-allotment-tracker-s84">
+                    <span>Open: <strong className="parking-allotment-tracker-s85">{floorAllotted}</strong></span>
+                    <span>Covered: <strong className="parking-allotment-tracker-s86">{floorCovered}</strong></span>
                   </div>
                 </div>
 
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
-                  gap: 10
-                }}>
+                <div className="parking-allotment-tracker-s87">
                   {flatsOnFloor.map(item => {
                     const isAllotted = item.status === 'Allotted';
                     const isRefuge = item.status === 'Refuge';
@@ -1342,49 +946,28 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                     return (
                       <div
                         key={item.flat}
-                        style={{
-                          background: isAllotted ? 'rgba(209,250,229,0.3)' : isRefuge ? '#f3f4f6' : 'rgba(219,234,254,0.3)',
-                          border: isAllotted ? '1px solid #a7f3d0' : isRefuge ? '1px solid #d1d5db' : '1px solid #bfdbfe',
-                          borderRadius: 12,
-                          padding: '10px 12px'
-                        }}
+                        className="parking-allotment-tracker-s88" style={{ background: isAllotted ? 'rgba(209,250,229,0.3)' : isRefuge ? '#f3f4f6' : 'rgba(219,234,254,0.3)', border: isAllotted ? '1px solid #a7f3d0' : isRefuge ? '1px solid #d1d5db' : '1px solid #bfdbfe' }}
                       >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#0b2b26', fontFamily: 'monospace' }}>
+                        <div className="parking-allotment-tracker-s89">
+                          <span className="parking-allotment-tracker-s90">
                             {item.flat}
                           </span>
                           {item.parkingNo ? (
-                            <span style={{
-                              background: '#0b2b26',
-                              color: '#C49B4F',
-                              fontWeight: 800,
-                              fontSize: '0.74rem',
-                              padding: '2px 8px',
-                              borderRadius: 6,
-                              fontFamily: 'monospace'
-                            }}>
+                            <span className="parking-allotment-tracker-s91">
                               {item.parkingNo}
                             </span>
                           ) : (
-                            <span style={{ fontSize: '0.7rem', color: isRefuge ? '#9ca3af' : '#1e40af', fontWeight: 600 }}>
+                            <span className="parking-allotment-tracker-s92" style={{ color: isRefuge ? '#9ca3af' : '#1e40af' }}>
                               {isRefuge ? 'Refuge' : 'Covered'}
                             </span>
                           )}
                         </div>
 
                         {isAdmin && (
-                          <div style={{ marginTop: 8, textAlign: 'right' }}>
+                          <div className="parking-allotment-tracker-s93">
                             <button
                               onClick={() => setEditingFlat(item)}
-                              style={{
-                                background: 'transparent',
-                                border: 'none',
-                                color: '#164e63',
-                                fontSize: '0.72rem',
-                                fontWeight: 700,
-                                cursor: 'pointer',
-                                padding: 0
-                              }}
+                              className="parking-allotment-tracker-s94"
                             >
                               ✏️ Edit
                             </button>
@@ -1402,40 +985,15 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
 
       {/* ── Slot Detail Popover Modal ── */}
       {selectedSlotForDetail && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.5)',
-          backdropFilter: 'blur(6px)',
-          zIndex: 9999,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 16
-        }} onClick={() => setSelectedSlotForDetail(null)}>
-          <div style={{
-            background: '#fff',
-            borderRadius: 20,
-            padding: '24px',
-            maxWidth: 380,
-            width: '100%',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-          }} onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <div style={{
-                background: '#0b2b26',
-                color: '#C49B4F',
-                padding: '4px 12px',
-                borderRadius: 8,
-                fontWeight: 800,
-                fontSize: '1rem',
-                fontFamily: 'monospace'
-              }}>
+        <div className="parking-allotment-tracker-s95" onClick={() => setSelectedSlotForDetail(null)}>
+          <div className="parking-allotment-tracker-s96" onClick={e => e.stopPropagation()}>
+            <div className="parking-allotment-tracker-s97">
+              <div className="parking-allotment-tracker-s98">
                 {selectedSlotForDetail.slotId}
               </div>
               <button
                 onClick={() => setSelectedSlotForDetail(null)}
-                style={{ background: 'none', border: 'none', fontSize: '1.1rem', cursor: 'pointer' }}
+                className="parking-allotment-tracker-s99"
               >
                 ✕
               </button>
@@ -1443,14 +1001,14 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
 
             {selectedSlotForDetail.flatItem ? (
               <div>
-                <h4 style={{ margin: '0 0 10px', fontSize: '1.25rem', color: '#0b2b26' }}>
+                <h4 className="parking-allotment-tracker-s100">
                   Flat {selectedSlotForDetail.flatItem.flat}
                 </h4>
-                <div style={{ fontSize: '0.85rem', color: '#475569', marginBottom: 6 }}>
+                <div className="parking-allotment-tracker-s101">
                   <strong>Parking Type:</strong> {selectedSlotForDetail.flatItem.parkingType || 'Open Parking'}
                 </div>
                 {selectedSlotForDetail.flatItem.remarks && (
-                  <div style={{ fontSize: '0.82rem', color: '#64748b', background: '#f8fafc', padding: 8, borderRadius: 8, marginTop: 8 }}>
+                  <div className="parking-allotment-tracker-s102">
                     <strong>Note:</strong> {selectedSlotForDetail.flatItem.remarks}
                   </div>
                 )}
@@ -1461,17 +1019,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                       setSelectedSlotForDetail(null);
                       setEditingFlat(f);
                     }}
-                    style={{
-                      width: '100%',
-                      marginTop: 16,
-                      padding: '8px',
-                      background: '#0b2b26',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: 10,
-                      fontWeight: 700,
-                      cursor: 'pointer'
-                    }}
+                    className="parking-allotment-tracker-s103"
                   >
                     ✏️ Edit Allocation
                   </button>
@@ -1479,10 +1027,10 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
               </div>
             ) : (
               <div>
-                <h4 style={{ margin: '0 0 6px', fontSize: '1.1rem', color: '#10b981' }}>
+                <h4 className="parking-allotment-tracker-s104">
                   Slot Available ({selectedSlotForDetail.slotId})
                 </h4>
-                <p style={{ margin: '0 0 14px', fontSize: '0.85rem', color: '#64748b' }}>
+                <p className="parking-allotment-tracker-s105">
                   This open parking bay is currently unallocated in the registered records.
                 </p>
                 {isAdmin && (
@@ -1499,17 +1047,7 @@ export default function ParkingAllotmentTracker({ isAdmin = false }) {
                         status: 'Allotted'
                       });
                     }}
-                    style={{
-                      width: '100%',
-                      padding: '9px',
-                      background: '#065f46',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: 10,
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      fontSize: '0.84rem'
-                    }}
+                    className="parking-allotment-tracker-s106"
                   >
                     ➕ Assign this Bay ({selectedSlotForDetail.slotId}) to a Flat
                   </button>
@@ -1594,39 +1132,20 @@ function EditFlatModal({ flatItem, allFlats = [], onSave, onClose }) {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(0,0,0,0.55)',
-      backdropFilter: 'blur(8px)',
-      zIndex: 9999,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 16
-    }} onClick={onClose}>
-      <div style={{
-        background: '#fffefb',
-        borderRadius: 22,
-        padding: '24px 28px',
-        maxWidth: 460,
-        width: '100%',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: '0 30px 80px rgba(0,0,0,0.3)'
-      }} onClick={e => e.stopPropagation()}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+    <div className="parking-allotment-tracker-s107" onClick={onClose}>
+      <div className="parking-allotment-tracker-s108" onClick={e => e.stopPropagation()}>
+        <div className="parking-allotment-tracker-s109">
           <div>
-            <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#164e63' }}>
+            <span className="parking-allotment-tracker-s110">
               Building "A" Allocation
             </span>
-            <h3 style={{ margin: '2px 0 0', fontSize: '1.25rem', fontWeight: 800, color: '#0b2b26' }}>
+            <h3 className="parking-allotment-tracker-s111">
               Assign / Edit Flat {form.flat}
             </h3>
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: 8, width: 32, height: 32, cursor: 'pointer' }}
+            className="parking-allotment-tracker-s112"
           >
             ✕
           </button>
@@ -1653,7 +1172,7 @@ function EditFlatModal({ flatItem, allFlats = [], onSave, onClose }) {
             placeholder="e.g. OP-39, OP-01, CP-15"
           />
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="parking-allotment-tracker-s113">
             <div>
               <label style={labelStyle}>Parking Type</label>
               <select
@@ -1683,38 +1202,23 @@ function EditFlatModal({ flatItem, allFlats = [], onSave, onClose }) {
 
           <label style={labelStyle}>Remarks / Notes</label>
           <textarea
-            style={{ ...fieldStyle, minHeight: 70, resize: 'vertical' }}
+            className="parking-allotment-tracker-s114" style={{ ...fieldStyle }}
             value={form.remarks}
             onChange={e => handleChange('remarks', e.target.value)}
             placeholder="Additional notes / record reference..."
           />
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20 }}>
+          <div className="parking-allotment-tracker-s115">
             <button
               type="button"
               onClick={onClose}
-              style={{
-                padding: '8px 16px',
-                borderRadius: 10,
-                border: '1px solid rgba(0,0,0,0.15)',
-                background: '#fff',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
+              className="parking-allotment-tracker-s116"
             >
               Cancel
             </button>
             <button
               type="submit"
-              style={{
-                padding: '8px 20px',
-                borderRadius: 10,
-                border: 'none',
-                background: '#0b2b26',
-                color: '#C49B4F',
-                fontWeight: 800,
-                cursor: 'pointer'
-              }}
+              className="parking-allotment-tracker-s117"
             >
               Save Allotment
             </button>

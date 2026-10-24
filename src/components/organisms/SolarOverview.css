@@ -1,0 +1,150 @@
+/**
+ * SolarOverview.css
+ * Extracted styles from SolarOverview.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.solar-overview-s1 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.solar-overview-s2 {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.solar-overview-s3 {
+  margin: 0;
+  color: #0B2B26;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+.solar-overview-s4 {
+  height: 48px;
+}
+
+.solar-overview-s5 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.solar-overview-s6 {
+  padding: 24px;
+  text-align: center;
+}
+
+.solar-overview-s7 {
+  margin: 0 0 8px 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.solar-overview-s8 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0B2B26;
+}
+
+.solar-overview-s9 {
+  margin: 4px 0 0 0;
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.solar-overview-s10 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.solar-overview-s11 {
+  padding: 24px;
+}
+
+.solar-overview-s12 {
+  margin: 0 0 20px 0;
+  font-size: 0.9rem;
+  color: #334155;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.solar-overview-s13 {
+  height: 300px;
+  width: 100%;
+}
+
+.solar-overview-s14 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.solar-overview-s15 {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.solar-overview-s16 {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 6px solid #0B2B26;
+  border-right-color: #C49B4F;
+  transform: rotate(-45deg);
+}
+
+.solar-overview-s17 {
+  margin: 0 0 4px 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.solar-overview-s18 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0B2B26;
+}
+
+.solar-overview-s19 {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.solar-overview-s20 {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.solar-overview-s21 {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+  display: block;
+}
+

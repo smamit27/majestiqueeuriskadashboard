@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import ShopMaintenanceTracker from './ShopMaintenanceTracker.jsx';
 import ElectricityTracker from './ElectricityTracker.jsx';
+import './CommonInvoiceHub.css';
+
 
 const fmt = (v) => Number(v || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
 const formatValue = (v) => Number(v || 0).toLocaleString('en-IN');
@@ -1516,50 +1518,41 @@ IFSC Code: HDFC0002454`;
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div className="common-invoice-hub-s1">
       
       {/* ── Executive Hero Banner ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0b2b26 0%, #134e44 60%, #196c6c 100%)',
-        borderRadius: 20,
-        padding: '24px 28px',
-        color: '#fff',
-        boxShadow: '0 8px 32px rgba(11,43,38,0.25)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 18,
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+      <div className="common-invoice-hub-s2">
+        <div className="common-invoice-hub-s3">
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 999, background: 'rgba(196, 155, 79, 0.2)', border: '1px solid rgba(196, 155, 79, 0.4)', marginBottom: 8 }}>
-              <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#fef08a' }}>
+            <div className="common-invoice-hub-s4">
+              <span className="common-invoice-hub-s5">
                 🏛️ Society Billing &amp; Invoicing Center
               </span>
             </div>
-            <h2 style={{ margin: '2px 0 6px', fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.01em' }}>
+            <h2 className="common-invoice-hub-s6">
               🧾 Common Invoice &amp; Demand Notice Hub
             </h2>
-            <p style={{ margin: 0, color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.88rem', lineHeight: 1.4 }}>
+            <p className="common-invoice-hub-s7">
               Select month range (Start Month &amp; End Month) to auto-calculate <strong>Maintenance (₹2,850/mo)</strong> + <strong>Sinking Fund (₹150/mo)</strong>.
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-            <div style={{ background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.18)', borderRadius: 12, padding: '10px 16px', minWidth: 160, textAlign: 'center' }}>
-              <div style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'rgba(255, 255, 255, 0.7)', fontWeight: 700 }}>Base Tariff</div>
-              <div style={{ fontSize: '1.05rem', fontWeight: 900, color: '#fde047', marginTop: 2 }}>₹3,000 / mo</div>
-              <div style={{ fontSize: '0.68rem', color: 'rgba(255, 255, 255, 0.75)' }}>Maint ₹2,850 + Sinking ₹150</div>
+          <div className="common-invoice-hub-s8">
+            <div className="common-invoice-hub-s9">
+              <div className="common-invoice-hub-s10">Base Tariff</div>
+              <div className="common-invoice-hub-s11">₹3,000 / mo</div>
+              <div className="common-invoice-hub-s12">Maint ₹2,850 + Sinking ₹150</div>
             </div>
-            <div style={{ background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.18)', borderRadius: 12, padding: '10px 16px', minWidth: 140, textAlign: 'center' }}>
-              <div style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'rgba(255, 255, 255, 0.7)', fontWeight: 700 }}>Remittance Bank</div>
-              <div style={{ fontSize: '0.95rem', fontWeight: 900, color: '#6ee7b7', marginTop: 2 }}>HDFC Bank</div>
-              <div style={{ fontSize: '0.66rem', color: 'rgba(255, 255, 255, 0.65)' }}>A/C 50200075533530</div>
+            <div className="common-invoice-hub-s13">
+              <div className="common-invoice-hub-s10">Remittance Bank</div>
+              <div className="common-invoice-hub-s14">HDFC Bank</div>
+              <div className="common-invoice-hub-s15">A/C 50200075533530</div>
             </div>
           </div>
         </div>
 
         {/* Category Switcher Tabs */}
-        <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.14)', paddingTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <div className="common-invoice-hub-s16">
           {[
             { id: 'combined_3flats', label: '🏢 Times Horizon (TOI) Combined 3-Flats Bill (₹67,200)', emoji: '🏛️' },
             { id: 'month_range', label: '📅 Month-Range (Maintenance + Sinking)', emoji: '🧮' },
@@ -1574,21 +1567,7 @@ IFSC Code: HDFC0002454`;
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveCategory(tab.id)}
-                style={{
-                  padding: '9px 16px',
-                  borderRadius: 999,
-                  border: isSel ? '2px solid #C49B4F' : '1px solid rgba(255, 255, 255, 0.22)',
-                  background: isSel ? 'linear-gradient(135deg, #C49B4F 0%, #b38634 100%)' : 'rgba(255, 255, 255, 0.1)',
-                  color: isSel ? '#0b2b26' : '#ffffff',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  fontSize: '0.84rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 7,
-                  boxShadow: isSel ? '0 4px 14px rgba(196,155,79,0.35)' : 'none',
-                  transition: 'all 0.18s ease'
-                }}
+                className="common-invoice-hub-s17" style={{ border: isSel ? '2px solid #C49B4F' : '1px solid rgba(255, 255, 255, 0.22)', background: isSel ? 'linear-gradient(135deg, #C49B4F 0%, #b38634 100%)' : 'rgba(255, 255, 255, 0.1)', color: isSel ? '#0b2b26' : '#ffffff', boxShadow: isSel ? '0 4px 14px rgba(196,155,79,0.35)' : 'none' }}
               >
                 <span>{tab.emoji}</span>
                 <span>{tab.label}</span>
@@ -1600,29 +1579,17 @@ IFSC Code: HDFC0002454`;
 
       {/* ── View 1: MONTH-RANGE MAINTENANCE & SINKING CALCULATOR ── */}
       {activeCategory === 'month_range' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="common-invoice-hub-s18">
           
           {/* Quick Settlement Notice Banner */}
-          <div style={{
-            background: 'linear-gradient(135deg, #0b2b26 0%, #164e43 100%)',
-            border: '2px solid #C49B4F',
-            borderRadius: 14,
-            padding: '14px 20px',
-            color: '#fff',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: 12,
-            boxShadow: '0 4px 16px rgba(11,43,38,0.22)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <span style={{ fontSize: '1.6rem' }}>🏛️</span>
+          <div className="common-invoice-hub-s19">
+            <div className="common-invoice-hub-s20">
+              <span className="common-invoice-hub-s21">🏛️</span>
               <div>
-                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#fef08a' }}>
+                <div className="common-invoice-hub-s22">
                   Times Horizon (TOI) Combined 3-Flats Settlement (Flats A-302, A-904, A-1002)
                 </div>
-                <div style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.9)', marginTop: 2 }}>
+                <div className="common-invoice-hub-s23">
                   ✓ <strong>₹18,000 each</strong> received today (23-Oct-2026) for <strong>Flats A-302 &amp; A-904</strong> (Total ₹36,000). Flat A-1002 balance: <strong>₹31,200 pending</strong>.
                 </div>
               </div>
@@ -1630,65 +1597,51 @@ IFSC Code: HDFC0002454`;
             <button
               type="button"
               onClick={() => setActiveCategory('combined_3flats')}
-              style={{
-                padding: '8px 16px', borderRadius: 8, background: '#C49B4F', color: '#0b2b26',
-                border: 'none', fontWeight: 800, fontSize: '0.82rem', cursor: 'pointer', whiteSpace: 'nowrap',
-                display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-              }}
+              className="common-invoice-hub-s24"
             >
               <span>🏢</span> View 3-Flats Statement &amp; Payments →
             </button>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#0b2b26', background: '#ecfdf5', padding: '4px 12px', borderRadius: 999, border: '1px solid #a7f3d0' }}>
+          <div className="common-invoice-hub-s25">
+            <div className="common-invoice-hub-s26">
+              <span className="common-invoice-hub-s27">
                 ⚡ Auto-Calculated for {calcMonthsCount} Month{calcMonthsCount !== 1 ? 's' : ''} ({formatMonthYearLabel(calcStartMonth)} to {formatMonthYearLabel(calcEndMonth)})
               </span>
             </div>
             {calcToast && (
-              <span style={{ padding: '4px 12px', borderRadius: 999, background: '#d1fae5', color: '#065f46', fontSize: '0.8rem', fontWeight: 700, border: '1px solid #a7f3d0' }}>
+              <span className="common-invoice-hub-s28">
                 {calcToast}
               </span>
             )}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(340px, 460px) 1fr', gap: 20, alignItems: 'start' }}>
+          <div className="common-invoice-hub-s29">
             
             {/* Left Column: Month Selector & Tariff Controls */}
-            <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '20px', display: 'flex', flexDirection: 'column', gap: 16, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+            <div className="common-invoice-hub-s30">
               
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9', paddingBottom: 10 }}>
+              <div className="common-invoice-hub-s31">
                 <div>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#C49B4F' }}>
+                  <span className="common-invoice-hub-s32">
                     Flat Billing Parameters
                   </span>
-                  <h3 style={{ margin: '2px 0 0', fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
+                  <h3 className="common-invoice-hub-s33">
                     🧮 Select Months &amp; Dues
                   </h3>
                 </div>
-                <div style={{ display: 'flex', gap: 4 }}>
+                <div className="common-invoice-hub-s34">
                   <button
                     type="button"
                     onClick={() => setCalcDocType('invoice')}
-                    style={{
-                      padding: '5px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
-                      background: calcDocType === 'invoice' ? '#0b2b26' : '#f1f5f9',
-                      color: calcDocType === 'invoice' ? '#C49B4F' : '#64748b',
-                      border: 'none', cursor: 'pointer'
-                    }}
+                    className="common-invoice-hub-s35" style={{ background: calcDocType === 'invoice' ? '#0b2b26' : '#f1f5f9', color: calcDocType === 'invoice' ? '#C49B4F' : '#64748b' }}
                   >
                     Invoice
                   </button>
                   <button
                     type="button"
                     onClick={() => setCalcDocType('notice')}
-                    style={{
-                      padding: '5px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
-                      background: calcDocType === 'notice' ? '#92400e' : '#f1f5f9',
-                      color: calcDocType === 'notice' ? '#fff' : '#64748b',
-                      border: 'none', cursor: 'pointer'
-                    }}
+                    className="common-invoice-hub-s35" style={{ background: calcDocType === 'notice' ? '#92400e' : '#f1f5f9', color: calcDocType === 'notice' ? '#fff' : '#64748b' }}
                   >
                     Notice
                   </button>
@@ -1697,10 +1650,10 @@ IFSC Code: HDFC0002454`;
 
               {/* Flat Picker */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 6 }}>
+                <label className="common-invoice-hub-s36">
                   1. Select Target Flat (Resident Flats)
                 </label>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                <div className="common-invoice-hub-s37">
                   {['A-302', 'A-904', 'A-1002'].map(fId => (
                     <button
                       key={fId}
@@ -1713,13 +1666,7 @@ IFSC Code: HDFC0002454`;
                           setCalcIncludeEarlierPending(false);
                         }
                       }}
-                      style={{
-                        flex: 1, minWidth: 80, padding: '7px 10px', borderRadius: 8, fontSize: '0.8rem', fontWeight: 700,
-                        border: calcFlat === fId ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                        background: calcFlat === fId ? '#0b2b26' : '#fff',
-                        color: calcFlat === fId ? '#C49B4F' : '#334155',
-                        cursor: 'pointer'
-                      }}
+                      className="common-invoice-hub-s38" style={{ border: calcFlat === fId ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: calcFlat === fId ? '#0b2b26' : '#fff', color: calcFlat === fId ? '#C49B4F' : '#334155' }}
                     >
                       Flat {fId}
                     </button>
@@ -1730,63 +1677,63 @@ IFSC Code: HDFC0002454`;
                   value={calcFlat}
                   onChange={(e) => setCalcFlat(e.target.value)}
                   placeholder="Or enter any flat: e.g. A-504"
-                  style={{ width: '100%', padding: '7px 10px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 700 }}
+                  className="common-invoice-hub-s39"
                 />
               </div>
 
               {/* Start Month and End Month Picker */}
-              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#0b2b26' }}>
+              <div className="common-invoice-hub-s40">
+                <div className="common-invoice-hub-s41">
+                  <span className="common-invoice-hub-s42">
                     2. Select Billing Month Range
                   </span>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#16a34a', background: '#dcfce7', padding: '2px 8px', borderRadius: 999 }}>
+                  <span className="common-invoice-hub-s43">
                     {calcMonthsCount} Months Counted
                   </span>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="common-invoice-hub-s44">
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>
+                    <label className="common-invoice-hub-s45">
                       Start Month
                     </label>
                     <input
                       type="month"
                       value={calcStartMonth}
                       onChange={(e) => setCalcStartMonth(e.target.value)}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.85rem', fontWeight: 700, background: '#fff' }}
+                      className="common-invoice-hub-s46"
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>
+                    <label className="common-invoice-hub-s45">
                       End Month
                     </label>
                     <input
                       type="month"
                       value={calcEndMonth}
                       onChange={(e) => setCalcEndMonth(e.target.value)}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.85rem', fontWeight: 700, background: '#fff' }}
+                      className="common-invoice-hub-s46"
                     />
                   </div>
                 </div>
 
                 {/* Quick Presets */}
                 <div>
-                  <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 4 }}>Quick Range Presets:</div>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    <button type="button" onClick={() => applyMonthPreset('2026-10', '2027-03')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: '#0b2b26', color: '#C49B4F', border: '1px solid #0b2b26', cursor: 'pointer' }}>
+                  <div className="common-invoice-hub-s47">Quick Range Presets:</div>
+                  <div className="common-invoice-hub-s48">
+                    <button type="button" onClick={() => applyMonthPreset('2026-10', '2027-03')} className="common-invoice-hub-s49">
                       Oct 26 – Mar 27 (Current 6m)
                     </button>
-                    <button type="button" onClick={() => applyMonthPreset('2024-04', '2025-03')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 600, background: '#fff', border: '1px solid #cbd5e1', cursor: 'pointer' }}>
+                    <button type="button" onClick={() => applyMonthPreset('2024-04', '2025-03')} className="common-invoice-hub-s50">
                       FY 24-25 (12m)
                     </button>
-                    <button type="button" onClick={() => applyMonthPreset('2025-04', '2026-03')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 600, background: '#fff', border: '1px solid #cbd5e1', cursor: 'pointer' }}>
+                    <button type="button" onClick={() => applyMonthPreset('2025-04', '2026-03')} className="common-invoice-hub-s50">
                       FY 25-26 (12m)
                     </button>
-                    <button type="button" onClick={() => applyMonthPreset('2026-04', '2026-09')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 600, background: '#fff', border: '1px solid #cbd5e1', cursor: 'pointer' }}>
+                    <button type="button" onClick={() => applyMonthPreset('2026-04', '2026-09')} className="common-invoice-hub-s50">
                       Last 6 Mos
                     </button>
-                    <button type="button" onClick={() => applyMonthPreset('2024-04', '2026-03')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: '0.72rem', fontWeight: 700, background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', cursor: 'pointer' }}>
+                    <button type="button" onClick={() => applyMonthPreset('2024-04', '2026-03')} className="common-invoice-hub-s51">
                       2-Year FY 24-26
                     </button>
                   </div>
@@ -1794,56 +1741,56 @@ IFSC Code: HDFC0002454`;
               </div>
 
               {/* Tariff Rates & Automatic Calculations */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#0b2b26' }}>
+              <div className="common-invoice-hub-s52">
+                <span className="common-invoice-hub-s42">
                   3. Tariff Rates &amp; Dynamic Calculation
                 </span>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <div style={{ background: '#fff', border: '1px solid #cbd5e1', borderRadius: 8, padding: '8px 10px' }}>
-                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#475569', marginBottom: 2 }}>
+                <div className="common-invoice-hub-s44">
+                  <div className="common-invoice-hub-s53">
+                    <label className="common-invoice-hub-s54">
                       Maintenance Rate (₹/mo)
                     </label>
                     <input
                       type="number"
                       value={calcMaintenanceRate}
                       onChange={(e) => setCalcMaintenanceRate(Number(e.target.value) || 0)}
-                      style={{ width: '100%', padding: '4px 6px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.9rem', fontWeight: 800, color: '#0b2b26' }}
+                      className="common-invoice-hub-s55"
                     />
-                    <div style={{ fontSize: '0.68rem', color: '#64748b', marginTop: 4 }}>
+                    <div className="common-invoice-hub-s56">
                       {calcMonthsCount} mos × ₹{formatValue(calcMaintenanceRate)} = <strong>₹{formatValue(calcMaintenanceTotal)}</strong>
                     </div>
                   </div>
 
-                  <div style={{ background: '#fff', border: '1px solid #cbd5e1', borderRadius: 8, padding: '8px 10px' }}>
-                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#475569', marginBottom: 2 }}>
+                  <div className="common-invoice-hub-s53">
+                    <label className="common-invoice-hub-s54">
                       Sinking Fund Rate (₹/mo)
                     </label>
                     <input
                       type="number"
                       value={calcSinkingFundRate}
                       onChange={(e) => setCalcSinkingFundRate(Number(e.target.value) || 0)}
-                      style={{ width: '100%', padding: '4px 6px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.9rem', fontWeight: 800, color: '#0b2b26' }}
+                      className="common-invoice-hub-s55"
                     />
-                    <div style={{ fontSize: '0.68rem', color: '#64748b', marginTop: 4 }}>
+                    <div className="common-invoice-hub-s56">
                       {calcMonthsCount} mos × ₹{formatValue(calcSinkingFundRate)} = <strong>₹{formatValue(calcSinkingFundTotal)}</strong>
                     </div>
                   </div>
                 </div>
 
                 {/* Earlier Pending Arrears Toggle (Specifically for A-1002 or Arrears Recovery) */}
-                <div style={{ background: calcIncludeEarlierPending ? '#fff7ed' : '#f8fafc', border: `1px solid ${calcIncludeEarlierPending ? '#fdba74' : '#e2e8f0'}`, borderRadius: 10, padding: '10px 12px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 700, fontSize: '0.82rem', color: '#c2410c' }}>
+                <div className="common-invoice-hub-s57" style={{ background: calcIncludeEarlierPending ? '#fff7ed' : '#f8fafc', border: `1px solid ${calcIncludeEarlierPending ? '#fdba74' : '#e2e8f0'}` }}>
+                  <label className="common-invoice-hub-s58">
                     <input
                       type="checkbox"
                       checked={calcIncludeEarlierPending}
                       onChange={(e) => setCalcIncludeEarlierPending(e.target.checked)}
-                      style={{ width: 16, height: 16, accentColor: '#c2410c' }}
+                      className="common-invoice-hub-s59"
                     />
                     <span>Include Earlier Pending Arrears (Oct 2024 – Mar 2025): ₹13,200</span>
                   </label>
                   {calcIncludeEarlierPending && (
-                    <div style={{ marginTop: 6, fontSize: '0.74rem', color: '#9a3412', paddingLeft: 24 }}>
+                    <div className="common-invoice-hub-s60">
                       <div>• Maintenance: ₹2,100 × 6 mos = <strong>₹12,600</strong></div>
                       <div>• Sinking Fund: ₹100 × 6 mos = <strong>₹600</strong></div>
                       <div>• Total Arrears: <strong>₹13,200</strong></div>
@@ -1852,52 +1799,41 @@ IFSC Code: HDFC0002454`;
                 </div>
 
                 {/* Grand Total Summary Box */}
-                <div style={{ background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', borderRadius: 10, padding: '12px 14px', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="common-invoice-hub-s61">
                   <div>
-                    <div style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: '#C49B4F', fontWeight: 700 }}>
+                    <div className="common-invoice-hub-s62">
                       Grand Total Payable ({calcMonthsCount} Mos)
                     </div>
-                    <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.7)' }}>
+                    <div className="common-invoice-hub-s63">
                       Maint (₹{formatValue(calcMaintenanceTotal)}) + Sinking (₹{formatValue(calcSinkingFundTotal)}) {calcIncludeEarlierPending ? `+ Arrears (₹13,200)` : ''}
                     </div>
                   </div>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#4ade80', fontFamily: 'monospace' }}>
+                  <div className="common-invoice-hub-s64">
                     ₹{formatValue(calcGrandTotal)}
                   </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingTop: 6, borderTop: '1px solid #f1f5f9' }}>
+              <div className="common-invoice-hub-s65">
                 <button
                   type="button"
                   onClick={handlePrintCalcInvoice}
-                  style={{
-                    flex: 1, padding: '10px 14px', borderRadius: 8, background: '#0b2b26', color: '#C49B4F',
-                    border: '1px solid #C49B4F', fontWeight: 800, fontSize: '0.84rem', cursor: 'pointer',
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, boxShadow: '0 4px 14px rgba(11,43,38,0.25)'
-                  }}
+                  className="common-invoice-hub-s66"
                 >
                   <span>🖨️</span> Print / Save PDF
                 </button>
                 <button
                   type="button"
                   onClick={handleShareCalcWhatsApp}
-                  style={{
-                    padding: '10px 14px', borderRadius: 8, background: '#25D366', color: '#ffffff',
-                    border: 'none', fontWeight: 700, fontSize: '0.84rem', cursor: 'pointer',
-                    display: 'inline-flex', alignItems: 'center', gap: 6
-                  }}
+                  className="common-invoice-hub-s67"
                 >
                   <span>📱</span> WhatsApp
                 </button>
                 <button
                   type="button"
                   onClick={handleCopyCalcText}
-                  style={{
-                    padding: '10px 12px', borderRadius: 8, background: '#f1f5f9', color: '#334155',
-                    border: '1px solid #cbd5e1', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer'
-                  }}
+                  className="common-invoice-hub-s68"
                 >
                   📋 Copy
                 </button>
@@ -1906,114 +1842,111 @@ IFSC Code: HDFC0002454`;
             </div>
 
             {/* Right Column: Live Letterhead Preview */}
-            <div style={{ background: '#eaedf0', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', overflowY: 'auto' }}>
-              <div style={{
-                background: '#ffffff', width: '100%', maxWidth: 540, borderRadius: 4, padding: '24px 28px',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.1)', border: '1px solid #cbd5e1', color: '#0f172a', fontSize: '0.82rem', lineHeight: 1.45, display: 'flex', flexDirection: 'column', gap: 10
-              }}>
+            <div className="common-invoice-hub-s69">
+              <div className="common-invoice-hub-s70">
                 {/* Letterhead */}
-                <div style={{ textAlign: 'center', borderBottom: '2px solid #0b2b26', paddingBottom: 10 }}>
-                  <div style={{ fontSize: '0.92rem', fontWeight: 900, color: '#0b2b26' }}>
+                <div className="common-invoice-hub-s71">
+                  <div className="common-invoice-hub-s72">
                     MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.
                   </div>
-                  <div style={{ fontSize: '0.66rem', color: '#475569', marginTop: 2 }}>
+                  <div className="common-invoice-hub-s73">
                     Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • Mohammed Wadi, Pune - 411060
                   </div>
-                  <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 8px', borderRadius: 999, background: '#0b2b26', color: '#fff', fontSize: '0.64rem', fontWeight: 800 }}>
+                  <span className="common-invoice-hub-s74">
                     {calcDocType === 'invoice' ? 'MAINTENANCE & SUBSCRIPTION TAX INVOICE' : 'FORMAL DEMAND NOTICE'}
                   </span>
                 </div>
 
                 {/* Ref & Date */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', color: '#334155', borderBottom: '1px dashed #e2e8f0', paddingBottom: 6 }}>
+                <div className="common-invoice-hub-s75">
                   <div><strong>No:</strong> {calcInvoiceNo}</div>
                   <div><strong>Date:</strong> {formatDisplayDate(calcInvoiceDate)}</div>
-                  <div><strong>Due:</strong> <span style={{ color: '#b91c1c', fontWeight: 700 }}>{formatDisplayDate(calcDueDate)}</span></div>
+                  <div><strong>Due:</strong> <span className="common-invoice-hub-s76">{formatDisplayDate(calcDueDate)}</span></div>
                 </div>
 
                 {/* Recipient */}
-                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px 12px', fontSize: '0.78rem' }}>
-                  <div style={{ fontSize: '0.66rem', color: '#64748b', fontWeight: 700 }}>BILLED TO:</div>
-                  <div style={{ fontWeight: 800, fontSize: '0.88rem' }}>Flat {calcFlat}</div>
-                  <div style={{ color: '#475569', fontSize: '0.72rem' }}>{calcFlatSubtext}</div>
+                <div className="common-invoice-hub-s77">
+                  <div className="common-invoice-hub-s78">BILLED TO:</div>
+                  <div className="common-invoice-hub-s79">Flat {calcFlat}</div>
+                  <div className="common-invoice-hub-s80">{calcFlatSubtext}</div>
                 </div>
 
                 {/* Subject */}
-                <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#0b2b26', background: '#f1f5f9', padding: '4px 8px', borderLeft: '3px solid #0b2b26' }}>
+                <div className="common-invoice-hub-s81">
                   <strong>SUBJECT:</strong> MAINTENANCE &amp; DUES BILLING ({formatMonthYearLabel(calcStartMonth)} to {formatMonthYearLabel(calcEndMonth)} • {calcMonthsCount} MONTHS)
                 </div>
 
                 {/* Table */}
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem', margin: '4px 0' }}>
+                <table className="common-invoice-hub-s82">
                   <thead>
-                    <tr style={{ background: '#0b2b26', color: '#fff' }}>
-                      <th style={{ padding: '4px 6px', textAlign: 'left' }}>Particulars</th>
-                      <th style={{ padding: '4px 6px', textAlign: 'center' }}>Months</th>
-                      <th style={{ padding: '4px 6px', textAlign: 'center' }}>Rate / Mo</th>
-                      <th style={{ padding: '4px 6px', textAlign: 'right' }}>Amount</th>
+                    <tr className="common-invoice-hub-s83">
+                      <th className="common-invoice-hub-s84">Particulars</th>
+                      <th className="common-invoice-hub-s85">Months</th>
+                      <th className="common-invoice-hub-s85">Rate / Mo</th>
+                      <th className="common-invoice-hub-s86">Amount</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                      <td style={{ padding: '4px 6px', fontWeight: 600 }}>Flat Maintenance Charges</td>
-                      <td style={{ padding: '4px 6px', textAlign: 'center' }}>{calcMonthsCount} mos</td>
-                      <td style={{ padding: '4px 6px', textAlign: 'center' }}>₹{formatValue(calcMaintenanceRate)}</td>
-                      <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹{formatValue(calcMaintenanceTotal)}</td>
+                    <tr className="common-invoice-hub-s87">
+                      <td className="common-invoice-hub-s88">Flat Maintenance Charges</td>
+                      <td className="common-invoice-hub-s85">{calcMonthsCount} mos</td>
+                      <td className="common-invoice-hub-s85">₹{formatValue(calcMaintenanceRate)}</td>
+                      <td className="common-invoice-hub-s89">₹{formatValue(calcMaintenanceTotal)}</td>
                     </tr>
-                    <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                      <td style={{ padding: '4px 6px', fontWeight: 600 }}>Sinking Fund Contribution</td>
-                      <td style={{ padding: '4px 6px', textAlign: 'center' }}>{calcMonthsCount} mos</td>
-                      <td style={{ padding: '4px 6px', textAlign: 'center' }}>₹{formatValue(calcSinkingFundRate)}</td>
-                      <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹{formatValue(calcSinkingFundTotal)}</td>
+                    <tr className="common-invoice-hub-s87">
+                      <td className="common-invoice-hub-s88">Sinking Fund Contribution</td>
+                      <td className="common-invoice-hub-s85">{calcMonthsCount} mos</td>
+                      <td className="common-invoice-hub-s85">₹{formatValue(calcSinkingFundRate)}</td>
+                      <td className="common-invoice-hub-s89">₹{formatValue(calcSinkingFundTotal)}</td>
                     </tr>
                     {calcIncludeEarlierPending && (
                       <>
-                        <tr style={{ borderBottom: '1px solid #fed7aa', background: '#fff7ed' }}>
-                          <td style={{ padding: '4px 6px', fontWeight: 600, color: '#c2410c' }}>Earlier Pending Maint (Oct 24 – Mar 25)</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center', color: '#c2410c' }}>6 mos</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center', color: '#c2410c' }}>₹2,100</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace', color: '#c2410c' }}>₹12,600</td>
+                        <tr className="common-invoice-hub-s90">
+                          <td className="common-invoice-hub-s91">Earlier Pending Maint (Oct 24 – Mar 25)</td>
+                          <td className="common-invoice-hub-s92">6 mos</td>
+                          <td className="common-invoice-hub-s92">₹2,100</td>
+                          <td className="common-invoice-hub-s93">₹12,600</td>
                         </tr>
-                        <tr style={{ borderBottom: '1px solid #fed7aa', background: '#fff7ed' }}>
-                          <td style={{ padding: '4px 6px', fontWeight: 600, color: '#c2410c' }}>Earlier Pending Sinking Fund (Oct 24 – Mar 25)</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center', color: '#c2410c' }}>6 mos</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'center', color: '#c2410c' }}>₹100</td>
-                          <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace', color: '#c2410c' }}>₹600</td>
+                        <tr className="common-invoice-hub-s90">
+                          <td className="common-invoice-hub-s91">Earlier Pending Sinking Fund (Oct 24 – Mar 25)</td>
+                          <td className="common-invoice-hub-s92">6 mos</td>
+                          <td className="common-invoice-hub-s92">₹100</td>
+                          <td className="common-invoice-hub-s93">₹600</td>
                         </tr>
                       </>
                     )}
-                    <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 800 }}>
-                      <td colSpan={3} style={{ padding: '6px 8px', textAlign: 'right', color: '#fff' }}>TOTAL NET PAYABLE:</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right', color: '#4ade80', fontSize: '0.88rem', fontFamily: 'monospace' }}>₹{formatValue(calcGrandTotal)}</td>
+                    <tr className="common-invoice-hub-s94">
+                      <td colSpan={3} className="common-invoice-hub-s95">TOTAL NET PAYABLE:</td>
+                      <td className="common-invoice-hub-s96">₹{formatValue(calcGrandTotal)}</td>
                     </tr>
                   </tbody>
                 </table>
 
                 {/* Remittance Box */}
-                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 6, padding: '8px 10px', fontSize: '0.72rem', color: '#166534' }}>
-                  <div style={{ fontWeight: 800, marginBottom: 2 }}>🏦 HDFC Bank Remittance Info:</div>
+                <div className="common-invoice-hub-s97">
+                  <div className="common-invoice-hub-s98">🏦 HDFC Bank Remittance Info:</div>
                   <div>• A/C: <strong>50200075533530</strong> • IFSC: <strong>HDFC0002454</strong></div>
                   <div>• Name: MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR</div>
                 </div>
 
                 {/* Notes */}
-                <div style={{ fontSize: '0.68rem', color: '#475569', background: '#f8fafc', padding: '6px 8px', borderRadius: 4, border: '1px dashed #cbd5e1' }}>
+                <div className="common-invoice-hub-s99">
                   <strong>Notes:</strong> {calcNotes}
                 </div>
 
                 {/* Signatures */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 16, paddingTop: 6 }}>
-                  <div style={{ textAlign: 'center', width: '30%' }}>
-                    <div style={{ border: '1px dashed #cbd5e1', height: 32, borderRadius: 3, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.6rem' }}>Seal</div>
-                    <div style={{ borderTop: '1px solid #0f172a', paddingTop: 2, fontSize: '0.68rem', fontWeight: 700 }}>Estate Manager</div>
+                <div className="common-invoice-hub-s100">
+                  <div className="common-invoice-hub-s101">
+                    <div className="common-invoice-hub-s102">Seal</div>
+                    <div className="common-invoice-hub-s103">Estate Manager</div>
                   </div>
-                  <div style={{ textAlign: 'center', width: '30%' }}>
-                    <div style={{ border: '1px dashed #cbd5e1', height: 32, borderRadius: 3, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.6rem' }}>Verified</div>
-                    <div style={{ borderTop: '1px solid #0f172a', paddingTop: 2, fontSize: '0.68rem', fontWeight: 700 }}>Hon. Secretary</div>
+                  <div className="common-invoice-hub-s101">
+                    <div className="common-invoice-hub-s102">Verified</div>
+                    <div className="common-invoice-hub-s103">Hon. Secretary</div>
                   </div>
-                  <div style={{ textAlign: 'center', width: '30%' }}>
-                    <div style={{ border: '1px dashed #cbd5e1', height: 32, borderRadius: 3, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.6rem' }}>Approved</div>
-                    <div style={{ borderTop: '1px solid #0f172a', paddingTop: 2, fontSize: '0.68rem', fontWeight: 700 }}>Hon. Treasurer</div>
+                  <div className="common-invoice-hub-s101">
+                    <div className="common-invoice-hub-s102">Approved</div>
+                    <div className="common-invoice-hub-s103">Hon. Treasurer</div>
                   </div>
                 </div>
 
@@ -2026,36 +1959,30 @@ IFSC Code: HDFC0002454`;
 
       {/* ── View 2: ALL HUB OVERVIEW ── */}
       {activeCategory === 'all_hub' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16 }}>
+        <div className="common-invoice-hub-s104">
+          <div className="common-invoice-hub-s105">
             
             {/* Card: Combined 3-Flats Bill (A-302, A-904, A-1002 — ₹67,200) */}
-            <div style={{
-              background: 'linear-gradient(135deg, #0b2b26 0%, #164e43 100%)', borderRadius: 16, border: '2px solid #C49B4F', padding: '20px',
-              color: '#fff', boxShadow: '0 4px 20px rgba(11,43,38,0.25)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 14
-            }}>
+            <div className="common-invoice-hub-s106">
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#fef08a', background: 'rgba(255,255,255,0.15)', padding: '3px 8px', borderRadius: 6 }}>
+                <div className="common-invoice-hub-s107">
+                  <span className="common-invoice-hub-s108">
                     3-Flats Combined
                   </span>
-                  <span style={{ fontSize: '1.2rem' }}>🏛️</span>
+                  <span className="common-invoice-hub-s109">🏛️</span>
                 </div>
-                <h3 style={{ margin: '0 0 6px', fontSize: '1.2rem', fontWeight: 800, color: '#fff' }}>
+                <h3 className="common-invoice-hub-s110">
                   Combined 3-Flats Bill (₹67,200)
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.45 }}>
+                <p className="common-invoice-hub-s111">
                   Flats A-302 (₹18,000), A-904 (₹18,000), and A-1002 (₹31,200 with arrears). Complete combined bill with HDFC bank details, WhatsApp notice, and printable letterhead PDF.
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <div className="common-invoice-hub-s112">
                 <button
                   type="button"
                   onClick={() => setActiveCategory('combined_3flats')}
-                  style={{
-                    flex: 1, padding: '9px 14px', borderRadius: 8, background: '#C49B4F', color: '#0b2b26',
-                    border: 'none', fontWeight: 800, fontSize: '0.82rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6
-                  }}
+                  className="common-invoice-hub-s113"
                 >
                   <span>🏛️</span> Open Combined 3-Flats Bill
                 </button>
@@ -2063,32 +1990,26 @@ IFSC Code: HDFC0002454`;
             </div>
 
             {/* Card 0: Month-Range Calculator */}
-            <div style={{
-              background: 'linear-gradient(135deg, #0b2b26 0%, #196c6c 100%)', borderRadius: 16, border: '1px solid #C49B4F', padding: '20px',
-              color: '#fff', boxShadow: '0 4px 20px rgba(11,43,38,0.25)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 14
-            }}>
+            <div className="common-invoice-hub-s114">
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#fef08a', background: 'rgba(255,255,255,0.15)', padding: '3px 8px', borderRadius: 6 }}>
+                <div className="common-invoice-hub-s107">
+                  <span className="common-invoice-hub-s108">
                     Primary Calculator
                   </span>
-                  <span style={{ fontSize: '1.2rem' }}>🧮</span>
+                  <span className="common-invoice-hub-s109">🧮</span>
                 </div>
-                <h3 style={{ margin: '0 0 6px', fontSize: '1.2rem', fontWeight: 800, color: '#fff' }}>
+                <h3 className="common-invoice-hub-s110">
                   Month-Range (Maintenance + Sinking)
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.45 }}>
+                <p className="common-invoice-hub-s111">
                   Select Start &amp; End Month: auto-calculates <strong>Maintenance (₹2,850/mo)</strong> + <strong>Sinking Fund (₹150/mo)</strong> for any number of selected months.
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <div className="common-invoice-hub-s112">
                 <button
                   type="button"
                   onClick={() => setActiveCategory('month_range')}
-                  style={{
-                    flex: 1, padding: '9px 14px', borderRadius: 8, background: '#C49B4F', color: '#0b2b26',
-                    border: 'none', fontWeight: 800, fontSize: '0.82rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6
-                  }}
+                  className="common-invoice-hub-s113"
                 >
                   <span>🧮</span> Open Month Calculator
                 </button>
@@ -2096,32 +2017,26 @@ IFSC Code: HDFC0002454`;
             </div>
 
             {/* Card 1: Commercial Shops */}
-            <div style={{
-              background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '20px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 14
-            }}>
+            <div className="common-invoice-hub-s115">
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#0b2b26', background: '#ecfdf5', padding: '3px 8px', borderRadius: 6, border: '1px solid #a7f3d0' }}>
+                <div className="common-invoice-hub-s107">
+                  <span className="common-invoice-hub-s116">
                     Commercial Wing
                   </span>
-                  <span style={{ fontSize: '1.2rem' }}>🏬</span>
+                  <span className="common-invoice-hub-s109">🏬</span>
                 </div>
-                <h3 style={{ margin: '0 0 6px', fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>
+                <h3 className="common-invoice-hub-s117">
                   Commercial Shops (Shop 1 – 8)
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748b', lineHeight: 1.45 }}>
+                <p className="common-invoice-hub-s118">
                   Monthly maintenance dues (₹1,500/mo), statements, demand notices, and individual/batch invoice generation with letterhead.
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <div className="common-invoice-hub-s112">
                 <button
                   type="button"
                   onClick={() => setActiveCategory('shops')}
-                  style={{
-                    flex: 1, padding: '9px 14px', borderRadius: 8, background: '#0b2b26', color: '#C49B4F',
-                    border: '1px solid #C49B4F', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6
-                  }}
+                  className="common-invoice-hub-s119"
                 >
                   <span>🧾</span> Open Shop Invoices
                 </button>
@@ -2129,32 +2044,26 @@ IFSC Code: HDFC0002454`;
             </div>
 
             {/* Card 2: Tata Electricity */}
-            <div style={{
-              background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '20px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 14
-            }}>
+            <div className="common-invoice-hub-s115">
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#1e40af', background: '#eff6ff', padding: '3px 8px', borderRadius: 6, border: '1px solid #bfdbfe' }}>
+                <div className="common-invoice-hub-s107">
+                  <span className="common-invoice-hub-s120">
                     Sub-Meter Billing
                   </span>
-                  <span style={{ fontSize: '1.2rem' }}>⚡</span>
+                  <span className="common-invoice-hub-s109">⚡</span>
                 </div>
-                <h3 style={{ margin: '0 0 6px', fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>
+                <h3 className="common-invoice-hub-s117">
                   Tata Electricity Sub-Meter
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748b', lineHeight: 1.45 }}>
-                  Tata Play Hub sub-meter with 10,000 unit reset rollover principle: <code style={{ fontSize: '0.75rem', background: '#f1f5f9', padding: '1px 4px', borderRadius: 4 }}>(10k - A) + B</code> @ ₹13.00/unit.
+                <p className="common-invoice-hub-s118">
+                  Tata Play Hub sub-meter with 10,000 unit reset rollover principle: <code className="common-invoice-hub-s121">(10k - A) + B</code> @ ₹13.00/unit.
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <div className="common-invoice-hub-s112">
                 <button
                   type="button"
                   onClick={() => setActiveCategory('tata')}
-                  style={{
-                    flex: 1, padding: '9px 14px', borderRadius: 8, background: '#1e3a8a', color: '#ffffff',
-                    border: 'none', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6
-                  }}
+                  className="common-invoice-hub-s122"
                 >
                   <span>⚡</span> Open Tata Electricity
                 </button>
@@ -2162,32 +2071,26 @@ IFSC Code: HDFC0002454`;
             </div>
 
             {/* Card 4: Custom Invoice Builder */}
-            <div style={{
-              background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '20px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 14
-            }}>
+            <div className="common-invoice-hub-s115">
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#7c3aed', background: '#f5f3ff', padding: '3px 8px', borderRadius: 6, border: '1px solid #ddd6fe' }}>
+                <div className="common-invoice-hub-s107">
+                  <span className="common-invoice-hub-s123">
                     On-Demand Creator
                   </span>
-                  <span style={{ fontSize: '1.2rem' }}>✍️</span>
+                  <span className="common-invoice-hub-s109">✍️</span>
                 </div>
-                <h3 style={{ margin: '0 0 6px', fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>
+                <h3 className="common-invoice-hub-s117">
                   Custom Society Invoice Builder
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748b', lineHeight: 1.45 }}>
+                <p className="common-invoice-hub-s118">
                   Generate custom society bills, penalty notices, vendor demand notes, or resident invoices with dynamic line items.
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <div className="common-invoice-hub-s112">
                 <button
                   type="button"
                   onClick={() => setActiveCategory('custom')}
-                  style={{
-                    flex: 1, padding: '9px 14px', borderRadius: 8, background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', color: '#ffffff',
-                    border: 'none', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6
-                  }}
+                  className="common-invoice-hub-s124"
                 >
                   <span>✍️</span> Build Custom Invoice
                 </button>
@@ -2201,15 +2104,15 @@ IFSC Code: HDFC0002454`;
       {/* ── View 3: SHOPS INVOICE MODULE ── */}
       {activeCategory === 'shops' && (
         <div>
-          <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="common-invoice-hub-s125">
             <button
               type="button"
               onClick={() => setActiveCategory('month_range')}
-              style={{ padding: '6px 12px', borderRadius: 8, background: '#f1f5f9', border: '1px solid #cbd5e1', fontSize: '0.8rem', fontWeight: 700, color: '#334155', cursor: 'pointer' }}
+              className="common-invoice-hub-s126"
             >
               ← Back to Month-Range Calculator
             </button>
-            <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Commercial Wing (Shop 1 – 8)</span>
+            <span className="common-invoice-hub-s127">Commercial Wing (Shop 1 – 8)</span>
           </div>
           <ShopMaintenanceTracker isAdmin={isAdmin} />
         </div>
@@ -2218,15 +2121,15 @@ IFSC Code: HDFC0002454`;
       {/* ── View 4: TATA ELECTRICITY MODULE ── */}
       {activeCategory === 'tata' && (
         <div>
-          <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="common-invoice-hub-s125">
             <button
               type="button"
               onClick={() => setActiveCategory('month_range')}
-              style={{ padding: '6px 12px', borderRadius: 8, background: '#f1f5f9', border: '1px solid #cbd5e1', fontSize: '0.8rem', fontWeight: 700, color: '#334155', cursor: 'pointer' }}
+              className="common-invoice-hub-s126"
             >
               ← Back to Month-Range Calculator
             </button>
-            <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>Tata Play Sub-Meter Billing &amp; Invoices</span>
+            <span className="common-invoice-hub-s127">Tata Play Sub-Meter Billing &amp; Invoices</span>
           </div>
           <ElectricityTracker isAdmin={isAdmin} />
         </div>
@@ -2235,53 +2138,43 @@ IFSC Code: HDFC0002454`;
 
       {/* ── View 6: CUSTOM INVOICE BUILDER ── */}
       {activeCategory === 'custom' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="common-invoice-hub-s18">
+          <div className="common-invoice-hub-s128">
             <button
               type="button"
               onClick={() => setActiveCategory('month_range')}
-              style={{ padding: '6px 12px', borderRadius: 8, background: '#f1f5f9', border: '1px solid #cbd5e1', fontSize: '0.8rem', fontWeight: 700, color: '#334155', cursor: 'pointer' }}
+              className="common-invoice-hub-s126"
             >
               ← Back to Month-Range Calculator
             </button>
             {customToast && (
-              <span style={{ padding: '4px 12px', borderRadius: 999, background: '#d1fae5', color: '#065f46', fontSize: '0.8rem', fontWeight: 700, border: '1px solid #a7f3d0' }}>
+              <span className="common-invoice-hub-s28">
                 {customToast}
               </span>
             )}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(340px, 460px) 1fr', gap: 20, alignItems: 'start' }}>
+          <div className="common-invoice-hub-s29">
             
             {/* Left Column: Form Controls */}
-            <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '20px', display: 'flex', flexDirection: 'column', gap: 16, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+            <div className="common-invoice-hub-s30">
               
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9', paddingBottom: 10 }}>
-                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#0f172a' }}>
+              <div className="common-invoice-hub-s31">
+                <h3 className="common-invoice-hub-s129">
                   ✍️ Custom Invoice Configuration
                 </h3>
-                <div style={{ display: 'flex', gap: 4 }}>
+                <div className="common-invoice-hub-s34">
                   <button
                     type="button"
                     onClick={() => setCustomDocType('invoice')}
-                    style={{
-                      padding: '4px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
-                      background: customDocType === 'invoice' ? '#0b2b26' : '#f1f5f9',
-                      color: customDocType === 'invoice' ? '#C49B4F' : '#64748b',
-                      border: 'none', cursor: 'pointer'
-                    }}
+                    className="common-invoice-hub-s130" style={{ background: customDocType === 'invoice' ? '#0b2b26' : '#f1f5f9', color: customDocType === 'invoice' ? '#C49B4F' : '#64748b' }}
                   >
                     Invoice
                   </button>
                   <button
                     type="button"
                     onClick={() => setCustomDocType('notice')}
-                    style={{
-                      padding: '4px 8px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
-                      background: customDocType === 'notice' ? '#92400e' : '#f1f5f9',
-                      color: customDocType === 'notice' ? '#fff' : '#64748b',
-                      border: 'none', cursor: 'pointer'
-                    }}
+                    className="common-invoice-hub-s130" style={{ background: customDocType === 'notice' ? '#92400e' : '#f1f5f9', color: customDocType === 'notice' ? '#fff' : '#64748b' }}
                   >
                     Notice
                   </button>
@@ -2289,46 +2182,46 @@ IFSC Code: HDFC0002454`;
               </div>
 
               {/* Recipient & Reference */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div className="common-invoice-hub-s52">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                  <label className="common-invoice-hub-s131">
                     Invoice / Notice Number
                   </label>
                   <input
                     type="text"
                     value={customInvoiceNo}
                     onChange={(e) => setCustomInvoiceNo(e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 600 }}
+                    className="common-invoice-hub-s132"
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="common-invoice-hub-s44">
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                    <label className="common-invoice-hub-s131">
                       Issue Date
                     </label>
                     <input
                       type="date"
                       value={customDate}
                       onChange={(e) => setCustomDate(e.target.value)}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                      className="common-invoice-hub-s133"
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#b45309', marginBottom: 4 }}>
+                    <label className="common-invoice-hub-s134">
                       Payment Due Date
                     </label>
                     <input
                       type="date"
                       value={customDueDate}
                       onChange={(e) => setCustomDueDate(e.target.value)}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #fde68a', background: '#fffbeb', fontSize: '0.82rem', fontWeight: 700, color: '#92400e' }}
+                      className="common-invoice-hub-s135"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                  <label className="common-invoice-hub-s131">
                     Billed To (Name / Flat / Shop)
                   </label>
                   <input
@@ -2336,60 +2229,60 @@ IFSC Code: HDFC0002454`;
                     value={customRecipientName}
                     onChange={(e) => setCustomRecipientName(e.target.value)}
                     placeholder="e.g. Flat A-302, Shop 5, or Vendor Name"
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 700 }}
+                    className="common-invoice-hub-s136"
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                  <label className="common-invoice-hub-s131">
                     Address / Subtext
                   </label>
                   <input
                     type="text"
                     value={customRecipientSubtext}
                     onChange={(e) => setCustomRecipientSubtext(e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                    className="common-invoice-hub-s133"
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                  <label className="common-invoice-hub-s131">
                     Subject Line
                   </label>
                   <input
                     type="text"
                     value={customSubject}
                     onChange={(e) => setCustomSubject(e.target.value)}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 600 }}
+                    className="common-invoice-hub-s132"
                   />
                 </div>
               </div>
 
               {/* Line Items */}
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <label style={{ fontSize: '0.78rem', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <div className="common-invoice-hub-s107">
+                  <label className="common-invoice-hub-s137">
                     Line Items ({customItems.length})
                   </label>
                   <button
                     type="button"
                     onClick={handleAddCustomItem}
-                    style={{ padding: '4px 8px', borderRadius: 6, background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                    className="common-invoice-hub-s138"
                   >
                     + Add Item
                   </button>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div className="common-invoice-hub-s139">
                   {customItems.map((item, idx) => (
-                    <div key={item.id} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '10px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b' }}>Item #{idx + 1}</span>
+                    <div key={item.id} className="common-invoice-hub-s140">
+                      <div className="common-invoice-hub-s41">
+                        <span className="common-invoice-hub-s141">Item #{idx + 1}</span>
                         {customItems.length > 1 && (
                           <button
                             type="button"
                             onClick={() => handleRemoveCustomItem(item.id)}
-                            style={{ background: 'transparent', border: 'none', color: '#ef4444', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 700 }}
+                            className="common-invoice-hub-s142"
                           >
                             ✕ Remove
                           </button>
@@ -2400,22 +2293,22 @@ IFSC Code: HDFC0002454`;
                         value={item.description}
                         placeholder="Description"
                         onChange={(e) => handleUpdateCustomItem(item.id, 'description', e.target.value)}
-                        style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.78rem' }}
+                        className="common-invoice-hub-s143"
                       />
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                      <div className="common-invoice-hub-s144">
                         <input
                           type="text"
                           value={item.period}
                           placeholder="Period"
                           onChange={(e) => handleUpdateCustomItem(item.id, 'period', e.target.value)}
-                          style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.78rem' }}
+                          className="common-invoice-hub-s143"
                         />
                         <input
                           type="number"
                           value={item.amount}
                           placeholder="Amount (₹)"
                           onChange={(e) => handleUpdateCustomItem(item.id, 'amount', Number(e.target.value) || 0)}
-                          style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.78rem', fontWeight: 700, textAlign: 'right' }}
+                          className="common-invoice-hub-s145"
                         />
                       </div>
                     </div>
@@ -2425,48 +2318,37 @@ IFSC Code: HDFC0002454`;
 
               {/* Notes */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#334155', marginBottom: 4 }}>
+                <label className="common-invoice-hub-s131">
                   Instructions &amp; Payment Notes
                 </label>
                 <textarea
                   rows={2}
                   value={customNotes}
                   onChange={(e) => setCustomNotes(e.target.value)}
-                  style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.76rem', lineHeight: 1.4 }}
+                  className="common-invoice-hub-s146"
                 />
               </div>
 
               {/* Action Buttons */}
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', paddingTop: 6, borderTop: '1px solid #f1f5f9' }}>
+              <div className="common-invoice-hub-s65">
                 <button
                   type="button"
                   onClick={handlePrintCustomInvoice}
-                  style={{
-                    flex: 1, padding: '10px 14px', borderRadius: 8, background: '#0b2b26', color: '#C49B4F',
-                    border: '1px solid #C49B4F', fontWeight: 800, fontSize: '0.84rem', cursor: 'pointer',
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, boxShadow: '0 4px 14px rgba(11,43,38,0.25)'
-                  }}
+                  className="common-invoice-hub-s66"
                 >
                   <span>🖨️</span> Print / Save PDF
                 </button>
                 <button
                   type="button"
                   onClick={handleShareCustomWhatsApp}
-                  style={{
-                    padding: '10px 14px', borderRadius: 8, background: '#25D366', color: '#ffffff',
-                    border: 'none', fontWeight: 700, fontSize: '0.84rem', cursor: 'pointer',
-                    display: 'inline-flex', alignItems: 'center', gap: 6
-                  }}
+                  className="common-invoice-hub-s67"
                 >
                   <span>📱</span> WhatsApp
                 </button>
                 <button
                   type="button"
                   onClick={handleCopyCustomText}
-                  style={{
-                    padding: '10px 12px', borderRadius: 8, background: '#f1f5f9', color: '#334155',
-                    border: '1px solid #cbd5e1', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer'
-                  }}
+                  className="common-invoice-hub-s68"
                 >
                   📋 Copy
                 </button>
@@ -2475,92 +2357,89 @@ IFSC Code: HDFC0002454`;
             </div>
 
             {/* Right Column: Live A4 Letterhead Preview */}
-            <div style={{ background: '#eaedf0', borderRadius: 16, padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', overflowY: 'auto' }}>
-              <div style={{
-                background: '#ffffff', width: '100%', maxWidth: 540, borderRadius: 4, padding: '24px 28px',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.1)', border: '1px solid #cbd5e1', color: '#0f172a', fontSize: '0.82rem', lineHeight: 1.45, display: 'flex', flexDirection: 'column', gap: 10
-              }}>
+            <div className="common-invoice-hub-s69">
+              <div className="common-invoice-hub-s70">
                 {/* Letterhead */}
-                <div style={{ textAlign: 'center', borderBottom: '2px solid #0b2b26', paddingBottom: 10 }}>
-                  <div style={{ fontSize: '0.92rem', fontWeight: 900, color: '#0b2b26' }}>
+                <div className="common-invoice-hub-s71">
+                  <div className="common-invoice-hub-s72">
                     MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.
                   </div>
-                  <div style={{ fontSize: '0.66rem', color: '#475569', marginTop: 2 }}>
+                  <div className="common-invoice-hub-s73">
                     Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • Mohammed Wadi, Pune - 411060
                   </div>
-                  <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 8px', borderRadius: 999, background: '#0b2b26', color: '#fff', fontSize: '0.64rem', fontWeight: 800 }}>
+                  <span className="common-invoice-hub-s74">
                     {customDocType === 'invoice' ? 'TAX INVOICE / BILL' : 'DEMAND NOTICE'}
                   </span>
                 </div>
 
                 {/* Ref & Date */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', color: '#334155', borderBottom: '1px dashed #e2e8f0', paddingBottom: 6 }}>
+                <div className="common-invoice-hub-s75">
                   <div><strong>No:</strong> {customInvoiceNo}</div>
                   <div><strong>Date:</strong> {formatDisplayDate(customDate)}</div>
-                  <div><strong>Due:</strong> <span style={{ color: '#b91c1c', fontWeight: 700 }}>{formatDisplayDate(customDueDate)}</span></div>
+                  <div><strong>Due:</strong> <span className="common-invoice-hub-s76">{formatDisplayDate(customDueDate)}</span></div>
                 </div>
 
                 {/* Recipient */}
-                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px 12px', fontSize: '0.78rem' }}>
-                  <div style={{ fontSize: '0.66rem', color: '#64748b', fontWeight: 700 }}>BILLED TO:</div>
-                  <div style={{ fontWeight: 800, fontSize: '0.88rem' }}>{customRecipientName}</div>
-                  <div style={{ color: '#475569', fontSize: '0.72rem' }}>{customRecipientSubtext}</div>
+                <div className="common-invoice-hub-s77">
+                  <div className="common-invoice-hub-s78">BILLED TO:</div>
+                  <div className="common-invoice-hub-s79">{customRecipientName}</div>
+                  <div className="common-invoice-hub-s80">{customRecipientSubtext}</div>
                 </div>
 
                 {/* Subject */}
-                <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#0b2b26', background: '#f1f5f9', padding: '4px 8px', borderLeft: '3px solid #0b2b26' }}>
+                <div className="common-invoice-hub-s81">
                   <strong>SUBJECT:</strong> {customSubject.toUpperCase()}
                 </div>
 
                 {/* Table */}
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem', margin: '4px 0' }}>
+                <table className="common-invoice-hub-s82">
                   <thead>
-                    <tr style={{ background: '#0b2b26', color: '#fff' }}>
-                      <th style={{ padding: '4px 6px', textAlign: 'left' }}>Particulars</th>
-                      <th style={{ padding: '4px 6px', textAlign: 'center' }}>Period</th>
-                      <th style={{ padding: '4px 6px', textAlign: 'right' }}>Amount</th>
+                    <tr className="common-invoice-hub-s83">
+                      <th className="common-invoice-hub-s84">Particulars</th>
+                      <th className="common-invoice-hub-s85">Period</th>
+                      <th className="common-invoice-hub-s86">Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     {customItems.map((item) => (
-                      <tr key={item.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td style={{ padding: '4px 6px', fontWeight: 600 }}>{item.description}</td>
-                        <td style={{ padding: '4px 6px', textAlign: 'center', color: '#475569' }}>{item.period}</td>
-                        <td style={{ padding: '4px 6px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹{formatValue(item.amount)}</td>
+                      <tr key={item.id} className="common-invoice-hub-s87">
+                        <td className="common-invoice-hub-s88">{item.description}</td>
+                        <td className="common-invoice-hub-s147">{item.period}</td>
+                        <td className="common-invoice-hub-s89">₹{formatValue(item.amount)}</td>
                       </tr>
                     ))}
-                    <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 800 }}>
-                      <td colSpan={2} style={{ padding: '6px 8px', textAlign: 'right', color: '#fff' }}>TOTAL PAYABLE:</td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right', color: '#4ade80', fontSize: '0.88rem', fontFamily: 'monospace' }}>₹{formatValue(customTotalAmount)}</td>
+                    <tr className="common-invoice-hub-s94">
+                      <td colSpan={2} className="common-invoice-hub-s95">TOTAL PAYABLE:</td>
+                      <td className="common-invoice-hub-s96">₹{formatValue(customTotalAmount)}</td>
                     </tr>
                   </tbody>
                 </table>
 
                 {/* Remittance Box */}
-                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 6, padding: '8px 10px', fontSize: '0.72rem', color: '#166534' }}>
-                  <div style={{ fontWeight: 800, marginBottom: 2 }}>🏦 HDFC Bank Remittance:</div>
+                <div className="common-invoice-hub-s97">
+                  <div className="common-invoice-hub-s98">🏦 HDFC Bank Remittance:</div>
                   <div>• A/C: <strong>50200075533530</strong> • IFSC: <strong>HDFC0002454</strong></div>
                   <div>• Name: MAJESTIQUE EURISKA A BLDG SA GRU SAN MAR</div>
                 </div>
 
                 {/* Notes */}
-                <div style={{ fontSize: '0.68rem', color: '#475569', background: '#f8fafc', padding: '6px 8px', borderRadius: 4, border: '1px dashed #cbd5e1' }}>
+                <div className="common-invoice-hub-s99">
                   <strong>Notes:</strong> {customNotes}
                 </div>
 
                 {/* Signatures */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 16, paddingTop: 6 }}>
-                  <div style={{ textAlign: 'center', width: '30%' }}>
-                    <div style={{ border: '1px dashed #cbd5e1', height: 32, borderRadius: 3, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.6rem' }}>Seal</div>
-                    <div style={{ borderTop: '1px solid #0f172a', paddingTop: 2, fontSize: '0.68rem', fontWeight: 700 }}>Estate Manager</div>
+                <div className="common-invoice-hub-s100">
+                  <div className="common-invoice-hub-s101">
+                    <div className="common-invoice-hub-s102">Seal</div>
+                    <div className="common-invoice-hub-s103">Estate Manager</div>
                   </div>
-                  <div style={{ textAlign: 'center', width: '30%' }}>
-                    <div style={{ border: '1px dashed #cbd5e1', height: 32, borderRadius: 3, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.6rem' }}>Verified</div>
-                    <div style={{ borderTop: '1px solid #0f172a', paddingTop: 2, fontSize: '0.68rem', fontWeight: 700 }}>Hon. Secretary</div>
+                  <div className="common-invoice-hub-s101">
+                    <div className="common-invoice-hub-s102">Verified</div>
+                    <div className="common-invoice-hub-s103">Hon. Secretary</div>
                   </div>
-                  <div style={{ textAlign: 'center', width: '30%' }}>
-                    <div style={{ border: '1px dashed #cbd5e1', height: 32, borderRadius: 3, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.6rem' }}>Approved</div>
-                    <div style={{ borderTop: '1px solid #0f172a', paddingTop: 2, fontSize: '0.68rem', fontWeight: 700 }}>Hon. Treasurer</div>
+                  <div className="common-invoice-hub-s101">
+                    <div className="common-invoice-hub-s102">Approved</div>
+                    <div className="common-invoice-hub-s103">Hon. Treasurer</div>
                   </div>
                 </div>
 
@@ -2577,37 +2456,33 @@ IFSC Code: HDFC0002454`;
         const isCombinedView = combActiveTab === 'combined';
 
         return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <div className="common-invoice-hub-s148">
           {/* Top Bar with Status and Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0b2b26', background: '#ecfdf5', padding: '6px 14px', borderRadius: 999, border: '1px solid #a7f3d0' }}>
+          <div className="common-invoice-hub-s149">
+            <div className="common-invoice-hub-s150">
+              <span className="common-invoice-hub-s151">
                 🏛️ Combined 3-Flats Demand Notice (A-302, A-904, A-1002)
               </span>
-              <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#1e3a8a', background: '#eff6ff', padding: '4px 10px', borderRadius: 999, border: '1px solid #bfdbfe' }}>
+              <span className="common-invoice-hub-s152">
                 📰 Official Times of India (Times Horizon Private Limited) Template
               </span>
-              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#92400e', background: '#fef3c7', padding: '4px 10px', borderRadius: 999, border: '1px solid #fde68a' }}>
+              <span className="common-invoice-hub-s153">
                 Current Maintenance + Oct 2024 Arrears
               </span>
             </div>
 
             {combToast && (
-              <span style={{ padding: '6px 14px', borderRadius: 999, background: '#d1fae5', color: '#065f46', fontSize: '0.82rem', fontWeight: 700, border: '1px solid #a7f3d0' }}>
+              <span className="common-invoice-hub-s154">
                 {combToast}
               </span>
             )}
 
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div className="common-invoice-hub-s155">
               {!isCombinedView && (
                 <button
                   type="button"
                   onClick={() => handlePrintSingleFlatInvoice(activeFlat.id)}
-                  style={{
-                    padding: '9px 16px', borderRadius: 8, background: '#1e3a8a', color: '#ffffff',
-                    border: '1px solid #3b82f6', fontWeight: 800, fontSize: '0.84rem', cursor: 'pointer',
-                    display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 12px rgba(30,58,138,0.2)'
-                  }}
+                  className="common-invoice-hub-s156"
                 >
                   <span>🖨️</span> Print Official Invoice (Flat {activeFlat.flatNo})
                 </button>
@@ -2615,44 +2490,28 @@ IFSC Code: HDFC0002454`;
               <button
                 type="button"
                 onClick={handlePrintBatchAllFlats}
-                style={{
-                  padding: '9px 16px', borderRadius: 8, background: '#0b2b26', color: '#4ade80',
-                  border: '1px solid #4ade80', fontWeight: 800, fontSize: '0.84rem', cursor: 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 12px rgba(11,43,38,0.2)'
-                }}
+                className="common-invoice-hub-s157"
               >
                 <span>📑</span> Batch Print All 3 Invoices (A4)
               </button>
               <button
                 type="button"
                 onClick={handlePrintCombInvoice}
-                style={{
-                  padding: '9px 16px', borderRadius: 8, background: '#0b2b26', color: '#C49B4F',
-                  border: '1px solid #C49B4F', fontWeight: 800, fontSize: '0.84rem', cursor: 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 12px rgba(11,43,38,0.2)'
-                }}
+                className="common-invoice-hub-s158"
               >
                 <span>🖨️</span> Print / Download Combined PDF
               </button>
               <button
                 type="button"
                 onClick={handleShareCombWhatsApp}
-                style={{
-                  padding: '9px 16px', borderRadius: 8, background: '#25D366', color: '#ffffff',
-                  border: 'none', fontWeight: 700, fontSize: '0.84rem', cursor: 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: 6
-                }}
+                className="common-invoice-hub-s159"
               >
                 <span>📱</span> Send WhatsApp
               </button>
               <button
                 type="button"
                 onClick={handleCopyCombText}
-                style={{
-                  padding: '9px 16px', borderRadius: 8, background: '#fff', color: '#334155',
-                  border: '1px solid #cbd5e1', fontWeight: 700, fontSize: '0.84rem', cursor: 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: 6
-                }}
+                className="common-invoice-hub-s160"
               >
                 <span>📋</span> Copy Full Notice
               </button>
@@ -2660,8 +2519,8 @@ IFSC Code: HDFC0002454`;
           </div>
 
           {/* Sub-tab Switcher: Flat A-302, Flat A-904, Flat A-1002, Combined Summary */}
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', background: '#f8fafc', padding: '10px 14px', borderRadius: 14, border: '1.5px solid #e2e8f0' }}>
-            <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#475569', display: 'flex', alignItems: 'center', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div className="common-invoice-hub-s161">
+            <span className="common-invoice-hub-s162">
               Select Official Invoice View:
             </span>
             {combFlats.map(flat => {
@@ -2671,32 +2530,11 @@ IFSC Code: HDFC0002454`;
                   key={flat.id}
                   type="button"
                   onClick={() => setCombActiveTab(flat.id)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: 8,
-                    border: isSelected ? '2px solid #1e3a8a' : '1px solid #cbd5e1',
-                    background: isSelected ? '#1e3a8a' : '#ffffff',
-                    color: isSelected ? '#ffffff' : '#0f172a',
-                    fontWeight: 800,
-                    fontSize: '0.82rem',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    boxShadow: isSelected ? '0 3px 10px rgba(30,58,138,0.25)' : 'none',
-                    transition: 'all 0.15s ease'
-                  }}
+                  className="common-invoice-hub-s163" style={{ border: isSelected ? '2px solid #1e3a8a' : '1px solid #cbd5e1', background: isSelected ? '#1e3a8a' : '#ffffff', color: isSelected ? '#ffffff' : '#0f172a', boxShadow: isSelected ? '0 3px 10px rgba(30,58,138,0.25)' : 'none' }}
                 >
                   <span>📄</span>
                   <span>Flat {flat.flatNo} ({flat.invoiceNo})</span>
-                  <span style={{
-                    fontSize: '0.74rem',
-                    padding: '2px 7px',
-                    borderRadius: 999,
-                    background: isSelected ? '#38bdf8' : '#f1f5f9',
-                    color: isSelected ? '#0f172a' : '#475569',
-                    fontWeight: 800
-                  }}>
+                  <span className="common-invoice-hub-s164" style={{ background: isSelected ? '#38bdf8' : '#f1f5f9', color: isSelected ? '#0f172a' : '#475569' }}>
                     ₹{flat.total.toLocaleString('en-IN')}
                   </span>
                 </button>
@@ -2705,98 +2543,66 @@ IFSC Code: HDFC0002454`;
             <button
               type="button"
               onClick={() => setCombActiveTab('combined')}
-              style={{
-                padding: '8px 16px',
-                borderRadius: 8,
-                border: isCombinedView ? '2px solid #0b2b26' : '1px solid #cbd5e1',
-                background: isCombinedView ? '#0b2b26' : '#ffffff',
-                color: isCombinedView ? '#ffffff' : '#0f172a',
-                fontWeight: 800,
-                fontSize: '0.82rem',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                boxShadow: isCombinedView ? '0 3px 10px rgba(11,43,38,0.25)' : 'none',
-                transition: 'all 0.15s ease'
-              }}
+              className="common-invoice-hub-s163" style={{ border: isCombinedView ? '2px solid #0b2b26' : '1px solid #cbd5e1', background: isCombinedView ? '#0b2b26' : '#ffffff', color: isCombinedView ? '#ffffff' : '#0f172a', boxShadow: isCombinedView ? '0 3px 10px rgba(11,43,38,0.25)' : 'none' }}
             >
               <span>📊</span>
               <span>Combined 3-Flats Summary</span>
-              <span style={{
-                fontSize: '0.74rem',
-                padding: '2px 7px',
-                borderRadius: 999,
-                background: isCombinedView ? '#4ade80' : '#dcfce7',
-                color: isCombinedView ? '#0b2b26' : '#166534',
-                fontWeight: 800
-              }}>
+              <span className="common-invoice-hub-s164" style={{ background: isCombinedView ? '#4ade80' : '#dcfce7', color: isCombinedView ? '#0b2b26' : '#166534' }}>
                 ₹67,200
               </span>
             </button>
           </div>
 
           {/* 3-Flats Dues Breakdown Cards Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: 16 }}>
+          <div className="common-invoice-hub-s165">
             {/* Flat A-302 */}
             <div
               onClick={() => setCombActiveTab('A-302')}
-              style={{
-                background: '#fff',
-                borderRadius: 14,
-                border: combActiveTab === 'A-302' ? '2.5px solid #16a34a' : '1px solid #bbf7d0',
-                padding: '18px',
-                boxShadow: combActiveTab === 'A-302' ? '0 6px 20px rgba(22,163,74,0.18)' : '0 4px 16px rgba(0,0,0,0.04)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
+              className="common-invoice-hub-s166" style={{ border: combActiveTab === 'A-302' ? '2.5px solid #16a34a' : '1px solid #bbf7d0', boxShadow: combActiveTab === 'A-302' ? '0 6px 20px rgba(22,163,74,0.18)' : '0 4px 16px rgba(0,0,0,0.04)' }}
             >
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0b2b26', background: '#ecfdf5', padding: '3px 10px', borderRadius: 6, border: '1px solid #a7f3d0' }}>
+                <div className="common-invoice-hub-s167">
+                  <span className="common-invoice-hub-s168">
                     FLAT A-302
                   </span>
-                  <span style={{ fontSize: '0.72rem', color: '#15803d', fontWeight: 800, background: '#dcfce7', padding: '2px 8px', borderRadius: 6, border: '1px solid #86efac' }}>
+                  <span className="common-invoice-hub-s169">
                     ✓ PAID (23-10-2026)
                   </span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0b2b26', fontFamily: 'monospace' }}>
+                <div className="common-invoice-hub-s170">
+                  <div className="common-invoice-hub-s171">
                     ₹18,000
                   </div>
-                  <div style={{ fontSize: '0.74rem', color: '#16a34a', fontWeight: 800 }}>
+                  <div className="common-invoice-hub-s172">
                     Balance: ₹0 (Paid)
                   </div>
                 </div>
-                <div style={{ fontSize: '0.74rem', color: '#1e3a8a', fontWeight: 700, marginBottom: 8 }}>
+                <div className="common-invoice-hub-s173">
                   Inv No: ME/A/18/Oct26
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: 4, background: '#f8fafc', padding: '10px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="common-invoice-hub-s174">
+                  <div className="common-invoice-hub-s175">
                     <span>• Maintenance (₹2,850 × 6):</span>
-                    <strong style={{ color: '#0f172a' }}>₹17,100</strong>
+                    <strong className="common-invoice-hub-s176">₹17,100</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div className="common-invoice-hub-s175">
                     <span>• Sinking Fund (₹150 × 6):</span>
-                    <strong style={{ color: '#0f172a' }}>₹900</strong>
+                    <strong className="common-invoice-hub-s176">₹900</strong>
                   </div>
-                  <div style={{ borderTop: '1px dashed #cbd5e1', paddingTop: 4, display: 'flex', justifyContent: 'space-between', color: '#15803d', fontWeight: 700, fontSize: '0.75rem' }}>
+                  <div className="common-invoice-hub-s177">
                     <span>• Paid on 23-10-2026:</span>
                     <span>₹18,000</span>
                   </div>
                 </div>
               </div>
-              <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px dashed #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: combActiveTab === 'A-302' ? '#16a34a' : '#15803d', fontWeight: 800 }}>
+              <div className="common-invoice-hub-s178">
+                <span className="common-invoice-hub-s179" style={{ color: combActiveTab === 'A-302' ? '#16a34a' : '#15803d' }}>
                   {combActiveTab === 'A-302' ? '● Currently Selected' : 'Click to View'}
                 </span>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handlePrintSingleFlatInvoice('A-302'); }}
-                  style={{ padding: '4px 8px', borderRadius: 6, background: '#f0fdf4', border: '1px solid #86efac', fontSize: '0.72rem', fontWeight: 700, color: '#166534', cursor: 'pointer' }}
+                  className="common-invoice-hub-s180"
                 >
                   🖨️ Print
                 </button>
@@ -2806,62 +2612,51 @@ IFSC Code: HDFC0002454`;
             {/* Flat A-904 */}
             <div
               onClick={() => setCombActiveTab('A-904')}
-              style={{
-                background: '#fff',
-                borderRadius: 14,
-                border: combActiveTab === 'A-904' ? '2.5px solid #16a34a' : '1px solid #bbf7d0',
-                padding: '18px',
-                boxShadow: combActiveTab === 'A-904' ? '0 6px 20px rgba(22,163,74,0.18)' : '0 4px 16px rgba(0,0,0,0.04)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
+              className="common-invoice-hub-s166" style={{ border: combActiveTab === 'A-904' ? '2.5px solid #16a34a' : '1px solid #bbf7d0', boxShadow: combActiveTab === 'A-904' ? '0 6px 20px rgba(22,163,74,0.18)' : '0 4px 16px rgba(0,0,0,0.04)' }}
             >
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0b2b26', background: '#ecfdf5', padding: '3px 10px', borderRadius: 6, border: '1px solid #a7f3d0' }}>
+                <div className="common-invoice-hub-s167">
+                  <span className="common-invoice-hub-s168">
                     FLAT A-904
                   </span>
-                  <span style={{ fontSize: '0.72rem', color: '#15803d', fontWeight: 800, background: '#dcfce7', padding: '2px 8px', borderRadius: 6, border: '1px solid #86efac' }}>
+                  <span className="common-invoice-hub-s169">
                     ✓ PAID (23-10-2026)
                   </span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0b2b26', fontFamily: 'monospace' }}>
+                <div className="common-invoice-hub-s170">
+                  <div className="common-invoice-hub-s171">
                     ₹18,000
                   </div>
-                  <div style={{ fontSize: '0.74rem', color: '#16a34a', fontWeight: 800 }}>
+                  <div className="common-invoice-hub-s172">
                     Balance: ₹0 (Paid)
                   </div>
                 </div>
-                <div style={{ fontSize: '0.74rem', color: '#1e3a8a', fontWeight: 700, marginBottom: 8 }}>
+                <div className="common-invoice-hub-s173">
                   Inv No: ME/A/16/Oct-26
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: 4, background: '#f8fafc', padding: '10px 12px', borderRadius: 8, border: '1px solid #e2e8f0' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="common-invoice-hub-s174">
+                  <div className="common-invoice-hub-s175">
                     <span>• Maintenance (₹2,850 × 6):</span>
-                    <strong style={{ color: '#0f172a' }}>₹17,100</strong>
+                    <strong className="common-invoice-hub-s176">₹17,100</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div className="common-invoice-hub-s175">
                     <span>• Sinking Fund (₹150 × 6):</span>
-                    <strong style={{ color: '#0f172a' }}>₹900</strong>
+                    <strong className="common-invoice-hub-s176">₹900</strong>
                   </div>
-                  <div style={{ borderTop: '1px dashed #cbd5e1', paddingTop: 4, display: 'flex', justifyContent: 'space-between', color: '#15803d', fontWeight: 700, fontSize: '0.75rem' }}>
+                  <div className="common-invoice-hub-s177">
                     <span>• Paid on 23-10-2026:</span>
                     <span>₹18,000</span>
                   </div>
                 </div>
               </div>
-              <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px dashed #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: combActiveTab === 'A-904' ? '#16a34a' : '#15803d', fontWeight: 800 }}>
+              <div className="common-invoice-hub-s178">
+                <span className="common-invoice-hub-s179" style={{ color: combActiveTab === 'A-904' ? '#16a34a' : '#15803d' }}>
                   {combActiveTab === 'A-904' ? '● Currently Selected' : 'Click to View'}
                 </span>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handlePrintSingleFlatInvoice('A-904'); }}
-                  style={{ padding: '4px 8px', borderRadius: 6, background: '#f0fdf4', border: '1px solid #86efac', fontSize: '0.72rem', fontWeight: 700, color: '#166534', cursor: 'pointer' }}
+                  className="common-invoice-hub-s180"
                 >
                   🖨️ Print
                 </button>
@@ -2871,64 +2666,53 @@ IFSC Code: HDFC0002454`;
             {/* Flat A-1002 */}
             <div
               onClick={() => setCombActiveTab('A-1002')}
-              style={{
-                background: '#fff',
-                borderRadius: 14,
-                border: combActiveTab === 'A-1002' ? '2.5px solid #1e3a8a' : '2px solid #C49B4F',
-                padding: '18px',
-                boxShadow: combActiveTab === 'A-1002' ? '0 6px 20px rgba(30,58,138,0.15)' : '0 4px 16px rgba(196,155,79,0.15)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
+              className="common-invoice-hub-s166" style={{ border: combActiveTab === 'A-1002' ? '2.5px solid #1e3a8a' : '2px solid #C49B4F', boxShadow: combActiveTab === 'A-1002' ? '0 6px 20px rgba(30,58,138,0.15)' : '0 4px 16px rgba(196,155,79,0.15)' }}
             >
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0b2b26', background: '#fef3c7', padding: '3px 10px', borderRadius: 6, border: '1px solid #fde68a' }}>
+                <div className="common-invoice-hub-s167">
+                  <span className="common-invoice-hub-s181">
                     FLAT A-1002
                   </span>
-                  <span style={{ fontSize: '0.72rem', color: '#92400e', fontWeight: 800, background: '#fef3c7', padding: '2px 8px', borderRadius: 6, border: '1px solid #fde68a' }}>
+                  <span className="common-invoice-hub-s182">
                     ⏳ PENDING (₹31,200)
                   </span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#b45309', fontFamily: 'monospace' }}>
+                <div className="common-invoice-hub-s170">
+                  <div className="common-invoice-hub-s183">
                     ₹31,200
                   </div>
-                  <div style={{ fontSize: '0.74rem', color: '#b45309', fontWeight: 800 }}>
+                  <div className="common-invoice-hub-s184">
                     Balance Due: ₹31,200
                   </div>
                 </div>
-                <div style={{ fontSize: '0.74rem', color: '#1e3a8a', fontWeight: 700, marginBottom: 8 }}>
+                <div className="common-invoice-hub-s173">
                   Inv No: ME/A/17/Oct-26
                 </div>
-                <div style={{ fontSize: '0.76rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: 6, background: '#fffbeb', padding: '10px 12px', borderRadius: 8, border: '1px solid #fde68a' }}>
+                <div className="common-invoice-hub-s185">
                   <div>
-                    <div style={{ fontWeight: 800, color: '#92400e', marginBottom: 2 }}>Earlier Pending (Oct 2024 – Mar 2025): ₹13,200</div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#78350f' }}>
+                    <div className="common-invoice-hub-s186">Earlier Pending (Oct 2024 – Mar 2025): ₹13,200</div>
+                    <div className="common-invoice-hub-s187">
                       <span>Maint: ₹2,100 × 6 = ₹12,600</span>
                       <span>Sinking: ₹100 × 6 = ₹600</span>
                     </div>
                   </div>
-                  <div style={{ borderTop: '1px dashed #fde68a', paddingTop: 4 }}>
-                    <div style={{ fontWeight: 800, color: '#065f46', marginBottom: 2 }}>Current Maintenance (Oct 2026 – Mar 2027): ₹18,000</div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#047857' }}>
+                  <div className="common-invoice-hub-s188">
+                    <div className="common-invoice-hub-s189">Current Maintenance (Oct 2026 – Mar 2027): ₹18,000</div>
+                    <div className="common-invoice-hub-s190">
                       <span>Maint: ₹2,850 × 6 = ₹17,100</span>
                       <span>Sinking: ₹150 × 6 = ₹900</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px dashed #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: combActiveTab === 'A-1002' ? '#1e3a8a' : '#b45309', fontWeight: 800 }}>
+              <div className="common-invoice-hub-s178">
+                <span className="common-invoice-hub-s179" style={{ color: combActiveTab === 'A-1002' ? '#1e3a8a' : '#b45309' }}>
                   {combActiveTab === 'A-1002' ? '● Currently Selected' : 'Click to View'}
                 </span>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handlePrintSingleFlatInvoice('A-1002'); }}
-                  style={{ padding: '4px 8px', borderRadius: 6, background: '#f1f5f9', border: '1px solid #cbd5e1', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer' }}
+                  className="common-invoice-hub-s191"
                 >
                   🖨️ Print
                 </button>
@@ -2937,48 +2721,37 @@ IFSC Code: HDFC0002454`;
           </div>
 
           {/* Grand Total Summary Banner */}
-          <div style={{
-            background: 'linear-gradient(135deg, #0b2b26 0%, #164e43 100%)',
-            borderRadius: 14,
-            padding: '18px 22px',
-            color: '#fff',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: 16,
-            boxShadow: '0 8px 24px rgba(11,43,38,0.25)'
-          }}>
+          <div className="common-invoice-hub-s192">
             <div>
-              <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#C49B4F', fontWeight: 800 }}>
+              <div className="common-invoice-hub-s193">
                 Combined Demand &amp; Payment Status (Times Horizon Private Limited)
               </div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff', marginTop: 2 }}>
+              <div className="common-invoice-hub-s194">
                 Flat A-302 (₹18,000) + Flat A-904 (₹18,000) + Flat A-1002 (₹31,200)
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.85)', marginTop: 4, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <span style={{ background: 'rgba(74,222,128,0.18)', border: '1px solid rgba(74,222,128,0.4)', padding: '2px 8px', borderRadius: 6, color: '#86efac', fontWeight: 700 }}>
+              <div className="common-invoice-hub-s195">
+                <span className="common-invoice-hub-s196">
                   ✓ Received Today (23-Oct-2026): ₹36,000 (Flats A-302 &amp; A-904 Paid)
                 </span>
-                <span style={{ background: 'rgba(251,191,36,0.18)', border: '1px solid rgba(251,191,36,0.4)', padding: '2px 8px', borderRadius: 6, color: '#fde047', fontWeight: 700 }}>
+                <span className="common-invoice-hub-s197">
                   ⏳ Net Balance Due: ₹31,200 (Flat A-1002 Pending)
                 </span>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
-              <div style={{ textAlign: 'right', borderRight: '1px solid rgba(255,255,255,0.2)', paddingRight: 20 }}>
-                <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div className="common-invoice-hub-s198">
+              <div className="common-invoice-hub-s199">
+                <div className="common-invoice-hub-s200">
                   Total Invoiced
                 </div>
-                <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#cbd5e1', fontFamily: 'monospace' }}>
+                <div className="common-invoice-hub-s201">
                   ₹67,200
                 </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.68rem', color: '#fde047', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 800 }}>
+              <div className="common-invoice-hub-s202">
+                <div className="common-invoice-hub-s203">
                   Net Outstanding
                 </div>
-                <div style={{ fontSize: '2rem', fontWeight: 900, color: '#facc15', fontFamily: 'monospace', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+                <div className="common-invoice-hub-s204">
                   ₹31,200
                 </div>
               </div>
@@ -2986,89 +2759,89 @@ IFSC Code: HDFC0002454`;
           </div>
 
           {/* Two-Column Layout: Controls & Bank Details on Left, Live A4 Preview on Right */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(340px, 460px) 1fr', gap: 20, alignItems: 'start' }}>
+          <div className="common-invoice-hub-s29">
             
             {/* Left Column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="common-invoice-hub-s18">
               
               {/* Flat-Specific Invoice Parameters (When single flat is selected) */}
               {!isCombinedView && (
-                <div style={{ background: '#fff', border: '1.5px solid #bfdbfe', borderRadius: 14, padding: '18px', boxShadow: '0 4px 16px rgba(30,58,138,0.06)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: '1.1rem' }}>📰</span>
-                      <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#1e3a8a' }}>
+                <div className="common-invoice-hub-s205">
+                  <div className="common-invoice-hub-s206">
+                    <div className="common-invoice-hub-s207">
+                      <span className="common-invoice-hub-s208">📰</span>
+                      <span className="common-invoice-hub-s209">
                         Flat {activeFlat.flatNo} Official Invoice Settings
                       </span>
                     </div>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 800, background: '#eff6ff', color: '#1e3a8a', padding: '3px 8px', borderRadius: 6 }}>
+                    <span className="common-invoice-hub-s210">
                       TOI Template
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div className="common-invoice-hub-s52">
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>
+                      <label className="common-invoice-hub-s45">
                         Invoice No. (Exact Printed Format)
                       </label>
                       <input
                         type="text"
                         value={activeFlat.invoiceNo}
                         onChange={(e) => handleUpdateFlatField(activeFlat.id, 'invoiceNo', e.target.value)}
-                        style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 700, color: '#1e3a8a' }}
+                        className="common-invoice-hub-s211"
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>
+                      <label className="common-invoice-hub-s45">
                         Bill Period Text (e.g. 01-10-2026 to 31-03-2027)
                       </label>
                       <input
                         type="text"
                         value={activeFlat.billPeriodStr}
                         onChange={(e) => handleUpdateFlatField(activeFlat.id, 'billPeriodStr', e.target.value)}
-                        style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                        className="common-invoice-hub-s212"
                       />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div className="common-invoice-hub-s44">
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>Invoice Date</label>
+                        <label className="common-invoice-hub-s45">Invoice Date</label>
                         <input
                           type="date"
                           value={combInvoiceDate}
                           onChange={(e) => setCombInvoiceDate(e.target.value)}
-                          style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                          className="common-invoice-hub-s212"
                         />
                       </div>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>Due Date</label>
+                        <label className="common-invoice-hub-s45">Due Date</label>
                         <input
                           type="date"
                           value={combDueDate}
                           onChange={(e) => setCombDueDate(e.target.value)}
-                          style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 700, color: '#b91c1c' }}
+                          className="common-invoice-hub-s213"
                         />
                       </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div className="common-invoice-hub-s44">
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>Mobile No.</label>
+                        <label className="common-invoice-hub-s45">Mobile No.</label>
                         <input
                           type="text"
                           value={combClientMobile}
                           onChange={(e) => setCombClientMobile(e.target.value)}
-                          style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                          className="common-invoice-hub-s212"
                         />
                       </div>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>E-Mail</label>
+                        <label className="common-invoice-hub-s45">E-Mail</label>
                         <input
                           type="email"
                           value={combClientEmail}
                           onChange={(e) => setCombClientEmail(e.target.value)}
-                          style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                          className="common-invoice-hub-s212"
                         />
                       </div>
                     </div>
@@ -3076,21 +2849,7 @@ IFSC Code: HDFC0002454`;
                     <button
                       type="button"
                       onClick={() => handlePrintSingleFlatInvoice(activeFlat.id)}
-                      style={{
-                        marginTop: 4,
-                        padding: '10px 14px',
-                        borderRadius: 8,
-                        background: '#1e3a8a',
-                        color: '#fff',
-                        border: 'none',
-                        fontWeight: 800,
-                        fontSize: '0.82rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 8
-                      }}
+                      className="common-invoice-hub-s214"
                     >
                       <span>🖨️</span> Print Flat {activeFlat.flatNo} A4 Invoice
                     </button>
@@ -3099,90 +2858,86 @@ IFSC Code: HDFC0002454`;
               )}
 
               {/* Remittance Bank Account Box */}
-              <div style={{ background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: 14, padding: '18px', boxShadow: '0 4px 14px rgba(22,101,52,0.08)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: '1.2rem' }}>🏦</span>
-                    <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#166534' }}>Bank Account Details for Payment</span>
+              <div className="common-invoice-hub-s215">
+                <div className="common-invoice-hub-s206">
+                  <div className="common-invoice-hub-s26">
+                    <span className="common-invoice-hub-s109">🏦</span>
+                    <span className="common-invoice-hub-s216">Bank Account Details for Payment</span>
                   </div>
                   <button
                     type="button"
                     onClick={handleCopyBankDetails}
-                    style={{
-                      padding: '4px 10px', borderRadius: 6, background: '#166534', color: '#fff',
-                      border: 'none', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
-                      display: 'inline-flex', alignItems: 'center', gap: 4
-                    }}
+                    className="common-invoice-hub-s217"
                   >
                     <span>📋</span> Copy Bank
                   </button>
                 </div>
 
-                <div style={{ fontSize: '0.82rem', color: '#14532d', display: 'flex', flexDirection: 'column', gap: 6, background: '#fff', padding: '12px 14px', borderRadius: 8, border: '1px solid #bbf7d0' }}>
+                <div className="common-invoice-hub-s218">
                   <div><strong>Account Name:</strong> Majestique Euriska 'A' Building CO OP Society LTD</div>
                   <div><strong>Bank:</strong> HDFC Bank</div>
                   <div><strong>Branch:</strong> Undri Branch (Budhrani Boulevard, Pune - 411060)</div>
                   <div><strong>Account Type:</strong> Current Account (CA-INSTITUTION)</div>
-                  <div><strong>Account No.:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: '0.95rem', color: '#0b2b26' }}>50200075533530</span></div>
-                  <div><strong>IFSC Code:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: '0.95rem', color: '#0b2b26' }}>HDFC0002454</span></div>
+                  <div><strong>Account No.:</strong> <span className="common-invoice-hub-s219">50200075533530</span></div>
+                  <div><strong>IFSC Code:</strong> <span className="common-invoice-hub-s219">HDFC0002454</span></div>
                 </div>
 
-                <div style={{ marginTop: 10, fontSize: '0.74rem', color: '#166534', fontStyle: 'italic' }}>
+                <div className="common-invoice-hub-s220">
                   Please share the payment confirmation / UTR screenshot once completed.
                 </div>
               </div>
 
               {/* Accompanying Cover Note & Cancelled Cheque Intimation */}
-              <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 14, padding: '18px', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }}>
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#C49B4F' }}>
+              <div className="common-invoice-hub-s221">
+                <span className="common-invoice-hub-s222">
                   Accompanying Note
                 </span>
-                <h4 style={{ margin: '2px 0 10px', fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>
+                <h4 className="common-invoice-hub-s223">
                   📝 Payment Notice Note &amp; Cheque Intimation
                 </h4>
                 <textarea
                   value={combNotes}
                   onChange={(e) => setCombNotes(e.target.value)}
                   rows={4}
-                  style={{ width: '100%', padding: '10px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: '0.82rem', lineHeight: 1.45, color: '#334155' }}
+                  className="common-invoice-hub-s224"
                 />
-                <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: 6 }}>
+                <div className="common-invoice-hub-s225">
                   This text will be included in the WhatsApp notification and official bill printout notes section.
                 </div>
               </div>
 
               {/* Combined Bill Metadata & Due Date */}
               {isCombinedView && (
-                <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 14, padding: '18px', boxShadow: '0 4px 16px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#0b2b26' }}>
+                <div className="common-invoice-hub-s226">
+                  <span className="common-invoice-hub-s227">
                     Bill Metadata &amp; Due Date
                   </span>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>Bill Reference No.</label>
+                    <label className="common-invoice-hub-s45">Bill Reference No.</label>
                     <input
                       type="text"
                       value={combInvoiceNo}
                       onChange={(e) => setCombInvoiceNo(e.target.value)}
-                      style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 700 }}
+                      className="common-invoice-hub-s228"
                     />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div className="common-invoice-hub-s44">
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>Bill Date</label>
+                      <label className="common-invoice-hub-s45">Bill Date</label>
                       <input
                         type="date"
                         value={combInvoiceDate}
                         onChange={(e) => setCombInvoiceDate(e.target.value)}
-                        style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem' }}
+                        className="common-invoice-hub-s212"
                       />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: '#475569', marginBottom: 4 }}>Due Date</label>
+                      <label className="common-invoice-hub-s45">Due Date</label>
                       <input
                         type="date"
                         value={combDueDate}
                         onChange={(e) => setCombDueDate(e.target.value)}
-                        style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: '0.82rem', fontWeight: 700, color: '#b91c1c' }}
+                        className="common-invoice-hub-s213"
                       />
                     </div>
                   </div>
@@ -3192,22 +2947,22 @@ IFSC Code: HDFC0002454`;
             </div>
 
             {/* Right Column: Live Printable A4 Preview */}
-            <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 8px 30px rgba(0,0,0,0.06)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, borderBottom: '1px solid #f1f5f9', paddingBottom: 10, flexWrap: 'wrap', gap: 10 }}>
+            <div className="common-invoice-hub-s229">
+              <div className="common-invoice-hub-s230">
                 <div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: isCombinedView ? '#0b2b26' : '#1e3a8a' }}>
+                  <span className="common-invoice-hub-s231" style={{ color: isCombinedView ? '#0b2b26' : '#1e3a8a' }}>
                     {isCombinedView ? 'Live Combined Statement Preview (A4)' : `Live Official Invoice Preview (Flat ${activeFlat.flatNo})`}
                   </span>
-                  <div style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600 }}>
+                  <div className="common-invoice-hub-s232">
                     {isCombinedView ? 'Consolidated Settlement Bill' : `Official Template • ${activeFlat.invoiceNo}`}
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div className="common-invoice-hub-s233">
                   {!isCombinedView ? (
                     <button
                       type="button"
                       onClick={() => handlePrintSingleFlatInvoice(activeFlat.id)}
-                      style={{ padding: '6px 12px', borderRadius: 6, background: '#1e3a8a', color: '#fff', border: 'none', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                      className="common-invoice-hub-s234"
                     >
                       <span>🖨️</span> Print Flat {activeFlat.flatNo}
                     </button>
@@ -3215,7 +2970,7 @@ IFSC Code: HDFC0002454`;
                     <button
                       type="button"
                       onClick={handlePrintCombInvoice}
-                      style={{ padding: '6px 12px', borderRadius: 6, background: '#0b2b26', color: '#C49B4F', border: '1px solid #C49B4F', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                      className="common-invoice-hub-s235"
                     >
                       <span>🖨️</span> Print Combined PDF
                     </button>
@@ -3226,86 +2981,86 @@ IFSC Code: HDFC0002454`;
               {/* Live Preview Paper */}
               {!isCombinedView ? (
                 /* ── OFFICIAL TOI PRINTED TEMPLATE REPLICA ── */
-                <div style={{ background: '#ffffff', border: '1.5px solid #000000', borderRadius: 4, padding: '20px 22px', fontSize: '0.76rem', color: '#000000', display: 'flex', flexDirection: 'column', gap: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
+                <div className="common-invoice-hub-s236">
                   
                   {/* Society Header & Bill Period Banner */}
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.98rem', fontWeight: 900, color: '#000', letterSpacing: '0.2px' }}>
+                  <div className="common-invoice-hub-s237">
+                    <div className="common-invoice-hub-s238">
                       Majestique Euriska A Building Sahakari Gruhrachna Sanstha Maryadit
                     </div>
-                    <div style={{ fontSize: '0.7rem', color: '#000', marginTop: 2, lineHeight: 1.3 }}>
+                    <div className="common-invoice-hub-s239">
                       S. No. 2, Plot No. C-1, Village Mohammadwadi Tal. Haveli, Dist. Pune- 411060 Reg. No.
                     </div>
-                    <div style={{ fontSize: '0.7rem', color: '#000', lineHeight: 1.3 }}>
+                    <div className="common-invoice-hub-s240">
                       PNA/PNA(4)/HSG/(TC)/21207/2021-22 Dt. 09/08/2019
                     </div>
-                    <div style={{ textAlign: 'center', fontWeight: 800, fontSize: '0.8rem', marginTop: 5 }}>
+                    <div className="common-invoice-hub-s241">
                       Bill Period : {activeFlat.billPeriodStr}
                     </div>
                   </div>
 
                   {/* Unified Table Box: Meta Box + Services Table directly touching with zero space */}
-                  <div style={{ display: 'flex', flexDirection: 'column', margin: 0, padding: 0 }}>
+                  <div className="common-invoice-hub-s242">
                     {/* Meta Box: Left Details + Right Period */}
-                    <div style={{ border: '1.5px solid #000', display: 'flex', margin: 0 }}>
+                    <div className="common-invoice-hub-s243">
                     
                     {/* Left Meta Column */}
-                    <div style={{ width: '54%', borderRight: '1.5px solid #000', padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: 3, fontSize: '0.73rem', lineHeight: 1.35 }}>
-                      <div style={{ display: 'flex' }}>
-                        <span style={{ width: 100, fontWeight: 700, flexShrink: 0 }}>INVOICE DATE</span>
-                        <span style={{ width: 12, fontWeight: 700, flexShrink: 0 }}>:</span>
+                    <div className="common-invoice-hub-s244">
+                      <div className="common-invoice-hub-s245">
+                        <span className="common-invoice-hub-s246">INVOICE DATE</span>
+                        <span className="common-invoice-hub-s247">:</span>
                         <span>{formatDmyDate(combInvoiceDate) || '01-09-2026'}</span>
                       </div>
-                      <div style={{ display: 'flex' }}>
-                        <span style={{ width: 100, fontWeight: 700, flexShrink: 0 }}>INVOICE NO.</span>
-                        <span style={{ width: 12, fontWeight: 700, flexShrink: 0 }}>:</span>
-                        <span style={{ fontWeight: 800 }}>{activeFlat.invoiceNo}</span>
+                      <div className="common-invoice-hub-s245">
+                        <span className="common-invoice-hub-s246">INVOICE NO.</span>
+                        <span className="common-invoice-hub-s247">:</span>
+                        <span className="common-invoice-hub-s248">{activeFlat.invoiceNo}</span>
                       </div>
-                      <div style={{ display: 'flex' }}>
-                        <span style={{ width: 100, fontWeight: 700, flexShrink: 0 }}>DUE DATE</span>
-                        <span style={{ width: 12, fontWeight: 700, flexShrink: 0 }}>:</span>
+                      <div className="common-invoice-hub-s245">
+                        <span className="common-invoice-hub-s246">DUE DATE</span>
+                        <span className="common-invoice-hub-s247">:</span>
                         <span>{formatDmyDate(combDueDate) || '31-03-2027'}</span>
                       </div>
-                      <div style={{ display: 'flex' }}>
-                        <span style={{ width: 100, fontWeight: 700, flexShrink: 0 }}>INVOICE TO:</span>
-                        <span style={{ width: 12, fontWeight: 700, flexShrink: 0 }}></span>
-                        <span style={{ fontWeight: 700 }}>{combClientName}</span>
+                      <div className="common-invoice-hub-s245">
+                        <span className="common-invoice-hub-s246">INVOICE TO:</span>
+                        <span className="common-invoice-hub-s247"></span>
+                        <span className="common-invoice-hub-s249">{combClientName}</span>
                       </div>
-                      <div style={{ display: 'flex' }}>
-                        <span style={{ width: 100, fontWeight: 700, flexShrink: 0 }}>FLAT NO. :</span>
-                        <span style={{ width: 12, fontWeight: 700, flexShrink: 0 }}></span>
-                        <span style={{ fontWeight: 800 }}>A WING- {activeFlat.flatNumberOnly}</span>
+                      <div className="common-invoice-hub-s245">
+                        <span className="common-invoice-hub-s246">FLAT NO. :</span>
+                        <span className="common-invoice-hub-s247"></span>
+                        <span className="common-invoice-hub-s248">A WING- {activeFlat.flatNumberOnly}</span>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                        <span style={{ width: 100, fontWeight: 700, flexShrink: 0 }}>ADDRESS:</span>
-                        <span style={{ width: 12, fontWeight: 700, flexShrink: 0 }}></span>
-                        <span style={{ flex: 1, fontSize: '0.71rem' }}>
+                      <div className="common-invoice-hub-s250">
+                        <span className="common-invoice-hub-s246">ADDRESS:</span>
+                        <span className="common-invoice-hub-s247"></span>
+                        <span className="common-invoice-hub-s251">
                           S. No. 2, Plot No. C-1,<br />
                           Village Mohammadwadi Tal. Haveli, Dist. Pune-<br />
                           411060
                         </span>
                       </div>
-                      <div style={{ display: 'flex' }}>
-                        <span style={{ width: 100, fontWeight: 700, flexShrink: 0 }}>MOBILE NO.</span>
-                        <span style={{ width: 12, fontWeight: 700, flexShrink: 0 }}>:</span>
+                      <div className="common-invoice-hub-s245">
+                        <span className="common-invoice-hub-s246">MOBILE NO.</span>
+                        <span className="common-invoice-hub-s247">:</span>
                         <span>{combClientMobile}</span>
                       </div>
-                      <div style={{ display: 'flex' }}>
-                        <span style={{ width: 100, fontWeight: 700, flexShrink: 0 }}>E-MAIL</span>
-                        <span style={{ width: 12, fontWeight: 700, flexShrink: 0 }}>:</span>
+                      <div className="common-invoice-hub-s245">
+                        <span className="common-invoice-hub-s246">E-MAIL</span>
+                        <span className="common-invoice-hub-s247">:</span>
                         <span>{combClientEmail}</span>
                       </div>
                     </div>
 
                     {/* Right Period Column */}
-                    <div style={{ width: '46%', padding: '8px 12px', fontSize: '0.73rem', lineHeight: 1.4 }}>
-                      <div style={{ fontWeight: 700, marginBottom: 4 }}>Period :-</div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <div className="common-invoice-hub-s252">
+                      <div className="common-invoice-hub-s253">Period :-</div>
+                      <div className="common-invoice-hub-s254">
                         {activeFlat.periodLines.map((line, idx) => (
                           line === '---' ? (
-                            <div key={idx} style={{ margin: '4px 0', borderTop: '1px dashed #666' }}></div>
+                            <div key={idx} className="common-invoice-hub-s255"></div>
                           ) : (
-                            <div key={idx} style={{ fontFamily: 'monospace', fontSize: '0.72rem' }}>{line}</div>
+                            <div key={idx} className="common-invoice-hub-s256">{line}</div>
                           )
                         ))}
                       </div>
@@ -3313,82 +3068,82 @@ IFSC Code: HDFC0002454`;
                   </div>
 
                   {/* Services & Calculations Table */}
-                  <table style={{ width: '100%', borderCollapse: 'collapse', border: '1.5px solid #000', borderTop: 'none', fontSize: '0.73rem' }}>
+                  <table className="common-invoice-hub-s257">
                     <thead>
                       <tr>
-                        <th style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center', width: '44%', fontWeight: 700 }}>
+                        <th className="common-invoice-hub-s258">
                           Description of<br />Services
                         </th>
-                        <th style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center', width: '10%', fontWeight: 700 }}>Units</th>
-                        <th style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center', width: '14%', fontWeight: 700 }}>SAC<br />Code</th>
-                        <th style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center', width: '14%', fontWeight: 700 }}>Rate<br />(INR)</th>
-                        <th style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center', width: '18%', fontWeight: 700 }}>Amount<br />Payable (INR)</th>
+                        <th className="common-invoice-hub-s259">Units</th>
+                        <th className="common-invoice-hub-s260">SAC<br />Code</th>
+                        <th className="common-invoice-hub-s260">Rate<br />(INR)</th>
+                        <th className="common-invoice-hub-s261">Amount<br />Payable (INR)</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}>
+                        <td className="common-invoice-hub-s262">
                           {activeFlat.hasEarlierPending ? 'Maintenance Fee Twelve Month' : 'Maintenance Fee Six Month'}
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center' }}>01</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center' }}>-</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center' }}>2850</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'right', fontFamily: 'monospace' }}>
+                        <td className="common-invoice-hub-s263">01</td>
+                        <td className="common-invoice-hub-s263">-</td>
+                        <td className="common-invoice-hub-s263">2850</td>
+                        <td className="common-invoice-hub-s264">
                           {(activeFlat.hasEarlierPending ? 29700 : 17100).toFixed(2)}
                         </td>
                       </tr>
                       <tr>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}>Repairs and Maintenance</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center' }}>-</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center' }}>-</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center' }}>0</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'right', fontFamily: 'monospace' }}>0.00</td>
+                        <td className="common-invoice-hub-s262">Repairs and Maintenance</td>
+                        <td className="common-invoice-hub-s263">-</td>
+                        <td className="common-invoice-hub-s263">-</td>
+                        <td className="common-invoice-hub-s263">0</td>
+                        <td className="common-invoice-hub-s264">0.00</td>
                       </tr>
                       <tr>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}>
+                        <td className="common-invoice-hub-s262">
                           {activeFlat.hasEarlierPending ? 'Sinking Fund Twelve Month' : 'Sinking Fund Six Month'}
                         </td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center' }}>-</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center' }}>-</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'center' }}>150</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'right', fontFamily: 'monospace' }}>
+                        <td className="common-invoice-hub-s263">-</td>
+                        <td className="common-invoice-hub-s263">-</td>
+                        <td className="common-invoice-hub-s263">150</td>
+                        <td className="common-invoice-hub-s264">
                           {(activeFlat.hasEarlierPending ? 1500 : 900).toFixed(2)}
                         </td>
                       </tr>
                       <tr>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', fontWeight: 800 }}>Current Bill Amount (INR)</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'right', fontWeight: 800, fontFamily: 'monospace' }}>
+                        <td className="common-invoice-hub-s265">Current Bill Amount (INR)</td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s266">
                           {activeFlat.total.toFixed(2)}
                         </td>
                       </tr>
                       <tr>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}>Last Outstanding (INR)</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
+                        <td className="common-invoice-hub-s262">Last Outstanding (INR)</td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
                       </tr>
                       <tr>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}>Pending Amount</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
+                        <td className="common-invoice-hub-s262">Pending Amount</td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
                       </tr>
                       <tr>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', fontWeight: 800 }}>Payable Amount (INR)</td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px' }}></td>
-                        <td style={{ border: '1.5px solid #000', padding: '5px 6px', textAlign: 'right', fontWeight: 800, fontFamily: 'monospace' }}>
+                        <td className="common-invoice-hub-s265">Payable Amount (INR)</td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s262"></td>
+                        <td className="common-invoice-hub-s266">
                           {activeFlat.total.toFixed(2)}
                         </td>
                       </tr>
                       <tr>
-                        <td colSpan={5} style={{ border: '1.5px solid #000', padding: '6px 8px', fontWeight: 800 }}>
+                        <td colSpan={5} className="common-invoice-hub-s267">
                           Amount in word: {activeFlat.words}
                         </td>
                       </tr>
@@ -3397,9 +3152,9 @@ IFSC Code: HDFC0002454`;
                   </div>
 
                   {/* Authorized Signatory Space */}
-                  <div style={{ marginTop: 40, display: 'flex', justifyContent: 'flex-end', paddingRight: 30 }}>
-                    <div style={{ textAlign: 'center', width: 200 }}>
-                      <div style={{ borderTop: '1.5px solid #000', paddingTop: 5, fontWeight: 700, fontSize: '0.78rem' }}>
+                  <div className="common-invoice-hub-s268">
+                    <div className="common-invoice-hub-s269">
+                      <div className="common-invoice-hub-s270">
                         Authorized Signatory
                       </div>
                     </div>
@@ -3408,160 +3163,160 @@ IFSC Code: HDFC0002454`;
                 </div>
               ) : (
                 /* ── COMBINED 3-FLATS STATEMENT REPLICA ── */
-                <div style={{ background: '#fff', border: '1px solid #cbd5e1', borderRadius: 8, padding: '24px', fontSize: '0.8rem', color: '#0f172a', display: 'flex', flexDirection: 'column', gap: 14, boxShadow: 'inset 0 0 10px rgba(0,0,0,0.02)' }}>
+                <div className="common-invoice-hub-s271">
                   
                   {/* Header */}
-                  <div style={{ textAlign: 'center', borderBottom: '2px solid #0b2b26', paddingBottom: 12 }}>
-                    <div style={{ fontSize: '1.05rem', fontWeight: 900, color: '#0b2b26', letterSpacing: '0.5px' }}>
+                  <div className="common-invoice-hub-s272">
+                    <div className="common-invoice-hub-s273">
                       MAJESTIQUE EURISKA 'A' BUILDING CO-OP HOUSING SOCIETY LTD.
                     </div>
-                    <div style={{ fontSize: '0.68rem', color: '#475569', marginTop: 2 }}>
+                    <div className="common-invoice-hub-s274">
                       Reg. No: PNA/PNA (4)/HSG/(TC)/21207/2019-20 • Mohammed Wadi, Pune - 411060
                     </div>
-                    <div style={{ display: 'inline-block', marginTop: 6, padding: '2px 12px', borderRadius: 999, background: '#0b2b26', color: '#C49B4F', fontWeight: 800, fontSize: '0.7rem', letterSpacing: '0.5px' }}>
+                    <div className="common-invoice-hub-s275">
                       COMBINED SOCIETY MAINTENANCE &amp; ARREARS DEMAND BILL
                     </div>
                   </div>
 
                   {/* Ref & Dates */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '6px 10px', fontSize: '0.72rem' }}>
+                  <div className="common-invoice-hub-s276">
                     <div><strong>Ref No:</strong> {combInvoiceNo}</div>
                     <div><strong>Date:</strong> {formatDisplayDate(combInvoiceDate)}</div>
-                    <div><strong>Due Date:</strong> <span style={{ color: '#b91c1c', fontWeight: 800 }}>{formatDisplayDate(combDueDate)}</span></div>
+                    <div><strong>Due Date:</strong> <span className="common-invoice-hub-s277">{formatDisplayDate(combDueDate)}</span></div>
                   </div>
 
                   {/* Recipient */}
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 6, padding: '8px 12px', fontSize: '0.76rem' }}>
-                    <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 700 }}>BILLED TO:</div>
-                    <div style={{ fontWeight: 800, fontSize: '0.86rem', color: '#0b2b26' }}>Times Horizon Private Limited (Flats A-302, A-904 &amp; A-1002)</div>
-                    <div style={{ color: '#475569', fontSize: '0.7rem' }}>Majestique Euriska 'A' Building, Mohammed Wadi, Pune - 411060</div>
+                  <div className="common-invoice-hub-s278">
+                    <div className="common-invoice-hub-s279">BILLED TO:</div>
+                    <div className="common-invoice-hub-s280">Times Horizon Private Limited (Flats A-302, A-904 &amp; A-1002)</div>
+                    <div className="common-invoice-hub-s281">Majestique Euriska 'A' Building, Mohammed Wadi, Pune - 411060</div>
                   </div>
 
                   {/* Subject */}
-                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#0b2b26', background: '#f1f5f9', padding: '4px 8px', borderLeft: '3px solid #0b2b26' }}>
+                  <div className="common-invoice-hub-s282">
                     <strong>SUBJECT:</strong> COMBINED DEMAND NOTICE FOR CURRENT SOCIETY MAINTENANCE (OCT 2026 – MAR 2027) &amp; ARREARS DUES
                   </div>
 
                   {/* Itemized Table */}
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.72rem' }}>
+                  <table className="common-invoice-hub-s283">
                     <thead>
-                      <tr style={{ background: '#0b2b26', color: '#fff' }}>
-                        <th style={{ padding: '6px 8px', textAlign: 'center', width: '60px' }}>Flat</th>
-                        <th style={{ padding: '6px 8px', textAlign: 'left' }}>Particulars</th>
-                        <th style={{ padding: '6px 8px', textAlign: 'center' }}>Billing Period</th>
-                        <th style={{ padding: '6px 8px', textAlign: 'center' }}>Months</th>
-                        <th style={{ padding: '6px 8px', textAlign: 'center' }}>Rate</th>
-                        <th style={{ padding: '6px 8px', textAlign: 'right' }}>Amount</th>
+                      <tr className="common-invoice-hub-s83">
+                        <th className="common-invoice-hub-s284">Flat</th>
+                        <th className="common-invoice-hub-s285">Particulars</th>
+                        <th className="common-invoice-hub-s286">Billing Period</th>
+                        <th className="common-invoice-hub-s286">Months</th>
+                        <th className="common-invoice-hub-s286">Rate</th>
+                        <th className="common-invoice-hub-s287">Amount</th>
                       </tr>
                     </thead>
                     <tbody>
                       {/* Flat A-302 */}
-                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td rowSpan={2} style={{ textAlign: 'center', fontWeight: 800, verticalAlign: 'middle', borderRight: '1px solid #e2e8f0', background: '#f8fafc' }}>A-302</td>
-                        <td style={{ padding: '4px 8px', fontWeight: 600 }}>Flat Maintenance Charges</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#475569' }}>Oct 2026 – Mar 2027</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', fontWeight: 700 }}>6 mos</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center' }}>₹2,850</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹17,100</td>
+                      <tr className="common-invoice-hub-s87">
+                        <td rowSpan={2} className="common-invoice-hub-s288">A-302</td>
+                        <td className="common-invoice-hub-s289">Flat Maintenance Charges</td>
+                        <td className="common-invoice-hub-s290">Oct 2026 – Mar 2027</td>
+                        <td className="common-invoice-hub-s291">6 mos</td>
+                        <td className="common-invoice-hub-s292">₹2,850</td>
+                        <td className="common-invoice-hub-s293">₹17,100</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td style={{ padding: '4px 8px', fontWeight: 600 }}>Sinking Fund Contribution</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#475569' }}>Oct 2026 – Mar 2027</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', fontWeight: 700 }}>6 mos</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center' }}>₹150</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹900</td>
+                      <tr className="common-invoice-hub-s87">
+                        <td className="common-invoice-hub-s289">Sinking Fund Contribution</td>
+                        <td className="common-invoice-hub-s290">Oct 2026 – Mar 2027</td>
+                        <td className="common-invoice-hub-s291">6 mos</td>
+                        <td className="common-invoice-hub-s292">₹150</td>
+                        <td className="common-invoice-hub-s293">₹900</td>
                       </tr>
-                      <tr style={{ background: '#f0fdf4', fontWeight: 700, borderBottom: '2px solid #cbd5e1' }}>
-                        <td colSpan={5} style={{ padding: '4px 8px', textAlign: 'right', color: '#166534' }}>
-                          ↳ Flat A-302 Subtotal Payable: <span style={{ background: '#dcfce7', color: '#15803d', padding: '1px 6px', borderRadius: 4, fontSize: '0.68rem', fontWeight: 800, border: '1px solid #86efac' }}>✓ PAID (23-10-2026)</span>
+                      <tr className="common-invoice-hub-s294">
+                        <td colSpan={5} className="common-invoice-hub-s295">
+                          ↳ Flat A-302 Subtotal Payable: <span className="common-invoice-hub-s296">✓ PAID (23-10-2026)</span>
                         </td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontFamily: 'monospace', color: '#15803d' }}>₹18,000</td>
+                        <td className="common-invoice-hub-s297">₹18,000</td>
                       </tr>
 
                       {/* Flat A-904 */}
-                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td rowSpan={2} style={{ textAlign: 'center', fontWeight: 800, verticalAlign: 'middle', borderRight: '1px solid #e2e8f0', background: '#f8fafc' }}>A-904</td>
-                        <td style={{ padding: '4px 8px', fontWeight: 600 }}>Flat Maintenance Charges</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#475569' }}>Oct 2026 – Mar 2027</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', fontWeight: 700 }}>6 mos</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center' }}>₹2,850</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹17,100</td>
+                      <tr className="common-invoice-hub-s87">
+                        <td rowSpan={2} className="common-invoice-hub-s288">A-904</td>
+                        <td className="common-invoice-hub-s289">Flat Maintenance Charges</td>
+                        <td className="common-invoice-hub-s290">Oct 2026 – Mar 2027</td>
+                        <td className="common-invoice-hub-s291">6 mos</td>
+                        <td className="common-invoice-hub-s292">₹2,850</td>
+                        <td className="common-invoice-hub-s293">₹17,100</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
-                        <td style={{ padding: '4px 8px', fontWeight: 600 }}>Sinking Fund Contribution</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#475569' }}>Oct 2026 – Mar 2027</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', fontWeight: 700 }}>6 mos</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center' }}>₹150</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹900</td>
+                      <tr className="common-invoice-hub-s87">
+                        <td className="common-invoice-hub-s289">Sinking Fund Contribution</td>
+                        <td className="common-invoice-hub-s290">Oct 2026 – Mar 2027</td>
+                        <td className="common-invoice-hub-s291">6 mos</td>
+                        <td className="common-invoice-hub-s292">₹150</td>
+                        <td className="common-invoice-hub-s293">₹900</td>
                       </tr>
-                      <tr style={{ background: '#f0fdf4', fontWeight: 700, borderBottom: '2px solid #cbd5e1' }}>
-                        <td colSpan={5} style={{ padding: '4px 8px', textAlign: 'right', color: '#166534' }}>
-                          ↳ Flat A-904 Subtotal Payable: <span style={{ background: '#dcfce7', color: '#15803d', padding: '1px 6px', borderRadius: 4, fontSize: '0.68rem', fontWeight: 800, border: '1px solid #86efac' }}>✓ PAID (23-10-2026)</span>
+                      <tr className="common-invoice-hub-s294">
+                        <td colSpan={5} className="common-invoice-hub-s295">
+                          ↳ Flat A-904 Subtotal Payable: <span className="common-invoice-hub-s296">✓ PAID (23-10-2026)</span>
                         </td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontFamily: 'monospace', color: '#15803d' }}>₹18,000</td>
+                        <td className="common-invoice-hub-s297">₹18,000</td>
                       </tr>
 
                       {/* Flat A-1002 */}
-                      <tr style={{ borderBottom: '1px solid #fed7aa', background: '#fffbeb' }}>
-                        <td rowSpan={4} style={{ textAlign: 'center', fontWeight: 800, verticalAlign: 'middle', borderRight: '1px solid #fed7aa', color: '#9a3412', background: '#fef3c7' }}>A-1002</td>
-                        <td style={{ padding: '4px 8px', fontWeight: 600, color: '#9a3412' }}>Earlier Pending Maint Arrears</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#9a3412' }}>Oct 2024 – Mar 2025</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', fontWeight: 700, color: '#9a3412' }}>6 mos</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#9a3412' }}>₹2,100</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace', color: '#9a3412' }}>₹12,600</td>
+                      <tr className="common-invoice-hub-s298">
+                        <td rowSpan={4} className="common-invoice-hub-s299">A-1002</td>
+                        <td className="common-invoice-hub-s300">Earlier Pending Maint Arrears</td>
+                        <td className="common-invoice-hub-s301">Oct 2024 – Mar 2025</td>
+                        <td className="common-invoice-hub-s302">6 mos</td>
+                        <td className="common-invoice-hub-s301">₹2,100</td>
+                        <td className="common-invoice-hub-s303">₹12,600</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #fed7aa', background: '#fffbeb' }}>
-                        <td style={{ padding: '4px 8px', fontWeight: 600, color: '#9a3412' }}>Earlier Pending Sinking Fund Arrears</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#9a3412' }}>Oct 2024 – Mar 2025</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', fontWeight: 700, color: '#9a3412' }}>6 mos</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#9a3412' }}>₹100</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace', color: '#9a3412' }}>₹600</td>
+                      <tr className="common-invoice-hub-s298">
+                        <td className="common-invoice-hub-s300">Earlier Pending Sinking Fund Arrears</td>
+                        <td className="common-invoice-hub-s301">Oct 2024 – Mar 2025</td>
+                        <td className="common-invoice-hub-s302">6 mos</td>
+                        <td className="common-invoice-hub-s301">₹100</td>
+                        <td className="common-invoice-hub-s303">₹600</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #fed7aa' }}>
-                        <td style={{ padding: '4px 8px', fontWeight: 600 }}>Current Flat Maintenance Charges</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#475569' }}>Oct 2026 – Mar 2027</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', fontWeight: 700 }}>6 mos</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center' }}>₹2,850</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹17,100</td>
+                      <tr className="common-invoice-hub-s304">
+                        <td className="common-invoice-hub-s289">Current Flat Maintenance Charges</td>
+                        <td className="common-invoice-hub-s290">Oct 2026 – Mar 2027</td>
+                        <td className="common-invoice-hub-s291">6 mos</td>
+                        <td className="common-invoice-hub-s292">₹2,850</td>
+                        <td className="common-invoice-hub-s293">₹17,100</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #fed7aa' }}>
-                        <td style={{ padding: '4px 8px', fontWeight: 600 }}>Current Sinking Fund Contribution</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', color: '#475569' }}>Oct 2026 – Mar 2027</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center', fontWeight: 700 }}>6 mos</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'center' }}>₹150</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹900</td>
+                      <tr className="common-invoice-hub-s304">
+                        <td className="common-invoice-hub-s289">Current Sinking Fund Contribution</td>
+                        <td className="common-invoice-hub-s290">Oct 2026 – Mar 2027</td>
+                        <td className="common-invoice-hub-s291">6 mos</td>
+                        <td className="common-invoice-hub-s292">₹150</td>
+                        <td className="common-invoice-hub-s293">₹900</td>
                       </tr>
-                      <tr style={{ background: '#fef3c7', fontWeight: 700, borderBottom: '2px solid #cbd5e1' }}>
-                        <td colSpan={5} style={{ padding: '4px 8px', textAlign: 'right', color: '#92400e' }}>
-                          ↳ Flat A-1002 Subtotal (Pending ₹13,200 + Current ₹18,000): <span style={{ background: '#fde68a', color: '#78350f', padding: '1px 6px', borderRadius: 4, fontSize: '0.68rem', fontWeight: 800 }}>⏳ PENDING</span>
+                      <tr className="common-invoice-hub-s305">
+                        <td colSpan={5} className="common-invoice-hub-s306">
+                          ↳ Flat A-1002 Subtotal (Pending ₹13,200 + Current ₹18,000): <span className="common-invoice-hub-s307">⏳ PENDING</span>
                         </td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontFamily: 'monospace', color: '#92400e', fontWeight: 800 }}>₹31,200</td>
+                        <td className="common-invoice-hub-s308">₹31,200</td>
                       </tr>
 
                       {/* Grand Total */}
-                      <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 900 }}>
-                        <td colSpan={5} style={{ padding: '8px 10px', textAlign: 'right', color: '#fff', fontSize: '0.8rem', letterSpacing: '0.5px' }}>
+                      <tr className="common-invoice-hub-s309">
+                        <td colSpan={5} className="common-invoice-hub-s310">
                           TOTAL COMBINED INVOICED (ALL THREE FLATS):
                         </td>
-                        <td style={{ padding: '8px 10px', textAlign: 'right', color: '#4ade80', fontSize: '1rem', fontFamily: 'monospace' }}>
+                        <td className="common-invoice-hub-s311">
                           ₹67,200
                         </td>
                       </tr>
 
                       {/* Payment Received & Net Balance */}
-                      <tr style={{ background: '#f0fdf4', color: '#166534', fontWeight: 800, borderBottom: '1px solid #bbf7d0' }}>
-                        <td colSpan={5} style={{ padding: '5px 8px', textAlign: 'right', fontSize: '0.72rem' }}>
+                      <tr className="common-invoice-hub-s312">
+                        <td colSpan={5} className="common-invoice-hub-s313">
                           Less: Payment Received Today (23-Oct-2026) for Flats A-302 &amp; A-904:
                         </td>
-                        <td style={{ padding: '5px 8px', textAlign: 'right', color: '#15803d', fontSize: '0.82rem', fontFamily: 'monospace' }}>
+                        <td className="common-invoice-hub-s314">
                           (-) ₹36,000
                         </td>
                       </tr>
-                      <tr style={{ background: '#fffbeb', color: '#92400e', fontWeight: 800, borderBottom: '2px solid #f59e0b' }}>
-                        <td colSpan={5} style={{ padding: '6px 8px', textAlign: 'right', fontSize: '0.74rem', letterSpacing: '0.5px' }}>
+                      <tr className="common-invoice-hub-s315">
+                        <td colSpan={5} className="common-invoice-hub-s316">
                           NET OUTSTANDING BALANCE DUE (FLAT A-1002 ONLY):
                         </td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#b45309', fontSize: '0.9rem', fontFamily: 'monospace' }}>
+                        <td className="common-invoice-hub-s317">
                           ₹31,200
                         </td>
                       </tr>
@@ -3569,30 +3324,30 @@ IFSC Code: HDFC0002454`;
                   </table>
 
                   {/* Remittance Box */}
-                  <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 6, padding: '8px 10px', fontSize: '0.72rem', color: '#166534' }}>
-                    <div style={{ fontWeight: 800, marginBottom: 2 }}>🏦 HDFC Bank Remittance Details:</div>
+                  <div className="common-invoice-hub-s97">
+                    <div className="common-invoice-hub-s98">🏦 HDFC Bank Remittance Details:</div>
                     <div>• Account Name: <strong>Majestique Euriska 'A' Building CO OP Society LTD</strong></div>
                     <div>• A/C: <strong>50200075533530</strong> • IFSC: <strong>HDFC0002454</strong> • Type: <strong>Current Account</strong> • Branch: <strong>Undri Branch</strong></div>
                   </div>
 
                   {/* Notes */}
-                  <div style={{ fontSize: '0.68rem', color: '#475569', background: '#f8fafc', padding: '6px 8px', borderRadius: 4, border: '1px dashed #cbd5e1' }}>
+                  <div className="common-invoice-hub-s99">
                     <strong>Notes:</strong> {combNotes}
                   </div>
 
                   {/* Signatures */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, paddingTop: 6 }}>
-                    <div style={{ textAlign: 'center', width: '30%' }}>
-                      <div style={{ border: '1px dashed #cbd5e1', height: 32, borderRadius: 3, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.6rem' }}>Society Seal</div>
-                      <div style={{ borderTop: '1px solid #0f172a', paddingTop: 2, fontSize: '0.68rem', fontWeight: 700 }}>Estate Manager</div>
+                  <div className="common-invoice-hub-s318">
+                    <div className="common-invoice-hub-s101">
+                      <div className="common-invoice-hub-s102">Society Seal</div>
+                      <div className="common-invoice-hub-s103">Estate Manager</div>
                     </div>
-                    <div style={{ textAlign: 'center', width: '30%' }}>
-                      <div style={{ border: '1px dashed #cbd5e1', height: 32, borderRadius: 3, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.6rem' }}>Verified</div>
-                      <div style={{ borderTop: '1px solid #0f172a', paddingTop: 2, fontSize: '0.68rem', fontWeight: 700 }}>Hon. Secretary</div>
+                    <div className="common-invoice-hub-s101">
+                      <div className="common-invoice-hub-s102">Verified</div>
+                      <div className="common-invoice-hub-s103">Hon. Secretary</div>
                     </div>
-                    <div style={{ textAlign: 'center', width: '30%' }}>
-                      <div style={{ border: '1px dashed #cbd5e1', height: 32, borderRadius: 3, marginBottom: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.6rem' }}>Approved</div>
-                      <div style={{ borderTop: '1px solid #0f172a', paddingTop: 2, fontSize: '0.68rem', fontWeight: 700 }}>Hon. Treasurer / Chairman</div>
+                    <div className="common-invoice-hub-s101">
+                      <div className="common-invoice-hub-s102">Approved</div>
+                      <div className="common-invoice-hub-s103">Hon. Treasurer / Chairman</div>
                     </div>
                   </div>
 

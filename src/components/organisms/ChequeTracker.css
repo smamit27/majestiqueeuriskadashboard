@@ -1,0 +1,397 @@
+/**
+ * ChequeTracker.css
+ * Extracted styles from ChequeTracker.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.cheque-tracker-s1 {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.cheque-tracker-s2 {
+  margin: 0 0 8px 0;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cheque-tracker-s3 {
+  margin: 0;
+  padding-left: 24px;
+  color: #991b1b;
+  font-size: 0.9rem;
+}
+
+.cheque-tracker-s4 {
+  border-left: 4px solid #3b82f6;
+}
+
+.cheque-tracker-s5 {
+  color: #3b82f6;
+}
+
+.cheque-tracker-s6 {
+  margin: 4px 0 0;
+}
+
+.cheque-tracker-s7 {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.cheque-tracker-s8 {
+  border-left: 4px solid #10b981;
+}
+
+.cheque-tracker-s9 {
+  color: #10b981;
+}
+
+.cheque-tracker-s10 {
+  margin-top: 8px;
+}
+
+.cheque-tracker-s11 {
+  padding: 2px 8px;
+  font-size: 0.7rem;
+}
+
+.cheque-tracker-s12 {
+  border-left: 4px solid #f59e0b;
+}
+
+.cheque-tracker-s13 {
+  color: #f59e0b;
+}
+
+.cheque-tracker-s14 {
+  padding: 0;
+}
+
+.cheque-tracker-s15 {
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.cheque-tracker-s16 {
+  min-width: 200px;
+}
+
+.cheque-tracker-s17 {
+  flex-wrap: wrap;
+  width: auto;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.cheque-tracker-s18 {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.cheque-tracker-s19 {
+  display: flex;
+  align-items: center;
+  opacity: 0.4;
+}
+
+.cheque-tracker-s20 {
+  border: none;
+  padding: 8px;
+  outline: none;
+  text-align: left;
+}
+
+.cheque-tracker-s21 {
+  width: auto;
+  min-width: 120px;
+  height: 38px;
+}
+
+.cheque-tracker-s22 {
+  font-size: 0.8rem;
+  padding: 8px 10px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.cheque-tracker-s23 {
+  padding: 8px 10px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.cheque-tracker-s24 {
+  min-width: 1800px;
+}
+
+.cheque-tracker-s25 {
+  background: #f8fafc;
+}
+
+.cheque-tracker-s26 {
+  width: 60px;
+}
+
+.cheque-tracker-s27 {
+  width: 120px;
+}
+
+.cheque-tracker-s28 {
+  width: 100px;
+}
+
+.cheque-tracker-s29 {
+  width: 220px;
+}
+
+.cheque-tracker-s30 {
+  width: 300px;
+}
+
+.cheque-tracker-s31 {
+  width: 140px;
+  text-align: right;
+}
+
+.cheque-tracker-s32 {
+  width: 110px;
+  text-align: right;
+  background: #f0fdf4;
+  color: #047857;
+}
+
+.cheque-tracker-s33 {
+  width: 110px;
+  text-align: right;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.cheque-tracker-s34 {
+  width: 140px;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.cheque-tracker-s35 {
+  width: 110px;
+  text-align: right;
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.cheque-tracker-s36 {
+  width: 140px;
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.cheque-tracker-s37 {
+  width: 90px;
+}
+
+.cheque-tracker-s38 {
+  text-align: center;
+  padding: 60px;
+}
+
+.cheque-tracker-s39 {
+  opacity: 0.5;
+}
+
+.cheque-tracker-s40 {
+  font-weight: 600;
+}
+
+.cheque-tracker-s41 {
+  text-align: right;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.cheque-tracker-s42 {
+  background: #f0fdf4;
+}
+
+.cheque-tracker-s43 {
+  text-align: right;
+}
+
+.cheque-tracker-s44 {
+  background: #eff6ff;
+}
+
+.cheque-tracker-s45 {
+  background: #fff7ed;
+}
+
+.cheque-tracker-s46 {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.cheque-tracker-s47 {
+  opacity: 0.6;
+  font-size: 1rem;
+}
+
+.cheque-tracker-s48 {
+  opacity: 0.3;
+}
+
+.cheque-tracker-s49 {
+  text-align: center;
+}
+
+.cheque-tracker-s50 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #64748b;
+  font-size: 0.85rem;
+  padding: 0 8px;
+}
+
+.cheque-tracker-s51 {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.cheque-tracker-s52 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cheque-tracker-s53 {
+  width: 12px;
+  height: 12px;
+  background: #fee2e2;
+  border-radius: 3px;
+}
+
+.cheque-tracker-s54 {
+  width: 12px;
+  height: 12px;
+  background: #dcfce7;
+  border-radius: 3px;
+}
+
+.cheque-tracker-s55 {
+  font-weight: 700;
+}
+
+.cheque-tracker-s56 {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.cheque-tracker-s57 {
+  background: #fff;
+  border-radius: 16px;
+  max-width: 620px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+  padding: 32px;
+}
+
+.cheque-tracker-s58 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cheque-tracker-s59 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.cheque-tracker-s60 {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.cheque-tracker-s61 {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  opacity: 0.4;
+  line-height: 1;
+}
+
+.cheque-tracker-s62 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.cheque-tracker-s63 {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.cheque-tracker-s64 {
+  text-align: left;
+  width: 100%;
+}
+
+.cheque-tracker-s65 {
+  color: #ef4444;
+}
+
+.cheque-tracker-s66 {
+  grid-column: 1 / -1;
+}
+
+.cheque-tracker-s67 {
+  text-align: left;
+  width: 100%;
+  font-weight: 600;
+}
+
+.cheque-tracker-s68 {
+  text-align: left;
+  width: 100%;
+  font-weight: 700;
+}
+
+.cheque-tracker-s69 {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 16px;
+}
+
+.cheque-tracker-s70 {
+  padding: 9px 18px;
+}
+
+.cheque-tracker-s71 {
+  padding: 9px 24px;
+}
+

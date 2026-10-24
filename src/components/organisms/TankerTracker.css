@@ -1,0 +1,82 @@
+/**
+ * TankerTracker.css
+ * Extracted styles from TankerTracker.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.tanker-tracker-s1 {
+  color: #0f3d35;
+}
+
+.tanker-tracker-s2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.tanker-tracker-s3 {
+  font-size: 1rem;
+}
+
+.tanker-tracker-s4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.tanker-tracker-s5 {
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
+.tanker-tracker-s6 {
+  min-width: 130px;
+}
+
+.tanker-tracker-s7 {
+  min-width: 120px;
+  text-align: center;
+}
+
+.tanker-tracker-s8 {
+  min-width: 130px;
+  text-align: right;
+}
+
+.tanker-tracker-s9 {
+  text-align: center;
+  padding: 32px;
+  opacity: 0.6;
+}
+
+.tanker-tracker-s10 {
+  text-align: center;
+}
+
+.tanker-tracker-s11 {
+  width: 80px;
+  text-align: right;
+}
+
+.tanker-tracker-s12 {
+  width: 64px;
+  text-align: center;
+}
+
+.tanker-tracker-s13 {
+  text-align: right;
+}
+
+.tanker-tracker-s14 {
+  opacity: 0.3;
+}
+
+.tanker-tracker-s15 {
+  text-align: right;
+  color: #0f3d35;
+}
+

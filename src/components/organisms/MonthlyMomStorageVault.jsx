@@ -36,6 +36,8 @@ import {
   dataUrlToBlob, 
   createSafeBlobUrl 
 } from '../../utils/documentStorageDb.js';
+import './MonthlyMomStorageVault.css';
+
 
 export const INITIAL_MONTHLY_MOM_ARCHIVE = [
   {
@@ -562,67 +564,40 @@ Status: Archived in Permanent Society Records.`;
   };
 
   return (
-    <div data-testid="monthly-mom-vault-container" style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+    <div data-testid="monthly-mom-vault-container" className="monthly-mom-storage-vault-s1">
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div style={{
-          marginBottom: '16px',
-          padding: '12px 18px',
-          borderRadius: '10px',
-          background: toastMessage.type === 'success' ? '#ecfdf5' : '#eff6ff',
-          color: toastMessage.type === 'success' ? '#065f46' : '#1e40af',
-          border: `1px solid ${toastMessage.type === 'success' ? '#a7f3d0' : '#bfdbfe'}`,
-          fontSize: '0.86rem',
-          fontWeight: 700,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.06)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="monthly-mom-storage-vault-s2" style={{ background: toastMessage.type === 'success' ? '#ecfdf5' : '#eff6ff', color: toastMessage.type === 'success' ? '#065f46' : '#1e40af', border: `1px solid ${toastMessage.type === 'success' ? '#a7f3d0' : '#bfdbfe'}` }}>
+          <div className="monthly-mom-storage-vault-s3">
             <CheckCircle2 size={18} color="#059669" />
             <span>{toastMessage.msg}</span>
           </div>
-          <button type="button" onClick={() => setToastMessage(null)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: 800 }}>✕</button>
+          <button type="button" onClick={() => setToastMessage(null)} className="monthly-mom-storage-vault-s4">✕</button>
         </div>
       )}
 
       {/* Header & Upload Action */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '22px' }}>
+      <div className="monthly-mom-storage-vault-s5">
         <div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(37, 99, 235, 0.08)', color: '#2563eb', padding: '4px 12px', borderRadius: '20px', fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '8px' }}>
+          <div className="monthly-mom-storage-vault-s6">
             <FileCheck size={14} />
             Statutory Document Repository
           </div>
-          <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0f172a' }}>
+          <h3 className="monthly-mom-storage-vault-s7">
             📁 Monthly MOM Storage & Upload Vault
           </h3>
-          <p style={{ margin: '4px 0 0', fontSize: '0.84rem', color: '#64748b' }}>
+          <p className="monthly-mom-storage-vault-s8">
             Store signed, scanned physical copies, Images, and PDFs of your monthly committee meetings for Building 'A' and Common Infrastructure.
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <div className="monthly-mom-storage-vault-s9">
           <button
             type="button"
             data-testid="open-upload-modal-btn"
             onClick={() => setIsUploadModalOpen(true)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '10px 18px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-              color: '#ffffff',
-              fontSize: '0.86rem',
-              fontWeight: 800,
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
-              transition: 'transform 0.15s ease'
-            }}
+            className="monthly-mom-storage-vault-s10"
           >
             <Upload size={16} />
             📤 Upload Monthly MOM (Image / PDF)
@@ -632,8 +607,7 @@ Status: Archived in Permanent Society Records.`;
             <button
               type="button"
               onClick={onClose}
-              className="button-secondary"
-              style={{ padding: '9px 14px', fontSize: '0.84rem' }}
+              className="button-secondary monthly-mom-storage-vault-s11"
             >
               ← Back
             </button>
@@ -642,24 +616,15 @@ Status: Archived in Permanent Society Records.`;
       </div>
 
       {/* Filter & Search Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', padding: '14px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
+      <div className="monthly-mom-storage-vault-s12">
         
         {/* Scope Filters */}
-        <div style={{ display: 'flex', gap: '6px', background: '#e2e8f0', padding: '3px', borderRadius: '8px' }}>
+        <div className="monthly-mom-storage-vault-s13">
           <button
             type="button"
             data-testid="filter-scope-all-btn"
             onClick={() => setScopeFilter('ALL')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              border: 'none',
-              background: scopeFilter === 'ALL' ? '#ffffff' : 'transparent',
-              color: scopeFilter === 'ALL' ? '#0f172a' : '#64748b',
-              fontWeight: 700,
-              fontSize: '0.78rem',
-              cursor: 'pointer'
-            }}
+            className="monthly-mom-storage-vault-s14" style={{ background: scopeFilter === 'ALL' ? '#ffffff' : 'transparent', color: scopeFilter === 'ALL' ? '#0f172a' : '#64748b' }}
           >
             All Scopes ({momArchives.length})
           </button>
@@ -667,16 +632,7 @@ Status: Archived in Permanent Society Records.`;
             type="button"
             data-testid="filter-scope-wing-a-btn"
             onClick={() => setScopeFilter('A_BUILDING')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              border: 'none',
-              background: scopeFilter === 'A_BUILDING' ? '#059669' : 'transparent',
-              color: scopeFilter === 'A_BUILDING' ? '#ffffff' : '#64748b',
-              fontWeight: 700,
-              fontSize: '0.78rem',
-              cursor: 'pointer'
-            }}
+            className="monthly-mom-storage-vault-s14" style={{ background: scopeFilter === 'A_BUILDING' ? '#059669' : 'transparent', color: scopeFilter === 'A_BUILDING' ? '#ffffff' : '#64748b' }}
           >
             🏢 Wing 'A' ({momArchives.filter(m => m.scope === 'A_BUILDING').length})
           </button>
@@ -684,35 +640,18 @@ Status: Archived in Permanent Society Records.`;
             type="button"
             data-testid="filter-scope-common-btn"
             onClick={() => setScopeFilter('COMMON')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              border: 'none',
-              background: scopeFilter === 'COMMON' ? '#2563eb' : 'transparent',
-              color: scopeFilter === 'COMMON' ? '#ffffff' : '#64748b',
-              fontWeight: 700,
-              fontSize: '0.78rem',
-              cursor: 'pointer'
-            }}
+            className="monthly-mom-storage-vault-s14" style={{ background: scopeFilter === 'COMMON' ? '#2563eb' : 'transparent', color: scopeFilter === 'COMMON' ? '#ffffff' : '#64748b' }}
           >
             🌐 Common ({momArchives.filter(m => m.scope === 'COMMON').length})
           </button>
         </div>
 
         {/* Month Selector & Search */}
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="monthly-mom-storage-vault-s15">
           <select
             value={selectedMonth}
             onChange={e => setSelectedMonth(e.target.value)}
-            style={{
-              padding: '6px 10px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              background: '#ffffff',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              color: '#334155'
-            }}
+            className="monthly-mom-storage-vault-s16"
           >
             <option value="ALL">🗓️ All Months</option>
             {availableMonths.map(m => (
@@ -722,21 +661,15 @@ Status: Archived in Permanent Society Records.`;
             ))}
           </select>
 
-          <div style={{ position: 'relative' }}>
+          <div className="monthly-mom-storage-vault-s17">
             <input
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search title, notes, files..."
-              style={{
-                padding: '6px 12px 6px 30px',
-                borderRadius: '8px',
-                border: '1px solid #cbd5e1',
-                fontSize: '0.8rem',
-                width: '180px'
-              }}
+              className="monthly-mom-storage-vault-s18"
             />
-            <Search size={14} color="#94a3b8" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} />
+            <Search size={14} color="#94a3b8" className="monthly-mom-storage-vault-s19" />
           </div>
         </div>
 
@@ -744,114 +677,66 @@ Status: Archived in Permanent Society Records.`;
 
       {/* Archives Card Grid */}
       {filteredMoms.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '48px 24px', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', color: '#64748b' }}>
-          <Upload size={36} color="#94a3b8" style={{ marginBottom: '10px' }} />
-          <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#334155' }}>No Monthly MOM documents found</h4>
-          <p style={{ margin: '6px 0 16px', fontSize: '0.84rem' }}>You can upload and store your first signed monthly MOM (image or PDF) right now.</p>
+        <div className="monthly-mom-storage-vault-s20">
+          <Upload size={36} color="#94a3b8" className="monthly-mom-storage-vault-s21" />
+          <h4 className="monthly-mom-storage-vault-s22">No Monthly MOM documents found</h4>
+          <p className="monthly-mom-storage-vault-s23">You can upload and store your first signed monthly MOM (image or PDF) right now.</p>
           <button
             type="button"
             onClick={() => setIsUploadModalOpen(true)}
-            className="button-primary"
-            style={{ padding: '8px 16px', fontSize: '0.82rem' }}
+            className="button-primary monthly-mom-storage-vault-s24"
           >
             + Upload Monthly MOM Now
           </button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
+        <div className="monthly-mom-storage-vault-s25">
           {filteredMoms.map((mom) => (
             <div
               key={mom.id}
               data-testid={`monthly-mom-card-${mom.id}`}
-              style={{
-                borderRadius: '12px',
-                border: '1px solid #e2e8f0',
-                background: '#ffffff',
-                padding: '18px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-                transition: 'all 0.2s ease',
-                position: 'relative'
-              }}
+              className="monthly-mom-storage-vault-s26"
             >
               <div>
                 {/* Badges Row */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                  <span style={{
-                    fontSize: '0.7rem',
-                    fontWeight: 800,
-                    padding: '3px 8px',
-                    borderRadius: '8px',
-                    background: mom.scope === 'A_BUILDING' ? '#059669' : '#2563eb',
-                    color: '#ffffff'
-                  }}>
+                <div className="monthly-mom-storage-vault-s27">
+                  <span className="monthly-mom-storage-vault-s28" style={{ background: mom.scope === 'A_BUILDING' ? '#059669' : '#2563eb' }}>
                     {mom.scope === 'A_BUILDING' ? "🏢 WING 'A'" : '🌐 COMMON CAMPUS'}
                   </span>
 
-                  <span style={{
-                    fontSize: '0.72rem',
-                    fontWeight: 800,
-                    padding: '3px 8px',
-                    borderRadius: '8px',
-                    background: '#f1f5f9',
-                    color: '#475569',
-                    border: '1px solid #e2e8f0'
-                  }}>
+                  <span className="monthly-mom-storage-vault-s29">
                     🗓️ {mom.monthLabel || mom.month}
                   </span>
                 </div>
 
                 {/* Title */}
-                <h4 style={{ margin: '0 0 8px', fontSize: '1.02rem', fontWeight: 800, color: '#0f172a', lineHeight: '1.35' }}>
+                <h4 className="monthly-mom-storage-vault-s30">
                   {mom.title}
                 </h4>
 
                 {/* Notes Summary */}
-                <p style={{ margin: '0 0 14px', fontSize: '0.82rem', color: '#475569', lineHeight: '1.45', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                <p className="monthly-mom-storage-vault-s31">
                   {mom.notes}
                 </p>
 
                 {/* Metadata Pills */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', fontSize: '0.72rem', marginBottom: '16px' }}>
-                  <span style={{ background: '#f8fafc', padding: '3px 8px', borderRadius: '6px', border: '1px solid #e2e8f0', color: '#64748b' }}>
+                <div className="monthly-mom-storage-vault-s32">
+                  <span className="monthly-mom-storage-vault-s33">
                     📅 {mom.meetingDate}
                   </span>
-                  <span style={{
-                    background: mom.fileType === 'PDF' ? '#fef2f2' : '#f0fdf4',
-                    color: mom.fileType === 'PDF' ? '#dc2626' : '#16a34a',
-                    border: `1px solid ${mom.fileType === 'PDF' ? '#fecaca' : '#bbf7d0'}`,
-                    padding: '3px 8px',
-                    borderRadius: '6px',
-                    fontWeight: 800
-                  }}>
+                  <span className="monthly-mom-storage-vault-s34" style={{ background: mom.fileType === 'PDF' ? '#fef2f2' : '#f0fdf4', color: mom.fileType === 'PDF' ? '#dc2626' : '#16a34a', border: `1px solid ${mom.fileType === 'PDF' ? '#fecaca' : '#bbf7d0'}` }}>
                     {mom.fileType === 'PDF' ? '📄 PDF' : '🖼️ IMAGE'} • {mom.fileSize}
                   </span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', paddingTop: '12px', borderTop: '1px solid #f1f5f9' }}>
+              <div className="monthly-mom-storage-vault-s35">
                 <button
                   type="button"
                   data-testid={`view-mom-btn-${mom.id}`}
                   onClick={() => setViewingDoc(mom)}
-                  style={{
-                    flex: 1,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '5px',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    background: '#f8fafc',
-                    color: '#1e293b',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    border: '1px solid #cbd5e1',
-                    cursor: 'pointer'
-                  }}
+                  className="monthly-mom-storage-vault-s36"
                 >
                   <Eye size={14} />
                   View
@@ -861,15 +746,7 @@ Status: Archived in Permanent Society Records.`;
                   type="button"
                   onClick={(e) => handleDownloadFile(mom, e)}
                   title="Download copy"
-                  style={{
-                    padding: '8px 10px',
-                    borderRadius: '8px',
-                    background: '#f8fafc',
-                    color: '#334155',
-                    fontSize: '0.78rem',
-                    border: '1px solid #cbd5e1',
-                    cursor: 'pointer'
-                  }}
+                  className="monthly-mom-storage-vault-s37"
                 >
                   <Download size={14} />
                 </button>
@@ -879,19 +756,7 @@ Status: Archived in Permanent Society Records.`;
                     type="button"
                     onClick={() => onLoadIntoGenerator(mom)}
                     title="Load into AI MOM Generator"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      padding: '8px 10px',
-                      borderRadius: '8px',
-                      background: 'rgba(5, 150, 105, 0.08)',
-                      color: '#065f46',
-                      fontSize: '0.76rem',
-                      fontWeight: 800,
-                      border: '1px solid #a7f3d0',
-                      cursor: 'pointer'
-                    }}
+                    className="monthly-mom-storage-vault-s38"
                   >
                     <Sparkles size={13} color="#059669" />
                     AI Edit
@@ -903,20 +768,7 @@ Status: Archived in Permanent Society Records.`;
                   data-testid={`delete-mom-btn-${mom.id}`}
                   onClick={(e) => handleRequestDelete(mom, e)}
                   title="Delete from archive"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    padding: '8px 10px',
-                    borderRadius: '8px',
-                    background: '#fef2f2',
-                    color: '#dc2626',
-                    border: '1px solid #fecaca',
-                    fontSize: '0.76rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease'
-                  }}
+                  className="monthly-mom-storage-vault-s39"
                 >
                   <Trash2 size={13} />
                   <span>Delete</span>
@@ -932,52 +784,30 @@ Status: Archived in Permanent Society Records.`;
       {isUploadModalOpen && (
         <div
           data-testid="upload-mom-modal"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(15, 23, 42, 0.65)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            padding: '16px'
-          }}
+          className="monthly-mom-storage-vault-s40"
           onClick={() => setIsUploadModalOpen(false)}
         >
           <div
-            style={{
-              background: '#ffffff',
-              borderRadius: '16px',
-              maxWidth: '560px',
-              width: '100%',
-              padding: '24px',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
-            }}
+            className="monthly-mom-storage-vault-s41"
             onClick={e => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', paddingBottom: '12px', borderBottom: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ padding: '8px', borderRadius: '10px', background: '#eff6ff', color: '#2563eb' }}>
+            <div className="monthly-mom-storage-vault-s42">
+              <div className="monthly-mom-storage-vault-s3">
+                <div className="monthly-mom-storage-vault-s43">
                   <Upload size={20} />
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>
+                  <h3 className="monthly-mom-storage-vault-s44">
                     Upload Monthly MOM (Image / PDF)
                   </h3>
-                  <span style={{ fontSize: '0.78rem', color: '#64748b' }}>Store physical minutes or scanned documents</span>
+                  <span className="monthly-mom-storage-vault-s45">Store physical minutes or scanned documents</span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsUploadModalOpen(false)}
-                style={{ border: 'none', background: 'transparent', fontSize: '1.2rem', cursor: 'pointer', color: '#94a3b8' }}
+                className="monthly-mom-storage-vault-s46"
               >
                 ✕
               </button>
@@ -985,11 +815,11 @@ Status: Archived in Permanent Society Records.`;
 
             <form onSubmit={handleUploadSubmit}>
               {/* Scope Selection */}
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+              <div className="monthly-mom-storage-vault-s47">
+                <label className="monthly-mom-storage-vault-s48">
                   Meeting Target Scope
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div className="monthly-mom-storage-vault-s49">
                   <button
                     type="button"
                     onClick={() => {
@@ -997,16 +827,7 @@ Status: Archived in Permanent Society Records.`;
                       const monthName = new Date(uploadMonth + '-01').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
                       setUploadTitle(`Wing 'A' Monthly MOM — ${monthName}`);
                     }}
-                    style={{
-                      padding: '10px',
-                      borderRadius: '8px',
-                      border: uploadScope === 'A_BUILDING' ? '2px solid #059669' : '1px solid #cbd5e1',
-                      background: uploadScope === 'A_BUILDING' ? '#ecfdf5' : '#ffffff',
-                      color: uploadScope === 'A_BUILDING' ? '#047857' : '#475569',
-                      fontWeight: 700,
-                      fontSize: '0.82rem',
-                      cursor: 'pointer'
-                    }}
+                    className="monthly-mom-storage-vault-s50" style={{ border: uploadScope === 'A_BUILDING' ? '2px solid #059669' : '1px solid #cbd5e1', background: uploadScope === 'A_BUILDING' ? '#ecfdf5' : '#ffffff', color: uploadScope === 'A_BUILDING' ? '#047857' : '#475569' }}
                   >
                     🏢 Building 'A'
                   </button>
@@ -1017,16 +838,7 @@ Status: Archived in Permanent Society Records.`;
                       const monthName = new Date(uploadMonth + '-01').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
                       setUploadTitle(`Common Infrastructure Monthly MOM — ${monthName}`);
                     }}
-                    style={{
-                      padding: '10px',
-                      borderRadius: '8px',
-                      border: uploadScope === 'COMMON' ? '2px solid #2563eb' : '1px solid #cbd5e1',
-                      background: uploadScope === 'COMMON' ? '#eff6ff' : '#ffffff',
-                      color: uploadScope === 'COMMON' ? '#1d4ed8' : '#475569',
-                      fontWeight: 700,
-                      fontSize: '0.82rem',
-                      cursor: 'pointer'
-                    }}
+                    className="monthly-mom-storage-vault-s50" style={{ border: uploadScope === 'COMMON' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: uploadScope === 'COMMON' ? '#eff6ff' : '#ffffff', color: uploadScope === 'COMMON' ? '#1d4ed8' : '#475569' }}
                   >
                     🌐 Common Society
                   </button>
@@ -1034,9 +846,9 @@ Status: Archived in Permanent Society Records.`;
               </div>
 
               {/* Month & Date Row */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+              <div className="monthly-mom-storage-vault-s51">
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  <label className="monthly-mom-storage-vault-s48">
                     Meeting Month
                   </label>
                   <input
@@ -1048,12 +860,12 @@ Status: Archived in Permanent Society Records.`;
                       const monthName = new Date(e.target.value + '-01').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
                       setUploadTitle(`${uploadScope === 'A_BUILDING' ? "Wing 'A'" : 'Common Infrastructure'} Monthly MOM — ${monthName}`);
                     }}
-                    style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                    className="monthly-mom-storage-vault-s52"
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  <label className="monthly-mom-storage-vault-s48">
                     Meeting Date
                   </label>
                   <input
@@ -1061,14 +873,14 @@ Status: Archived in Permanent Society Records.`;
                     required
                     value={uploadDate}
                     onChange={e => setUploadDate(e.target.value)}
-                    style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                    className="monthly-mom-storage-vault-s52"
                   />
                 </div>
               </div>
 
               {/* Title Input */}
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+              <div className="monthly-mom-storage-vault-s47">
+                <label className="monthly-mom-storage-vault-s48">
                   Document Title / Heading
                 </label>
                 <input
@@ -1077,13 +889,13 @@ Status: Archived in Permanent Society Records.`;
                   value={uploadTitle}
                   onChange={e => setUploadTitle(e.target.value)}
                   placeholder="e.g. Wing 'A' Managing Committee Minutes — October 2026"
-                  style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.88rem' }}
+                  className="monthly-mom-storage-vault-s53"
                 />
               </div>
 
               {/* Presided By / Chairperson (clean empty field as requested) */}
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+              <div className="monthly-mom-storage-vault-s47">
+                <label className="monthly-mom-storage-vault-s48">
                   Presided By / Chairperson (Optional)
                 </label>
                 <input
@@ -1091,25 +903,17 @@ Status: Archived in Permanent Society Records.`;
                   value={uploadChairperson}
                   onChange={e => setUploadChairperson(e.target.value)}
                   placeholder="Leave empty or enter name if applicable"
-                  style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.88rem' }}
+                  className="monthly-mom-storage-vault-s53"
                 />
               </div>
 
               {/* File Attachment Dropzone */}
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+              <div className="monthly-mom-storage-vault-s47">
+                <label className="monthly-mom-storage-vault-s48">
                   Attach Document (PDF or Image)
                 </label>
                 <div
-                  style={{
-                    border: '2px dashed #93c5fd',
-                    background: '#f8fafc',
-                    borderRadius: '12px',
-                    padding: '20px',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    position: 'relative'
-                  }}
+                  className="monthly-mom-storage-vault-s54"
                   onClick={() => document.getElementById('mom-file-input').click()}
                 >
                   <input
@@ -1118,7 +922,7 @@ Status: Archived in Permanent Society Records.`;
                     type="file"
                     accept=".pdf,.png,.jpg,.jpeg,.webp"
                     onChange={handleFileSelect}
-                    style={{ display: 'none' }}
+                    className="monthly-mom-storage-vault-s55"
                   />
 
                   {uploadedFile ? (
@@ -1127,23 +931,23 @@ Status: Archived in Permanent Society Records.`;
                         <img
                           src={filePreviewUrl}
                           alt="Preview"
-                          style={{ maxHeight: '110px', borderRadius: '8px', marginBottom: '8px', objectFit: 'contain' }}
+                          className="monthly-mom-storage-vault-s56"
                         />
                       )}
-                      <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0f172a' }}>
+                      <div className="monthly-mom-storage-vault-s57">
                         {uploadedFile.name}
                       </div>
-                      <span style={{ fontSize: '0.76rem', color: '#64748b' }}>
+                      <span className="monthly-mom-storage-vault-s58">
                         {fileSizeText} • {fileType}
                       </span>
                     </div>
                   ) : (
                     <div>
-                      <Upload size={28} color="#2563eb" style={{ marginBottom: '6px' }} />
-                      <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1e293b' }}>
+                      <Upload size={28} color="#2563eb" className="monthly-mom-storage-vault-s59" />
+                      <div className="monthly-mom-storage-vault-s60">
                         Click to select PDF or Image
                       </div>
-                      <span style={{ fontSize: '0.74rem', color: '#64748b' }}>
+                      <span className="monthly-mom-storage-vault-s61">
                         Supports PDF, PNG, JPG, JPEG, WEBP (up to 25 MB)
                       </span>
                     </div>
@@ -1152,8 +956,8 @@ Status: Archived in Permanent Society Records.`;
               </div>
 
               {/* Notes / Summary */}
-              <div style={{ marginBottom: '18px' }}>
-                <label style={{ display: 'block', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginBottom: '6px' }}>
+              <div className="monthly-mom-storage-vault-s62">
+                <label className="monthly-mom-storage-vault-s48">
                   Summary Notes / Key Decisions
                 </label>
                 <textarea
@@ -1161,17 +965,16 @@ Status: Archived in Permanent Society Records.`;
                   value={uploadNotes}
                   onChange={e => setUploadNotes(e.target.value)}
                   placeholder="Key decisions taken, approvals, vendors mentioned, or lift/STP status..."
-                  style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                  className="monthly-mom-storage-vault-s52"
                 />
               </div>
 
               {/* Submit Buttons */}
-              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              <div className="monthly-mom-storage-vault-s63">
                 <button
                   type="button"
                   onClick={() => setIsUploadModalOpen(false)}
-                  className="button-secondary"
-                  style={{ padding: '9px 16px', fontSize: '0.84rem' }}
+                  className="button-secondary monthly-mom-storage-vault-s64"
                 >
                   Cancel
                 </button>
@@ -1179,8 +982,7 @@ Status: Archived in Permanent Society Records.`;
                   type="submit"
                   data-testid="submit-monthly-mom-btn"
                   disabled={isSubmitting}
-                  className="button-primary"
-                  style={{ padding: '9px 20px', fontSize: '0.84rem' }}
+                  className="button-primary monthly-mom-storage-vault-s65"
                 >
                   {isSubmitting ? 'Uploading...' : '💾 Store in Archives'}
                 </button>
@@ -1195,53 +997,30 @@ Status: Archived in Permanent Society Records.`;
       {viewingDoc && (
         <div
           data-testid="view-mom-lightbox"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(15, 23, 42, 0.85)',
-            backdropFilter: 'blur(6px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 99999,
-            padding: '20px'
-          }}
+          className="monthly-mom-storage-vault-s66"
           onClick={() => setViewingDoc(null)}
         >
           <div
-            style={{
-              background: '#ffffff',
-              borderRadius: '16px',
-              maxWidth: '820px',
-              width: '100%',
-              maxHeight: '90vh',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
-              overflow: 'hidden'
-            }}
+            className="monthly-mom-storage-vault-s67"
             onClick={e => e.stopPropagation()}
           >
             {/* Lightbox Toolbar */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px', background: '#0f172a', color: '#ffffff', flexWrap: 'wrap', gap: '10px' }}>
+            <div className="monthly-mom-storage-vault-s68">
               <div>
-                <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>{viewingDoc.title}</h4>
-                <span style={{ fontSize: '0.76rem', color: '#94a3b8' }}>
+                <h4 className="monthly-mom-storage-vault-s69">{viewingDoc.title}</h4>
+                <span className="monthly-mom-storage-vault-s70">
                   {viewingDoc.monthLabel || viewingDoc.month} • {viewingDoc.fileName} • {viewingDoc.fileSize}
                 </span>
               </div>
 
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <div className="monthly-mom-storage-vault-s71">
                 {viewingDoc.fileType === 'IMAGE' && (
                   <>
                     <button
                       type="button"
                       onClick={() => setZoomLevel(prev => Math.min(prev + 0.2, 2.5))}
                       title="Zoom In"
-                      style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer' }}
+                      className="monthly-mom-storage-vault-s72"
                     >
                       <ZoomIn size={16} />
                     </button>
@@ -1249,7 +1028,7 @@ Status: Archived in Permanent Society Records.`;
                       type="button"
                       onClick={() => setZoomLevel(prev => Math.max(prev - 0.2, 0.5))}
                       title="Zoom Out"
-                      style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer' }}
+                      className="monthly-mom-storage-vault-s72"
                     >
                       <ZoomOut size={16} />
                     </button>
@@ -1267,19 +1046,7 @@ Status: Archived in Permanent Society Records.`;
                       }
                     }}
                     title="Open Full PDF in New Tab"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      background: 'rgba(255,255,255,0.15)',
-                      border: '1px solid rgba(255,255,255,0.25)',
-                      color: '#ffffff',
-                      padding: '6px 12px',
-                      borderRadius: '6px',
-                      fontSize: '0.78rem',
-                      fontWeight: 700,
-                      cursor: 'pointer'
-                    }}
+                    className="monthly-mom-storage-vault-s73"
                   >
                     <ExternalLink size={14} />
                     Open in New Tab
@@ -1290,7 +1057,7 @@ Status: Archived in Permanent Society Records.`;
                   type="button"
                   onClick={() => handleDownloadFile(viewingDoc)}
                   title="Download File"
-                  style={{ background: '#2563eb', border: 'none', color: '#fff', padding: '6px 14px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
+                  className="monthly-mom-storage-vault-s74"
                 >
                   <Download size={14} />
                   Download
@@ -1301,19 +1068,7 @@ Status: Archived in Permanent Society Records.`;
                   data-testid="lightbox-delete-mom-btn"
                   onClick={(e) => handleRequestDelete(viewingDoc, e)}
                   title="Delete Document"
-                  style={{
-                    background: 'rgba(239, 68, 68, 0.2)',
-                    border: '1px solid rgba(239, 68, 68, 0.4)',
-                    color: '#fca5a5',
-                    padding: '6px 12px',
-                    borderRadius: '6px',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '5px'
-                  }}
+                  className="monthly-mom-storage-vault-s75"
                 >
                   <Trash2 size={14} />
                   Delete
@@ -1322,7 +1077,7 @@ Status: Archived in Permanent Society Records.`;
                 <button
                   type="button"
                   onClick={() => setViewingDoc(null)}
-                  style={{ background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '1.3rem', cursor: 'pointer', padding: '0 6px', lineHeight: 1 }}
+                  className="monthly-mom-storage-vault-s76"
                 >
                   ✕
                 </button>
@@ -1330,28 +1085,28 @@ Status: Archived in Permanent Society Records.`;
             </div>
 
             {/* Document Content View */}
-            <div style={{ padding: '0', overflowY: 'auto', flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#f8fafc', position: 'relative', minHeight: '500px' }}>
+            <div className="monthly-mom-storage-vault-s77">
               {isLoadingFile ? (
-                <div style={{ textAlign: 'center', padding: '48px', color: '#64748b' }}>
-                  <FileText size={40} color="#2563eb" style={{ marginBottom: '12px' }} />
-                  <p style={{ margin: 0, fontWeight: 700, fontSize: '0.92rem' }}>Loading document from storage...</p>
+                <div className="monthly-mom-storage-vault-s78">
+                  <FileText size={40} color="#2563eb" className="monthly-mom-storage-vault-s79" />
+                  <p className="monthly-mom-storage-vault-s80">Loading document from storage...</p>
                 </div>
               ) : activeFileBlobUrl && viewingDoc.fileType === 'IMAGE' ? (
-                <div style={{ padding: '24px', textAlign: 'center', width: '100%', overflow: 'auto' }}>
+                <div className="monthly-mom-storage-vault-s81">
                   <img
                     src={activeFileBlobUrl}
                     alt={viewingDoc.title}
-                    style={{ transform: `scale(${zoomLevel})`, transition: 'transform 0.15s ease', maxWidth: '100%', maxHeight: '68vh', borderRadius: '8px', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}
+                    className="monthly-mom-storage-vault-s82" style={{ transform: `scale(${zoomLevel})` }}
                   />
                 </div>
               ) : activeFileBlobUrl && viewingDoc.fileType === 'PDF' ? (
-                <div style={{ width: '100%', height: '70vh', minHeight: '520px', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px', background: '#e2e8f0', fontSize: '0.78rem', color: '#334155' }}>
+                <div className="monthly-mom-storage-vault-s83">
+                  <div className="monthly-mom-storage-vault-s84">
                     <span>📄 <strong>{viewingDoc.fileName}</strong> ({viewingDoc.fileSize})</span>
                     <button
                       type="button"
                       onClick={() => window.open(activeFileBlobUrl, '_blank')}
-                      style={{ border: 'none', background: '#2563eb', color: '#ffffff', padding: '3px 8px', borderRadius: '4px', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer' }}
+                      className="monthly-mom-storage-vault-s85"
                     >
                       ↗️ Full Screen Native Viewer
                     </button>
@@ -1359,15 +1114,15 @@ Status: Archived in Permanent Society Records.`;
                   <object
                     data={activeFileBlobUrl}
                     type="application/pdf"
-                    style={{ width: '100%', height: '100%', border: 'none' }}
+                    className="monthly-mom-storage-vault-s86"
                   >
                     <iframe
                       src={activeFileBlobUrl}
                       title={viewingDoc.title}
-                      style={{ width: '100%', height: '100%', border: 'none' }}
+                      className="monthly-mom-storage-vault-s86"
                     >
-                      <div style={{ textAlign: 'center', padding: '40px', color: '#475569' }}>
-                        <p style={{ fontWeight: 700 }}>PDF Document Loaded</p>
+                      <div className="monthly-mom-storage-vault-s87">
+                        <p className="monthly-mom-storage-vault-s88">PDF Document Loaded</p>
                         <button
                           type="button"
                           onClick={() => window.open(activeFileBlobUrl, '_blank')}
@@ -1380,33 +1135,32 @@ Status: Archived in Permanent Society Records.`;
                   </object>
                 </div>
               ) : (
-                <div style={{ textAlign: 'center', padding: '36px', maxWidth: '580px', width: '100%' }}>
-                  <FileText size={48} color="#2563eb" style={{ marginBottom: '12px' }} />
-                  <h4 style={{ margin: '0 0 8px', fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
+                <div className="monthly-mom-storage-vault-s89">
+                  <FileText size={48} color="#2563eb" className="monthly-mom-storage-vault-s79" />
+                  <h4 className="monthly-mom-storage-vault-s90">
                     {viewingDoc.title}
                   </h4>
-                  <div style={{ background: '#ffffff', padding: '18px', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'left', marginBottom: '18px', fontSize: '0.86rem', lineHeight: '1.6', color: '#334155' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+                  <div className="monthly-mom-storage-vault-s91">
+                    <div className="monthly-mom-storage-vault-s92">
                       <div><strong>Meeting Date:</strong> {viewingDoc.meetingDate}</div>
                       <div><strong>Meeting Time:</strong> {viewingDoc.meetingTime || '10:30 AM'}</div>
                       <div><strong>Scope:</strong> {viewingDoc.scope === 'A_BUILDING' ? "Wing 'A'" : 'Common Infrastructure'}</div>
                       <div><strong>Presided By:</strong> {viewingDoc.chairperson || '(General Body)'}</div>
                     </div>
-                    <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '10px' }}>
+                    <div className="monthly-mom-storage-vault-s93">
                       <strong>File:</strong> {viewingDoc.fileName} ({viewingDoc.fileSize})
                     </div>
-                    <hr style={{ border: 'none', borderTop: '1px solid #f1f5f9', margin: '8px 0' }} />
+                    <hr className="monthly-mom-storage-vault-s94" />
                     <strong>Summary & Resolutions:</strong>
-                    <p style={{ margin: '6px 0 0', color: '#475569', fontSize: '0.84rem' }}>{viewingDoc.notes}</p>
+                    <p className="monthly-mom-storage-vault-s95">{viewingDoc.notes}</p>
                   </div>
-                  <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                  <div className="monthly-mom-storage-vault-s96">
                     <button
                       type="button"
                       onClick={() => handleDownloadFile(viewingDoc)}
-                      className="button-primary"
-                      style={{ padding: '8px 16px', fontSize: '0.84rem' }}
+                      className="button-primary monthly-mom-storage-vault-s97"
                     >
-                      <Download size={14} style={{ marginRight: '6px' }} />
+                      <Download size={14} className="monthly-mom-storage-vault-s98" />
                       Download Record
                     </button>
                     {onLoadIntoGenerator && (
@@ -1417,10 +1171,9 @@ Status: Archived in Permanent Society Records.`;
                           setViewingDoc(null);
                           onLoadIntoGenerator(doc);
                         }}
-                        className="button-secondary"
-                        style={{ padding: '8px 16px', fontSize: '0.84rem' }}
+                        className="button-secondary monthly-mom-storage-vault-s97"
                       >
-                        <Sparkles size={14} style={{ marginRight: '6px', color: '#059669' }} />
+                        <Sparkles size={14} className="monthly-mom-storage-vault-s99" />
                         Open in AI Generator
                       </button>
                     )}
@@ -1430,8 +1183,8 @@ Status: Archived in Permanent Society Records.`;
             </div>
 
             {/* Bottom Bar */}
-            <div style={{ padding: '12px 20px', background: '#ffffff', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
+            <div className="monthly-mom-storage-vault-s100">
+              <span className="monthly-mom-storage-vault-s45">
                 Archived in Permanent Society Records • {viewingDoc.uploadDate}
               </span>
               {onLoadIntoGenerator && (
@@ -1442,10 +1195,9 @@ Status: Archived in Permanent Society Records.`;
                     setViewingDoc(null);
                     onLoadIntoGenerator(doc);
                   }}
-                  className="button-primary"
-                  style={{ padding: '6px 14px', fontSize: '0.78rem' }}
+                  className="button-primary monthly-mom-storage-vault-s101"
                 >
-                  <Sparkles size={13} style={{ marginRight: '5px' }} />
+                  <Sparkles size={13} className="monthly-mom-storage-vault-s102" />
                   Open in AI MOM Generator
                 </button>
               )}
@@ -1459,57 +1211,36 @@ Status: Archived in Permanent Society Records.`;
       {deletingMomDoc && (
         <div
           data-testid="delete-mom-modal"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(15, 23, 42, 0.7)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 10000,
-            padding: '16px'
-          }}
+          className="monthly-mom-storage-vault-s103"
           onClick={(e) => {
             if (e.target === e.currentTarget && !isDeleting) setDeletingMomDoc(null);
           }}
         >
           <div
-            style={{
-              background: '#ffffff',
-              borderRadius: '16px',
-              maxWidth: '460px',
-              width: '100%',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              overflow: 'hidden',
-              border: '1px solid #fee2e2'
-            }}
+            className="monthly-mom-storage-vault-s104"
           >
             {/* Header */}
-            <div style={{ background: '#fef2f2', padding: '18px 22px', borderBottom: '1px solid #fecaca', display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ background: '#fee2e2', color: '#dc2626', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <div className="monthly-mom-storage-vault-s105">
+              <div className="monthly-mom-storage-vault-s106">
                 <Trash2 size={20} />
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#991b1b' }}>
+                <h4 className="monthly-mom-storage-vault-s107">
                   Delete Monthly MOM Record?
                 </h4>
-                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#b91c1c' }}>
+                <p className="monthly-mom-storage-vault-s108">
                   This action permanently deletes the document
                 </p>
               </div>
             </div>
 
             {/* Content */}
-            <div style={{ padding: '20px 22px' }}>
-              <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0', marginBottom: '16px', fontSize: '0.84rem' }}>
-                <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>
+            <div className="monthly-mom-storage-vault-s109">
+              <div className="monthly-mom-storage-vault-s110">
+                <div className="monthly-mom-storage-vault-s111">
                   {deletingMomDoc.title}
                 </div>
-                <div style={{ fontSize: '0.76rem', color: '#64748b', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <div className="monthly-mom-storage-vault-s112">
                   <span>📅 {deletingMomDoc.month || deletingMomDoc.meetingDate}</span>
                   <span>•</span>
                   <span>📄 {deletingMomDoc.fileName || 'Archive Record'} ({deletingMomDoc.fileSize})</span>
@@ -1518,8 +1249,8 @@ Status: Archived in Permanent Society Records.`;
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', background: '#fffbeb', border: '1px solid #fef3c7', padding: '12px', borderRadius: '8px', color: '#92400e', fontSize: '0.8rem', lineHeight: '1.45' }}>
-                <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: '2px', color: '#d97706' }} />
+              <div className="monthly-mom-storage-vault-s113">
+                <AlertTriangle size={18} className="monthly-mom-storage-vault-s114" />
                 <div>
                   This file and its summary will be permanently erased from your browser cache, offline IndexedDB, and society Firestore records. This cannot be recovered.
                 </div>
@@ -1527,22 +1258,13 @@ Status: Archived in Permanent Society Records.`;
             </div>
 
             {/* Footer Buttons */}
-            <div style={{ padding: '14px 22px', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+            <div className="monthly-mom-storage-vault-s115">
               <button
                 type="button"
                 data-testid="cancel-delete-mom-btn"
                 onClick={() => setDeletingMomDoc(null)}
                 disabled={isDeleting}
-                style={{
-                  padding: '9px 16px',
-                  borderRadius: '8px',
-                  border: '1px solid #cbd5e1',
-                  background: '#ffffff',
-                  color: '#475569',
-                  fontSize: '0.84rem',
-                  fontWeight: 700,
-                  cursor: isDeleting ? 'not-allowed' : 'pointer'
-                }}
+                className="monthly-mom-storage-vault-s116" style={{ cursor: isDeleting ? 'not-allowed' : 'pointer' }}
               >
                 Cancel
               </button>
@@ -1552,20 +1274,7 @@ Status: Archived in Permanent Society Records.`;
                 data-testid="confirm-delete-mom-btn"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
-                style={{
-                  padding: '9px 18px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: isDeleting ? '#94a3b8' : '#dc2626',
-                  color: '#ffffff',
-                  fontSize: '0.84rem',
-                  fontWeight: 800,
-                  cursor: isDeleting ? 'not-allowed' : 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: '0 2px 6px rgba(220, 38, 38, 0.3)'
-                }}
+                className="monthly-mom-storage-vault-s117" style={{ background: isDeleting ? '#94a3b8' : '#dc2626', cursor: isDeleting ? 'not-allowed' : 'pointer' }}
               >
                 <Trash2 size={15} />
                 <span>{isDeleting ? 'Deleting...' : 'Yes, Delete Document'}</span>

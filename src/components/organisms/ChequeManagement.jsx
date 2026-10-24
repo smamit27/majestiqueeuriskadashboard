@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './ChequeManagement.css';
+
 
 const FINANCIAL_YEAR_MONTHS = Array.from({ length: 12 }, (_, i) => {
   const d = new Date(2026, 3 + i, 1);
@@ -628,33 +630,33 @@ export default function ChequeManagement({ isAdmin = false }) {
         <table className="attendance-table" style={{ minWidth: isCommon ? (isPaybackTrackingActive ? 1850 : 1600) : 1200 }}>
           <thead>
             <tr style={{ background: isCommon ? '#f0fdf4' : '#eff6ff' }}>
-              <th style={{ width: 50 }}>Sr.</th>
-              <th style={{ width: 130 }}>Cheque Date</th>
-              <th style={{ width: 135 }}>Deducted Date</th>
-              <th style={{ width: 110 }}>Cheque No</th>
-              <th style={{ width: 200 }}>Vendor Name</th>
+              <th className="cheque-management-s1">Sr.</th>
+              <th className="cheque-management-s2">Cheque Date</th>
+              <th className="cheque-management-s3">Deducted Date</th>
+              <th className="cheque-management-s4">Cheque No</th>
+              <th className="cheque-management-s5">Vendor Name</th>
               <th>{isCommon ? 'Purpose' : 'Remarks / Purpose'}</th>
-              {isCommon && <th style={{ width: 150 }}>Remark</th>}
-              <th style={{ width: 130, textAlign: 'right' }}>Total (₹)</th>
+              {isCommon && <th className="cheque-management-s6">Remark</th>}
+              <th className="cheque-management-s7">Total (₹)</th>
               {isCommon && (
                 <>
-                  <th style={{ width: 120, textAlign: 'right', background: '#f0fdf4' }}>A Share (87)</th>
-                  <th style={{ width: isPaybackTrackingActive ? 110 : 120, textAlign: 'right', background: '#f0f9ff' }}>B Share (96)</th>
-                  {isPaybackTrackingActive && <th style={{ width: 155, textAlign: 'center', background: '#eff6ff', color: '#1e40af' }}>B Paid Back Date</th>}
-                  <th style={{ width: isPaybackTrackingActive ? 110 : 120, textAlign: 'right', background: '#fff7ed' }}>C Share (48)</th>
-                  {isPaybackTrackingActive && <th style={{ width: 155, textAlign: 'center', background: '#fffbeb', color: '#b45309' }}>C Paid Back Date</th>}
+                  <th className="cheque-management-s8">A Share (87)</th>
+                  <th className="cheque-management-s9" style={{ width: isPaybackTrackingActive ? 110 : 120 }}>B Share (96)</th>
+                  {isPaybackTrackingActive && <th className="cheque-management-s10">B Paid Back Date</th>}
+                  <th className="cheque-management-s11" style={{ width: isPaybackTrackingActive ? 110 : 120 }}>C Share (48)</th>
+                  {isPaybackTrackingActive && <th className="cheque-management-s12">C Paid Back Date</th>}
                 </>
               )}
-              <th style={{ width: 120 }}>Who Paid</th>
-              <th style={{ width: 70, textAlign: 'center' }}>Paid?</th>
-              <th style={{ width: 85, textAlign: 'center' }}>Actions</th>
+              <th className="cheque-management-s13">Who Paid</th>
+              <th className="cheque-management-s14">Paid?</th>
+              <th className="cheque-management-s15">Actions</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
-              <tr><td colSpan={colSpanBase} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>Loading records...</td></tr>
+              <tr><td colSpan={colSpanBase} className="cheque-management-s16">Loading records...</td></tr>
             ) : list.length === 0 ? (
-              <tr><td colSpan={colSpanBase} style={{ textAlign: 'center', padding: 40, opacity: 0.5 }}>
+              <tr><td colSpan={colSpanBase} className="cheque-management-s16">
                 {searchText ? `No cheques found matching "${searchText}"` : 'No cheques recorded.'}
               </td></tr>
             ) : (
@@ -679,48 +681,48 @@ export default function ChequeManagement({ isAdmin = false }) {
                       />
                     </td>
                     <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div className="cheque-management-s17">
                         <input className="attendance-register-input" value={c.chequeNo} onChange={e => updateRow(actualIdx, 'chequeNo', e.target.value, isCommon)} readOnly={!canEdit} style={strikeStyle} />
-                        {isCancelled && <span style={{ fontSize: '0.65rem', background: '#fee2e2', color: '#dc2626', fontWeight: 700, padding: '2px 5px', borderRadius: '4px', whiteSpace: 'nowrap' }}>CANCELLED</span>}
+                        {isCancelled && <span className="cheque-management-s18">CANCELLED</span>}
                       </div>
                     </td>
-                    <td><input className="attendance-register-input" style={{ fontWeight: 600, ...strikeStyle }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value, isCommon)} readOnly={!canEdit} /></td>
+                    <td><input className="attendance-register-input cheque-management-s19" style={{ ...strikeStyle }} value={c.vendor} onChange={e => updateRow(actualIdx, 'vendor', e.target.value, isCommon)} readOnly={!canEdit} /></td>
                     <td><input className="attendance-register-input" value={c.purpose} onChange={e => updateRow(actualIdx, 'purpose', e.target.value, isCommon)} readOnly={!canEdit} style={isCancelled || isPaid ? { color: '#9ca3af' } : {}} /></td>
                     {isCommon && (
                       <td><input className="attendance-register-input" placeholder="Add remark..." value={c.remark || ''} onChange={e => updateRow(actualIdx, 'remark', e.target.value, isCommon)} readOnly={!canEdit} style={strikeStyle} title="Remark / Note for common work" /></td>
                     )}
-                    <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 700, ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : isPaid ? { textDecoration: 'line-through', color: '#16a34a' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value, isCommon)} readOnly={!canEdit} /></td>
+                    <td><input className="attendance-register-input cheque-management-s20" style={{ ...(isCancelled ? { textDecoration: 'line-through', color: '#dc2626' } : isPaid ? { textDecoration: 'line-through', color: '#16a34a' } : {}) }} value={c.amount} onChange={e => updateRow(actualIdx, 'amount', e.target.value, isCommon)} readOnly={!canEdit} /></td>
                     {isCommon && (
                       <>
-                        <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#16a34a', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
-                        <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#2563eb', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
+                        <td className="cheque-management-s21" style={{ color: isCancelled ? '#9ca3af' : '#16a34a', ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.A / FLATS.Total)}`}</td>
+                        <td className="cheque-management-s21" style={{ color: isCancelled ? '#9ca3af' : '#2563eb', ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.B / FLATS.Total)}`}</td>
                         {isPaybackTrackingActive && (
-                          <td style={{ textAlign: 'center', background: '#f8faff', borderLeft: '1px solid #dbeafe', verticalAlign: 'middle', padding: '6px 8px' }}>
-                            {isCancelled ? <span style={{ color: '#9ca3af' }}>—</span> : (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <input type="date" className="attendance-register-input" value={c.bPaidDate || c.bReceiveDate || ''} onChange={e => updateRow(actualIdx, 'bPaidDate', e.target.value, isCommon)} readOnly={!canEdit} title="B Building paid back date" style={{ textAlign: 'center', fontSize: '0.82rem', padding: '4px' }} />
+                          <td className="cheque-management-s22">
+                            {isCancelled ? <span className="cheque-management-s23">—</span> : (
+                              <div className="cheque-management-s24">
+                                <input type="date" className="attendance-register-input cheque-management-s25" value={c.bPaidDate || c.bReceiveDate || ''} onChange={e => updateRow(actualIdx, 'bPaidDate', e.target.value, isCommon)} readOnly={!canEdit} title="B Building paid back date" />
                                 {(c.bPaidDate || c.bReceiveDate) ? (
-                                  <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#166534', background: '#dcfce7', border: '1px solid #86efac', borderRadius: '4px', padding: '2px 6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                  <div className="cheque-management-s26">
                                     <span>✓ Paid Back</span>
-                                    {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'bPaidDate', '', isCommon)} style={{ background: 'none', border: 'none', color: '#166534', cursor: 'pointer', padding: 0, fontWeight: 700, fontSize: '0.75rem' }}>✕</button>}
+                                    {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'bPaidDate', '', isCommon)} className="cheque-management-s27">✕</button>}
                                   </div>
-                                ) : n(c.amount) > 0 && <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#b45309', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '2px 6px', textAlign: 'center' }}>⏳ Pending</div>}
+                                ) : n(c.amount) > 0 && <div className="cheque-management-s28">⏳ Pending</div>}
                               </div>
                             )}
                           </td>
                         )}
-                        <td style={{ textAlign: 'right', color: isCancelled ? '#9ca3af' : '#ea580c', fontWeight: 500, ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
+                        <td className="cheque-management-s21" style={{ color: isCancelled ? '#9ca3af' : '#ea580c', ...(isPaid ? { textDecoration: 'line-through' } : {}) }}>{isCancelled ? '—' : `₹${fmt(n(c.amount) * FLATS.C / FLATS.Total)}`}</td>
                         {isPaybackTrackingActive && (
-                          <td style={{ textAlign: 'center', background: '#fffdfa', borderLeft: '1px solid #fef3c7', verticalAlign: 'middle', padding: '6px 8px' }}>
-                            {isCancelled ? <span style={{ color: '#9ca3af' }}>—</span> : (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                <input type="date" className="attendance-register-input" value={c.cPaidDate || c.cReceiveDate || ''} onChange={e => updateRow(actualIdx, 'cPaidDate', e.target.value, isCommon)} readOnly={!canEdit} title="C Building paid back date" style={{ textAlign: 'center', fontSize: '0.82rem', padding: '4px' }} />
+                          <td className="cheque-management-s29">
+                            {isCancelled ? <span className="cheque-management-s23">—</span> : (
+                              <div className="cheque-management-s24">
+                                <input type="date" className="attendance-register-input cheque-management-s25" value={c.cPaidDate || c.cReceiveDate || ''} onChange={e => updateRow(actualIdx, 'cPaidDate', e.target.value, isCommon)} readOnly={!canEdit} title="C Building paid back date" />
                                 {(c.cPaidDate || c.cReceiveDate) ? (
-                                  <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#166534', background: '#dcfce7', border: '1px solid #86efac', borderRadius: '4px', padding: '2px 6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                  <div className="cheque-management-s26">
                                     <span>✓ Paid Back</span>
-                                    {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'cPaidDate', '', isCommon)} style={{ background: 'none', border: 'none', color: '#166534', cursor: 'pointer', padding: 0, fontWeight: 700, fontSize: '0.75rem' }}>✕</button>}
+                                    {canEdit && <button type="button" onClick={() => updateRow(actualIdx, 'cPaidDate', '', isCommon)} className="cheque-management-s27">✕</button>}
                                   </div>
-                                ) : n(c.amount) > 0 && <div style={{ fontSize: '0.72rem', fontWeight: 600, color: '#b45309', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '4px', padding: '2px 6px', textAlign: 'center' }}>⏳ Pending</div>}
+                                ) : n(c.amount) > 0 && <div className="cheque-management-s28">⏳ Pending</div>}
                               </div>
                             )}
                           </td>
@@ -732,13 +734,13 @@ export default function ChequeManagement({ isAdmin = false }) {
                         <option>A Building</option><option>B Building</option><option>C Building</option><option>Petty Cash</option>
                       </select>
                     </td>
-                    <td style={{ textAlign: 'center' }}>
-                      <input type="checkbox" checked={c.isPaid || false} onChange={e => updateRow(actualIdx, 'isPaid', e.target.checked, isCommon)} disabled={!canEdit} style={{ transform: 'scale(1.2)' }} />
+                    <td className="cheque-management-s30">
+                      <input type="checkbox" checked={c.isPaid || false} onChange={e => updateRow(actualIdx, 'isPaid', e.target.checked, isCommon)} disabled={!canEdit} className="cheque-management-s31" />
                     </td>
-                    <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                        <button type="button" onClick={() => handleOpenEditModal(c, actualIdx, isCommon)} className="button-secondary" style={{ padding: '3px 8px', fontSize: '0.75rem', height: 'auto', borderRadius: '4px', cursor: 'pointer' }} title="Edit Cheque Details">✏️ Edit</button>
-                        {canEdit && <button type="button" className="button-icon" onClick={() => removeRow(actualIdx, isCommon)} style={{ opacity: 0.3 }} title="Delete Cheque">✕</button>}
+                    <td className="cheque-management-s32">
+                      <div className="cheque-management-s33">
+                        <button type="button" onClick={() => handleOpenEditModal(c, actualIdx, isCommon)} className="button-secondary cheque-management-s34" title="Edit Cheque Details">✏️ Edit</button>
+                        {canEdit && <button type="button" className="button-icon cheque-management-s35" onClick={() => removeRow(actualIdx, isCommon)} title="Delete Cheque">✕</button>}
                       </div>
                     </td>
                   </tr>
@@ -747,16 +749,16 @@ export default function ChequeManagement({ isAdmin = false }) {
             )}
           </tbody>
           <tfoot>
-            <tr style={{ background: '#f8fafc', fontWeight: 700 }}>
-              <td colSpan={isCommon ? 7 : 6} style={{ textAlign: 'right' }}>GRAND TOTAL</td>
-              <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(isCommon ? totalAmountCommon : totalAmountA)}</td>
+            <tr className="cheque-management-s36">
+              <td colSpan={isCommon ? 7 : 6} className="cheque-management-s37">GRAND TOTAL</td>
+              <td className="cheque-management-s38">₹{fmt(isCommon ? totalAmountCommon : totalAmountA)}</td>
               {isCommon && (
                 <>
-                  <td style={{ textAlign: 'right', color: '#16a34a' }}>₹{fmt(totalAmountCommon * FLATS.A / FLATS.Total)}</td>
-                  <td style={{ textAlign: 'right', color: '#2563eb' }}>₹{fmt(totalAmountCommon * FLATS.B / FLATS.Total)}</td>
-                  {isPaybackTrackingActive && <td style={{ textAlign: 'center', fontSize: '0.78rem', color: '#1e40af', background: '#eff6ff' }}>Rec: ₹{fmt(bReceivedAmount)}</td>}
-                  <td style={{ textAlign: 'right', color: '#ea580c' }}>₹{fmt(totalAmountCommon * FLATS.C / FLATS.Total)}</td>
-                  {isPaybackTrackingActive && <td style={{ textAlign: 'center', fontSize: '0.78rem', color: '#b45309', background: '#fffbeb' }}>Rec: ₹{fmt(cReceivedAmount)}</td>}
+                  <td className="cheque-management-s39">₹{fmt(totalAmountCommon * FLATS.A / FLATS.Total)}</td>
+                  <td className="cheque-management-s38">₹{fmt(totalAmountCommon * FLATS.B / FLATS.Total)}</td>
+                  {isPaybackTrackingActive && <td className="cheque-management-s40">Rec: ₹{fmt(bReceivedAmount)}</td>}
+                  <td className="cheque-management-s41">₹{fmt(totalAmountCommon * FLATS.C / FLATS.Total)}</td>
+                  {isPaybackTrackingActive && <td className="cheque-management-s42">Rec: ₹{fmt(cReceivedAmount)}</td>}
                 </>
               )}
               <td colSpan={3}></td>
@@ -768,10 +770,10 @@ export default function ChequeManagement({ isAdmin = false }) {
   };
 
   return (
-    <div className="cheque-management" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="cheque-management cheque-management-s43">
 
       {/* Month Tabs */}
-      <div className="table-card" style={{ padding: 0 }}>
+      <div className="table-card cheque-management-s44">
         <div className="attendance-month-tabs" role="tablist">
           {FINANCIAL_YEAR_MONTHS.map(mv => {
             const isLocked = isMonthLockedByDefault(mv);
@@ -779,15 +781,14 @@ export default function ChequeManagement({ isAdmin = false }) {
             return (
               <button
                 key={mv}
-                className={`attendance-month-tab ${selectedMonth === mv ? 'attendance-month-tab--active' : ''}`}
+                className={`attendance-month-tab ${selectedMonth === mv ? 'attendance-month-tab--active' : ''} cheque-management-s45`}
                 onClick={() => setSelectedMonth(mv)}
                 title={isLocked ? (isUnlocked ? `${formatLongMonth(mv)} (Unlocked for Editing)` : `Closed Month (Locked) — ${formatLongMonth(mv)}`) : `${formatLongMonth(mv)} (Active Period)`}
-                style={{ position: 'relative' }}
               >
                 <span>{formatMonthLabel(mv)}</span>
                 {isLocked && (
                   <span 
-                    style={{ marginLeft: '5px', fontSize: '0.8em', opacity: isUnlocked ? 0.7 : 1 }} 
+                    className="cheque-management-s46" style={{ opacity: isUnlocked ? 0.7 : 1 }} 
                     aria-label={isUnlocked ? 'Period Unlocked' : 'Period Locked'}
                   >
                     {isUnlocked ? '🔓' : '🔒'}
@@ -801,24 +802,16 @@ export default function ChequeManagement({ isAdmin = false }) {
         <div className="attendance-table-card__header">
           <div>
             <p className="eyebrow">A Building &amp; Common Work — {formatLongMonth(selectedMonth)}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <h3 style={{ margin: 0 }}>Cheque Register — {formatMonthLabel(selectedMonth)}</h3>
+            <div className="cheque-management-s47">
+              <h3 className="cheque-management-s48">Cheque Register — {formatMonthLabel(selectedMonth)}</h3>
               {isMonthLockedByDefault(selectedMonth) && (
-                <span style={{
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  padding: '3px 8px',
-                  borderRadius: '6px',
-                  background: unlockedMonths[selectedMonth] ? '#dcfce7' : '#fef3c7',
-                  color: unlockedMonths[selectedMonth] ? '#166534' : '#92400e',
-                  border: unlockedMonths[selectedMonth] ? '1px solid #86efac' : '1px solid #fde68a'
-                }}>
+                <span className="cheque-management-s49" style={{ background: unlockedMonths[selectedMonth] ? '#dcfce7' : '#fef3c7', color: unlockedMonths[selectedMonth] ? '#166534' : '#92400e', border: unlockedMonths[selectedMonth] ? '1px solid #86efac' : '1px solid #fde68a' }}>
                   {unlockedMonths[selectedMonth] ? '🔓 AUDIT UNLOCKED' : '🔒 CLOSED MONTH LOCKED'}
                 </span>
               )}
             </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: badge.color, fontWeight: 500, fontSize: '0.9rem' }}>
+          <div className="cheque-management-s50" style={{ color: badge.color }}>
              <span>{badge.icon}</span>
              <span>{isLoading ? 'Loading...' : saveMsg || 'Ready'}</span>
           </div>
@@ -828,24 +821,14 @@ export default function ChequeManagement({ isAdmin = false }) {
       {/* Lock System Notification & Controls */}
       {isMonthLockedByDefault(selectedMonth) && (
         isCurrentMonthLocked ? (
-          <div style={{
-            background: '#fffbeb',
-            border: '1.5px solid #fde68a',
-            borderRadius: '14px',
-            padding: '16px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '16px',
-            flexWrap: 'wrap'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <span style={{ fontSize: '1.6rem', lineHeight: 1 }}>🔒</span>
+          <div className="cheque-management-s51">
+            <div className="cheque-management-s52">
+              <span className="cheque-management-s53">🔒</span>
               <div>
-                <h4 style={{ margin: '0 0 3px 0', color: '#92400e', fontSize: '0.96rem', fontWeight: 700 }}>
+                <h4 className="cheque-management-s54">
                   Closed Month Locked: {formatLongMonth(selectedMonth)}
                 </h4>
-                <p style={{ margin: 0, color: '#b45309', fontSize: '0.86rem' }}>
+                <p className="cheque-management-s55">
                   Past months are automatically locked when a new month begins. Enter authorization password to make changes.
                 </p>
               </div>
@@ -854,41 +837,21 @@ export default function ChequeManagement({ isAdmin = false }) {
               <button
                 type="button"
                 onClick={() => { setShowUnlockModal(true); setUnlockError(''); setUnlockPassword(''); }}
-                className="button-primary"
-                style={{
-                  background: '#d97706',
-                  borderColor: '#b45309',
-                  padding: '9px 18px',
-                  fontSize: '0.88rem',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: '0 2px 4px rgba(217, 119, 6, 0.2)'
-                }}
+                className="button-primary cheque-management-s56"
               >
                 🔑 Unlock with Password
               </button>
             )}
           </div>
         ) : (
-          <div style={{
-            background: '#f0fdf4',
-            border: '1.5px solid #bbf7d0',
-            borderRadius: '14px',
-            padding: '12px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '16px',
-            flexWrap: 'wrap'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '1.4rem' }}>🔓</span>
+          <div className="cheque-management-s57">
+            <div className="cheque-management-s58">
+              <span className="cheque-management-s59">🔓</span>
               <div>
-                <span style={{ fontWeight: 700, color: '#166534', fontSize: '0.92rem' }}>
+                <span className="cheque-management-s60">
                   {formatLongMonth(selectedMonth)} Unlocked (Temporary Edit Access Active)
                 </span>
-                <p style={{ margin: '2px 0 0 0', color: '#15803d', fontSize: '0.84rem' }}>
+                <p className="cheque-management-s61">
                   You can now add, edit, or remove cheque entries for {formatLongMonth(selectedMonth)}.
                 </p>
               </div>
@@ -896,8 +859,7 @@ export default function ChequeManagement({ isAdmin = false }) {
             <button
               type="button"
               onClick={() => setUnlockedMonths(prev => ({ ...prev, [selectedMonth]: false }))}
-              className="button-secondary"
-              style={{ padding: '7px 16px', fontSize: '0.84rem', borderColor: '#86efac', color: '#166534', background: 'white' }}
+              className="button-secondary cheque-management-s62"
             >
               🔒 Re-lock Month
             </button>
@@ -907,11 +869,11 @@ export default function ChequeManagement({ isAdmin = false }) {
 
       {/* Missing Cheque Alert Banner — Both tabs, June 2026+ */}
       {missingCheques.length > 0 && (
-        <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '12px', padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-          <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>⚠️</span>
+        <div className="cheque-management-s63">
+          <span className="cheque-management-s64">⚠️</span>
           <div>
-            <p style={{ margin: '0 0 4px 0', fontWeight: 700, color: '#dc2626', fontSize: '0.95rem' }}>Missing Cheque Alert</p>
-            <p style={{ margin: 0, color: '#991b1b', fontSize: '0.88rem' }}>
+            <p className="cheque-management-s65">Missing Cheque Alert</p>
+            <p className="cheque-management-s66">
               In <strong>{formatLongMonth(selectedMonth)}</strong>, you missed to add cheque number(s): <strong>{missingCheques.join(', ')}</strong>. Please check.
             </p>
           </div>
@@ -919,23 +881,22 @@ export default function ChequeManagement({ isAdmin = false }) {
       )}
 
       {/* SEARCH ZONE */}
-      <div className="section-card" style={{ padding: '16px 24px', background: '#f8fafc', border: '1px solid var(--line)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-          <div className="filter-field" style={{ flex: 1, minWidth: '280px', margin: 0 }}>
-            <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>🔍 Search by Cheque Number or Date</label>
+      <div className="section-card cheque-management-s67">
+        <div className="cheque-management-s68">
+          <div className="filter-field cheque-management-s69">
+            <label className="eyebrow cheque-management-s70">🔍 Search by Cheque Number or Date</label>
             <input 
               type="search" 
               placeholder="Search Cheque No, Date (YYYY-MM-DD), or Vendor..." 
               value={searchText} 
               onChange={e => setSearchText(e.target.value)}
-              className="attendance-register-input"
-              style={{ textAlign: 'left', height: '44px', fontSize: '1rem', background: 'white' }}
+              className="attendance-register-input cheque-management-s71"
             />
           </div>
-          <button className="button-secondary" onClick={handlePrintPdf} style={{ padding: '10px 20px', height: '44px', marginTop: 'auto' }}>
+          <button className="button-secondary cheque-management-s72" onClick={handlePrintPdf}>
             ⬇ Export PDF
           </button>
-          <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '10px 20px', height: '44px', marginTop: 'auto' }}>
+          <button className="button-secondary cheque-management-s72" onClick={handleDownloadExcel}>
             📊 Export Excel
           </button>
         </div>
@@ -944,68 +905,58 @@ export default function ChequeManagement({ isAdmin = false }) {
       {/* ADD NEW CHEQUE FORM */}
       {isAdmin && (
         isCurrentMonthLocked ? (
-          <div className="section-card" style={{ padding: '22px 24px', background: '#f8fafc', border: '1.5px dashed #cbd5e1', borderRadius: '14px', textAlign: 'center' }}>
-            <div style={{ maxWidth: '520px', margin: '0 auto' }}>
-              <span style={{ fontSize: '1.8rem', display: 'block', marginBottom: '6px' }}>🔒</span>
-              <h4 style={{ margin: '0 0 6px 0', color: '#475569', fontSize: '1rem' }}>Adding Cheques Disabled for {formatLongMonth(selectedMonth)}</h4>
-              <p style={{ margin: '0 0 14px 0', color: '#64748b', fontSize: '0.88rem', lineHeight: 1.4 }}>
+          <div className="section-card cheque-management-s73">
+            <div className="cheque-management-s74">
+              <span className="cheque-management-s75">🔒</span>
+              <h4 className="cheque-management-s76">Adding Cheques Disabled for {formatLongMonth(selectedMonth)}</h4>
+              <p className="cheque-management-s77">
                 Past closed months are automatically locked against unintended changes. Enter the password to unlock edits for this month.
               </p>
-              <button type="button" onClick={() => { setShowUnlockModal(true); setUnlockError(''); setUnlockPassword(''); }} className="button-secondary" style={{ padding: '8px 18px', fontSize: '0.86rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <button type="button" onClick={() => { setShowUnlockModal(true); setUnlockError(''); setUnlockPassword(''); }} className="button-secondary cheque-management-s78">
                 🔑 Enter Password to Enable Adding Cheques
               </button>
             </div>
           </div>
         ) : (
-          <div className="section-card" style={{ padding: '24px' }}>
+          <div className="section-card cheque-management-s79">
             {/* Section selector toggle */}
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+            <div className="cheque-management-s80">
               <button type="button"
                 onClick={() => setFormTarget('buildingA')}
-                style={{
-                  padding: '10px 20px', borderRadius: '10px', border: '2px solid', cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', transition: 'all 0.15s',
-                  background: formTarget === 'buildingA' ? '#1e3a8a' : 'white',
-                  color: formTarget === 'buildingA' ? 'white' : '#1e3a8a',
-                  borderColor: '#1e3a8a'
-                }}
+                className="cheque-management-s81" style={{ background: formTarget === 'buildingA' ? '#1e3a8a' : 'white', color: formTarget === 'buildingA' ? 'white' : '#1e3a8a' }}
               >🏢 Building A</button>
               <button type="button"
                 onClick={() => setFormTarget('common')}
-                style={{
-                  padding: '10px 20px', borderRadius: '10px', border: '2px solid', cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', transition: 'all 0.15s',
-                  background: formTarget === 'common' ? '#065f46' : 'white',
-                  color: formTarget === 'common' ? 'white' : '#065f46',
-                  borderColor: '#065f46'
-                }}
+                className="cheque-management-s82" style={{ background: formTarget === 'common' ? '#065f46' : 'white', color: formTarget === 'common' ? 'white' : '#065f46' }}
               >🤝 Common Work</button>
-              <span style={{ marginLeft: 8, alignSelf: 'center', fontSize: '0.85rem', color: '#64748b' }}>
+              <span className="cheque-management-s83">
                 Adding to: <strong>{formTarget === 'common' ? 'Common Work' : 'A Building'}</strong>
               </span>
             </div>
-            <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
+            <form onSubmit={handleFormSubmit} className="cheque-management-s84">
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Cheque Date <span style={{ color: '#ef4444' }}>*</span></label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.date} onChange={e => handleFormChange('date', e.target.value)} required />
+                <label className="eyebrow cheque-management-s70">Cheque Date <span className="cheque-management-s85">*</span></label>
+                <input className="attendance-register-input cheque-management-s86" type="date" value={formData.date} onChange={e => handleFormChange('date', e.target.value)} required />
               </div>
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Amount Deducted Date</label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.deductedDate || ''} onChange={e => handleFormChange('deductedDate', e.target.value)} />
+                <label className="eyebrow cheque-management-s70">Amount Deducted Date</label>
+                <input className="attendance-register-input cheque-management-s86" type="date" value={formData.deductedDate || ''} onChange={e => handleFormChange('deductedDate', e.target.value)} />
               </div>
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Cheque No <span style={{ color: '#ef4444' }}>*</span></label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Cheque #" value={formData.chequeNo} onChange={e => handleFormChange('chequeNo', e.target.value)} required />
+                <label className="eyebrow cheque-management-s70">Cheque No <span className="cheque-management-s85">*</span></label>
+                <input className="attendance-register-input cheque-management-s86" placeholder="Cheque #" value={formData.chequeNo} onChange={e => handleFormChange('chequeNo', e.target.value)} required />
               </div>
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Vendor Name <span style={{ color: '#ef4444' }}>*</span></label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Payee Name" value={formData.vendor} onChange={e => handleFormChange('vendor', e.target.value)} required />
+                <label className="eyebrow cheque-management-s70">Vendor Name <span className="cheque-management-s85">*</span></label>
+                <input className="attendance-register-input cheque-management-s86" placeholder="Payee Name" value={formData.vendor} onChange={e => handleFormChange('vendor', e.target.value)} required />
               </div>
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Total Amount (₹) <span style={{ color: '#ef4444' }}>*</span></label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="0.00" value={formData.amount} onChange={e => handleFormChange('amount', e.target.value)} required />
+                <label className="eyebrow cheque-management-s70">Total Amount (₹) <span className="cheque-management-s85">*</span></label>
+                <input className="attendance-register-input cheque-management-s86" placeholder="0.00" value={formData.amount} onChange={e => handleFormChange('amount', e.target.value)} required />
               </div>
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Who Paid <span style={{ color: '#ef4444' }}>*</span></label>
-                <select className="attendance-register-input" style={{ textAlign: 'left' }} value={formData.whoPaid} onChange={e => handleFormChange('whoPaid', e.target.value)} required>
+                <label className="eyebrow cheque-management-s70">Who Paid <span className="cheque-management-s85">*</span></label>
+                <select className="attendance-register-input cheque-management-s86" value={formData.whoPaid} onChange={e => handleFormChange('whoPaid', e.target.value)} required>
                   <option value="">-- Select Payer --</option>
                   <option>A Building</option><option>B Building</option><option>C Building</option><option>Petty Cash</option>
                 </select>
@@ -1013,32 +964,28 @@ export default function ChequeManagement({ isAdmin = false }) {
               {formTarget === 'common' && isPaybackTrackingActive && (
                 <>
                   <div className="field-group">
-                    <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>B Paid Back Date</label>
-                    <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.bPaidDate || ''} onChange={e => handleFormChange('bPaidDate', e.target.value)} />
+                    <label className="eyebrow cheque-management-s70">B Paid Back Date</label>
+                    <input className="attendance-register-input cheque-management-s86" type="date" value={formData.bPaidDate || ''} onChange={e => handleFormChange('bPaidDate', e.target.value)} />
                   </div>
                   <div className="field-group">
-                    <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>C Paid Back Date</label>
-                    <input className="attendance-register-input" style={{ textAlign: 'left' }} type="date" value={formData.cPaidDate || ''} onChange={e => handleFormChange('cPaidDate', e.target.value)} />
+                    <label className="eyebrow cheque-management-s70">C Paid Back Date</label>
+                    <input className="attendance-register-input cheque-management-s86" type="date" value={formData.cPaidDate || ''} onChange={e => handleFormChange('cPaidDate', e.target.value)} />
                   </div>
                 </>
               )}
               <div className="field-group" style={{ gridColumn: formTarget === 'common' ? 'span 1' : '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>{formTarget === 'common' ? 'Purpose / Head of Expense' : 'Remarks / Purpose'}</label>
-                <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Describe the payment purpose..." value={formData.purpose} onChange={e => handleFormChange('purpose', e.target.value)} />
+                <label className="eyebrow cheque-management-s70">{formTarget === 'common' ? 'Purpose / Head of Expense' : 'Remarks / Purpose'}</label>
+                <input className="attendance-register-input cheque-management-s86" placeholder="Describe the payment purpose..." value={formData.purpose} onChange={e => handleFormChange('purpose', e.target.value)} />
               </div>
               {formTarget === 'common' && (
                 <div className="field-group">
-                  <label className="eyebrow" style={{ display: 'block', marginBottom: '8px' }}>Remark / Notes</label>
-                  <input className="attendance-register-input" style={{ textAlign: 'left' }} placeholder="Add note / remark..." value={formData.remark || ''} onChange={e => handleFormChange('remark', e.target.value)} />
+                  <label className="eyebrow cheque-management-s70">Remark / Notes</label>
+                  <input className="attendance-register-input cheque-management-s86" placeholder="Add note / remark..." value={formData.remark || ''} onChange={e => handleFormChange('remark', e.target.value)} />
                 </div>
               )}
-              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-                <button type="submit" className="button-primary"
-                  style={{
-                    padding: '8px 24px', width: 'auto',
-                    background: formTarget === 'common' ? '#059669' : '#1e3a8a',
-                    borderColor: formTarget === 'common' ? '#047857' : '#1e40af'
-                  }}
+              <div className="cheque-management-s87">
+                <button type="submit" className="button-primary cheque-management-s88"
+                  style={{ background: formTarget === 'common' ? '#059669' : '#1e3a8a', borderColor: formTarget === 'common' ? '#047857' : '#1e40af' }}
                 >
                   ➕ Add to {formTarget === 'common' ? 'Common Work' : 'Building A'}
                 </button>
@@ -1049,13 +996,13 @@ export default function ChequeManagement({ isAdmin = false }) {
       )}
 
       {/* ── SECTION 1: BUILDING A ────────────────────────────────── */}
-      <div className="table-card" style={{ borderTop: '4px solid #1e3a8a' }}>
-        <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#eff6ff', borderRadius: '12px 12px 0 0' }}>
+      <div className="table-card cheque-management-s89">
+        <div className="cheque-management-s90">
           <div>
-            <p className="eyebrow" style={{ margin: 0, color: '#1e40af' }}>A Building Ledger</p>
-            <h4 style={{ margin: '2px 0 0 0', color: '#1e3a8a', fontSize: '1rem' }}>🏢 Building A Cheques — {chequesA.filter(c => c.chequeNo).length} entries · ₹{fmt(totalAmountA)}</h4>
+            <p className="eyebrow cheque-management-s91">A Building Ledger</p>
+            <h4 className="cheque-management-s92">🏢 Building A Cheques — {chequesA.filter(c => c.chequeNo).length} entries · ₹{fmt(totalAmountA)}</h4>
           </div>
-          <span style={{ fontSize: '0.78rem', color: '#3b82f6', fontWeight: 600, background: '#dbeafe', padding: '4px 10px', borderRadius: '8px' }}>
+          <span className="cheque-management-s93">
             Scroll →
           </span>
         </div>
@@ -1063,46 +1010,46 @@ export default function ChequeManagement({ isAdmin = false }) {
       </div>
 
       {/* ── SECTION 2: COMMON WORK ───────────────────────────────── */}
-      <div className="table-card" style={{ borderTop: '4px solid #059669' }}>
-        <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f0fdf4', borderRadius: '12px 12px 0 0', flexWrap: 'wrap', gap: '8px' }}>
+      <div className="table-card cheque-management-s94">
+        <div className="cheque-management-s95">
           <div>
-            <p className="eyebrow" style={{ margin: 0, color: '#166534' }}>Society Shared Expenses</p>
-            <h4 style={{ margin: '2px 0 0 0', color: '#065f46', fontSize: '1rem' }}>🤝 Common Work Cheques — {chequesCommon.filter(c => c.chequeNo).length} entries · ₹{fmt(totalAmountCommon)}</h4>
+            <p className="eyebrow cheque-management-s96">Society Shared Expenses</p>
+            <h4 className="cheque-management-s97">🤝 Common Work Cheques — {chequesCommon.filter(c => c.chequeNo).length} entries · ₹{fmt(totalAmountCommon)}</h4>
           </div>
           {isPaybackTrackingActive && (
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, padding: '4px 10px', borderRadius: '6px', background: '#dbeafe', color: '#1e40af', border: '1px solid #93c5fd' }}>
+            <span className="cheque-management-s98">
               🤝 B &amp; C Payback Tracking Active
             </span>
           )}
         </div>
         {/* Share Calculator */}
         {(totalAmountCommon > 0 || isPaybackTrackingActive) && (
-          <div style={{ display: 'grid', gridTemplateColumns: isPaybackTrackingActive ? 'repeat(auto-fit, minmax(220px, 1fr))' : 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', padding: '16px', background: '#f0f9ff', borderBottom: '1px solid #bae6fd' }}>
-            <div style={{ background: 'white', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-              <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#15803d' }}>A Share ({FLATS.A} flats)</p>
-              <h4 style={{ color: '#16a34a', margin: 0 }}>₹{fmt(totalAmountCommon * FLATS.A / FLATS.Total)}</h4>
+          <div className="cheque-management-s99" style={{ gridTemplateColumns: isPaybackTrackingActive ? 'repeat(auto-fit, minmax(220px, 1fr))' : 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+            <div className="cheque-management-s100">
+              <p className="eyebrow cheque-management-s101">A Share ({FLATS.A} flats)</p>
+              <h4 className="cheque-management-s102">₹{fmt(totalAmountCommon * FLATS.A / FLATS.Total)}</h4>
             </div>
-            <div style={{ background: 'white', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#1d4ed8' }}>B Share ({FLATS.B} flats)</p>
-                {isPaybackTrackingActive && <span style={{ fontSize: '0.72rem', fontWeight: 600, color: bPendingAmount === 0 ? '#166534' : '#b45309' }}>{bPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
+            <div className="cheque-management-s100">
+              <div className="cheque-management-s103">
+                <p className="eyebrow cheque-management-s104">B Share ({FLATS.B} flats)</p>
+                {isPaybackTrackingActive && <span className="cheque-management-s105" style={{ color: bPendingAmount === 0 ? '#166534' : '#b45309' }}>{bPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
               </div>
-              <h4 style={{ color: '#2563eb', margin: '0 0 4px 0' }}>₹{fmt(bTotalShare)}</h4>
-              {isPaybackTrackingActive && <div style={{ fontSize: '0.75rem', color: '#15803d' }}>✓ Recv: ₹{fmt(bReceivedAmount)} · <span style={{ color: '#b45309' }}>⏳ ₹{fmt(bPendingAmount)}</span></div>}
+              <h4 className="cheque-management-s106">₹{fmt(bTotalShare)}</h4>
+              {isPaybackTrackingActive && <div className="cheque-management-s107">✓ Recv: ₹{fmt(bReceivedAmount)} · <span className="cheque-management-s108">⏳ ₹{fmt(bPendingAmount)}</span></div>}
             </div>
-            <div style={{ background: 'white', padding: '14px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#c2410c' }}>C Share ({FLATS.C} flats)</p>
-                {isPaybackTrackingActive && <span style={{ fontSize: '0.72rem', fontWeight: 600, color: cPendingAmount === 0 ? '#166534' : '#b45309' }}>{cPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
+            <div className="cheque-management-s100">
+              <div className="cheque-management-s103">
+                <p className="eyebrow cheque-management-s109">C Share ({FLATS.C} flats)</p>
+                {isPaybackTrackingActive && <span className="cheque-management-s105" style={{ color: cPendingAmount === 0 ? '#166534' : '#b45309' }}>{cPaidCount}/{filteredCommon.filter(c => n(c.amount) > 0).length} Paid</span>}
               </div>
-              <h4 style={{ color: '#ea580c', margin: '0 0 4px 0' }}>₹{fmt(cTotalShare)}</h4>
-              {isPaybackTrackingActive && <div style={{ fontSize: '0.75rem', color: '#15803d' }}>✓ Recv: ₹{fmt(cReceivedAmount)} · <span style={{ color: '#b45309' }}>⏳ ₹{fmt(cPendingAmount)}</span></div>}
+              <h4 className="cheque-management-s110">₹{fmt(cTotalShare)}</h4>
+              {isPaybackTrackingActive && <div className="cheque-management-s107">✓ Recv: ₹{fmt(cReceivedAmount)} · <span className="cheque-management-s108">⏳ ₹{fmt(cPendingAmount)}</span></div>}
             </div>
             {isPaybackTrackingActive && (
-              <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
-                <p className="eyebrow" style={{ margin: '0 0 4px 0', color: '#475569' }}>Inter-Building Recovery</p>
-                <h4 style={{ color: totalOutstanding > 0 ? '#d97706' : '#16a34a', margin: '0 0 4px 0' }}>₹{fmt(totalRecovered)} / ₹{fmt(totalRecoveryDue)}</h4>
-                <div style={{ fontSize: '0.75rem', color: totalOutstanding > 0 ? '#b45309' : '#15803d', fontWeight: 600 }}>
+              <div className="cheque-management-s111">
+                <p className="eyebrow cheque-management-s112">Inter-Building Recovery</p>
+                <h4 className="cheque-management-s113" style={{ color: totalOutstanding > 0 ? '#d97706' : '#16a34a' }}>₹{fmt(totalRecovered)} / ₹{fmt(totalRecoveryDue)}</h4>
+                <div className="cheque-management-s114" style={{ color: totalOutstanding > 0 ? '#b45309' : '#15803d' }}>
                   {totalOutstanding > 0 ? `⏳ ₹${fmt(totalOutstanding)} outstanding` : '✓ All Settled'}
                 </div>
               </div>
@@ -1118,56 +1065,21 @@ export default function ChequeManagement({ isAdmin = false }) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="cheque-edit-dialog-title"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.55)',
-            backdropFilter: 'blur(5px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '20px'
-          }}
+          className="cheque-management-s115"
         >
           <div
-            className="table-card"
-            style={{
-              maxWidth: '620px',
-              width: '100%',
-              padding: '26px',
-              background: 'white',
-              borderRadius: '18px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              border: '1px solid #e2e8f0',
-              maxHeight: '90vh',
-              overflowY: 'auto'
-            }}
+            className="table-card cheque-management-s116"
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '10px',
-                  background: '#eff6ff',
-                  border: '1px solid #bfdbfe',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.3rem',
-                  flexShrink: 0
-                }}>
+            <div className="cheque-management-s117">
+              <div className="cheque-management-s58">
+                <div className="cheque-management-s118">
                   ✏️
                 </div>
                 <div>
-                  <h3 id="cheque-edit-dialog-title" style={{ margin: 0, fontSize: '1.2rem', color: 'var(--ink)' }}>
+                  <h3 id="cheque-edit-dialog-title" className="cheque-management-s119">
                     Edit Cheque {editModalData.cheque.chequeNo ? `#${editModalData.cheque.chequeNo}` : 'Entry'}
                   </h3>
-                  <p style={{ margin: '2px 0 0 0', fontSize: '0.82rem', color: 'var(--muted)' }}>
+                  <p className="cheque-management-s120">
                     {editModalData.isCommon ? '🤝 Common Work Cheque' : '🏢 Building A Cheque'} • {formatLongMonth(selectedMonth)}
                   </p>
                 </div>
@@ -1175,19 +1087,18 @@ export default function ChequeManagement({ isAdmin = false }) {
               <button
                 type="button"
                 onClick={() => setEditModalData(null)}
-                style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: '#64748b' }}
+                className="cheque-management-s121"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSaveEditModal} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+            <form onSubmit={handleSaveEditModal} className="cheque-management-s122">
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Cheque Date <span style={{ color: '#ef4444' }}>*</span></label>
+                <label className="eyebrow cheque-management-s123">Cheque Date <span className="cheque-management-s85">*</span></label>
                 <input
                   type="date"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-management-s124"
                   value={editModalData.cheque.date}
                   onChange={e => handleEditFieldChange('date', e.target.value)}
                   required
@@ -1195,22 +1106,20 @@ export default function ChequeManagement({ isAdmin = false }) {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Amount Deducted Date</label>
+                <label className="eyebrow cheque-management-s123">Amount Deducted Date</label>
                 <input
                   type="date"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-management-s124"
                   value={editModalData.cheque.deductedDate}
                   onChange={e => handleEditFieldChange('deductedDate', e.target.value)}
                 />
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Cheque No <span style={{ color: '#ef4444' }}>*</span></label>
+                <label className="eyebrow cheque-management-s123">Cheque No <span className="cheque-management-s85">*</span></label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-management-s124"
                   value={editModalData.cheque.chequeNo}
                   onChange={e => handleEditFieldChange('chequeNo', e.target.value)}
                   placeholder="Cheque #"
@@ -1219,11 +1128,10 @@ export default function ChequeManagement({ isAdmin = false }) {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Total Amount (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+                <label className="eyebrow cheque-management-s123">Total Amount (₹) <span className="cheque-management-s85">*</span></label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%', fontWeight: 700 }}
+                  className="attendance-register-input cheque-management-s125"
                   value={editModalData.cheque.amount}
                   onChange={e => handleEditFieldChange('amount', e.target.value)}
                   placeholder="0.00"
@@ -1231,12 +1139,11 @@ export default function ChequeManagement({ isAdmin = false }) {
                 />
               </div>
 
-              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Payee / Vendor Name <span style={{ color: '#ef4444' }}>*</span></label>
+              <div className="field-group cheque-management-s126">
+                <label className="eyebrow cheque-management-s123">Payee / Vendor Name <span className="cheque-management-s85">*</span></label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%', fontWeight: 600 }}
+                  className="attendance-register-input cheque-management-s127"
                   value={editModalData.cheque.vendor}
                   onChange={e => handleEditFieldChange('vendor', e.target.value)}
                   placeholder="Vendor / Payee Name"
@@ -1244,24 +1151,22 @@ export default function ChequeManagement({ isAdmin = false }) {
                 />
               </div>
 
-              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Purpose / Head of Expense</label>
+              <div className="field-group cheque-management-s126">
+                <label className="eyebrow cheque-management-s123">Purpose / Head of Expense</label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-management-s124"
                   value={editModalData.cheque.purpose}
                   onChange={e => handleEditFieldChange('purpose', e.target.value)}
                   placeholder="Payment purpose description..."
                 />
               </div>
 
-              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Remark / Notes</label>
+              <div className="field-group cheque-management-s126">
+                <label className="eyebrow cheque-management-s123">Remark / Notes</label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-management-s124"
                   value={editModalData.cheque.remark}
                   onChange={e => handleEditFieldChange('remark', e.target.value)}
                   placeholder="Additional remark / note for this cheque..."
@@ -1269,10 +1174,9 @@ export default function ChequeManagement({ isAdmin = false }) {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Who Paid</label>
+                <label className="eyebrow cheque-management-s123">Who Paid</label>
                 <select
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-management-s124"
                   value={editModalData.cheque.whoPaid}
                   onChange={e => handleEditFieldChange('whoPaid', e.target.value)}
                 >
@@ -1283,13 +1187,13 @@ export default function ChequeManagement({ isAdmin = false }) {
                 </select>
               </div>
 
-              <div className="field-group" style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '24px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600 }}>
+              <div className="field-group cheque-management-s128">
+                <label className="cheque-management-s129">
                   <input
                     type="checkbox"
                     checked={editModalData.cheque.isPaid}
                     onChange={e => handleEditFieldChange('isPaid', e.target.checked)}
-                    style={{ transform: 'scale(1.2)' }}
+                    className="cheque-management-s31"
                   />
                   <span>Cheque Cleared / Deducted</span>
                 </label>
@@ -1298,21 +1202,19 @@ export default function ChequeManagement({ isAdmin = false }) {
               {editModalData.isCommon && isPaybackTrackingActive && (
                 <>
                   <div className="field-group">
-                    <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>B Paid Back Date</label>
+                    <label className="eyebrow cheque-management-s123">B Paid Back Date</label>
                     <input
                       type="date"
-                      className="attendance-register-input"
-                      style={{ textAlign: 'left', width: '100%' }}
+                      className="attendance-register-input cheque-management-s124"
                       value={editModalData.cheque.bPaidDate}
                       onChange={e => handleEditFieldChange('bPaidDate', e.target.value)}
                     />
                   </div>
                   <div className="field-group">
-                    <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>C Paid Back Date</label>
+                    <label className="eyebrow cheque-management-s123">C Paid Back Date</label>
                     <input
                       type="date"
-                      className="attendance-register-input"
-                      style={{ textAlign: 'left', width: '100%' }}
+                      className="attendance-register-input cheque-management-s124"
                       value={editModalData.cheque.cPaidDate}
                       onChange={e => handleEditFieldChange('cPaidDate', e.target.value)}
                     />
@@ -1320,19 +1222,17 @@ export default function ChequeManagement({ isAdmin = false }) {
                 </>
               )}
 
-              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px', borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
+              <div className="cheque-management-s130">
                 <button
                   type="button"
                   onClick={() => setEditModalData(null)}
-                  className="button-secondary"
-                  style={{ padding: '9px 18px' }}
+                  className="button-secondary cheque-management-s131"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="button-primary"
-                  style={{ padding: '9px 24px' }}
+                  className="button-primary cheque-management-s132"
                 >
                   Save Changes
                 </button>
@@ -1348,65 +1248,32 @@ export default function ChequeManagement({ isAdmin = false }) {
           role="dialog" 
           aria-modal="true"
           aria-labelledby="cheque-unlock-dialog-title"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.55)',
-            backdropFilter: 'blur(5px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '20px'
-          }}
+          className="cheque-management-s115"
         >
           <div 
-            className="table-card" 
-            style={{ 
-              maxWidth: '460px', 
-              width: '100%', 
-              padding: '28px', 
-              background: 'white', 
-              borderRadius: '18px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              border: '1px solid #e2e8f0'
-            }}
+            className="table-card cheque-management-s133"
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' }}>
-              <div style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '12px',
-                background: '#fef3c7',
-                border: '1px solid #fde68a',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.5rem',
-                flexShrink: 0
-              }}>
+            <div className="cheque-management-s134">
+              <div className="cheque-management-s135">
                 🔐
               </div>
               <div>
-                <h3 id="cheque-unlock-dialog-title" style={{ margin: 0, fontSize: '1.2rem', color: 'var(--ink)' }}>
+                <h3 id="cheque-unlock-dialog-title" className="cheque-management-s119">
                   Unlock Cheque Tracker — {formatLongMonth(selectedMonth)}
                 </h3>
-                <p style={{ margin: '2px 0 0 0', fontSize: '0.82rem', color: 'var(--muted)' }}>
+                <p className="cheque-management-s120">
                   Closed Month Audit Protection
                 </p>
               </div>
             </div>
 
-            <p style={{ fontSize: '0.9rem', color: '#4b5563', marginBottom: '18px', lineHeight: 1.5 }}>
+            <p className="cheque-management-s136">
               This past month is locked. Please enter the treasurer or administrator authorization password to unlock editing for {formatLongMonth(selectedMonth)}.
             </p>
 
             <form onSubmit={handleUnlockSubmit}>
-              <div className="field-group" style={{ marginBottom: '18px' }}>
-                <label htmlFor="cheque-unlock-password" className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>
+              <div className="field-group cheque-management-s137">
+                <label htmlFor="cheque-unlock-password" className="eyebrow cheque-management-s123">
                   Authorization Password
                 </label>
                 <input
@@ -1415,31 +1282,28 @@ export default function ChequeManagement({ isAdmin = false }) {
                   placeholder="Enter authorization password..."
                   value={unlockPassword}
                   onChange={(e) => { setUnlockPassword(e.target.value); setUnlockError(''); }}
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%', height: '44px', fontSize: '0.95rem', background: '#f8fafc' }}
+                  className="attendance-register-input cheque-management-s138"
                   autoFocus
                   required
                 />
                 {unlockError && (
-                  <p style={{ color: '#dc2626', fontSize: '0.84rem', marginTop: '6px', fontWeight: 600 }}>
+                  <p className="cheque-management-s139">
                     ⚠️ {unlockError}
                   </p>
                 )}
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <div className="cheque-management-s140">
                 <button
                   type="button"
                   onClick={() => { setShowUnlockModal(false); setUnlockPassword(''); setUnlockError(''); }}
-                  className="button-secondary"
-                  style={{ padding: '9px 18px' }}
+                  className="button-secondary cheque-management-s131"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="button-primary"
-                  style={{ padding: '9px 22px', background: '#d97706', borderColor: '#b45309' }}
+                  className="button-primary cheque-management-s141"
                 >
                   Unlock Editing
                 </button>

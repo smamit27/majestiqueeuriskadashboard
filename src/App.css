@@ -1,0 +1,89 @@
+/**
+ * App.css
+ * Extracted styles from App.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.app-s1 {
+  font-size: 1.6rem;
+}
+
+.app-s2 {
+  padding: 48px 32px;
+  text-align: center;
+  background: white;
+  border-radius: 16px;
+  max-width: 580px;
+  margin: 40px auto;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.06);
+}
+
+.app-s3 {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.app-s4 {
+  margin: 0 0 10px;
+  color: #0f172a;
+}
+
+.app-s5 {
+  color: #64748b;
+  margin: 0 auto 24px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.app-s6 {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.app-s7 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+}
+
+.app-s8 {
+  padding: 12px 20px;
+  font-size: 0.95rem;
+}
+
+.app-s9 {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 24px;
+}
+
+.app-s10 {
+  padding: 48px;
+  text-align: center;
+  background: white;
+  border-radius: 16px;
+}
+
+.app-s11 {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.app-s12 {
+  margin: 0 0 8px;
+  color: #991b1b;
+}
+
+.app-s13 {
+  color: #64748b;
+  max-width: 440px;
+  margin: 0 auto 20px;
+  font-size: 0.9rem;
+}
+

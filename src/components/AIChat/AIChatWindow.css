@@ -1,0 +1,12 @@
+/**
+ * AIChatWindow.css
+ * Extracted styles from AIChatWindow.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.a-i-chat-window-s1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+

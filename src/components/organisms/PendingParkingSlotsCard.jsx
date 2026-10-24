@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { OFFICIAL_PENDING_PARKING_FLATS, isParkingSlotPending } from '../../data/parkingAllotmentData.js';
 import IndividualFlatNoticeCard from './IndividualFlatNoticeCard.jsx';
 import GeneralParkingNoticeDocument from './GeneralParkingNoticeDocument.jsx';
+import './PendingParkingSlotsCard.css';
+
 
 /**
  * PendingParkingSlotsCard Component
@@ -414,60 +416,30 @@ export default function PendingParkingSlotsCard({
   }, [items]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div className="pending-parking-slots-card-s1">
       {/* ── Toolbar Actions & Mode Switcher ── */}
       {showControls && (
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 12,
-          padding: '12px 18px',
-          background: 'rgba(255, 255, 255, 0.95)',
-          borderRadius: 16,
-          border: '1px solid rgba(226, 232, 240, 0.9)',
-          boxShadow: '0 4px 14px rgba(15, 23, 42, 0.04)'
-        }}>
+        <div className="pending-parking-slots-card-s2">
           {/* Left: Title & Mode Toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontSize: '1.25rem' }}>🚗</span>
+          <div className="pending-parking-slots-card-s3">
+            <div className="pending-parking-slots-card-s4">
+              <span className="pending-parking-slots-card-s5">🚗</span>
               <div>
-                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f2952' }}>
+                <div className="pending-parking-slots-card-s6">
                   Pending Parking Slot Details Register
                 </div>
-                <div style={{ fontSize: '0.74rem', color: '#64748b' }}>
+                <div className="pending-parking-slots-card-s7">
                   Dynamically tracking <strong>{items.length} Covered Parking Flats</strong> requiring slot confirmation
                 </div>
               </div>
             </div>
 
             {/* View Mode Toggle */}
-            <div style={{
-              display: 'inline-flex',
-              background: '#f1f5f9',
-              padding: 3,
-              borderRadius: 10,
-              border: '1px solid #cbd5e1'
-            }}>
+            <div className="pending-parking-slots-card-s8">
               <button
                 type="button"
                 onClick={() => setActiveView('general')}
-                style={{
-                  padding: '5px 12px',
-                  borderRadius: 7,
-                  border: 'none',
-                  background: activeView === 'general' ? '#ffffff' : 'transparent',
-                  color: activeView === 'general' ? '#0f2952' : '#64748b',
-                  fontSize: '0.78rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  boxShadow: activeView === 'general' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 5
-                }}
+                className="pending-parking-slots-card-s9" style={{ background: activeView === 'general' ? '#ffffff' : 'transparent', color: activeView === 'general' ? '#0f2952' : '#64748b', boxShadow: activeView === 'general' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' }}
               >
                 <span>📜</span>
                 <span>General Notice</span>
@@ -475,20 +447,7 @@ export default function PendingParkingSlotsCard({
               <button
                 type="button"
                 onClick={() => setActiveView('notice')}
-                style={{
-                  padding: '5px 12px',
-                  borderRadius: 7,
-                  border: 'none',
-                  background: activeView === 'notice' ? '#ffffff' : 'transparent',
-                  color: activeView === 'notice' ? '#0f2952' : '#64748b',
-                  fontSize: '0.78rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  boxShadow: activeView === 'notice' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 5
-                }}
+                className="pending-parking-slots-card-s9" style={{ background: activeView === 'notice' ? '#ffffff' : 'transparent', color: activeView === 'notice' ? '#0f2952' : '#64748b', boxShadow: activeView === 'notice' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' }}
               >
                 <span>✉️</span>
                 <span>Flat Notice</span>
@@ -496,20 +455,7 @@ export default function PendingParkingSlotsCard({
               <button
                 type="button"
                 onClick={() => setActiveView('register')}
-                style={{
-                  padding: '5px 12px',
-                  borderRadius: 7,
-                  border: 'none',
-                  background: activeView === 'register' ? '#ffffff' : 'transparent',
-                  color: activeView === 'register' ? '#0f2952' : '#64748b',
-                  fontSize: '0.78rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  boxShadow: activeView === 'register' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 5
-                }}
+                className="pending-parking-slots-card-s9" style={{ background: activeView === 'register' ? '#ffffff' : 'transparent', color: activeView === 'register' ? '#0f2952' : '#64748b', boxShadow: activeView === 'register' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' }}
               >
                 <span>📋</span>
                 <span>3-Column Register</span>
@@ -518,18 +464,10 @@ export default function PendingParkingSlotsCard({
           </div>
 
           {/* Right: Flat Dropdown & Actions */}
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="pending-parking-slots-card-s10">
             {/* Flat Selector Dropdown for Notice Generation */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              background: '#f8fafc',
-              padding: '4px 8px',
-              borderRadius: 10,
-              border: '1px solid #cbd5e1'
-            }}>
-              <label htmlFor="flat-notice-select-dropdown" style={{ fontSize: '0.78rem', fontWeight: 800, color: '#0f2952' }}>
+            <div className="pending-parking-slots-card-s11">
+              <label htmlFor="flat-notice-select-dropdown" className="pending-parking-slots-card-s12">
                 Flat:
               </label>
               <select
@@ -540,17 +478,7 @@ export default function PendingParkingSlotsCard({
                   setSelectedNoticeFlat(e.target.value);
                   setActiveView('notice');
                 }}
-                style={{
-                  padding: '5px 10px',
-                  borderRadius: 8,
-                  border: '1.5px solid #0284c7',
-                  background: '#ffffff',
-                  color: '#0f2952',
-                  fontSize: '0.80rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  outline: 'none'
-                }}
+                className="pending-parking-slots-card-s13"
               >
                 {items.map(f => (
                   <option key={f} value={f}>
@@ -562,20 +490,7 @@ export default function PendingParkingSlotsCard({
               <button
                 type="button"
                 onClick={() => setActiveView('notice')}
-                style={{
-                  padding: '5px 12px',
-                  borderRadius: 8,
-                  border: 'none',
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%)',
-                  color: '#ffffff',
-                  fontSize: '0.78rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  boxShadow: '0 2px 6px rgba(2, 132, 199, 0.25)'
-                }}
+                className="pending-parking-slots-card-s14"
               >
                 <span>📄</span>
                 <span>Make Notice</span>
@@ -588,21 +503,7 @@ export default function PendingParkingSlotsCard({
                   type="button"
                   onClick={handleCopy}
                   disabled={items.length === 0}
-                  style={{
-                    padding: '7px 14px',
-                    borderRadius: 10,
-                    border: '1px solid #cbd5e1',
-                    background: '#ffffff',
-                    color: '#334155',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    cursor: items.length === 0 ? 'not-allowed' : 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    fontFamily: 'inherit',
-                    transition: 'all 0.15s ease'
-                  }}
+                  className="pending-parking-slots-card-s15" style={{ cursor: items.length === 0 ? 'not-allowed' : 'pointer' }}
                 >
                   {copied ? '✓ Copied!' : '📋 Copy Flats'}
                 </button>
@@ -611,21 +512,7 @@ export default function PendingParkingSlotsCard({
                   href="/pending_parking_slots_card.svg"
                   download={`Flats_with_Pending_Parking_Slot_Details_${items.length}_Flats.svg`}
                   title="Download vector SVG (infinite zoom without pixelation)"
-                  style={{
-                    padding: '8px 14px',
-                    borderRadius: 10,
-                    border: '1px solid #cbd5e1',
-                    background: '#ffffff',
-                    color: '#1e3a8a',
-                    fontSize: '0.80rem',
-                    fontWeight: 700,
-                    textDecoration: 'none',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    boxShadow: '0 2px 6px rgba(15, 23, 42, 0.04)',
-                    transition: 'all 0.15s ease'
-                  }}
+                  className="pending-parking-slots-card-s16"
                 >
                   <span>📐</span>
                   <span>Download Vector SVG</span>
@@ -635,22 +522,7 @@ export default function PendingParkingSlotsCard({
                   type="button"
                   onClick={handleDownloadPNG}
                   disabled={downloading || items.length === 0}
-                  style={{
-                    padding: '8px 18px',
-                    borderRadius: 10,
-                    border: 'none',
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%)',
-                    color: '#ffffff',
-                    fontSize: '0.82rem',
-                    fontWeight: 800,
-                    cursor: downloading ? 'wait' : items.length === 0 ? 'not-allowed' : 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    fontFamily: 'inherit',
-                    boxShadow: '0 4px 12px rgba(2, 132, 199, 0.35)',
-                    transition: 'all 0.15s ease'
-                  }}
+                  className="pending-parking-slots-card-s17" style={{ cursor: downloading ? 'wait' : items.length === 0 ? 'not-allowed' : 'pointer' }}
                 >
                   <span>📸</span>
                   <span>{downloading ? 'Rendering Ultra-HD Image...' : 'Download as PNG Image (Ultra-HD)'}</span>
@@ -686,53 +558,14 @@ export default function PendingParkingSlotsCard({
         /* ── The Exact UI Card Matching Mockup ── */
         <div
           id="pending-parking-slots-ui-card"
-          style={{
-            position: 'relative',
-            borderRadius: 24,
-            overflow: 'hidden',
-            background: 'linear-gradient(145deg, rgba(235, 244, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%)',
-            border: '2px solid rgba(255, 255, 255, 0.85)',
-            boxShadow: '0 20px 45px -10px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(203, 213, 225, 0.4)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-          }}
+          className="pending-parking-slots-card-s18"
         >
         {/* Deep Blue Symmetrical Executive Header Banner */}
-        <div style={{
-          background: 'linear-gradient(135deg, #091a32 0%, #0f2952 45%, #1e3a8a 100%)',
-          padding: '20px 28px',
-          color: '#ffffff',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 18,
-          position: 'relative',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.15)'
-        }}>
+        <div className="pending-parking-slots-card-s19">
           {/* ── Left Zone: Society Brand Identity ── */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 14,
-            minWidth: 220
-          }}>
+          <div className="pending-parking-slots-card-s20">
             {/* Crisp Circular Society Logo Badge */}
-            <div style={{
-              width: 58,
-              height: 58,
-              borderRadius: '50%',
-              backgroundColor: '#ffffff',
-              padding: 2,
-              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              overflow: 'hidden',
-              border: '2.5px solid rgba(255, 255, 255, 0.95)'
-            }}>
+            <div className="pending-parking-slots-card-s21">
               <img
                 src="/euriska_logo.png"
                 alt="Majestique Euriska Logo"
@@ -740,59 +573,24 @@ export default function PendingParkingSlotsCard({
                   e.currentTarget.onerror = null;
                   e.currentTarget.src = '/logo.png';
                 }}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                  borderRadius: '50%'
-                }}
+                className="pending-parking-slots-card-s22"
               />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{
-                fontSize: '0.90rem',
-                fontWeight: 800,
-                letterSpacing: '0.05em',
-                color: '#ffffff',
-                lineHeight: 1.2
-              }}>
+            <div className="pending-parking-slots-card-s23">
+              <span className="pending-parking-slots-card-s24">
                 MAJESTIQUE EURISKA
               </span>
-              <span style={{
-                fontSize: '0.73rem',
-                color: '#93c5fd',
-                fontWeight: 600,
-                marginTop: 2
-              }}>
+              <span className="pending-parking-slots-card-s25">
                 'A' Building CHS Ltd.
               </span>
             </div>
           </div>
 
           {/* ── Center Zone: Car Silhouette + Exact Title + Red Underline ── */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            flex: '1 1 auto'
-          }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 12,
-              justifyContent: 'center'
-            }}>
+          <div className="pending-parking-slots-card-s26">
+            <div className="pending-parking-slots-card-s27">
               {/* Crisp Car Silhouette Icon */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 38,
-                height: 38,
-                flexShrink: 0
-              }}>
+              <div className="pending-parking-slots-card-s28">
                 <svg width="38" height="38" viewBox="0 0 64 64" fill="none">
                   <rect x="4" y="24" width="56" height="24" rx="8" fill="#FFFFFF" />
                   <path d="M12 24L18 10C19 8 21 6 24 6H40C43 6 45 8 46 10L52 24H12Z" fill="#FFFFFF" />
@@ -808,60 +606,22 @@ export default function PendingParkingSlotsCard({
               </div>
 
               {/* Exact Mockup Title */}
-              <h3 style={{
-                margin: 0,
-                fontSize: 'clamp(1.15rem, 2.2vw, 1.6rem)',
-                fontWeight: 800,
-                color: '#ffffff',
-                letterSpacing: '-0.01em',
-                lineHeight: 1.2
-              }}>
+              <h3 className="pending-parking-slots-card-s29">
                 Flats with Pending Parking Slot Details
               </h3>
             </div>
 
             {/* Signature Red Underline Accent under "Flats with" */}
-            <div style={{
-              width: 140,
-              height: 3.5,
-              background: '#e11d48',
-              borderRadius: 2,
-              marginTop: 6
-            }} />
+            <div className="pending-parking-slots-card-s30" />
           </div>
 
           {/* ── Right Zone: Live Status KPI Pill ── */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-end',
-            gap: 3,
-            minWidth: 170
-          }}>
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.12)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
-              padding: '6px 14px',
-              borderRadius: 20,
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              fontSize: '0.80rem',
-              fontWeight: 800,
-              color: '#ffffff',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
-            }}>
-              <span style={{ color: '#fcd34d' }}>⚠️</span>
+          <div className="pending-parking-slots-card-s31">
+            <div className="pending-parking-slots-card-s32">
+              <span className="pending-parking-slots-card-s33">⚠️</span>
               <span>{items.length} Flats Pending</span>
             </div>
-            <span style={{
-              fontSize: '0.70rem',
-              color: '#93c5fd',
-              fontWeight: 600,
-              marginRight: 4
-            }}>
+            <span className="pending-parking-slots-card-s34">
               Covered Parking Scope
             </span>
           </div>
@@ -869,65 +629,28 @@ export default function PendingParkingSlotsCard({
 
         {/* ── 3 Columns Tables Container ── */}
         {items.length === 0 ? (
-          <div style={{
-            padding: '48px 24px',
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 12
-          }}>
-            <div style={{ fontSize: '3rem' }}>🎉</div>
-            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#065f46' }}>
+          <div className="pending-parking-slots-card-s35">
+            <div className="pending-parking-slots-card-s36">🎉</div>
+            <div className="pending-parking-slots-card-s37">
               All Covered Parking Slots are Confirmed!
             </div>
-            <div style={{ fontSize: '0.86rem', color: '#64748b', maxWidth: 420 }}>
+            <div className="pending-parking-slots-card-s38">
               There are currently no covered parking flats with pending allocation details in the society records.
             </div>
           </div>
         ) : (
-          <div style={{
-            padding: 'clamp(14px, 2.5vw, 24px)',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: 'clamp(12px, 2vw, 20px)'
-          }}>
+          <div className="pending-parking-slots-card-s39">
             {columns.map((col, colIndex) => (
               <div
                 key={`col-${colIndex}`}
-                style={{
-                  borderRadius: 14,
-                  overflow: 'hidden',
-                  border: '1px solid #cbd5e1',
-                  background: '#ffffff',
-                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)'
-                }}
+                className="pending-parking-slots-card-s40"
               >
                 {/* Table Column Header */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '34% 66%',
-                  background: 'linear-gradient(180deg, #e0e7ff 0%, #dbeafe 100%)',
-                  borderBottom: '1.5px solid #cbd5e1',
-                  padding: '9px 0',
-                  alignItems: 'center',
-                  textAlign: 'center'
-                }}>
-                  <div style={{
-                    fontWeight: 700,
-                    fontSize: '0.88rem',
-                    color: '#1e3a8a',
-                    borderRight: '1px solid #cbd5e1',
-                    padding: '0 8px'
-                  }}>
+                <div className="pending-parking-slots-card-s41">
+                  <div className="pending-parking-slots-card-s42">
                     Sr. No.
                   </div>
-                  <div style={{
-                    fontWeight: 800,
-                    fontSize: '0.92rem',
-                    color: '#0f2952',
-                    padding: '0 8px'
-                  }}>
+                  <div className="pending-parking-slots-card-s43">
                     Flat Number
                   </div>
                 </div>
@@ -942,14 +665,7 @@ export default function PendingParkingSlotsCard({
                       <div
                         key={flat}
                         onClick={() => onSelectFlat && onSelectFlat(flat)}
-                        style={{
-                          display: 'grid',
-                          gridTemplateColumns: '34% 66%',
-                          borderBottom: rowIndex < col.items.length - 1 ? '1px solid #e2e8f0' : 'none',
-                          background: isEven ? '#f8fafc' : '#ffffff',
-                          cursor: onSelectFlat ? 'pointer' : 'default',
-                          transition: 'background 0.15s ease'
-                        }}
+                        className="pending-parking-slots-card-s44" style={{ borderBottom: rowIndex < col.items.length - 1 ? '1px solid #e2e8f0' : 'none', background: isEven ? '#f8fafc' : '#ffffff', cursor: onSelectFlat ? 'pointer' : 'default' }}
                         onMouseEnter={e => {
                           e.currentTarget.style.background = '#eff6ff';
                         }}
@@ -958,31 +674,13 @@ export default function PendingParkingSlotsCard({
                         }}
                       >
                         {/* Sr. No. */}
-                        <div style={{
-                          padding: '8px 10px',
-                          textAlign: 'center',
-                          fontSize: '0.9rem',
-                          fontWeight: 600,
-                          color: '#475569',
-                          borderRight: '1px solid #e2e8f0'
-                        }}>
+                        <div className="pending-parking-slots-card-s45">
                           {srNo}
                         </div>
 
                         {/* Flat Number + Notice Action */}
-                        <div style={{
-                          padding: '7px 10px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: 8
-                        }}>
-                          <span style={{
-                            fontSize: '1.02rem',
-                            fontWeight: 800,
-                            color: '#0f2952',
-                            letterSpacing: '0.02em'
-                          }}>
+                        <div className="pending-parking-slots-card-s46">
+                          <span className="pending-parking-slots-card-s47">
                             {flat}
                           </span>
                           <button
@@ -993,20 +691,7 @@ export default function PendingParkingSlotsCard({
                               setSelectedNoticeFlat(flat);
                               setActiveView('notice');
                             }}
-                            style={{
-                              padding: '2px 7px',
-                              borderRadius: 6,
-                              border: '1px solid #bfdbfe',
-                              background: '#eff6ff',
-                              color: '#1e40af',
-                              fontSize: '0.70rem',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 2,
-                              transition: 'all 0.15s ease'
-                            }}
+                            className="pending-parking-slots-card-s48"
                           >
                             <span>📄</span>
                             <span>Notice</span>
@@ -1022,16 +707,7 @@ export default function PendingParkingSlotsCard({
         )}
 
         {/* Subtle Bottom Society Tagline */}
-        <div style={{
-          padding: '10px 24px',
-          background: 'rgba(241, 245, 249, 0.7)',
-          borderTop: '1px solid rgba(226, 232, 240, 0.8)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          fontSize: '0.72rem',
-          color: '#64748b'
-        }}>
+        <div className="pending-parking-slots-card-s49">
           <span>Majestique Euriska 'A' Building Co-Op Housing Society Ltd.</span>
           <span>Dynamic Covered Parking Register • {items.length} Pending Units</span>
         </div>

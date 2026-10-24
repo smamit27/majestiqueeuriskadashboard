@@ -2,56 +2,26 @@ import React, { useState } from 'react';
 import TankerTracker from './TankerTracker.jsx';
 import TankerBillCalculator from './TankerBillCalculator.jsx';
 import SectionCard from '../molecules/SectionCard.jsx';
+import './TankerModule.css';
+
 
 export default function TankerModule({ isAdmin = false }) {
   const [subTab, setSubTab] = useState('entry');
 
   return (
     <div className="housekeeping-module">
-      <div className="tab-navigation" style={{
-        display: 'flex',
-        gap: '12px',
-        marginBottom: '24px',
-        background: 'rgba(255, 255, 255, 0.5)',
-        padding: '8px',
-        borderRadius: '12px',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(0,0,0,0.05)',
-        position: 'sticky',
-        top: '0',
-        zIndex: 10
-      }}>
+      <div className="tab-navigation tanker-module-s1">
         <button
           onClick={() => setSubTab('entry')}
-          className={`sub-tab-button ${subTab === 'entry' ? 'active' : ''}`}
-          style={{
-            padding: '10px 20px',
-            borderRadius: '8px',
-            border: 'none',
-            background: subTab === 'entry' ? '#1e3a8a' : 'transparent',
-            color: subTab === 'entry' ? 'white' : '#64748b',
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            fontSize: '0.9rem'
-          }}
+          className={`sub-tab-button ${subTab === 'entry' ? 'active' : ''} tanker-module-s2`}
+          style={{ background: subTab === 'entry' ? '#1e3a8a' : 'transparent', color: subTab === 'entry' ? 'white' : '#64748b' }}
         >
           💧 Water Tanker Entry
         </button>
         <button
           onClick={() => setSubTab('billing')}
-          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''}`}
-          style={{
-            padding: '10px 20px',
-            borderRadius: '8px',
-            border: 'none',
-            background: subTab === 'billing' ? '#1e3a8a' : 'transparent',
-            color: subTab === 'billing' ? 'white' : '#64748b',
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            fontSize: '0.9rem'
-          }}
+          className={`sub-tab-button ${subTab === 'billing' ? 'active' : ''} tanker-module-s2`}
+          style={{ background: subTab === 'billing' ? '#1e3a8a' : 'transparent', color: subTab === 'billing' ? 'white' : '#64748b' }}
         >
           💰 Bill Calculation
         </button>

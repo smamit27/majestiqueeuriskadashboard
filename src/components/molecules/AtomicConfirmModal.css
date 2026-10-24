@@ -1,0 +1,26 @@
+/**
+ * AtomicConfirmModal.css
+ * Extracted styles from AtomicConfirmModal.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.atomic-confirm-modal-s1 {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.atomic-confirm-modal-s2 {
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.atomic-confirm-modal-s3 {
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+

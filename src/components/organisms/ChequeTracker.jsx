@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import * as XLSX from 'xlsx';
 import { db, ensureFirebaseSession, isFirebaseConfigured } from '../../firebase.js';
+import './ChequeTracker.css';
+
 
 const FLAT_COUNTS = { A: 87, B: 96, C: 48 };
 const TOTAL_FLATS = FLAT_COUNTS.A + FLAT_COUNTS.B + FLAT_COUNTS.C;
@@ -373,11 +375,11 @@ export default function ChequeTracker() {
     <div className="accounting-shell">
 
       {missingAlerts.length > 0 && (
-        <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '12px', padding: '16px', marginBottom: '24px' }}>
-          <h4 style={{ margin: '0 0 8px 0', color: '#dc2626', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="cheque-tracker-s1">
+          <h4 className="cheque-tracker-s2">
             <span>⚠️</span> Missing Cheque Alert
           </h4>
-          <ul style={{ margin: 0, paddingLeft: '24px', color: '#991b1b', fontSize: '0.9rem' }}>
+          <ul className="cheque-tracker-s3">
             {missingAlerts.map(alert => (
               <li key={alert.month}>
                 In <strong>{alert.month}</strong>, you missed to add cheque <strong>{alert.missing.join(', ')}</strong>. Please check.
@@ -389,52 +391,50 @@ export default function ChequeTracker() {
 
       {/* Summary Cards */}
       <div className="attendance-summary-grid">
-        <div className="accounting-summary-card" style={{ borderLeft: '4px solid #3b82f6' }}>
-          <p className="eyebrow" style={{ color: '#3b82f6' }}>Total Outflow (Building A)</p>
-          <h3 style={{ margin: '4px 0 0' }}>₹{fmt(stats.totalPaidByA)}</h3>
-          <span style={{ fontSize: '0.75rem', opacity: 0.6 }}>Total payments made for common services</span>
+        <div className="accounting-summary-card cheque-tracker-s4">
+          <p className="eyebrow cheque-tracker-s5">Total Outflow (Building A)</p>
+          <h3 className="cheque-tracker-s6">₹{fmt(stats.totalPaidByA)}</h3>
+          <span className="cheque-tracker-s7">Total payments made for common services</span>
         </div>
-        <div className="accounting-summary-card" style={{ borderLeft: '4px solid #10b981' }}>
-          <p className="eyebrow" style={{ color: '#10b981' }}>Recovery Status (B)</p>
-          <h3 style={{ margin: '4px 0 0' }}>₹{fmt(stats.totalRecvFromB)} / ₹{fmt(stats.totalDueFromB)}</h3>
-          <div style={{ marginTop: 8 }}>
-            <span className="header-badge" style={{ padding: '2px 8px', fontSize: '0.7rem', background: pendingB > 0 ? '#fff7ed' : '#ecfdf5', color: pendingB > 0 ? '#c2410c' : '#047857' }}>
+        <div className="accounting-summary-card cheque-tracker-s8">
+          <p className="eyebrow cheque-tracker-s9">Recovery Status (B)</p>
+          <h3 className="cheque-tracker-s6">₹{fmt(stats.totalRecvFromB)} / ₹{fmt(stats.totalDueFromB)}</h3>
+          <div className="cheque-tracker-s10">
+            <span className="header-badge cheque-tracker-s11" style={{ background: pendingB > 0 ? '#fff7ed' : '#ecfdf5', color: pendingB > 0 ? '#c2410c' : '#047857' }}>
               {pendingB > 0 ? `₹${fmt(pendingB)} Pending` : 'Fully Recovered'}
             </span>
           </div>
         </div>
-        <div className="accounting-summary-card" style={{ borderLeft: '4px solid #f59e0b' }}>
-          <p className="eyebrow" style={{ color: '#f59e0b' }}>Recovery Status (C)</p>
-          <h3 style={{ margin: '4px 0 0' }}>₹{fmt(stats.totalRecvFromC)} / ₹{fmt(stats.totalDueFromC)}</h3>
-          <div style={{ marginTop: 8 }}>
-            <span className="header-badge" style={{ padding: '2px 8px', fontSize: '0.7rem', background: pendingC > 0 ? '#fff7ed' : '#ecfdf5', color: pendingC > 0 ? '#c2410c' : '#047857' }}>
+        <div className="accounting-summary-card cheque-tracker-s12">
+          <p className="eyebrow cheque-tracker-s13">Recovery Status (C)</p>
+          <h3 className="cheque-tracker-s6">₹{fmt(stats.totalRecvFromC)} / ₹{fmt(stats.totalDueFromC)}</h3>
+          <div className="cheque-tracker-s10">
+            <span className="header-badge cheque-tracker-s11" style={{ background: pendingC > 0 ? '#fff7ed' : '#ecfdf5', color: pendingC > 0 ? '#c2410c' : '#047857' }}>
               {pendingC > 0 ? `₹${fmt(pendingC)} Pending` : 'Fully Recovered'}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="table-card" style={{ padding: 0 }}>
-        <div className="attendance-table-card__header" style={{ flexWrap: 'wrap', gap: '20px' }}>
-          <div style={{ minWidth: '200px' }}>
+      <div className="table-card cheque-tracker-s14">
+        <div className="attendance-table-card__header cheque-tracker-s15">
+          <div className="cheque-tracker-s16">
             <p className="eyebrow">Society Accounting</p>
             <h3>Cheque Tracking Ledger</h3>
           </div>
-          <div className="attendance-table-card__actions" style={{ flexWrap: 'wrap', width: 'auto', flex: 1, justifyContent: 'flex-end' }}>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', width: '100%', justifyContent: 'flex-end' }}>
+          <div className="attendance-table-card__actions cheque-tracker-s17">
+            <div className="cheque-tracker-s18">
               <div className="accounting-search-container">
-                <span style={{ display: 'flex', alignItems: 'center', opacity: 0.4 }}>🔍</span>
+                <span className="cheque-tracker-s19">🔍</span>
                 <input
-                  className="attendance-register-input"
-                  style={{ border: 'none', padding: '8px', outline: 'none', textAlign: 'left' }}
+                  className="attendance-register-input cheque-tracker-s20"
                   placeholder="Search Vendor or Purpose..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
               <select
-                className="attendance-register-input"
-                style={{ width: 'auto', minWidth: '120px', height: '38px' }}
+                className="attendance-register-input cheque-tracker-s21"
                 value={filterMonth}
                 onChange={e => setFilterMonth(e.target.value)}
               >
@@ -442,40 +442,40 @@ export default function ChequeTracker() {
               </select>
             </div>
             <div className="accounting-action-row">
-              <button className="button-secondary" onClick={handleRestoreDefault} style={{ fontSize: '0.8rem', padding: '8px 10px', whiteSpace: 'nowrap', flex: '0 0 auto' }}>🔄 Restore</button>
-              <button className="button-primary" onClick={addRow} style={{ padding: '8px 10px', whiteSpace: 'nowrap', flex: '0 0 auto' }}>+ Add Row</button>
-              <button className="button-secondary" onClick={handleDownloadExcel} style={{ padding: '8px 10px', whiteSpace: 'nowrap', flex: '0 0 auto' }}>⬇ Excel</button>
-              <button className="button-secondary" onClick={handlePrintPdf} style={{ padding: '8px 10px', whiteSpace: 'nowrap', flex: '0 0 auto' }}>⬇ PDF</button>
+              <button className="button-secondary cheque-tracker-s22" onClick={handleRestoreDefault}>🔄 Restore</button>
+              <button className="button-primary cheque-tracker-s23" onClick={addRow}>+ Add Row</button>
+              <button className="button-secondary cheque-tracker-s23" onClick={handleDownloadExcel}>⬇ Excel</button>
+              <button className="button-secondary cheque-tracker-s23" onClick={handlePrintPdf}>⬇ PDF</button>
             </div>
           </div>
         </div>
 
         <div className="attendance-table-scroll">
-          <table className="attendance-table" style={{ minWidth: 1800 }}>
+          <table className="attendance-table cheque-tracker-s24">
             <thead>
-              <tr style={{ background: '#f8fafc' }}>
-                <th style={{ width: 60 }}>Sr.</th>
-                <th style={{ width: 120 }}>Month</th>
-                <th style={{ width: 120 }}>Cheque Date</th>
-                <th style={{ width: 120 }}>Deducted Date</th>
-                <th style={{ width: 100 }}>Cheque No</th>
-                <th style={{ width: 220 }}>Vendor Name</th>
-                <th style={{ width: 300 }}>Remarks / Purpose</th>
-                <th style={{ width: 140, textAlign: 'right' }}>Total (₹)</th>
-                <th style={{ width: 120 }}>Who Paid</th>
-                <th style={{ width: 110, textAlign: 'right', background: '#f0fdf4', color: '#047857' }}>A Share</th>
-                <th style={{ width: 110, textAlign: 'right', background: '#eff6ff', color: '#1d4ed8' }}>B Share</th>
-                <th style={{ width: 140, background: '#eff6ff', color: '#1d4ed8' }}>Receive B</th>
-                <th style={{ width: 110, textAlign: 'right', background: '#fff7ed', color: '#c2410c' }}>C Share</th>
-                <th style={{ width: 140, background: '#fff7ed', color: '#c2410c' }}>Receive C</th>
+              <tr className="cheque-tracker-s25">
+                <th className="cheque-tracker-s26">Sr.</th>
+                <th className="cheque-tracker-s27">Month</th>
+                <th className="cheque-tracker-s27">Cheque Date</th>
+                <th className="cheque-tracker-s27">Deducted Date</th>
+                <th className="cheque-tracker-s28">Cheque No</th>
+                <th className="cheque-tracker-s29">Vendor Name</th>
+                <th className="cheque-tracker-s30">Remarks / Purpose</th>
+                <th className="cheque-tracker-s31">Total (₹)</th>
+                <th className="cheque-tracker-s27">Who Paid</th>
+                <th className="cheque-tracker-s32">A Share</th>
+                <th className="cheque-tracker-s33">B Share</th>
+                <th className="cheque-tracker-s34">Receive B</th>
+                <th className="cheque-tracker-s35">C Share</th>
+                <th className="cheque-tracker-s36">Receive C</th>
                 <th>Final Remarks</th>
-                <th style={{ width: 90 }}>Actions</th>
+                <th className="cheque-tracker-s37">Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={16} style={{ textAlign: 'center', padding: 60 }}>
-                  <div style={{ opacity: 0.5 }}>Loading Accounting Records...</div>
+                <tr><td colSpan={16} className="cheque-tracker-s38">
+                  <div className="cheque-tracker-s39">Loading Accounting Records...</div>
                 </td></tr>
               ) : filteredEntries.map((e) => (
                 <tr key={e.id} className={(!e.bReceiveDate || !e.cReceiveDate) ? 'row-pending' : ''}>
@@ -484,9 +484,9 @@ export default function ChequeTracker() {
                   <td><input className="attendance-register-input" value={e.date} onChange={v => updateRow(e.id, 'date', v.target.value)} /></td>
                   <td><input className="attendance-register-input" value={e.deductedDate || ''} onChange={v => updateRow(e.id, 'deductedDate', v.target.value)} placeholder="—" /></td>
                   <td><input className="attendance-register-input" value={e.chequeNo} onChange={v => updateRow(e.id, 'chequeNo', v.target.value)} /></td>
-                  <td><input className="attendance-register-input" style={{ fontWeight: 600 }} value={e.vendor} onChange={v => updateRow(e.id, 'vendor', v.target.value)} /></td>
+                  <td><input className="attendance-register-input cheque-tracker-s40" value={e.vendor} onChange={v => updateRow(e.id, 'vendor', v.target.value)} /></td>
                   <td><input className="attendance-register-input" value={e.purpose} onChange={v => updateRow(e.id, 'purpose', v.target.value)} /></td>
-                  <td><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: 800, color: 'var(--ink)' }} value={e.totalAmount} onChange={v => updateRow(e.id, 'totalAmount', v.target.value)} /></td>
+                  <td><input className="attendance-register-input cheque-tracker-s41" value={e.totalAmount} onChange={v => updateRow(e.id, 'totalAmount', v.target.value)} /></td>
                   <td>
                     <select className="attendance-register-input" value={e.whoPaid} onChange={v => updateRow(e.id, 'whoPaid', v.target.value)}>
                       <option>A Building</option>
@@ -494,9 +494,9 @@ export default function ChequeTracker() {
                       <option>C Building</option>
                     </select>
                   </td>
-                  <td style={{ background: '#f0fdf4' }}><input className="attendance-register-input" style={{ textAlign: 'right' }} value={e.aShare} onChange={v => updateRow(e.id, 'aShare', v.target.value)} /></td>
-                  <td style={{ background: '#eff6ff' }}><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: e.bReceiveDate ? 400 : 700 }} value={e.bShare} onChange={v => updateRow(e.id, 'bShare', v.target.value)} /></td>
-                  <td style={{ background: '#eff6ff' }}>
+                  <td className="cheque-tracker-s42"><input className="attendance-register-input cheque-tracker-s43" value={e.aShare} onChange={v => updateRow(e.id, 'aShare', v.target.value)} /></td>
+                  <td className="cheque-tracker-s44"><input className="attendance-register-input cheque-tracker-s43" style={{ fontWeight: e.bReceiveDate ? 400 : 700 }} value={e.bShare} onChange={v => updateRow(e.id, 'bShare', v.target.value)} /></td>
+                  <td className="cheque-tracker-s44">
                     <input
                       className={`attendance-register-input ${e.bReceiveDate ? 'input-status-received' : 'input-status-pending'}`}
                       value={e.bReceiveDate}
@@ -504,8 +504,8 @@ export default function ChequeTracker() {
                       placeholder="Pending"
                     />
                   </td>
-                  <td style={{ background: '#fff7ed' }}><input className="attendance-register-input" style={{ textAlign: 'right', fontWeight: e.cReceiveDate ? 400 : 700 }} value={e.cShare} onChange={v => updateRow(e.id, 'cShare', v.target.value)} /></td>
-                  <td style={{ background: '#fff7ed' }}>
+                  <td className="cheque-tracker-s45"><input className="attendance-register-input cheque-tracker-s43" style={{ fontWeight: e.cReceiveDate ? 400 : 700 }} value={e.cShare} onChange={v => updateRow(e.id, 'cShare', v.target.value)} /></td>
+                  <td className="cheque-tracker-s45">
                     <input
                       className={`attendance-register-input ${e.cReceiveDate ? 'input-status-received' : 'input-status-pending'}`}
                       value={e.cReceiveDate}
@@ -514,28 +514,27 @@ export default function ChequeTracker() {
                     />
                   </td>
                   <td><input className="attendance-register-input" value={e.remarks} onChange={v => updateRow(e.id, 'remarks', v.target.value)} /></td>
-                  <td style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  <td className="cheque-tracker-s46">
                     <button
-                      className="button-icon"
+                      className="button-icon cheque-tracker-s47"
                       onClick={() => handleOpenEditModal(e)}
                       title="Edit this cheque entry"
-                      style={{ opacity: 0.6, fontSize: '1rem' }}
                     >✏️</button>
-                    <button className="button-icon" onClick={() => removeRow(e.id)} style={{ opacity: 0.3 }}>✕</button>
+                    <button className="button-icon cheque-tracker-s48" onClick={() => removeRow(e.id)}>✕</button>
                   </td>
                 </tr>
               ))}
             </tbody>
             <tfoot className="accounting-table-footer">
               <tr>
-                <td colSpan={7} style={{ textAlign: 'right' }}>GRAND TOTALS:</td>
-                <td style={{ textAlign: 'right' }}>₹{fmt(stats.totalPaidByA)}</td>
+                <td colSpan={7} className="cheque-tracker-s43">GRAND TOTALS:</td>
+                <td className="cheque-tracker-s43">₹{fmt(stats.totalPaidByA)}</td>
                 <td></td>
-                <td style={{ textAlign: 'right' }}>₹{fmt(stats.totalPaidByA * 0.3766)}</td>
-                <td style={{ textAlign: 'right' }}>₹{fmt(stats.totalDueFromB)}</td>
-                <td style={{ textAlign: 'center', color: pendingB > 0 ? '#dc2626' : '#166534' }}>{pendingB > 0 ? `₹${fmt(pendingB)} Bal` : 'Clear'}</td>
-                <td style={{ textAlign: 'right' }}>₹{fmt(stats.totalDueFromC)}</td>
-                <td style={{ textAlign: 'center', color: pendingC > 0 ? '#dc2626' : '#166534' }}>{pendingC > 0 ? `₹${fmt(pendingC)} Bal` : 'Clear'}</td>
+                <td className="cheque-tracker-s43">₹{fmt(stats.totalPaidByA * 0.3766)}</td>
+                <td className="cheque-tracker-s43">₹{fmt(stats.totalDueFromB)}</td>
+                <td className="cheque-tracker-s49" style={{ color: pendingB > 0 ? '#dc2626' : '#166534' }}>{pendingB > 0 ? `₹${fmt(pendingB)} Bal` : 'Clear'}</td>
+                <td className="cheque-tracker-s43">₹{fmt(stats.totalDueFromC)}</td>
+                <td className="cheque-tracker-s49" style={{ color: pendingC > 0 ? '#dc2626' : '#166534' }}>{pendingC > 0 ? `₹${fmt(pendingC)} Bal` : 'Clear'}</td>
                 <td colSpan={2}></td>
               </tr>
             </tfoot>
@@ -543,39 +542,38 @@ export default function ChequeTracker() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#64748b', fontSize: '0.85rem', padding: '0 8px' }}>
+      <div className="cheque-tracker-s50">
         <div>Showing {filteredEntries.length} of {entries.length} records</div>
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '12px', height: '12px', background: '#fee2e2', borderRadius: '3px' }}></span> Pending Payment</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '12px', height: '12px', background: '#dcfce7', borderRadius: '3px' }}></span> Payment Received</span>
-          <div style={{ color: badge, fontWeight: 700 }}>● {saveMsg || 'All changes saved'}</div>
+        <div className="cheque-tracker-s51">
+          <span className="cheque-tracker-s52"><span className="cheque-tracker-s53"></span> Pending Payment</span>
+          <span className="cheque-tracker-s52"><span className="cheque-tracker-s54"></span> Payment Received</span>
+          <div className="cheque-tracker-s55" style={{ color: badge }}>● {saveMsg || 'All changes saved'}</div>
         </div>
       </div>
 
       {/* ✏️ Edit Cheque Modal */}
       {editModalData && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setEditModalData(null)}>
+        <div className="cheque-tracker-s56" onClick={() => setEditModalData(null)}>
           <div
-            style={{ background: '#fff', borderRadius: '16px', maxWidth: '620px', width: '100%', maxHeight: '90vh', overflow: 'auto', boxShadow: '0 25px 60px rgba(0,0,0,0.3)', padding: '32px' }}
+            className="cheque-tracker-s57"
             onClick={e => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div className="cheque-tracker-s58">
               <div>
-                <h3 style={{ margin: 0, fontSize: '1.2rem' }}>✏️ Edit Cheque Entry</h3>
-                <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: '0.85rem' }}>
+                <h3 className="cheque-tracker-s59">✏️ Edit Cheque Entry</h3>
+                <p className="cheque-tracker-s60">
                   Cheque #{editModalData.entry.chequeNo || '—'} • {editModalData.entry.vendor || 'Unknown Vendor'}
                 </p>
               </div>
-              <button onClick={() => setEditModalData(null)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', opacity: 0.4, lineHeight: 1 }}>✕</button>
+              <button onClick={() => setEditModalData(null)} className="cheque-tracker-s61">✕</button>
             </div>
 
-            <form onSubmit={handleSaveEditModal} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+            <form onSubmit={handleSaveEditModal} className="cheque-tracker-s62">
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Month</label>
+                <label className="eyebrow cheque-tracker-s63">Month</label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-tracker-s64"
                   value={editModalData.entry.month}
                   onChange={e => handleEditFieldChange('month', e.target.value)}
                   placeholder="e.g. Oct 2026"
@@ -583,11 +581,10 @@ export default function ChequeTracker() {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Cheque No <span style={{ color: '#ef4444' }}>*</span></label>
+                <label className="eyebrow cheque-tracker-s63">Cheque No <span className="cheque-tracker-s65">*</span></label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-tracker-s64"
                   value={editModalData.entry.chequeNo}
                   onChange={e => handleEditFieldChange('chequeNo', e.target.value)}
                   placeholder="Cheque #"
@@ -596,11 +593,10 @@ export default function ChequeTracker() {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Cheque Date <span style={{ color: '#ef4444' }}>*</span></label>
+                <label className="eyebrow cheque-tracker-s63">Cheque Date <span className="cheque-tracker-s65">*</span></label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-tracker-s64"
                   value={editModalData.entry.date}
                   onChange={e => handleEditFieldChange('date', e.target.value)}
                   placeholder="e.g. 17 Feb"
@@ -609,23 +605,21 @@ export default function ChequeTracker() {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Deducted Date</label>
+                <label className="eyebrow cheque-tracker-s63">Deducted Date</label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-tracker-s64"
                   value={editModalData.entry.deductedDate || ''}
                   onChange={e => handleEditFieldChange('deductedDate', e.target.value)}
                   placeholder="e.g. 20.02.26"
                 />
               </div>
 
-              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Vendor Name <span style={{ color: '#ef4444' }}>*</span></label>
+              <div className="field-group cheque-tracker-s66">
+                <label className="eyebrow cheque-tracker-s63">Vendor Name <span className="cheque-tracker-s65">*</span></label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%', fontWeight: 600 }}
+                  className="attendance-register-input cheque-tracker-s67"
                   value={editModalData.entry.vendor}
                   onChange={e => handleEditFieldChange('vendor', e.target.value)}
                   placeholder="Vendor / Payee Name"
@@ -633,12 +627,11 @@ export default function ChequeTracker() {
                 />
               </div>
 
-              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Purpose / Remarks</label>
+              <div className="field-group cheque-tracker-s66">
+                <label className="eyebrow cheque-tracker-s63">Purpose / Remarks</label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-tracker-s64"
                   value={editModalData.entry.purpose}
                   onChange={e => handleEditFieldChange('purpose', e.target.value)}
                   placeholder="Payment purpose description..."
@@ -646,11 +639,10 @@ export default function ChequeTracker() {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Total Amount (₹) <span style={{ color: '#ef4444' }}>*</span></label>
+                <label className="eyebrow cheque-tracker-s63">Total Amount (₹) <span className="cheque-tracker-s65">*</span></label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%', fontWeight: 700 }}
+                  className="attendance-register-input cheque-tracker-s68"
                   value={editModalData.entry.totalAmount}
                   onChange={e => handleEditFieldChange('totalAmount', e.target.value)}
                   placeholder="0.00"
@@ -659,10 +651,9 @@ export default function ChequeTracker() {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Who Paid</label>
+                <label className="eyebrow cheque-tracker-s63">Who Paid</label>
                 <select
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-tracker-s64"
                   value={editModalData.entry.whoPaid}
                   onChange={e => handleEditFieldChange('whoPaid', e.target.value)}
                 >
@@ -673,11 +664,10 @@ export default function ChequeTracker() {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>B Receive Date</label>
+                <label className="eyebrow cheque-tracker-s63">B Receive Date</label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-tracker-s64"
                   value={editModalData.entry.bReceiveDate}
                   onChange={e => handleEditFieldChange('bReceiveDate', e.target.value)}
                   placeholder="Pending"
@@ -685,42 +675,38 @@ export default function ChequeTracker() {
               </div>
 
               <div className="field-group">
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>C Receive Date</label>
+                <label className="eyebrow cheque-tracker-s63">C Receive Date</label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-tracker-s64"
                   value={editModalData.entry.cReceiveDate}
                   onChange={e => handleEditFieldChange('cReceiveDate', e.target.value)}
                   placeholder="Pending"
                 />
               </div>
 
-              <div className="field-group" style={{ gridColumn: '1 / -1' }}>
-                <label className="eyebrow" style={{ display: 'block', marginBottom: '6px' }}>Final Remarks</label>
+              <div className="field-group cheque-tracker-s66">
+                <label className="eyebrow cheque-tracker-s63">Final Remarks</label>
                 <input
                   type="text"
-                  className="attendance-register-input"
-                  style={{ textAlign: 'left', width: '100%' }}
+                  className="attendance-register-input cheque-tracker-s64"
                   value={editModalData.entry.remarks}
                   onChange={e => handleEditFieldChange('remarks', e.target.value)}
                   placeholder="Additional remarks..."
                 />
               </div>
 
-              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px', borderTop: '1px solid #f1f5f9', paddingTop: '16px' }}>
+              <div className="cheque-tracker-s69">
                 <button
                   type="button"
                   onClick={() => setEditModalData(null)}
-                  className="button-secondary"
-                  style={{ padding: '9px 18px' }}
+                  className="button-secondary cheque-tracker-s70"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="button-primary"
-                  style={{ padding: '9px 24px' }}
+                  className="button-primary cheque-tracker-s71"
                 >
                   Save Changes
                 </button>

@@ -1,0 +1,231 @@
+/**
+ * DocumentManager.css
+ * Extracted styles from DocumentManager.jsx
+ * Generated according to Atomic Design and zero-inline-style architecture.
+ */
+
+.document-manager-s1 {
+  padding: 24px;
+}
+
+.document-manager-s2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.document-manager-s3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.document-manager-s4 {
+  font-size: 1.8rem;
+}
+
+.document-manager-s5 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0b2b26;
+}
+
+.document-manager-s6 {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #5f665f;
+}
+
+.document-manager-s7 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.document-manager-s8 {
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.document-manager-s9 {
+  flex: 0 1 200px;
+}
+
+.document-manager-s10 {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+.document-manager-s11 {
+  text-align: right;
+}
+
+.document-manager-s12 {
+  font-weight: 600;
+}
+
+.document-manager-s13 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.document-manager-s14 {
+  color: #ef4444;
+  font-weight: 800;
+}
+
+.document-manager-s15 {
+  color: #0f172a;
+}
+
+.document-manager-s16 {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.document-manager-s17 {
+  color: #475569;
+}
+
+.document-manager-s18 {
+  color: #94a3b8;
+}
+
+.document-manager-s19 {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.document-manager-s20 {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.document-manager-s21 {
+  background: #0b2b26;
+  color: #C49B4F;
+  border-color: #0b2b26;
+}
+
+.document-manager-s22 {
+  display: grid;
+  gap: 14px;
+}
+
+.document-manager-s23 {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.document-manager-s24 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.document-manager-s25 {
+  font-size: 0.85rem;
+}
+
+.document-manager-s26 {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.document-manager-s27 {
+  color: #10b981;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.document-manager-s28 {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.document-manager-s29 {
+  max-width: 460px;
+  border: 1px solid #fee2e2;
+}
+
+.document-manager-s30 {
+  background: #fef2f2;
+  border-bottom: 1px solid #fecaca;
+}
+
+.document-manager-s31 {
+  background: #fee2e2;
+  color: #dc2626;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.document-manager-s32 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #991b1b;
+}
+
+.document-manager-s33 {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  color: #b91c1c;
+}
+
+.document-manager-s34 {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+  font-size: 0.84rem;
+}
+
+.document-manager-s35 {
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.document-manager-s36 {
+  font-size: 0.76rem;
+  color: #64748b;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.document-manager-s37 {
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  padding: 12px;
+  border-radius: 8px;
+  color: #92400e;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
