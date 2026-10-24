@@ -159,9 +159,9 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
           <div className="section-card" style={{ padding: '20px', background: 'white', borderRadius: '12px' }}>
             <h4 style={{ margin: '0 0 14px', color: '#0b2b26' }}>Maintenance Status</h4>
             <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', padding: '14px', marginBottom: '12px' }}>
-              <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 700 }}>CURRENT BILL (JULY – SEPT 2026)</div>
-              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#15803d', marginTop: '4px' }}>₹9,000 / Quarter</div>
-              <div style={{ fontSize: '0.78rem', color: '#166534', marginTop: '4px' }}>Status: Paid in full (UTR: HDFCN520251121)</div>
+              <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 700 }}>CURRENT BILL (OCT 2026 – MAR 2027)</div>
+              <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#15803d', marginTop: '4px' }}>₹18,000 / 6 Months</div>
+              <div style={{ fontSize: '0.78rem', color: '#166534', marginTop: '4px' }}>Status: Paid in full today (23-Oct-2026) • Inv: ME/A/18/Oct26</div>
             </div>
             <button
               onClick={() => setActiveSection('maintenance')}
@@ -207,6 +207,14 @@ export default function ResidentPortal({ onNavigate, announcements = DEFAULT_ANN
               </tr>
             </thead>
             <tbody>
+              <tr style={{ borderBottom: '1px solid #f1f5f9', background: '#f0fdf4' }}>
+                <td style={{ padding: '12px', fontWeight: 700 }}>Oct 2026 to Mar 2027</td>
+                <td style={{ padding: '12px', fontWeight: 600 }}>ME/A/18/Oct26</td>
+                <td style={{ padding: '12px', fontWeight: 800, color: '#15803d' }}>₹18,000</td>
+                <td style={{ padding: '12px' }}>23-10-2026</td>
+                <td style={{ padding: '12px', fontFamily: 'monospace' }}>HDFCN261023904</td>
+                <td style={{ padding: '12px' }}><span style={{ color: '#15803d', fontWeight: 800 }}>✓ Paid Today</span></td>
+              </tr>
               <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
                 <td style={{ padding: '12px' }}>April to June 2026</td>
                 <td style={{ padding: '12px' }}>ME/A/18/APR-26</td>

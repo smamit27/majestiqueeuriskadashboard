@@ -16,42 +16,142 @@ function formatDisplayDate(isoDate) {
 
 // ─── TOI Bill Template ────────────────────────────────────────────────────────
 // Oct 2021 – Jun 2025 : ₹2,200 / year  (45 months)
-// Jul 2025 – Sept 2026 : ₹3,000 / year  (15 months)
-const BILLS_TEMPLATE = [
-  { id: 1, year: 'FY 2021-22',       period: 'Oct 2021 – Mar 2022',  months: 6,  rate: 2200, amount: 13200 },
-  { id: 2, year: 'FY 2022-23',       period: 'Apr 2022 – Mar 2023',  months: 12, rate: 2200, amount: 26400 },
-  { id: 3, year: 'FY 2023-24',       period: 'Apr 2023 – Mar 2024',  months: 12, rate: 2200, amount: 26400 },
-  { id: 4, year: 'FY 2024-25',       period: 'Apr 2024 – Mar 2025',  months: 12, rate: 2200, amount: 26400 },
-  { id: 5, year: 'FY 2025-26 (I)',   period: 'Apr 2025 – Jun 2025',  months: 3,  rate: 2200, amount: 6600  },
-  { id: 6, year: 'FY 2025-26 (II)',  period: 'Jul 2025 – Sept 2026', months: 15, rate: 3000, amount: 45000 },
+// Jul 2025 – Mar 2027 : ₹3,000 / year  (21 months)
+export const BILLS_TEMPLATE = [
+  { id: 1, year: 'FY 2021-22',       period: 'Oct 2021 – Mar 2022', months: 6,  rate: 2200, amount: 13200 },
+  { id: 2, year: 'FY 2022-23',       period: 'Apr 2022 – Mar 2023', months: 12, rate: 2200, amount: 26400 },
+  { id: 3, year: 'FY 2023-24',       period: 'Apr 2023 – Mar 2024', months: 12, rate: 2200, amount: 26400 },
+  { id: 4, year: 'FY 2024-25',       period: 'Apr 2024 – Mar 2025', months: 12, rate: 2200, amount: 26400 },
+  { id: 5, year: 'FY 2025-26 (I)',   period: 'Apr 2025 – Jun 2025', months: 3,  rate: 2200, amount: 6600  },
+  { id: 6, year: 'FY 2025-26 (II)',  period: 'Jul 2025 – Mar 2026', months: 9,  rate: 3000, amount: 27000 },
+  { id: 7, year: 'FY 2026-27 (I)',   period: 'Apr 2026 – Sep 2026', months: 6,  rate: 3000, amount: 18000 },
+  { id: 8, year: 'FY 2026-27 (II)',  period: 'Oct 2026 – Mar 2027', months: 6,  rate: 3000, amount: 18000 },
 ];
 
-const TOTAL_PER_FLAT = BILLS_TEMPLATE.reduce((s, b) => s + b.amount, 0); // ₹1,44,000
-const TOTAL_MONTHS   = BILLS_TEMPLATE.reduce((s, b) => s + b.months, 0); // 60 months
+// ─── Divided Bill Template specifically for Flat A-1002 ─────────────────────────
+// FY 2024-25 is split into:
+// Part (I)  : Apr 2024 – Sept 2024 (6 months @ ₹2,200 = ₹13,200)
+// Part (II) : Oct 2024 – Mar 2025  (6 months @ ₹2,200 = ₹13,200)
+export const BILLS_TEMPLATE_1002 = [
+  { id: 1,    year: 'FY 2021-22',       period: 'Oct 2021 – Mar 2022', months: 6,  rate: 2200, amount: 13200 },
+  { id: 2,    year: 'FY 2022-23',       period: 'Apr 2022 – Mar 2023', months: 12, rate: 2200, amount: 26400 },
+  { id: 3,    year: 'FY 2023-24',       period: 'Apr 2023 – Mar 2024', months: 12, rate: 2200, amount: 26400 },
+  { id: '4a', year: 'FY 2024-25 (I)',   period: 'Apr 2024 – Sept 2024', months: 6, rate: 2200, amount: 13200 },
+  { id: '4b', year: 'FY 2024-25 (II)',  period: 'Oct 2024 – Mar 2025', months: 6,  rate: 2200, amount: 13200 },
+  { id: 5,    year: 'FY 2025-26 (I)',   period: 'Apr 2025 – Jun 2025', months: 3,  rate: 2200, amount: 6600  },
+  { id: 6,    year: 'FY 2025-26 (II)',  period: 'Jul 2025 – Mar 2026', months: 9,  rate: 3000, amount: 27000 },
+  { id: 7,    year: 'FY 2026-27 (I)',   period: 'Apr 2026 – Sep 2026', months: 6,  rate: 3000, amount: 18000 },
+  { id: 8,    year: 'FY 2026-27 (II)',  period: 'Oct 2026 – Mar 2027', months: 6,  rate: 3000, amount: 18000 },
+];
+
+export const getBillsTemplate = (flatId) => {
+  if (flatId === 'A-1002' || flatId === '1002') {
+    return BILLS_TEMPLATE_1002;
+  }
+  return BILLS_TEMPLATE;
+};
+
+const TOTAL_PER_FLAT = BILLS_TEMPLATE.reduce((s, b) => s + b.amount, 0); // ₹1,62,000
+const TOTAL_MONTHS   = BILLS_TEMPLATE.reduce((s, b) => s + b.months, 0); // 66 months
 const FLAT_IDS = ['A-302', 'A-904', 'A-1002'];
 
-const makeDefaultFlats = () =>
-  FLAT_IDS.map(id => ({
-    id, flatNo: id,
-    bills: BILLS_TEMPLATE.map(b => ({ ...b, status: 'Pending' })),
-  }));
+export const makeDefaultFlats = () =>
+  FLAT_IDS.map(id => {
+    const template = getBillsTemplate(id);
+    return {
+      id, flatNo: id,
+      bills: template.map(b => {
+        let status = 'Paid';
+        if (id === 'A-1002') {
+          // Flat A-1002 has shortfall in Oct 2024 – Mar 2025 and Oct 2026 – Mar 2027 pending
+          if (b.id === '4b' || b.id === 8 ||
+              (b.period && (b.period.includes('Oct 2024 – Mar 2025') || b.period.includes('Oct 2026 – Mar 2027')))) {
+            status = 'Pending';
+          }
+        }
+        return {
+          ...b,
+          status,
+        };
+      }),
+    };
+  });
 
-const normalizeFlats = (raw) => {
+export const normalizeFlats = (raw) => {
   if (!Array.isArray(raw) || raw.length === 0) {
     return makeDefaultFlats();
   }
   return FLAT_IDS.map(flatId => {
     const existing = raw.find(f => f.id === flatId || f.flatNo === flatId);
     const existingBills = existing?.bills || [];
+    const template = getBillsTemplate(flatId);
 
-    const updatedBills = BILLS_TEMPLATE.map(t => {
+    const updatedBills = template.map(t => {
       let matched = existingBills.find(b => b.id === t.id);
-      if (!matched && t.id === 6) {
-        matched = existingBills.find(b => b.id === 6 || (b.period && b.period.includes('Jul 2025')));
+
+      // Handle migration of legacy split / merged bills:
+      if (t.id === 6) {
+        // Jul 2025 – Mar 2026 (was part of 15-mo bill)
+        matched = existingBills.find(b => b.id === 6 && (b.months === 9 || b.period?.includes('Mar 2026')));
+        if (!matched) {
+          const old15 = existingBills.find(b => b.id === 6 || b.period?.includes('Jul 2025'));
+          if (old15) {
+            return { ...t, status: old15.status };
+          }
+          return { ...t, status: 'Paid' };
+        }
       }
+
+      if (t.id === 7) {
+        // Apr 2026 – Sep 2026 (was part of 15-mo bill, paid on 23-06-2026)
+        matched = existingBills.find(b => b.id === 7 || (b.period && b.period.includes('Apr 2026 – Sep 2026')));
+        if (!matched) {
+          const old15 = existingBills.find(b => b.id === 6 || b.period?.includes('Jul 2025'));
+          if (old15) {
+            return { ...t, status: old15.status };
+          }
+          return { ...t, status: 'Paid' };
+        }
+      }
+
+      if (t.id === 8) {
+        // Oct 2026 – Mar 2027
+        matched = existingBills.find(b => b.id === 8 || (b.period && b.period.includes('Oct 2026 – Mar 2027')));
+        if (!matched) {
+          // For 302 and 904, payment received on 23-10-2026 -> Paid. For 1002 -> Pending.
+          const defaultStatus = (flatId === 'A-302' || flatId === 'A-904') ? 'Paid' : 'Pending';
+          return { ...t, status: defaultStatus };
+        }
+      }
+
+      // Flat A-1002: Resolve split bills for FY 2024-25
+      if (flatId === 'A-1002' || flatId === '1002') {
+        if (!matched && (t.id === '4a' || (t.period && t.period.includes('Apr 2024 – Sept 2024')))) {
+          matched = existingBills.find(b =>
+            b.id === '4a' || b.id === '4-1' || b.id === '4_1' || b.id === 41 ||
+            (b.period && b.period.includes('Apr 2024 – Sept 2024')) ||
+            (b.year && (b.year.includes('2024-25(I)') || b.year.includes('2024-25 (I)')))
+          );
+          if (!matched) {
+            return { ...t, status: 'Paid' };
+          }
+        }
+
+        if (!matched && (t.id === '4b' || (t.period && t.period.includes('Oct 2024 – Mar 2025')))) {
+          matched = existingBills.find(b =>
+            b.id === '4b' || b.id === '4-2' || b.id === '4_2' || b.id === 42 ||
+            (b.period && b.period.includes('Oct 2024 – Mar 2025')) ||
+            (b.year && (b.year.includes('2024-25(II)') || b.year.includes('2024-25 (II)') || b.year.includes('2024-25(||)')))
+          );
+          if (!matched) {
+            return { ...t, status: 'Pending' };
+          }
+        }
+      }
+
       return {
         ...t,
-        status: matched ? matched.status : 'Pending'
+        status: matched ? matched.status : (flatId === 'A-1002' ? 'Pending' : 'Paid')
       };
     });
 
@@ -163,12 +263,15 @@ export const TOI_RECONCILIATION_DATA = {
   kpi: {
     rateTillJune2025: '₹2,200 per Month per Flat',
     rateFromJuly2025: '₹3,000 per Month per Flat',
-    totalDue: 432000,
-    totalDuePeriod: 'Oct 2021 to Sept 2026',
-    totalDueBreakdown: '60 Months × 3 Flats (₹1,44,000 per flat)',
-    totalPaid: 425100,
-    paidBreakdown: '(₹3,43,500 + ₹81,600)',
-    netOutstanding: 6900,
+    totalDue: 486000,
+    totalDuePeriod: 'Oct 2021 to Mar 2027',
+    totalDueBreakdown: '66 Months × 3 Flats (₹1,62,000 per flat)',
+    totalPaid: 461100,
+    paidBreakdown: '(₹3,43,500 + ₹81,600 + ₹36,000)',
+    netOutstanding: 24900,
+    historical60Due: 432000,
+    historical60Paid: 425100,
+    historical60Shortfall: 6900,
   },
   chronologicalTimeline: [
     {
@@ -306,6 +409,18 @@ export const TOI_RECONCILIATION_DATA = {
       diff: 0,
       diffLabel: '0',
       status: 'PAID'
+    },
+    {
+      srNo: 9,
+      period: 'Oct 2026 – Mar 2027 (6 Months)',
+      months: 6,
+      rate: '3,000',
+      expected: 54000,
+      paid: 36000,
+      paymentDetails: '23-10-2026 (Flats 302 & 904 paid ₹18,000 each = ₹36,000; Flat 1002 pending)',
+      diff: -18000,
+      diffLabel: '-18,000',
+      status: 'PARTIALLY PAID'
     }
   ],
   aprSep2025Details: {
@@ -319,31 +434,54 @@ export const TOI_RECONCILIATION_DATA = {
     diffText: '₹47,700 - ₹46,800 = ₹900 (Extra Paid)'
   },
   shortfallItems: [
-    { period: 'Oct 2024 – Mar 2025 (Short Paid)', amount: 13200 }
+    { period: 'Oct 2024 – Mar 2025 (Short Paid - Flat 1002)', amount: 13200 },
+    { period: 'Oct 2026 – Mar 2027 (Pending - Flat 1002)', amount: 18000 }
   ],
-  totalShortfall: 13200,
+  totalShortfall: 31200,
   extraPaidItems: [
     { period: 'Oct 2021 – Sept 2022 (Extra Paid)', amount: 2400 },
     { period: 'Apr 2023 – Mar 2024 (Extra Paid)', amount: 3000 },
     { period: 'Apr 2025 – Sept 2025 (Extra Paid)', amount: 900 }
   ],
   totalExtraPaid: 6300,
-  netOutstanding: 6900,
+  netOutstanding: 24900,
   takeaways: [
     'No missing bill for Oct 2021 – Sept 2022. Extra paid by ₹2,400.',
     'All payments are mapped against corresponding periods.',
-    'Only shortfall is for Oct 2024 – Mar 2025.',
-    'Apr 2026 – Sept 2026: Payment received on 23-06-2026 in HDFC account (₹54,000).'
+    'Apr 2026 – Sept 2026: Payment received on 23-06-2026 in HDFC account (₹54,000).',
+    'Oct 2026 – Mar 2027: Payment received on 23-10-2026 for Flat 302 & Flat 904 (₹18,000 each = ₹36,000).',
+    'Flat 1002 pending: Oct 2024 – Mar 2025 (₹13,200) + Oct 2026 – Mar 2027 (₹18,000) = ₹31,200 total shortfall. After adjusting ₹6,300 extra payments, Net Outstanding is ₹24,900.'
   ],
   notes: [
-    '1. Maintenance includes 3 Flats: 302, 904, 1002 (₹1,44,000 per flat × 3 = ₹4,32,000)',
-    '2. All amounts are in Indian Rupees (₹)',
-    'Extra payments of ₹6,300 have been adjusted against the shortfall to arrive at the Net Outstanding Balance.'
+    '1. Maintenance includes 3 Flats: 302, 904, 1002 (₹1,62,000 per flat × 3 = ₹4,86,000 for 66 Months)',
+    '2. Historical 60 Months (Oct 21 – Sept 26): Due ₹4,32,000 | Paid ₹4,25,100 | Shortfall ₹6,900',
+    '3. Current Cycle (Oct 26 – Mar 27): Due ₹54,000 | Paid ₹36,000 | Flat 1002 Pending ₹18,000',
+    '4. All amounts are in Indian Rupees (₹)',
+    'Extra payments of ₹6,300 have been adjusted against the shortfall of ₹31,200 to arrive at the Net Outstanding Balance of ₹24,900.'
   ]
 };
 
 function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, onOpenInvoiceModal }) {
   const d = data;
+
+  const recon60Totals = useMemo(() => {
+    const list = (d.periodWiseReconciliation || []).slice(0, 8);
+    const months = list.reduce((s, r) => s + (Number(r.months) || 0), 0);
+    const expected = list.reduce((s, r) => s + (Number(r.expected) || 0), 0);
+    const paid = list.reduce((s, r) => s + (Number(r.paid) || 0), 0);
+    const diff = paid - expected;
+    return { months, expected, paid, diff };
+  }, [d.periodWiseReconciliation]);
+
+  const reconGrandTotals = useMemo(() => {
+    const list = d.periodWiseReconciliation || [];
+    const months = list.reduce((s, r) => s + (Number(r.months) || 0), 0);
+    const expected = list.reduce((s, r) => s + (Number(r.expected) || 0), 0);
+    const paid = list.reduce((s, r) => s + (Number(r.paid) || 0), 0);
+    const diff = paid - expected;
+    return { months, expected, paid, diff };
+  }, [d.periodWiseReconciliation]);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       
@@ -479,7 +617,7 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
             ₹3,000 <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#5f665f' }}>/ mo / flat</span>
           </div>
           <div style={{ fontSize: '0.7rem', color: '#8a9080', marginTop: 4 }}>
-            Period: Jul 2025 – Sept 2026 (15 mos)
+            Period: Jul 2025 – Mar 2027 (21 mos)
           </div>
         </div>
 
@@ -492,14 +630,14 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <span style={{ fontSize: '1.25rem' }}>📑</span>
             <span style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#5f665f' }}>
-              Total Amount Due (Oct 21–Sept 26)
+              Total Amount Due ({reconGrandTotals.months} Mos)
             </span>
           </div>
           <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0b2b26', lineHeight: 1.1 }}>
-            ₹4,32,000
+            ₹{reconGrandTotals.expected.toLocaleString('en-IN')}
           </div>
           <div style={{ fontSize: '0.7rem', color: '#8a9080', marginTop: 4 }}>
-            {d.kpi.totalDueBreakdown}
+            {reconGrandTotals.months} Mos × 3 Flats • 60-Mo: ₹4,32,000
           </div>
         </div>
 
@@ -516,10 +654,10 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
             </span>
           </div>
           <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#15803d', lineHeight: 1.1 }}>
-            ₹4,25,100
+            ₹{reconGrandTotals.paid.toLocaleString('en-IN')}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#166534', fontWeight: 600, marginTop: 4 }}>
-            {d.kpi.paidBreakdown}
+            (₹3,43,500 + ₹81,600 + ₹36,000) • 60-Mo: ₹4,25,100
           </div>
         </div>
 
@@ -536,10 +674,10 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
             </span>
           </div>
           <div style={{ fontSize: '1.45rem', fontWeight: 900, color: '#dc2626', lineHeight: 1.1 }}>
-            ₹6,900
+            ₹{Math.abs(reconGrandTotals.diff).toLocaleString('en-IN')}
           </div>
           <div style={{ fontSize: '0.72rem', color: '#991b1b', fontWeight: 700, marginTop: 4 }}>
-            Pending from TOI (Oct 24–Mar 25 net)
+            Flat 1002 Arrears: ₹31,200 − ₹6,300 extra • 60-Mo: ₹6,900
           </div>
         </div>
 
@@ -741,25 +879,57 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
                 })}
               </tbody>
               <tfoot>
-                <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 800 }}>
-                  <td colSpan={2} style={{ padding: '12px 14px', textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    TOTAL
+                {/* Subtotal for Phase 1 & 2 (Oct 2021 – Sept 2026, 60 Months) */}
+                <tr style={{ background: '#1e3a34', color: '#fff', fontWeight: 700, borderTop: '2px solid #cbd5e1' }}>
+                  <td colSpan={2} style={{ padding: '8px 12px', textAlign: 'right', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', color: '#e2e8f0' }}>
+                    Subtotal (Oct 2021 – Sept 2026)
                   </td>
-                  <td style={{ padding: '12px 10px', textAlign: 'center', color: '#c49b4f' }}>60</td>
-                  <td style={{ padding: '12px 10px' }} />
-                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#c49b4f' }}>
-                    ₹4,32,000
+                  <td style={{ padding: '8px 10px', textAlign: 'center', color: '#c49b4f', fontWeight: 800 }}>
+                    {recon60Totals.months}
                   </td>
-                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#86efac' }}>
-                    <div>₹4,25,100</div>
+                  <td style={{ padding: '8px 10px' }} />
+                  <td style={{ padding: '8px 10px', textAlign: 'right', color: '#c49b4f', fontWeight: 800 }}>
+                    ₹{recon60Totals.expected.toLocaleString('en-IN')}
+                  </td>
+                  <td style={{ padding: '8px 10px', textAlign: 'right', color: '#86efac', fontWeight: 800 }}>
+                    <div>₹{recon60Totals.paid.toLocaleString('en-IN')}</div>
                     <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>(3,43,500 + 81,600)</div>
                   </td>
-                  <td style={{ padding: '12px 10px' }} />
-                  <td style={{ padding: '12px 10px', textAlign: 'center', color: '#fca5a5' }}>
+                  <td style={{ padding: '8px 10px', fontSize: '0.68rem', color: '#cbd5e1' }}>60 Mos Phase</td>
+                  <td style={{ padding: '8px 10px', textAlign: 'center', color: '#fca5a5', fontWeight: 800 }}>
                     -6,900
                   </td>
-                  <td style={{ padding: '12px 10px', textAlign: 'center', color: '#fca5a5', fontSize: '0.72rem' }}>
-                    NET SHORTFALL
+                  <td style={{ padding: '8px 10px', textAlign: 'center', color: '#fca5a5', fontSize: '0.7rem', fontWeight: 800 }}>
+                    60-MO SHORTFALL
+                  </td>
+                </tr>
+
+                {/* Grand Total (Oct 2021 – Mar 2027, 66 Months) */}
+                <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 800 }}>
+                  <td colSpan={2} style={{ padding: '12px 14px', textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    TOTAL ({reconGrandTotals.months} MONTHS)
+                  </td>
+                  <td style={{ padding: '12px 10px', textAlign: 'center', color: '#facc15', fontSize: '0.92rem' }}>
+                    {reconGrandTotals.months}
+                  </td>
+                  <td style={{ padding: '12px 10px' }} />
+                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#facc15', fontSize: '0.95rem' }}>
+                    ₹{reconGrandTotals.expected.toLocaleString('en-IN')}
+                  </td>
+                  <td style={{ padding: '12px 10px', textAlign: 'right', color: '#4ade80', fontSize: '0.95rem' }}>
+                    <div>₹{reconGrandTotals.paid.toLocaleString('en-IN')}</div>
+                    <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
+                      (3,43,500 + 81,600 + 36,000)
+                    </div>
+                  </td>
+                  <td style={{ padding: '12px 10px', fontSize: '0.7rem', color: '#86efac' }}>
+                    Flats 302 & 904 paid till Mar 2027
+                  </td>
+                  <td style={{ padding: '12px 10px', textAlign: 'center', color: reconGrandTotals.diff < 0 ? '#fca5a5' : '#86efac', fontSize: '0.92rem' }}>
+                    {reconGrandTotals.diff < 0 ? `-${Math.abs(reconGrandTotals.diff).toLocaleString('en-IN')}` : `+${reconGrandTotals.diff.toLocaleString('en-IN')}`}
+                  </td>
+                  <td style={{ padding: '12px 10px', textAlign: 'center', color: reconGrandTotals.diff < 0 ? '#fca5a5' : '#86efac', fontSize: '0.74rem' }}>
+                    {reconGrandTotals.diff < 0 ? 'NET SHORTFALL' : 'FULLY SETTLED'}
                   </td>
                 </tr>
               </tfoot>
@@ -934,7 +1104,7 @@ function ToiReconciliationSection({ data, onPrint, onWhatsApp, onCopy, toast, on
           </div>
           <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: 6, fontSize: '0.76rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475569' }}>
-              <span>Total Amount Due (Oct 21–Sept 26)</span>
+              <span>Total Amount Due ({d.kpi.totalDuePeriod})</span>
               <strong style={{ color: '#0f172a' }}>₹{Number(d.kpi.totalDue).toLocaleString('en-IN')}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#475569' }}>
@@ -996,7 +1166,7 @@ export default function TimesOfIndiaTracker({ isAdmin = false }) {
   const [saveMsg, setSaveMsg]       = useState('');
   const [activeFlat, setActiveFlat] = useState('reconciliation');
   const isLoadedRef                 = useRef(false);
-  const recordId                    = 'toi_bills_v3';
+  const recordId                    = 'toi_bills_v4';
 
   // Reconciliation Toast State
   const [reconciliationToast, setReconciliationToast] = useState('');
@@ -1038,9 +1208,14 @@ export default function TimesOfIndiaTracker({ isAdmin = false }) {
         await ensureFirebaseSession();
         let snap = await getDoc(doc(db, 'toiTracking', recordId));
         if (!snap.exists()) {
-          const fallbackSnap = await getDoc(doc(db, 'toiTracking', 'toi_bills_v2'));
-          if (fallbackSnap.exists()) {
-            snap = fallbackSnap;
+          const fallbackV3 = await getDoc(doc(db, 'toiTracking', 'toi_bills_v3'));
+          if (fallbackV3.exists()) {
+            snap = fallbackV3;
+          } else {
+            const fallbackV2 = await getDoc(doc(db, 'toiTracking', 'toi_bills_v2'));
+            if (fallbackV2.exists()) {
+              snap = fallbackV2;
+            }
           }
         }
         if (!cancelled) {
@@ -1657,15 +1832,21 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 📰 *SOCIETY MAINTENANCE PAYMENT RECONCILIATION – TIME OF INDIA*
 🏢 *Flats:* 302, 904, 1002 (3 Flats) | *Start Date:* October 2021
 ───────────────────────────
-📊 *RECONCILIATION SUMMARY (Oct 2021 to Sept 2026 - 60 Months):*
+📊 *RECONCILIATION SUMMARY (Oct 2021 to Mar 2027 - 66 Months):*
 • *Rate till June 2025:* ₹2,200 per Month per Flat
 • *Rate from July 2025:* ₹3,000 per Month per Flat
-• *Total Amount Due:* ₹4,32,000 (60 Mos × 3 Flats)
-• *Total Amount Paid:* ₹4,25,100 (₹3,43,500 + ₹81,600)
-• 🚨 *NET OUTSTANDING BALANCE: ₹6,900*
+• *Total Amount Due:* ₹4,86,000 (66 Mos × 3 Flats = ₹1,62,000 per flat)
+• *Total Amount Paid:* ₹4,61,100 (₹3,43,500 + ₹81,600 + ₹36,000)
+• 🚨 *NET OUTSTANDING BALANCE: ₹24,900*
+
+📌 *PHASE-WISE BREAKUP:*
+1. *Oct 2021 – Sept 2026 (60 Mos):* Due ₹4,32,000 | Paid ₹4,25,100 | Net Shortfall: ₹6,900
+2. *Oct 2026 – Mar 2027 (6 Mos):* Due ₹54,000 | Paid ₹36,000 (Flats 302 & 904 paid, Flat 1002 pending ₹18,000)
 
 🔻 *C. SHORTFALL (WHERE THEY PAY SHORT):*
-• Oct 2024 – Mar 2025 (Short Paid): *₹13,200* (Paid ₹26,400 of ₹39,600 expected - Flat 1002 unpaid)
+• Oct 2024 – Mar 2025 (Short Paid): *₹13,200* (Flat 1002 unpaid)
+• Oct 2026 – Mar 2027 (Pending): *₹18,000* (Flat 1002 unpaid)
+↳ *Total Shortfall:* *₹31,200*
 
 🔺 *D. EXTRA PAID (WHERE THEY PAY EXTRA):*
 • Oct 2021 – Sept 2022 (Extra Paid): *+₹2,400*
@@ -1674,15 +1855,16 @@ Majestique Euriska 'A' Building CHS Ltd.`;
 ↳ *Total Extra Paid:* *₹6,300*
 
 ⚖️ *E. NET OUTSTANDING CALCULATION:*
-• Total Shortfall (C): ₹13,200
+• Total Shortfall (C): ₹31,200
 • Less: Total Extra Paid (D): (-) ₹6,300
-↳ ⚠️ *NET OUTSTANDING TO BE RECEIVED: ₹6,900*
+↳ ⚠️ *NET OUTSTANDING TO BE RECEIVED: ₹24,900* (Flat 1002 pending)
 
 📌 *KEY TAKEAWAYS:*
 ✓ No missing bill for Oct 2021 – Sept 2022. Total extra paid by ₹2,400.
 ✓ All payments are mapped against corresponding periods.
 ✓ Apr 2026 – Sept 2026: ₹54,000 received on 23-06-2026 in HDFC account.
-✓ Only pending shortfall is for Oct 2024 – Mar 2025 (₹13,200 - ₹6,300 = ₹6,900).
+✓ Oct 2026 – Mar 2027: ₹36,000 received on 23-10-2026 for Flat 302 & Flat 904.
+✓ Flat 1002 has total net outstanding of ₹24,900 (₹31,200 shortfall − ₹6,300 extra adjusted).
 
 🏦 *SOCIETY BANK REMITTANCE INFO:*
 • Bank: HDFC Bank
@@ -1890,14 +2072,26 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   </td>
                 </tr>
               `).join('')}
-              <tr style="background: #0b2b26; color: #fff; font-weight: 800;">
-                <td colspan="2" style="text-align: right;">TOTAL (60 Months)</td>
+              <!-- Subtotal (Oct 2021 – Sept 2026, 60 Months) -->
+              <tr style="background: #1e3a34; color: #fff; font-weight: 700;">
+                <td colspan="2" style="text-align: right;">Subtotal (Oct 2021 – Sept 2026)</td>
                 <td style="text-align: center;">60</td>
                 <td></td>
                 <td style="text-align: right; color: #c49b4f;">₹4,32,000</td>
                 <td style="text-align: right; color: #86efac;">₹4,25,100</td>
-                <td></td>
+                <td style="font-size: 8px;">(3,43,500 + 81,600)</td>
                 <td style="text-align: center; color: #fca5a5;">-6,900</td>
+                <td style="text-align: center; color: #fca5a5; font-size: 8px;">60-MO SHORTFALL</td>
+              </tr>
+              <!-- Grand Total (Oct 2021 – Mar 2027, 66 Months) -->
+              <tr style="background: #0b2b26; color: #fff; font-weight: 800;">
+                <td colspan="2" style="text-align: right;">TOTAL (66 Months)</td>
+                <td style="text-align: center;">66</td>
+                <td></td>
+                <td style="text-align: right; color: #facc15;">₹4,86,000</td>
+                <td style="text-align: right; color: #4ade80;">₹4,61,100</td>
+                <td style="font-size: 8px;">(3,43,500 + 81,600 + 36,000)</td>
+                <td style="text-align: center; color: #fca5a5;">-24,900</td>
                 <td style="text-align: center; color: #fca5a5;">NET SHORTFALL</td>
               </tr>
             </tbody>
@@ -2087,6 +2281,53 @@ Majestique Euriska 'A' Building CHS Ltd.`;
           {saveStatus === 'saved'  && <span style={{ fontSize: '0.75rem', color: '#6ee7b7', fontWeight: 700 }}>{saveMsg}</span>}
           {saveStatus === 'error'  && <span style={{ fontSize: '0.75rem', color: '#fca5a5', fontWeight: 700 }}>{saveMsg}</span>}
           {isLoading               && <span style={{ fontSize: '0.75rem', color: '#93c5fd', fontWeight: 700 }}>Loading…</span>}
+        </div>
+      </div>
+
+      {/* ── Prominent Banner: Payment Received Today (23-Oct-2026) ── */}
+      <div style={{
+        background: 'linear-gradient(135deg, #0b2b26 0%, #164e63 100%)',
+        border: '2px solid #86efac',
+        borderRadius: 16,
+        padding: '16px 22px',
+        color: '#fff',
+        boxShadow: '0 6px 20px rgba(11,43,38,0.22)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: 14
+      }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <span style={{
+              background: '#16a34a', color: '#fff', fontSize: '0.72rem', fontWeight: 800,
+              padding: '3px 10px', borderRadius: 999, textTransform: 'uppercase', letterSpacing: '0.06em'
+            }}>
+              ✓ PAYMENT RECEIVED TODAY (23-OCT-2026)
+            </span>
+            <span style={{ fontSize: '0.8rem', color: '#86efac', fontWeight: 700 }}>
+              Period: Oct 2026 – Mar 2027 (6 Months @ ₹3,000/mo)
+            </span>
+          </div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff' }}>
+            Flats A-302 &amp; A-904 Cleared: ₹18,000 each (Total ₹36,000 Received)
+          </div>
+          <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.85)', marginTop: 4, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <span>• <strong>Flat A-302:</strong> ₹18,000 <span style={{ color: '#86efac', fontWeight: 700 }}>(PAID IN FULL - Bal: ₹0)</span></span>
+            <span>• <strong>Flat A-904:</strong> ₹18,000 <span style={{ color: '#86efac', fontWeight: 700 }}>(PAID IN FULL - Bal: ₹0)</span></span>
+            <span>• <strong>Flat A-1002:</strong> <span style={{ color: '#fde047', fontWeight: 800 }}>₹31,200 PENDING</span> (Arrears ₹13,200 + Current ₹18,000)</span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <div style={{ textAlign: 'right', background: 'rgba(255,255,255,0.1)', padding: '8px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#86efac', fontWeight: 800 }}>Received Today</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#4ade80', fontFamily: 'monospace' }}>₹36,000</div>
+          </div>
+          <div style={{ textAlign: 'right', background: 'rgba(255,255,255,0.1)', padding: '8px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#fde047', fontWeight: 800 }}>A-1002 Balance</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#facc15', fontFamily: 'monospace' }}>₹31,200</div>
+          </div>
         </div>
       </div>
 
@@ -2364,7 +2605,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                 <tfoot>
                   <tr style={{ background: 'rgba(11,43,38,0.04)', borderTop: '2px solid rgba(61,63,52,0.13)' }}>
                     <td colSpan={3} style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '0.82rem', color: '#0b2b26', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      Grand Total (${TOTAL_MONTHS} Months)
+                      Grand Total ({TOTAL_MONTHS} Months)
                     </td>
                     <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 800, fontSize: '0.92rem', color: '#196c6c' }}>
                       <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 8, background: 'rgba(25,108,108,0.1)', color: '#196c6c', fontWeight: 800, fontSize: '0.82rem' }}>
@@ -2372,7 +2613,7 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                       </span>
                     </td>
                     <td style={{ ...TD_BASE, textAlign: 'center', fontWeight: 700, fontSize: '0.8rem', color: '#5f665f' }}>
-                      45 × ₹2,200<br />15 × ₹3,000
+                      45 × ₹2,200<br />21 × ₹3,000
                     </td>
                     <td style={{ ...TD_BASE, textAlign: 'right', fontWeight: 800, fontSize: '1rem', color: '#0b2b26', fontVariantNumeric: 'tabular-nums' }}>
                       {fmt(TOTAL_PER_FLAT)}
@@ -2392,6 +2633,52 @@ Majestique Euriska 'A' Building CHS Ltd.`;
                   </tr>
                 </tfoot>
               </table>
+            </div>
+
+            {/* Current Cycle (Oct 2026 – Mar 2027) Settlement Snapshot */}
+            <div style={{
+              margin: '14px 18px 18px',
+              padding: '14px 18px',
+              borderRadius: 14,
+              border: (flat.id === 'A-302' || flat.id === 'A-904') ? '1.5px solid #86efac' : '1.5px solid #fde68a',
+              background: (flat.id === 'A-302' || flat.id === 'A-904') ? '#f0fdf4' : '#fffbeb',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 12
+            }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
+                  <span style={{
+                    fontSize: '0.68rem', fontWeight: 800, padding: '3px 8px', borderRadius: 6, textTransform: 'uppercase',
+                    background: (flat.id === 'A-302' || flat.id === 'A-904') ? '#dcfce7' : '#fef3c7',
+                    color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#92400e',
+                    border: (flat.id === 'A-302' || flat.id === 'A-904') ? '1px solid #86efac' : '1px solid #fde68a'
+                  }}>
+                    {(flat.id === 'A-302' || flat.id === 'A-904') ? '✓ Current Cycle: PAID' : '⏳ Current Cycle: PENDING'}
+                  </span>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 700, color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#166534' : '#92400e' }}>
+                    Oct 2026 – Mar 2027 (6 Mos @ ₹3,000/mo = ₹18,000)
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.92rem', fontWeight: 800, color: '#0f172a' }}>
+                  {(flat.id === 'A-302' || flat.id === 'A-904')
+                    ? `Payment Received Today (23-10-2026): ₹18,000 • Net Balance Due: ₹0 (Paid in Full)`
+                    : `Flat A-1002 Balance Due: ₹31,200 (Arrears Oct 24–Mar 25: ₹13,200 + Current Oct 26–Mar 27: ₹18,000)`}
+                </div>
+                <div style={{ fontSize: '0.74rem', color: '#64748b', marginTop: 2 }}>
+                  Maint: ₹2,850 × 6 = ₹17,100 | Sinking: ₹150 × 6 = ₹900 | Ref: {flat.id === 'A-302' ? 'ME/A/18/Oct26' : (flat.id === 'A-904' ? 'ME/A/16/Oct-26' : 'ME/A/17/Oct-26')}
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '0.66rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#b45309', fontWeight: 800 }}>
+                  {(flat.id === 'A-302' || flat.id === 'A-904') ? 'Paid Today' : 'Total Pending'}
+                </div>
+                <div style={{ fontSize: '1.45rem', fontWeight: 900, color: (flat.id === 'A-302' || flat.id === 'A-904') ? '#15803d' : '#b45309', fontFamily: 'monospace' }}>
+                  {(flat.id === 'A-302' || flat.id === 'A-904') ? '₹18,000' : '₹31,200'}
+                </div>
+              </div>
             </div>
           </div>
         );

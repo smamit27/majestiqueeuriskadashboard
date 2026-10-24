@@ -501,6 +501,10 @@ export default function CommonInvoiceHub({ isAdmin = false }) {
       earlierPending: 0,
       total: 18000,
       words: 'Eighteen Thousand Only.',
+      paymentStatus: 'Paid',
+      paidDate: '23-10-2026',
+      paidAmount: 18000,
+      balanceDue: 0,
       periodLines: [
         'Oct 26  -  2850 + 150 = 3000',
         'Nov 26  -  2850 + 150 = 3000',
@@ -526,6 +530,10 @@ export default function CommonInvoiceHub({ isAdmin = false }) {
       earlierPending: 0,
       total: 18000,
       words: 'Eighteen Thousand Only.',
+      paymentStatus: 'Paid',
+      paidDate: '23-10-2026',
+      paidAmount: 18000,
+      balanceDue: 0,
       periodLines: [
         'Oct 26  -  2850 + 150 = 3000',
         'Nov 26  -  2850 + 150 = 3000',
@@ -557,6 +565,10 @@ export default function CommonInvoiceHub({ isAdmin = false }) {
       earlierPending: 13200,
       total: 31200,
       words: 'Thirty One Thousand Two Hundred Only.',
+      paymentStatus: 'Pending',
+      paidDate: null,
+      paidAmount: 0,
+      balanceDue: 31200,
       periodLines: [
         'Oct 24  -  2100 + 100 = 2200',
         'Nov 24  -  2100 + 100 = 2200',
@@ -574,11 +586,19 @@ export default function CommonInvoiceHub({ isAdmin = false }) {
       ]
     }
   ]);
-  const [combNotes, setCombNotes] = useState('I have attached the combined maintenance bill PDF along with the cancelled cheque for your reference and payment processing. Kindly verify the details and arrange the payment of ₹67,200. Please share the payment confirmation/UTR once completed.');
+  const [combNotes, setCombNotes] = useState('Payment of ₹18,000 each for Flats A-302 and A-904 received today (23-Oct-2026). Flat A-1002 balance due of ₹31,200 (Arrears ₹13,200 + Current ₹18,000) is pending.');
   const [combToast, setCombToast] = useState('');
 
   const combGrandTotal = useMemo(() => {
     return combFlats.reduce((sum, f) => sum + (Number(f.total) || 0), 0);
+  }, [combFlats]);
+
+  const combTotalPaid = useMemo(() => {
+    return combFlats.reduce((sum, f) => sum + (Number(f.paidAmount) || 0), 0);
+  }, [combFlats]);
+
+  const combTotalPending = useMemo(() => {
+    return combFlats.reduce((sum, f) => sum + (Number(f.balanceDue ?? f.total) || 0), 0);
   }, [combFlats]);
 
   const formatDmyDate = (isoDate) => {
@@ -696,6 +716,24 @@ export default function CommonInvoiceHub({ isAdmin = false }) {
               <td></td><td></td><td></td>
               <td style="text-align: right; font-weight: bold; font-family: monospace;">${currentTotal.toFixed(2)}</td>
             </tr>
+            ${flat.paymentStatus === 'Paid' ? `
+            <tr style="background: #f0fdf4;">
+              <td style="font-weight: bold; color: #15803d;">Payment Received (${flat.paidDate})</td>
+              <td></td><td></td><td></td>
+              <td style="text-align: right; font-weight: bold; font-family: monospace; color: #15803d;">(-) ${(Number(flat.paidAmount) || currentTotal).toFixed(2)}</td>
+            </tr>
+            <tr style="background: #f0fdf4;">
+              <td style="font-weight: bold; color: #15803d;">Balance Due (INR)</td>
+              <td></td><td></td><td></td>
+              <td style="text-align: right; font-weight: bold; font-family: monospace; color: #15803d;">0.00 (PAID IN FULL)</td>
+            </tr>
+            ` : `
+            <tr style="background: #fffbeb;">
+              <td style="font-weight: bold; color: #b45309;">Balance Due (INR)</td>
+              <td></td><td></td><td></td>
+              <td style="text-align: right; font-weight: bold; font-family: monospace; color: #b45309;">${(Number(flat.balanceDue) || currentTotal).toFixed(2)} (PENDING)</td>
+            </tr>
+            `}
             <tr>
               <td colspan="5" style="font-weight: bold; padding: 6px 8px;">
                 Amount in word: ${amountWords}
@@ -705,7 +743,18 @@ export default function CommonInvoiceHub({ isAdmin = false }) {
         </table>
         </div>
 
-        <div class="toi-signatory-section">
+        <div class="toi-signatory-section" style="margin-top: 36px; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 16px;">
+          <div>
+            ${flat.paymentStatus === 'Paid' ? `
+              <div style="border: 2px solid #16a34a; background: #f0fdf4; color: #16a34a; font-weight: 800; padding: 5px 12px; border-radius: 6px; display: inline-block; font-size: 10pt; letter-spacing: 0.5px; text-transform: uppercase;">
+                ✓ PAID IN FULL • ${flat.paidDate}
+              </div>
+            ` : `
+              <div style="border: 2px solid #d97706; background: #fffbeb; color: #b45309; font-weight: 800; padding: 5px 12px; border-radius: 6px; display: inline-block; font-size: 9.5pt; letter-spacing: 0.5px; text-transform: uppercase;">
+                ⏳ PENDING PAYMENT
+              </div>
+            `}
+          </div>
           <div class="toi-signatory-box">
             <div class="toi-signatory-line">
               Authorized Signatory
@@ -833,10 +882,10 @@ export default function CommonInvoiceHub({ isAdmin = false }) {
 ⏰ *Payment Due Date:* ${formatDisplayDate(combDueDate)}
 🏢 *Billed To:* ${combClientName}
 
-*FLAT DUES SUMMARY:*
-• *A-302 (Inv: ME/A/18/Oct26):* ₹18,000 – Maintenance ₹17,100 + Sinking Fund ₹900
-• *A-904 (Inv: ME/A/16/Oct-26):* ₹18,000 – Maintenance ₹17,100 + Sinking Fund ₹900
-• *A-1002 (Inv: ME/A/17/Oct-26):* ₹31,200 – Earlier pending amount ₹13,200 + Current maintenance ₹18,000
+*FLAT DUES & PAYMENT SUMMARY:*
+• *A-302 (Inv: ME/A/18/Oct26):* ₹18,000 – Maint ₹17,100 + Sinking ₹900 [✓ PAID IN FULL on 23-10-2026]
+• *A-904 (Inv: ME/A/16/Oct-26):* ₹18,000 – Maint ₹17,100 + Sinking ₹900 [✓ PAID IN FULL on 23-10-2026]
+• *A-1002 (Inv: ME/A/17/Oct-26):* ₹31,200 – Earlier Arrears ₹13,200 + Current ₹18,000 [⏳ PENDING DUE]
 
 *A-1002 Earlier Pending Amount (Oct 2024 – Mar 2025):*
 • Maintenance: ₹2,100 × 6 = ₹12,600
@@ -848,7 +897,9 @@ export default function CommonInvoiceHub({ isAdmin = false }) {
 • Sinking Fund: ₹150 × 6 = ₹900
 • Total Current: *₹18,000*
 
-💰 *Total payable for all three flats: ₹${formatValue(combGrandTotal)}*
+💰 *Total Invoiced for all 3 flats: ₹${formatValue(combGrandTotal)}*
+✅ *Payment Received Today (23-Oct-2026): ₹${formatValue(combTotalPaid)} (Flats A-302 & A-904)*
+⏳ *Net Outstanding Balance: ₹${formatValue(combTotalPending)} (Flat A-1002)*
 ───────────────────────────
 🏦 *Bank Account Details for Payment:*
 • *Account Name:* Majestique Euriska 'A' Building CO OP Society LTD
@@ -862,7 +913,7 @@ ${combNotes}
 
 Thanks & Regards,
 *A Building Committee*`;
-  }, [combInvoiceNo, combInvoiceDate, combDueDate, combClientName, combGrandTotal, combNotes]);
+  }, [combInvoiceNo, combInvoiceDate, combDueDate, combClientName, combGrandTotal, combTotalPaid, combTotalPending, combNotes]);
 
   const handleShareCombWhatsApp = () => {
     const text = encodeURIComponent(generateCombWhatsAppMessage());
@@ -976,9 +1027,9 @@ IFSC Code: HDFC0002454`;
                   <td style="text-align: center;">₹150</td>
                   <td style="text-align: right; font-weight: 700; font-family: monospace;">₹900</td>
                 </tr>
-                <tr class="subtotal-row" style="border-bottom: 2px solid #94a3b8;">
-                  <td colspan="5" style="text-align: right;">↳ Flat A-302 Subtotal Payable (Inv: ME/A/18/Oct26):</td>
-                  <td style="text-align: right; font-family: monospace; font-size: 11.5px;">₹18,000</td>
+                <tr class="subtotal-row" style="border-bottom: 2px solid #94a3b8; background: #f0fdf4;">
+                  <td colspan="5" style="text-align: right; color: #166534; font-weight: 700;">↳ Flat A-302 Subtotal Payable (Inv: ME/A/18/Oct26): <span style="background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; border: 1px solid #86efac;">✓ PAID (23-10-2026)</span></td>
+                  <td style="text-align: right; font-family: monospace; font-size: 11.5px; color: #15803d; font-weight: 700;">₹18,000</td>
                 </tr>
 
                 <!-- Flat A-904 -->
@@ -997,9 +1048,9 @@ IFSC Code: HDFC0002454`;
                   <td style="text-align: center;">₹150</td>
                   <td style="text-align: right; font-weight: 700; font-family: monospace;">₹900</td>
                 </tr>
-                <tr class="subtotal-row" style="border-bottom: 2px solid #94a3b8;">
-                  <td colspan="5" style="text-align: right;">↳ Flat A-904 Subtotal Payable (Inv: ME/A/16/Oct-26):</td>
-                  <td style="text-align: right; font-family: monospace; font-size: 11.5px;">₹18,000</td>
+                <tr class="subtotal-row" style="border-bottom: 2px solid #94a3b8; background: #f0fdf4;">
+                  <td colspan="5" style="text-align: right; color: #166534; font-weight: 700;">↳ Flat A-904 Subtotal Payable (Inv: ME/A/16/Oct-26): <span style="background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; border: 1px solid #86efac;">✓ PAID (23-10-2026)</span></td>
+                  <td style="text-align: right; font-family: monospace; font-size: 11.5px; color: #15803d; font-weight: 700;">₹18,000</td>
                 </tr>
 
                 <!-- Flat A-1002 -->
@@ -1032,15 +1083,25 @@ IFSC Code: HDFC0002454`;
                   <td style="text-align: center;">₹150</td>
                   <td style="text-align: right; font-weight: 700; font-family: monospace;">₹900</td>
                 </tr>
-                <tr class="subtotal-row" style="border-bottom: 2px solid #94a3b8;">
-                  <td colspan="5" style="text-align: right;">↳ Flat A-1002 Subtotal Payable (Inv: ME/A/17/Oct-26, Arrears ₹13,200 + Current ₹18,000):</td>
-                  <td style="text-align: right; font-family: monospace; font-size: 11.5px;">₹31,200</td>
+                <tr class="subtotal-row" style="border-bottom: 2px solid #94a3b8; background: #fffbeb;">
+                  <td colspan="5" style="text-align: right; color: #92400e; font-weight: 700;">↳ Flat A-1002 Subtotal Payable (Inv: ME/A/17/Oct-26, Arrears ₹13,200 + Current ₹18,000): <span style="background: #fef3c7; color: #b45309; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; border: 1px solid #fde68a;">⏳ PENDING</span></td>
+                  <td style="text-align: right; font-family: monospace; font-size: 11.5px; color: #b45309; font-weight: 800;">₹31,200</td>
                 </tr>
 
                 <!-- Grand Total -->
                 <tr class="grand-total-row">
                   <td colspan="5" style="text-align: right; letter-spacing: 0.5px;">TOTAL COMBINED PAYABLE (ALL THREE FLATS):</td>
                   <td style="text-align: right; font-family: monospace; font-size: 14px; color: #4ade80;">₹${formatValue(combGrandTotal)}</td>
+                </tr>
+
+                <!-- Payment Received & Net Due -->
+                <tr style="background: #f0fdf4; font-weight: 700; border-top: 1px solid #86efac;">
+                  <td colspan="5" style="text-align: right; color: #166534; font-size: 11px;">Less: Payment Received Today (23-Oct-2026) for Flats A-302 &amp; A-904:</td>
+                  <td style="text-align: right; font-family: monospace; font-size: 12.5px; color: #15803d; font-weight: 800;">(-) ₹36,000</td>
+                </tr>
+                <tr style="background: #fffbeb; font-weight: 800; border-top: 2px solid #fde68a; border-bottom: 2px solid #f59e0b;">
+                  <td colspan="5" style="text-align: right; color: #92400e; font-size: 11.5px; letter-spacing: 0.5px;">NET OUTSTANDING BALANCE DUE (FLAT A-1002 ONLY):</td>
+                  <td style="text-align: right; font-family: monospace; font-size: 14px; color: #b45309;">₹31,200</td>
                 </tr>
               </tbody>
             </table>
@@ -1540,6 +1601,45 @@ IFSC Code: HDFC0002454`;
       {/* ── View 1: MONTH-RANGE MAINTENANCE & SINKING CALCULATOR ── */}
       {activeCategory === 'month_range' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          
+          {/* Quick Settlement Notice Banner */}
+          <div style={{
+            background: 'linear-gradient(135deg, #0b2b26 0%, #164e43 100%)',
+            border: '2px solid #C49B4F',
+            borderRadius: 14,
+            padding: '14px 20px',
+            color: '#fff',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 12,
+            boxShadow: '0 4px 16px rgba(11,43,38,0.22)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <span style={{ fontSize: '1.6rem' }}>🏛️</span>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#fef08a' }}>
+                  Times Horizon (TOI) Combined 3-Flats Settlement (Flats A-302, A-904, A-1002)
+                </div>
+                <div style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.9)', marginTop: 2 }}>
+                  ✓ <strong>₹18,000 each</strong> received today (23-Oct-2026) for <strong>Flats A-302 &amp; A-904</strong> (Total ₹36,000). Flat A-1002 balance: <strong>₹31,200 pending</strong>.
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveCategory('combined_3flats')}
+              style={{
+                padding: '8px 16px', borderRadius: 8, background: '#C49B4F', color: '#0b2b26',
+                border: 'none', fontWeight: 800, fontSize: '0.82rem', cursor: 'pointer', whiteSpace: 'nowrap',
+                display: 'inline-flex', alignItems: 'center', gap: 6, boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+              }}
+            >
+              <span>🏢</span> View 3-Flats Statement &amp; Payments →
+            </button>
+          </div>
+
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#0b2b26', background: '#ecfdf5', padding: '4px 12px', borderRadius: 999, border: '1px solid #a7f3d0' }}>
@@ -2644,9 +2744,9 @@ IFSC Code: HDFC0002454`;
               style={{
                 background: '#fff',
                 borderRadius: 14,
-                border: combActiveTab === 'A-302' ? '2.5px solid #1e3a8a' : '1px solid #e2e8f0',
+                border: combActiveTab === 'A-302' ? '2.5px solid #16a34a' : '1px solid #bbf7d0',
                 padding: '18px',
-                boxShadow: combActiveTab === 'A-302' ? '0 6px 20px rgba(30,58,138,0.15)' : '0 4px 16px rgba(0,0,0,0.04)',
+                boxShadow: combActiveTab === 'A-302' ? '0 6px 20px rgba(22,163,74,0.18)' : '0 4px 16px rgba(0,0,0,0.04)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -2659,10 +2759,17 @@ IFSC Code: HDFC0002454`;
                   <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0b2b26', background: '#ecfdf5', padding: '3px 10px', borderRadius: 6, border: '1px solid #a7f3d0' }}>
                     FLAT A-302
                   </span>
-                  <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}>6 Mos (Oct 26 – Mar 27)</span>
+                  <span style={{ fontSize: '0.72rem', color: '#15803d', fontWeight: 800, background: '#dcfce7', padding: '2px 8px', borderRadius: 6, border: '1px solid #86efac' }}>
+                    ✓ PAID (23-10-2026)
+                  </span>
                 </div>
-                <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0b2b26', fontFamily: 'monospace', marginBottom: 4 }}>
-                  ₹18,000
+                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0b2b26', fontFamily: 'monospace' }}>
+                    ₹18,000
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: '#16a34a', fontWeight: 800 }}>
+                    Balance: ₹0 (Paid)
+                  </div>
                 </div>
                 <div style={{ fontSize: '0.74rem', color: '#1e3a8a', fontWeight: 700, marginBottom: 8 }}>
                   Inv No: ME/A/18/Oct26
@@ -2676,16 +2783,20 @@ IFSC Code: HDFC0002454`;
                     <span>• Sinking Fund (₹150 × 6):</span>
                     <strong style={{ color: '#0f172a' }}>₹900</strong>
                   </div>
+                  <div style={{ borderTop: '1px dashed #cbd5e1', paddingTop: 4, display: 'flex', justifyContent: 'space-between', color: '#15803d', fontWeight: 700, fontSize: '0.75rem' }}>
+                    <span>• Paid on 23-10-2026:</span>
+                    <span>₹18,000</span>
+                  </div>
                 </div>
               </div>
               <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px dashed #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: combActiveTab === 'A-302' ? '#1e3a8a' : '#16a34a', fontWeight: 800 }}>
+                <span style={{ fontSize: '0.75rem', color: combActiveTab === 'A-302' ? '#16a34a' : '#15803d', fontWeight: 800 }}>
                   {combActiveTab === 'A-302' ? '● Currently Selected' : 'Click to View'}
                 </span>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handlePrintSingleFlatInvoice('A-302'); }}
-                  style={{ padding: '4px 8px', borderRadius: 6, background: '#f1f5f9', border: '1px solid #cbd5e1', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer' }}
+                  style={{ padding: '4px 8px', borderRadius: 6, background: '#f0fdf4', border: '1px solid #86efac', fontSize: '0.72rem', fontWeight: 700, color: '#166534', cursor: 'pointer' }}
                 >
                   🖨️ Print
                 </button>
@@ -2698,9 +2809,9 @@ IFSC Code: HDFC0002454`;
               style={{
                 background: '#fff',
                 borderRadius: 14,
-                border: combActiveTab === 'A-904' ? '2.5px solid #1e3a8a' : '1px solid #e2e8f0',
+                border: combActiveTab === 'A-904' ? '2.5px solid #16a34a' : '1px solid #bbf7d0',
                 padding: '18px',
-                boxShadow: combActiveTab === 'A-904' ? '0 6px 20px rgba(30,58,138,0.15)' : '0 4px 16px rgba(0,0,0,0.04)',
+                boxShadow: combActiveTab === 'A-904' ? '0 6px 20px rgba(22,163,74,0.18)' : '0 4px 16px rgba(0,0,0,0.04)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -2713,10 +2824,17 @@ IFSC Code: HDFC0002454`;
                   <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0b2b26', background: '#ecfdf5', padding: '3px 10px', borderRadius: 6, border: '1px solid #a7f3d0' }}>
                     FLAT A-904
                   </span>
-                  <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}>6 Mos (Oct 26 – Mar 27)</span>
+                  <span style={{ fontSize: '0.72rem', color: '#15803d', fontWeight: 800, background: '#dcfce7', padding: '2px 8px', borderRadius: 6, border: '1px solid #86efac' }}>
+                    ✓ PAID (23-10-2026)
+                  </span>
                 </div>
-                <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0b2b26', fontFamily: 'monospace', marginBottom: 4 }}>
-                  ₹18,000
+                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0b2b26', fontFamily: 'monospace' }}>
+                    ₹18,000
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: '#16a34a', fontWeight: 800 }}>
+                    Balance: ₹0 (Paid)
+                  </div>
                 </div>
                 <div style={{ fontSize: '0.74rem', color: '#1e3a8a', fontWeight: 700, marginBottom: 8 }}>
                   Inv No: ME/A/16/Oct-26
@@ -2730,16 +2848,20 @@ IFSC Code: HDFC0002454`;
                     <span>• Sinking Fund (₹150 × 6):</span>
                     <strong style={{ color: '#0f172a' }}>₹900</strong>
                   </div>
+                  <div style={{ borderTop: '1px dashed #cbd5e1', paddingTop: 4, display: 'flex', justifyContent: 'space-between', color: '#15803d', fontWeight: 700, fontSize: '0.75rem' }}>
+                    <span>• Paid on 23-10-2026:</span>
+                    <span>₹18,000</span>
+                  </div>
                 </div>
               </div>
               <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px dashed #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: combActiveTab === 'A-904' ? '#1e3a8a' : '#16a34a', fontWeight: 800 }}>
+                <span style={{ fontSize: '0.75rem', color: combActiveTab === 'A-904' ? '#16a34a' : '#15803d', fontWeight: 800 }}>
                   {combActiveTab === 'A-904' ? '● Currently Selected' : 'Click to View'}
                 </span>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handlePrintSingleFlatInvoice('A-904'); }}
-                  style={{ padding: '4px 8px', borderRadius: 6, background: '#f1f5f9', border: '1px solid #cbd5e1', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer' }}
+                  style={{ padding: '4px 8px', borderRadius: 6, background: '#f0fdf4', border: '1px solid #86efac', fontSize: '0.72rem', fontWeight: 700, color: '#166534', cursor: 'pointer' }}
                 >
                   🖨️ Print
                 </button>
@@ -2767,10 +2889,17 @@ IFSC Code: HDFC0002454`;
                   <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0b2b26', background: '#fef3c7', padding: '3px 10px', borderRadius: 6, border: '1px solid #fde68a' }}>
                     FLAT A-1002
                   </span>
-                  <span style={{ fontSize: '0.7rem', color: '#b45309', fontWeight: 800 }}>Includes Oct 24 Arrears</span>
+                  <span style={{ fontSize: '0.72rem', color: '#92400e', fontWeight: 800, background: '#fef3c7', padding: '2px 8px', borderRadius: 6, border: '1px solid #fde68a' }}>
+                    ⏳ PENDING (₹31,200)
+                  </span>
                 </div>
-                <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#b45309', fontFamily: 'monospace', marginBottom: 4 }}>
-                  ₹31,200
+                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#b45309', fontFamily: 'monospace' }}>
+                    ₹31,200
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: '#b45309', fontWeight: 800 }}>
+                    Balance Due: ₹31,200
+                  </div>
                 </div>
                 <div style={{ fontSize: '0.74rem', color: '#1e3a8a', fontWeight: 700, marginBottom: 8 }}>
                   Inv No: ME/A/17/Oct-26
@@ -2811,32 +2940,47 @@ IFSC Code: HDFC0002454`;
           <div style={{
             background: 'linear-gradient(135deg, #0b2b26 0%, #164e43 100%)',
             borderRadius: 14,
-            padding: '16px 22px',
+            padding: '18px 22px',
             color: '#fff',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: 14,
+            gap: 16,
             boxShadow: '0 8px 24px rgba(11,43,38,0.25)'
           }}>
             <div>
               <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#C49B4F', fontWeight: 800 }}>
-                Total Payable For All Three Flats (Times Horizon Private Limited)
+                Combined Demand &amp; Payment Status (Times Horizon Private Limited)
               </div>
-              <div style={{ fontSize: '1.35rem', fontWeight: 900, color: '#fff', marginTop: 2 }}>
+              <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff', marginTop: 2 }}>
                 Flat A-302 (₹18,000) + Flat A-904 (₹18,000) + Flat A-1002 (₹31,200)
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
-                Rupees Sixty-Seven Thousand Two Hundred Only
+              <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.85)', marginTop: 4, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <span style={{ background: 'rgba(74,222,128,0.18)', border: '1px solid rgba(74,222,128,0.4)', padding: '2px 8px', borderRadius: 6, color: '#86efac', fontWeight: 700 }}>
+                  ✓ Received Today (23-Oct-2026): ₹36,000 (Flats A-302 &amp; A-904 Paid)
+                </span>
+                <span style={{ background: 'rgba(251,191,36,0.18)', border: '1px solid rgba(251,191,36,0.4)', padding: '2px 8px', borderRadius: 6, color: '#fde047', fontWeight: 700 }}>
+                  ⏳ Net Balance Due: ₹31,200 (Flat A-1002 Pending)
+                </span>
               </div>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '2.1rem', fontWeight: 900, color: '#4ade80', fontFamily: 'monospace', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
-                ₹67,200
+            <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+              <div style={{ textAlign: 'right', borderRight: '1px solid rgba(255,255,255,0.2)', paddingRight: 20 }}>
+                <div style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Total Invoiced
+                </div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#cbd5e1', fontFamily: 'monospace' }}>
+                  ₹67,200
+                </div>
               </div>
-              <div style={{ fontSize: '0.72rem', color: '#fde047', fontWeight: 700 }}>
-                Combined 3-Flats Settlement Due
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '0.68rem', color: '#fde047', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 800 }}>
+                  Net Outstanding
+                </div>
+                <div style={{ fontSize: '2rem', fontWeight: 900, color: '#facc15', fontFamily: 'monospace', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+                  ₹31,200
+                </div>
               </div>
             </div>
           </div>
@@ -3327,9 +3471,11 @@ IFSC Code: HDFC0002454`;
                         <td style={{ padding: '4px 8px', textAlign: 'center' }}>₹150</td>
                         <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹900</td>
                       </tr>
-                      <tr style={{ background: '#f1f5f9', fontWeight: 700, borderBottom: '2px solid #cbd5e1' }}>
-                        <td colSpan={5} style={{ padding: '4px 8px', textAlign: 'right', color: '#0b2b26' }}>↳ Flat A-302 Subtotal Payable:</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontFamily: 'monospace' }}>₹18,000</td>
+                      <tr style={{ background: '#f0fdf4', fontWeight: 700, borderBottom: '2px solid #cbd5e1' }}>
+                        <td colSpan={5} style={{ padding: '4px 8px', textAlign: 'right', color: '#166534' }}>
+                          ↳ Flat A-302 Subtotal Payable: <span style={{ background: '#dcfce7', color: '#15803d', padding: '1px 6px', borderRadius: 4, fontSize: '0.68rem', fontWeight: 800, border: '1px solid #86efac' }}>✓ PAID (23-10-2026)</span>
+                        </td>
+                        <td style={{ padding: '4px 8px', textAlign: 'right', fontFamily: 'monospace', color: '#15803d' }}>₹18,000</td>
                       </tr>
 
                       {/* Flat A-904 */}
@@ -3348,9 +3494,11 @@ IFSC Code: HDFC0002454`;
                         <td style={{ padding: '4px 8px', textAlign: 'center' }}>₹150</td>
                         <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹900</td>
                       </tr>
-                      <tr style={{ background: '#f1f5f9', fontWeight: 700, borderBottom: '2px solid #cbd5e1' }}>
-                        <td colSpan={5} style={{ padding: '4px 8px', textAlign: 'right', color: '#0b2b26' }}>↳ Flat A-904 Subtotal Payable:</td>
-                        <td style={{ padding: '4px 8px', textAlign: 'right', fontFamily: 'monospace' }}>₹18,000</td>
+                      <tr style={{ background: '#f0fdf4', fontWeight: 700, borderBottom: '2px solid #cbd5e1' }}>
+                        <td colSpan={5} style={{ padding: '4px 8px', textAlign: 'right', color: '#166534' }}>
+                          ↳ Flat A-904 Subtotal Payable: <span style={{ background: '#dcfce7', color: '#15803d', padding: '1px 6px', borderRadius: 4, fontSize: '0.68rem', fontWeight: 800, border: '1px solid #86efac' }}>✓ PAID (23-10-2026)</span>
+                        </td>
+                        <td style={{ padding: '4px 8px', textAlign: 'right', fontFamily: 'monospace', color: '#15803d' }}>₹18,000</td>
                       </tr>
 
                       {/* Flat A-1002 */}
@@ -3384,17 +3532,37 @@ IFSC Code: HDFC0002454`;
                         <td style={{ padding: '4px 8px', textAlign: 'right', fontWeight: 700, fontFamily: 'monospace' }}>₹900</td>
                       </tr>
                       <tr style={{ background: '#fef3c7', fontWeight: 700, borderBottom: '2px solid #cbd5e1' }}>
-                        <td colSpan={5} style={{ padding: '4px 8px', textAlign: 'right', color: '#92400e' }}>↳ Flat A-1002 Subtotal (Pending ₹13,200 + Current ₹18,000):</td>
+                        <td colSpan={5} style={{ padding: '4px 8px', textAlign: 'right', color: '#92400e' }}>
+                          ↳ Flat A-1002 Subtotal (Pending ₹13,200 + Current ₹18,000): <span style={{ background: '#fde68a', color: '#78350f', padding: '1px 6px', borderRadius: 4, fontSize: '0.68rem', fontWeight: 800 }}>⏳ PENDING</span>
+                        </td>
                         <td style={{ padding: '4px 8px', textAlign: 'right', fontFamily: 'monospace', color: '#92400e', fontWeight: 800 }}>₹31,200</td>
                       </tr>
 
                       {/* Grand Total */}
                       <tr style={{ background: '#0b2b26', color: '#fff', fontWeight: 900 }}>
                         <td colSpan={5} style={{ padding: '8px 10px', textAlign: 'right', color: '#fff', fontSize: '0.8rem', letterSpacing: '0.5px' }}>
-                          TOTAL PAYABLE FOR ALL THREE FLATS:
+                          TOTAL COMBINED INVOICED (ALL THREE FLATS):
                         </td>
                         <td style={{ padding: '8px 10px', textAlign: 'right', color: '#4ade80', fontSize: '1rem', fontFamily: 'monospace' }}>
                           ₹67,200
+                        </td>
+                      </tr>
+
+                      {/* Payment Received & Net Balance */}
+                      <tr style={{ background: '#f0fdf4', color: '#166534', fontWeight: 800, borderBottom: '1px solid #bbf7d0' }}>
+                        <td colSpan={5} style={{ padding: '5px 8px', textAlign: 'right', fontSize: '0.72rem' }}>
+                          Less: Payment Received Today (23-Oct-2026) for Flats A-302 &amp; A-904:
+                        </td>
+                        <td style={{ padding: '5px 8px', textAlign: 'right', color: '#15803d', fontSize: '0.82rem', fontFamily: 'monospace' }}>
+                          (-) ₹36,000
+                        </td>
+                      </tr>
+                      <tr style={{ background: '#fffbeb', color: '#92400e', fontWeight: 800, borderBottom: '2px solid #f59e0b' }}>
+                        <td colSpan={5} style={{ padding: '6px 8px', textAlign: 'right', fontSize: '0.74rem', letterSpacing: '0.5px' }}>
+                          NET OUTSTANDING BALANCE DUE (FLAT A-1002 ONLY):
+                        </td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#b45309', fontSize: '0.9rem', fontFamily: 'monospace' }}>
+                          ₹31,200
                         </td>
                       </tr>
                     </tbody>
