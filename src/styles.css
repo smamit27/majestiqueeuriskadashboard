@@ -3282,8 +3282,9 @@ select {
     background: #ffffff !important;
   }
 
-  /* Monthly Society Report Printable Area */
-  .report-printable-area {
+  /* Monthly Society Report & AI MOM Printable Area */
+  .report-printable-area,
+  #ai-mom-printable-area {
     background: #ffffff !important;
     border: none !important;
     padding: 0 !important;
