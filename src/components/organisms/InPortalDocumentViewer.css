@@ -1,0 +1,997 @@
+/* ==========================================================================
+   In-Portal Document & Presentation Viewer - Atomic CSS
+   Strict Atomic Design - All inline CSS removed
+   ========================================================================== */
+
+/* ── Root Layout ── */
+.ip-viewer-root {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* ── Header Banner (Liquid Glass Aesthetic) ── */
+.ip-header-banner {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.88));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 16px;
+  padding: 22px 26px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.ip-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ip-header-icon-box {
+  background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+  flex-shrink: 0;
+}
+
+.ip-header-title {
+  margin: 0;
+  font-size: 1.38rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.ip-header-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ip-tag-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(13, 148, 136, 0.12);
+  color: #0f766e;
+}
+
+.ip-header-subtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* ── Preset Selectors & Upload Buttons ── */
+.ip-preset-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ip-preset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 15px;
+  border-radius: 12px;
+  font-size: 0.83rem;
+  font-weight: 500;
+  border: 1px solid rgba(203, 213, 225, 0.7);
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.ip-preset-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.ip-preset-btn--selected {
+  font-weight: 700;
+  border: 1.5px solid #0d9488;
+  background: #f0fdfa;
+  color: #0d9488;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.12);
+}
+
+.ip-preset-btn--selected.ip-preset-btn--xlsx {
+  border-color: #059669;
+  background: #f0fdf4;
+  color: #047857;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.12);
+}
+
+.ip-preset-btn--selected.ip-preset-btn--ppt {
+  border-color: #d97706;
+  background: #fffbeb;
+  color: #b45309;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.12);
+}
+
+.ip-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  border-radius: 12px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  border: 1.5px dashed #0d9488;
+  background: rgba(240, 253, 250, 0.85);
+  color: #0d9488;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ip-upload-btn:hover {
+  background: rgba(204, 251, 241, 0.9);
+}
+
+.ip-upload-input {
+  display: none;
+}
+
+.ip-url-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ip-url-btn:hover {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+/* ── Viewer Frame Container ── */
+.ip-frame-container {
+  background: #0f172a;
+  border-radius: 18px;
+  border: 1px solid #334155;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+}
+
+/* ── Top Dark Toolbar ── */
+.ip-toolbar {
+  background: #090e1a;
+  padding: 12px 18px;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+}
+
+.ip-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ip-type-badge {
+  color: #ffffff;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: #0d9488;
+}
+
+.ip-type-badge--xlsx {
+  background: #059669;
+}
+
+.ip-type-badge--ppt {
+  background: #d97706;
+}
+
+.ip-type-badge--pdf {
+  background: #0d9488;
+}
+
+.ip-doc-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.ip-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Zoom Controls ── */
+.ip-zoom-group {
+  display: flex;
+  align-items: center;
+  background: #1e293b;
+  border-radius: 10px;
+  padding: 3px 8px;
+  border: 1px solid #334155;
+}
+
+.ip-zoom-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease;
+}
+
+.ip-zoom-btn:hover {
+  color: #ffffff;
+}
+
+.ip-zoom-label {
+  font-size: 0.78rem;
+  color: #e2e8f0;
+  min-width: 44px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.ip-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  padding: 7px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ip-icon-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.ip-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ip-action-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.ip-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  color: #ffffff;
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ip-download-btn--xlsx {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.ip-download-btn--xlsx:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+}
+
+.ip-download-btn--default {
+  background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+}
+
+.ip-download-btn--default:hover {
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+}
+
+/* ── Viewport Canvas ── */
+.ip-viewport {
+  width: 100%;
+  height: 78vh;
+  min-height: 620px;
+  background: #0b1329;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.ip-viewport--fullscreen {
+  height: calc(100vh - 60px);
+}
+
+.ip-iframe-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  background: #0b1329;
+}
+
+.ip-iframe {
+  min-height: 100%;
+  min-width: 100%;
+  border: none;
+  border-radius: 0;
+  background: #ffffff;
+}
+
+/* ── Spreadsheet Components ── */
+.ip-spreadsheet-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: #ffffff;
+}
+
+/* Formula & Search Bar */
+.ip-formula-bar {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ip-formula-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.ip-cell-pill {
+  background: #059669;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  font-family: monospace;
+  min-width: 42px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+}
+
+.ip-formula-box {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 4px 10px;
+  flex: 1;
+  gap: 6px;
+}
+
+.ip-formula-fx {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.ip-formula-input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.82rem;
+  color: #1e293b;
+  background: transparent;
+}
+
+.ip-search-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ip-search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ip-search-icon {
+  position: absolute;
+  left: 10px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.ip-search-input {
+  padding: 5px 28px 5px 30px;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  width: 180px;
+  transition: border-color 0.15s ease;
+}
+
+.ip-search-input:focus {
+  border-color: #059669;
+}
+
+.ip-search-clear {
+  position: absolute;
+  right: 6px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.ip-search-count {
+  font-size: 0.74rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Sheet Tabs Bar */
+.ip-sheet-tabs-bar {
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 4px 12px 0 12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.ip-sheet-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #475569;
+  background: transparent;
+  border-top: 2px solid transparent;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s ease;
+}
+
+.ip-sheet-tab-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.ip-sheet-tab-btn--active {
+  font-weight: 700;
+  color: #065f46;
+  background: #ffffff;
+  border-top: 2px solid #059669;
+  border-left: 1px solid #cbd5e1;
+  border-right: 1px solid #cbd5e1;
+  border-bottom: 1px solid #ffffff;
+  margin-bottom: -1px;
+}
+
+.ip-sheet-tab-count {
+  font-size: 0.68rem;
+  padding: 1px 5px;
+  border-radius: 10px;
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+.ip-sheet-tab-btn--active .ip-sheet-tab-count {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Spreadsheet Grid */
+.ip-table-scroll {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  background: #ffffff;
+}
+
+.ip-table {
+  border-collapse: collapse;
+  width: max-content;
+  min-width: 100%;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+.ip-col-letter-row {
+  background: #f8fafc;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.ip-corner-cell {
+  width: 44px;
+  min-width: 44px;
+  padding: 5px;
+  background: #e2e8f0;
+  border-bottom: 1px solid #cbd5e1;
+  border-right: 1px solid #cbd5e1;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+  position: sticky;
+  left: 0;
+  z-index: 20;
+}
+
+.ip-col-letter-th {
+  padding: 6px 12px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  border-right: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.ip-header-row {
+  background: #f8fafc;
+  position: sticky;
+  top: 29px;
+  z-index: 9;
+}
+
+.ip-header-corner-th {
+  padding: 6px;
+  background: #e2e8f0;
+  border-bottom: 2px solid #cbd5e1;
+  border-right: 1px solid #cbd5e1;
+  position: sticky;
+  left: 0;
+  z-index: 19;
+}
+
+.ip-header-th {
+  background: #f8fafc;
+  border-bottom: 2px solid #cbd5e1;
+  border-right: 1px solid #e2e8f0;
+  color: #0f172a;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.ip-data-row {
+  background: #ffffff;
+}
+
+.ip-data-row--alt {
+  background: #fcfcfd;
+}
+
+.ip-row-num-td {
+  padding: 4px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #cbd5e1;
+  color: #64748b;
+  font-size: 0.72rem;
+  text-align: center;
+  font-weight: 600;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+}
+
+.ip-data-td {
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #f1f5f9;
+  color: #1e293b;
+  white-space: nowrap;
+  cursor: cell;
+}
+
+.ip-data-td--selected {
+  outline: 2px solid #059669;
+  outline-offset: -2px;
+  background: #ecfdf5 !important;
+}
+
+.ip-data-td--mono {
+  font-family: monospace;
+}
+
+.ip-empty-row-td {
+  text-align: center;
+  padding: 30px;
+  color: #64748b;
+}
+
+/* Badges for status inside cells */
+.ip-status-badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.ip-status-badge--cleared {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.ip-status-badge--pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.ip-status-badge--overdue {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.ip-status-badge--advance {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.ip-status-badge--active {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+/* Spreadsheet Footer */
+.ip-spreadsheet-footer {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 6px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.ip-footer-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #059669;
+  margin-right: 8px;
+}
+
+/* ── Fallback PPTX Card ── */
+.ip-pptx-fallback-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+}
+
+.ip-pptx-fallback-card {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 18px;
+  padding: 36px;
+  max-width: 640px;
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  margin: 20px;
+}
+
+.ip-pptx-icon-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(217, 119, 6, 0.15);
+  color: #d97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
+
+.ip-pptx-card-title {
+  margin: 0 0 10px 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.ip-pptx-card-text {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.ip-pptx-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  background: #1e293b;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.ip-pptx-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.84rem;
+  color: #e2e8f0;
+}
+
+.ip-pptx-card-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.ip-btn-teal {
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: #0d9488;
+  border: none;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.ip-btn-teal:hover {
+  background: #0f766e;
+}
+
+.ip-btn-slate {
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: #334155;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.84rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.ip-btn-slate:hover {
+  background: #475569;
+}
+
+/* ── Modals (Open URL & DocumentViewerModal) ── */
+.ip-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ip-modal-content {
+  background: #ffffff;
+  border-radius: 18px;
+  max-width: 520px;
+  width: 100%;
+  padding: 26px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
+
+.ip-modal-title {
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ip-modal-desc {
+  margin: 0 0 18px 0;
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.ip-modal-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.9rem;
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 18px;
+  transition: border-color 0.15s ease;
+}
+
+.ip-modal-input:focus {
+  border-color: #0d9488;
+}
+
+.ip-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.ip-btn-secondary {
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  border: none;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ip-btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.ip-btn-primary {
+  padding: 8px 18px;
+  border-radius: 10px;
+  background: #0d9488;
+  border: none;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ip-btn-primary:hover {
+  background: #0f766e;
+}
+
+/* ── DocumentViewerModal (Standalone Reusable Modal) ── */
+.ip-doc-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ip-doc-modal-content {
+  width: 100%;
+  max-width: 1100px;
+  height: 90vh;
+  background: #ffffff;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+}
+
+.ip-doc-modal-header {
+  padding: 14px 20px;
+  background: #0f172a;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ip-doc-modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ip-doc-modal-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.ip-doc-modal-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.ip-doc-modal-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.ip-doc-modal-close:hover {
+  color: #ffffff;
+}
+
+.ip-doc-modal-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #ffffff;
+}

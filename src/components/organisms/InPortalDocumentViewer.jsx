@@ -1,22 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import {
-  FileText, Presentation, Maximize2, Minimize2, Download,
-  Printer, RefreshCw, ZoomIn, ZoomOut, ExternalLink, Eye,
-  CheckCircle2, Table, FileSpreadsheet, Search, Filter,
-  Layers, Check, X, FileUp
-} from 'lucide-react';
-import LiquidGlassCard from '../liquid-glass/LiquidGlassCard.jsx';
+import { Eye } from 'lucide-react';
+import './InPortalDocumentViewer.css';
 
-export function getColumnLetter(colIndex) {
-  let temp = colIndex;
-  let letter = '';
-  while (temp >= 0) {
-    letter = String.fromCharCode((temp % 26) + 65) + letter;
-    temp = Math.floor(temp / 26) - 1;
-  }
-  return letter;
-}
+// ── Atoms & Molecules ──
+import DocumentPresetSelector from '../molecules/DocumentPresetSelector.jsx';
+import ViewerToolbar from '../molecules/ViewerToolbar.jsx';
+import SpreadsheetFormulaBar from '../molecules/SpreadsheetFormulaBar.jsx';
+import SpreadsheetSheetTabs from '../molecules/SpreadsheetSheetTabs.jsx';
+import SpreadsheetGrid, { getColumnLetter } from './SpreadsheetGrid.jsx';
+import PptxFallbackCard from '../molecules/PptxFallbackCard.jsx';
+import OpenUrlModal from '../molecules/OpenUrlModal.jsx';
+import DocumentViewerModal from '../molecules/DocumentViewerModal.jsx';
+
+export { getColumnLetter, DocumentViewerModal };
 
 export const SOCIETY_LEDGER_SHEETS = {
   'Maintenance & Dues Ledger': [
@@ -115,6 +112,10 @@ export const IN_PORTAL_PRESETS = [
   }
 ];
 
+/**
+ * InPortalDocumentViewer Master Organism
+ * Composes atomic components to provide unified in-portal document viewing.
+ */
 export default function InPortalDocumentViewer({ initialDocId = 'workflow_ppt' }) {
   const [selectedDocId, setSelectedDocId] = useState(initialDocId);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -136,7 +137,7 @@ export default function InPortalDocumentViewer({ initialDocId = 'workflow_ppt' }
   }, [customDoc, selectedDocId]);
 
   // Sync active sheet name when activeDoc changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (activeDoc.isSpreadsheet) {
       const defaultSheet = activeDoc.activeSheet || activeDoc.sheetNames?.[0] || Object.keys(activeDoc.sheetsData || {})[0];
       if (defaultSheet) {
@@ -244,7 +245,6 @@ export default function InPortalDocumentViewer({ initialDocId = 'workflow_ppt' }
     }
   };
 
-  // Download handler for XLSX spreadsheets or standard documents
   const handleDownload = (e) => {
     if (activeDoc.isSpreadsheet && activeDoc.sheetsData) {
       e?.preventDefault();
@@ -272,7 +272,6 @@ export default function InPortalDocumentViewer({ initialDocId = 'workflow_ppt' }
 
     const isPdf = activeDoc.type === 'PDF' || activeDoc.url?.toLowerCase().includes('.pdf');
     if (isPdf && activeDoc.url) {
-      // Direct high-res PDF print via native browser viewer in a dedicated clean window
       const printWin = window.open(activeDoc.url, '_blank');
       if (printWin) {
         printWin.focus();
@@ -320,1068 +319,137 @@ export default function InPortalDocumentViewer({ initialDocId = 'workflow_ppt' }
     );
   }, [dataRows, spreadsheetSearch]);
 
-  const zoomScale = zoomLevel / 100;
-  const cellFontSize = `${Math.max(0.72, 0.82 * zoomScale)}rem`;
-  const cellPadding = `${Math.max(6, Math.round(8 * zoomScale))}px ${Math.max(8, Math.round(12 * zoomScale))}px`;
+  const handleCellClick = (rowIdx, colIdx, cellVal) => {
+    setSelectedCell({
+      row: rowIdx,
+      col: colIdx,
+      address: `${getColumnLetter(colIdx)}${rowIdx + 2}`,
+      val: cellVal
+    });
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
-      {/* ── Liquid Glass Header Banner ── */}
-      <LiquidGlassCard
-        variant="society"
-        style={{
-          padding: '22px 26px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '18px'
-        }}
-      >
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-            <div style={{
-              background: 'linear-gradient(135deg, #0d9488 0%, #059669 100%)',
-              color: '#ffffff',
-              padding: '9px',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 14px rgba(13,148,136,0.35)'
-            }}>
-              <Eye size={22} />
-            </div>
-            <div>
-              <h2 style={{ margin: 0, fontSize: '1.42rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
-                In-Portal Document &amp; Presentation Viewer
-              </h2>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '3px' }}>
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, padding: '2px 8px', borderRadius: '12px', background: 'rgba(13,148,136,0.12)', color: '#0f766e' }}>
-                  PPT • PDF • XLSX • XLS • CSV
-                </span>
-                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
-                  Interactive presentation slides, audit reports, and multi-sheet spreadsheets
-                </span>
-              </div>
+    <div className="ip-viewer-root">
+      {/* ── Top Header Banner (Liquid Glass) ── */}
+      <div className="ip-header-banner">
+        <div className="ip-header-info">
+          <div className="ip-header-icon-box">
+            <Eye size={22} />
+          </div>
+          <div>
+            <h2 className="ip-header-title">
+              In-Portal Document &amp; Presentation Viewer
+            </h2>
+            <div className="ip-header-tags">
+              <span className="ip-tag-pill">
+                PPT • PDF • XLSX • XLS • CSV
+              </span>
+              <span className="ip-header-subtitle">
+                Interactive presentation slides, audit reports, and multi-sheet spreadsheets
+              </span>
             </div>
           </div>
         </div>
 
         {/* Action Controls & Document Selector Pills */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-          {IN_PORTAL_PRESETS.map(docItem => {
-            const isSelected = selectedDocId === docItem.id;
-            let icon = <FileText size={15} color={isSelected ? '#0d9488' : '#64748b'} />;
-            if (docItem.type === 'PPT') {
-              icon = <Presentation size={15} color={isSelected ? '#d97706' : '#64748b'} />;
-            } else if (docItem.type === 'XLSX') {
-              icon = <Table size={15} color={isSelected ? '#059669' : '#64748b'} />;
-            }
-
-            return (
-              <button
-                key={docItem.id}
-                onClick={() => { setSelectedDocId(docItem.id); setZoomLevel(100); }}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '9px 15px',
-                  borderRadius: '12px',
-                  fontSize: '0.83rem',
-                  fontWeight: isSelected ? 700 : 500,
-                  border: isSelected
-                    ? docItem.type === 'XLSX' ? '1.5px solid #059669' : docItem.type === 'PPT' ? '1.5px solid #d97706' : '1.5px solid #0d9488'
-                    : '1px solid rgba(203,213,225,0.7)',
-                  background: isSelected
-                    ? docItem.type === 'XLSX' ? '#f0fdf4' : docItem.type === 'PPT' ? '#fffbeb' : '#f0fdfa'
-                    : '#ffffff',
-                  color: isSelected
-                    ? docItem.type === 'XLSX' ? '#047857' : docItem.type === 'PPT' ? '#b45309' : '#0d9488'
-                    : '#475569',
-                  cursor: 'pointer',
-                  transition: 'all 0.18s ease',
-                  boxShadow: isSelected ? '0 4px 12px rgba(0,0,0,0.06)' : 'none'
-                }}
-              >
-                {icon}
-                <span>{docItem.type}: {docItem.title.split(' ')[0]} {docItem.title.split(' ')[1]}…</span>
-              </button>
-            );
-          })}
-
-          {customDoc && (
-            <button
-              onClick={() => setSelectedDocId('custom')}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '9px 15px',
-                borderRadius: '12px',
-                fontSize: '0.83rem',
-                fontWeight: selectedDocId === 'custom' ? 700 : 500,
-                border: selectedDocId === 'custom' ? '1.5px solid #0d9488' : '1px solid #cbd5e1',
-                background: selectedDocId === 'custom' ? '#f0fdfa' : '#ffffff',
-                color: selectedDocId === 'custom' ? '#0d9488' : '#475569',
-                cursor: 'pointer'
-              }}
-            >
-              {customDoc.type === 'XLSX' ? <FileSpreadsheet size={15} color="#059669" /> : <FileText size={15} color="#0d9488" />}
-              <span>{customDoc.type}: {customDoc.title.slice(0, 16)}…</span>
-            </button>
-          )}
-
-          {/* Upload Local File Button */}
-          <label
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '7px',
-              padding: '9px 15px',
-              borderRadius: '12px',
-              fontSize: '0.83rem',
-              fontWeight: 600,
-              border: '1.5px dashed #0d9488',
-              background: 'rgba(240,253,250,0.85)',
-              color: '#0d9488',
-              cursor: 'pointer',
-              transition: 'all 0.15s ease'
-            }}
-            title="Upload any PDF, XLSX, XLS, CSV or Presentation to view in-portal"
-          >
-            <FileUp size={15} />
-            <span>Open File (PPT/PDF/XLSX)</span>
-            <input
-              type="file"
-              accept=".pdf,.html,.htm,.txt,.png,.jpg,.jpeg,.webp,.pptx,.ppt,.xlsx,.xls,.csv"
-              onChange={handleFileUpload}
-              style={{ display: 'none' }}
-            />
-          </label>
-
-          {/* Open Web URL Button */}
-          <button
-            onClick={() => setUrlModalOpen(true)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '9px 14px',
-              borderRadius: '12px',
-              fontSize: '0.83rem',
-              fontWeight: 600,
-              border: '1px solid #cbd5e1',
-              background: '#ffffff',
-              color: '#475569',
-              cursor: 'pointer'
-            }}
-            title="Open document via web URL"
-          >
-            <ExternalLink size={14} />
-            <span>Open URL</span>
-          </button>
-        </div>
-      </LiquidGlassCard>
+        <DocumentPresetSelector
+          presets={IN_PORTAL_PRESETS}
+          selectedDocId={selectedDocId}
+          customDoc={customDoc}
+          onSelectPreset={(id) => { setSelectedDocId(id); setZoomLevel(100); }}
+          onSelectCustom={() => setSelectedDocId('custom')}
+          onFileUpload={handleFileUpload}
+          onOpenUrlModal={() => setUrlModalOpen(true)}
+        />
+      </div>
 
       {/* ── Viewer Frame Container ── */}
-      <div
-        id="in-portal-viewer-frame"
-        style={{
-          background: '#0f172a',
-          borderRadius: '18px',
-          border: '1px solid #334155',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.22)'
-        }}
-      >
-        {/* Top Viewer Toolbar */}
-        <div style={{
-          background: '#090e1a',
-          padding: '12px 18px',
-          borderBottom: '1px solid #1e293b',
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '12px',
-          color: '#ffffff'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{
-              background: activeDoc.type === 'XLSX' ? '#059669' : activeDoc.type === 'PPT' ? '#d97706' : '#0d9488',
-              color: '#ffffff',
-              padding: '3px 10px',
-              borderRadius: '8px',
-              fontSize: '0.74rem',
-              fontWeight: 800,
-              letterSpacing: '0.04em'
-            }}>
-              {activeDoc.type}
-            </span>
-            <span style={{ fontSize: '0.92rem', fontWeight: 700, color: '#f8fafc' }}>
-              {activeDoc.title}
-            </span>
-          </div>
-
-          {/* Controls: Zoom, Print, Download, Fullscreen */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', background: '#1e293b', borderRadius: '10px', padding: '3px 8px', border: '1px solid #334155' }}>
-              <button
-                onClick={handleZoomOut}
-                title="Zoom Out"
-                style={{ background: 'none', border: 'none', color: '#94a3b8', padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-              >
-                <ZoomOut size={15} />
-              </button>
-              <span style={{ fontSize: '0.78rem', color: '#e2e8f0', minWidth: '44px', textAlign: 'center', fontWeight: 600 }}>
-                {zoomLevel}%
-              </span>
-              <button
-                onClick={handleZoomIn}
-                title="Zoom In"
-                style={{ background: 'none', border: 'none', color: '#94a3b8', padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-              >
-                <ZoomIn size={15} />
-              </button>
-              <button
-                onClick={handleResetZoom}
-                title="Reset Zoom"
-                style={{ background: 'none', border: 'none', color: '#94a3b8', padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-              >
-                <RefreshCw size={12} />
-              </button>
-            </div>
-
-            <button
-              onClick={handlePrint}
-              title="Print Document"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                background: '#1e293b',
-                border: '1px solid #334155',
-                color: '#e2e8f0',
-                padding: '7px 12px',
-                borderRadius: '10px',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              <Printer size={14} /> Print
-            </button>
-
-            {activeDoc.isSpreadsheet ? (
-              <button
-                onClick={handleDownload}
-                title="Download Original"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                  border: 'none',
-                  color: '#ffffff',
-                  padding: '7px 14px',
-                  borderRadius: '10px',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(5,150,105,0.3)'
-                }}
-              >
-                <Download size={14} /> {activeDoc.downloadLabel || 'Download .xlsx'}
-              </button>
-            ) : (
-              <a
-                href={activeDoc.downloadUrl}
-                download
-                title="Download Original"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
-                  border: 'none',
-                  color: '#ffffff',
-                  padding: '7px 14px',
-                  borderRadius: '10px',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  textDecoration: 'none',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(13,148,136,0.3)'
-                }}
-              >
-                <Download size={14} /> {activeDoc.downloadLabel}
-              </a>
-            )}
-
-            <button
-              onClick={toggleFullscreen}
-              title="Toggle Fullscreen"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                background: '#1e293b',
-                border: '1px solid #334155',
-                color: '#e2e8f0',
-                padding: '7px 10px',
-                borderRadius: '10px',
-                cursor: 'pointer'
-              }}
-            >
-              {isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
-            </button>
-          </div>
-        </div>
+      <div id="in-portal-viewer-frame" className="ip-frame-container">
+        {/* Top Viewer Toolbar Molecule */}
+        <ViewerToolbar
+          activeDoc={activeDoc}
+          zoomLevel={zoomLevel}
+          isFullscreen={isFullscreen}
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
+          onResetZoom={handleResetZoom}
+          onPrint={handlePrint}
+          onDownload={handleDownload}
+          onToggleFullscreen={toggleFullscreen}
+        />
 
         {/* ── Viewport Area ── */}
-        <div style={{
-          width: '100%',
-          height: isFullscreen ? 'calc(100vh - 60px)' : '78vh',
-          minHeight: '620px',
-          background: '#0b1329',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'relative'
-        }}>
+        <div className={`ip-viewport ${isFullscreen ? 'ip-viewport--fullscreen' : ''}`}>
           {activeDoc.isSpreadsheet ? (
             /* ═════════════════════════════════════════════════════════════════
                SPREADSHEET VIEWER (XLSX, XLS, CSV)
                ═════════════════════════════════════════════════════════════════ */
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', background: '#ffffff' }}>
-              {/* Spreadsheet Formula & Search Bar */}
-              <div style={{
-                background: '#f8fafc',
-                borderBottom: '1px solid #e2e8f0',
-                padding: '8px 16px',
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '12px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: '280px' }}>
-                  {/* Active Cell Address */}
-                  <div style={{
-                    background: '#059669',
-                    color: '#ffffff',
-                    padding: '4px 10px',
-                    borderRadius: '6px',
-                    fontSize: '0.78rem',
-                    fontWeight: 800,
-                    fontFamily: 'monospace',
-                    minWidth: '42px',
-                    textAlign: 'center',
-                    boxShadow: '0 2px 6px rgba(5,150,105,0.2)'
-                  }}>
-                    {selectedCell.address}
-                  </div>
+            <div className="ip-spreadsheet-container">
+              {/* Formula & Search Bar Molecule */}
+              <SpreadsheetFormulaBar
+                selectedCell={selectedCell}
+                searchValue={spreadsheetSearch}
+                onSearchChange={setSpreadsheetSearch}
+                onSearchClear={() => setSpreadsheetSearch('')}
+                filteredRowCount={filteredDataRows.length}
+                totalRowCount={dataRows.length}
+                colCount={headers.length}
+              />
 
-                  {/* Formula Bar Display */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    background: '#ffffff',
-                    border: '1px solid #cbd5e1',
-                    borderRadius: '8px',
-                    padding: '4px 10px',
-                    flex: 1,
-                    gap: '6px'
-                  }}>
-                    <span style={{ fontSize: '0.76rem', fontWeight: 800, color: '#94a3b8', fontStyle: 'italic' }}>fx</span>
-                    <input
-                      type="text"
-                      readOnly
-                      value={String(selectedCell.val ?? '')}
-                      placeholder="Select any cell to inspect value or formula"
-                      style={{
-                        border: 'none',
-                        outline: 'none',
-                        width: '100%',
-                        fontSize: '0.82rem',
-                        color: '#1e293b',
-                        background: 'transparent'
-                      }}
-                    />
-                  </div>
-                </div>
+              {/* Sheet Navigation Tabs Molecule */}
+              <SpreadsheetSheetTabs
+                sheetNames={activeDoc.sheetNames || Object.keys(activeDoc.sheetsData || {})}
+                sheetsData={activeDoc.sheetsData}
+                activeSheetName={activeSheetName}
+                onSelectSheet={(sName) => {
+                  setActiveSheetName(sName);
+                  setSpreadsheetSearch('');
+                  setSelectedCell({ row: 0, col: 0, address: 'A1', val: activeDoc.sheetsData?.[sName]?.[1]?.[0] || '' });
+                }}
+              />
 
-                {/* Search & Filter within current sheet */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{
-                    position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}>
-                    <Search size={14} style={{ position: 'absolute', left: '10px', color: '#94a3b8' }} />
-                    <input
-                      type="text"
-                      value={spreadsheetSearch}
-                      onChange={e => setSpreadsheetSearch(e.target.value)}
-                      placeholder="Filter sheet rows…"
-                      style={{
-                        padding: '5px 28px 5px 30px',
-                        fontSize: '0.8rem',
-                        borderRadius: '8px',
-                        border: '1px solid #cbd5e1',
-                        outline: 'none',
-                        background: '#ffffff',
-                        color: '#0f172a',
-                        width: '180px'
-                      }}
-                    />
-                    {spreadsheetSearch && (
-                      <button
-                        onClick={() => setSpreadsheetSearch('')}
-                        style={{ position: 'absolute', right: '6px', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '2px' }}
-                      >
-                        <X size={13} />
-                      </button>
-                    )}
-                  </div>
-
-                  <span style={{ fontSize: '0.74rem', color: '#64748b', fontWeight: 600 }}>
-                    {filteredDataRows.length} of {dataRows.length} rows • {headers.length} cols
-                  </span>
-                </div>
-              </div>
-
-              {/* Sheet Navigation Tabs Bar (Excel-Style) */}
-              <div style={{
-                background: '#f1f5f9',
-                borderBottom: '1px solid #cbd5e1',
-                padding: '4px 12px 0 12px',
-                display: 'flex',
-                alignItems: 'flex-end',
-                gap: '4px',
-                overflowX: 'auto'
-              }}>
-                {(activeDoc.sheetNames || Object.keys(activeDoc.sheetsData || {})).map(sName => {
-                  const isActive = activeSheetName === sName;
-                  const rowCount = (activeDoc.sheetsData?.[sName]?.length || 1) - 1;
-                  return (
-                    <button
-                      key={sName}
-                      onClick={() => {
-                        setActiveSheetName(sName);
-                        setSpreadsheetSearch('');
-                        setSelectedCell({ row: 0, col: 0, address: 'A1', val: activeDoc.sheetsData?.[sName]?.[1]?.[0] || '' });
-                      }}
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '7px 14px',
-                        fontSize: '0.8rem',
-                        fontWeight: isActive ? 700 : 500,
-                        color: isActive ? '#065f46' : '#475569',
-                        background: isActive ? '#ffffff' : 'transparent',
-                        borderTop: isActive ? '2px solid #059669' : '2px solid transparent',
-                        borderLeft: isActive ? '1px solid #cbd5e1' : 'none',
-                        borderRight: isActive ? '1px solid #cbd5e1' : 'none',
-                        borderBottom: isActive ? '1px solid #ffffff' : 'none',
-                        borderTopLeftRadius: '6px',
-                        borderTopRightRadius: '6px',
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                        marginBottom: isActive ? '-1px' : '0',
-                        transition: 'all 0.12s ease'
-                      }}
-                    >
-                      <Table size={13} color={isActive ? '#059669' : '#94a3b8'} />
-                      <span>{sName}</span>
-                      <span style={{
-                        fontSize: '0.68rem',
-                        padding: '1px 5px',
-                        borderRadius: '10px',
-                        background: isActive ? '#dcfce7' : '#e2e8f0',
-                        color: isActive ? '#166534' : '#64748b'
-                      }}>
-                        {rowCount}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Scrollable Spreadsheet Grid */}
-              <div style={{
-                flex: 1,
-                overflow: 'auto',
-                position: 'relative',
-                background: '#ffffff'
-              }}>
-                <table style={{
-                  borderCollapse: 'collapse',
-                  width: 'max-content',
-                  minWidth: '100%',
-                  fontSize: cellFontSize,
-                  fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                }}>
-                  <thead>
-                    {/* Column Letters Row (A, B, C...) */}
-                    <tr style={{ background: '#f8fafc', position: 'sticky', top: 0, zIndex: 10 }}>
-                      <th style={{
-                        width: '44px',
-                        minWidth: '44px',
-                        padding: '5px',
-                        background: '#e2e8f0',
-                        borderBottom: '1px solid #cbd5e1',
-                        borderRight: '1px solid #cbd5e1',
-                        color: '#64748b',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        textAlign: 'center',
-                        position: 'sticky',
-                        left: 0,
-                        zIndex: 20
-                      }}>
-                        #
-                      </th>
-                      {headers.map((_, colIdx) => (
-                        <th
-                          key={colIdx}
-                          style={{
-                            padding: '4px 10px',
-                            background: '#f1f5f9',
-                            borderBottom: '1px solid #cbd5e1',
-                            borderRight: '1px solid #e2e8f0',
-                            color: '#64748b',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            textAlign: 'center',
-                            letterSpacing: '0.04em'
-                          }}
-                        >
-                          {getColumnLetter(colIdx)}
-                        </th>
-                      ))}
-                    </tr>
-
-                    {/* Column Headers Row (Header Names) */}
-                    <tr style={{ background: '#f1f5f9', position: 'sticky', top: '24px', zIndex: 9 }}>
-                      <th style={{
-                        padding: '8px',
-                        background: '#e2e8f0',
-                        borderBottom: '2px solid #cbd5e1',
-                        borderRight: '1px solid #cbd5e1',
-                        position: 'sticky',
-                        left: 0,
-                        zIndex: 20
-                      }} />
-                      {headers.map((colName, colIdx) => (
-                        <th
-                          key={colIdx}
-                          style={{
-                            padding: cellPadding,
-                            background: '#f8fafc',
-                            borderBottom: '2px solid #cbd5e1',
-                            borderRight: '1px solid #e2e8f0',
-                            color: '#0f172a',
-                            fontWeight: 700,
-                            textAlign: 'left',
-                            whiteSpace: 'nowrap'
-                          }}
-                        >
-                          {String(colName ?? '')}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {filteredDataRows.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan={headers.length + 1}
-                          style={{
-                            textAlign: 'center',
-                            padding: '40px',
-                            color: '#94a3b8',
-                            fontSize: '0.9rem'
-                          }}
-                        >
-                          No matching records found for "{spreadsheetSearch}"
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredDataRows.map((row, rowIdx) => {
-                        const originalRowIndex = rowIdx + 2; // Row 1 was headers
-                        return (
-                          <tr
-                            key={rowIdx}
-                            style={{
-                              background: rowIdx % 2 === 0 ? '#ffffff' : '#fafafa',
-                              transition: 'background 0.1s ease'
-                            }}
-                          >
-                            {/* Row Number Indicator (Sticky Left) */}
-                            <td style={{
-                              padding: '6px 8px',
-                              background: '#f1f5f9',
-                              borderBottom: '1px solid #e2e8f0',
-                              borderRight: '1px solid #cbd5e1',
-                              color: '#64748b',
-                              fontSize: '0.72rem',
-                              fontWeight: 600,
-                              textAlign: 'center',
-                              position: 'sticky',
-                              left: 0,
-                              zIndex: 5
-                            }}>
-                              {rowIdx + 1}
-                            </td>
-
-                            {/* Data Cells */}
-                            {headers.map((_, colIdx) => {
-                              const cellVal = row[colIdx];
-                              const isSelected = selectedCell.row === rowIdx && selectedCell.col === colIdx;
-                              const cellAddr = `${getColumnLetter(colIdx)}${rowIdx + 1}`;
-                              const valStr = String(cellVal ?? '');
-
-                              // Special styling for status badges
-                              let badgeStyle = null;
-                              if (valStr === 'Cleared') {
-                                badgeStyle = { background: '#dcfce7', color: '#15803d' };
-                              } else if (valStr === 'Pending' || valStr === 'Cheque Pending') {
-                                badgeStyle = { background: '#fef3c7', color: '#b45309' };
-                              } else if (valStr === 'Overdue') {
-                                badgeStyle = { background: '#fee2e2', color: '#b91c1c' };
-                              } else if (valStr.includes('Advance')) {
-                                badgeStyle = { background: '#e0f2fe', color: '#0369a1' };
-                              } else if (valStr.includes('Active')) {
-                                badgeStyle = { background: '#ecfdf5', color: '#047857' };
-                              }
-
-                              return (
-                                <td
-                                  key={colIdx}
-                                  onClick={() => setSelectedCell({
-                                    row: rowIdx,
-                                    col: colIdx,
-                                    address: cellAddr,
-                                    val: cellVal
-                                  })}
-                                  style={{
-                                    padding: cellPadding,
-                                    borderBottom: '1px solid #e2e8f0',
-                                    borderRight: '1px solid #f1f5f9',
-                                    outline: isSelected ? '2px solid #059669' : 'none',
-                                    outlineOffset: '-2px',
-                                    background: isSelected ? '#ecfdf5' : 'inherit',
-                                    color: '#1e293b',
-                                    whiteSpace: 'nowrap',
-                                    cursor: 'cell',
-                                    fontFamily: typeof cellVal === 'number' ? 'monospace' : 'inherit'
-                                  }}
-                                >
-                                  {badgeStyle ? (
-                                    <span style={{
-                                      padding: '2px 8px',
-                                      borderRadius: '12px',
-                                      fontSize: '0.74rem',
-                                      fontWeight: 700,
-                                      ...badgeStyle
-                                    }}>
-                                      {valStr}
-                                    </span>
-                                  ) : typeof cellVal === 'number' ? (
-                                    cellVal.toLocaleString('en-IN')
-                                  ) : (
-                                    valStr
-                                  )}
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Status footer for spreadsheet */}
-              <div style={{
-                background: '#f8fafc',
-                borderTop: '1px solid #e2e8f0',
-                padding: '6px 16px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                fontSize: '0.74rem',
-                color: '#64748b'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#059669' }} />
-                  <span>Ready • In-Portal Multi-Sheet Spreadsheet Engine</span>
-                </div>
-                <div>
-                  Active Sheet: <strong>{activeSheetName}</strong>
-                </div>
-              </div>
+              {/* Spreadsheet Table Grid Organism */}
+              <SpreadsheetGrid
+                headers={headers}
+                rows={filteredDataRows}
+                selectedCell={selectedCell}
+                onCellClick={handleCellClick}
+                activeSheetName={activeSheetName}
+              />
             </div>
           ) : activeDoc.isPptxBinary ? (
             /* ═════════════════════════════════════════════════════════════════
-               RAW PPTX FALLBACK MODAL
+               RAW PPTX FALLBACK CARD MOLECULE
                ═════════════════════════════════════════════════════════════════ */
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              width: '100%',
-              padding: '20px'
-            }}>
-              <div style={{
-                background: '#0f172a',
-                border: '1px solid #334155',
-                borderRadius: '18px',
-                padding: '36px',
-                maxWidth: '640px',
-                textAlign: 'center',
-                color: '#ffffff',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
-                margin: '20px'
-              }}>
-                <div style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '16px',
-                  background: 'rgba(217,119,6,0.15)',
-                  color: '#d97706',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 16px auto'
-                }}>
-                  <Presentation size={36} />
-                </div>
-                <h3 style={{ margin: '0 0 10px 0', fontSize: '1.25rem', fontWeight: 800 }}>
-                  {activeDoc.title}
-                </h3>
-                <p style={{ fontSize: '0.88rem', color: '#94a3b8', lineHeight: 1.6, marginBottom: '20px' }}>
-                  You have loaded a PowerPoint presentation file. To view presentations directly inside the portal without external software:
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left', background: '#1e293b', padding: '16px', borderRadius: '12px', marginBottom: '24px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.84rem', color: '#e2e8f0' }}>
-                    <CheckCircle2 size={16} color="#0d9488" />
-                    <span><strong>Native Web Presentation:</strong> Check the pre-bundled <em>Enterprise Workflow Presentation</em> above.</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.84rem', color: '#e2e8f0' }}>
-                    <CheckCircle2 size={16} color="#0d9488" />
-                    <span><strong>Spreadsheets (XLSX/CSV):</strong> Check the live <em>Society Master Financial &amp; Maintenance Ledger</em>.</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.84rem', color: '#e2e8f0' }}>
-                    <CheckCircle2 size={16} color="#0d9488" />
-                    <span><strong>Download &amp; Edit:</strong> Download the file anytime for Microsoft PowerPoint or Keynote.</span>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                  <button
-                    onClick={() => setSelectedDocId('workflow_ppt')}
-                    style={{
-                      padding: '10px 18px',
-                      borderRadius: '10px',
-                      background: '#0d9488',
-                      border: 'none',
-                      color: '#ffffff',
-                      fontWeight: 700,
-                      fontSize: '0.84rem',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    View Workflow HTML Slides
-                  </button>
-                  <a
-                    href={activeDoc.downloadUrl}
-                    download
-                    style={{
-                      padding: '10px 18px',
-                      borderRadius: '10px',
-                      background: '#334155',
-                      color: '#ffffff',
-                      textDecoration: 'none',
-                      fontWeight: 600,
-                      fontSize: '0.84rem',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}
-                  >
-                    <Download size={14} /> Download File
-                  </a>
-                </div>
-              </div>
-            </div>
+            <PptxFallbackCard
+              activeDoc={activeDoc}
+              onSwitchToPresentation={() => setSelectedDocId('workflow_ppt')}
+            />
           ) : (
             /* ═════════════════════════════════════════════════════════════════
                STANDARD EMBEDDED IFRAME (HTML SLIDES / PDF)
                ═════════════════════════════════════════════════════════════════ */
-            <div style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              overflow: 'auto',
-              background: '#0b1329'
-            }}>
+            <div className="ip-iframe-wrap">
               <iframe
                 id="viewer-iframe"
                 src={activeDoc.url}
                 title={activeDoc.title}
-                style={{
-                  width: `${zoomLevel}%`,
-                  height: `${zoomLevel}%`,
-                  minHeight: '100%',
-                  minWidth: '100%',
-                  border: 'none',
-                  borderRadius: '0',
-                  background: '#ffffff'
-                }}
+                className="ip-iframe"
+                style={{ width: `${zoomLevel}%`, height: `${zoomLevel}%` }}
               />
             </div>
           )}
         </div>
       </div>
 
-      {/* ── Open Web URL Modal ── */}
-      {urlModalOpen && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(15,23,42,0.7)',
-          backdropFilter: 'blur(6px)',
-          zIndex: 10000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px'
-        }}
-        onClick={() => setUrlModalOpen(false)}
-        >
-          <div
-            style={{
-              background: '#ffffff',
-              borderRadius: '18px',
-              maxWidth: '520px',
-              width: '100%',
-              padding: '26px',
-              boxShadow: '0 25px 60px rgba(0,0,0,0.25)'
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>
-              Open Document from Web URL
-            </h3>
-            <p style={{ margin: '0 0 18px 0', fontSize: '0.85rem', color: '#64748b', lineHeight: 1.5 }}>
-              Enter any accessible URL to a PDF, web document, or presentation to display it seamlessly inside this portal.
-            </p>
-            <form onSubmit={handleOpenUrl}>
-              <input
-                type="url"
-                value={customUrlInput}
-                onChange={e => setCustomUrlInput(e.target.value)}
-                placeholder="https://example.com/document.pdf"
-                required
-                style={{
-                  width: '100%',
-                  padding: '12px 14px',
-                  borderRadius: '10px',
-                  border: '1px solid #cbd5e1',
-                  fontSize: '0.9rem',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                  marginBottom: '18px'
-                }}
-              />
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                <button
-                  type="button"
-                  onClick={() => setUrlModalOpen(false)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '10px',
-                    background: '#f1f5f9',
-                    border: 'none',
-                    color: '#475569',
-                    fontWeight: 600,
-                    cursor: 'pointer'
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  style={{
-                    padding: '8px 18px',
-                    borderRadius: '10px',
-                    background: '#0d9488',
-                    border: 'none',
-                    color: '#ffffff',
-                    fontWeight: 700,
-                    cursor: 'pointer'
-                  }}
-                >
-                  Open in Viewer
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── In-Portal Document Modal (Helper for Document Vault and Workflow Manager) ─
-export function DocumentViewerModal({ documentUrl, documentTitle, documentType = 'PDF', onClose }) {
-  if (!documentUrl) return null;
-
-  const handlePrintModal = () => {
-    const isPdf = documentType === 'PDF' || documentUrl?.toLowerCase().includes('.pdf');
-    if (isPdf && documentUrl) {
-      const printWin = window.open(documentUrl, '_blank');
-      if (printWin) {
-        printWin.focus();
-        try {
-          printWin.onload = () => {
-            try { printWin.print(); } catch {}
-          };
-        } catch {}
-      }
-      return;
-    }
-
-    const iframe = document.getElementById('modal-viewer-iframe');
-    if (iframe?.contentWindow) {
-      try {
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-        return;
-      } catch (err) {
-        console.warn('Modal print fallback:', err);
-      }
-    }
-    window.print();
-  };
-
-  return (
-    <div
-      className="document-viewer-modal-backdrop"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 10000,
-        background: 'rgba(15,23,42,0.75)',
-        backdropFilter: 'blur(8px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px'
-      }}
-      onClick={onClose}
-    >
-      <div
-        className="document-viewer-modal-content"
-        style={{
-          width: '100%',
-          maxWidth: '1100px',
-          height: '90vh',
-          background: '#ffffff',
-          borderRadius: '18px',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          boxShadow: '0 25px 80px rgba(0,0,0,0.3)'
-        }}
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="no-print" style={{
-          padding: '14px 20px',
-          background: '#0f172a',
-          color: '#ffffff',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{
-              background: documentType === 'XLSX' ? '#059669' : documentType === 'PPT' ? '#d97706' : '#0d9488',
-              padding: '3px 8px',
-              borderRadius: '6px',
-              fontSize: '0.72rem',
-              fontWeight: 800
-            }}>
-              {documentType}
-            </span>
-            <span style={{ fontSize: '0.95rem', fontWeight: 700 }}>
-              {documentTitle}
-            </span>
-          </div>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <button
-              onClick={handlePrintModal}
-              title="Print Document"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                background: '#1e293b',
-                color: '#e2e8f0',
-                border: '1px solid #334155',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                fontSize: '0.76rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-            >
-              <Printer size={13} /> Print
-            </button>
-            <a
-              href={documentUrl}
-              download
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                background: '#0d9488',
-                color: '#fff',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                fontSize: '0.76rem',
-                fontWeight: 700,
-                textDecoration: 'none'
-              }}
-            >
-              <Download size={13} /> Download
-            </a>
-            <button
-              onClick={onClose}
-              style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1.2rem' }}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-
-        <iframe
-          id="modal-viewer-iframe"
-          src={documentUrl}
-          title={documentTitle}
-          style={{ width: '100%', height: '100%', border: 'none' }}
-        />
-      </div>
+      {/* ── Open Web URL Modal Molecule ── */}
+      <OpenUrlModal
+        isOpen={urlModalOpen}
+        urlInput={customUrlInput}
+        onUrlInputChange={setCustomUrlInput}
+        onSubmit={handleOpenUrl}
+        onClose={() => setUrlModalOpen(false)}
+      />
     </div>
   );
 }
